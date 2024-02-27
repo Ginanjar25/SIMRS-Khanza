@@ -1,0 +1,4 @@
+/build/
+**/nbproject/private/
+/setting/
+/setting/database.xml
