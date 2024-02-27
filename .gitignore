@@ -9,3 +9,5 @@ nbdist/
 .nb-gradle/
 setting/database.xml
 nbproject/private/private.properties
+/tesgit/
+/setting/
