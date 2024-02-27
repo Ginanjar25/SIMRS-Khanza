@@ -7,5 +7,5 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
-setting/database_ori.xml
+setting/database.xml
 nbproject/private/private.properties
