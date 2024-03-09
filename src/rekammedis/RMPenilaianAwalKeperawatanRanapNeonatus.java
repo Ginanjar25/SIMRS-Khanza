@@ -4826,6 +4826,7 @@ public final class RMPenilaianAwalKeperawatanRanapNeonatus extends javax.swing.J
         KeteranganDiagnosaKhususGizi.setText("");
         DiketahuiDietisen.setSelectedIndex(0);
         KeteranganDiketahuiDietisen.setText("");
+	sdasda
         Rencana.setText("");
         for (i = 0; i < tabModeMasalah.getRowCount(); i++) {
             tabModeMasalah.setValueAt(false,i,0);
