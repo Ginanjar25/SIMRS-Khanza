@@ -190,7 +190,8 @@ public class DlgUpdateUser extends javax.swing.JDialog {
             satu_sehat_kirim_medication=false,satu_sehat_kirim_medicationrequest=false,penatalaksanaan_terapi_okupasi=false,satu_sehat_kirim_medicationdispense=false,hasil_usg_neonatus=false,hasil_endoskopi_faring_laring=false,
             satu_sehat_mapping_radiologi=false,satu_sehat_kirim_servicerequest_radiologi=false,hasil_endoskopi_hidung=false,satu_sehat_kirim_specimen_radiologi=false,master_masalah_keperawatan_neonatus=false,
             master_rencana_keperawatan_neonatus=false,penilaian_awal_keperawatan_ranap_neonatus=false,satu_sehat_kirim_observation_radiologi=false,satu_sehat_kirim_diagnosticreport_radiologi=false,hasil_endoskopi_telinga=false,
-            satu_sehat_mapping_lab=false;
+            satu_sehat_mapping_lab=false,satu_sehat_kirim_servicerequest_lab=false,satu_sehat_kirim_servicerequest_labmb=false,satu_sehat_kirim_specimen_lab=false,satu_sehat_kirim_specimen_labmb=false,
+            satu_sehat_kirim_observation_lab=false,satu_sehat_kirim_observation_labmb=false;
 
     /** Creates new form DlgUser
      * @param parent
@@ -565,6 +566,7 @@ public class DlgUpdateUser extends javax.swing.JDialog {
         }else{ 
             Simpan();
             Simpan2();
+            Simpan3();
         }
     }//GEN-LAST:event_BtnSimpanActionPerformed
 
@@ -803,7 +805,8 @@ public class DlgUpdateUser extends javax.swing.JDialog {
         satu_sehat_kirim_medication=false;satu_sehat_kirim_medicationrequest=false;penatalaksanaan_terapi_okupasi=false;satu_sehat_kirim_medicationdispense=false;hasil_usg_neonatus=false;hasil_endoskopi_faring_laring=false;
         satu_sehat_mapping_radiologi=false;satu_sehat_kirim_servicerequest_radiologi=false;hasil_endoskopi_hidung=false;satu_sehat_kirim_specimen_radiologi=false;master_masalah_keperawatan_neonatus=false;
         master_rencana_keperawatan_neonatus=false;penilaian_awal_keperawatan_ranap_neonatus=false;satu_sehat_kirim_observation_radiologi=false;satu_sehat_kirim_diagnosticreport_radiologi=false;hasil_endoskopi_telinga=false;
-        satu_sehat_mapping_lab=false;
+        satu_sehat_mapping_lab=false;satu_sehat_kirim_servicerequest_lab=false;satu_sehat_kirim_servicerequest_labmb=false;satu_sehat_kirim_specimen_lab=false;satu_sehat_kirim_specimen_labmb=false;
+        satu_sehat_kirim_observation_lab=false;satu_sehat_kirim_observation_labmb=false;
         try{    
             jml=0;
             for(i=0;i<tbUser.getRowCount();i++){
@@ -1031,7 +1034,9 @@ public class DlgUpdateUser extends javax.swing.JDialog {
                 "user.satu_sehat_kirim_medicationrequest,user.penatalaksanaan_terapi_okupasi,user.satu_sehat_kirim_medicationdispense,user.hasil_usg_neonatus,"+
                 "user.hasil_endoskopi_faring_laring,user.satu_sehat_mapping_radiologi,user.satu_sehat_kirim_servicerequest_radiologi,user.hasil_endoskopi_hidung,"+
                 "user.satu_sehat_kirim_specimen_radiologi,user.master_masalah_keperawatan_neonatus,user.master_rencana_keperawatan_neonatus,user.penilaian_awal_keperawatan_ranap_neonatus,"+
-                "user.satu_sehat_kirim_observation_radiologi,user.satu_sehat_kirim_diagnosticreport_radiologi,user.hasil_endoskopi_telinga,user.satu_sehat_mapping_lab from user where user.id_user=AES_ENCRYPT(?,'nur')");
+                "user.satu_sehat_kirim_observation_radiologi,user.satu_sehat_kirim_diagnosticreport_radiologi,user.hasil_endoskopi_telinga,user.satu_sehat_mapping_lab,"+
+                "user.satu_sehat_kirim_servicerequest_lab,user.satu_sehat_kirim_servicerequest_labmb,user.satu_sehat_kirim_specimen_lab,user.satu_sehat_kirim_specimen_labmb,"+
+                "user.satu_sehat_kirim_observation_lab,user.satu_sehat_kirim_observation_labmb from user where user.id_user=AES_ENCRYPT(?,'nur')");
             try {
                 ps.setString(1,user);
                 rs=ps.executeQuery();
@@ -1147,7 +1152,8 @@ public class DlgUpdateUser extends javax.swing.JDialog {
                     bpjs_daftar_pelayanan_obat_apotek=rs.getBoolean("bpjs_daftar_pelayanan_obat_apotek");penilaian_awal_medis_ralan_paru=rs.getBoolean("penilaian_awal_medis_ralan_paru");catatan_keperawatan_ralan=rs.getBoolean("catatan_keperawatan_ralan");catatan_persalinan=rs.getBoolean("catatan_persalinan");skor_aldrette_pasca_anestesi=rs.getBoolean("skor_aldrette_pasca_anestesi");skor_steward_pasca_anestesi=rs.getBoolean("skor_steward_pasca_anestesi");skor_bromage_pasca_anestesi=rs.getBoolean("skor_bromage_pasca_anestesi");penilaian_pre_induksi=rs.getBoolean("penilaian_pre_induksi");hasil_usg_urologi=rs.getBoolean("hasil_usg_urologi");
                     hasil_usg_gynecologi=rs.getBoolean("hasil_usg_gynecologi");hasil_pemeriksaan_ekg=rs.getBoolean("hasil_pemeriksaan_ekg");hapus_edit_sep_bpjs=rs.getBoolean("hapus_edit_sep_bpjs");satu_sehat_kirim_diet=rs.getBoolean("satu_sehat_kirim_diet");satu_sehat_mapping_obat=rs.getBoolean("satu_sehat_mapping_obat");dapur_ringkasan_pembelian=rs.getBoolean("dapur_ringkasan_pembelian");satu_sehat_kirim_medication=rs.getBoolean("satu_sehat_kirim_medication");satu_sehat_kirim_medicationrequest=rs.getBoolean("satu_sehat_kirim_medicationrequest");penatalaksanaan_terapi_okupasi=rs.getBoolean("penatalaksanaan_terapi_okupasi");
                     satu_sehat_kirim_medicationdispense=rs.getBoolean("satu_sehat_kirim_medicationdispense");hasil_usg_neonatus=rs.getBoolean("hasil_usg_neonatus");hasil_endoskopi_faring_laring=rs.getBoolean("hasil_endoskopi_faring_laring");satu_sehat_mapping_radiologi=rs.getBoolean("satu_sehat_mapping_radiologi");satu_sehat_kirim_servicerequest_radiologi=rs.getBoolean("satu_sehat_kirim_servicerequest_radiologi");hasil_endoskopi_hidung=rs.getBoolean("hasil_endoskopi_hidung");satu_sehat_kirim_specimen_radiologi=rs.getBoolean("satu_sehat_kirim_specimen_radiologi");master_masalah_keperawatan_neonatus=rs.getBoolean("master_masalah_keperawatan_neonatus");
-                    master_rencana_keperawatan_neonatus=rs.getBoolean("master_rencana_keperawatan_neonatus");penilaian_awal_keperawatan_ranap_neonatus=rs.getBoolean("penilaian_awal_keperawatan_ranap_neonatus");satu_sehat_kirim_observation_radiologi=rs.getBoolean("satu_sehat_kirim_observation_radiologi");satu_sehat_kirim_diagnosticreport_radiologi=rs.getBoolean("satu_sehat_kirim_diagnosticreport_radiologi");hasil_endoskopi_telinga=rs.getBoolean("hasil_endoskopi_telinga");satu_sehat_mapping_lab=rs.getBoolean("satu_sehat_mapping_lab");
+                    master_rencana_keperawatan_neonatus=rs.getBoolean("master_rencana_keperawatan_neonatus");penilaian_awal_keperawatan_ranap_neonatus=rs.getBoolean("penilaian_awal_keperawatan_ranap_neonatus");satu_sehat_kirim_observation_radiologi=rs.getBoolean("satu_sehat_kirim_observation_radiologi");satu_sehat_kirim_diagnosticreport_radiologi=rs.getBoolean("satu_sehat_kirim_diagnosticreport_radiologi");hasil_endoskopi_telinga=rs.getBoolean("hasil_endoskopi_telinga");satu_sehat_mapping_lab=rs.getBoolean("satu_sehat_mapping_lab");satu_sehat_kirim_servicerequest_lab=rs.getBoolean("satu_sehat_kirim_servicerequest_lab");
+                    satu_sehat_kirim_servicerequest_labmb=rs.getBoolean("satu_sehat_kirim_servicerequest_labmb");satu_sehat_kirim_specimen_lab=rs.getBoolean("satu_sehat_kirim_specimen_lab");satu_sehat_kirim_specimen_labmb=rs.getBoolean("satu_sehat_kirim_specimen_labmb");satu_sehat_kirim_observation_lab=rs.getBoolean("satu_sehat_kirim_observation_lab");satu_sehat_kirim_observation_labmb=rs.getBoolean("satu_sehat_kirim_observation_labmb");
                     setTampil();
                 }       
                 LCount.setText(""+tabMode.getRowCount());
@@ -3596,8 +3602,32 @@ public class DlgUpdateUser extends javax.swing.JDialog {
             tabMode.addRow(new Object[]{false,"[L]Kirim Diagnostic Report Radiologi Satu Sehat",satu_sehat_kirim_diagnosticreport_radiologi});
         }
         
-        if("[L]Mapping Tindakan Laborat Satu Sehat".toLowerCase().contains(TCari.getText().toLowerCase())){
-            tabMode.addRow(new Object[]{false,"[L]Mapping Tindakan Laborat Satu Sehat",satu_sehat_mapping_lab});
+        if("[L]Mapping Tindakan Lab PK & MB Satu Sehat".toLowerCase().contains(TCari.getText().toLowerCase())){
+            tabMode.addRow(new Object[]{false,"[L]Mapping Tindakan Lab PK & MB Satu Sehat",satu_sehat_mapping_lab});
+        }
+        
+        if("[L]Kirim Service Request Lab PK Satu Sehat".toLowerCase().contains(TCari.getText().toLowerCase())){
+            tabMode.addRow(new Object[]{false,"[L]Kirim Service Request Lab PK Satu Sehat",satu_sehat_kirim_servicerequest_lab});
+        }
+        
+        if("[L]Kirim Service Request Lab MB Satu Sehat".toLowerCase().contains(TCari.getText().toLowerCase())){
+            tabMode.addRow(new Object[]{false,"[L]Kirim Service Request Lab MB Satu Sehat",satu_sehat_kirim_servicerequest_labmb});
+        }
+        
+        if("[L]Kirim Specimen Lab PK Satu Sehat".toLowerCase().contains(TCari.getText().toLowerCase())){
+            tabMode.addRow(new Object[]{false,"[L]Kirim Specimen Lab PK Satu Sehat",satu_sehat_kirim_specimen_lab});
+        }
+        
+        if("[L]Kirim Specimen Lab MB Satu Sehat".toLowerCase().contains(TCari.getText().toLowerCase())){
+            tabMode.addRow(new Object[]{false,"[L]Kirim Specimen Lab MB Satu Sehat",satu_sehat_kirim_specimen_labmb});
+        }
+        
+        if("[L]Kirim Observation Lab PK Satu Sehat".toLowerCase().contains(TCari.getText().toLowerCase())){
+            tabMode.addRow(new Object[]{false,"[L]Kirim Observation Lab PK Satu Sehat",satu_sehat_kirim_observation_lab});
+        }
+        
+        if("[L]Kirim Observation Lab MB Satu Sehat".toLowerCase().contains(TCari.getText().toLowerCase())){
+            tabMode.addRow(new Object[]{false,"[L]Kirim Observation Lab MB Satu Sehat",satu_sehat_kirim_observation_labmb});
         }
 
         if("[M]Pasien".toLowerCase().contains(TCari.getText().toLowerCase())){
@@ -7687,8 +7717,32 @@ public class DlgUpdateUser extends javax.swing.JDialog {
                 Sequel.mengedit("user","id_user=AES_ENCRYPT('"+TKd.getText()+"','nur')","satu_sehat_kirim_diagnosticreport_radiologi='"+tbUser.getValueAt(i,2).toString()+"'");
             }
             
-            if("[L]Mapping Tindakan Laborat Satu Sehat".equals(tbUser.getValueAt(i,1).toString())){
+            if("[L]Mapping Tindakan Lab PK & MB Satu Sehat".equals(tbUser.getValueAt(i,1).toString())){
                 Sequel.mengedit("user","id_user=AES_ENCRYPT('"+TKd.getText()+"','nur')","satu_sehat_mapping_lab='"+tbUser.getValueAt(i,2).toString()+"'");
+            }
+            
+            if("[L]Kirim Service Request Lab PK Satu Sehat".equals(tbUser.getValueAt(i,1).toString())){
+                Sequel.mengedit("user","id_user=AES_ENCRYPT('"+TKd.getText()+"','nur')","satu_sehat_kirim_servicerequest_lab='"+tbUser.getValueAt(i,2).toString()+"'");
+            }
+            
+            if("[L]Kirim Service Request Lab MB Satu Sehat".equals(tbUser.getValueAt(i,1).toString())){
+                Sequel.mengedit("user","id_user=AES_ENCRYPT('"+TKd.getText()+"','nur')","satu_sehat_kirim_servicerequest_labmb='"+tbUser.getValueAt(i,2).toString()+"'");
+            }
+            
+            if("[L]Kirim Specimen Lab PK Satu Sehat".equals(tbUser.getValueAt(i,1).toString())){
+                Sequel.mengedit("user","id_user=AES_ENCRYPT('"+TKd.getText()+"','nur')","satu_sehat_kirim_specimen_lab='"+tbUser.getValueAt(i,2).toString()+"'");
+            }
+            
+            if("[L]Kirim Specimen Lab MB Satu Sehat".equals(tbUser.getValueAt(i,1).toString())){
+                Sequel.mengedit("user","id_user=AES_ENCRYPT('"+TKd.getText()+"','nur')","satu_sehat_kirim_specimen_labmb='"+tbUser.getValueAt(i,2).toString()+"'");
+            }
+            
+            if("[L]Kirim Observation Lab PK Satu Sehat".equals(tbUser.getValueAt(i,1).toString())){
+                Sequel.mengedit("user","id_user=AES_ENCRYPT('"+TKd.getText()+"','nur')","satu_sehat_kirim_observation_lab='"+tbUser.getValueAt(i,2).toString()+"'");
+            }
+            
+            if("[L]Kirim Observation Lab MB Satu Sehat".equals(tbUser.getValueAt(i,1).toString())){
+                Sequel.mengedit("user","id_user=AES_ENCRYPT('"+TKd.getText()+"','nur')","satu_sehat_kirim_observation_labmb='"+tbUser.getValueAt(i,2).toString()+"'");
             }
             
             if("[M]Pasien".equals(tbUser.getValueAt(i,1).toString())){
@@ -8434,7 +8488,11 @@ public class DlgUpdateUser extends javax.swing.JDialog {
             if("[N]Data Pendonor".equals(tbUser.getValueAt(i,1).toString())){
                 Sequel.mengedit("user","id_user=AES_ENCRYPT('"+TKd.getText()+"','nur')","utd_pendonor='"+tbUser.getValueAt(i,2).toString()+"'");
             }
-
+        }
+    }
+    
+    private void Simpan3() {
+        for(i=0;i<tbUser.getRowCount();i++){ 
             if("[O]Registrasi Per Poli".equals(tbUser.getValueAt(i,1).toString())){
                 Sequel.mengedit("user","id_user=AES_ENCRYPT('"+TKd.getText()+"','nur')","grafik_kunjungan_poli='"+tbUser.getValueAt(i,2).toString()+"'");
             }
