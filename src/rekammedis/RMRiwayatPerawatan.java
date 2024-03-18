@@ -284,6 +284,7 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
         chkAsuhanPsikolog = new widget.CekBox();
         chkAsuhanKeperawatanRanap = new widget.CekBox();
         chkAsuhanKeperawatanRanapKandungan = new widget.CekBox();
+        chkAsuhanKeperawatanRanapNeonatus = new widget.CekBox();
         chkAsuhanMedisIGD = new widget.CekBox();
         chkAsuhanMedisIGDPsikiatri = new widget.CekBox();
         chkAsuhanMedisRalan = new widget.CekBox();
@@ -646,7 +647,7 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
         FormMenu.setBackground(new java.awt.Color(255, 255, 255));
         FormMenu.setBorder(null);
         FormMenu.setName("FormMenu"); // NOI18N
-        FormMenu.setPreferredSize(new java.awt.Dimension(255, 3075));
+        FormMenu.setPreferredSize(new java.awt.Dimension(255, 3080));
         FormMenu.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 1, 1));
 
         chkSemua.setSelected(true);
@@ -789,6 +790,14 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
         chkAsuhanKeperawatanRanapKandungan.setOpaque(false);
         chkAsuhanKeperawatanRanapKandungan.setPreferredSize(new java.awt.Dimension(245, 22));
         FormMenu.add(chkAsuhanKeperawatanRanapKandungan);
+
+        chkAsuhanKeperawatanRanapNeonatus.setSelected(true);
+        chkAsuhanKeperawatanRanapNeonatus.setText("Awal Keperawatan Ranap Neonatus");
+        chkAsuhanKeperawatanRanapNeonatus.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        chkAsuhanKeperawatanRanapNeonatus.setName("chkAsuhanKeperawatanRanapNeonatus"); // NOI18N
+        chkAsuhanKeperawatanRanapNeonatus.setOpaque(false);
+        chkAsuhanKeperawatanRanapNeonatus.setPreferredSize(new java.awt.Dimension(245, 22));
+        FormMenu.add(chkAsuhanKeperawatanRanapNeonatus);
 
         chkAsuhanMedisIGD.setSelected(true);
         chkAsuhanMedisIGD.setText("Awal Medis IGD");
@@ -2113,6 +2122,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
             chkAsuhanKeperawatanRalanKandungan.setSelected(true);
             chkAsuhanKeperawatanRanap.setSelected(true);
             chkAsuhanKeperawatanRanapKandungan.setSelected(true);
+            chkAsuhanKeperawatanRanapNeonatus.setSelected(true);
             chkAsuhanKeperawatanRalanPsikiatri.setSelected(true);
             chkAsuhanMedisRalan.setSelected(true);
             chkAsuhanMedisIGD.setSelected(true);
@@ -2246,6 +2256,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
             chkAsuhanKeperawatanRalanKandungan.setSelected(false);
             chkAsuhanKeperawatanRanap.setSelected(false);
             chkAsuhanKeperawatanRanapKandungan.setSelected(false);
+            chkAsuhanKeperawatanRanapNeonatus.setSelected(false);
             chkAsuhanKeperawatanRalanPsikiatri.setSelected(false);
             chkAsuhanMedisRalan.setSelected(false);
             chkAsuhanMedisIGD.setSelected(false);
@@ -2457,6 +2468,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     private widget.CekBox chkAsuhanKeperawatanRalanPsikiatri;
     private widget.CekBox chkAsuhanKeperawatanRanap;
     private widget.CekBox chkAsuhanKeperawatanRanapKandungan;
+    private widget.CekBox chkAsuhanKeperawatanRanapNeonatus;
     private widget.CekBox chkAsuhanLanjutanRisikoJatuhAnak;
     private widget.CekBox chkAsuhanLanjutanRisikoJatuhDewasa;
     private widget.CekBox chkAsuhanLanjutanRisikoJatuhGeriatri;
@@ -3049,6 +3061,8 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                     menampilkanAsuhanKeperawatanRawatInap(rs.getString("no_rawat"));
                     //menampilkan asuhan kebidanan rawat inap
                     menampilkanAsuhanKebidananRawatInap(rs.getString("no_rawat"));
+                    //menampilkan asuhan keperawatan rawat inap neonatus
+                    menampilkanAsuhanKeperawatanRawatInapNeonatus(rs.getString("no_rawat"));
                     //menampilkan asuhan awal medis rawat inap
                     menampilkanAsuhanMedisRawatInap(rs.getString("no_rawat"));
                     //menampilkan asuhan awal medis rawat inap kebidanan
@@ -6398,13 +6412,13 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                                "<td valign='middle' bgcolor='#FFFAF8' align='center' width='25%' colspan='2'>Nilai</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td valign='top'>1</td>"+
+                                              "<td valign='top' align='center'>1</td>"+
                                               "<td valign='top'>Apakah ada penurunan berat badan yang tidak diinginkan selama enam bulan terakhir ?</td>"+
                                               "<td valign='top' align='center' width='20%'>"+rs2.getString("sg1")+"</td>"+
                                               "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai1")+"&nbsp;&nbsp;</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td valign='top'>2</td>"+
+                                              "<td valign='top' align='center'>2</td>"+
                                               "<td valign='top'>Apakah nafsu makan berkurang karena tidak nafsu makan ?</td>"+
                                               "<td valign='top' align='center' width='20%'>"+rs2.getString("sg2")+"</td>"+
                                               "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai2")+"&nbsp;&nbsp;</td>"+
@@ -6678,13 +6692,13 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                                "<td valign='middle' bgcolor='#FFFAF8' align='center' width='25%' colspan='2'>Nilai</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td valign='top'>1</td>"+
+                                              "<td valign='top' align='center'>1</td>"+
                                               "<td valign='top'>Apakah ada penurunan berat badan yang tidak diinginkan selama enam bulan terakhir ?</td>"+
                                               "<td valign='top' align='center' width='20%'>"+rs2.getString("sg1")+"</td>"+
                                               "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai1")+"&nbsp;&nbsp;</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td valign='top'>2</td>"+
+                                              "<td valign='top' align='center'>2</td>"+
                                               "<td valign='top'>Apakah nafsu makan berkurang karena tidak nafsu makan ?</td>"+
                                               "<td valign='top' align='center' width='20%'>"+rs2.getString("sg2")+"</td>"+
                                               "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai2")+"&nbsp;&nbsp;</td>"+
@@ -7402,25 +7416,25 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                               "<td width='20%' bgcolor='#FFFAF8' colspan='2' align='center' valign='middle'>Nilai</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td>1</td>"+
+                                              "<td align='center'>1</td>"+
                                               "<td>Apakah pasien tampak kurus</td>"+
                                               "<td align='center'>"+rs2.getString("sg1")+"</td>"+
                                               "<td align='center'>"+rs2.getString("nilai1")+"</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td>2</td>"+
+                                              "<td align='center'>2</td>"+
                                               "<td>Apakah terdapat penurunan berat badan selama satu bulan terakhir? (berdasarkan penilaian objektif data berat badan bila ada atau untuk bayi < 1 tahun ; berat badan tidak naik selama 3 bulan terakhir</td>"+
                                               "<td align='center'>"+rs2.getString("sg2")+"</td>"+
                                               "<td align='center'>"+rs2.getString("nilai2")+"</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td>3</td>"+
+                                              "<td align='center'>3</td>"+
                                               "<td>Apakah terdapat salah satu dari kondisi tersebut? Diare > 5 kali/hari dan/muntah > 3 kali/hari salam seminggu terakhir; Asupan makanan berkurang selama 1 minggu terakhir</td>"+
                                               "<td align='center'>"+rs2.getString("sg3")+"</td>"+
                                               "<td align='center'>"+rs2.getString("nilai3")+"</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td>4</td>"+
+                                              "<td align='center'>4</td>"+
                                               "<td>Apakah terdapat penyakit atau keadaan yang menyebabkan pasien beresiko mengalami malnutrisi?</td>"+
                                               "<td align='center'>"+rs2.getString("sg4")+"</td>"+
                                               "<td align='center'>"+rs2.getString("nilai4")+"</td>"+
@@ -7839,13 +7853,13 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                                "<td valign='middle' bgcolor='#FFFAF8' align='center' width='25%' colspan='2'>Nilai</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td valign='top'>1</td>"+
+                                              "<td valign='top' align='center'>1</td>"+
                                               "<td valign='top'>Apakah ada penurunan berat badanyang tidak diinginkan selama enam bulan terakhir ?</td>"+
                                               "<td valign='top' align='center' width='20%'>"+rs2.getString("sg1")+"</td>"+
                                               "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai1")+"&nbsp;&nbsp;</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td valign='top'>2</td>"+
+                                              "<td valign='top' align='center'>2</td>"+
                                               "<td valign='top'>Apakah nafsu makan berkurang karena tidak nafsu makan ?</td>"+
                                               "<td valign='top' align='center' width='20%'>"+rs2.getString("sg2")+"</td>"+
                                               "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai2")+"&nbsp;&nbsp;</td>"+
@@ -8128,13 +8142,13 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                                "<td valign='middle' bgcolor='#FFFAF8' align='center' width='40%' colspan='2'>Nilai</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td valign='top'>1</td>"+
+                                              "<td valign='top' align='center'>1</td>"+
                                               "<td valign='top'>Apakah ada penurunan berat badan yang tidak diinginkan selama 6 bulan terakhir ?</td>"+
                                               "<td valign='top' align='center' width='35%'>"+rs2.getString("sg1")+"</td>"+
                                               "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai1")+"&nbsp;&nbsp;</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td valign='top'>2</td>"+
+                                              "<td valign='top' align='center'>2</td>"+
                                               "<td valign='top'>Apakah nafsu makan berkurang, karena tidak nafsu makan ?</td>"+
                                               "<td valign='top' align='center' width='35%'>"+rs2.getString("sg2")+"</td>"+
                                               "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai2")+"&nbsp;&nbsp;</td>"+
@@ -10851,13 +10865,13 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                                "<td valign='middle' bgcolor='#FFFAF8' align='center' width='40%' colspan='2'>Nilai</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td valign='top'>1</td>"+
+                                              "<td valign='top' align='center'>1</td>"+
                                               "<td valign='top'>Apakah ada penurunan BB yang tidak diinginkan selama 6 bulan terakhir ?</td>"+
                                               "<td valign='top' align='center' width='35%'>"+rs2.getString("skrining_gizi1")+"</td>"+
                                               "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai_gizi1")+"&nbsp;&nbsp;</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td valign='top'>2</td>"+
+                                              "<td valign='top' align='center'>2</td>"+
                                               "<td valign='top'>Apakah asupan makan berkurang karena tidak nafsu makan ?</td>"+
                                               "<td valign='top' align='center' width='35%'>"+rs2.getString("skrining_gizi2")+"</td>"+
                                               "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai_gizi2")+"&nbsp;&nbsp;</td>"+
@@ -14989,13 +15003,13 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                                "<td valign='middle' bgcolor='#FFFAF8' align='center' width='40%' colspan='2'>Nilai</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td valign='top'>1</td>"+
+                                              "<td valign='top' align='center'>1</td>"+
                                               "<td valign='top'>Apakah ada penurunan BB yang tidak diinginkan selama 6 bulan terakhir ?</td>"+
                                               "<td valign='top' align='center' width='35%'>"+rs2.getString("skrining_gizi1")+"</td>"+
                                               "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai_gizi1")+"&nbsp;&nbsp;</td>"+
                                           "</tr>"+
                                           "<tr>"+
-                                              "<td valign='top'>2</td>"+
+                                              "<td valign='top' align='center'>2</td>"+
                                               "<td valign='top'>Apakah asupan makan berkurang karena tidak nafsu makan ?</td>"+
                                               "<td valign='top' align='center' width='35%'>"+rs2.getString("skrining_gizi2")+"</td>"+
                                               "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai_gizi2")+"&nbsp;&nbsp;</td>"+
@@ -23859,6 +23873,616 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
             }
         } catch (Exception e) {
             System.out.println("Notif Hasil Pemeriksaan Endoskopi Telinga : "+e);
+        }
+    }
+    
+    private void menampilkanAsuhanKeperawatanRawatInapNeonatus(String norawat) {
+        try {
+            if(chkAsuhanKeperawatanRanapNeonatus.isSelected()==true){
+                try {
+                    rs2=koneksi.prepareStatement(
+                            "select penilaian_awal_keperawatan_ranap_neonatus.no_rawat,penilaian_awal_keperawatan_ranap_neonatus.tanggal,penilaian_awal_keperawatan_ranap_neonatus.asal_pasien,penilaian_awal_keperawatan_ranap_neonatus.cara_masuk,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.diperoleh_dari,penilaian_awal_keperawatan_ranap_neonatus.hubungan_dengan_pasien,penilaian_awal_keperawatan_ranap_neonatus.keluhan_utama,penilaian_awal_keperawatan_ranap_neonatus.prenatal_g,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.prenatal_p,penilaian_awal_keperawatan_ranap_neonatus.prenatal_a,penilaian_awal_keperawatan_ranap_neonatus.prenatal_uk,penilaian_awal_keperawatan_ranap_neonatus.prenatal_riwayat_penyakit_ibu,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.prenatal_riwayat_penyakit_ibu_keterangan,penilaian_awal_keperawatan_ranap_neonatus.prenatal_riwayat_pengobatan_ibu_selama_hamil,penilaian_awal_keperawatan_ranap_neonatus.prenatal_pernah_dirawat,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.prenatal_pernah_dirawat_keterangan,penilaian_awal_keperawatan_ranap_neonatus.prenatal_status_gizi_ibu,penilaian_awal_keperawatan_ranap_neonatus.intranatal_g,penilaian_awal_keperawatan_ranap_neonatus.intranatal_p,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.intranatal_a,penilaian_awal_keperawatan_ranap_neonatus.intranatal_kondisi_lahir,penilaian_awal_keperawatan_ranap_neonatus.intranatal_cara_persalinan,penilaian_awal_keperawatan_ranap_neonatus.intranatal_cara_persalinan_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.intranatal_apgar,penilaian_awal_keperawatan_ranap_neonatus.intranatal_letak,penilaian_awal_keperawatan_ranap_neonatus.intranatal_tali_pusat,penilaian_awal_keperawatan_ranap_neonatus.intranatal_ketuban,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.intranatal_bb,penilaian_awal_keperawatan_ranap_neonatus.intranatal_pb,penilaian_awal_keperawatan_ranap_neonatus.intranatal_lk,penilaian_awal_keperawatan_ranap_neonatus.intranatal_ld,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.intranatal_lp,penilaian_awal_keperawatan_ranap_neonatus.risiko_infeksi_mayor,penilaian_awal_keperawatan_ranap_neonatus.risiko_infeksi_mayor_keterangan,penilaian_awal_keperawatan_ranap_neonatus.risiko_infeksi_minor,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.risiko_infeksi_minor_keterangan,penilaian_awal_keperawatan_ranap_neonatus.kebutuhan_biologis_nutrisi,penilaian_awal_keperawatan_ranap_neonatus.kebutuhan_biologis_nutrisi_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.kebutuhan_biologis_nutrisi_frekuensi,penilaian_awal_keperawatan_ranap_neonatus.kebutuhan_biologis_nutrisi_kali,penilaian_awal_keperawatan_ranap_neonatus.kebutuhan_biologis_bak,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.kebutuhan_biologis_bak_keterangan,penilaian_awal_keperawatan_ranap_neonatus.kebutuhan_biologis_bab,penilaian_awal_keperawatan_ranap_neonatus.kebutuhan_biologis_bab_keterangan,penilaian_awal_keperawatan_ranap_neonatus.alergi_obat,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.alergi_obat_keterangan,penilaian_awal_keperawatan_ranap_neonatus.alergi_obat_reaksi,penilaian_awal_keperawatan_ranap_neonatus.alergi_makanan,penilaian_awal_keperawatan_ranap_neonatus.alergi_makanan_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.alergi_makanan_reaksi,penilaian_awal_keperawatan_ranap_neonatus.alergi_lainnya,penilaian_awal_keperawatan_ranap_neonatus.alergi_lainnya_keterangan,penilaian_awal_keperawatan_ranap_neonatus.alergi_lainnya_reaksi,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.riwayat_penyakit_keluarga,penilaian_awal_keperawatan_ranap_neonatus.riwayat_penyakit_keluarga_keterangan,penilaian_awal_keperawatan_ranap_neonatus.riwayat_imunisasi,penilaian_awal_keperawatan_ranap_neonatus.riwayat_imunisasi_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.riwayat_tranfusi_darah,penilaian_awal_keperawatan_ranap_neonatus.riwayat_tranfusi_darah_keterangan,penilaian_awal_keperawatan_ranap_neonatus.riwayat_tranfusi_darah_reaksi,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.riwayat_tranfusi_darah_reaksi_keterangan,penilaian_awal_keperawatan_ranap_neonatus.kebiasan_ibu_obat_diminum,penilaian_awal_keperawatan_ranap_neonatus.kebiasan_ibu_obat_diminum_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.kebiasan_ibu_narkoba,penilaian_awal_keperawatan_ranap_neonatus.kebiasan_ibu_narkoba_keterangan,penilaian_awal_keperawatan_ranap_neonatus.kebiasan_ibu_merokok,penilaian_awal_keperawatan_ranap_neonatus.kebiasan_ibu_merokok_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.kebiasan_ibu_alkohol,penilaian_awal_keperawatan_ranap_neonatus.kebiasan_ibu_alkohol_keterangan,penilaian_awal_keperawatan_ranap_neonatus.kesadaran,penilaian_awal_keperawatan_ranap_neonatus.keadaan_umum,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.gcs,penilaian_awal_keperawatan_ranap_neonatus.td,penilaian_awal_keperawatan_ranap_neonatus.suhu,penilaian_awal_keperawatan_ranap_neonatus.hr,penilaian_awal_keperawatan_ranap_neonatus.rr,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.spo2,penilaian_awal_keperawatan_ranap_neonatus.down_score,penilaian_awal_keperawatan_ranap_neonatus.bb,penilaian_awal_keperawatan_ranap_neonatus.tb,penilaian_awal_keperawatan_ranap_neonatus.lk,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.ld,penilaian_awal_keperawatan_ranap_neonatus.lp,penilaian_awal_keperawatan_ranap_neonatus.gd_bayi,penilaian_awal_keperawatan_ranap_neonatus.gd_ibu,penilaian_awal_keperawatan_ranap_neonatus.gd_ayah,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.saraf_pusat_gerak_bayi,penilaian_awal_keperawatan_ranap_neonatus.saraf_pusat_kepala,penilaian_awal_keperawatan_ranap_neonatus.saraf_pusat_kepala_keterangan,penilaian_awal_keperawatan_ranap_neonatus.saraf_pusat_ubunubun,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.saraf_pusat_ubunubun_keterangan,penilaian_awal_keperawatan_ranap_neonatus.saraf_pusat_wajah,penilaian_awal_keperawatan_ranap_neonatus.saraf_pusat_wajah_keterangan,penilaian_awal_keperawatan_ranap_neonatus.saraf_pusat_kejang,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.saraf_pusat_kejang_keterangan,penilaian_awal_keperawatan_ranap_neonatus.saraf_pusat_refleks,penilaian_awal_keperawatan_ranap_neonatus.saraf_pusat_refleks_keterangan,penilaian_awal_keperawatan_ranap_neonatus.saraf_pusat_tangisbayi,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.saraf_pusat_tangisbayi_keterangan,penilaian_awal_keperawatan_ranap_neonatus.kardiovaskular_denyutnadi,penilaian_awal_keperawatan_ranap_neonatus.kardiovaskular_sirkulasi,penilaian_awal_keperawatan_ranap_neonatus.kardiovaskular_sirkulasi_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.kardiovaskular_pulsasi,penilaian_awal_keperawatan_ranap_neonatus.kardiovaskular_pulsasi_keterangan,penilaian_awal_keperawatan_ranap_neonatus.respirasi_polanafas,penilaian_awal_keperawatan_ranap_neonatus.respirasi_jenispernapasan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.respirasi_jenispernapasan_keterangan,penilaian_awal_keperawatan_ranap_neonatus.respirasi_retraksi,penilaian_awal_keperawatan_ranap_neonatus.respirasi_airentry,penilaian_awal_keperawatan_ranap_neonatus.respirasi_merintih,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.respirasi_suara_napas,penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_mulut,penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_mulut_keterangan,penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_lidah,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_lidah_keterangan,penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_tenggorakan,penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_tenggorakan_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_abdomen,penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_abdomen_keterangan,penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_bab,penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_bab_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_warnabab,penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_warnabab_keterangan,penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_bak,penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_bak_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_bakwarna,penilaian_awal_keperawatan_ranap_neonatus.gastrointestinal_bakwarna_keterangan,penilaian_awal_keperawatan_ranap_neonatus.neurologi_posisi_mata,penilaian_awal_keperawatan_ranap_neonatus.neurologi_kelopak_mata,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.neurologi_kelopak_mata_keterangan,penilaian_awal_keperawatan_ranap_neonatus.neurologi_besar_pupil,penilaian_awal_keperawatan_ranap_neonatus.neurologi_konjugtiva,penilaian_awal_keperawatan_ranap_neonatus.neurologi_konjugtiva_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.neurologi_sklera,penilaian_awal_keperawatan_ranap_neonatus.neurologi_sklera_keterangan,penilaian_awal_keperawatan_ranap_neonatus.neurologi_pendengaran,penilaian_awal_keperawatan_ranap_neonatus.neurologi_pendengaran_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.neurologi_penciuman,penilaian_awal_keperawatan_ranap_neonatus.neurologi_penciuman_keterangan,penilaian_awal_keperawatan_ranap_neonatus.integument_warna_kulit,penilaian_awal_keperawatan_ranap_neonatus.integument_warna_kulit_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.integument_vernic_kaseosa,penilaian_awal_keperawatan_ranap_neonatus.integument_vernic_kaseosa_keterangan,penilaian_awal_keperawatan_ranap_neonatus.integument_turgor,penilaian_awal_keperawatan_ranap_neonatus.integument_lanugo,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.integument_kulit,penilaian_awal_keperawatan_ranap_neonatus.integument_risiko_dekubitas,penilaian_awal_keperawatan_ranap_neonatus.reproduksi,penilaian_awal_keperawatan_ranap_neonatus.reproduksi_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.muskuloskeletal_rekoil_telinga,penilaian_awal_keperawatan_ranap_neonatus.muskuloskeletal_rekoil_telinga_keterangan,penilaian_awal_keperawatan_ranap_neonatus.muskuloskeletal_lengan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.muskuloskeletal_lengan_keterangan,penilaian_awal_keperawatan_ranap_neonatus.muskuloskeletal_tungkai,penilaian_awal_keperawatan_ranap_neonatus.muskuloskeletal_tungkai_keterangan,penilaian_awal_keperawatan_ranap_neonatus.muskuloskeletal_telapak_kaki,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.kondisi_psikologis,penilaian_awal_keperawatan_ranap_neonatus.gangguan_jiwa,penilaian_awal_keperawatan_ranap_neonatus.menerima_kondisi_bayi,penilaian_awal_keperawatan_ranap_neonatus.status_menikah,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.masalah_pernikahan,penilaian_awal_keperawatan_ranap_neonatus.masalah_pernikahan_keterangan,penilaian_awal_keperawatan_ranap_neonatus.pekerjaan,penilaian_awal_keperawatan_ranap_neonatus.agama,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.nilai_kepercayaan,penilaian_awal_keperawatan_ranap_neonatus.nilai_kepercayaan_keterangan,penilaian_awal_keperawatan_ranap_neonatus.suku,penilaian_awal_keperawatan_ranap_neonatus.pendidikan,penilaian_awal_keperawatan_ranap_neonatus.pembayaran,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.tinggal_bersama,penilaian_awal_keperawatan_ranap_neonatus.tinggal_bersama_keterangan,penilaian_awal_keperawatan_ranap_neonatus.hubungan_keluarga,penilaian_awal_keperawatan_ranap_neonatus.respon_emosi,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.bahasa_sehari_hari,penilaian_awal_keperawatan_ranap_neonatus.kemampuan_bacatulis,penilaian_awal_keperawatan_ranap_neonatus.butuh_penterjemah,penilaian_awal_keperawatan_ranap_neonatus.butuh_penterjemah_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.terdapat_hambatan_belajar,penilaian_awal_keperawatan_ranap_neonatus.hambatan_belajar,penilaian_awal_keperawatan_ranap_neonatus.hambatan_belajar_keterangan,penilaian_awal_keperawatan_ranap_neonatus.hambatan_cara_bicara,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.hambatan_bahasa_isyarat,penilaian_awal_keperawatan_ranap_neonatus.cara_belajar_disukai,penilaian_awal_keperawatan_ranap_neonatus.kesediaan_menerima_informasi,penilaian_awal_keperawatan_ranap_neonatus.kesediaan_menerima_informasi_keterangan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.pemahaman_nutrisi,penilaian_awal_keperawatan_ranap_neonatus.pemahaman_penyakit,penilaian_awal_keperawatan_ranap_neonatus.pemahaman_pengobatan,penilaian_awal_keperawatan_ranap_neonatus.pemahaman_perawatan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.masalah_gizi1,penilaian_awal_keperawatan_ranap_neonatus.nilai_gizi1,penilaian_awal_keperawatan_ranap_neonatus.masalah_gizi2,penilaian_awal_keperawatan_ranap_neonatus.nilai_gizi2,penilaian_awal_keperawatan_ranap_neonatus.masalah_gizi3,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.nilai_gizi3,penilaian_awal_keperawatan_ranap_neonatus.totalgizi,penilaian_awal_keperawatan_ranap_neonatus.keterangan_gizi,penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_skala1,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_nilai1,penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_skala2,penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_nilai2,penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_skala3,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_nilai3,penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_skala4,penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_nilai4,penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_skala5,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_nilai5,penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_skala6,penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_nilai6,penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_skala7,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_nilai7,penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_totalnilai,penilaian_awal_keperawatan_ranap_neonatus.penilaian_humptydumpty_hasil,penilaian_awal_keperawatan_ranap_neonatus.skala_nips1,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.skala_nips1_nilai,penilaian_awal_keperawatan_ranap_neonatus.skala_nips2,penilaian_awal_keperawatan_ranap_neonatus.skala_nips2_nilai,penilaian_awal_keperawatan_ranap_neonatus.skala_nips3,penilaian_awal_keperawatan_ranap_neonatus.skala_nips3_nilai,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.skala_nips4,penilaian_awal_keperawatan_ranap_neonatus.skala_nips4_nilai,penilaian_awal_keperawatan_ranap_neonatus.skala_nips5,penilaian_awal_keperawatan_ranap_neonatus.skala_nips5_nilai,penilaian_awal_keperawatan_ranap_neonatus.skala_nips_total,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.skala_nips_keterangan,penilaian_awal_keperawatan_ranap_neonatus.informasi_perencanaan_pulang,penilaian_awal_keperawatan_ranap_neonatus.lama_ratarata,penilaian_awal_keperawatan_ranap_neonatus.perencanaan_pulang,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.kondisi_klinis_pulang,penilaian_awal_keperawatan_ranap_neonatus.perawatan_lanjutan_dirumah,penilaian_awal_keperawatan_ranap_neonatus.cara_transportasi_pulang,penilaian_awal_keperawatan_ranap_neonatus.transportasi_digunakan,"+
+                            "penilaian_awal_keperawatan_ranap_neonatus.rencana,penilaian_awal_keperawatan_ranap_neonatus.nip1,penilaian_awal_keperawatan_ranap_neonatus.nip2,penilaian_awal_keperawatan_ranap_neonatus.kd_dokter,pengkaji1.nama as pengkaji1,pengkaji2.nama as pengkaji2,dokter.nm_dokter "+
+                            "from penilaian_awal_keperawatan_ranap_neonatus inner join petugas as pengkaji1 on penilaian_awal_keperawatan_ranap_neonatus.nip1=pengkaji1.nip "+
+                            "inner join petugas as pengkaji2 on penilaian_awal_keperawatan_ranap_neonatus.nip2=pengkaji2.nip inner join dokter on penilaian_awal_keperawatan_ranap_neonatus.kd_dokter=dokter.kd_dokter "+
+                            "where penilaian_awal_keperawatan_ranap_neonatus.no_rawat='"+norawat+"'").executeQuery();
+                    if(rs2.next()){
+                        htmlContent.append(
+                          "<tr class='isi'>"+ 
+                            "<td valign='top' width='2%'></td>"+        
+                            "<td valign='top' width='18%'>Penilaian Awal Keperawatan Rawat Inap Neonatus</td>"+
+                            "<td valign='top' width='1%' align='center'>:</td>"+
+                            "<td valign='top' width='79%'>"+
+                              "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"
+                        );
+                        rs2.beforeFirst();
+                        while(rs2.next()){
+                            htmlContent.append(
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "YANG MELAKUKAN PENGKAJIAN"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='11%' border='0'>Tanggal</td>"+
+                                              "<td width='35%' border='0'>: "+rs2.getString("tanggal")+"</td>"+
+                                              "<td width='16%' border='0'>Deperoleh Dari</td>"+
+                                              "<td width='38%' border='0'>: "+rs2.getString("diperoleh_dari")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='11%' border='0'>Asal Pasien</td>"+
+                                              "<td width='35%' border='0'>: "+rs2.getString("asal_pasien")+"</td>"+
+                                              "<td width='16%' border='0'>Hubungan Dengan Pasien</td>"+
+                                              "<td width='38%' border='0'>: "+rs2.getString("hubungan_dengan_pasien")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='11%' border='0'>Cara Masuk</td>"+
+                                              "<td width='35%' border='0'>: "+rs2.getString("cara_masuk")+"</td>"+
+                                              "<td width='16%' border='0'>Pengkaji 1</td>"+
+                                              "<td width='38%' border='0'>: "+rs2.getString("nip1")+" "+rs2.getString("pengkaji1")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='11%' border='0'>DPJP</td>"+
+                                              "<td width='38%' border='0'>: "+rs2.getString("kd_dokter")+" "+rs2.getString("nm_dokter")+"</td>"+
+                                              "<td width='16%' border='0'>Pengkaji 2</td>"+
+                                              "<td width='35%' border='0'>: "+rs2.getString("nip2")+" "+rs2.getString("pengkaji2")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "I. RIWAYAT KESEHATAN"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Keluhan Utama : "+rs2.getString("keluhan_utama").replaceAll("(\r\n|\r|\n|\n\r)","<br>")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Riwayat Prenatal : "+
+                                                 "<table width='99%' align='right' border='0' cellpadding='3px' cellspacing='0px' class='tbl_form'"+
+                                                    "<tr>"+
+                                                        "<td colspan='2' width='50%'>Riwayat Obstetri : G "+rs2.getString("prenatal_g")+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;P "+rs2.getString("prenatal_p")+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A "+rs2.getString("prenatal_a")+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UK "+rs2.getString("prenatal_uk")+"</td>"+
+                                                        "<td colspan='2' width='50%'>Riwayat Penyakit Ibu : "+rs2.getString("prenatal_riwayat_penyakit_ibu")+(rs2.getString("prenatal_riwayat_penyakit_ibu_keterangan").equals("")?"":", "+rs2.getString("prenatal_riwayat_penyakit_ibu_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                     "<tr>"+
+                                                        "<td colspan='4' width='100%'>Riwayat Pengobatan Ibu Selama Hamil : "+rs2.getString("prenatal_riwayat_pengobatan_ibu_selama_hamil")+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td colspan='3' width='75%'>Pernah Dirawat : "+rs2.getString("prenatal_pernah_dirawat")+(rs2.getString("prenatal_pernah_dirawat_keterangan").equals("")?"":", "+rs2.getString("prenatal_pernah_dirawat_keterangan"))+"</td>"+
+                                                        "<td width='25%'>Status Gizi Ibu : "+rs2.getString("prenatal_status_gizi_ibu")+"</td>"+
+                                                    "</tr>"+
+                                                 "</table>"+
+                                              "</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Riwayat Intranatal : "+
+                                                 "<table width='99%' align='right' border='0' cellpadding='3px' cellspacing='0px' class='tbl_form'"+
+                                                    "<tr>"+
+                                                        "<td colspan='2' width='50%'>Riwayat Obstetri : G "+rs2.getString("intranatal_g")+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;P "+rs2.getString("intranatal_p")+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A "+rs2.getString("intranatal_a")+"</td>"+
+                                                        "<td colspan='2' width='50%'>Kondisi Saat Lahir : "+rs2.getString("intranatal_kondisi_lahir")+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='25%'>Cara Persalinan : "+rs2.getString("intranatal_cara_persalinan")+(rs2.getString("intranatal_cara_persalinan_keterangan").equals("")?"":", "+rs2.getString("intranatal_cara_persalinan_keterangan"))+"</td>"+
+                                                        "<td width='25%'>APGAR : "+rs2.getString("intranatal_apgar")+"</td>"+
+                                                        "<td width='25%'>Letak : "+rs2.getString("intranatal_letak")+"</td>"+
+                                                        "<td width='25%'>Tali Pusat : "+rs2.getString("intranatal_tali_pusat")+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='25%'>Ketuban : "+rs2.getString("intranatal_ketuban")+"</td>"+
+                                                        "<td colspan='3' width='75%'>Antopometri BBL : BB "+rs2.getString("intranatal_bb")+" gr, PB "+rs2.getString("intranatal_pb")+" cm, LK "+rs2.getString("intranatal_lk")+" cm, LD "+rs2.getString("intranatal_ld")+" cm, LP "+rs2.getString("intranatal_lp")+" cm</td>"+
+                                                    "</tr>"+
+                                                 "</table>"+
+                                              "</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Faktor Risiko Infeksi : "+
+                                                 "<table width='99%' align='right' border='0' cellpadding='3px' cellspacing='0px' class='tbl_form'"+
+                                                    "<tr>"+
+                                                        "<td width='50%'>Mayor : "+rs2.getString("risiko_infeksi_mayor")+(rs2.getString("risiko_infeksi_mayor_keterangan").equals("")?"":", "+rs2.getString("risiko_infeksi_mayor_keterangan"))+"</td>"+
+                                                        "<td width='50%'>Minor : "+rs2.getString("risiko_infeksi_minor")+(rs2.getString("risiko_infeksi_minor_keterangan").equals("")?"":", "+rs2.getString("risiko_infeksi_minor_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                 "</table>"+
+                                              "</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Kebutuhan Biologis : "+
+                                                 "<table width='99%' align='right' border='0' cellpadding='3px' cellspacing='0px' class='tbl_form'"+
+                                                    "<tr>"+
+                                                        "<td colspan='2' width='100%'>"+
+                                                            "Nutrisi : "+rs2.getString("kebutuhan_biologis_nutrisi")+(rs2.getString("kebutuhan_biologis_nutrisi_keterangan").equals("")?"":", "+rs2.getString("kebutuhan_biologis_nutrisi_keterangan"))+
+                                                            (rs2.getString("kebutuhan_biologis_nutrisi_frekuensi").equals("")?"":", Frekuensi : "+rs2.getString("kebutuhan_biologis_nutrisi_frekuensi")+" cc"+(rs2.getString("kebutuhan_biologis_nutrisi_kali").equals("")?"":"/ "+rs2.getString("kebutuhan_biologis_nutrisi_kali")+" x"))+
+                                                        "</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td colspan='2' width='100%' border='0'>Eliminasi :</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='50%' style='margin-left: 10px'>Mayor : "+rs2.getString("kebutuhan_biologis_bak")+(rs2.getString("kebutuhan_biologis_bak_keterangan").equals("")?"":", "+rs2.getString("kebutuhan_biologis_bak_keterangan"))+"</td>"+
+                                                        "<td width='50%'>Minor : "+rs2.getString("kebutuhan_biologis_bab")+(rs2.getString("kebutuhan_biologis_bab_keterangan").equals("")?"":", "+rs2.getString("kebutuhan_biologis_bab_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                 "</table>"+
+                                              "</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Alergi/Reaksi (Pada Orang Tua) : "+
+                                                 "<table width='99%' align='right' border='0' cellpadding='3px' cellspacing='0px' class='tbl_form'"+
+                                                    "<tr>"+
+                                                        "<td width='50%'>Alergi Obat : "+rs2.getString("alergi_obat")+(rs2.getString("alergi_obat_keterangan").equals("")?"":", "+rs2.getString("alergi_obat_keterangan"))+"</td>"+
+                                                        "<td width='50%'>Jika Ada, Reaksi : "+rs2.getString("alergi_obat_reaksi")+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='50%'>Alergi Makanan "+rs2.getString("alergi_makanan")+(rs2.getString("alergi_makanan_keterangan").equals("")?"":", "+rs2.getString("alergi_makanan_keterangan"))+"</td>"+
+                                                        "<td width='50%'>Jika Ada, Reaksi : "+rs2.getString("alergi_makanan_reaksi")+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='50%'>Alergi Lainnya : "+rs2.getString("alergi_lainnya")+(rs2.getString("alergi_lainnya_keterangan").equals("")?"":", "+rs2.getString("alergi_lainnya_keterangan"))+"</td>"+
+                                                        "<td width='50%'>Jika Ada, Reaksi : "+rs2.getString("alergi_lainnya_reaksi")+"</td>"+
+                                                    "</tr>"+
+                                                 "</table>"+
+                                              "</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Riwayat Penyakit Keluarga : "+rs2.getString("riwayat_penyakit_keluarga")+(rs2.getString("riwayat_penyakit_keluarga_keterangan").equals("")?"":", "+rs2.getString("riwayat_penyakit_keluarga_keterangan"))+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Riwayat Imunisasi : "+rs2.getString("riwayat_imunisasi")+(rs2.getString("riwayat_imunisasi_keterangan").equals("")?"":", "+rs2.getString("riwayat_imunisasi_keterangan"))+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Riwayat Tranfusi Darah : "+rs2.getString("riwayat_tranfusi_darah")+(rs2.getString("riwayat_tranfusi_darah_keterangan").equals("")?"":", "+rs2.getString("riwayat_tranfusi_darah_keterangan"))+(rs2.getString("riwayat_tranfusi_darah").equals("Ada")?". Reaksi Tranfusi : "+rs2.getString("riwayat_tranfusi_darah_reaksi")+(rs2.getString("riwayat_tranfusi_darah_reaksi_keterangan").equals("")?"":", "+rs2.getString("riwayat_tranfusi_darah_reaksi_keterangan")):"")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Kebiasaan Ibu : "+
+                                                 "<table width='99%' align='right' border='0' cellpadding='3px' cellspacing='0px' class='tbl_form'"+
+                                                    "<tr>"+
+                                                        "<td width='65%'>Obat-obatan Diminum : "+rs2.getString("kebiasan_ibu_obat_diminum")+(rs2.getString("kebiasan_ibu_obat_diminum_keterangan").equals("")?"":", "+rs2.getString("kebiasan_ibu_obat_diminum_keterangan"))+"</td>"+
+                                                        "<td width='35%'>Merokok : "+rs2.getString("kebiasan_ibu_merokok")+(rs2.getString("kebiasan_ibu_merokok_keterangan").equals("")?"":", "+rs2.getString("kebiasan_ibu_merokok_keterangan")+" batang/hari")+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='65%'>Obat Tidur/Narkoba : "+rs2.getString("kebiasan_ibu_narkoba")+(rs2.getString("kebiasan_ibu_narkoba_keterangan").equals("")?"":", "+rs2.getString("kebiasan_ibu_narkoba_keterangan"))+"</td>"+
+                                                        "<td width='35%'>Alkohol : "+rs2.getString("kebiasan_ibu_alkohol")+(rs2.getString("kebiasan_ibu_alkohol_keterangan").equals("")?"":", "+rs2.getString("kebiasan_ibu_alkohol_keterangan")+" gelas/hari")+"</td>"+
+                                                    "</tr>"+
+                                                 "</table>"+
+                                              "</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+  
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "II. PEMERIKSAAN FISIK"+ 
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='100%' align='justify'>"+
+                                                  "Kesadaran : "+rs2.getString("kesadaran")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Keadaan Umum : "+rs2.getString("keadaan_umum")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GCS(E,V,M) : "+rs2.getString("gcs")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+
+                                                  "TD : "+rs2.getString("td")+" mmHg &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Suhu : "+rs2.getString("suhu")+" °C &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HR : "+rs2.getString("hr")+" x/menit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+
+                                                  "RR : "+rs2.getString("rr")+" x/menit &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SpO2 : "+rs2.getString("spo2")+" % &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Down Score : "+rs2.getString("down_score")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+
+                                                  "BB : "+rs2.getString("bb")+" Kg &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TB : "+rs2.getString("tb")+" cm &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LK : "+rs2.getString("lk")+" cm &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+
+                                                  "LD : "+rs2.getString("ld")+" cm &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LP : "+rs2.getString("lp")+" cm &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Golongan Darah Bayi : "+rs2.getString("gd_bayi")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+
+                                                  "Golongan Darah Ibu : "+rs2.getString("gd_ibu")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Golongan Darah Ayah : "+rs2.getString("gd_ayah")+
+                                              "</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Sistem Susunan Saraf Pusat : "+
+                                                 "<table width='99%' align='right' border='0' cellpadding='3px' cellspacing='0px' class='tbl_form'"+
+                                                    "<tr>"+
+                                                        "<td width='25%'>Gerak Bayi : "+rs2.getString("saraf_pusat_gerak_bayi")+"</td>"+
+                                                        "<td width='35%'>Kepala : "+rs2.getString("saraf_pusat_kepala")+(rs2.getString("saraf_pusat_kepala_keterangan").equals("")?"":", "+rs2.getString("saraf_pusat_kepala_keterangan"))+"</td>"+
+                                                        "<td width='40%'>Ubun-ubun : "+rs2.getString("saraf_pusat_ubunubun")+(rs2.getString("saraf_pusat_ubunubun_keterangan").equals("")?"":", "+rs2.getString("saraf_pusat_ubunubun_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='60%' colspan='2'>Wajah : "+rs2.getString("saraf_pusat_wajah")+(rs2.getString("saraf_pusat_wajah_keterangan").equals("")?"":", "+rs2.getString("saraf_pusat_wajah_keterangan"))+"</td>"+
+                                                        "<td width='40%'>Kejang : "+rs2.getString("saraf_pusat_kejang")+(rs2.getString("saraf_pusat_kejang_keterangan").equals("")?"":", "+rs2.getString("saraf_pusat_kejang_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='60%' colspan='2'>Refleks : "+rs2.getString("saraf_pusat_refleks")+(rs2.getString("saraf_pusat_refleks_keterangan").equals("")?"":", "+rs2.getString("saraf_pusat_refleks_keterangan"))+"</td>"+
+                                                        "<td width='40%'>Tangis Bayi : "+rs2.getString("saraf_pusat_tangisbayi")+(rs2.getString("saraf_pusat_tangisbayi_keterangan").equals("")?"":", "+rs2.getString("saraf_pusat_tangisbayi_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                 "</table>"+
+                                              "</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Kardiovaskuler : "+
+                                                 "<table width='99%' align='right' border='0' cellpadding='3px' cellspacing='0px' class='tbl_form'"+
+                                                    "<tr>"+
+                                                        "<td width='25%'>Denyut Nadi : "+rs2.getString("kardiovaskular_denyutnadi")+"</td>"+
+                                                        "<td width='37%'>Sirkulasi : "+rs2.getString("kardiovaskular_sirkulasi")+(rs2.getString("kardiovaskular_sirkulasi_keterangan").equals("")?"":", "+rs2.getString("kardiovaskular_sirkulasi_keterangan"))+"</td>"+
+                                                        "<td width='38%'>Pulsasi : "+rs2.getString("kardiovaskular_pulsasi")+(rs2.getString("kardiovaskular_pulsasi_keterangan").equals("")?"":", "+rs2.getString("kardiovaskular_pulsasi_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                 "</table>"+
+                                              "</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Respirasi : "+
+                                                 "<table width='99%' align='right' border='0' cellpadding='3px' cellspacing='0px' class='tbl_form'"+
+                                                    "<tr>"+
+                                                        "<td width='30%'>Pola Napas : "+rs2.getString("respirasi_polanafas")+"</td>"+
+                                                        "<td width='40%'>Jenis Pernapasan : "+rs2.getString("respirasi_jenispernapasan")+(rs2.getString("respirasi_jenispernapasan_keterangan").equals("")?"":", "+rs2.getString("respirasi_jenispernapasan_keterangan"))+"</td>"+
+                                                        "<td width='30%'>Retraksi : "+rs2.getString("respirasi_retraksi")+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='30%'>Air Entry : "+rs2.getString("respirasi_airentry")+"</td>"+
+                                                        "<td width='40%'>Merintih : "+rs2.getString("respirasi_merintih")+"</td>"+
+                                                        "<td width='30%'>Suara Napas : "+rs2.getString("respirasi_suara_napas")+"</td>"+
+                                                    "</tr>"+
+                                                 "</table>"+
+                                              "</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Gastrointestinal : "+
+                                                 "<table width='99%' align='right' border='0' cellpadding='3px' cellspacing='0px' class='tbl_form'"+
+                                                    "<tr>"+
+                                                        "<td width='50%'>Mulut : "+rs2.getString("gastrointestinal_mulut")+(rs2.getString("gastrointestinal_mulut_keterangan").equals("")?"":", "+rs2.getString("gastrointestinal_mulut_keterangan"))+"</td>"+
+                                                        "<td width='50%'>Lidah : "+rs2.getString("gastrointestinal_lidah")+(rs2.getString("gastrointestinal_lidah_keterangan").equals("")?"":", "+rs2.getString("gastrointestinal_lidah_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='50%'>Tenggorokan : "+rs2.getString("gastrointestinal_tenggorakan")+(rs2.getString("gastrointestinal_tenggorakan_keterangan").equals("")?"":", "+rs2.getString("gastrointestinal_tenggorakan_keterangan"))+"</td>"+
+                                                        "<td width='50%'>Abdomen : "+rs2.getString("gastrointestinal_abdomen")+(rs2.getString("gastrointestinal_abdomen_keterangan").equals("")?"":", "+rs2.getString("gastrointestinal_abdomen_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='50%'>BAB : "+rs2.getString("gastrointestinal_bab")+(rs2.getString("gastrointestinal_bab_keterangan").equals("")?"":", "+rs2.getString("gastrointestinal_bab_keterangan"))+"</td>"+
+                                                        "<td width='50%'>Warna BAB : "+rs2.getString("gastrointestinal_warnabab")+(rs2.getString("gastrointestinal_warnabab_keterangan").equals("")?"":", "+rs2.getString("gastrointestinal_warnabab_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='50%'>BAK : "+rs2.getString("gastrointestinal_bak")+(rs2.getString("gastrointestinal_bak_keterangan").equals("")?"":", "+rs2.getString("gastrointestinal_bak_keterangan"))+"</td>"+
+                                                        "<td width='50%'>Warna BAK : "+rs2.getString("gastrointestinal_bakwarna")+(rs2.getString("gastrointestinal_bakwarna_keterangan").equals("")?"":", "+rs2.getString("gastrointestinal_bakwarna_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                 "</table>"+
+                                              "</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Neurologi : "+
+                                                 "<table width='99%' align='right' border='0' cellpadding='3px' cellspacing='0px' class='tbl_form'"+
+                                                    "<tr>"+
+                                                        "<td width='25%'>Posisi Mata : "+rs2.getString("neurologi_posisi_mata")+"</td>"+
+                                                        "<td width='50%' colspan='2'>Kelopak Mata : "+rs2.getString("neurologi_kelopak_mata")+(rs2.getString("neurologi_kelopak_mata_keterangan").equals("")?"":", "+rs2.getString("neurologi_kelopak_mata_keterangan"))+"</td>"+
+                                                        "<td width='25%'>Besar Pupil : "+rs2.getString("neurologi_besar_pupil")+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='50%' colspan='2'>Konjungtiva : "+rs2.getString("neurologi_konjugtiva")+(rs2.getString("neurologi_konjugtiva_keterangan").equals("")?"":", "+rs2.getString("neurologi_konjugtiva_keterangan"))+"</td>"+
+                                                        "<td width='50%' colspan='2'>Sklera : "+rs2.getString("neurologi_sklera")+(rs2.getString("neurologi_sklera_keterangan").equals("")?"":", "+rs2.getString("neurologi_sklera_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='50%' colspan='2'>Pendengaran : "+rs2.getString("neurologi_pendengaran")+(rs2.getString("neurologi_pendengaran_keterangan").equals("")?"":", "+rs2.getString("neurologi_pendengaran_keterangan"))+"</td>"+
+                                                        "<td width='50%' colspan='2'>Penciuman : "+rs2.getString("neurologi_penciuman")+(rs2.getString("neurologi_penciuman_keterangan").equals("")?"":", "+rs2.getString("neurologi_penciuman_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                 "</table>"+
+                                              "</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Integument : "+
+                                                 "<table width='99%' align='right' border='0' cellpadding='3px' cellspacing='0px' class='tbl_form'"+
+                                                    "<tr>"+
+                                                        "<td width='35%'>Warna Kulit : "+rs2.getString("integument_warna_kulit")+(rs2.getString("integument_warna_kulit_keterangan").equals("")?"":", "+rs2.getString("integument_warna_kulit_keterangan"))+"</td>"+
+                                                        "<td width='30%'>Turgor : "+rs2.getString("integument_turgor")+"</td>"+
+                                                        "<td width='35%'>Vernic Kaseosa : "+rs2.getString("integument_vernic_kaseosa")+(rs2.getString("integument_vernic_kaseosa_keterangan").equals("")?"":", "+rs2.getString("integument_vernic_kaseosa_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='35%'>Lanugo : "+rs2.getString("integument_lanugo")+"</td>"+
+                                                        "<td width='30%'>Kulit : "+rs2.getString("integument_kulit")+"</td>"+
+                                                        "<td width='35%'>Kriteria Risiko Dekubitas : "+rs2.getString("integument_risiko_dekubitas")+"</td>"+
+                                                    "</tr>"+
+                                                 "</table>"+
+                                              "</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Reproduksi : "+rs2.getString("reproduksi")+(rs2.getString("reproduksi_keterangan").equals("")?"":", "+rs2.getString("reproduksi_keterangan"))+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td width='100%'>Sistem Muskuloskeletal : "+
+                                                 "<table width='99%' align='right' border='0' cellpadding='3px' cellspacing='0px' class='tbl_form'"+
+                                                    "<tr>"+
+                                                        "<td width='50%'>Rekoil Telinga : "+rs2.getString("muskuloskeletal_rekoil_telinga")+(rs2.getString("muskuloskeletal_rekoil_telinga_keterangan").equals("")?"":", "+rs2.getString("muskuloskeletal_rekoil_telinga_keterangan"))+"</td>"+
+                                                        "<td width='50%'>Lengan : "+rs2.getString("muskuloskeletal_lengan")+(rs2.getString("muskuloskeletal_lengan_keterangan").equals("")?"":", "+rs2.getString("muskuloskeletal_lengan_keterangan"))+"</td>"+
+                                                    "</tr>"+
+                                                    "<tr>"+
+                                                        "<td width='50%'>Tungkai : "+rs2.getString("muskuloskeletal_tungkai")+(rs2.getString("muskuloskeletal_tungkai_keterangan").equals("")?"":", "+rs2.getString("muskuloskeletal_tungkai_keterangan"))+"</td>"+
+                                                        "<td width='50%'>Garis Telapak Kaki : "+rs2.getString("muskuloskeletal_telapak_kaki")+"</td>"+
+                                                    "</tr>"+
+                                                 "</table>"+
+                                              "</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+  
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "III. RIWAYAT PSIKOLOGIS – SOSIAL – EKONOMI – BUDAYA – SPIRITUAL (ORANGTUA)"+ 
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='100%' align='justify'>"+
+                                                  "Kondisi Psikologis : "+rs2.getString("kondisi_psikologis")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Gangguan Jiwa Di Masa Lalu : "+rs2.getString("gangguan_jiwa")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Menerima Kondisi Bayi Saat Ini : "+rs2.getString("menerima_kondisi_bayi")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+
+                                                  "Status Menikah : "+rs2.getString("status_menikah")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Masalah Pernikahan : "+rs2.getString("masalah_pernikahan")+(rs2.getString("masalah_pernikahan_keterangan").equals("")?"":", "+rs2.getString("masalah_pernikahan_keterangan"))+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pekerjaan : "+rs2.getString("pekerjaan")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+
+                                                  "Agama : "+rs2.getString("agama")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Nilai-nilai Kepercayaan/Budaya Yang Perlu Diperhatikan : "+rs2.getString("nilai_kepercayaan")+(rs2.getString("nilai_kepercayaan_keterangan").equals("")?"":", "+rs2.getString("nilai_kepercayaan_keterangan"))+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Suku : "+rs2.getString("suku")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+
+                                                  "Pendidikan : "+rs2.getString("pendidikan")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pembayaran : "+rs2.getString("pembayaran")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tinggal Bersama : "+rs2.getString("tinggal_bersama")+(rs2.getString("tinggal_bersama_keterangan").equals("")?"":", "+rs2.getString("tinggal_bersama_keterangan"))+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+
+                                                  "Hubungan Pasien dengan Anggota Keluarga : "+rs2.getString("hubungan_keluarga")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Respon Emosi : "+rs2.getString("respon_emosi")+
+                                              "</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+  
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "IV. KEBUTUHAN KOMUNIKASI DAN BELAJAR/EDUKASI (ORANGTUA)"+ 
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td width='100%' align='justify'>"+
+                                                  "Bahasa Sehari-hari : "+rs2.getString("bahasa_sehari_hari")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kemampuan Baca & Tulis : "+rs2.getString("kemampuan_bacatulis")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Butuh Penerjamah : "+rs2.getString("butuh_penterjemah")+(rs2.getString("butuh_penterjemah_keterangan").equals("")?"":", "+rs2.getString("butuh_penterjemah_keterangan"))+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+
+                                                  "Terdapat Hambatan Dalam Pembelajaran : "+rs2.getString("terdapat_hambatan_belajar")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hambatan Belajar : "+rs2.getString("hambatan_belajar")+(rs2.getString("hambatan_belajar_keterangan").equals("")?"":", "+rs2.getString("hambatan_belajar_keterangan"))+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hambatan Cara Bicara : "+rs2.getString("hambatan_cara_bicara")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+
+                                                  "Hambatan Bahasa Isyarat : "+rs2.getString("hambatan_bahasa_isyarat")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Cara Belajar Yang Disukai : "+rs2.getString("cara_belajar_disukai")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Kesediaan Menerima Informasi : "+rs2.getString("kesediaan_menerima_informasi")+(rs2.getString("kesediaan_menerima_informasi_keterangan").equals("")?"":", "+rs2.getString("kesediaan_menerima_informasi_keterangan"))+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "+
+                                                  "Pemahaman Tentang Nutrisi/Diet : "+rs2.getString("pemahaman_nutrisi")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pemahaman Tentang Penyakit : "+rs2.getString("pemahaman_penyakit")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pemahaman Tentang Pengobatan : "+rs2.getString("pemahaman_pengobatan")+" &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pemahaman Tentang Perawatan : "+rs2.getString("pemahaman_perawatan")+
+                                              "</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+ 
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "V. SKRINING GIZI"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                               "<td valign='middle' bgcolor='#FFFAF8' align='center' width='5%'>No</td>"+
+                                               "<td valign='middle' bgcolor='#FFFAF8' align='center' width='70%'>Parameter</td>"+
+                                               "<td valign='middle' bgcolor='#FFFAF8' align='center' width='25%' colspan='2'>Nilai</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td valign='top' align='center'>1</td>"+
+                                              "<td valign='top'>Masalah Minum (ASI/PASI)</td>"+
+                                              "<td valign='top' align='center' width='20%'>"+rs2.getString("masalah_gizi1")+"</td>"+
+                                              "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai_gizi1")+"&nbsp;&nbsp;</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td valign='top' align='center'>2</td>"+
+                                              "<td valign='top'>Penurunan Berat Badan > 10% Dari BBL (Berat Badan Lahir)</td>"+
+                                              "<td valign='top' align='center' width='20%'>"+rs2.getString("masalah_gizi2")+"</td>"+
+                                              "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai_gizi2")+"&nbsp;&nbsp;</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td valign='top' align='center'>3</td>"+
+                                              "<td valign='top'>Penyakit / Kelainan Yang Menyertai (Sepsis, Jantung, BBLR, Hipoglikemi, Diare, Lain–lain)</td>"+
+                                              "<td valign='top' align='center' width='20%'>"+rs2.getString("masalah_gizi3")+"</td>"+
+                                              "<td valign='top' align='right' width='5%'>"+rs2.getString("nilai_gizi3")+"&nbsp;&nbsp;</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td valign='top' colspan='3'>Keterangan & Total Skor : "+rs2.getString("keterangan_gizi")+"</td>"+
+                                              "<td valign='top' align='right' width='5%'>"+rs2.getString("totalgizi")+"&nbsp;&nbsp;</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "VI. PENILAIAN RISIKO JATUH (SKALA HUMPTY DUMPTY)"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                         "<tr class='isi'>"+
+                                              "<td width='35%' bgcolor='#FFFAF8' align='center'>Faktor Resiko</td>"+
+                                              "<td width='55%' bgcolor='#FFFAF8' align='center'>Skala</td>"+
+                                              "<td width='10%' bgcolor='#FFFAF8' align='center'>Poin</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>1. Umur</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_skala1")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_nilai1")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>2. Jenis Kelamin</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_skala2")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_nilai2")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>3. Diagnosa</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_skala3")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_nilai3")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>4. Gangguan Kognitif</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_skala4")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_nilai4")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>5. Faktor Lingkungan</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_skala5")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_nilai5")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>6. Efek Obat Penenang/Operasi/Anastesi</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_skala6")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_nilai6")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>7. Penggunaan Obat</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_skala7")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("penilaian_humptydumpty_nilai7")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td valign='top' colspan='2'>Keterangan & Total Poin : "+rs2.getString("penilaian_humptydumpty_hasil")+"</td>"+
+                                              "<td valign='top' align='center'>"+rs2.getString("penilaian_humptydumpty_totalnilai")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "VII. PENILAIAN TINGKAT NYERI (SKALA NIPS)"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                         "<tr class='isi'>"+
+                                              "<td width='30%' bgcolor='#FFFAF8' align='center'>Pengkajian</td>"+
+                                              "<td width='60%' bgcolor='#FFFAF8' align='center'>Parameter</td>"+
+                                              "<td width='10%' bgcolor='#FFFAF8' align='center'>Nilai</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>1. Ekspresi Wajah</td>"+
+                                              "<td align='center'>"+rs2.getString("skala_nips1")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("skala_nips1_nilai")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>2. Tangisan</td>"+
+                                              "<td align='center'>"+rs2.getString("skala_nips2")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("skala_nips2_nilai")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>3. Pola Nafas</td>"+
+                                              "<td align='center'>"+rs2.getString("skala_nips3")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("skala_nips3_nilai")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>4. Tungkai</td>"+
+                                              "<td align='center'>"+rs2.getString("skala_nips4")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("skala_nips4_nilai")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td>5. Tingkat kesadaran</td>"+
+                                              "<td align='center'>"+rs2.getString("skala_nips5")+"</td>"+
+                                              "<td align='center'>"+rs2.getString("skala_nips5_nilai")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td valign='top' colspan='2'>Keterangan & Total Nilai : "+rs2.getString("skala_nips_keterangan")+"</td>"+
+                                              "<td valign='top' align='center'>"+rs2.getString("skala_nips_total")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "VIII. PERENCANAAN PULANG (DISCHARGE PLANNING)"+  
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                              "<td valign='top' colspan='2' width='50%'>Ibu Bayi & Keluarga Diberikan Informasi Perencanaan Pulang ? "+rs2.getString("informasi_perencanaan_pulang")+"</td>"+
+                                              "<td valign='top' width='25%'>Lama Rawat Rata-rata : "+rs2.getString("lama_ratarata")+"</td>"+
+                                              "<td valign='top' width='25%'>Perencanaan Pulang :"+rs2.getString("perencanaan_pulang")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td valign='top' colspan='4' width='100%'>Kondisi Klinis Saat Pulang : "+rs2.getString("kondisi_klinis_pulang")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td valign='top' colspan='4' width='100%'>Perawatan Lanjutan Yang Diberikan Di Rumah : "+rs2.getString("perawatan_lanjutan_dirumah")+"</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                              "<td valign='top' colspan='2' width='50%'>Cara Transportasi Pulang : "+rs2.getString("cara_transportasi_pulang")+"</td>"+
+                                              "<td valign='top' colspan='2' width='50%'>Transportasi Yang Digunakan : "+rs2.getString("transportasi_digunakan")+"</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"+
+                                 "<tr>"+
+                                    "<td valign='top'>"+
+                                       "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0px' class='tbl_form'>"+
+                                          "<tr>"+
+                                               "<td valign='middle' bgcolor='#FFFAF8' align='center' width='50%'>MASALAH KEPERAWATAN :</td>"+
+                                               "<td valign='middle' bgcolor='#FFFAF8' align='center' width='50%'>RENCANA KEPERAWATAN :</td>"+
+                                          "</tr>"+
+                                          "<tr>"+
+                                               "<td valign='top'>");
+                            try {
+                                rs3=koneksi.prepareStatement(
+                                    "select master_masalah_keperawatan_neonatus.nama_masalah from master_masalah_keperawatan_neonatus "+
+                                    "inner join penilaian_awal_keperawatan_ranap_neonatus_masalah on penilaian_awal_keperawatan_ranap_neonatus_masalah.kode_masalah=master_masalah_keperawatan_neonatus.kode_masalah "+
+                                    "where penilaian_awal_keperawatan_ranap_neonatus_masalah.no_rawat='"+norawat+"' order by penilaian_awal_keperawatan_ranap_neonatus_masalah.kode_masalah").executeQuery();
+                                while(rs3.next()){
+                                    htmlContent.append(rs3.getString("nama_masalah")+"<br>");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Notif : "+e);
+                            } finally{
+                                if(rs3!=null){
+                                    rs3.close();
+                                }
+                            }
+                            htmlContent.append("</td>"+
+                                               "<td valign='top'>");
+                            try {
+                                rs3=koneksi.prepareStatement(
+                                    "select master_rencana_keperawatan_neonatus.rencana_keperawatan from master_rencana_keperawatan_neonatus "+
+                                    "inner join penilaian_awal_keperawatan_ranap_neonatus_rencana on penilaian_awal_keperawatan_ranap_neonatus_rencana.kode_rencana=master_rencana_keperawatan_neonatus.kode_rencana "+
+                                    "where penilaian_awal_keperawatan_ranap_neonatus_rencana.no_rawat='"+norawat+"' order by penilaian_awal_keperawatan_ranap_neonatus_rencana.kode_rencana").executeQuery();
+                                while(rs3.next()){
+                                    htmlContent.append(rs3.getString("rencana_keperawatan")+"<br>");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Notif : "+e);
+                            } finally{
+                                if(rs3!=null){
+                                    rs3.close();
+                                }
+                            }
+                            htmlContent.append(rs2.getString("rencana")+
+                                            "</td>"+
+                                          "</tr>"+
+                                       "</table>"+
+                                    "</td>"+
+                                 "</tr>"
+                            );   
+                        }
+                        htmlContent.append(
+                              "</table>"+
+                            "</td>"+
+                          "</tr>");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Notifikasi : "+e);
+                } finally{
+                    if(rs2!=null){
+                        rs2.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif Asuhan Keperawatan Rawat Inap Neonatus : "+e);
         }
     }
 }
