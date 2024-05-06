@@ -918,7 +918,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
                                     "\"kodeDokter\":\""+KdDokter.getText()+"\"," +
                                     "\"poliKontrol\":\""+KdPoli.getText()+"\"," +
                                     "\"tglRencanaKontrol\":\""+Valid.SetTgl(TanggalKontrol.getSelectedItem()+"")+"\"," +
-                                    "\"user\":\""+user+"\"" +
+                                    "\"user\":\"RSPW"+user+"\"" +
                                 "}" +
                              "}";
                 System.out.println("JSON : "+requestJson);
