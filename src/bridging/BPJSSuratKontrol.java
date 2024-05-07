@@ -911,14 +911,15 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
                 headers.add("X-Timestamp",utc);
                 headers.add("X-Signature",api.getHmac(utc));
                 headers.add("user_key",koneksiDB.USERKEYAPIBPJS());
-                URL = link+"/RencanaKontrol/insert";            
+                URL = link+"/RencanaKontrol/insert";
+                user = "RSPW"+user;
                 requestJson ="{" +
                                 "\"request\": {" +
                                     "\"noSEP\":\""+NoSEP.getText()+"\"," +
                                     "\"kodeDokter\":\""+KdDokter.getText()+"\"," +
                                     "\"poliKontrol\":\""+KdPoli.getText()+"\"," +
                                     "\"tglRencanaKontrol\":\""+Valid.SetTgl(TanggalKontrol.getSelectedItem()+"")+"\"," +
-                                    "\"user\":\"RSPW"+user+"\"" +
+                                    "\"user\":\""+user+"\"" +
                                 "}" +
                              "}";
                 System.out.println("JSON : "+requestJson);

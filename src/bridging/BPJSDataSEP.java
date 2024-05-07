@@ -3927,6 +3927,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                     headers.add("X-Signature",api.getHmac(utc));
                     headers.add("user_key",koneksiDB.USERKEYAPIBPJS());
                     URL = link+"/SEP/2.0/updtglplg";	
+                    user = "RSPW"+user;
                     requestJson ="{" +
                                   "\"request\":" +
                                      "{" +
