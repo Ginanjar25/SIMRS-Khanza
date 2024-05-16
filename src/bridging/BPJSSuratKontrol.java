@@ -1508,10 +1508,12 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         JK.setText(jk.replaceAll("L","LAKI-LAKI").replaceAll("P","PEREMPUAN"));
         Diagnosa.setText(diagnosa);
         TCari.setText(nosep);
-        ChkInput.setSelected(true);
+        ChkInput.setSelected(true);       
         isForm();
         tampil();
     }
+    
+    
     
     public void setNoRm(String norm) {
         TCari.setText(norm);
