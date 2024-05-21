@@ -91,6 +91,7 @@ import bridging.ICareRiwayatPerawatan;
 import bridging.ICareRiwayatPerawatanFKTP;
 import bridging.INACBGPerawatanCorona;
 import bridging.PilihanBridgingAsuransi;
+import fungsi.WarnaTableKasirRalan1;
 import inventory.DlgCopyResep;
 import rekammedis.RMDataResumePasien;
 import org.jfree.chart.ChartFactory;
@@ -289,6 +290,7 @@ public final class DlgReg extends javax.swing.JDialog {
     private char[] UNIT_1_360 = {ESC,40, 'U', '1', '0'};
     // move vertical print position
     private char[] VERTICAL_PRINT_POSITION = {ESC, 'J', '1'};
+    private String jmlBookWeb = Sequel.cariIsi("SELECT COUNT(bp.no_booking) FROM booking_periksa bp WHERE bp.tanggal >= CURDATE() AND `status` = 'Belum Dibalas'");
     
 
     /** Creates new form DlgReg
@@ -305,7 +307,7 @@ public final class DlgReg extends javax.swing.JDialog {
         tabMode=new DefaultTableModel(null,new Object[]{
             "P","No.Reg","No.Rawat","Tanggal","Jam","Kode Dokter","Dokter Dituju","Nomer RM",
             "Pasien","J.K.","Umur","Poliklinik","Jenis Bayar","Penanggung Jawab","Alamat P.J.","Hubungan P.J.",
-            "Biaya Regristrasi","Status","No.Telp","Stts Rawat","Stts Poli","Kode Poli","Kode PJ","Status Bayar"
+            "Biaya Regristrasi","Status","No.Telp","Stts Rawat","Stts Poli","Kode Poli","Kode PJ","Status Bayar", "SEP", "Asal", "JKN"
         }){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -320,7 +322,7 @@ public final class DlgReg extends javax.swing.JDialog {
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
-                 java.lang.Object.class,java.lang.Object.class,java.lang.Object.class,java.lang.Object.class
+                 java.lang.Object.class,java.lang.Object.class,java.lang.Object.class,java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -384,6 +386,12 @@ public final class DlgReg extends javax.swing.JDialog {
                 column.setMaxWidth(0);
             }else if(i==23){
                 column.setPreferredWidth(70);
+            } else if (i == 24) {
+                column.setPreferredWidth(50);
+            } else if (i == 25) {
+                column.setPreferredWidth(50);
+            } else if (i == 26) {
+                column.setPreferredWidth(50);
             }
         }
         tbPetugas.setDefaultRenderer(Object.class, new WarnaTable());
@@ -944,6 +952,10 @@ public final class DlgReg extends javax.swing.JDialog {
     private void initComponents() {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
+        MnCheckInJKN = new javax.swing.JMenuItem();
+        MnBatalCheckInJKN = new javax.swing.JMenuItem();
+        jMenuItem1skdp = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         MnDataRM = new javax.swing.JMenu();
         MnRMRawatJalan = new javax.swing.JMenu();
         MnAwalKeperawatan = new javax.swing.JMenu();
@@ -1281,6 +1293,8 @@ public final class DlgReg extends javax.swing.JDialog {
         kdpnj = new widget.TextBox();
         JK = new widget.TextBox();
         NoTelp = new widget.TextBox();
+        popupMenu1 = new java.awt.PopupMenu();
+        jPanel1 = new javax.swing.JPanel();
         internalFrame1 = new widget.InternalFrame();
         jPanel2 = new javax.swing.JPanel();
         panelGlass6 = new widget.panelisi();
@@ -1308,6 +1322,9 @@ public final class DlgReg extends javax.swing.JDialog {
         jLabel16 = new widget.Label();
         CrPoli = new widget.TextBox();
         BtnSeek4 = new widget.Button();
+        button1 = new widget.Button();
+        button2 = new widget.Button();
+        button3 = new widget.Button();
         PanelInput = new javax.swing.JPanel();
         FormInput = new widget.PanelBiasa();
         jLabel3 = new widget.Label();
@@ -1352,6 +1369,26 @@ public final class DlgReg extends javax.swing.JDialog {
         jLabel31 = new widget.Label();
         NoKa = new widget.TextBox();
         btnCekBridging = new widget.Button();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        label2 = new widget.Label();
+        label3 = new widget.Label();
+        label4 = new widget.Label();
+        jPanel5 = new javax.swing.JPanel();
+        label5 = new widget.Label();
+        jPanel6 = new javax.swing.JPanel();
+        label6 = new widget.Label();
+        label7 = new widget.Label();
+        label8 = new widget.Label();
+        jPanel7 = new javax.swing.JPanel();
+        label9 = new widget.Label();
+        jPanel8 = new javax.swing.JPanel();
+        label10 = new widget.Label();
+        label11 = new widget.Label();
+        jPanel9 = new javax.swing.JPanel();
+        jPanel10 = new javax.swing.JPanel();
+        label12 = new widget.Label();
+        button4 = new widget.Button();
         ChkInput = new widget.CekBox();
         TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
@@ -1360,6 +1397,50 @@ public final class DlgReg extends javax.swing.JDialog {
         tbPetugas2 = new widget.Table();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
+
+        MnCheckInJKN.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCheckInJKN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnCheckInJKN.setText("Chekin JKN Mobile");
+        MnCheckInJKN.setName("MnCheckInJKN"); // NOI18N
+        MnCheckInJKN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnCheckInJKNActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(MnCheckInJKN);
+
+        MnBatalCheckInJKN.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnBatalCheckInJKN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnBatalCheckInJKN.setText("Batal JKN Mobile");
+        MnBatalCheckInJKN.setName("MnBatalCheckInJKN"); // NOI18N
+        MnBatalCheckInJKN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnBatalCheckInJKNActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(MnBatalCheckInJKN);
+
+        jMenuItem1skdp.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jMenuItem1skdp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        jMenuItem1skdp.setText("Rencana Kontol ONSITE");
+        jMenuItem1skdp.setName("jMenuItem1skdp"); // NOI18N
+        jMenuItem1skdp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1skdpActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(jMenuItem1skdp);
+
+        jMenuItem1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        jMenuItem1.setText("Permintaan Kamar");
+        jMenuItem1.setName("jMenuItem1"); // NOI18N
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(jMenuItem1);
 
         MnDataRM.setBackground(new java.awt.Color(255, 255, 254));
         MnDataRM.setForeground(new java.awt.Color(50, 50, 50));
@@ -6262,6 +6343,8 @@ public final class DlgReg extends javax.swing.JDialog {
 
         NoTelp.setName("NoTelp"); // NOI18N
         NoTelp.setPreferredSize(new java.awt.Dimension(207, 23));
+        popupMenu1.setLabel("popupMenu1");
+        jPanel1.setName("jPanel1"); // NOI18N
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -6533,6 +6616,37 @@ public final class DlgReg extends javax.swing.JDialog {
         });
         panelGlass8.add(BtnSeek4);
 
+        button1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/plus_16.png"))); // NOI18N
+        button1.setText("Chekin JKN");
+        button1.setName("button1"); // NOI18N
+        button1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button1ActionPerformed(evt);
+            }
+        });
+        panelGlass8.add(button1);
+
+        button2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cancel.png"))); // NOI18N
+        button2.setText("Batal Checkin JKN");
+        button2.setName("button2"); // NOI18N
+        button2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button2ActionPerformed(evt);
+            }
+        });
+        panelGlass8.add(button2);
+
+        button3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/clear24.png"))); // NOI18N
+        button3.setText("Bridging SEP");
+        button3.setToolTipText("");
+        button3.setName("button3"); // NOI18N
+        button3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button3ActionPerformed(evt);
+            }
+        });
+        panelGlass8.add(button3);
+
         jPanel2.add(panelGlass8, java.awt.BorderLayout.PAGE_START);
 
         internalFrame1.add(jPanel2, java.awt.BorderLayout.PAGE_END);
@@ -6560,6 +6674,7 @@ public final class DlgReg extends javax.swing.JDialog {
         FormInput.add(TDokter);
         TDokter.setBounds(183, 102, 209, 23);
 
+        TNoRw.setEditable(false);
         TNoRw.setHighlighter(null);
         TNoRw.setName("TNoRw"); // NOI18N
         TNoRw.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -6627,6 +6742,7 @@ public final class DlgReg extends javax.swing.JDialog {
         FormInput.add(TNoRM);
         TNoRM.setBounds(520, 12, 110, 23);
 
+        TNoReg.setEditable(false);
         TNoReg.setHighlighter(null);
         TNoReg.setName("TNoReg"); // NOI18N
         TNoReg.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -6885,6 +7001,121 @@ public final class DlgReg extends javax.swing.JDialog {
         });
         FormInput.add(btnCekBridging);
         btnCekBridging.setBounds(852, 102, 28, 23);
+
+        jPanel3.setBackground(new java.awt.Color(51, 153, 255));
+        jPanel3.setName("jPanel3"); // NOI18N
+        FormInput.add(jPanel3);
+        jPanel3.setBounds(910, 60, 30, 20);
+
+        jPanel4.setBackground(new java.awt.Color(0, 165, 82));
+        jPanel4.setName("jPanel4"); // NOI18N
+        FormInput.add(jPanel4);
+        jPanel4.setBounds(910, 30, 30, 20);
+
+        label2.setText("Keterangan SEP BPJS :");
+        label2.setName("label2"); // NOI18N
+        FormInput.add(label2);
+        label2.setBounds(1070, 10, 110, 14);
+
+        label3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label3.setText("Website RSPW");
+        label3.setName("label3"); // NOI18N
+        FormInput.add(label3);
+        label3.setBounds(950, 60, 80, 14);
+
+        label4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label4.setText("JKN Mobile");
+        label4.setName("label4"); // NOI18N
+        FormInput.add(label4);
+        label4.setBounds(950, 30, 70, 14);
+
+        jPanel5.setBackground(new java.awt.Color(102, 204, 0));
+        jPanel5.setName("jPanel5"); // NOI18N
+        FormInput.add(jPanel5);
+        jPanel5.setBounds(1070, 60, 30, 20);
+
+        label5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label5.setText("Sudah Terbit SEP Bridging");
+        label5.setName("label5"); // NOI18N
+        FormInput.add(label5);
+        label5.setBounds(1110, 60, 150, 14);
+
+        jPanel6.setBackground(new java.awt.Color(0, 204, 204));
+        jPanel6.setName("jPanel6"); // NOI18N
+        FormInput.add(jPanel6);
+        jPanel6.setBounds(1270, 60, 30, 20);
+
+        label6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label6.setText("Chek In");
+        label6.setName("label6"); // NOI18N
+        FormInput.add(label6);
+        label6.setBounds(1310, 60, 100, 14);
+
+        label7.setText("Keterangan Asal Registrasi :");
+        label7.setName("label7"); // NOI18N
+        FormInput.add(label7);
+        label7.setBounds(910, 10, 140, 14);
+
+        label8.setText("Keterangan JKN Mobile :");
+        label8.setName("label8"); // NOI18N
+        FormInput.add(label8);
+        label8.setBounds(1260, 10, 130, 14);
+
+        jPanel7.setBackground(new java.awt.Color(153, 153, 153));
+        jPanel7.setName("jPanel7"); // NOI18N
+        FormInput.add(jPanel7);
+        jPanel7.setBounds(910, 90, 30, 20);
+
+        label9.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label9.setText("Onsite FO");
+        label9.setName("label9"); // NOI18N
+        FormInput.add(label9);
+        label9.setBounds(950, 90, 80, 14);
+
+        jPanel8.setBackground(new java.awt.Color(255, 204, 0));
+        jPanel8.setName("jPanel8"); // NOI18N
+        FormInput.add(jPanel8);
+        jPanel8.setBounds(1070, 30, 30, 20);
+
+        label10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label10.setText("Belum Terbit SEP / Vclaim");
+        label10.setName("label10"); // NOI18N
+        FormInput.add(label10);
+        label10.setBounds(1110, 30, 150, 14);
+
+        label11.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label11.setText("Batal");
+        label11.setName("label11"); // NOI18N
+        FormInput.add(label11);
+        label11.setBounds(1310, 90, 100, 14);
+
+        jPanel9.setBackground(new java.awt.Color(255, 51, 51));
+        jPanel9.setName("jPanel9"); // NOI18N
+        FormInput.add(jPanel9);
+        jPanel9.setBounds(1270, 90, 30, 20);
+
+        jPanel10.setBackground(new java.awt.Color(153, 153, 255));
+        jPanel10.setName("jPanel10"); // NOI18N
+        FormInput.add(jPanel10);
+        jPanel10.setBounds(1270, 30, 30, 20);
+
+        label12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label12.setText("Belum");
+        label12.setName("label12"); // NOI18N
+        FormInput.add(label12);
+        label12.setBounds(1310, 30, 100, 14);
+
+        button4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        button4.setText("Booking Pasien Baru");
+        button4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        button4.setName("button4"); // NOI18N
+        button4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button4ActionPerformed(evt);
+            }
+        });
+        FormInput.add(button4);
+        button4.setBounds(910, 120, 270, 22);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -14895,6 +15126,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private javax.swing.JMenuItem MnBarcode2;
     private javax.swing.JMenuItem MnBarcodeRM9;
     private javax.swing.JMenuItem MnBatal;
+    private javax.swing.JMenuItem MnBatalCheckInJKN;
     private javax.swing.JMenuItem MnBelum;
     private javax.swing.JMenuItem MnBelumTerbitSEP;
     private javax.swing.JMenuItem MnBilling;
@@ -14921,6 +15153,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private javax.swing.JMenuItem MnCetakSuratSehat;
     private javax.swing.JMenuItem MnCetakSuratSehat1;
     private javax.swing.JMenuItem MnCetakSuratSehat2;
+    private javax.swing.JMenuItem MnCheckInJKN;
     private javax.swing.JMenuItem MnCheckList;
     private javax.swing.JMenuItem MnCheckList1;
     private javax.swing.JMenuItem MnCheckList2;
@@ -15169,6 +15402,10 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Button btnKel;
     private widget.Button btnPenjab;
     private widget.Button btnPenjab1;
+    private widget.Button button1;
+    private widget.Button button2;
+    private widget.Button button3;
+    private widget.Button button4;
     private widget.InternalFrame internalFrame1;
     private widget.InternalFrame internalFrame4;
     private widget.InternalFrame internalFrame5;
@@ -15204,7 +15441,18 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenu jMenu8;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem1skdp;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JPopupMenu jPopupMenu2;
     private javax.swing.JPopupMenu.Separator jSeparator10;
@@ -15212,12 +15460,24 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private javax.swing.JPopupMenu.Separator jSeparator12;
     private widget.TextBox kdpnj;
     private widget.TextBox kdpoli;
+    private widget.Label label10;
+    private widget.Label label11;
+    private widget.Label label12;
+    private widget.Label label2;
+    private widget.Label label3;
+    private widget.Label label4;
+    private widget.Label label5;
+    private widget.Label label6;
+    private widget.Label label7;
+    private widget.Label label8;
+    private widget.Label label9;
     private widget.TextBox nmpnj;
     private widget.PanelBiasa panelBiasa3;
     private widget.PanelBiasa panelBiasa4;
     private widget.panelisi panelGlass6;
     private widget.panelisi panelGlass7;
     private widget.panelisi panelGlass8;
+    private java.awt.PopupMenu popupMenu1;
     private javax.swing.JMenuItem ppAsuhanGizi;
     private javax.swing.JMenuItem ppBerkas;
     private javax.swing.JMenuItem ppBerkasDigital;
@@ -15270,8 +15530,10 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
                     "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli,"+
                     "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,reg_periksa.status_poli, "+
-                    "reg_periksa.kd_poli,reg_periksa.kd_pj,reg_periksa.status_bayar from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                    "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli inner join penjab on reg_periksa.kd_pj=penjab.kd_pj where "+
+                    "reg_periksa.kd_poli,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(bse.no_sep),'VCL','BRD') AS skdp, CASE WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '10' THEN 'WEB' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '01' THEN 'JKN' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '11' THEN 'ONSITE' ELSE 'Unknown' END AS asal, IF(ISNULL(rmb.`status`),'-',rmb.`status`) AS jknstts "+
+                    "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+                    "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
+                    "LEFT JOIN referensi_mobilejkn_bpjs rmb ON rmb.no_rawat = reg_periksa.no_rawat LEFT JOIN side_db.reg_periksa_website regw ON regw.no_rawat = reg_periksa.no_rawat LEFT JOIN bridging_sep bse ON bse.no_rawat = reg_periksa.no_rawat where "+
                     "poliklinik.kd_poli<>'IGDK' and reg_periksa.tgl_registrasi between ? and ? "+terbitsep+" order by "+order); 
             }else{
                 ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
@@ -15318,7 +15580,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                         rs.getString(9),rs.getString(10),rs.getString(11),rs.getString(17),
                         rs.getString(12),rs.getString(13),rs.getString(14),Valid.SetAngka(rs.getDouble(15)),
                         rs.getString(16),rs.getString("no_tlp"),rs.getString("stts"),rs.getString("status_poli"),
-                        rs.getString("kd_poli"),rs.getString("kd_pj"),rs.getString("status_bayar")
+                        rs.getString("kd_poli"),rs.getString("kd_pj"),rs.getString("status_bayar"), rs.getString("skdp"), rs.getString("asal"), rs.getString("jknstts")
                     });
                 }                    
             }catch(Exception e){
