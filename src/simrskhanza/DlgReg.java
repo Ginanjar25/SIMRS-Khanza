@@ -235,6 +235,7 @@ public final class DlgReg extends javax.swing.JDialog {
     private DlgCariPoli poli=new DlgCariPoli(null,false);
     private DlgCariPoli2 poli2=new DlgCariPoli2(null,false);
     public  DlgRujukMasuk rujukmasuk=new DlgRujukMasuk(null,false);
+    public  DlgBookingWeb bookingweb = new DlgBookingWeb(null, false);
     private PreparedStatement ps,ps3,pscaripiutang;
     private ResultSet rs;
     private int pilihan=0,i=0,kuota=0,jmlparsial=0;
@@ -394,7 +395,7 @@ public final class DlgReg extends javax.swing.JDialog {
                 column.setPreferredWidth(50);
             }
         }
-        tbPetugas.setDefaultRenderer(Object.class, new WarnaTable());
+        tbPetugas.setDefaultRenderer(Object.class, new WarnaTableKasirRalan1());
 
         tabMode2=new DefaultTableModel(null,new Object[]{
             "P","No.Rawat","Tanggal","Jam","Kd.Dokter","Dokter Rujukan","Nomer RM",
@@ -1404,7 +1405,7 @@ public final class DlgReg extends javax.swing.JDialog {
         MnCheckInJKN.setName("MnCheckInJKN"); // NOI18N
         MnCheckInJKN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MnCheckInJKNActionPerformed(evt);
+                //MnCheckInJKNActionPerformed(evt);
             }
         });
         jPopupMenu1.add(MnCheckInJKN);
@@ -1415,7 +1416,7 @@ public final class DlgReg extends javax.swing.JDialog {
         MnBatalCheckInJKN.setName("MnBatalCheckInJKN"); // NOI18N
         MnBatalCheckInJKN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MnBatalCheckInJKNActionPerformed(evt);
+                //MnBatalCheckInJKNActionPerformed(evt);
             }
         });
         jPopupMenu1.add(MnBatalCheckInJKN);
@@ -1426,7 +1427,7 @@ public final class DlgReg extends javax.swing.JDialog {
         jMenuItem1skdp.setName("jMenuItem1skdp"); // NOI18N
         jMenuItem1skdp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1skdpActionPerformed(evt);
+                //jMenuItem1skdpActionPerformed(evt);
             }
         });
         jPopupMenu1.add(jMenuItem1skdp);
@@ -1437,7 +1438,7 @@ public final class DlgReg extends javax.swing.JDialog {
         jMenuItem1.setName("jMenuItem1"); // NOI18N
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                //jMenuItem1ActionPerformed(evt);
             }
         });
         jPopupMenu1.add(jMenuItem1);
@@ -15054,8 +15055,74 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 this.setCursor(Cursor.getDefaultCursor());
             }
         }
+    }    
+    private void button1ActionPerformed(java.awt.event.ActionEvent evt) {                                        
+        if (tbPetugas.getSelectedRow() != -1) {
+            if (!"JKN".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
+                JOptionPane.showMessageDialog(null, "Maaf, Pasien tidak daftar melalui Mobile JKN..!!!");
+            } else {
+                if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "no_rawat=?", "status='Checkin',validasi=now()", 1, new String[]{TNoRw.getText()
+                }) == true) {
+                    Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()});
+                    Sequel.meghapus("referensi_mobilejkn_bpjs_batal", "no_rawat_batal", TNoRw.getText());
+                    tampil();
+                }
+            }
+        }
+    }                                       
+
+    private void button2ActionPerformed(java.awt.event.ActionEvent evt) {                                        
+        if (tbPetugas.getSelectedRow() != -1) {
+            if (!"JKN".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
+                JOptionPane.showMessageDialog(null, "Maaf, Pasien tidak daftar melalui Mobile JKN..!!!");
+            } else {
+                if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "nobooking=?", "status='Batal',validasi=now()", 1, new String[]{
+                    Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
+                }) == true) {
+                    Sequel.menyimpan2("referensi_mobilejkn_bpjs_batal", "?,?,?,now(),?,?,?", 6, new String[]{
+                        tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 7).toString(),
+                        tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 2).toString(),
+                        Sequel.cariIsi("SELECT rmb.nomorreferensi FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText()),
+                        "Dibatalkan Oleh " + akses.getkode() + "",
+                        "Belum",
+                        Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
+                    });
+                    tampil();
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Silahkan pilih dulu data yang mau dibatalkan..!!");
+        }
+    }                                       
+
+    private void button3ActionPerformed(java.awt.event.ActionEvent evt) {                                        
+        if (tabMode.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Maaf, table masih kosong...!!!!");
+            TNoReg.requestFocus();
+        } else if (TPasien.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+            tbPetugas.requestFocus();
+        } else {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            akses.setform("DlgReg");
+            BPJSDataSEP dlgki = new BPJSDataSEP(null, false);
+            dlgki.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+            dlgki.setLocationRelativeTo(internalFrame1);
+            dlgki.isCek();
+            dlgki.setNoRm2(TNoRw.getText(), DTPReg.getDate(), "2. Ralan", kdpoli.getText(), TPoli.getText(), KdDokter.getText(), TNoReg.getText());
+            dlgki.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());
+        }
     }
-    
+   private void button4ActionPerformed(java.awt.event.ActionEvent evt) {                                        
+        button4.setText(Sequel.cariIsi("SELECT COUNT(bp.no_booking) FROM booking_periksa bp WHERE bp.tanggal >= CURDATE() AND `status` = 'Belum Dibalas'") + " Booking dari WEB Belum Dibalas");
+        bookingweb.isCek();
+        bookingweb.TCari.requestFocus();
+        bookingweb.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+        bookingweb.setLocationRelativeTo(internalFrame1);
+        bookingweb.setVisible(true);
+    }
+   
     /**
     * @param args the command line arguments
     */
@@ -15539,8 +15606,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
                     "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli,"+
                     "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,reg_periksa.status_poli, "+
-                    "reg_periksa.kd_poli,reg_periksa.kd_pj,reg_periksa.status_bayar from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                    "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli inner join penjab on reg_periksa.kd_pj=penjab.kd_pj where "+
+                    "reg_periksa.kd_poli,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(bse.no_sep),'VCL','BRD') AS skdp, CASE WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '10' THEN 'WEB' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '01' THEN 'JKN' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '11' THEN 'ONSITE' ELSE 'Unknown' END AS asal, IF(ISNULL(rmb.`status`),'-',rmb.`status`) AS jknstts from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+                    "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
+                    "LEFT JOIN referensi_mobilejkn_bpjs rmb ON rmb.no_rawat = reg_periksa.no_rawat LEFT JOIN side_db.reg_periksa_website regw ON regw.no_rawat = reg_periksa.no_rawat LEFT JOIN bridging_sep bse ON bse.no_rawat = reg_periksa.no_rawat where  "+
                     "poliklinik.kd_poli<>'IGDK' and poliklinik.nm_poli like ? and  dokter.nm_dokter like ? and reg_periksa.tgl_registrasi between ? and ? and  "+
                     "(reg_periksa.no_reg like ? or reg_periksa.no_rawat like ? or reg_periksa.tgl_registrasi like ? or reg_periksa.kd_dokter like ? or "+
                     "dokter.nm_dokter like ? or reg_periksa.no_rkm_medis like ? or reg_periksa.stts_daftar like ? or pasien.nm_pasien like ? or "+
@@ -15884,8 +15952,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
             ChkInput.setVisible(false);            
-            PanelInput.setPreferredSize(new Dimension(WIDTH,20));
-            FormInput.setVisible(false);      
+            PanelInput.setPreferredSize(new Dimension(WIDTH, 188));
+            FormInput.setVisible(true);
             ChkInput.setVisible(true);
         }
     }
