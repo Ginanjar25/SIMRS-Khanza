@@ -301,10 +301,11 @@ public final class DlgReg extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         initRegistrasi();
-
+        
         this.setLocation(8,1);
         setSize(885,674);
-
+        button4.setText(jmlBookWeb + " Booking dari WEB Belum Dibalas");
+        ChkTracker.hide();
         tabMode=new DefaultTableModel(null,new Object[]{
             "P","No.Reg","No.Rawat","Tanggal","Jam","Kode Dokter","Dokter Dituju","Nomer RM",
             "Pasien","J.K.","Umur","Poliklinik","Jenis Bayar","Penanggung Jawab","Alamat P.J.","Hubungan P.J.",
@@ -537,7 +538,18 @@ public final class DlgReg extends javax.swing.JDialog {
                         isPas();
                         isNumber();                                                    
                     }  
+                    if(pasien.getTable4().getSelectedRow() != -1) {
+                        TNoRM.setText(pasien.getTable4().getValueAt(pasien.getTable4().getSelectedRow(), 1).toString());
+                        isPas();
+                        isNumber();
+                    }
                     TNoRM.requestFocus();
+                    System.out.println("lokasi dispose notif");
+                    if (Sequel.cariInteger("select count(reg_periksa.no_rkm_medis) from pasien inner join reg_periksa on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+                            + "WHERE reg_periksa.tgl_registrasi = CURDATE() and pasien.no_rkm_medis=?", TNoRM.getText()) > 0) {
+                        JOptionPane.showMessageDialog(null, "Pasien dengan No. RM : " + TNoRM.getText() + " Sudah terdaftar di hari yang sama...!");
+                        TNoRM.requestFocus();
+                    }
                 }
             }
             @Override
@@ -593,7 +605,24 @@ public final class DlgReg extends javax.swing.JDialog {
             }
             @Override
             public void keyReleased(KeyEvent e) {}
-        }); 
+        });
+        
+        pasien.getTable4().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (akses.getform().equals("DlgReg")) {
+                    if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                        pasien.dispose();
+                    }
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
         
         dokter.addWindowListener(new WindowListener() {
             @Override
@@ -1398,50 +1427,6 @@ public final class DlgReg extends javax.swing.JDialog {
         tbPetugas2 = new widget.Table();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
-
-        MnCheckInJKN.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnCheckInJKN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-        MnCheckInJKN.setText("Chekin JKN Mobile");
-        MnCheckInJKN.setName("MnCheckInJKN"); // NOI18N
-        MnCheckInJKN.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                //MnCheckInJKNActionPerformed(evt);
-            }
-        });
-        jPopupMenu1.add(MnCheckInJKN);
-
-        MnBatalCheckInJKN.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        MnBatalCheckInJKN.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-        MnBatalCheckInJKN.setText("Batal JKN Mobile");
-        MnBatalCheckInJKN.setName("MnBatalCheckInJKN"); // NOI18N
-        MnBatalCheckInJKN.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                //MnBatalCheckInJKNActionPerformed(evt);
-            }
-        });
-        jPopupMenu1.add(MnBatalCheckInJKN);
-
-        jMenuItem1skdp.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        jMenuItem1skdp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-        jMenuItem1skdp.setText("Rencana Kontol ONSITE");
-        jMenuItem1skdp.setName("jMenuItem1skdp"); // NOI18N
-        jMenuItem1skdp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                //jMenuItem1skdpActionPerformed(evt);
-            }
-        });
-        jPopupMenu1.add(jMenuItem1skdp);
-
-        jMenuItem1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-        jMenuItem1.setText("Permintaan Kamar");
-        jMenuItem1.setName("jMenuItem1"); // NOI18N
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                //jMenuItem1ActionPerformed(evt);
-            }
-        });
-        jPopupMenu1.add(jMenuItem1);
 
         MnDataRM.setBackground(new java.awt.Color(255, 255, 254));
         MnDataRM.setForeground(new java.awt.Color(50, 50, 50));

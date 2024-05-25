@@ -3526,7 +3526,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(TTmp);
         TTmp.setBounds(102, 102, 187, 23);
 
-        CmbJk.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "LAKI-LAKI", "PEREMPUAN" }));
+        CmbJk.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-Pilih-", "LAKI-LAKI", "PEREMPUAN" }));
         CmbJk.setName("CmbJk"); // NOI18N
         CmbJk.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -3598,7 +3598,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(jLabel18);
         jLabel18.setBounds(402, 12, 90, 23);
 
-        cmbAgama.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "ISLAM", "KRISTEN", "KATOLIK", "HINDU", "BUDHA", "KONG HU CHU", "-" }));
+        cmbAgama.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-Pilih-", "ISLAM", "KRISTEN", "KATOLIK", "HINDU", "BUDHA", "KONG HU CHU", "-" }));
         cmbAgama.setLightWeightPopupEnabled(false);
         cmbAgama.setName("cmbAgama"); // NOI18N
         cmbAgama.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -3614,7 +3614,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(jLabel19);
         jLabel19.setBounds(629, 12, 100, 23);
 
-        CmbStts.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "MENIKAH", "BELUM MENIKAH", "JANDA", "DUDHA" }));
+        CmbStts.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-Pilih-", "MENIKAH", "BELUM MENIKAH", "JANDA", "DUDHA" }));
         CmbStts.setLightWeightPopupEnabled(false);
         CmbStts.setName("CmbStts"); // NOI18N
         CmbStts.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -3740,7 +3740,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(jLabel23);
         jLabel23.setBounds(247, 132, 72, 23);
 
-        CMbPnd.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-", "TS", "TK", "SD", "SMP", "SMA", "SLTA/SEDERAJAT", "D1", "D2", "D3", "D4", "S1", "S2", "S3" }));
+        CMbPnd.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-Pilih-", "-", "TS", "TK", "SD", "SMP", "SMA", "SLTA/SEDERAJAT", "D1", "D2", "D3", "D4", "S1", "S2", "S3" }));
         CMbPnd.setName("CMbPnd"); // NOI18N
         CMbPnd.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -4565,8 +4565,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(ChkAlamatPJ);
         ChkAlamatPJ.setBounds(845, 252, 28, 23);
 
-        CmbKeluarga.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AYAH", "IBU", "ISTRI", "SUAMI", "SAUDARA", "ANAK", "DIRI SENDIRI", "LAIN-LAIN" }));
-        CmbKeluarga.setSelectedIndex(6);
+        CmbKeluarga.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "AYAH", "IBU", "ISTRI", "SUAMI", "SAUDARA", "ANAK", "MENANTU", "REKAN KERJA", "TETANGGA", "PIHAK BERWAJIB", "DIRI SENDIRI", "LAIN-LAIN" }));
         CmbKeluarga.setName("CmbKeluarga"); // NOI18N
         CmbKeluarga.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -4583,7 +4582,6 @@ public class DlgPasien extends javax.swing.JDialog {
         tbPasienHint.setAutoCreateRowSorter(true);
         tbPasienHint.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbPasienHint.setName("tbPasienHint"); // NOI18N
-        tbPasienHint.setRowSorter(null);
         tbPasienHint.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tbPasienHintMouseClicked(evt);
@@ -4993,6 +4991,14 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             Valid.textKosong(TNo,"No.Rekam Medis");
         }else if(TNm.getText().trim().equals("")){
             Valid.textKosong(TNm,"nama pasien");
+        }else if (CmbJk.getSelectedItem().toString().trim().equals("-Pilih-")) {
+            Valid.textKosong(CmbJk, "Jenis Kelamin");
+        } else if (CMbPnd.getSelectedItem().toString().trim().equals("-Pilih-")) {
+            Valid.textKosong(CmbJk, "Pendididikan");
+        } else if (cmbAgama.getSelectedItem().toString().trim().equals("-Pilih-")) {
+            Valid.textKosong(CmbJk, "Agama");
+        } else if (CmbStts.getSelectedItem().toString().trim().equals("-Pilih-")) {
+            Valid.textKosong(CmbJk, "Status Perkawinan");
         }else if(nmpnj.getText().trim().equals("")||Kdpnj.getText().trim().equals("")){
             Valid.textKosong(Kdpnj,"Asuransi/Askes/Png.Jawab");
         }else if(no_ktp.equals("Yes")&&(TKtp.getText().trim().length()<p_no_ktp)){
@@ -5341,6 +5347,14 @@ private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             Valid.textKosong(TNm,"nama pasien");
         }else if(nmpnj.getText().trim().equals("")||Kdpnj.getText().trim().equals("")){
             Valid.textKosong(Kdpnj,"Asuransi/Askes/Png.Jawab");
+        }else if (CmbJk.getSelectedItem().toString().trim().equals("-Pilih-")) {
+            Valid.textKosong(CmbJk, "Jenis Kelamin");
+        }else if (CMbPnd.getSelectedItem().toString().trim().equals("-Pilih-")) {
+            Valid.textKosong(CmbJk, "Pendididikan");
+        }else if (cmbAgama.getSelectedItem().toString().trim().equals("-Pilih-")) {
+            Valid.textKosong(CmbJk, "Agama");
+        }else if (CmbStts.getSelectedItem().toString().trim().equals("-Pilih-")) {
+            Valid.textKosong(CmbJk, "Status Perkawinan");
         }else if(no_ktp.equals("Yes")&&(TKtp.getText().trim().length()<p_no_ktp)){
             Valid.textKosong(TKtp,"No.KTP/SIM minimal "+p_no_ktp+" karakter dan ");            
         }else if(tmp_lahir.equals("Yes")&&(TTmp.getText().trim().length()<p_tmp_lahir)){
@@ -5524,7 +5538,7 @@ private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                 }
                     
                 emptTeks();
-                TabRawat.setSelectedIndex(1);
+                TabRawat.setSelectedIndex(0);
             }
         }
 }//GEN-LAST:event_BtnEditActionPerformed
@@ -10731,7 +10745,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                 TNoPeserta.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 20).toString());
                 NmIbu.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 7).toString());
                 CMbPnd.setSelectedItem(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 16).toString());
-                CmbKeluarga.setSelectedItem(tbPasien.getValueAt(tbPasien.getSelectedRow(),17).toString());
+                CmbKeluarga.setSelectedItem(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(),17).toString());
                 PekerjaanPj.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 22).toString());
                 kdsuku.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 24).toString());
                 nmsukubangsa.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 25).toString());
@@ -10786,6 +10800,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                 Valid.SetTgl(DTPDaftar, tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 13).toString());
                 panggilPhoto();
             } catch (Exception ex) {
+                System.out.println(ex);
             }
         }
     }
