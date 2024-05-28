@@ -100,7 +100,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
     private int day = cal.get(Calendar.DAY_OF_WEEK);
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private Date parsedDate;
-    private String data1 = "", data2 = "", data3 = "", data4 = "";
+    private String data1 = "", data2 = "", data3 = "", data4 = "", kd_poli_rujukan = "", nm_poli_rujukan="";
     
     /** Creates new form DlgRujuk
      * @param parent
@@ -3847,6 +3847,8 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                                 NmPenyakit.setText(response.path("diagnosa").path("nama").asText());
                                 NoRujukan.setText(response.path("noKunjungan").asText());
                                 Valid.SetTgl(TanggalRujuk, response.path("tglKunjungan").asText());
+                                kd_poli_rujukan = response.path("poliRujukan").path("kode").asText();
+                                nm_poli_rujukan = response.path("poliRujukan").path("nama").asText();
 
                                 try {
                                     URL = link + "/RencanaKontrol/ListRencanaKontrol/Bulan/" + data3 + "/Tahun/" + data2 + "/Nokartu/" + data1 + "/filter/2";
@@ -6754,6 +6756,9 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                      (FlagProsedur.getSelectedIndex()>0?FlagProsedur.getSelectedItem().toString().substring(0,1):""),(Penunjang.getSelectedIndex()>0?Penunjang.getSelectedIndex()+"":""),
                      (AsesmenPoli.getSelectedIndex()>0?AsesmenPoli.getSelectedItem().toString().substring(0,1):""),KdDPJPLayanan.getText(),NmDPJPLayanan.getText()
                  })==true){
+                     Sequel.menyimpan("side_db.rujukan_bpjs","?,?,?",3,new String[]{
+                         TNoRw.getText(),kd_poli_rujukan,nm_poli_rujukan
+                     });
                      Sequel.menyimpan("rujuk_masuk","?,?,?,?,?,?,?,?,?,?",10,new String[]{
                          TNoRw.getText(),NmPpkRujukan.getText(),"-",NoRujukan.getText(),"0",NmPpkRujukan.getText(),KdPenyakit.getText(),"-",
                          "-",NoBalasan.getText()
