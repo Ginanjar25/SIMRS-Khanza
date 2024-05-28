@@ -165,6 +165,7 @@ import surat.SuratPersetujuanUmum;
 import surat.SuratPulangAtasPermintaanSendiri;
 import surat.SuratSakit;
 import surat.SuratSakitPihak2;
+import java.time.LocalDate;
 
 /**
  *
@@ -187,8 +188,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private Date date = new Date();
     private String now=dateFormat.format(date),kmr="",key="",tglmasuk,jammasuk,kd_pj,
             hariawal="",pilihancetak="",aktifkan_hapus_data_salah="",terbitsep="",namadokter="";
-    private PreparedStatement ps,pssetjam,pscaripiutang,psdiagnosa,psibu,psanak,pstarif,psdpjp,pscariumur;
-    private ResultSet rs,rs2,rssetjam;
+    private PreparedStatement ps,pssetjam,pscaripiutang,psdiagnosa,psibu,psanak,pstarif,psdpjp,pscariumur, psinsertkamar, psupdatekamar, psrekapkamar, pstitip;
+    private ResultSet rs,rs2,rssetjam, rsrekapkamar, rstitip;;
     private int i,row=0;
     private double lama=0,persenbayi=0,hargakamar=0;
     private String gabungkan="",norawatgabung="",kamaryangdigabung="",dokterranap="",bangsal="",diagnosa_akhir="",namakamar="",umur="0",sttsumur="Th",order="order by bangsal.nm_bangsal,kamar_inap.tgl_masuk,kamar_inap.jam_masuk";
@@ -1042,17 +1043,12 @@ public class DlgKamarInap extends javax.swing.JDialog {
         jLabel30 = new widget.Label();
         BtnSimpanpindah = new widget.Button();
         jLabel31 = new widget.Label();
-        jLabel32 = new widget.Label();
         TTarifpindah = new widget.TextBox();
         CmbTahunpindah = new widget.ComboBox();
         CmbBlnpindah = new widget.ComboBox();
         CmbTglpindah = new widget.ComboBox();
         jLabel35 = new widget.Label();
-        Rganti3 = new widget.RadioButton();
         jLabel33 = new widget.Label();
-        Rganti2 = new widget.RadioButton();
-        Rganti1 = new widget.RadioButton();
-        Rganti4 = new widget.RadioButton();
         buttonGroup2 = new javax.swing.ButtonGroup();
         WindowCaraBayar = new javax.swing.JDialog();
         internalFrame5 = new widget.InternalFrame();
@@ -4924,12 +4920,12 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         });
         internalFrame3.add(BtnCloseInpindah);
-        BtnCloseInpindah.setBounds(560, 235, 100, 30);
+        BtnCloseInpindah.setBounds(560, 190, 100, 30);
 
         jLabel30.setText("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         jLabel30.setName("jLabel30"); // NOI18N
         internalFrame3.add(jLabel30);
-        jLabel30.setBounds(-10, 215, 850, 14);
+        jLabel30.setBounds(0, 160, 850, 14);
 
         BtnSimpanpindah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
         BtnSimpanpindah.setMnemonic('S');
@@ -4947,17 +4943,12 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         });
         internalFrame3.add(BtnSimpanpindah);
-        BtnSimpanpindah.setBounds(14, 235, 100, 30);
+        BtnSimpanpindah.setBounds(20, 190, 100, 30);
 
         jLabel31.setText("Stts.Kamar :");
         jLabel31.setName("jLabel31"); // NOI18N
         internalFrame3.add(jLabel31);
         jLabel31.setBounds(444, 55, 100, 23);
-
-        jLabel32.setText("Pilihan :");
-        jLabel32.setName("jLabel32"); // NOI18N
-        internalFrame3.add(jLabel32);
-        jLabel32.setBounds(0, 145, 72, 23);
 
         TTarifpindah.setEditable(false);
         TTarifpindah.setText("0");
@@ -4985,35 +4976,10 @@ public class DlgKamarInap extends javax.swing.JDialog {
         internalFrame3.add(jLabel35);
         jLabel35.setBounds(304, 85, 67, 23);
 
-        buttonGroup2.add(Rganti3);
-        Rganti3.setSelected(true);
-        Rganti3.setText("3. Kamar Inap sebelumnya distatuskan pindah, lama inap dihitung dan pasien dimasukkan Ke Kamar inap yang baru");
-        Rganti3.setName("Rganti3"); // NOI18N
-        internalFrame3.add(Rganti3);
-        Rganti3.setBounds(75, 176, 620, 20);
-
         jLabel33.setText("Biaya :");
         jLabel33.setName("jLabel33"); // NOI18N
         internalFrame3.add(jLabel33);
         jLabel33.setBounds(0, 115, 72, 23);
-
-        buttonGroup2.add(Rganti2);
-        Rganti2.setText("2. Kamar Inap sebelumnya diganti kamarnya dengan Kamar Inap terbaru dan harga kamar menyesuaikan harga baru");
-        Rganti2.setName("Rganti2"); // NOI18N
-        internalFrame3.add(Rganti2);
-        Rganti2.setBounds(75, 159, 620, 20);
-
-        buttonGroup2.add(Rganti1);
-        Rganti1.setText("1. Kamar Inap sebelumnya dihapus dan pasien dihitung menginap mulai saat ini (Kamar Inap lama dihapus dari billing)");
-        Rganti1.setName("Rganti1"); // NOI18N
-        internalFrame3.add(Rganti1);
-        Rganti1.setBounds(75, 142, 620, 20);
-
-        buttonGroup2.add(Rganti4);
-        Rganti4.setText("4. Seperti nomer 3, Kamar Inap sebelumnya mengikuti harga tertinggi");
-        Rganti4.setName("Rganti4"); // NOI18N
-        internalFrame3.add(Rganti4);
-        Rganti4.setBounds(75, 193, 620, 20);
 
         WindowPindahKamar.getContentPane().add(internalFrame3, java.awt.BorderLayout.CENTER);
 
@@ -6878,7 +6844,78 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                              JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
                              tbKamIn.requestFocus();
-                }else{    
+                }else{
+                    //append kamar 
+                    Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "'", "lama='0', ttl_biaya='0'");
+                    try {
+                    psrekapkamar = koneksi.prepareStatement("SELECT gr.*, COUNT(gr.tgl_masuk) AS lama, (COUNT(gr.tgl_masuk)*gr.tarif) AS total FROM (\n"
+                            + "		SELECT ki.no_rawat, ki.kd_kamar, ki.tgl_masuk, max(ki.jam_masuk)jam_masuk, ki.tgl_billing, ki.tarif, ki.titip, ki.status_kamar\n"
+                            + "			FROM side_db.detail_pindah_kamar ki\n"
+                            + "			JOIN (\n"
+                            + "				SELECT no_rawat, kd_kamar, tgl_masuk, jam_masuk, tgl_billing, MAX(tarif) AS tarif, titip, status_kamar\n"
+                            + "				FROM side_db.detail_pindah_kamar\n"
+                            + "				WHERE no_rawat =? AND titip = '-'"
+                            + "				GROUP BY tgl_billing\n"
+                            + "			) dpk ON dpk.tgl_billing = ki.tgl_billing AND dpk.tarif = ki.tarif AND ki.status_kamar = '-'\n"
+                            + "			WHERE ki.no_rawat =? AND ki.titip = '-'"
+                            + "	GROUP BY tgl_billing\n"
+                            + ") gr\n"
+                            + "GROUP BY gr.tgl_masuk, gr.jam_masuk");
+                    try {
+                        psrekapkamar.setString(1, TNoRwCari.getText());
+                        psrekapkamar.setString(2, TNoRwCari.getText());
+                        rsrekapkamar = psrekapkamar.executeQuery();
+                        while (rsrekapkamar.next()) {
+                            System.out.println("Lama = " + rsrekapkamar.getString("lama"));
+                            if (rsrekapkamar.getString("titip").equals("Titip")) {
+                                System.out.println("titip");
+                                Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "' "
+                                        + "and kd_kamar='" + rsrekapkamar.getString("kd_kamar") + "' "
+                                        + "and tgl_masuk='" + rsrekapkamar.getString("tgl_masuk") + "' "
+                                        + "and jam_masuk='" + rsrekapkamar.getString("jam_masuk") + "' ",
+                                        "lama='0', ttl_biaya='0'");
+                            } else {
+                                System.out.println("bukan titip");
+                                String cekTitipJam23 = Sequel.cariIsi("SELECT "
+                                        + "if(SUBSTRING_INDEX(pr.catatan,'#',1) > '23:00:00','Yes','No') AS hasil_cek FROM permintaan_ranap pr WHERE pr.no_rawat = '" + TNoRwCari.getText() + "'");
+                                if (cekTitipJam23.equals("Yes")) {
+                                    if (rsrekapkamar.isFirst()) {
+                                        int lamaMinSatu = Integer.parseInt(rsrekapkamar.getString("lama")) - 1;
+                                        int tarifMinSatu = Integer.parseInt(rsrekapkamar.getString("total")) - Integer.parseInt(rsrekapkamar.getString("tarif")) ;                                        
+                                        Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "' "
+                                                + "and kd_kamar='" + rsrekapkamar.getString("kd_kamar") + "' "
+                                                + "and tgl_masuk='" + rsrekapkamar.getString("tgl_masuk") + "' "
+                                                + "and jam_masuk='" + rsrekapkamar.getString("jam_masuk") + "' ",
+                                                "lama='" + lamaMinSatu + "', ttl_biaya='" + tarifMinSatu + "'");
+                                    } else {
+                                        Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "' "
+                                                + "and kd_kamar='" + rsrekapkamar.getString("kd_kamar") + "' "
+                                                + "and tgl_masuk='" + rsrekapkamar.getString("tgl_masuk") + "' "
+                                                + "and jam_masuk='" + rsrekapkamar.getString("jam_masuk") + "' ",
+                                                "lama='" + rsrekapkamar.getString("lama") + "', ttl_biaya='" + rsrekapkamar.getString("total") + "'");
+                                    }
+                                } else {
+                                    Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "' "
+                                            + "and kd_kamar='" + rsrekapkamar.getString("kd_kamar") + "' "
+                                            + "and tgl_masuk='" + rsrekapkamar.getString("tgl_masuk") + "' "
+                                            + "and jam_masuk='" + rsrekapkamar.getString("jam_masuk") + "' ",
+                                            "lama='" + rsrekapkamar.getString("lama") + "', ttl_biaya='" + rsrekapkamar.getString("total") + "'");
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Notifikasi : " + e);
+                    } finally {
+                        if (rsrekapkamar != null) {
+                            rsrekapkamar.close();
+                        }
+                        if (rsrekapkamar != null) {
+                            rsrekapkamar.close();
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("");
+                }
                     try {
                         pscaripiutang=koneksi.prepareStatement("select tgl_piutang from piutang_pasien where no_rkm_medis=? and status='Belum Lunas' order by tgl_piutang asc limit 1");
                         try {
@@ -7398,7 +7435,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     kdkamar.requestFocus();
                     break;
                 case "KOSONG":
-                    if(Rganti1.isSelected()==true){
+                    if(1==2){
                         Sequel.menyimpan("kamar_inap","'"+norawatpindah.getText()+"','"+
                                 kdkamarpindah.getText()+"','"+TTarifpindah.getText()+"','"+
                                 diagnosaawal.getText()+"','"+
@@ -7412,7 +7449,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 "' and tgl_masuk='"+tbKamIn.getValueAt(tbKamIn.getSelectedRow(),11).toString()+
                                 "' and jam_masuk='"+tbKamIn.getValueAt(tbKamIn.getSelectedRow(),12).toString()+"'");
                         Sequel.mengedit("kamar","kd_kamar='"+tbKamIn.getValueAt(tbKamIn.getSelectedRow(),19).toString()+"'","status='KOSONG'");  
-                    }else if(Rganti2.isSelected()==true){
+                    }else if(1==2){
                         Sequel.queryu("update kamar_inap set kd_kamar='"+kdkamarpindah.getText()+"',trf_kamar='"+TTarifpindah.getText()+"',"+
                                 "lama='"+TJmlHaripindah.getText()+"',ttl_biaya='"+ttlbiayapindah.getText()+
                                 "' where no_rawat='"+tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString()+
@@ -7421,7 +7458,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 "' and jam_masuk='"+tbKamIn.getValueAt(tbKamIn.getSelectedRow(),12).toString()+"'");                        
                         Sequel.mengedit("kamar","kd_kamar='"+kdkamarpindah.getText()+"'","status='ISI'"); 
                         Sequel.mengedit("kamar","kd_kamar='"+tbKamIn.getValueAt(tbKamIn.getSelectedRow(),19).toString()+"'","status='KOSONG'");  
-                    }else if(Rganti3.isSelected()==true){
+                    }else if(1==1){
                         i=1;
                         kdkamar.setText(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),19).toString());
                         isKmr();
@@ -7474,8 +7511,110 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 CmbTahunpindah.getSelectedItem()+"-"+CmbBlnpindah.getSelectedItem()+"-"+CmbTglpindah.getSelectedItem()+"','"+
                                 cmbJampindah.getSelectedItem()+":"+cmbMntpindah.getSelectedItem()+":"+cmbDtkpindah.getSelectedItem()+"','0000-00-00','00:00:00','"+
                                 TJmlHaripindah.getText()+"','"+ttlbiayapindah.getText()+"','-'","No.Rawat");
-                        Sequel.mengedit("kamar","kd_kamar='"+kdkamarpindah.getText()+"'","status='ISI'");                         
-                    }else if(Rganti4.isSelected()==true){
+                        Sequel.mengedit("kamar","kd_kamar='"+kdkamarpindah.getText()+"'","status='ISI'");
+                        //modif
+                        String tglMasukKmrBaru = CmbTahunpindah.getSelectedItem() + "-" + CmbBlnpindah.getSelectedItem() + "-" + CmbTglpindah.getSelectedItem();
+                        String tglMasukKmrLama = tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 11).toString();
+                        //data kamar lama
+                        String Cnorawat = tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString();
+                        String Ckdkmr = tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 19).toString();
+                        String Ctglmsk = tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 11).toString();
+                        String Cjammsk = tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 12).toString();
+                        String Ctrfmsk = tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 8).toString().replaceAll(",", "");
+                        //data kamar baru
+                        String CkdkmrBaru = kdkamarpindah.getText();
+                        String CtglmskBaru = CmbTahunpindah.getSelectedItem() + "-" + CmbBlnpindah.getSelectedItem() + "-" + CmbTglpindah.getSelectedItem();
+                        String Cjammskbaru = cmbJampindah.getSelectedItem() + ":" + cmbMntpindah.getSelectedItem() + ":" + cmbDtkpindah.getSelectedItem();
+                        String CtrfmskBaru = ttlbiayapindah.getText();
+
+                        //jumlah perulangan
+                        int JmlWhile;
+                        JmlWhile = Integer.parseInt(TJmlHari.getText()) - 1;
+                        int z;
+                        System.out.println("jml perulangan " + JmlWhile);
+                        for (z = 0; z < JmlWhile; z++) {
+                            LocalDate tglMasukFix = LocalDate.parse(Ctglmsk).plusDays(1);
+                            String tglMasukFix1 = tglMasukFix.toString();
+                            LocalDate tglBaru = LocalDate.parse(tglMasukFix1).plusDays(z);
+                            System.out.println("Tgl Biling = " + tglBaru);
+
+                            try {
+                                psinsertkamar = koneksi.prepareStatement("insert into side_db.detail_pindah_kamar "
+                                        + "values('" + Cnorawat + "','" + Ckdkmr + "','" + Ctglmsk + "','" + Cjammsk + "','" + tglBaru + "','" + Ctrfmsk + "','-','Lanjut')");
+                                try {
+                                    psinsertkamar.executeUpdate();
+                                } catch (Exception e) {
+                                    System.out.println("error di jml perulangan");
+                                    System.out.println("Notifikasi : " + e);
+                                }
+                            } catch (Exception e) {
+                                //System.out.println("error 2");
+                            }
+                        }
+                        System.out.println("===========");
+                        
+                        String cekTitip = Sequel.cariIsi("SELECT dpk.titip FROM side_db.detail_pindah_kamar dpk "
+                                + "WHERE dpk.no_rawat = '" + Cnorawat + "' AND dpk.kd_kamar = '" + Ckdkmr + "' AND dpk.tgl_masuk = '" + Ctglmsk + "' "
+                                + "AND dpk.jam_masuk = '" + Cjammsk + "' AND dpk.tgl_masuk = dpk.tgl_billing");
+                        if (cekTitip.equals("Titip")) {
+                            try {
+                                pstitip = koneksi.prepareStatement("SELECT * FROM side_db.detail_pindah_kamar ki WHERE ki.no_rawat =? AND ki.titip = 'Titip'");
+                                try {
+                                    pstitip.setString(1, Cnorawat);
+                                    rstitip = pstitip.executeQuery();
+                                    while (rstitip.next()) {
+                                        try {
+//                                            psinsertkamar = koneksi.prepareStatement("insert into side_db.detail_pindah_kamar "
+//                                                + "values('" + Cnorawat + "','" + CkdkmrBaru + "','" + rstitip.getString("tgl_masuk") 
+//                                                + "','" + rstitip.getString("jam_masuk") + "','" + rstitip.getString("tgl_billing") 
+//                                                + "','" + CtrfmskBaru + "','-','" + rstitip.getString("status_kamar") + "')");
+                                            psinsertkamar = koneksi.prepareStatement("insert into side_db.detail_pindah_kamar "
+                                                    + "values('" + Cnorawat + "','" + CkdkmrBaru + "','" + CtglmskBaru
+                                                    + "','" + Cjammskbaru + "','" + rstitip.getString("tgl_billing")
+                                                    + "','" + CtrfmskBaru + "','-','" + rstitip.getString("status_kamar") + "')");
+                                            try {
+                                                System.out.println("Query insert = " + psinsertkamar);
+                                                psinsertkamar.executeUpdate();
+                                            } catch (Exception e) {
+                                                //System.out.println("eror" + e);
+                                            }
+                                        } catch (Exception e) {
+                                            //System.out.println("eror" + e);
+                                        }
+                                        System.out.println(rstitip.getString("tgl_billing"));
+                                    }
+                                } catch (Exception e) {
+                                    System.out.println(e);
+                                } finally {
+                                    if (rstitip != null) {
+                                        rstitip.close();
+                                    }
+                                    if (rstitip != null) {
+                                        rstitip.close();
+                                    }
+                                }
+                            } catch (Exception e) {
+                                System.out.println(e);
+                            }
+                        } else {
+                            try {
+                                psupdatekamar = koneksi.prepareStatement("update side_db.detail_pindah_kamar "
+                                        + "set status_kamar='Pindah' "
+                                        + "where no_rawat='" + Cnorawat + "'  and tgl_billing='" + CtglmskBaru + "' ");
+                                psinsertkamar = koneksi.prepareStatement("insert into side_db.detail_pindah_kamar "
+                                        + "values('" + Cnorawat + "','" + CkdkmrBaru + "','" + CtglmskBaru + "','" + Cjammskbaru + "','" + CtglmskBaru + "','" + CtrfmskBaru + "','-','-')");
+                                try {
+                                    psupdatekamar.executeUpdate();
+                                    psinsertkamar.executeUpdate();
+                                } catch (Exception e) {
+                                    System.out.println("error insert kamar baru");
+                                    System.out.println("Notifikasi : " + e);
+                                }
+                            } catch (Exception e) {
+                                //System.out.println("error 2");
+                            }
+                        }
+                    }else if(1==2){
                         i=1;
                         kdkamar.setText(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),19).toString());
                         isKmr();
@@ -16880,10 +17019,6 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private widget.RadioButton R1;
     private widget.RadioButton R2;
     private widget.RadioButton R3;
-    private widget.RadioButton Rganti1;
-    private widget.RadioButton Rganti2;
-    private widget.RadioButton Rganti3;
-    private widget.RadioButton Rganti4;
     private widget.ScrollPane Scroll;
     private javax.swing.JMenu SetStatus;
     private widget.TextBox TBangsal;
@@ -16964,7 +17099,6 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private widget.Label jLabel3;
     private widget.Label jLabel30;
     private widget.Label jLabel31;
-    private widget.Label jLabel32;
     private widget.Label jLabel33;
     private widget.Label jLabel34;
     private widget.Label jLabel35;
@@ -17114,6 +17248,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             System.out.println("Notifikasi : "+e);
         }
         LCount.setText(""+tabMode.getRowCount());
+        updateHari();
     }
 
     public void emptTeks() {       
@@ -17561,9 +17696,12 @@ public class DlgKamarInap extends javax.swing.JDialog {
    }
     
     private void updateHari(){
+        int x;
         if((R1.isSelected()==true)&&(akses.getstatus()==false)){
             for(i=0;i<tbKamIn.getRowCount();i++){
-                if(tbKamIn.getValueAt(i,13).toString().equals("")){        
+                if(tbKamIn.getValueAt(i,13).toString().equals("")){
+                    
+                    
                     if(hariawal.equals("Yes")){
                         Sequel.mengedit(" kamar_inap "," no_rawat='"+tbKamIn.getValueAt(i,0).toString()+"' and "+
                             " kd_kamar='"+Sequel.cariIsi("select kd_kamar from kamar inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal where concat(kamar.kd_kamar,' ',bangsal.nm_bangsal)=? ",tbKamIn.getValueAt(i,7).toString())+"' "+
@@ -17578,9 +17716,47 @@ public class DlgKamarInap extends javax.swing.JDialog {
                             " ttl_biaya=if(to_days(NOW())-to_days(concat(tgl_masuk,' ',jam_masuk))=0,if(time_to_sec(NOW())-time_to_sec(concat(tgl_masuk,' ',jam_masuk))>(3600*"+lama+"),1,0),to_days(NOW())-to_days(concat(tgl_masuk,' ',jam_masuk)))*trf_kamar");
                     }         
                 }
+                //modif update hari
+                if (tbKamIn.getValueAt(i, 13).toString().equals("")) {
+                    if (!tbKamIn.getValueAt(i, 0).toString().equals("")) {
+                        //System.out.println(tbKamIn.getValueAt(i, 12).toString());
+                        String tglMasukKmrLama = tbKamIn.getValueAt(i, 11).toString();
+                        String LamaHari = Sequel.cariIsi("SELECT DATEDIFF(CURDATE(),'" + tglMasukKmrLama + "')");
+                        //data kamar lama
+                        String Cnorawat = tbKamIn.getValueAt(i, 0).toString();
+                        String Ckdkmr = tbKamIn.getValueAt(i, 19).toString();
+                        String Ctglmsk = tbKamIn.getValueAt(i, 11).toString();
+                        String Cjammsk = tbKamIn.getValueAt(i, 12).toString();
+                        String Ctrfmsk = tbKamIn.getValueAt(i, 8).toString().replaceAll(",", "");
+                        String titip = Sequel.cariIsi("SELECT dpk.titip FROM side_db.detail_pindah_kamar dpk "
+                                + "WHERE dpk.no_rawat = '" + Cnorawat + "' AND dpk.kd_kamar = '" + Ckdkmr + "' AND dpk.tgl_masuk = '" + Ctglmsk + "' AND dpk.jam_masuk = '" + Cjammsk + "' "
+                                + "AND dpk.tgl_billing = dpk.tgl_masuk");
+                        //jumlah perulangan
+                        int JmlWhile;
+                        JmlWhile = Integer.parseInt(LamaHari);
+                        System.out.println(JmlWhile);
+                        for (x = 0; x < JmlWhile; x++) {
+                            LocalDate tglMasukFix = LocalDate.parse(Ctglmsk).plusDays(1);
+                            String tglMasukFix1 = tglMasukFix.toString();
+                            LocalDate tglBaru = LocalDate.parse(tglMasukFix1).plusDays(x);
+                            System.out.println("Tgl Biling = " + tglBaru);
+                            try {
+                                psinsertkamar = koneksi.prepareStatement("insert into side_db.detail_pindah_kamar values('" + Cnorawat + "','" + Ckdkmr + "','" + Ctglmsk + "','" + Cjammsk + "','" + tglBaru + "','" + Ctrfmsk + "','" + titip + "','Lanjut') ");
+                                try {
+                                    psinsertkamar.executeUpdate();
+                                } catch (Exception e) {
+                                    //System.out.println("error 1");
+                                    //System.out.println("Notifikasi : " + e);
+                                }
+                            } catch (Exception e) {
+                                //System.out.println("error 2");
+                            }
+                        }
+                    }
+                }
             }
         }
-        tampil();
+//        tampil();
     }
 
     public void setCariKosong() {
