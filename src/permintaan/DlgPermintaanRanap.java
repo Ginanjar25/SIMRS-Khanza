@@ -1794,11 +1794,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         } else {
                             titip_kamar = "-";
                         }
-                        Sequel.menyimpan("side_db.pindah_kamar",
-                                "'" + NoRw.getText() + "','" + KdKamar.getText() + "','" + hargakmr2 + "','"
-                                + Valid.SetTgl(DTPTgl.getSelectedItem() + "") + "','"
-                                + Catatan.getText() + "','0000-00-00','00:00:00','0','1','"+titip_kamar+"','-'", "No.Rawat");
-
+                        
                         Sequel.menyimpan("side_db.detail_pindah_kamar",
                                 "'" + NoRw.getText() + "','" + KdKamar.getText() + "','" + Valid.SetTgl(DTPTgl.getSelectedItem() + "") + "','" + Catatan.getText() + "','" + Valid.SetTgl(DTPTgl.getSelectedItem() + "") + "','" + hargakmr2 + "','"+titip_kamar+"','-'", "No.Rawat");
                         JOptionPane.showMessageDialog(rootPane, "Berhasil menginapkan pasien " + NmPasien.getText());

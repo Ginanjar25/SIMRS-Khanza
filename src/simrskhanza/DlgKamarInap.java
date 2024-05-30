@@ -6856,7 +6856,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                             + "				FROM side_db.detail_pindah_kamar\n"
                             + "				WHERE no_rawat =? AND titip = '-'"
                             + "				GROUP BY tgl_billing\n"
-                            + "			) dpk ON dpk.tgl_billing = ki.tgl_billing AND dpk.tarif = ki.tarif AND ki.status_kamar = '-'\n"
+                            + "			) dpk ON dpk.tgl_billing = ki.tgl_billing AND dpk.tarif = ki.tarif \n"
                             + "			WHERE ki.no_rawat =? AND ki.titip = '-'"
                             + "	GROUP BY tgl_billing\n"
                             + ") gr\n"
