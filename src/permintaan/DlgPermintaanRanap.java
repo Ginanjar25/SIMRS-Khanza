@@ -1497,7 +1497,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
             Valid.hapusTable(tabMode, NoRw, "ranap_gabung", "no_rawat");
             Valid.hapusTable(tabMode, NoRawatGabung, "reg_periksa", "no_rawat");
             emptTeks();
-            LCount.setText(""+tabMode.getRowCount());
+            tampil();
         }
 }//GEN-LAST:event_BtnHapusActionPerformed
 
@@ -2372,6 +2372,35 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             rs.getString("kd_bangsal"),rs.getString("kd_kamar")+" "+rs.getString("nm_bangsal"),Valid.SetAngka(rs.getDouble("trf_kamar")),rs.getString("diagnosa"),
                             rs.getString("catatan"),rs.getString("kd_dokter"), rs.getString("dp1"), rs.getString("dp2"), rs.getString("gabung")
                         });
+                        psanak = koneksi.prepareStatement(
+                                "select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.no_peserta, "
+                                + "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamat, dpjp_ranap.kd_dokter, dokter.nm_dokter "
+                                + "from reg_periksa inner join pasien on pasien.no_rkm_medis=reg_periksa.no_rkm_medis "
+                                + "inner join ranap_gabung on ranap_gabung.no_rawat2=reg_periksa.no_rawat "
+                                + "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = ranap_gabung.no_rawat2 "
+                                + "INNER JOIN dokter ON dokter.kd_dokter = dpjp_ranap.kd_dokter "
+                                + "where ranap_gabung.no_rawat=?");
+                        try {
+                            psanak.setString(1, rs.getString("no_rawat"));
+                            rs2 = psanak.executeQuery();
+                            if (rs2.next()) {
+                                tabMode.addRow(new String[]{
+                                    "", rs2.getString("no_rkm_medis"), rs2.getString("nm_pasien"), rs.getString("jk"), rs2.getString("umur"),
+                                    "", rs.getString("png_jawab"), "", "", rs.getString("tanggal"), rs.getString("kd_kamar"),
+                                    rs.getString("kd_bangsal"), rs.getString("kd_kamar") + " " + rs.getString("nm_bangsal"), Valid.SetAngka(rs.getDouble("trf_kamar")), "", "",
+                                    "", rs2.getString("kd_dokter"), rs2.getString("nm_dokter"), "Bayi"
+                                });
+                            }
+                        } catch (Exception ex) {
+                            System.out.println("Notifikasi : " + ex);
+                        } finally {
+                            if (rs2 != null) {
+                                rs2.close();
+                            }
+                            if (psanak != null) {
+                                psanak.close();
+                            }
+                        }
                     }
                 } catch (Exception e) {
                     System.out.println("Notif Kamar : "+e);
@@ -2515,9 +2544,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
-            ChkInput.setVisible(false);            
-            PanelInput.setPreferredSize(new Dimension(WIDTH,20));
-            FormInput.setVisible(false);      
+            ChkInput.setVisible(false);
+            PanelInput.setPreferredSize(new Dimension(WIDTH,186));
+            FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }
     }
@@ -2575,8 +2604,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             ChkAccor.setVisible(true);
         }else if(ChkAccor.isSelected()==false){  
             ChkAccor.setVisible(false);
-            PanelAccor.setPreferredSize(new Dimension(15,HEIGHT));
-            FormMenu.setVisible(false);    
+            PanelAccor.setPreferredSize(new Dimension(175,HEIGHT));
+            FormMenu.setVisible(true); 
             ChkAccor.setVisible(true);
         }
     }
