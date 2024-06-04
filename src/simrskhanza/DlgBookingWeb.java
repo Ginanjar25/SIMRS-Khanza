@@ -485,14 +485,8 @@ public class DlgBookingWeb extends javax.swing.JDialog {
         TNoBooking = new widget.TextBox();
         TNoKtp = new widget.TextBox();
         TPasien = new widget.TextBox();
-        jLabel13 = new widget.Label();
         TAlamat = new widget.TextBox();
         jLabel17 = new widget.Label();
-        Scroll1 = new widget.ScrollPane();
-        tbDiagnosa = new widget.Table();
-        Dokter = new widget.TextBox();
-        BtnCari1 = new widget.Button();
-        btnTarif = new widget.Button();
         jLabel4 = new widget.Label();
         jLabel5 = new widget.Label();
         jLabel18 = new widget.Label();
@@ -507,8 +501,6 @@ public class DlgBookingWeb extends javax.swing.JDialog {
         THintRm = new widget.TextBox();
         jLabel24 = new widget.Label();
         TPernahKeRspw = new widget.TextBox();
-        TCariPasien = new widget.TextBox();
-        BtnSeek4 = new widget.Button();
         jLabel16 = new widget.Label();
         TRKec = new widget.TextBox();
         TRNoRm = new widget.TextBox();
@@ -524,7 +516,6 @@ public class DlgBookingWeb extends javax.swing.JDialog {
         jLabel44 = new widget.Label();
         jLabel45 = new widget.Label();
         jLabel46 = new widget.Label();
-        jLabel47 = new widget.Label();
         jLabel48 = new widget.Label();
         TRKdDok = new widget.TextBox();
         TRNmDok = new widget.TextBox();
@@ -682,16 +673,6 @@ public class DlgBookingWeb extends javax.swing.JDialog {
         BtnPrint.setToolTipText("Alt+T");
         BtnPrint.setName("BtnPrint"); // NOI18N
         BtnPrint.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnPrint.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnPrintActionPerformed(evt);
-            }
-        });
-        BtnPrint.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnPrintKeyPressed(evt);
-            }
-        });
         panelGlass8.add(BtnPrint);
 
         BtnAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
@@ -777,7 +758,7 @@ public class DlgBookingWeb extends javax.swing.JDialog {
         panelGlass9.add(R2);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "12-04-2024" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-06-2024" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -790,7 +771,7 @@ public class DlgBookingWeb extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "12-04-2024" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-06-2024" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -811,7 +792,7 @@ public class DlgBookingWeb extends javax.swing.JDialog {
         });
         panelGlass9.add(R3);
 
-        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "12-04-2024" }));
+        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-06-2024" }));
         DTPCari3.setDisplayFormat("dd-MM-yyyy");
         DTPCari3.setName("DTPCari3"); // NOI18N
         DTPCari3.setOpaque(false);
@@ -834,7 +815,7 @@ public class DlgBookingWeb extends javax.swing.JDialog {
         jLabel25.setPreferredSize(new java.awt.Dimension(25, 23));
         panelGlass9.add(jLabel25);
 
-        DTPCari4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "12-04-2024" }));
+        DTPCari4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-06-2024" }));
         DTPCari4.setDisplayFormat("dd-MM-yyyy");
         DTPCari4.setName("DTPCari4"); // NOI18N
         DTPCari4.setOpaque(false);
@@ -967,11 +948,6 @@ public class DlgBookingWeb extends javax.swing.JDialog {
         FormInput.add(TPasien);
         TPasien.setBounds(81, 72, 250, 23);
 
-        jLabel13.setText("Dokter :");
-        jLabel13.setName("jLabel13"); // NOI18N
-        FormInput.add(jLabel13);
-        jLabel13.setBounds(1090, 10, 70, 23);
-
         TAlamat.setHighlighter(null);
         TAlamat.setName("TAlamat"); // NOI18N
         FormInput.add(TAlamat);
@@ -981,56 +957,6 @@ public class DlgBookingWeb extends javax.swing.JDialog {
         jLabel17.setName("jLabel17"); // NOI18N
         FormInput.add(jLabel17);
         jLabel17.setBounds(20, 160, 50, 23);
-
-        Scroll1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)));
-        Scroll1.setName("Scroll1"); // NOI18N
-
-        tbDiagnosa.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
-        tbDiagnosa.setName("tbDiagnosa"); // NOI18N
-        tbDiagnosa.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                tbDiagnosaKeyPressed(evt);
-            }
-        });
-        Scroll1.setViewportView(tbDiagnosa);
-
-        FormInput.add(Scroll1);
-        Scroll1.setBounds(1120, 40, 380, 80);
-
-        Dokter.setHighlighter(null);
-        Dokter.setName("Dokter"); // NOI18N
-        Dokter.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                DokterKeyPressed(evt);
-            }
-        });
-        FormInput.add(Dokter);
-        Dokter.setBounds(1170, 10, 274, 23);
-
-        BtnCari1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
-        BtnCari1.setMnemonic('1');
-        BtnCari1.setToolTipText("Alt+1");
-        BtnCari1.setName("BtnCari1"); // NOI18N
-        BtnCari1.setPreferredSize(new java.awt.Dimension(28, 23));
-        BtnCari1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnCari1ActionPerformed(evt);
-            }
-        });
-        FormInput.add(BtnCari1);
-        BtnCari1.setBounds(1440, 10, 28, 23);
-
-        btnTarif.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/plus_16.png"))); // NOI18N
-        btnTarif.setMnemonic('2');
-        btnTarif.setToolTipText("Alt+2");
-        btnTarif.setName("btnTarif"); // NOI18N
-        btnTarif.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTarifActionPerformed(evt);
-            }
-        });
-        FormInput.add(btnTarif);
-        btnTarif.setBounds(1470, 10, 28, 23);
 
         jLabel4.setText("No. KTP :");
         jLabel4.setName("jLabel4"); // NOI18N
@@ -1101,34 +1027,6 @@ public class DlgBookingWeb extends javax.swing.JDialog {
         TPernahKeRspw.setName("TPernahKeRspw"); // NOI18N
         FormInput.add(TPernahKeRspw);
         TPernahKeRspw.setBounds(610, 100, 60, 23);
-
-        TCariPasien.setName("TCariPasien"); // NOI18N
-        TCariPasien.setPreferredSize(new java.awt.Dimension(130, 23));
-        TCariPasien.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                TCariPasienKeyPressed(evt);
-            }
-        });
-        FormInput.add(TCariPasien);
-        TCariPasien.setBounds(1180, 130, 130, 23);
-
-        BtnSeek4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
-        BtnSeek4.setMnemonic('5');
-        BtnSeek4.setToolTipText("Alt+5");
-        BtnSeek4.setName("BtnSeek4"); // NOI18N
-        BtnSeek4.setPreferredSize(new java.awt.Dimension(28, 23));
-        BtnSeek4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnSeek4ActionPerformed(evt);
-            }
-        });
-        BtnSeek4.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnSeek4KeyPressed(evt);
-            }
-        });
-        FormInput.add(BtnSeek4);
-        BtnSeek4.setBounds(1320, 130, 28, 23);
 
         jLabel16.setText("Dokter :");
         jLabel16.setName("jLabel16"); // NOI18N
@@ -1210,12 +1108,6 @@ public class DlgBookingWeb extends javax.swing.JDialog {
         jLabel46.setName("jLabel46"); // NOI18N
         FormInput.add(jLabel46);
         jLabel46.setBounds(380, 130, 70, 23);
-
-        jLabel47.setText("No.RM :");
-        jLabel47.setName("jLabel47"); // NOI18N
-        jLabel47.setPreferredSize(new java.awt.Dimension(50, 23));
-        FormInput.add(jLabel47);
-        jLabel47.setBounds(1120, 130, 50, 23);
 
         jLabel48.setText("Hub. PJ:");
         jLabel48.setName("jLabel48"); // NOI18N
@@ -1437,53 +1329,23 @@ public class DlgBookingWeb extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnCariKeyPressed
 
     private void TNoBookingKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNoBookingKeyPressed
-        Valid.pindah(evt, TCari, Dokter);
+       
 }//GEN-LAST:event_TNoBookingKeyPressed
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
-        jml = 0;
-        for (i = 0; i < tbDiagnosa.getRowCount(); i++) {
-            if (tbDiagnosa.getValueAt(i, 0).toString().equals("true")) {
-                jml++;
-            }
-        }
-        if (TNoBooking.getText().trim().equals("") || TPasien.getText().trim().equals("")) {
-            Valid.textKosong(TNoBooking, "No.Rawat");
-        } else if (jml == 0) {
-            Valid.textKosong(Dokter, "Data Dokter");
-        } else {
-            for (i = 0; i < tbDiagnosa.getRowCount(); i++) {
-                if (tbDiagnosa.getValueAt(i, 0).toString().equals("true")) {
-                    if (Sequel.menyimpantf("dpjp_ranap", "?,?", "Dokter", 2, new String[]{
-                        TNoBooking.getText(), tbDiagnosa.getValueAt(i, 1).toString()
-                    }) == true) {
-                        TabModePasien.addRow(new Object[]{
-                            false, TAlamat.getText(), TNoBooking.getText(), TNoKtp.getText(), TPasien.getText(), tbDiagnosa.getValueAt(i, 1).toString(), tbDiagnosa.getValueAt(i, 2).toString()
-                        });
-                        tbDiagnosa.setValueAt(false, i, 0);
-                    }
-                }
-            }
-            LCount.setText("" + TabModePasien.getRowCount());
-        }
+        
 }//GEN-LAST:event_BtnSimpanActionPerformed
 
     private void BtnSimpanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSimpanKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             BtnSimpanActionPerformed(null);
         } else {
-            Valid.pindah(evt, Dokter, BtnBatal);
+            //Valid.pindah(evt, Dokter, BtnBatal);
         }
 }//GEN-LAST:event_BtnSimpanKeyPressed
 
     private void BtnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBatalActionPerformed
-        Dokter.setText("");
-        TNoBooking.requestFocus();
-        for (i = 0; i < tbDiagnosa.getRowCount(); i++) {
-            tbDiagnosa.setValueAt(false, i, 0);
-        }
-        ChkInput.setSelected(true);
-        isForm();
+ 
 }//GEN-LAST:event_BtnBatalActionPerformed
 
     private void BtnBatalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnBatalKeyPressed
@@ -1523,44 +1385,6 @@ public class DlgBookingWeb extends javax.swing.JDialog {
         }
 }//GEN-LAST:event_BtnHapusKeyPressed
 
-    private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        if (TabModePasien.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(null, "Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
-            BtnBatal.requestFocus();
-        } else if (TabModePasien.getRowCount() != 0) {
-            Map<String, Object> param = new HashMap<>();
-            param.put("namars", akses.getnamars());
-            param.put("alamatrs", akses.getalamatrs());
-            param.put("kotars", akses.getkabupatenrs());
-            param.put("propinsirs", akses.getpropinsirs());
-            param.put("kontakrs", akses.getkontakrs());
-            param.put("emailrs", akses.getemailrs());
-            param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
-            Valid.MyReportqry("rptDpjp.jasper", "report", "::[ Data Diagnosa Pasien ]::",
-                    "select reg_periksa.tgl_registrasi,dpjp_ranap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,"
-                    + "dpjp_ranap.kd_dokter,dokter.nm_dokter from dpjp_ranap inner join reg_periksa inner join pasien inner join dokter "
-                    + "on dpjp_ranap.no_rawat=reg_periksa.no_rawat and reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
-                    + "and dpjp_ranap.kd_dokter=dokter.kd_dokter "
-                    + "where reg_periksa.tgl_registrasi between '" + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + "' and '" + Valid.SetTgl(DTPCari2.getSelectedItem() + "") + "' and reg_periksa.no_rkm_medis like '%" + TCariPasien.getText() + "%' and reg_periksa.tgl_registrasi like '%" + TCari.getText().trim() + "%' or "
-                    + "reg_periksa.tgl_registrasi between '" + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + "' and '" + Valid.SetTgl(DTPCari2.getSelectedItem() + "") + "' and reg_periksa.no_rkm_medis like '%" + TCariPasien.getText() + "%' and dpjp_ranap.no_rawat like '%" + TCari.getText().trim() + "%' or "
-                    + "reg_periksa.tgl_registrasi between '" + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + "' and '" + Valid.SetTgl(DTPCari2.getSelectedItem() + "") + "' and reg_periksa.no_rkm_medis like '%" + TCariPasien.getText() + "%' and reg_periksa.no_rkm_medis like '%" + TCari.getText().trim() + "%' or "
-                    + "reg_periksa.tgl_registrasi between '" + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + "' and '" + Valid.SetTgl(DTPCari2.getSelectedItem() + "") + "' and reg_periksa.no_rkm_medis like '%" + TCariPasien.getText() + "%' and pasien.nm_pasien like '%" + TCari.getText().trim() + "%' or "
-                    + "reg_periksa.tgl_registrasi between '" + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + "' and '" + Valid.SetTgl(DTPCari2.getSelectedItem() + "") + "' and reg_periksa.no_rkm_medis like '%" + TCariPasien.getText() + "%' and dokter.kd_dokter like '%" + TCari.getText().trim() + "%' or "
-                    + "reg_periksa.tgl_registrasi between '" + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + "' and '" + Valid.SetTgl(DTPCari2.getSelectedItem() + "") + "' and reg_periksa.no_rkm_medis like '%" + TCariPasien.getText() + "%' and dokter.nm_dokter like '%" + TCari.getText().trim() + "%' "
-                    + "order by reg_periksa.tgl_registrasi", param);
-        }
-        this.setCursor(Cursor.getDefaultCursor());
-}//GEN-LAST:event_BtnPrintActionPerformed
-
-    private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnPrintKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
-            BtnPrintActionPerformed(null);
-        } else {
-            Valid.pindah(evt, BtnHapus, BtnAll);
-        }
-}//GEN-LAST:event_BtnPrintKeyPressed
-
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
         dispose();
 }//GEN-LAST:event_BtnKeluarActionPerformed
@@ -1575,7 +1399,6 @@ public class DlgBookingWeb extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        TCariPasien.setText("");
         tampil();
 }//GEN-LAST:event_BtnAllActionPerformed
 
@@ -1613,7 +1436,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_ChkInputActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampildiagnosa();
+        
     }//GEN-LAST:event_formWindowOpened
 
     private void tbPasien1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbPasien1MouseClicked
@@ -1786,84 +1609,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         // TODO add your handling code here:
     }//GEN-LAST:event_TRNmPenjabActionPerformed
 
-    private void BtnSeek4KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSeek4KeyPressed
-        Valid.pindah(evt, TCariPasien, DTPCari1);
-    }//GEN-LAST:event_BtnSeek4KeyPressed
-
-    private void BtnSeek4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeek4ActionPerformed
-        pasien.emptTeks();
-        pasien.isCek();
-        pasien.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
-        pasien.setLocationRelativeTo(internalFrame1);
-        pasien.setVisible(true);
-    }//GEN-LAST:event_BtnSeek4ActionPerformed
-
-    private void TCariPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCariPasienKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            tampil();
-        } else if (evt.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
-            BtnSeek4.requestFocus();
-        } else if (evt.getKeyCode() == KeyEvent.VK_PAGE_UP) {
-            DTPCari2.requestFocus();
-        }
-    }//GEN-LAST:event_TCariPasienKeyPressed
-
-    private void tbDiagnosaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbDiagnosaKeyPressed
-        if (tbDiagnosa.getRowCount() != 0) {
-            if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-                try {
-                    i = tbDiagnosa.getSelectedColumn();
-                    if (i == 1) {
-                        if (tbDiagnosa.getSelectedRow() > -1) {
-                            tbDiagnosa.setValueAt(true, tbDiagnosa.getSelectedRow(), 0);
-                        }
-                        Dokter.setText("");
-                        Dokter.requestFocus();
-                    }
-                } catch (java.lang.NullPointerException e) {
-                }
-            } else if (evt.getKeyCode() == KeyEvent.VK_SHIFT) {
-                Dokter.setText("");
-                Dokter.requestFocus();
-            }
-        }
-    }//GEN-LAST:event_tbDiagnosaKeyPressed
-
-    private void btnTarifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTarifActionPerformed
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        DlgDokter tariflab = new DlgDokter(null, false);
-        tariflab.emptTeks();
-        tariflab.isCek();
-        tariflab.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
-        tariflab.setLocationRelativeTo(internalFrame1);
-        tariflab.setVisible(true);
-        this.setCursor(Cursor.getDefaultCursor());
-    }//GEN-LAST:event_btnTarifActionPerformed
-
-    private void BtnCari1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCari1ActionPerformed
-        if (!TNoBooking.getText().equals("")) {
-            tampildiagnosa();
-        }
-    }//GEN-LAST:event_BtnCari1ActionPerformed
-
-    private void DokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DokterKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (!TNoBooking.getText().equals("")) {
-                tampildiagnosa();
-            }
-        } else if (evt.getKeyCode() == KeyEvent.VK_UP) {
-            if (akses.getpenyakit() == true) {
-                btnTarifActionPerformed(null);
-            }
-        } else if (evt.getKeyCode() == KeyEvent.VK_UP) {
-            tbDiagnosa.requestFocus();
-        } else if (evt.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
-            BtnSimpan.requestFocus();
-        } else if (evt.getKeyCode() == KeyEvent.VK_PAGE_UP) {
-            TNoBooking.requestFocus();
-        }
-    }//GEN-LAST:event_DokterKeyPressed
-
     /**
      * @param args the command line arguments
      */
@@ -1884,12 +1629,10 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Button BtnAll;
     private widget.Button BtnBatal;
     private widget.Button BtnCari;
-    private widget.Button BtnCari1;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
     private widget.Button BtnNewRM;
     private widget.Button BtnPrint;
-    private widget.Button BtnSeek4;
     private widget.Button BtnSimpan;
     private widget.Button BtnUpdateRM;
     private widget.CekBox ChkInput;
@@ -1898,7 +1641,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Tanggal DTPCari2;
     private widget.Tanggal DTPCari3;
     private widget.Tanggal DTPCari4;
-    private widget.TextBox Dokter;
     private widget.PanelBiasa FormInput;
     private widget.Label LCount;
     private widget.TextBox NoRm;
@@ -1907,12 +1649,10 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.RadioButton R2;
     private widget.RadioButton R3;
     private widget.ScrollPane Scroll;
-    private widget.ScrollPane Scroll1;
     private widget.ScrollPane Scroll2;
     private widget.ComboBox StatusBalas1;
     private widget.TextBox TAlamat;
     public widget.TextBox TCari;
-    private widget.TextBox TCariPasien;
     private widget.TextBox THintRm;
     private widget.TextBox TIbuKandung;
     private widget.TextBox TNoBooking;
@@ -1943,11 +1683,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox TTempatLahir;
     private widget.TextBox TTl;
     private widget.TextBox TUmur;
-    private widget.Button btnTarif;
     private javax.swing.ButtonGroup buttonGroup1;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel10;
-    private widget.Label jLabel13;
     private widget.Label jLabel16;
     private widget.Label jLabel17;
     private widget.Label jLabel18;
@@ -1966,7 +1704,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Label jLabel44;
     private widget.Label jLabel45;
     private widget.Label jLabel46;
-    private widget.Label jLabel47;
     private widget.Label jLabel48;
     private widget.Label jLabel49;
     private widget.Label jLabel5;
@@ -1983,7 +1720,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JSeparator jSeparator5;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
-    private widget.Table tbDiagnosa;
     private widget.Table tbPasien;
     private widget.Table tbPasien1;
     // End of variables declaration//GEN-END:variables
@@ -2292,65 +2028,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public void isCek() {
         BtnSimpan.setEnabled(akses.getdpjp_ranap());
         BtnHapus.setEnabled(akses.getdpjp_ranap());
-        btnTarif.setEnabled(akses.getdokter());
         BtnPrint.setEnabled(akses.getdpjp_ranap());
 
     }
 
-    private void tampildiagnosa() {
-        try {
-            jml = 0;
-            for (i = 0; i < tbDiagnosa.getRowCount(); i++) {
-                if (tbDiagnosa.getValueAt(i, 0).toString().equals("true")) {
-                    jml++;
-                }
-            }
 
-            pilih = null;
-            pilih = new boolean[jml];
-            kode = null;
-            kode = new String[jml];
-            nama = null;
-            nama = new String[jml];
-
-            index = 0;
-            for (i = 0; i < tbDiagnosa.getRowCount(); i++) {
-                if (tbDiagnosa.getValueAt(i, 0).toString().equals("true")) {
-                    pilih[index] = true;
-                    kode[index] = tbDiagnosa.getValueAt(i, 1).toString();
-                    nama[index] = tbDiagnosa.getValueAt(i, 2).toString();
-                    index++;
-                }
-            }
-
-            Valid.tabelKosong(tabModeDiagnosa);
-            for (i = 0; i < jml; i++) {
-                tabModeDiagnosa.addRow(new Object[]{pilih[i], kode[i], nama[i]});
-            }
-
-            ps = koneksi.prepareStatement("select dokter.kd_dokter,dokter.nm_dokter from dokter "
-                    + "where  status='1' and dokter.kd_dokter like ? or status='1' and dokter.nm_dokter like ? order by dokter.nm_dokter");
-            try {
-                ps.setString(1, "%" + Dokter.getText().trim() + "%");
-                ps.setString(2, "%" + Dokter.getText().trim() + "%");
-                rs = ps.executeQuery();
-                while (rs.next()) {
-                    tabModeDiagnosa.addRow(new Object[]{false, rs.getString(1), rs.getString(2)});
-                }
-            } catch (Exception e) {
-                System.out.println(e);
-            } finally {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Notifikasi : " + e);
-        }
-    }
 
     private void autoNomor() {
         if (ChkRM1.isSelected() == true) {
