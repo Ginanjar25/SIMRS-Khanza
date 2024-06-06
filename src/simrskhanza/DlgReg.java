@@ -1355,6 +1355,8 @@ public final class DlgReg extends javax.swing.JDialog {
         button1 = new widget.Button();
         button2 = new widget.Button();
         button3 = new widget.Button();
+        button5 = new widget.Button();
+        button6 = new widget.Button();
         PanelInput = new javax.swing.JPanel();
         FormInput = new widget.PanelBiasa();
         jLabel3 = new widget.Label();
@@ -6632,6 +6634,28 @@ public final class DlgReg extends javax.swing.JDialog {
             }
         });
         panelGlass8.add(button3);
+
+        button5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Add patient.png"))); // NOI18N
+        button5.setText("Chekin Website");
+        button5.setToolTipText("");
+        button5.setName("button5"); // NOI18N
+        button5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button5ActionPerformed(evt);
+            }
+        });
+        panelGlass8.add(button5);
+
+        button6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cancel.png"))); // NOI18N
+        button6.setText("Batal Chekin Website");
+        button6.setToolTipText("");
+        button6.setName("button6"); // NOI18N
+        button6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button6ActionPerformed(evt);
+            }
+        });
+        panelGlass8.add(button6);
 
         jPanel2.add(panelGlass8, java.awt.BorderLayout.PAGE_START);
 
@@ -15099,6 +15123,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             this.setCursor(Cursor.getDefaultCursor());
         }
     }
+    
    private void button4ActionPerformed(java.awt.event.ActionEvent evt) {                                        
         button4.setText(Sequel.cariIsi("SELECT COUNT(bp.no_booking) FROM booking_periksa bp WHERE bp.tanggal >= CURDATE() AND `status` = 'Belum Dibalas'") + " Booking dari WEB Belum Dibalas");
         bookingweb.isCek();
@@ -15108,6 +15133,50 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         bookingweb.setVisible(true);
     }
    
+    private void button5ActionPerformed(java.awt.event.ActionEvent evt) {                                        
+        if (tbPetugas.getSelectedRow() != -1) {
+            if (!"WEB".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
+                JOptionPane.showMessageDialog(null, "Maaf, Pasien tidak daftar melalui Webssite RSPW..!!!");
+            } else {
+                if (Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()}) == true) {
+                    Valid.editTable(tabMode, "reg_periksa", "no_rawat", TNoRw, "stts='Belum',biaya_reg='"+TBiaya.getText()+"'");
+                    Sequel.mengedittf("side_db.reg_periksa_website", "no_rawat=?", "status='Chekin'", 1, new String[]{TNoRw.getText()});
+                    JOptionPane.showMessageDialog(rootPane, "Berhasil Chekin");
+                    tampil();
+                }
+            }
+        }
+    }                                       
+
+    private void button6ActionPerformed(java.awt.event.ActionEvent evt) {                                        
+        if (tbPetugas.getSelectedRow() != -1) {
+            if (!"WEB".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
+                JOptionPane.showMessageDialog(null, "Maaf, Pasien tidak daftar melalui Webssite RSPW..!!!");
+            } else {
+                if (TNoRw.getText().trim().equals("")) {
+                    Valid.textKosong(TNoRw, "No.Rawat");
+                } else {
+                    if (Sequel.cariInteger("select count(kamar_inap.no_rawat) from kamar_inap where kamar_inap.no_rawat=?", TNoRw.getText()) > 0) {
+                        JOptionPane.showMessageDialog(null, "Maaf, Pasien sudah masuk Kamar Inap. Gunakan billing Ranap..!!!");
+                    } else {
+                        if (Sequel.cariRegistrasi(TNoRw.getText()) > 0) {
+                            JOptionPane.showMessageDialog(rootPane, "Data billing sudah terverifikasi..!!");
+                        } else {
+                            Valid.editTable(tabMode, "reg_periksa", "no_rawat", TNoRw, "stts='Batal',biaya_reg='0'");
+                            Sequel.mengedittf("side_db.reg_periksa_website", "no_rawat=?", "status='Batal'", 1, new String[]{TNoRw.getText()});
+                            if (tbPetugas.getSelectedRow() > -1) {
+                                tabMode.setValueAt("Batal", tbPetugas.getSelectedRow(), 19);
+                                tabMode.setValueAt("0", tbPetugas.getSelectedRow(), 16);
+                                JOptionPane.showMessageDialog(rootPane, "Berhasil dibatalkan");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }                                       
+
     /**
     * @param args the command line arguments
     */
@@ -15458,6 +15527,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Button button2;
     private widget.Button button3;
     private widget.Button button4;
+    private widget.Button button5;
+    private widget.Button button6;
     private widget.InternalFrame internalFrame1;
     private widget.InternalFrame internalFrame4;
     private widget.InternalFrame internalFrame5;
