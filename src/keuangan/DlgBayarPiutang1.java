@@ -47,7 +47,7 @@ import simrskhanza.DlgCariPasien;
  *
  * @author dosen
  */
-public final class DlgBayarPiutang extends javax.swing.JDialog {
+public final class DlgBayarPiutang1 extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();    
@@ -70,7 +70,7 @@ public final class DlgBayarPiutang extends javax.swing.JDialog {
     /** Creates new form DlgPenyakit
      * @param parent
      * @param modal */
-    public DlgBayarPiutang(java.awt.Frame parent, boolean modal) {
+    public DlgBayarPiutang1(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.setLocation(10,2);
@@ -1377,7 +1377,7 @@ private void BtnSeekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     */
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {
-            DlgBayarPiutang dialog = new DlgBayarPiutang(new javax.swing.JFrame(), true);
+            DlgBayarPiutang1 dialog = new DlgBayarPiutang1(new javax.swing.JFrame(), true);
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {

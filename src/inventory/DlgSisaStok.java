@@ -592,7 +592,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private void prosesCari() {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
-            i=Sequel.cariInteger("select count(nm_bangsal) from bangsal where status='1' and kd_bangsal<>'-' ");
+            i=Sequel.cariInteger("select count(nm_bangsal) from bangsal where status='1' AND kd_bangsal IN ('AP2', 'AP', 'GD') ORDER BY FIELD(kd_bangsal, 'AP2', 'AP', 'GD')");
             posisigudang=new String[i];
             htmlContent = new StringBuilder();
             htmlContent.append(                             
@@ -609,7 +609,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             htmlContent.append(                             
                 "<tr class='isi'>");
             kolom=0;
-            ps=koneksi.prepareStatement("select kd_bangsal,nm_bangsal from bangsal where status='1' and kd_bangsal<>'-' ");
+            ps=koneksi.prepareStatement("SELECT kd_bangsal, nm_bangsal FROM bangsal WHERE status = '1' AND kd_bangsal IN ('AP2', 'AP', 'GD') ORDER BY FIELD(kd_bangsal, 'AP2', 'AP', 'GD')");
             try {
                 rs=ps.executeQuery();
                 while(rs.next()){
