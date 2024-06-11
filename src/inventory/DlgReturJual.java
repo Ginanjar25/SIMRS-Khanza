@@ -125,7 +125,7 @@ public class DlgReturJual extends javax.swing.JDialog {
             public void removeUpdate(DocumentEvent e) {isHitung();}
             @Override
             public void changedUpdate(DocumentEvent e) {isHitung();}
-        }); 
+        });
         
         
         form.barang.addWindowListener(new WindowListener() {
@@ -723,6 +723,11 @@ public class DlgReturJual extends javax.swing.JDialog {
 
         NoRetur.setName("NoRetur"); // NOI18N
         NoRetur.setPreferredSize(new java.awt.Dimension(207, 23));
+        NoRetur.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NoReturActionPerformed(evt);
+            }
+        });
         NoRetur.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 NoReturKeyPressed(evt);
@@ -1156,6 +1161,9 @@ private void BtnBrgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         form.barang.setLocationRelativeTo(internalFrame1);
         form.barang.setAlwaysOnTop(false);
         form.barang.setVisible(true);
+        form.barang.TCari.setEnabled(false);
+        form.barang.BtnAll.setEnabled(false);
+        form.barang.BtnCari.setEnabled(false);
 }//GEN-LAST:event_BtnBrgActionPerformed
 
 private void JmlreturKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JmlreturKeyPressed
@@ -1258,6 +1266,10 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             Jmlretur.requestFocus();    
         }
     }//GEN-LAST:event_NoFakturKeyPressed
+
+    private void NoReturActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NoReturActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_NoReturActionPerformed
 
     /**
     * @param args the command line arguments
@@ -1404,7 +1416,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }            
     }
     
-    public void isCek(){  
+    public void isCek(){   
         autonomor();
         Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi",kdgudang);
         nmgudang.setText(bangsal.tampil3(kdgudang.getText())); 
@@ -1422,12 +1434,45 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     
     public void setPasien(String norm,String norawat){
         kdmem.setText(norm);
+        
         this.norawat=norawat;
-        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_retur_jual,2),signed)),0) from returjual where no_retur_jual like '%"+norawat+"%' ",norawat,2,NoRetur); 
-        formvalid="No";
+        
+        String status = Sequel.cariIsi("SELECT status_lanjut FROM reg_periksa WHERE no_rawat = ?", norawat);
+        String kelas = Sequel.cariIsi("SELECT km.kelas FROM kamar_inap ki INNER JOIN kamar km ON km.kd_kamar = ki.kd_kamar WHERE ki.no_rawat = ? AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1", norawat);
+        
+        if(!kelas.equals("")){
+            if (kelas.contains("VIP") || kelas.contains("VVIP")) {
+                kelas = kelas.replace("Kelas ", ""); // Menghapus "Kelas " dari string kelas
+            }else if(kelas.contains("Utama")){
+                kelas = "Utama/BPJS";
+            }
+        } else{
+            kelas = "Rawat Jalan";
+        }
+        Jenisjual.setSelectedItem(kelas);    
+        
+        if(Sequel.cariRegistrasi(norawat)>0){
+          if(!status.equals("Ralan")){
+               String no_nota = Sequel.cariIsi("SELECT nota_inap.no_nota FROM nota_inap WHERE nota_inap.no_rawat = ?", norawat);
+               NoNota.setText(no_nota);               
+          } else{
+              String no_nota = Sequel.cariIsi("SELECT nota_jalan.no_nota FROM nota_jalan WHERE nota_jalan.no_rawat = ?", norawat);
+              NoNota.setText(no_nota);
+          }
+        }
+        
         Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=?",nmmem,kdmem.getText());
         kdgudang.setText(akses.getkdbangsal());
         nmgudang.setText(bangsal.tampil3(kdgudang.getText())); 
+        
+        if(Sequel.cariRegistrasi(norawat)>0){
+           Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_retur_jual,2),signed)),0) from returjual where no_retur_jual like '%"+norawat+"%' ","RJ"+norawat,2,NoRetur); 
+        }
+        else{
+           Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_retur_jual,2),signed)),0) from returjual where no_retur_jual like '%"+norawat+"%' ",norawat,2,NoRetur);
+        }
+        
+        formvalid="No";
     }
     
     private void cariBatch() {
@@ -1480,12 +1525,19 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }
 
     private void autonomor() {
-        if(!formvalid.equals("No")){
-            Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_retur_jual,3),signed)),0) from returjual where tgl_retur='"+Valid.SetTgl(TglRetur.getSelectedItem()+"")+"' ",
+            if(!formvalid.equals("No")){
+                Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_retur_jual,3),signed)),0) from returjual where tgl_retur='"+Valid.SetTgl(TglRetur.getSelectedItem()+"")+"' ",
                 "RJ"+TglRetur.getSelectedItem().toString().substring(6,10)+TglRetur.getSelectedItem().toString().substring(3,5)+TglRetur.getSelectedItem().toString().substring(0,2),3,NoRetur); 
-        }else{
-            Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_retur_jual,2),signed)),0) from returjual where no_retur_jual like '%"+norawat+"%' ",norawat,2,NoRetur); 
-        }
+            }else{
+                if(Sequel.cariRegistrasi(norawat)>0){
+                    Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_retur_jual,2),signed)),0) from returjual where no_retur_jual like '%"+norawat+"%' ","RJ"+norawat,2,NoRetur); 
+                 }
+                 else{
+                    Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_retur_jual,2),signed)),0) from returjual where no_retur_jual like '%"+norawat+"%' ",norawat,2,NoRetur);
+                 }
+            }
+            
+        
     }
 
     private void simpan() {

@@ -218,7 +218,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import keuangan.DlgAkunBayar;
 import keuangan.KeuanganBayarPemesananFarmasi;
-import keuangan.DlgBayarPiutang;
+import keuangan.DlgBayarPiutang1;
 import keuangan.KeuanganBubes;
 import keuangan.DlgCashflow;
 import keuangan.DlgDetailJMDokter;
@@ -639,6 +639,8 @@ import dapur.DapurRiwayatBarang;
 import grafikanalisa.GrafikKeslingLimbahB3CairBulan;
 import grafikanalisa.GrafikKeslingLimbahB3CairPertanggal;
 import inventaris.KeslingLimbahB3MedisCair;
+import inventory.DlgCariPiutangKary;
+import inventory.DlgPiutangKry;
 import ipsrs.IPSRSPengajuanBarangNonMedis;
 import ipsrs.DlgSirkulasiNonMedis2;
 import ipsrs.IPSRSHibah;
@@ -1692,6 +1694,8 @@ public class frmUtama extends javax.swing.JFrame {
         btnGrafikLimbahDomestikPerTanggal = new widget.ButtonBig();
         btnLaboratoriumPA = new widget.ButtonBig();
         btnLaboratoriumMB = new widget.ButtonBig();
+        btnPiutangObatKary = new widget.ButtonBig();
+        btnCariPiutangObatKary = new widget.ButtonBig();
         internalFrame1 = new widget.InternalFrame();
         BtnMenu = new widget.ButtonBig();
         jSeparator4 = new javax.swing.JSeparator();
@@ -1988,7 +1992,7 @@ public class frmUtama extends javax.swing.JFrame {
 
         tanggal.setEditable(false);
         tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "24/04/2024" }));
+        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11/06/2024" }));
         tanggal.setDisplayFormat("dd/MM/yyyy");
         tanggal.setName("tanggal"); // NOI18N
         tanggal.setOpaque(false);
@@ -7042,6 +7046,28 @@ public class frmUtama extends javax.swing.JFrame {
             }
         });
 
+        btnPiutangObatKary.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/teacher.png"))); // NOI18N
+        btnPiutangObatKary.setText("Penjualan Obat karyawan");
+        btnPiutangObatKary.setIconTextGap(0);
+        btnPiutangObatKary.setName("btnPiutangObatKary"); // NOI18N
+        btnPiutangObatKary.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnPiutangObatKary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPiutangObatKaryActionPerformed(evt);
+            }
+        });
+
+        btnCariPiutangObatKary.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/1485357524_Company.png"))); // NOI18N
+        btnCariPiutangObatKary.setText("Data Piutang Obat Karyawan");
+        btnCariPiutangObatKary.setIconTextGap(0);
+        btnCariPiutangObatKary.setName("btnCariPiutangObatKary"); // NOI18N
+        btnCariPiutangObatKary.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnCariPiutangObatKary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCariPiutangObatKaryActionPerformed(evt);
+            }
+        });
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("::[ Khanza SIMKES 2022 ]::");
         setBackground(new java.awt.Color(255, 254, 254));
@@ -8973,7 +8999,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         
         isTutup();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        DlgBayarPiutang bayarpiutang=new DlgBayarPiutang(this,false);
+        DlgBayarPiutang1 bayarpiutang=new DlgBayarPiutang1(this,false);
         bayarpiutang.tampil();
         bayarpiutang.emptTeks();
         bayarpiutang.isCek();
@@ -11011,18 +11037,22 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     }//GEN-LAST:event_formComponentMoved
 
     private void BtnToolJualObatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnToolJualObatActionPerformed
-        isTutup();
+         isTutup();
         FlayMenu.removeAll();        
         FlayMenu.add(btnInputPenjualan);
         FlayMenu.add(btnDataPenjualan);
         FlayMenu.add(btnDataPenyerahanDarah);
         FlayMenu.add(btnDaftarPermintaanResep);
         FlayMenu.add(btnResepObatDepan);
+        FlayMenu.add(btnPiutangObatKary);
+        FlayMenu.add(btnCariPiutangObatKary);
         btnInputPenjualan.setEnabled(akses.getpenjualan_obat());
         btnDataPenjualan.setEnabled(akses.getpenjualan_obat());
         btnDataPenyerahanDarah.setEnabled(akses.getutd_penyerahan_darah());
         btnDaftarPermintaanResep.setEnabled(akses.getresep_dokter());
         btnResepObatDepan.setEnabled(akses.getresep_obat());
+        btnPiutangObatKary.setEnabled(akses.getresep_obat());
+        btnCariPiutangObatKary.setEnabled(akses.getresep_obat());
         FlayMenu.setVisible(true);       
     }//GEN-LAST:event_BtnToolJualObatActionPerformed
 
@@ -14558,6 +14588,34 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         Valid.panggilUrl("antrianmobilejkn.php");
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_MnInfoMobileJKNActionPerformed
+
+    private void btnPiutangObatKaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPiutangObatKaryActionPerformed
+        isTutup();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        DlgPiutangKry piutangkry=new DlgPiutangKry(this,false);
+
+        piutangkry.emptTeks();
+        piutangkry.isCek();
+        piutangkry.setPasien("00000", "Pasien Resep Bebas");
+        piutangkry.setSize(PanelUtama.getWidth(),PanelUtama.getHeight());
+        piutangkry.setLocationRelativeTo(PanelUtama);
+        piutangkry.setVisible(true);
+        DlgHome.dispose();
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_btnPiutangObatKaryActionPerformed
+
+    private void btnCariPiutangObatKaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariPiutangObatKaryActionPerformed
+        isTutup();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        DlgCariPiutangKary caripiutangkry=new DlgCariPiutangKary(this,false);
+        caripiutangkry.emptTeks();
+        caripiutangkry.setSize(PanelUtama.getWidth(),PanelUtama.getHeight());
+        caripiutangkry.setLocationRelativeTo(PanelUtama);
+        caripiutangkry.setAlwaysOnTop(false);
+        caripiutangkry.setVisible(true);
+        DlgHome.dispose();
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_btnCariPiutangObatKaryActionPerformed
 
     private void btnKategoriPerpustakaanActionPerformed(java.awt.event.ActionEvent evt) {
         isTutup();
@@ -21623,6 +21681,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private widget.ButtonBig btnBubes;
     private widget.ButtonBig btnBulananHAIs;
     private widget.ButtonBig btnCacatFisik;
+    private widget.ButtonBig btnCariPiutangObatKary;
     private widget.ButtonBig btnCashFlow;
     private widget.ButtonBig btnCatatanPasien;
     private widget.ButtonBig btnCekBPJSDiagnosa;
@@ -21887,6 +21946,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private widget.ButtonBig btnPerusahaan;
     private widget.ButtonBig btnPiutang;
     private widget.ButtonBig btnPiutangBelumLunas;
+    private widget.ButtonBig btnPiutangObatKary;
     private widget.ButtonBig btnPiutangPerAkunPiutang;
     private widget.ButtonBig btnPiutangPerCaraBayar;
     private widget.ButtonBig btnPiutangRalan;
@@ -42813,7 +42873,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         btnCatatanObservasiRanapPostPartum.setName("btnCatatanObservasiRanapPostPartum"); 
         btnCatatanObservasiRanapPostPartum.setPreferredSize(new java.awt.Dimension(200, 90));
         btnCatatanObservasiRanapPostPartum.addActionListener(this::btnCatatanObservasiRanapPostPartumActionPerformed);
-        
+      
         btnPenilaianAwalMedisRalanTHT = new widget.ButtonBig();
         btnPenilaianAwalMedisRalanTHT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/5868953_coronavirus_covid-19_nose_secretion_snot_icon.png"))); 
         btnPenilaianAwalMedisRalanTHT.setText("Awal Medis Ralan THT");

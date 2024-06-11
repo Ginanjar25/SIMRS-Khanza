@@ -44,6 +44,7 @@ import inventory.DlgCopyResep;
 import inventory.DlgPenjualan;
 import inventory.DlgPeresepanDokter;
 import inventory.DlgPiutang;
+import inventory.DlgReturJual;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Window;
@@ -208,7 +209,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement psotomatis,psotomatis2,pskasir,pscaripiutang,psrekening;
     private ResultSet rskasir,rsrekening;
-    private String aktifkanparsial="no",kamar_inap_kasir_ralan=Sequel.cariIsi("select set_jam_minimal.kamar_inap_kasir_ralan from set_jam_minimal"),caripenjab="",filter="no",nonota="",
+    private String aktifkanparsial="no",kamar_inap_kasir_ralan=Sequel.cariIsi("select set_jam_minimal.kamar_inap_kasir_ralan from set_jam_minimal"),caripenjab="",filter="no",bangsal=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1"),nonota="",
             sqlpsotomatis2="insert into rawat_jl_dr values (?,?,?,?,?,?,?,?,?,?,?,'Belum')",
             sqlpsotomatis2petugas="insert into rawat_jl_pr values (?,?,?,?,?,?,?,?,?,?,?,'Belum')",
             sqlpsotomatis2dokterpetugas="insert into rawat_jl_drpr values (?,?,?,?,?,?,?,?,?,?,?,?,?,'Belum')",
@@ -749,6 +750,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         MnPenjualan = new javax.swing.JMenuItem();
         MnPiutangObat = new javax.swing.JMenuItem();
         MnCopyResep = new javax.swing.JMenuItem();
+        MnReturJual = new javax.swing.JMenuItem();
         MnPilihBilling = new javax.swing.JMenu();
         MnBillingParsial = new javax.swing.JMenuItem();
         MnBilling = new javax.swing.JMenuItem();
@@ -2869,6 +2871,22 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             }
         });
         MnObatRalan.add(MnCopyResep);
+        
+        MnReturJual.setBackground(new java.awt.Color(255, 255, 254));
+        MnReturJual.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnReturJual.setForeground(new java.awt.Color(50, 50, 50));
+        MnReturJual.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnReturJual.setText("Retur Obat/Barang/Alkes");
+        MnReturJual.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnReturJual.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnReturJual.setName("MnReturJual"); // NOI18N
+        MnReturJual.setPreferredSize(new java.awt.Dimension(200, 26));
+        MnReturJual.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnReturJualActionPerformed(evt);
+            }
+        });
+        MnObatRalan.add(MnReturJual);
 
         jPopupMenu1.add(MnObatRalan);
 
@@ -11886,6 +11904,42 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         }
     }//GEN-LAST:event_MnCopyResepActionPerformed
 
+    
+    private void MnReturJualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnReturJualActionPerformed
+        if(TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+            tbKasirRalan.requestFocus();
+        }else{
+            if(tbKasirRalan.getSelectedRow()!= -1){
+                if(Sequel.cariInteger("select count(kamar_inap.no_rawat) from kamar_inap where kamar_inap.no_rawat=?",tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),10).toString())>0){
+                    JOptionPane.showMessageDialog(null,"Maaf, Pasien sudah masuk Kamar Inap. Gunakan billing Ranap..!!!");
+                }else{
+//                    if(Sequel.cariRegistrasi(tbKasirRalan2.getValueAt(tbKasirRalan2.getSelectedRow(),10).toString())>0){
+//                            JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi ..!!");
+//                    }else{ 
+                        akses.setform("DlgKasirRalan");
+                        bangsal="";
+                        if(bangsal.equals("")){
+                            akses.setkdbangsal(Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi"));
+                        }else{
+                            akses.setkdbangsal(bangsal);
+                        }
+                        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                        DlgReturJual returjual=new DlgReturJual(null,false);
+                        returjual.emptTeks();
+                        returjual.isCek();
+                        returjual.setPasien(TNoRMCari.getText(),TNoRwCari.getText());
+                        returjual.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                        returjual.setLocationRelativeTo(internalFrame1);
+                        returjual.setVisible(true);
+                        this.setCursor(Cursor.getDefaultCursor());
+//                    }                    
+                }  
+            }            
+        }
+    }//GEN-LAST:event_MnReturJualActionPerformed
+    
+    
     private void MnCopyResep2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnCopyResep2ActionPerformed
         if(tabModekasir2.getRowCount()==0){
             JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
@@ -14256,6 +14310,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private javax.swing.JMenuItem MnCheckListKriteriaMasukICU;
     private javax.swing.JMenuItem MnChecklistPreOperasi;
     private javax.swing.JMenuItem MnCopyResep;
+    private javax.swing.JMenuItem MnReturJual;
     private javax.swing.JMenuItem MnCopyResep2;
     private javax.swing.JMenuItem MnDIrawat;
     private javax.swing.JMenuItem MnDataPemberianObat;
@@ -14766,6 +14821,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     public void isCek(){
         MnRawatJalan1.setEnabled(akses.gettindakan_ralan());
         MnPemberianObat.setEnabled(akses.getberi_obat());
+        MnReturJual.setEnabled(akses.getberi_obat());
         MnPemberianObat1.setEnabled(akses.getberi_obat());
         MnPeriksaLab.setEnabled(akses.getperiksa_lab());
         MnPeriksaLab1.setEnabled(akses.getperiksa_lab());
