@@ -8964,15 +8964,23 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     private void tbPasienHintMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbPasienHintMouseClicked
         if (tabMode4.getRowCount() != 0) {
             ChkHint.setSelected(true);
-            try {
-                getDataHint();
+            try {                
+                //getDataHint();
             } catch (java.lang.NullPointerException e) {
             }
         }
     }//GEN-LAST:event_tbPasienHintMouseClicked
 
     private void tbPasienHintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbPasienHintKeyPressed
-
+        if (evt.getKeyCode() == KeyEvent.VK_LEFT) {
+            if (tabMode4.getRowCount() != 0) {
+                ChkHint.setSelected(true);
+                try {
+                    getDataHint();
+                } catch (java.lang.NullPointerException e) {
+                }
+            }
+        }
     }//GEN-LAST:event_tbPasienHintKeyPressed
 
     private void tbPasienHintKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbPasienHintKeyReleased
