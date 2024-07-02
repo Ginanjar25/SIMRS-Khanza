@@ -31,6 +31,7 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -699,6 +700,11 @@ public final class DlgBayarPiutang extends javax.swing.JDialog {
 
         Keterangan.setHighlighter(null);
         Keterangan.setName("Keterangan"); // NOI18N
+        Keterangan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                KeteranganActionPerformed(evt);
+            }
+        });
         Keterangan.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 KeteranganKeyPressed(evt);
@@ -1372,6 +1378,10 @@ private void BtnSeekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         }
     }//GEN-LAST:event_TidakTerbayarKeyPressed
 
+    private void KeteranganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_KeteranganActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_KeteranganActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1538,6 +1548,14 @@ private void BtnSeekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             sisapiutang=Sequel.cariIsiAngka("select detail_piutang_pasien.sisapiutang from detail_piutang_pasien where detail_piutang_pasien.no_rawat='"+NoRawat.getText()+"' and nama_bayar='"+AkunPiutang.getSelectedItem().toString()+"'");
             Sisa.setText(Valid.SetAngka(sisapiutang));
             status="pasien";
+        }
+        if(norawat.contains("HK")){
+            String petugas = Sequel.cariIsi("select nama from petugas where nip=?", akses.getkode());
+            Date now = new Date();
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+            String jam_now = timeFormat.format(now);
+            
+            Keterangan.setText(jam_now +"|"+petugas);
         }
     }
 

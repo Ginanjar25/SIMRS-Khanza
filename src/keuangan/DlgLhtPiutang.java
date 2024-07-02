@@ -540,7 +540,7 @@ public final class DlgLhtPiutang extends javax.swing.JDialog {
                 if(kolom==1){
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     if(akses.getbayar_piutang()==true){
-                        DlgBayarPiutang1 bayarpiutang=new DlgBayarPiutang1(null,false);
+                        DlgBayarPiutang bayarpiutang=new DlgBayarPiutang(null,false);
                         bayarpiutang.emptTeks();
                         String norm=Sequel.cariIsi("select piutang_pasien.no_rkm_medis from piutang_pasien where piutang_pasien.no_rawat='"+tbBangsal.getValueAt(tbBangsal.getSelectedRow(),0).toString() +"'");
                         String nama=Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis='"+norm+"'"); 
@@ -565,7 +565,7 @@ public final class DlgLhtPiutang extends javax.swing.JDialog {
                 if(kolom==1){
                     if(akses.getbayar_piutang()==true){
                         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                        DlgBayarPiutang1 bayarpiutang=new DlgBayarPiutang1(null,false);
+                        DlgBayarPiutang bayarpiutang=new DlgBayarPiutang(null,false);
                         bayarpiutang.emptTeks();
                         String norm=Sequel.cariIsi("select piutang_pasien.no_rkm_medis from piutang_pasien where piutang_pasien.no_rawat='"+tbBangsal.getValueAt(tbBangsal.getSelectedRow(),0).toString()+"'");
                         String nama=Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis='"+norm+"'");
@@ -646,7 +646,7 @@ private void MnDetailCicilanActionPerformed(java.awt.event.ActionEvent evt) {//G
             TCari.requestFocus();
         }else{
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            DlgBayarPiutang1 bayarpiutang=new DlgBayarPiutang1(null,true);
+            DlgBayarPiutang bayarpiutang=new DlgBayarPiutang(null,true);
             bayarpiutang.emptTeks();
             String norm=Sequel.cariIsi("select piutang_pasien.no_rkm_medis from piutang_pasien where piutang_pasien.no_rawat='"+tbBangsal.getValueAt(tbBangsal.getSelectedRow(),0).toString()+"'");
             String nama=Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis='"+norm+"'"); 

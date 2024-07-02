@@ -218,7 +218,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import keuangan.DlgAkunBayar;
 import keuangan.KeuanganBayarPemesananFarmasi;
-import keuangan.DlgBayarPiutang1;
+import keuangan.DlgBayarPiutang;
 import keuangan.KeuanganBubes;
 import keuangan.DlgCashflow;
 import keuangan.DlgDetailJMDokter;
@@ -8999,7 +8999,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         
         isTutup();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        DlgBayarPiutang1 bayarpiutang=new DlgBayarPiutang1(this,false);
+        DlgBayarPiutang bayarpiutang=new DlgBayarPiutang(this,false);
         bayarpiutang.tampil();
         bayarpiutang.emptTeks();
         bayarpiutang.isCek();

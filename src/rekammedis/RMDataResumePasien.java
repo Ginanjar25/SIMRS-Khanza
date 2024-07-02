@@ -307,8 +307,15 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
         carilaborat.BtnKeluar.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
+                int x = 0;
                 for (i= 0; i < carilaborat.getTable().getRowCount(); i++) {
                     if(carilaborat.getTable().getValueAt(i,0).toString().equals("true")){
+                        HasilLaborat.append(carilaborat.getTable().getValueAt(i,3).toString()+", ");
+                        x++;
+                    }
+                }
+                if(x==0){
+                    for (i= 0; i < carilaborat.getTable().getRowCount(); i++) {
                         HasilLaborat.append(carilaborat.getTable().getValueAt(i,3).toString()+", ");
                     }
                 }
@@ -335,8 +342,16 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
         cariobat.BtnKeluar.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
+                int x = 0;
                 for (i= 0; i < cariobat.getTable().getRowCount(); i++) {
                     if(cariobat.getTable().getValueAt(i,0).toString().equals("true")){
+                        Obat2an.append(cariobat.getTable().getValueAt(i,3).toString()+", ");
+                        x++;
+                    }
+                }
+                
+                if(x==0){
+                    for (i= 0; i < cariobat.getTable().getRowCount(); i++) {
                         Obat2an.append(cariobat.getTable().getValueAt(i,3).toString()+", ");
                     }
                 }

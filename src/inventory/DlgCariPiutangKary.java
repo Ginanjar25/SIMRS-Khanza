@@ -24,7 +24,7 @@ import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import keuangan.DlgBayarPiutang1;
+import keuangan.DlgBayarPiutang;
 import keuangan.Jurnal;
 import kepegawaian.DlgCariPetugas;
 import keuangan.DlgBayarPiutangKry;
@@ -1254,7 +1254,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                 Valid.textKosong(TCari, "No.Nota");
             } else {
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                DlgBayarPiutangKry bayarpiutang1 = new DlgBayarPiutangKry(null, false);
+                DlgBayarPiutang bayarpiutang1 = new DlgBayarPiutang(null, false);
                 bayarpiutang1.emptTeks();
                 String norm = Sequel.cariIsi("select no_rkm_medis from piutang where nota_piutang='" + tbDokter.getValueAt(tbDokter.getSelectedRow(), 0).toString() + "'");
                 String nama = Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis='" + norm + "'");

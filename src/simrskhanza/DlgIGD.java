@@ -5494,31 +5494,16 @@ public final class DlgIGD extends javax.swing.JDialog {
                     TCari.requestFocus();
                 }else{
                     if(akses.getedit_registrasi()==true){
-                        if(Sequel.queryu2tf("update reg_periksa set no_rawat=?,no_reg=?,tgl_registrasi=?,jam_reg=?,kd_dokter=?,no_rkm_medis=?,kd_poli=?,"+
-                                "p_jawab=?,almt_pj=?,biaya_reg=?,hubunganpj=?,stts_daftar=?,kd_pj=?,umurdaftar=?,sttsumur=? where no_rawat=?",16,new String[]{
-                                TNoRw.getText(),TNoReg.getText(),Valid.SetTgl(DTPReg.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),
-                                KdDokter.getText(),TNoRM.getText(),"IGDK",TPngJwb.getText(),TAlmt.getText(),""+biaya,THbngn.getText(),
-                                TStatus.getText(),kdpnj.getText(),umur,sttsumur,tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString()
-                            })==true){
-                            tabMode.setValueAt(TNoReg.getText(),tbPetugas.getSelectedRow(),1);
-                            tabMode.setValueAt(TNoRw.getText(),tbPetugas.getSelectedRow(),2);
-                            tabMode.setValueAt(Valid.SetTgl(DTPReg.getSelectedItem()+""),tbPetugas.getSelectedRow(),3);
-                            tabMode.setValueAt(CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),tbPetugas.getSelectedRow(),4);
-                            tabMode.setValueAt(KdDokter.getText(),tbPetugas.getSelectedRow(),5);
-                            tabMode.setValueAt(TDokter.getText(),tbPetugas.getSelectedRow(),6);
-                            tabMode.setValueAt(TNoRM.getText(),tbPetugas.getSelectedRow(),7);
-                            tabMode.setValueAt(TPasien.getText(),tbPetugas.getSelectedRow(),8);
-                            tabMode.setValueAt(JK.getText(),tbPetugas.getSelectedRow(),9);
-                            tabMode.setValueAt(umur+" "+sttsumur,tbPetugas.getSelectedRow(),10);
-                            tabMode.setValueAt("IGD",tbPetugas.getSelectedRow(),11);
-                            tabMode.setValueAt(TPngJwb.getText(),tbPetugas.getSelectedRow(),12);
-                            tabMode.setValueAt(TAlmt.getText(),tbPetugas.getSelectedRow(),13);
-                            tabMode.setValueAt(THbngn.getText(),tbPetugas.getSelectedRow(),14);
-                            tabMode.setValueAt(Valid.SetAngka(biaya),tbPetugas.getSelectedRow(),15);
-                            tabMode.setValueAt(TStatus.getText(),tbPetugas.getSelectedRow(),16);
-                            tabMode.setValueAt(nmpnj.getText(),tbPetugas.getSelectedRow(),17);
-                            tabMode.setValueAt(kdpnj.getText(),tbPetugas.getSelectedRow(),19);
-                            emptTeks();
+                        String no_rm = Sequel.cariIsi("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.no_rawat =?", TNoRw.getText());
+                        String nama = Sequel.cariIsi("SELECT p.nm_pasien FROM pasien p WHERE p.no_rkm_medis =?", no_rm);
+                        if(!no_rm.equals(TNoRM.getText())){
+                            int reply = JOptionPane.showConfirmDialog(rootPane,"No Rawat "+TNoRw.getText()+ " sudah terdaftar untuk \nPasien : " + nama +" (" + no_rm +"). \n"
+                                         + "Apakah ingin mengganti ke \nPasien : "+ TPasien.getText() + " (" + TNoRM.getText()+") ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                            if (reply == JOptionPane.YES_OPTION) {
+                                ganti();
+                            }
+                        }else{
+                            ganti();
                         }
                     }else{
                         JOptionPane.showMessageDialog(rootPane,"Maaf hak akses anda dibatasi, silahkan konfirmasi kepada admin..!!! ");
@@ -11822,6 +11807,30 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         MnPenilaianPasienImunitasRendah.setEnabled(akses.getpenilaian_pasien_imunitas_rendah());
         MnCatatanKeseimbanganCairan.setEnabled(akses.getbalance_cairan());
         MnCatatanObservasiInduksiPersalinan.setEnabled(akses.getcatatan_observasi_induksi_persalinan());
+        
+        if(!akses.getkode().equals("Admin Utama")){
+            BtnHapus.setEnabled(false);
+        }
+        
+        if(!akses.getkode().equals("Admin Utama")){
+           if(!Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode()).equals("J005")){
+               BtnHapus.setEnabled(false);
+               DTPReg.setEditable(false);
+               DTPReg.setEnabled(false);
+               ChkJln.setEnabled(false);
+               CmbJam.setEnabled(false);
+               CmbMenit.setEnabled(false);
+               CmbDetik.setEnabled(false);
+           }else{
+               BtnHapus.setEnabled(true);
+               DTPReg.setEditable(true);
+               DTPReg.setEnabled(true);
+               ChkJln.setEnabled(true);
+               CmbJam.setEnabled(true);
+               CmbMenit.setEnabled(true);
+               CmbDetik.setEnabled(true);
+           }
+        }
     }
     
     private void isNumber(){
@@ -12150,5 +12159,34 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         MnRMCatatanMonitoring.add(MnCatatanObservasiIGD);
         MnRMCatatanMonitoring.add(MnCatatanObservasiCHBP);
         MnRMCatatanMonitoring.add(MnCatatanObservasiInduksiPersalinan);
+    }
+    
+    private void ganti(){
+        if(Sequel.queryu2tf("update reg_periksa set no_rawat=?,no_reg=?,tgl_registrasi=?,jam_reg=?,kd_dokter=?,no_rkm_medis=?,kd_poli=?,"+
+            "p_jawab=?,almt_pj=?,biaya_reg=?,hubunganpj=?,stts_daftar=?,kd_pj=?,umurdaftar=?,sttsumur=? where no_rawat=?",16,new String[]{
+            TNoRw.getText(),TNoReg.getText(),Valid.SetTgl(DTPReg.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),
+            KdDokter.getText(),TNoRM.getText(),"IGDK",TPngJwb.getText(),TAlmt.getText(),""+biaya,THbngn.getText(),
+            TStatus.getText(),kdpnj.getText(),umur,sttsumur,TNoRw.getText()
+            })==true){
+                tabMode.setValueAt(TNoReg.getText(),tbPetugas.getSelectedRow(),1);
+                tabMode.setValueAt(TNoRw.getText(),tbPetugas.getSelectedRow(),2);
+                tabMode.setValueAt(Valid.SetTgl(DTPReg.getSelectedItem()+""),tbPetugas.getSelectedRow(),3);
+                tabMode.setValueAt(CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),tbPetugas.getSelectedRow(),4);
+                tabMode.setValueAt(KdDokter.getText(),tbPetugas.getSelectedRow(),5);
+                tabMode.setValueAt(TDokter.getText(),tbPetugas.getSelectedRow(),6);
+                tabMode.setValueAt(TNoRM.getText(),tbPetugas.getSelectedRow(),7);
+                tabMode.setValueAt(TPasien.getText(),tbPetugas.getSelectedRow(),8);
+                tabMode.setValueAt(JK.getText(),tbPetugas.getSelectedRow(),9);
+                tabMode.setValueAt(umur+" "+sttsumur,tbPetugas.getSelectedRow(),10);
+                tabMode.setValueAt("IGD",tbPetugas.getSelectedRow(),11);
+                tabMode.setValueAt(TPngJwb.getText(),tbPetugas.getSelectedRow(),12);
+                tabMode.setValueAt(TAlmt.getText(),tbPetugas.getSelectedRow(),13);
+                tabMode.setValueAt(THbngn.getText(),tbPetugas.getSelectedRow(),14);
+                tabMode.setValueAt(Valid.SetAngka(biaya),tbPetugas.getSelectedRow(),15);
+                tabMode.setValueAt(TStatus.getText(),tbPetugas.getSelectedRow(),16);
+                tabMode.setValueAt(nmpnj.getText(),tbPetugas.getSelectedRow(),17);
+                tabMode.setValueAt(kdpnj.getText(),tbPetugas.getSelectedRow(),19);
+                emptTeks();
+            }
     }
 }

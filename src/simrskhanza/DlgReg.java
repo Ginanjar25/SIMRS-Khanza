@@ -983,7 +983,6 @@ public final class DlgReg extends javax.swing.JDialog {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
         MnCheckInJKN = new javax.swing.JMenuItem();
-        MnBatalCheckInJKN = new javax.swing.JMenuItem();
         jMenuItem1skdp = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         MnDataRM = new javax.swing.JMenu();
@@ -1357,6 +1356,7 @@ public final class DlgReg extends javax.swing.JDialog {
         button3 = new widget.Button();
         button5 = new widget.Button();
         button6 = new widget.Button();
+        btnCetakLabel = new widget.Button(); 
         PanelInput = new javax.swing.JPanel();
         FormInput = new widget.PanelBiasa();
         jLabel3 = new widget.Label();
@@ -6656,7 +6656,17 @@ public final class DlgReg extends javax.swing.JDialog {
             }
         });
         panelGlass8.add(button6);
-
+        
+        btnCetakLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
+        btnCetakLabel.setText("Cetak Barcode RM");
+        btnCetakLabel.setName("btnCetakLabel"); // NOI18N
+        btnCetakLabel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCetakLabelActionPerformed(evt);
+            }
+        });
+        panelGlass8.add(btnCetakLabel);
+        
         jPanel2.add(panelGlass8, java.awt.BorderLayout.PAGE_START);
 
         internalFrame1.add(jPanel2, java.awt.BorderLayout.PAGE_END);
@@ -7357,15 +7367,34 @@ public final class DlgReg extends javax.swing.JDialog {
         for(i=0;i<tbPetugas.getRowCount();i++){ 
             if(tbPetugas.getValueAt(i,0).toString().equals("true")){
                 if(akses.getkode().equals("Admin Utama")){
-                    if(Sequel.meghapustf("reg_periksa","no_rawat",tbPetugas.getValueAt(i,2).toString())==true){
-                        tabMode.removeRow(i);
-                        i--;
-                    }
+                     int reply = JOptionPane.showConfirmDialog(rootPane,"Apakah Anda Ingin Menghapus Registrasi Pasien : \n" + 
+                             "No Rawat: " + TNoRw.getText() + "/ Nama: " + TPasien.getText() + "(" +TNoRM.getText()+")","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                     if (reply == JOptionPane.YES_OPTION) {
+                        if(Sequel.meghapustf("reg_periksa","no_rawat",tbPetugas.getValueAt(i,2).toString())==true){
+                           if("WEB".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
+                               Sequel.meghapustf("side_db.reg_periksa_website","no_rawat",tbPetugas.getValueAt(i,2).toString());
+                           }
+                           tabMode.removeRow(i);
+                           i--;
+                       }
+                        else{
+                               System.out.println("ERROR");
+                           }
+                     }
                 }else{
                     if(Sequel.cekTanggal48jam(tbPetugas.getValueAt(i,3).toString()+" "+tbPetugas.getValueAt(i,4).toString(),Sequel.ambiltanggalsekarang())==true){
-                        if(Sequel.meghapustf("reg_periksa","no_rawat",tbPetugas.getValueAt(i,2).toString())==true){
-                            tabMode.removeRow(i);
-                            i--;
+                        int reply = JOptionPane.showConfirmDialog(rootPane,"Apakah Anda Ingin Menghapus Registrasi Pasien : \n" + 
+                             "No Rawat: " + TNoRw.getText() + "/ Nama: " + TPasien.getText() + "(" +TNoRM.getText()+")","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                        if (reply == JOptionPane.YES_OPTION) {
+                           if(Sequel.meghapustf("reg_periksa","no_rawat",tbPetugas.getValueAt(i,2).toString())==true){
+                              if("WEB".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
+                                  Sequel.meghapustf("side_db.reg_periksa_website","no_rawat",tbPetugas.getValueAt(i,2).toString());
+                              }
+                              tabMode.removeRow(i);
+                              i--;
+                          }else{
+                               System.out.println("ERROR");
+                           }                     
                         }
                     }
                 }   
@@ -7509,7 +7538,17 @@ public final class DlgReg extends javax.swing.JDialog {
                     }else{
                         if(akses.getedit_registrasi()==true){
                             if(Sequel.cekTanggal48jam(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),3).toString()+" "+tbPetugas.getValueAt(tbPetugas.getSelectedRow(),4).toString(),Sequel.ambiltanggalsekarang())==true){
-                                ganti();
+                                String no_rm = Sequel.cariIsi("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.no_rawat =?", TNoRw.getText());
+                                String nama = Sequel.cariIsi("SELECT p.nm_pasien FROM pasien p WHERE p.no_rkm_medis =?", no_rm);
+                                if(!no_rm.equals(TNoRM.getText())){
+                                    int reply = JOptionPane.showConfirmDialog(rootPane,"No Rawat "+TNoRw.getText()+ " sudah terdaftar untuk \nPasien : " + nama +" (" + no_rm +"). \n"
+                                            + "Apakah ingin mengganti ke \nPasien : "+ TPasien.getText() + " (" + TNoRM.getText()+") ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                                    if (reply == JOptionPane.YES_OPTION) {
+                                        ganti();
+                                     }
+                                }else{
+                                   ganti();
+                                }
                             }
                         }else{
                             JOptionPane.showMessageDialog(rootPane,"Maaf hak akses anda dibatasi, silahkan konfirmasi kepada admin..!!! ");
@@ -15175,8 +15214,26 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             }
         }
 
-    }                                       
-
+    }
+    
+    private void btnCetakLabelActionPerformed(java.awt.event.ActionEvent evt) {                                        
+        if(TPasien.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            Map<String, Object> param = new HashMap<>();
+            param.put("namars",akses.getnamars());
+            param.put("alamatrs",akses.getalamatrs());
+            param.put("kotars",akses.getkabupatenrs());
+            param.put("propinsirs",akses.getpropinsirs());
+            param.put("kontakrs",akses.getkontakrs());
+            param.put("emailrs",akses.getemailrs());
+            param.put("no_rawat",TNoRw.getText());
+            param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
+            Valid.MyReport("rptBarcodeRawat3.jasper",param,"::[ Barcode No.RM ]::");
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }
     /**
     * @param args the command line arguments
     */
@@ -15247,7 +15304,6 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private javax.swing.JMenuItem MnBarcode2;
     private javax.swing.JMenuItem MnBarcodeRM9;
     private javax.swing.JMenuItem MnBatal;
-    private javax.swing.JMenuItem MnBatalCheckInJKN;
     private javax.swing.JMenuItem MnBelum;
     private javax.swing.JMenuItem MnBelumTerbitSEP;
     private javax.swing.JMenuItem MnBilling;
@@ -15529,6 +15585,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Button button4;
     private widget.Button button5;
     private widget.Button button6;
+    private widget.Button btnCetakLabel;
     private widget.InternalFrame internalFrame1;
     private widget.InternalFrame internalFrame4;
     private widget.InternalFrame internalFrame5;
@@ -16215,6 +16272,27 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 CmbMenit.setEnabled(false);
                 CmbDetik.setEnabled(false);
             }
+        }
+        
+        if(!akses.getkode().equals("Admin Utama")){
+           String jabatan = Sequel.cariIsi("select jbtn from pegawai where nik =?", akses.getkode());
+           if(!(jabatan.equals("IT") || jabatan.equals("Koordinator Unit FO"))){
+               BtnHapus.setEnabled(false);
+               DTPReg.setEditable(false);
+               DTPReg.setEnabled(false);
+               ChkJln.setEnabled(false);
+               CmbJam.setEnabled(false);
+               CmbMenit.setEnabled(false);
+               CmbDetik.setEnabled(false);
+           }else{
+               BtnHapus.setEnabled(true);
+               DTPReg.setEditable(true);
+               DTPReg.setEnabled(true);
+               ChkJln.setEnabled(true);
+               CmbJam.setEnabled(true);
+               CmbMenit.setEnabled(true);
+               CmbDetik.setEnabled(true);
+           }
         }
     }
     
@@ -16914,7 +16992,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             new String[]{
                 TNoRw.getText(),TNoReg.getText(),Valid.SetTgl(DTPReg.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),
                 KdDokter.getText(),TNoRM.getText(),kdpoli.getText(),TPngJwb.getText(),TAlmt.getText(),TBiaya.getText(),THbngn.getText(),
-                TStatus.getText(),kdpnj.getText(),umur,sttsumur,tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString()
+                TStatus.getText(),kdpnj.getText(),umur,sttsumur,TNoRw.getText()
             })==true){
             tabMode.setValueAt(TNoReg.getText(),tbPetugas.getSelectedRow(),1);
             tabMode.setValueAt(TNoRw.getText(),tbPetugas.getSelectedRow(),2);

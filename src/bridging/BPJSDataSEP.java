@@ -87,7 +87,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
     private BPJSCekReferensiKecamatan kecamatan=new BPJSCekReferensiKecamatan(null,false);
     private BPJSCekRiwayatRujukanTerakhir rujukanterakhir=new BPJSCekRiwayatRujukanTerakhir(null,false);
     private String prb="",no_peserta="",link="",ADDANTRIANAPIMOBILEJKN="no",requestJson,URL="",query="",utc="",user="",kddokter="",tglkkl="0000-00-00",penunjang="",kodedokterreg="",kodepolireg="",
-            jammulai="",jamselesai="",datajam="",jeniskunjungan="",hari="",nomorreg="",respon="200";
+            jammulai="",jamselesai="",datajam="",jeniskunjungan="",hari="",nomorreg="",respon="200", status="";
     private HttpHeaders headers;
     private HttpEntity requestEntity;
     private ObjectMapper mapper = new ObjectMapper();
@@ -3818,7 +3818,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
             }else{
                 cekViaBPJSKartu.tampil(no_peserta);
                 if(cekViaBPJSKartu.informasi.equals("OK")){
-                    if(cekViaBPJSKartu.statusPesertaketerangan.equals("AKTIF")){
+                    if(!cekViaBPJSKartu.statusPesertaketerangan.equals("TIDAK AKTIF")){
                         TPasien.setText(cekViaBPJSKartu.nama);
                         TglLahir.setText(cekViaBPJSKartu.tglLahir);
                         NIK.setText(cekViaBPJSKartu.nik);
@@ -4730,6 +4730,10 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                     NoSKDP.setText(response.path("kontrol").path("noSurat").asText());
                     
                     Valid.SetTgl(TanggalSEP,response.path("tglSep").asText());
+                    
+                    String jkn = Sequel.cariIsi("select status from referensi_mobilejkn_bpjs where no_rawat=?", TNoRw.getText());
+                    System.out.println("JKN MOBILE: " + jkn);
+                    
                 }else {
                     NoSEP.setText("");
                     JOptionPane.showMessageDialog(null,nameNode.path("message").asText());                
@@ -6774,7 +6778,8 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                             prb="";
                         } 
                      }
-                        
+                     
+                     checkinJKN(TNoRw.getText());
                      emptTeks();
                  }else{
                      if(Sequel.menyimpantf("bridging_sep_internal","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","SEP",52,new String[]{
@@ -6804,7 +6809,8 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                                prb="";
                            } 
                         }
-
+                        
+                        checkinJKN(TNoRw.getText());
                         emptTeks();
                     }
                  }                     
@@ -7008,5 +7014,16 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
             }
         }
         return statusantrean;
+    }
+    
+    private void checkinJKN(String no_rawat){
+        String status = Sequel.cariIsi("select status from referensi_mobilejkn_bpjs where no_rawat=?", no_rawat);
+        if(status.equals("Belum")){
+            if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "no_rawat=?", "status='Checkin',validasi=now()", 1, new String[]{no_rawat
+                }) == true) {
+                    Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{no_rawat});
+                    Sequel.meghapus("referensi_mobilejkn_bpjs_batal", "no_rawat_batal", no_rawat);
+                }
+        } 
     }
 }

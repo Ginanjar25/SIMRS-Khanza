@@ -11,6 +11,7 @@
 
 package laporan;
 
+import fungsi.akses;
 import fungsi.koneksiDB;
 import fungsi.sekuel;
 import fungsi.validasi;
@@ -225,9 +226,9 @@ public class DlgBerkasRawat extends javax.swing.JDialog {
         
         Platform.runLater(() -> {
             try {
-                engine.load(url);
+                engine.load(url.concat("&ip="+akses.getalamatip()+"&nik_user="+akses.getkode()));
             }catch (Exception exception) {
-                engine.load(url);
+                engine.load(url.concat("&ip="+akses.getalamatip()+"&nik_user="+akses.getkode()));
             }
         });        
     }    

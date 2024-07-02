@@ -2582,7 +2582,9 @@ public final class RMCatatanPersalinan extends javax.swing.JDialog {
             TglLahir.setText(tbObat.getValueAt(tbObat.getSelectedRow(),3).toString());
             Jk.setText(tbObat.getValueAt(tbObat.getSelectedRow(),4).toString()); 
             KdDokter.setText(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()); 
-            NmDokter.setText(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString()); 
+            NmDokter.setText(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());
+            NIP.setText(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString()); 
+            NmPetugas.setText(tbObat.getValueAt(tbObat.getSelectedRow(),8).toString());
             Catatan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),11).toString());
             WaktuPersalinanKala1.setText(tbObat.getValueAt(tbObat.getSelectedRow(),12).toString());
             WaktuPersalinanKala2.setText(tbObat.getValueAt(tbObat.getSelectedRow(),13).toString());
