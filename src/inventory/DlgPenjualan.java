@@ -1091,6 +1091,7 @@ public class DlgPenjualan extends javax.swing.JDialog {
         panelisi3.add(label14);
         label14.setBounds(426, 40, 60, 23);
 
+        kdmem.setToolTipText("");
         kdmem.setName("kdmem"); // NOI18N
         kdmem.setPreferredSize(new java.awt.Dimension(80, 23));
         kdmem.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1911,9 +1912,11 @@ private void kdmemKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdm
                 Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=?", nmmem,kdmem.getText());
                 break;
             case KeyEvent.VK_PAGE_UP:
+                Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=?", nmmem,kdmem.getText());
                 Tgl.requestFocus();
                 break;
             case KeyEvent.VK_ENTER:
+                Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=?", nmmem,kdmem.getText());
                 catatan.requestFocus();
                 break;
             case KeyEvent.VK_UP:
