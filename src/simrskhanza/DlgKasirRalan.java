@@ -14713,6 +14713,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                                   MnHasilEndoskopiFaringLaring,MnHasilEndoskopiHidung,MnHasilEndoskopiTelinga,MnPenilaianPasienImunitasRendah,MnCatatanKeseimbanganCairan,MnCatatanObservasiCHBP,MnCatatanObservasiInduksiPersalinan,
                                   MnPermintaanKonsultasiMedik;
     private javax.swing.JMenu MnHasilUSG,MnHasilEndoskopi;
+    private javax.swing.JMenuItem MnLaporanOperasi;
     
     private void tampilkasir() {     
         Valid.tabelKosong(tabModekasir);
