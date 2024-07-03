@@ -795,6 +795,7 @@ import surat.MasterMenolakAnjuranMedis;
 import permintaan.DlgBookingPeriksa;
 import permintaan.DlgCariPermintaanLabMB;
 import permintaan.DlgCariPermintaanLabPA;
+import permintaan.DlgPermintaanKonsultasiMedik;
 import permintaan.DlgPermintaanPelayananInformasiObat;
 import permintaan.DlgPermintaanRanap;
 import perpustakaan.PerpustakaanAnggota;
@@ -21601,6 +21602,18 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         form.setVisible(true);
         this.setCursor(Cursor.getDefaultCursor());
     } 
+    
+    private void btnKonsultasiMedikActionPerformed(java.awt.event.ActionEvent evt) {                                                        
+        isTutup();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        DlgPermintaanKonsultasiMedik form=new DlgPermintaanKonsultasiMedik(this,false);
+        form.isCek();
+        form.setSize(PanelUtama.getWidth(),PanelUtama.getHeight());
+        form.setLocationRelativeTo(PanelUtama);
+        form.setVisible(true);
+        DlgHome.dispose();
+        this.setCursor(Cursor.getDefaultCursor());
+    } 
             
     /**
     * @param args the command line arguments
@@ -22295,7 +22308,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             btnKirimDiagnosticReportLabMBSatuSehat,btnKepatuhanKelengkapanKeselamatanBedah,btnNilaiPiutangPerJenisBayarPerBulan,btnRingkasanPiutangPerJenisBayar,
             btnPenilaianPasienImunitasRendah,btnCatatanKeseimbanganCairan,btnCatatanObservasiCHBP,btnCatatanObservasiInduksiPersalinan,btnSKPKategoriPenilaian,btnSKPKriteriaPenilaian,
             btnReferensiPoliMobileJKNFKTP,btnReferensiDokterMobileJKNFKTP,btnSKPPenilaianPegawai,btnMandiriMetodePembayaran,btnMandiriBankTujuanTRansfer,btnPembayaranPihakKe3BankMandiri,
-            btnMandiriKodeTransaksiTujuanTRansfer,btnSKPRekapitulasiPenilaian,btnPCareReferensiAlergi,btnPCareReferensiPrognosa;
+            btnMandiriKodeTransaksiTujuanTRansfer,btnSKPRekapitulasiPenilaian,btnPCareReferensiAlergi,btnPCareReferensiPrognosa,btnKonsultasiMedik;
     
     public void isWall(){
         try{            
@@ -26347,6 +26360,11 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             
             if(akses.getpelayanan_informasi_obat()==true){
                 Panelmenu.add(btnPelayananInformasiObat);
+                jmlmenu++;
+            }
+            
+            if(akses.getkonsultasi_medik()==true){
+                Panelmenu.add(btnKonsultasiMedik);
                 jmlmenu++;
             }
             
@@ -31526,6 +31544,11 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         
         if(akses.getpelayanan_informasi_obat()==true){
             Panelmenu.add(btnPelayananInformasiObat);
+            jmlmenu++;
+        }
+        
+        if(akses.getkonsultasi_medik()==true){
+            Panelmenu.add(btnKonsultasiMedik);
             jmlmenu++;
         }
         
@@ -38271,6 +38294,13 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             }                
         }
         
+        if(akses.getkonsultasi_medik()==true){
+            if(btnKonsultasiMedik.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
+                Panelmenu.add(btnKonsultasiMedik);
+                jmlmenu++;
+            }                
+        }
+        
         if(akses.gettransfer_pasien_antar_ruang()==true){
             if(btnTransferPasienAntarRuang.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
                 Panelmenu.add(btnTransferPasienAntarRuang);
@@ -44643,5 +44673,13 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         btnPCareReferensiPrognosa.setName("btnPCareReferensiPrognosa"); 
         btnPCareReferensiPrognosa.setPreferredSize(new java.awt.Dimension(200, 90));
         btnPCareReferensiPrognosa.addActionListener(this::btnPCareReferensiPrognosaActionPerformed);
+        
+        btnKonsultasiMedik = new widget.ButtonBig();
+        btnKonsultasiMedik.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/6071860_freelance_freelancer_job_occupation_worker_icon.png"))); 
+        btnKonsultasiMedik.setText("Konsultasi Medik");
+        btnKonsultasiMedik.setIconTextGap(0);
+        btnKonsultasiMedik.setName("btnKonsultasiMedik"); 
+        btnKonsultasiMedik.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnKonsultasiMedik.addActionListener(this::btnKonsultasiMedikActionPerformed);
     }
 }
