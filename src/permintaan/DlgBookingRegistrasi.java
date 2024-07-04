@@ -1338,7 +1338,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 Date now = new Date();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                 String tanggal_now = dateFormat.format(now);                
-                String tanggal_periksa = TanggalBooking.getSelectedItem().toString().substring(0,10);
+                String tanggal_periksa = TanggalPeriksa.getSelectedItem().toString().substring(0,10);
                 if(!tanggal_periksa.equals(tanggal_now)){
                     JOptionPane.showMessageDialog(null,"Maaf, Registrasi belum bisa dilakukan hari ini!");
                 }else{
