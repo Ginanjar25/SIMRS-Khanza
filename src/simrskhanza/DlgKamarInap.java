@@ -1140,6 +1140,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         TPasienCari = new widget.TextBox();
         jLabel37 = new widget.Label();
         cmbStatusBayar = new widget.ComboBox();
+//        ppResumePerawat = new javax.swing.JMenuItem();
 
         WindowInputKamar.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         WindowInputKamar.setName("WindowInputKamar"); // NOI18N
@@ -2713,6 +2714,22 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         });
         MnDataRM.add(ppResume);
+        
+//        ppResumePerawat.setBackground(new java.awt.Color(255, 255, 254));
+//        ppResumePerawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+//        ppResumePerawat.setForeground(new java.awt.Color(50, 50, 50));
+//        ppResumePerawat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+//        ppResumePerawat.setText("Resume Perawat");
+//        ppResumePerawat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+//        ppResumePerawat.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+//        ppResumePerawat.setName("[170,26]"); // NOI18N
+//        ppResumePerawat.setPreferredSize(new java.awt.Dimension(200, 26));
+//        ppResumePerawat.addActionListener(new java.awt.event.ActionListener() {
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//                ppResumePerawatBtnPrintActionPerformed(evt);
+//            }
+//        });
+//        MnDataRM.add(ppResumePerawat);
 
         ppRiwayat.setBackground(new java.awt.Color(255, 255, 254));
         ppRiwayat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -11069,6 +11086,73 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         }   
     }//GEN-LAST:event_ppResumeBtnPrintActionPerformed
+    
+//    private void ppResumePerawatBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppResumeBtnPrintActionPerformed
+//        if(tabMode.getRowCount()==0){
+//            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+//            TCari.requestFocus();
+//        }else{
+//            if(tbKamIn.getSelectedRow()>-1){
+//                if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
+//                    try {
+//                        psanak=koneksi.prepareStatement(
+//                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+//                        try {
+//                            psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
+//                            rs2=psanak.executeQuery();
+//                            if(rs2.next()){
+//                                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//                                RMDataResumePasienRanap resume=new RMDataResumePasienRanap(null,false);
+//                                resume.isCek();
+//                                resume.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+//                                resume.setLocationRelativeTo(internalFrame1);
+//                                if(R1.isSelected()==true){
+//                                    resume.setNoRm(rs2.getString("no_rawat2"),new Date());
+//                                }else if(R2.isSelected()==true){
+//                                    resume.setNoRm(rs2.getString("no_rawat2"),DTPCari2.getDate());
+//                                }else if(R3.isSelected()==true){
+//                                    resume.setNoRm(rs2.getString("no_rawat2"),DTPCari4.getDate());
+//                                }
+//                                resume.tampil();
+//                                resume.setVisible(true);
+//                                this.setCursor(Cursor.getDefaultCursor());
+//                            }else{
+//                                JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+//                                tbKamIn.requestFocus();
+//                            }
+//                        } catch(Exception ex){
+//                            System.out.println("Notifikasi : "+ex);
+//                        }finally{
+//                              if(rs2 != null){
+//                                  rs2.close();
+//                              }
+//                              if(psanak != null){
+//                                  psanak.close();
+//                              }
+//                        }
+//                    } catch (Exception e) {
+//                        System.out.println(e);
+//                    }
+//                }else{
+//                    this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//                    RMDataResumePasienRanap resume=new RMDataResumePasienRanap(null,false);
+//                    resume.isCek();
+//                    resume.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+//                    resume.setLocationRelativeTo(internalFrame1);
+//                    if(R1.isSelected()==true){
+//                        resume.setNoRm(norawat.getText(),new Date());
+//                    }else if(R2.isSelected()==true){
+//                        resume.setNoRm(norawat.getText(),DTPCari2.getDate());
+//                    }else if(R3.isSelected()==true){
+//                        resume.setNoRm(norawat.getText(),DTPCari4.getDate());
+//                    }
+//                    resume.tampil();
+//                    resume.setVisible(true);
+//                    this.setCursor(Cursor.getDefaultCursor());
+//                }
+//            }
+//        }   
+//    }//GEN-LAST:event_ppResumeBtnPrintActionPerformed
 
     private void ppAsuhanGiziBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppAsuhanGiziBtnPrintActionPerformed
         if(tabMode.getRowCount()==0){
@@ -17305,6 +17389,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private javax.swing.JMenuItem MnSkorBromagePascaAnestesi,MnPenilaianPreInduksi,MnHasilPemeriksaanUSGUrologi,MnHasilPemeriksaanUSGGynecologi,MnHasilPemeriksaanEKG,MnBelumTerbitSEP,MnSudahTerbitSEP,MnHasilPemeriksaanUSGNeonatus,MnHasilEndoskopiFaringLaring,
                                   MnHasilEndoskopiHidung,MnHasilEndoskopiTelinga,MnPenilaianAwalKeperawatanRanapNeonatus,MnPenilaianPasienImunitasRendah,MnCatatanKeseimbanganCairan,MnCatatanObservasiCHBP,MnCatatanObservasiInduksiPersalinan,MnPermintaanKonsultasiMedik;
     private javax.swing.JMenu MnHasilUSG,MnHasilEndoskopi,MnCatatanObservasi;
+//    private javax.swing.JMenuItem ppResumePerawat;
     
     private void tampil() {
         if(R1.isSelected()==true){
@@ -17835,6 +17920,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         MnCatatanKeseimbanganCairan.setEnabled(akses.getbalance_cairan());
         MnCatatanObservasiCHBP.setEnabled(akses.getcatatan_observasi_chbp());
         MnPermintaanKonsultasiMedik.setEnabled(akses.getkonsultasi_medik());
+//        ppResumePerawat.setEnabled(akses.gettindakan_ranap());
         
         if(akses.getkode().equals("Admin Utama")){
             MnFilterDPJP.setEnabled(true);

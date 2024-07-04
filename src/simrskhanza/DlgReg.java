@@ -221,6 +221,7 @@ import surat.SuratPulangAtasPermintaanSendiri;
 import surat.SuratSakit;
 import surat.SuratSakitPihak2;
 import surat.SuratTidakHamil;
+import permintaan.DlgBookingRegistrasi;
 /**
  *
  * @author dosen
@@ -237,6 +238,7 @@ public final class DlgReg extends javax.swing.JDialog {
     private DlgCariPoli2 poli2=new DlgCariPoli2(null,false);
     public  DlgRujukMasuk rujukmasuk=new DlgRujukMasuk(null,false);
     public  DlgBookingWeb bookingweb = new DlgBookingWeb(null, false);
+    public  DlgBookingRegistrasi bookingreg = new DlgBookingRegistrasi(null, false);
     private PreparedStatement ps,ps3,pscaripiutang;
     private ResultSet rs;
     private int pilihan=0,i=0,kuota=0,jmlparsial=0;
@@ -293,6 +295,7 @@ public final class DlgReg extends javax.swing.JDialog {
     // move vertical print position
     private char[] VERTICAL_PRINT_POSITION = {ESC, 'J', '1'};
     private String jmlBookWeb = Sequel.cariIsi("SELECT COUNT(bp.no_booking) FROM booking_periksa bp WHERE bp.tanggal >= CURDATE() AND `status` = 'Belum Dibalas'");
+    private String jmlBookReg = Sequel.cariIsi("SELECT COUNT(br.no_reg) FROM booking_registrasi br WHERE br.tanggal_booking >= CURDATE() AND `status` = 'Belum'");
     
 
     /** Creates new form DlgReg
@@ -306,6 +309,7 @@ public final class DlgReg extends javax.swing.JDialog {
         this.setLocation(8,1);
         setSize(885,674);
         button4.setText(jmlBookWeb + " Booking dari WEB Belum Dibalas");
+        btnBookingReg.setText(jmlBookReg + " Booking Registrasi Belum Diregistrasikan");
         ChkTracker.hide();
         tabMode=new DefaultTableModel(null,new Object[]{
             "P","No.Reg","No.Rawat","Tanggal","Jam","Kode Dokter","Dokter Dituju","Nomer RM",
@@ -1422,6 +1426,7 @@ public final class DlgReg extends javax.swing.JDialog {
         jPanel10 = new javax.swing.JPanel();
         label12 = new widget.Label();
         button4 = new widget.Button();
+        btnBookingReg = new widget.Button();
         ChkInput = new widget.CekBox();
         TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
@@ -7137,6 +7142,18 @@ public final class DlgReg extends javax.swing.JDialog {
         });
         FormInput.add(button4);
         button4.setBounds(910, 120, 270, 22);
+        
+        btnBookingReg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnBookingReg.setText("Booking Registrasi Pasien Baru");
+        btnBookingReg.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnBookingReg.setName("btnBookingReg"); // NOI18N
+        btnBookingReg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBookingRegActionPerformed(evt);
+            }
+        });
+        FormInput.add(btnBookingReg);
+        btnBookingReg.setBounds(1200, 120, 300, 22);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -10337,6 +10354,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 JOptionPane.showMessageDialog(null,"Maaf, Pasien sudah masuk Kamar Inap. Gunakan billing Ranap..!!!");
             }else {
                 Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Belum'");
+                Sequel.queryu2("update booking_registrasi set status='Terdaftar' where no_rkm_medis=? and tanggal_periksa=?",2,new String[]{
+                        TNoRM.getText(), Valid.SetTgl(DTPReg.getSelectedItem()+"")
+                });
                 if(tbPetugas.getSelectedRow()>-1){
                     tabMode.setValueAt("Belum",tbPetugas.getSelectedRow(),19);
                 }
@@ -10356,6 +10376,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi..!!");
                 }else{
                     Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Batal',biaya_reg='0'");
+                     Sequel.queryu2("update booking_registrasi set status='Batal' where no_rkm_medis=? and tanggal_periksa=?",2,new String[]{
+                            TNoRM.getText(), Valid.SetTgl(DTPReg.getSelectedItem()+"")
+                     });
                     if(tbPetugas.getSelectedRow()>-1){
                         tabMode.setValueAt("Batal",tbPetugas.getSelectedRow(),19);
                     }
@@ -15173,6 +15196,15 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         bookingweb.setVisible(true);
     }
    
+      private void btnBookingRegActionPerformed(java.awt.event.ActionEvent evt) {                                        
+        btnBookingReg.setText(Sequel.cariIsi("SELECT COUNT(br.no_reg) FROM booking_registrasi br WHERE br.tanggal_booking >= CURDATE() AND `status` = 'Belum'") + " Booking Registrasi Belum Diregistrasikan");
+        bookingreg.isCek();
+        bookingreg.TCari.requestFocus();
+        bookingreg.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+        bookingreg.setLocationRelativeTo(internalFrame1);
+        bookingreg.setVisible(true);
+    }
+   
     private void button5ActionPerformed(java.awt.event.ActionEvent evt) {                                        
         if (tbPetugas.getSelectedRow() != -1) {
             if (!"WEB".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
@@ -15610,6 +15642,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Button button5;
     private widget.Button button6;
     private widget.Button btnCetakLabel;
+    private widget.Button btnBookingReg;
     private widget.InternalFrame internalFrame1;
     private widget.InternalFrame internalFrame4;
     private widget.InternalFrame internalFrame5;
@@ -16300,16 +16333,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }
         
         if(!akses.getkode().equals("Admin Utama")){
-           String jabatan = Sequel.cariIsi("select jbtn from pegawai where nik =?", akses.getkode());
-           if(!(jabatan.equals("IT") || jabatan.equals("Koordinator Unit FO"))){
-               BtnHapus.setEnabled(false);
-               DTPReg.setEditable(false);
-               DTPReg.setEnabled(false);
-               ChkJln.setEnabled(false);
-               CmbJam.setEnabled(false);
-               CmbMenit.setEnabled(false);
-               CmbDetik.setEnabled(false);
-           }else{
+//           String jabatan = Sequel.cariIsi("select jbtn from pegawai where nik =?", akses.getkode());
+           String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
+           if(jabatan.equals("J005")){
                BtnHapus.setEnabled(true);
                DTPReg.setEditable(true);
                DTPReg.setEnabled(true);
@@ -16317,6 +16343,17 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                CmbJam.setEnabled(true);
                CmbMenit.setEnabled(true);
                CmbDetik.setEnabled(true);
+//               if((jabatan.equals("Koordinator Unit FO"))){
+//                   BtnHapus.setEnabled(true);
+//               }
+           }else{
+               BtnHapus.setEnabled(false);
+               DTPReg.setEditable(false);
+               DTPReg.setEnabled(false);
+               ChkJln.setEnabled(false);
+               CmbJam.setEnabled(false);
+               CmbMenit.setEnabled(false);
+               CmbDetik.setEnabled(false);
            }
         }
     }

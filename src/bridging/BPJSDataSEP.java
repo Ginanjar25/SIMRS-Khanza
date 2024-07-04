@@ -3367,7 +3367,15 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
             Valid.textKosong(KdDPJP, "DPJP");
         }else{  
             if(JenisPelayanan.getSelectedIndex()==0){
-                insertSEP();
+                if("Belum".equals(CekCheckInJKN())){
+                    int reply = JOptionPane.showConfirmDialog(rootPane,"Pasien belum Check In JKN, Apakah ingin Check In ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        checkinJKN();
+                        insertSEP();
+                    }
+                }else{
+                    insertSEP();
+                }
             }else if(JenisPelayanan.getSelectedIndex()==1){
                 if(NmPoli.getText().toLowerCase().contains("darurat")){
                     if(Sequel.cariInteger("select count(bridging_sep.no_kartu) from bridging_sep where bridging_sep.no_kartu='"+no_peserta+"' and bridging_sep.jnspelayanan='"+JenisPelayanan.getSelectedItem().toString().substring(0,1)+"' and bridging_sep.tglsep like '%"+Valid.SetTgl(TanggalSEP.getSelectedItem()+"")+"%' and bridging_sep.nmpolitujuan like '%darurat%'")>=3){
@@ -3376,12 +3384,28 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                     }else{
                         if(ADDANTRIANAPIMOBILEJKN.equals("yes")){
                             if(SimpanAntrianOnSite()==true){
-                                insertSEP();
+                                if("Belum".equals(CekCheckInJKN())){
+                                    int reply = JOptionPane.showConfirmDialog(rootPane,"Pasien belum Check In JKN, Apakah ingin Check In ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                                    if (reply == JOptionPane.YES_OPTION) {
+                                        checkinJKN();
+                                        insertSEP();
+                                    }
+                                }else{
+                                    insertSEP();
+                                }
                             }else{
                                 JOptionPane.showMessageDialog(null,"Maaf, antrian mobile JKN gagal dibuat. Silahkan cek jadwal dokter / Nomor Referensi..!!");
                             }
                         }else{
-                            insertSEP();
+                            if("Belum".equals(CekCheckInJKN())){
+                                int reply = JOptionPane.showConfirmDialog(rootPane,"Pasien belum Check In JKN, Apakah ingin Check In ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                                if (reply == JOptionPane.YES_OPTION) {
+                                    checkinJKN();
+                                    insertSEP();
+                                }
+                            }else{
+                                insertSEP();
+                            }
                         }
                     }
                 }else if(!NmPoli.getText().toLowerCase().contains("darurat")){
@@ -3391,12 +3415,28 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                     }else{
                         if(ADDANTRIANAPIMOBILEJKN.equals("yes")){
                             if(SimpanAntrianOnSite()==true){
-                                insertSEP();
+                                if("Belum".equals(CekCheckInJKN())){
+                                    int reply = JOptionPane.showConfirmDialog(rootPane,"Pasien belum Check In JKN, Apakah ingin Check In ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                                    if (reply == JOptionPane.YES_OPTION) {
+                                        checkinJKN();
+                                        insertSEP();
+                                    }
+                                }else{
+                                    insertSEP();
+                                }
                             }else{
                                 JOptionPane.showMessageDialog(null,"Maaf, antrian mobile JKN gagal dibuat. Silahkan cek jadwal dokter / Nomor Referensi..!!");
                             }
                         }else{
-                            insertSEP();
+                            if("Belum".equals(CekCheckInJKN())){
+                                int reply = JOptionPane.showConfirmDialog(rootPane,"Pasien belum Check In JKN, Apakah ingin Check In ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                                if (reply == JOptionPane.YES_OPTION) {
+                                    checkinJKN();
+                                    insertSEP();
+                                }
+                            }else{
+                                insertSEP();
+                            }
                         }
                     }
                 } 
@@ -6779,7 +6819,6 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                         } 
                      }
                      
-                     checkinJKN(TNoRw.getText());
                      emptTeks();
                  }else{
                      if(Sequel.menyimpantf("bridging_sep_internal","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","SEP",52,new String[]{
@@ -6809,8 +6848,6 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                                prb="";
                            } 
                         }
-                        
-                        checkinJKN(TNoRw.getText());
                         emptTeks();
                     }
                  }                     
@@ -7016,14 +7053,22 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         return statusantrean;
     }
     
-    private void checkinJKN(String no_rawat){
-        String status = Sequel.cariIsi("select status from referensi_mobilejkn_bpjs where no_rawat=?", no_rawat);
+    private void checkinJKN(){
+        String status = Sequel.cariIsi("select status from referensi_mobilejkn_bpjs where no_rawat=?", TNoRw.getText());
         if(status.equals("Belum")){
-            if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "no_rawat=?", "status='Checkin',validasi=now()", 1, new String[]{no_rawat
+            if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "no_rawat=?", "status='Checkin',validasi=now()", 1, new String[]{TNoRw.getText()
                 }) == true) {
-                    Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{no_rawat});
-                    Sequel.meghapus("referensi_mobilejkn_bpjs_batal", "no_rawat_batal", no_rawat);
+                    Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()});
+                    Sequel.meghapus("referensi_mobilejkn_bpjs_batal", "no_rawat_batal", TNoRw.getText());
                 }
+            else{
+                System.out.println("CHECK IN GAGAL");
+            }
         } 
+    }
+    
+    private String CekCheckInJKN(){
+        String status = Sequel.cariIsi("select status from referensi_mobilejkn_bpjs where no_rawat=?", TNoRw.getText());
+        return status;
     }
 }
