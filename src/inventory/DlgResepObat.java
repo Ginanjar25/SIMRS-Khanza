@@ -74,7 +74,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         this.setLocation(8,1);
         setSize(628,674);
 
-        Object[] row={"No.Resep","Tgl.Resep","Pasien","Dokter Peresep", "No. Antrean"};
+        Object[] row={"No.Resep","Tgl.Resep","Pasien","Dokter Peresep"};
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -84,7 +84,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         tbResep.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbResep.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < 4; i++) {
             TableColumn column = tbResep.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(80);
@@ -94,8 +94,6 @@ public final class DlgResepObat extends javax.swing.JDialog {
                 column.setPreferredWidth(300);
             }else if(i==3){
                 column.setPreferredWidth(200);
-            }if(i==4){
-                column.setPreferredWidth(80);
             }
         }
         tbResep.setDefaultRenderer(Object.class, new WarnaTable());
