@@ -454,7 +454,6 @@
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                       <ComponentRef name="buttonGroup1"/>
                     </Property>
-                    <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="Tanggal Booking :"/>
                     <Property name="horizontalAlignment" type="int" value="4"/>
                     <Property name="horizontalTextPosition" type="int" value="4"/>
@@ -524,6 +523,7 @@
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                       <ComponentRef name="buttonGroup1"/>
                     </Property>
+                    <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="Tanggal Periksa :"/>
                     <Property name="horizontalAlignment" type="int" value="4"/>
                     <Property name="horizontalTextPosition" type="int" value="4"/>
