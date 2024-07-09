@@ -10365,8 +10365,11 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
         CmbJk.setSelectedIndex(0);
         CMbGd.setSelectedIndex(0);
         TTmp.setText("");
+        CMbPnd.setSelectedIndex(0);
         cmbAgama.setSelectedIndex(0);
         CmbStts.setSelectedIndex(0);
+        Kdpnj.setText("-");
+        nmpnj.setText("-");
         Alamat.setText("ALAMAT");
         AlamatPj.setText("ALAMAT");
         TKtp.setText("");
