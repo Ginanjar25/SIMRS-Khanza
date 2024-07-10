@@ -104,6 +104,7 @@ import rekammedis.RMDataCatatanObservasiIGD;
 import rekammedis.RMDataCatatanObservasiInduksiPersalinan;
 import rekammedis.RMDataMonitoringAsuhanGizi;
 import rekammedis.RMDataMonitoringReaksiTranfusi;
+import rekammedis.RMDataResumePerawatPasien;
 import rekammedis.RMDataSkriningGiziLanjut;
 import rekammedis.RMHemodialisa;
 import rekammedis.RMDeteksiDiniCorona;
@@ -754,6 +755,7 @@ public final class DlgIGD extends javax.swing.JDialog {
         MnTransferAntarRuang = new javax.swing.JMenuItem();
         MnEdukasiPasienKeluarga = new javax.swing.JMenuItem();
         ppResume = new javax.swing.JMenuItem();
+        ppResumePerawat = new javax.swing.JMenuItem();
         ppRiwayat = new javax.swing.JMenuItem();
         ppDeteksiDIniCorona = new javax.swing.JMenuItem();
         MnPermintaan = new javax.swing.JMenu();
@@ -2014,6 +2016,22 @@ public final class DlgIGD extends javax.swing.JDialog {
             }
         });
         MnDataRM.add(ppResume);
+        
+        ppResumePerawat.setBackground(new java.awt.Color(255, 255, 254));
+        ppResumePerawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResumePerawat.setForeground(new java.awt.Color(50, 50, 50));
+        ppResumePerawat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppResumePerawat.setText("Resume Perawat");
+        ppResumePerawat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppResumePerawat.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppResumePerawat.setName("[170,26]"); // NOI18N
+        ppResumePerawat.setPreferredSize(new java.awt.Dimension(200, 26));
+        ppResumePerawat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppResumePerawatBtnPrintActionPerformed(evt);
+            }
+        });
+        MnDataRM.add(ppResumePerawat);
 
         ppRiwayat.setBackground(new java.awt.Color(255, 255, 254));
         ppRiwayat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -8623,6 +8641,28 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             }
         }
     }//GEN-LAST:event_ppResumeBtnPrintActionPerformed
+    
+    private void ppResumePerawatBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppResumeBtnPrintActionPerformed
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, data pasien sudah habis...!!!!");
+            //TNoReg.requestFocus();
+        }else if(TPasien.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu data registrasi pada table...!!!");
+            TCari.requestFocus();
+        }else{
+            if(tbPetugas.getSelectedRow()!= -1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                RMDataResumePerawatPasien resume_perawat=new RMDataResumePerawatPasien(null,false);
+                resume_perawat.isCek();
+                resume_perawat.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                resume_perawat.setLocationRelativeTo(internalFrame1);
+                resume_perawat.setNoRm(TNoRw.getText(),DTPCari2.getDate());
+                resume_perawat.tampil();
+                resume_perawat.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+    }//GEN-LAST:event_ppResumeBtnPrintActionPerformed
 
     private void ppPerawatanCoronaBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppPerawatanCoronaBtnPrintActionPerformed
         if(tabMode.getRowCount()==0){
@@ -11405,6 +11445,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Table tbPetugas;
     // End of variables declaration//GEN-END:variables
     private javax.swing.JMenuItem MnPenilaianPreInduksi,MnHasilPemeriksaanEKG,MnSudahTerbitSEP,MnPenilaianPasienImunitasRendah,MnCatatanKeseimbanganCairan,MnCatatanObservasiCHBP,MnCatatanObservasiInduksiPersalinan;
+    private javax.swing.JMenuItem ppResumePerawat;
     
     private void tampil() {
         Valid.tabelKosong(tabMode);   
@@ -11807,6 +11848,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         MnPenilaianPasienImunitasRendah.setEnabled(akses.getpenilaian_pasien_imunitas_rendah());
         MnCatatanKeseimbanganCairan.setEnabled(akses.getbalance_cairan());
         MnCatatanObservasiInduksiPersalinan.setEnabled(akses.getcatatan_observasi_induksi_persalinan());
+        ppResumePerawat.setEnabled(akses.gettindakan_ralan());
         
         if(!akses.getkode().equals("Admin Utama")){
             BtnHapus.setEnabled(false);

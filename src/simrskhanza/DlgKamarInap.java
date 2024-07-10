@@ -2716,21 +2716,21 @@ public class DlgKamarInap extends javax.swing.JDialog {
         });
         MnDataRM.add(ppResume);
         
-//        ppResumePerawat.setBackground(new java.awt.Color(255, 255, 254));
-//        ppResumePerawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-//        ppResumePerawat.setForeground(new java.awt.Color(50, 50, 50));
-//        ppResumePerawat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-//        ppResumePerawat.setText("Resume Perawat");
-//        ppResumePerawat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-//        ppResumePerawat.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-//        ppResumePerawat.setName("[170,26]"); // NOI18N
-//        ppResumePerawat.setPreferredSize(new java.awt.Dimension(200, 26));
-//        ppResumePerawat.addActionListener(new java.awt.event.ActionListener() {
-//            public void actionPerformed(java.awt.event.ActionEvent evt) {
-//                ppResumePerawatBtnPrintActionPerformed(evt);
-//            }
-//        });
-//        MnDataRM.add(ppResumePerawat);
+        ppResumePerawat.setBackground(new java.awt.Color(255, 255, 254));
+        ppResumePerawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResumePerawat.setForeground(new java.awt.Color(50, 50, 50));
+        ppResumePerawat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppResumePerawat.setText("Resume Perawat");
+        ppResumePerawat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppResumePerawat.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppResumePerawat.setName("[170,26]"); // NOI18N
+        ppResumePerawat.setPreferredSize(new java.awt.Dimension(200, 26));
+        ppResumePerawat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppResumePerawatBtnPrintActionPerformed(evt);
+            }
+        });
+        MnDataRM.add(ppResumePerawat);
 
         ppRiwayat.setBackground(new java.awt.Color(255, 255, 254));
         ppRiwayat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N

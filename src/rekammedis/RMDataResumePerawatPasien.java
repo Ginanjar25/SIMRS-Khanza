@@ -22,6 +22,7 @@ import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +40,7 @@ import laporan.DlgDiagnosaPenyakit;
  *
  * @author perpustakaan
  */
-public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
+public final class RMDataResumePerawatPasien extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
     private Connection koneksi=koneksiDB.condb();
     private sekuel Sequel=new sekuel();
@@ -64,13 +65,13 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
     /** Creates new form DlgRujuk
      * @param parent
      * @param modal */
-    public RMDataResumePerawatPasienRanap(java.awt.Frame parent, boolean modal) {
+    public RMDataResumePerawatPasien(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         
         tabMode=new DefaultTableModel(null,new Object[]{
             "No.Rawat","No.RM","Nama Pasien","Kode Petugas","Nama Petugas",
-            "Kode Kamar","Kamar/Ruang/Bangsal","Tgl.Masuk","Jam Masuk","Tgl.Keluar","Jam Keluar","Keadaan Waktu Masuk","Masalah Keperawatan Selama Dirawat",
+            "Kode Poli","Poliklinik","Tgl.Masuk","Jam Masuk","Tgl.Keluar","Jam Keluar","Keadaan Waktu Masuk","Masalah Keperawatan Selama Dirawat",
             "Tindakan Keperawatan","Tindakan Medis","Pemeriksaan Penunjang Rad Terpenting","Pemeriksaan Penunjang Lab Terpenting","Diet",
             "Instruksi/Anjuran Dan Edukasi (Follow Up)","Keadaan Pulang","Ket.Keadaan Pulang","Cara Keluar","Ket.Cara Keluar","Dilanjutkan",
             "Ket.Dilanjutkan","Kontrol Kembali","Obat Pulang"
@@ -685,7 +686,7 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-07-2024" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-07-2024" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -699,7 +700,7 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-07-2024" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-07-2024" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -1185,7 +1186,7 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
         KetDilanjutkan.setBounds(240, 620, 270, 23);
 
         Kontrol.setForeground(new java.awt.Color(50, 70, 50));
-        Kontrol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-07-2024 10:54:47" }));
+        Kontrol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-07-2024 08:37:33" }));
         Kontrol.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         Kontrol.setName("Kontrol"); // NOI18N
         Kontrol.setOpaque(false);
@@ -1363,7 +1364,7 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
         }else if(TindakanKeperawatan.getText().equals("")){
             Valid.textKosong(TindakanKeperawatan,"Jalannya penyakit selama perawatan");
         }else{
-            if(Sequel.menyimpantf("resume_perawat_pasien_ranap","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Rawat",18,new String[]{
+            if(Sequel.menyimpantf("resume_perawat_pasien_ralan","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Rawat",18,new String[]{
                     TNoRw.getText(),NIP.getText(), KeadaanMasuk.getText(), MasalahKeperawatan.getText(), TindakanKeperawatan.getText(), TindakanMedis.getText(), 
                     PemeriksaanRad.getText(), HasilLaborat.getText(), Diet.getText(),Edukasi.getText(),CaraKeluar.getSelectedItem().toString(),KetKeluar.getText(),
                     Keadaan.getSelectedItem().toString(),KetKeadaanPulang.getText(),DIlanjutkan.getSelectedItem().toString(),KetDilanjutkan.getText(),
@@ -1501,19 +1502,19 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
             param.put("emailrs",akses.getemailrs());   
             param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
             Valid.MyReportqry("rptDataResumePerawatPasienRanap.jasper","report","::[ Data Resume Perawat Pasien ]::",
-                    "select reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,resume_perawat_pasien_ranap.nip,petugas.nama,reg_periksa.tgl_registrasi,reg_periksa.jam_reg, " +
-                    "resume_perawat_pasien_ranap.keadaan_masuk, resume_perawat_pasien_ranap.masalah_keperawatan, resume_perawat_pasien_ranap.tindakan_keperawatan, resume_perawat_pasien_ranap.tindakan_medis, " +
-                    "resume_perawat_pasien_ranap.pemeriksaan_penunjang, resume_perawat_pasien_ranap.hasil_laborat, resume_perawat_pasien_ranap.diet, resume_perawat_pasien_ranap.edukasi, resume_perawat_pasien_ranap.cara_keluar, " +
-                    "resume_perawat_pasien_ranap.ket_keluar, resume_perawat_pasien_ranap.keadaan, resume_perawat_pasien_ranap.ket_keadaan, resume_perawat_pasien_ranap.dilanjutkan, resume_perawat_pasien_ranap.ket_dilanjutkan, " +
-                    "resume_perawat_pasien_ranap.kontrol, resume_perawat_pasien_ranap.obat_pulang" +
-                    "from resume_perawat_pasien_ranap inner join reg_periksa on resume_perawat_pasien_ranap.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
-                    "inner join petugas on resume_perawat_pasien_ranap.nip=petugas.nip "+
+                    "select reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,resume_perawat_pasien_ralan.nip,petugas.nama,reg_periksa.tgl_registrasi,reg_periksa.jam_reg, " +
+                    "resume_perawat_pasien_ralan.keadaan_masuk, resume_perawat_pasien_ralan.masalah_keperawatan, resume_perawat_pasien_ralan.tindakan_keperawatan, resume_perawat_pasien_ralan.tindakan_medis, " +
+                    "resume_perawat_pasien_ralan.pemeriksaan_penunjang, resume_perawat_pasien_ralan.hasil_laborat, resume_perawat_pasien_ralan.diet, resume_perawat_pasien_ralan.edukasi, resume_perawat_pasien_ralan.cara_keluar, " +
+                    "resume_perawat_pasien_ralan.ket_keluar, resume_perawat_pasien_ralan.keadaan, resume_perawat_pasien_ralan.ket_keadaan, resume_perawat_pasien_ralan.dilanjutkan, resume_perawat_pasien_ralan.ket_dilanjutkan, " +
+                    "resume_perawat_pasien_ralan.kontrol, resume_perawat_pasien_ralan.obat_pulang" +
+                    "from resume_perawat_pasien_ralan inner join reg_periksa on resume_perawat_pasien_ralan.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
+                    "inner join petugas on resume_perawat_pasien_ralan.nip=petugas.nip "+
                     "where reg_periksa.tgl_registrasi between '"+Valid.SetTgl(DTPCari1.getSelectedItem()+"")+"' and '"+Valid.SetTgl(DTPCari2.getSelectedItem()+"")+"' "+
                     (TCari.getText().trim().equals("")?"":"and (reg_periksa.no_rkm_medis like '%"+TCari.getText().trim()+"%' or pasien.nm_pasien like '%"+TCari.getText().trim()+"%' or "+
-                    "resume_perawat_pasien_ranap.nip like '%"+TCari.getText().trim()+"%' or petugas.nama like '%"+TCari.getText().trim()+"%' or resume_perawat_pasien_ranap.keadaan_masuk like '%"+TCari.getText().trim()+"%' or " +
-                    "resume_perawat_pasien_ranap.masalah_keperawatan like '%"+TCari.getText().trim()+"%' or resume_perawat_pasien_ranap.tindakan_keperawatan like '%"+TCari.getText().trim()+"%' or " +
-                    "resume_perawat_pasien_ranap.cara_keluar like '%"+TCari.getText().trim()+"%' or reg_periksa.no_rawat like '%"+TCari.getText().trim()+ "%' or " +
-                    "resume_perawat_pasien_ranap.dilanjutkan like '%"+TCari.getText().trim()+"%')")+"order by reg_periksa.tgl_registrasi,reg_periksa.status_lanjut",param);
+                    "resume_perawat_pasien_ralan.nip like '%"+TCari.getText().trim()+"%' or petugas.nama like '%"+TCari.getText().trim()+"%' or resume_perawat_pasien_ralan.keadaan_masuk like '%"+TCari.getText().trim()+"%' or " +
+                    "resume_perawat_pasien_ralan.masalah_keperawatan like '%"+TCari.getText().trim()+"%' or resume_perawat_pasien_ralan.tindakan_keperawatan like '%"+TCari.getText().trim()+"%' or " +
+                    "resume_perawat_pasien_ralan.cara_keluar like '%"+TCari.getText().trim()+"%' or reg_periksa.no_rawat like '%"+TCari.getText().trim()+ "%' or " +
+                    "resume_perawat_pasien_ralan.dilanjutkan like '%"+TCari.getText().trim()+"%')")+"order by reg_periksa.tgl_registrasi,reg_periksa.status_lanjut",param);
         }
         this.setCursor(Cursor.getDefaultCursor());
 }//GEN-LAST:event_BtnPrintActionPerformed
@@ -1638,10 +1639,10 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
             param.put("norawat",tbObat.getValueAt(tbObat.getSelectedRow(),0).toString());
             finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",tbObat.getValueAt(tbObat.getSelectedRow(),3).toString());
             param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+tbObat.getValueAt(tbObat.getSelectedRow(),4).toString()+"\nID "+(finger.equals("")?tbObat.getValueAt(tbObat.getSelectedRow(),3).toString():finger)+"\n"+Valid.SetTgl3(Keluar.getText())); 
-            param.put("ruang",KdRuang.getText()+" "+NmRuang.getText());
+            param.put("ruang",NmRuang.getText());
             param.put("tanggalkeluar",Valid.SetTgl3(Keluar.getText()));
             param.put("jamkeluar",JamKeluar.getText());
-            Valid.MyReport("rptLaporanResumePerawatRanap.jasper","report","::[ Laporan Resume Perawat Pasien ]::",param);
+            Valid.MyReport("rptLaporanResumePerawatRalan.jasper","report","::[ Laporan Resume Perawat Pasien ]::",param);
         }
     }//GEN-LAST:event_MnLaporanResumeActionPerformed
 
@@ -1819,7 +1820,7 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
     */
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {
-            RMDataResumePerawatPasienRanap dialog = new RMDataResumePerawatPasienRanap(new javax.swing.JFrame(), true);
+            RMDataResumePerawatPasien dialog = new RMDataResumePerawatPasien(new javax.swing.JFrame(), true);
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
@@ -1931,17 +1932,17 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement(
-                    "select reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,resume_perawat_pasien_ranap.nip,petugas.nama, " +
-                    "reg_periksa.tgl_registrasi,reg_periksa.jam_reg,resume_perawat_pasien_ranap.keadaan_masuk,resume_perawat_pasien_ranap.masalah_keperawatan, " +
-                    "resume_perawat_pasien_ranap.tindakan_keperawatan,resume_perawat_pasien_ranap.tindakan_medis, " +
-                    "resume_perawat_pasien_ranap.pemeriksaan_penunjang,resume_perawat_pasien_ranap.hasil_laborat, " +
-                    "resume_perawat_pasien_ranap.diet,resume_perawat_pasien_ranap.edukasi,resume_perawat_pasien_ranap.cara_keluar,resume_perawat_pasien_ranap.ket_keluar,resume_perawat_pasien_ranap.keadaan, " +
-                    "resume_perawat_pasien_ranap.ket_keadaan,resume_perawat_pasien_ranap.dilanjutkan,resume_perawat_pasien_ranap.ket_dilanjutkan,resume_perawat_pasien_ranap.kontrol,resume_perawat_pasien_ranap.obat_pulang,reg_periksa.kd_pj,penjab.png_jawab " +
-                    "from resume_perawat_pasien_ranap inner join reg_periksa on resume_perawat_pasien_ranap.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
-                    "inner join petugas on resume_perawat_pasien_ranap.nip=petugas.nip " +
+                    "select reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,resume_perawat_pasien_ralan.nip,petugas.nama, " +
+                    "reg_periksa.tgl_registrasi,reg_periksa.jam_reg,resume_perawat_pasien_ralan.keadaan_masuk,resume_perawat_pasien_ralan.masalah_keperawatan, " +
+                    "resume_perawat_pasien_ralan.tindakan_keperawatan,resume_perawat_pasien_ralan.tindakan_medis, " +
+                    "resume_perawat_pasien_ralan.pemeriksaan_penunjang,resume_perawat_pasien_ralan.hasil_laborat, " +
+                    "resume_perawat_pasien_ralan.diet,resume_perawat_pasien_ralan.edukasi,resume_perawat_pasien_ralan.cara_keluar,resume_perawat_pasien_ralan.ket_keluar,resume_perawat_pasien_ralan.keadaan, " +
+                    "resume_perawat_pasien_ralan.ket_keadaan,resume_perawat_pasien_ralan.dilanjutkan,resume_perawat_pasien_ralan.ket_dilanjutkan,resume_perawat_pasien_ralan.kontrol,resume_perawat_pasien_ralan.obat_pulang,reg_periksa.kd_pj,penjab.png_jawab " +
+                    "from resume_perawat_pasien_ralan inner join reg_periksa on resume_perawat_pasien_ralan.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
+                    "inner join petugas on resume_perawat_pasien_ralan.nip=petugas.nip " +
                     "inner join penjab on penjab.kd_pj=reg_periksa.kd_pj where reg_periksa.tgl_registrasi between ? and ? "+
-                    (TCari.getText().trim().equals("")?"":"and (reg_periksa.no_rkm_medis like ? or pasien.nm_pasien like ? or resume_perawat_pasien_ranap.nip like ? or " +
-                    "petugas.nip like ? or resume_perawat_pasien_ranap.keadaan like ? or reg_periksa.no_rawat LIKE ? OR resume_perawat_pasien_ranap.keadaan_masuk LIKE ?)")+
+                    (TCari.getText().trim().equals("")?"":"and (reg_periksa.no_rkm_medis like ? or pasien.nm_pasien like ? or resume_perawat_pasien_ralan.nip like ? or " +
+                    "petugas.nip like ? or resume_perawat_pasien_ralan.keadaan like ? or reg_periksa.no_rawat LIKE ? OR resume_perawat_pasien_ralan.keadaan_masuk LIKE ?)")+
                     "order by reg_periksa.tgl_registrasi,reg_periksa.status_lanjut");
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
@@ -1960,18 +1961,20 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
                 while(rs.next()){
                     kodekamar="";namakamar="";tglkeluar="";jamkeluar="";
                     ps2=koneksi.prepareStatement(
-                        "select if(kamar_inap.tgl_keluar='0000-00-00',current_date(),kamar_inap.tgl_keluar) as tgl_keluar,"+
-                        "if(kamar_inap.jam_keluar='00:00:00',current_time(),kamar_inap.jam_keluar) as jam_keluar,kamar_inap.kd_kamar,bangsal.nm_bangsal "+
-                        "from kamar_inap inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal "+
-                        "where kamar_inap.no_rawat=? and kamar_inap.stts_pulang = '-' order by kamar_inap.tgl_keluar desc,kamar_inap.jam_keluar desc limit 1");
+                        "select reg_periksa.no_rkm_medis, reg_periksa.kd_poli, poliklinik.nm_poli, reg_periksa.tgl_registrasi, reg_periksa.jam_reg " +
+                        "from reg_periksa INNER JOIN poliklinik ON poliklinik.kd_poli = reg_periksa.kd_poli " +
+                        "where reg_periksa.no_rawat=?");
                     try {
                         ps2.setString(1,rs.getString("no_rawat"));
                         rs2=ps2.executeQuery();
                         if(rs2.next()){
-                            kodekamar=rs2.getString("kd_kamar");
-                            namakamar=rs2.getString("nm_bangsal");
-                            tglkeluar=rs2.getString("tgl_keluar");
-                            jamkeluar=rs2.getString("jam_keluar");
+                            Date now = new Date();
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+                            kodekamar=rs2.getString("kd_poli");
+                            namakamar=rs2.getString("nm_poli");
+                            tglkeluar=dateFormat.format(now);
+                            jamkeluar=timeFormat.format(now);
                         }
                     } catch (Exception e) {
                         System.out.println("Notif : "+e);
@@ -2063,31 +2066,33 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
     private void isRawat() {
         try {
             ps=koneksi.prepareStatement(
-                    "select reg_periksa.no_rkm_medis,pasien.nm_pasien,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
-                    "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.kd_pj,penjab.png_jawab,"+
-                    "if(kamar_inap.tgl_keluar='0000-00-00',current_date(),kamar_inap.tgl_keluar) as tgl_keluar,"+
-                    "if(kamar_inap.jam_keluar='00:00:00',current_time(),kamar_inap.jam_keluar) as jam_keluar,"+
-                    "kamar_inap.diagnosa_awal,kamar_inap.kd_kamar,bangsal.nm_bangsal from reg_periksa "+
-                    "inner join pasien on pasien.no_rkm_medis=reg_periksa.no_rkm_medis "+
-                    "inner join dokter on dokter.kd_dokter=reg_periksa.kd_dokter "+
-                    "inner join penjab on penjab.kd_pj=reg_periksa.kd_pj "+
-                    "inner join kamar_inap on kamar_inap.no_rawat=reg_periksa.no_rawat "+
-                    "inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar "+
-                    "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal "+
-                    "where reg_periksa.no_rawat=? order by kamar_inap.tgl_keluar desc,kamar_inap.jam_keluar desc limit 1");
+                     "select reg_periksa.no_rkm_medis,pasien.nm_pasien,reg_periksa.tgl_registrasi, " +
+                     "reg_periksa.jam_reg,reg_periksa.kd_pj,penjab.png_jawab, poliklinik.nm_poli, reg_periksa.kd_poli " +
+                     "from reg_periksa " +
+                     "inner join pasien on pasien.no_rkm_medis=reg_periksa.no_rkm_medis " +
+                     "inner join penjab on penjab.kd_pj=reg_periksa.kd_pj " +
+                     "INNER JOIN poliklinik ON poliklinik.kd_poli = reg_periksa.kd_poli " +
+                     "where reg_periksa.no_rawat=?");
             try {
                 ps.setString(1,TNoRw.getText());
                 rs=ps.executeQuery();
                 if(rs.next()){
+                    
+                    Date now = new Date();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+                    tglkeluar=dateFormat.format(now);
+                    jamkeluar=timeFormat.format(now);
+                    
                     DTPCari1.setDate(rs.getDate("tgl_registrasi"));
                     TNoRM.setText(rs.getString("no_rkm_medis"));
                     TPasien.setText(rs.getString("nm_pasien"));
                     Masuk.setText(rs.getString("tgl_registrasi"));
                     JamMasuk.setText(rs.getString("jam_reg"));
-                    Keluar.setText(rs.getString("tgl_keluar"));
-                    JamKeluar.setText(rs.getString("jam_keluar"));
-                    KdRuang.setText(rs.getString("kd_kamar"));
-                    NmRuang.setText(rs.getString("nm_bangsal"));
+                    Keluar.setText(tglkeluar);
+                    JamKeluar.setText(jamkeluar);
+                    KdRuang.setText(rs.getString("kd_poli"));
+                    NmRuang.setText(rs.getString("nm_poli"));
                 }
             } catch (Exception e) {
                 System.out.println("Notif : "+e);
@@ -2104,12 +2109,17 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
         }
     }
     
+    private void isPsien() {
+        Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis='"+TNoRM.getText()+"' ",TPasien);
+    }
+    
     
     public void setNoRm(String norwt, Date tgl2) {
         TNoRw.setText(norwt);
         TCari.setText(norwt);
         DTPCari2.setDate(tgl2);    
-        isRawat();              
+        isRawat();
+        isPsien();                
         ChkInput.setSelected(true);
         isForm();
         CaraKeluar.requestFocus();
@@ -2150,7 +2160,7 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
     }
 
     private void ganti() {
-        if(Sequel.mengedittf("resume_perawat_pasien_ranap","no_rawat=?","no_rawat=?,nip=?,keadaan_masuk=?,masalah_keperawatan=?,tindakan_keperawatan=?,tindakan_medis=?,pemeriksaan_penunjang=?,hasil_laborat=?,"+
+        if(Sequel.mengedittf("resume_perawat_pasien_ralan","no_rawat=?","no_rawat=?,nip=?,keadaan_masuk=?,masalah_keperawatan=?,tindakan_keperawatan=?,tindakan_medis=?,pemeriksaan_penunjang=?,hasil_laborat=?,"+
                 "diet=?,edukasi=?,cara_keluar=?,ket_keluar=?,keadaan=?,ket_keadaan=?,dilanjutkan=?,ket_dilanjutkan=?,kontrol=?, obat_pulang=?",19,new String[]{
                  TNoRw.getText(),NIP.getText(), KeadaanMasuk.getText(), MasalahKeperawatan.getText(), TindakanKeperawatan.getText(), TindakanMedis.getText(), 
                  PemeriksaanRad.getText(), HasilLaborat.getText(), Diet.getText(),Edukasi.getText(),CaraKeluar.getSelectedItem().toString(),KetKeluar.getText(),
@@ -2190,7 +2200,7 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
     }
 
     private void hapus() {
-        if(Sequel.queryu2tf("delete from resume_perawat_pasien_ranap where no_rawat=?",1,new String[]{
+        if(Sequel.queryu2tf("delete from resume_perawat_pasien_ralan where no_rawat=?",1,new String[]{
             TNoRw.getText()
         })==true){
             tabMode.removeRow(tbObat.getSelectedRow());

@@ -98,6 +98,8 @@ import rekammedis.RMDataCatatanObservasiIGD;
 import rekammedis.RMDataCatatanObservasiInduksiPersalinan;
 import rekammedis.RMDataMonitoringAsuhanGizi;
 import rekammedis.RMDataMonitoringReaksiTranfusi;
+import rekammedis.RMDataResumePerawatPasien;
+import rekammedis.RMDataResumePerawatPasienRanap;
 import rekammedis.RMDataSkriningGiziLanjut;
 import rekammedis.RMHemodialisa;
 import rekammedis.RMDeteksiDiniCorona;
@@ -1049,6 +1051,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         TNoRMCari = new widget.TextBox();
         jLabel8 = new widget.Label();
         TPasienCari = new widget.TextBox();
+        ppResumePerawat = new javax.swing.JMenuItem();
 
         jPopupMenu1.setForeground(new java.awt.Color(50, 50, 50));
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
@@ -2468,6 +2471,22 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             }
         });
         MnDataRM.add(ppResume);
+        
+        ppResumePerawat.setBackground(new java.awt.Color(255, 255, 254));
+        ppResumePerawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppResumePerawat.setForeground(new java.awt.Color(50, 50, 50));
+        ppResumePerawat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppResumePerawat.setText("Resume Perawat");
+        ppResumePerawat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppResumePerawat.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppResumePerawat.setName("[170,26]"); // NOI18N
+        ppResumePerawat.setPreferredSize(new java.awt.Dimension(200, 26));
+        ppResumePerawat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppResumePerawatBtnPrintActionPerformed(evt);
+            }
+        });
+        MnDataRM.add(ppResumePerawat);
 
         ppRiwayat.setBackground(new java.awt.Color(255, 255, 254));
         ppRiwayat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -10906,6 +10925,29 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
             }
         }
     }//GEN-LAST:event_ppResumeBtnPrintActionPerformed
+    
+    
+    private void ppResumePerawatBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppResumeBtnPrintActionPerformed
+        if(tabModekasir.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+            //TNoReg.requestFocus();
+        }else if(TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+            tbKasirRalan.requestFocus();
+        }else{
+            if(tbKasirRalan.getSelectedRow()!= -1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                RMDataResumePerawatPasien resume_perawat=new RMDataResumePerawatPasien(null,false);
+                resume_perawat.isCek();
+                resume_perawat.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                resume_perawat.setLocationRelativeTo(internalFrame1);
+                resume_perawat.setNoRm(TNoRw.getText(),DTPCari2.getDate());
+                resume_perawat.tampil();
+                resume_perawat.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+    }//GEN-LAST:event_ppResumeBtnPrintActionPerformed
 
     private void MnPenilaianAwalKeperawatanRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnPenilaianAwalKeperawatanRalanActionPerformed
         if(tabModekasir.getRowCount()==0){
@@ -14714,6 +14756,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                                   MnPermintaanKonsultasiMedik;
     private javax.swing.JMenu MnHasilUSG,MnHasilEndoskopi;
     private javax.swing.JMenuItem MnLaporanOperasi;
+    private javax.swing.JMenuItem ppResumePerawat;
     
     private void tampilkasir() {     
         Valid.tabelKosong(tabModekasir);
@@ -15061,6 +15104,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         MnCatatanKeseimbanganCairan.setEnabled(akses.getbalance_cairan());
         MnCatatanObservasiInduksiPersalinan.setEnabled(akses.getcatatan_observasi_induksi_persalinan());
         MnPermintaanKonsultasiMedik.setEnabled(akses.getkonsultasi_medik());
+        ppResumePerawat.setEnabled(akses.gettindakan_ralan());
         
         if(akses.getkode().equals("Admin Utama")){
             MnHapusData.setEnabled(true);

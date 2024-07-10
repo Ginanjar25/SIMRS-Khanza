@@ -78,6 +78,7 @@ import rekammedis.RMDataCatatanObservasiIGD;
 import rekammedis.RMDataCatatanObservasiInduksiPersalinan;
 import rekammedis.RMDataMonitoringAsuhanGizi;
 import rekammedis.RMDataMonitoringReaksiTranfusi;
+import rekammedis.RMDataResumePerawatPasien;
 import rekammedis.RMDataSkriningGiziLanjut;
 import rekammedis.RMEdukasiPasienKeluargaRawatJalan;
 import rekammedis.RMHasilEndoskopiFaringLaring;
@@ -1578,6 +1579,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         BtnTriaseIGD = new widget.Button();
         BtnRujukInternal = new widget.Button();
         BtnResume = new widget.Button();
+        BtnResumePerawat = new widget.Button();
         BtnAwalKeperawatanIGD = new widget.Button();
         BtnAwalKeperawatan = new widget.Button();
         BtnAwalKeperawatanGigi = new widget.Button();
@@ -3901,6 +3903,22 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         BtnResume.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnResumeActionPerformed(evt);
+            }
+        });
+        
+        BtnResumePerawat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
+        BtnResumePerawat.setText("Resume Perawat Pasien");
+        BtnResumePerawat.setFocusPainted(false);
+        BtnResumePerawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnResumePerawat.setGlassColor(new java.awt.Color(255, 255, 255));
+        BtnResumePerawat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        BtnResumePerawat.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        BtnResumePerawat.setName("BtnResumePerawat"); // NOI18N
+        BtnResumePerawat.setPreferredSize(new java.awt.Dimension(190, 23));
+        BtnResumePerawat.setRoundRect(false);
+        BtnResumePerawat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnResumePerawatActionPerformed(evt);
             }
         });
 
@@ -7546,6 +7564,23 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             this.setCursor(Cursor.getDefaultCursor());
         }
     }//GEN-LAST:event_BtnResumeActionPerformed
+    
+    private void BtnResumePerawatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnResumeActionPerformed
+        if(TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+            TCari.requestFocus();
+        }else{ 
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            RMDataResumePerawatPasien resume_perawat=new RMDataResumePerawatPasien(null,false);
+            resume_perawat.isCek();
+            resume_perawat.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            resume_perawat.setLocationRelativeTo(internalFrame1);
+            resume_perawat.setNoRm(TNoRw.getText(),DTPCari2.getDate());
+            resume_perawat.tampil();
+            resume_perawat.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }//GEN-LAST:event_BtnResumeActionPerformed
 
     private void cmbKesadaranKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbKesadaranKeyPressed
         Valid.pindah(evt,TGCS,LingkarPerut);
@@ -9475,6 +9510,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button BtnResepLuar;
     private widget.Button BtnResepObat;
     private widget.Button BtnResume;
+    private widget.Button BtnResumePerawat;
     private widget.Button BtnRiwayat;
     private widget.Button BtnRujukInternal;
     private widget.Button BtnRujukKeluar;
@@ -10079,6 +10115,10 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
         BtnResume.setVisible(akses.getdata_resume_pasien());   
         if(akses.getdata_resume_pasien()==true){
+            tinggi=tinggi+24;
+        }
+        BtnResumePerawat.setVisible(akses.gettindakan_ralan());
+        if(akses.gettindakan_ranap()==true){
             tinggi=tinggi+24;
         }
         BtnResepLuar.setVisible(akses.getresep_luar()); 
@@ -11924,6 +11964,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         FormMenu.add(BtnTriaseIGD);
         FormMenu.add(BtnRujukInternal);
         FormMenu.add(BtnResume);
+        FormMenu.add(BtnResumePerawat);
         FormMenu.add(BtnAwalKeperawatanIGD);
         FormMenu.add(BtnAwalKeperawatan);
         FormMenu.add(BtnAwalKeperawatanGigi);
