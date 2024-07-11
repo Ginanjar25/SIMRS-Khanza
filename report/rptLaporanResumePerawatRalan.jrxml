@@ -869,7 +869,7 @@
 				<textFieldExpression><![CDATA["9. Cara Keluar : " + $F{cara_keluar} + " / Ket Cara Keluar : " +$F{ket_keluar}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="368" y="663" width="157" height="15" uuid="54ff0f98-99b2-454b-a45d-f4f17b7bc2c2"/>
+				<reportElement positionType="Float" x="365" y="663" width="157" height="15" uuid="54ff0f98-99b2-454b-a45d-f4f17b7bc2c2"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" size="8" isBold="false" isItalic="false" isUnderline="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -877,7 +877,7 @@
 				<textFieldExpression><![CDATA[$F{nama}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement positionType="Float" x="368" y="612" width="153" height="45" isRemoveLineWhenBlank="true" uuid="7a048ca8-6066-47b7-b86e-7471ab272c6e">
+				<reportElement positionType="Float" x="368" y="616" width="153" height="45" isRemoveLineWhenBlank="true" uuid="7a048ca8-6066-47b7-b86e-7471ab272c6e">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
@@ -885,7 +885,7 @@
 				</jr:QRCode>
 			</componentElement>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="356" y="588" width="180" height="11" uuid="82df3c90-90d4-4184-8799-96d5f8f318ef"/>
+				<reportElement positionType="Float" x="356" y="592" width="180" height="11" uuid="82df3c90-90d4-4184-8799-96d5f8f318ef"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" size="8" isBold="false" isItalic="false" isUnderline="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -893,7 +893,7 @@
 				<textFieldExpression><![CDATA[$P{kotars} + ", " + $P{tanggalkeluar} + " Jam : " + $P{jamkeluar}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="381" y="600" width="130" height="10" uuid="a8b4578c-304d-4509-81ff-0e2ee1223b6b">
+				<reportElement positionType="Float" x="381" y="604" width="130" height="10" uuid="a8b4578c-304d-4509-81ff-0e2ee1223b6b">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>

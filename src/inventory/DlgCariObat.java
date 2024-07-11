@@ -529,6 +529,10 @@ public final class DlgCariObat extends javax.swing.JDialog {
         TPasien = new widget.TextBox();
         TNoRM = new widget.TextBox();
         LblNoRawat = new widget.TextBox();
+        jLabel13 = new widget.Label();
+        TKamar = new widget.TextBox();
+        TCaraBayar = new widget.TextBox();
+        jLabel15 = new widget.Label();
         TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -757,14 +761,14 @@ public final class DlgCariObat extends javax.swing.JDialog {
 
         FormInput.setBackground(new java.awt.Color(215, 225, 215));
         FormInput.setName("FormInput"); // NOI18N
-        FormInput.setPreferredSize(new java.awt.Dimension(100, 103));
+        FormInput.setPreferredSize(new java.awt.Dimension(100, 130));
         FormInput.setLayout(null);
 
         jLabel5.setText("Total :");
         jLabel5.setName("jLabel5"); // NOI18N
         jLabel5.setPreferredSize(new java.awt.Dimension(45, 23));
         FormInput.add(jLabel5);
-        jLabel5.setBounds(4, 70, 65, 23);
+        jLabel5.setBounds(4, 70, 65, 20);
 
         LTotal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LTotal.setText("0");
@@ -772,13 +776,13 @@ public final class DlgCariObat extends javax.swing.JDialog {
         LTotal.setName("LTotal"); // NOI18N
         LTotal.setPreferredSize(new java.awt.Dimension(80, 23));
         FormInput.add(LTotal);
-        LTotal.setBounds(72, 70, 80, 23);
+        LTotal.setBounds(72, 70, 80, 20);
 
         jLabel6.setText("PPN :");
         jLabel6.setName("jLabel6"); // NOI18N
         jLabel6.setPreferredSize(new java.awt.Dimension(35, 23));
         FormInput.add(jLabel6);
-        jLabel6.setBounds(145, 70, 35, 23);
+        jLabel6.setBounds(145, 70, 35, 20);
 
         LPpn.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LPpn.setText("0");
@@ -786,13 +790,13 @@ public final class DlgCariObat extends javax.swing.JDialog {
         LPpn.setName("LPpn"); // NOI18N
         LPpn.setPreferredSize(new java.awt.Dimension(65, 23));
         FormInput.add(LPpn);
-        LPpn.setBounds(183, 70, 65, 23);
+        LPpn.setBounds(183, 70, 65, 20);
 
         jLabel7.setText("Total+PPN :");
         jLabel7.setName("jLabel7"); // NOI18N
         jLabel7.setPreferredSize(new java.awt.Dimension(65, 23));
         FormInput.add(jLabel7);
-        jLabel7.setBounds(251, 70, 65, 23);
+        jLabel7.setBounds(251, 70, 65, 20);
 
         LTotalTagihan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         LTotalTagihan.setText("0");
@@ -800,7 +804,7 @@ public final class DlgCariObat extends javax.swing.JDialog {
         LTotalTagihan.setName("LTotalTagihan"); // NOI18N
         LTotalTagihan.setPreferredSize(new java.awt.Dimension(80, 23));
         FormInput.add(LTotalTagihan);
-        LTotalTagihan.setBounds(319, 70, 80, 23);
+        LTotalTagihan.setBounds(319, 70, 80, 20);
 
         label12.setText("Tarif :");
         label12.setName("label12"); // NOI18N
@@ -846,7 +850,7 @@ public final class DlgCariObat extends javax.swing.JDialog {
         jLabel8.setBounds(4, 40, 65, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-01-2024" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-07-2024" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -978,6 +982,30 @@ public final class DlgCariObat extends javax.swing.JDialog {
         LblNoRawat.setPreferredSize(new java.awt.Dimension(207, 23));
         FormInput.add(LblNoRawat);
         LblNoRawat.setBounds(72, 10, 123, 23);
+
+        jLabel13.setText("Asal Poli :");
+        jLabel13.setName("jLabel13"); // NOI18N
+        jLabel13.setPreferredSize(new java.awt.Dimension(68, 23));
+        FormInput.add(jLabel13);
+        jLabel13.setBounds(20, 100, 50, 23);
+
+        TKamar.setEditable(false);
+        TKamar.setName("TKamar"); // NOI18N
+        TKamar.setPreferredSize(new java.awt.Dimension(207, 23));
+        FormInput.add(TKamar);
+        TKamar.setBounds(70, 100, 280, 23);
+
+        TCaraBayar.setEditable(false);
+        TCaraBayar.setName("TCaraBayar"); // NOI18N
+        TCaraBayar.setPreferredSize(new java.awt.Dimension(207, 23));
+        FormInput.add(TCaraBayar);
+        TCaraBayar.setBounds(450, 100, 110, 23);
+
+        jLabel15.setText("Cara Bayar :");
+        jLabel15.setName("jLabel15"); // NOI18N
+        jLabel15.setPreferredSize(new java.awt.Dimension(68, 23));
+        FormInput.add(jLabel15);
+        jLabel15.setBounds(380, 100, 65, 23);
 
         internalFrame1.add(FormInput, java.awt.BorderLayout.PAGE_START);
 
@@ -2034,7 +2062,9 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     private widget.ScrollPane Scroll;
     private widget.ScrollPane Scroll1;
     private widget.ScrollPane Scroll2;
+    private widget.TextBox TCaraBayar;
     public widget.TextBox TCari;
+    private widget.TextBox TKamar;
     private widget.TextBox TNoRM;
     private widget.TextBox TNoRw;
     private widget.TextBox TPasien;
@@ -2047,6 +2077,8 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     private widget.Label jLabel10;
     private widget.Label jLabel11;
     private widget.Label jLabel12;
+    private widget.Label jLabel13;
+    private widget.Label jLabel15;
     private widget.Label jLabel5;
     private widget.Label jLabel6;
     private widget.Label jLabel7;
@@ -3426,6 +3458,8 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         Jam.setText(jam);  
         KdPj.setText(Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?",norwt));
         kenaikan=Sequel.cariIsiAngka("select (set_harga_obat_ralan.hargajual/100) from set_harga_obat_ralan where set_harga_obat_ralan.kd_pj=?",KdPj.getText());
+        TCaraBayar.setText(Sequel.cariIsi("select penjab.png_jawab from reg_periksa INNER JOIN penjab ON penjab.kd_pj = reg_periksa.kd_pj where reg_periksa.no_rawat=?",norwt));
+        TKamar.setText(Sequel.cariIsi("SELECT poliklinik.nm_poli FROM reg_periksa INNER JOIN poliklinik ON poliklinik.kd_poli = reg_periksa.kd_poli WHERE reg_periksa.no_rawat = ?",norwt));
         TCari.requestFocus();
     }
     
@@ -3443,6 +3477,8 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         ChkJln.setSelected(cekbox);
         KdPj.setText(Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?",norwt));
         kenaikan=Sequel.cariIsiAngka("select (set_harga_obat_ralan.hargajual/100) from set_harga_obat_ralan where set_harga_obat_ralan.kd_pj=?",KdPj.getText());
+        TCaraBayar.setText(Sequel.cariIsi("select penjab.png_jawab from reg_periksa INNER JOIN penjab ON penjab.kd_pj = reg_periksa.kd_pj where reg_periksa.no_rawat=?",norwt));
+        TKamar.setText(Sequel.cariIsi("SELECT poliklinik.nm_poli FROM reg_periksa INNER JOIN poliklinik ON poliklinik.kd_poli = reg_periksa.kd_poli WHERE reg_periksa.no_rawat = ?",norwt));
         TCari.requestFocus();
     }
     

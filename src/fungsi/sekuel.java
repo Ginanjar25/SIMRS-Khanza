@@ -1347,20 +1347,27 @@ public final class sekuel {
     
     public boolean cekTanggal48jam(String tanggalmulai,String tanggalinputdata){
         bool=false;
-        try {
-            waktumulai = formattanggal.parse(tanggalmulai);
-            kegiatan = formattanggal.parse(tanggalinputdata);
-            bedawaktu = (kegiatan.getTime()-waktumulai.getTime())/1000;
-            if(bedawaktu>172800){
+        String jabatan = cariIsi("select kd_jbtn from petugas where nip = ?", akses.getkode());
+        
+        if (jabatan.equals("J005") || jabatan.equals("J024")){
+            bool=true;
+        }else{
+            try {
+                waktumulai = formattanggal.parse(tanggalmulai);
+                kegiatan = formattanggal.parse(tanggalinputdata);
+                bedawaktu = (kegiatan.getTime()-waktumulai.getTime())/1000;
+                if(bedawaktu>172800){
+                    bool=false;
+                    JOptionPane.showMessageDialog(null,"Maaf, perubahan data / penghapusan data tidak boleh lebih dari 2 x 24 jam !");
+                }else{
+                    bool=true;
+                }
+            } catch (Exception ex) {
                 bool=false;
-                JOptionPane.showMessageDialog(null,"Maaf, perubahan data / penghapusan data tidak boleh lebih dari 2 x 24 jam !");
-            }else{
-                bool=true;
+                System.out.println("Notif : "+ex);
             }
-        } catch (Exception ex) {
-            bool=false;
-            System.out.println("Notif : "+ex);
         }
+        
         return bool;
     }
     
