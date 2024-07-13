@@ -192,7 +192,7 @@
 				<textElement>
 					<font fontName="Arial" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[ $P{norawat}+ " (" +  $P{norm} + ")"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{norawat}+ " (" +  $P{norm} + ")"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="409" y="52" width="96" height="12" uuid="dae4002f-edd7-409b-94fb-f48a11113692"/>
