@@ -330,6 +330,7 @@ public final class ICareRiwayatPerawatan extends javax.swing.JDialog {
     public void setPasien(String param,String kodedokter){
         NoKartu.setText(param);
         KdDPJPLayanan.setText(kodedokter);
+        tampil();
     }
     
     private void createScene() {        

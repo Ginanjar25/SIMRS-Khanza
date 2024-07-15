@@ -7894,6 +7894,11 @@ private void MnDataRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                     dlgrwjl2.SetPj(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),17).toString());
                     dlgrwjl2.setNoRm(TNoRw.getText(),DTPCari1.getDate(),DTPCari2.getDate());    
                     dlgrwjl2.setVisible(true);
+                    
+                    i=JOptionPane.showConfirmDialog(null, "Apakah Anda ingin mengakses ICARE BPJS ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                    if(i==JOptionPane.YES_OPTION){
+                        MnRiwayatPerawatanICareNIKActionPerformed(null);
+                    }
                 } 
             }                               
         }

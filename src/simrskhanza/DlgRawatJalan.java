@@ -12,6 +12,7 @@
 
 package simrskhanza;
 
+import bridging.ICareRiwayatPerawatan;
 import surat.SuratKontrol;
 import kepegawaian.DlgCariDokter;
 import kepegawaian.DlgCariPetugas;
@@ -1662,6 +1663,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         BtnPenilaianTambahanBunuhDiri = new widget.Button();
         BtnPenilaianTambahanPerilakuKekerasan = new widget.Button();
         BtnPenilaianTambahanMelarikanDiri = new widget.Button();
+        button4 = new widget.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -2406,6 +2408,19 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
 
         panelGlass12.add(scrollPane2);
         scrollPane2.setBounds(73, 115, 360, 38);
+        
+        
+        button4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        button4.setText("Akses ICARE BPJS");
+        button4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        button4.setName("button4"); // NOI18N
+        button4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button4ActionPerformed(evt);
+            }
+        });
+        panelGlass12.add(button4);
+        button4.setBounds(910, 10, 170, 22);
 
         TSuhu.setFocusTraversalPolicyProvider(true);
         TSuhu.setName("TSuhu"); 
@@ -5245,6 +5260,25 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void button4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No.Rawat");
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                String variabel=Sequel.cariIsi("select maping_dokter_dpjpvclaim.kd_dokter_bpjs from maping_dokter_dpjpvclaim where maping_dokter_dpjpvclaim.kd_dokter=?",KdDok.getText());
+                if(!variabel.equals("")){
+                    ICareRiwayatPerawatan dlgki=new ICareRiwayatPerawatan(null,false);
+                    dlgki.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                    dlgki.setLocationRelativeTo(internalFrame1);
+                    dlgki.setPasien(Sequel.cariIsi("select pasien.no_peserta from pasien where pasien.no_rkm_medis=?",TNoRM.getText()),variabel);   
+                    dlgki.setVisible(true);
+                }else{
+                    JOptionPane.showMessageDialog(null,"Maaf, Dokter tidak terdaftar di mapping dokter BPJS...!!!"); 
+                }
+                this.setCursor(Cursor.getDefaultCursor());  
+        }
+    }
+    
     private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNoRwKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
             isRawat();
@@ -9759,6 +9793,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button BtnSkorBromagePascaAnestesi,BtnPenilaianPreInduksi,BtnHasilPemeriksaanUSGUrologi,BtnHasilPemeriksaanUSGGynecologi,BtnHasilPemeriksaanEKG,BtnPenatalaksanaanTerapiOkupasi,BtnPenilaianPsikolog,
                           BtnHasilPemeriksaanUSGNeonatus,BtnHasilEndoskopiFaringLaring,BtnHasilEndoskopiHidung,BtnHasilEndoskopiTelinga,BtnPenilaianPasienImunitasRendah,BtnCatatanKeseimbanganCairan,BtnCatatanObservasiCHBP,
                           BtnCatatanObservasiInduksiPersalinan,BtnPermintaanKonsultasiMedik;
+    private widget.Button button4;
     
     private void tampilDr() {
         Valid.tabelKosong(tabModeDr);
