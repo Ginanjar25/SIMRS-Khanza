@@ -10847,14 +10847,29 @@ public class DlgKamarInap extends javax.swing.JDialog {
             param.put("nomersurat",NomorSurat.getText());
             param.put("dokterpj",CrDokter3.getText());
             param.put("emailrs",akses.getemailrs());
+            param.put("no_rawat",TNoRwCari.getText());
             param.put("TanggalAwal",Sequel.cariIsi("select DATE_FORMAT(reg_periksa.tgl_registrasi, '%e %M %Y') from reg_periksa where reg_periksa.no_rawat='"+TNoRwCari.getText()+"'"));
             param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
-            Valid.MyReportqry("rptSuratSakit2.jasper","report","::[ Surat Sakit ]::",
-                "select reg_periksa.no_rkm_medis,dokter.nm_dokter,pasien.keluarga,pasien.namakeluarga,pasien.tgl_lahir,pasien.jk," +
-                " pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.pekerjaan,pasien.alamat" +
-                " from reg_periksa inner join pasien inner join dokter" +
-                " on reg_periksa.no_rkm_medis=pasien.no_rkm_medis and reg_periksa.kd_dokter=dokter.kd_dokter  "+
-                "where reg_periksa.no_rawat='"+TNoRwCari.getText()+"' ",param);
+            String tgl_bayar = Sequel.cariIsi("SELECT billing.tgl_byr FROM billing WHERE billing.no_rawat = ? limit 1", TNoRwCari.getText());
+            String tgl_masuk = Sequel.cariIsi("SELECT kamar_inap.tgl_masuk FROM kamar_inap WHERE kamar_inap.no_rawat = ? ORDER BY kamar_inap.tgl_masuk ASC LIMIT 1 ", TNoRwCari.getText());
+            param.put("TanggalAwal",tgl_masuk);
+            String kodedokter=Sequel.cariIsi("SELECT kd_dokter FROM dpjp_ranap WHERE no_rawat = ?",TNoRwCari.getText());
+            if(kodedokter.isBlank()){
+               kodedokter=Sequel.cariIsi("SELECT kd_dokter FROM reg_periksa WHERE no_rawat = ?",TNoRwCari.getText());
+            }
+            String dpjp=Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",kodedokter);
+            String finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kodedokter);
+            param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+dpjp+"\nID "+(finger.equals("")?kodedokter:finger)+"\n"+Sequel.cariIsi("select DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y') from reg_periksa where reg_periksa.no_rawat=?",TNoRwCari.getText()));  
+            param.put("penyakit",Sequel.cariIsi("select concat(diagnosa_pasien.kd_penyakit,' ',penyakit.nm_penyakit) from diagnosa_pasien inner join reg_periksa inner join penyakit "+
+                "on diagnosa_pasien.no_rawat=reg_periksa.no_rawat and diagnosa_pasien.kd_penyakit=penyakit.kd_penyakit "+
+                "where diagnosa_pasien.no_rawat=? and diagnosa_pasien.prioritas='1'",TNoRwCari.getText()));
+            if(tgl_bayar.isBlank()){
+                Valid.MyReport("rptSuratSakit2.jasper","report","::[ Surat Keterangan Rawat Inap ]::", param);
+            }else{
+                param.put("TanggalAkhir",tgl_bayar);
+                Valid.MyReport("rptSuratKeteranganRawatInap.jasper","report","::[ Surat Keterangan Rawat Inap ]::", param);
+            }
+            
             this.setCursor(Cursor.getDefaultCursor());
         }
     }//GEN-LAST:event_BtnPrint5ActionPerformed

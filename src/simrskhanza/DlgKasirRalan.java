@@ -238,7 +238,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             Beban_Jasa_Medik_Paramedis_Tindakan_Ralan="",Utang_Jasa_Medik_Paramedis_Tindakan_Ralan="",Beban_KSO_Tindakan_Ralan="",Utang_KSO_Tindakan_Ralan="",
             Beban_Jasa_Sarana_Tindakan_Ralan="",Utang_Jasa_Sarana_Tindakan_Ralan="",HPP_BHP_Tindakan_Ralan="",Persediaan_BHP_Tindakan_Ralan="",terbitsep="",
             Beban_Jasa_Menejemen_Tindakan_Ralan="",Utang_Jasa_Menejemen_Tindakan_Ralan="",tampildiagnosa="",finger="",norawatdipilih="",normdipilih="",
-            variabel="";
+            variabel="", Bridging_SEP = "";
     public DlgBilingRalan billing=new DlgBilingRalan(null,false);
     private int i=0,pilihan=0,sudah=0,jmlparsial=0;
     public DlgKamarInap kamarinap=new DlgKamarInap(null,false);
@@ -7895,8 +7895,9 @@ private void MnDataRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                     dlgrwjl2.setNoRm(TNoRw.getText(),DTPCari1.getDate(),DTPCari2.getDate());    
                     dlgrwjl2.setVisible(true);
                     
-                    i=JOptionPane.showConfirmDialog(null, "Apakah Anda ingin mengakses ICARE BPJS ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
-                    if(i==JOptionPane.YES_OPTION){
+                    Bridging_SEP = Sequel.cariIsi("select no_sep from bridging_sep where no_rawat = ?", TNoRw.getText());
+                    
+                    if(!Bridging_SEP.isBlank()){
                         MnRiwayatPerawatanICareNIKActionPerformed(null);
                     }
                 } 
