@@ -9028,6 +9028,12 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         ChkInput1.setSelected(true);
         isForm2(); 
         TabRawatMouseClicked(null);
+        TKdPrw.setText("");
+        TNmPrw.setText("");
+        TKdPrwPetugas.setText("");
+        TNmPrwPetugas.setText("");
+        TKdPrwDokterPetugas.setText("");
+        TNmPrwDokterPetugas.setText("");
     }
     
     public void setKamar(String kamar) {
