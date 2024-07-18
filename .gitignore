@@ -4,3 +4,7 @@
 /setting/
 setting/database.xml
 /cache
+/KhanzaHMSServiceMobileJKNERM/build
+/KhanzaHMSServiceMobileJKNERM/dist
+*.properties
+*.class
