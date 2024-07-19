@@ -59,7 +59,7 @@ import org.springframework.web.client.RestTemplate;
  * @author perpustakaan
  */
 public final class BPJSProgramPRB extends javax.swing.JDialog {
-    private final DefaultTableModel tabMode,tabMode2;
+    private final DefaultTableModel tabMode,tabMode2,tabMode3, tabMode4;
     private Connection koneksi=koneksiDB.condb();
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
@@ -134,6 +134,37 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         }
         tbProgramPRB.setDefaultRenderer(Object.class, new WarnaTable());
         
+        tabMode3=new DefaultTableModel(null,new Object[]{
+            "No.Rawat","No. SEP","PRB","No. RM","Nama Pasien","Poliklinik","Dokter","ICD 9"}){
+             @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
+        };
+        tbPotensiPRB.setModel(tabMode3);
+
+        tbPotensiPRB.setPreferredScrollableViewportSize(new Dimension(500,500));
+        tbPotensiPRB.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        for (i = 0; i < 8; i++) {
+            TableColumn column = tbPotensiPRB.getColumnModel().getColumn(i);
+            if(i==0){
+                column.setPreferredWidth(105);
+            }else if(i==1){
+                column.setPreferredWidth(70);
+            }else if(i==2){
+                column.setPreferredWidth(150);
+            }else if(i==3){
+                column.setPreferredWidth(180);
+            }else if(i==4){
+                column.setPreferredWidth(150);
+            }else if(i==5){
+                column.setPreferredWidth(85);
+            }else if(i==6){
+                column.setPreferredWidth(122);
+            }else if(i==7){
+                column.setPreferredWidth(80);
+            }
+        }
+        tbPotensiPRB.setDefaultRenderer(Object.class, new WarnaTable());
+        
         tabMode2=new DefaultTableModel(null,new Object[]{
             "Jumlah","Kode Obat","Nama Obat","Signa 1","Signa 2"}){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
@@ -172,6 +203,47 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         }
         warna.kolom=0;
         tbObat.setDefaultRenderer(Object.class,warna);
+
+        tabMode4 = new DefaultTableModel(null, new Object[]{
+            "Jumlah", "Kode Obat", "Nama Obat", "Signa 1", "Signa 2"}) {
+            @Override
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                boolean a = false;
+                if ((colIndex == 0) || (colIndex == 3) || (colIndex == 4)) {
+                    a = true;
+                }
+                return a;
+            }
+            Class[] types = new Class[]{
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+
+            @Override
+            public Class getColumnClass(int columnIndex) {
+                return types[columnIndex];
+            }
+        };
+        tbObat1.setModel(tabMode4);
+
+        tbObat1.setPreferredScrollableViewportSize(new Dimension(500, 500));
+        tbObat1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        for (i = 0; i < 5; i++) {
+            TableColumn column = tbObat1.getColumnModel().getColumn(i);
+            if (i == 0) {
+                column.setPreferredWidth(45);
+            } else if (i == 1) {
+                column.setPreferredWidth(80);
+            } else if (i == 2) {
+                column.setPreferredWidth(325);
+            } else if (i == 3) {
+                column.setPreferredWidth(90);
+            } else if (i == 4) {
+                column.setPreferredWidth(90);
+            }
+        }
+        warna.kolom = 0;
+        tbObat1.setDefaultRenderer(Object.class, warna);
 
         NoRawat.setDocument(new batasInput((byte)17).getKata(NoRawat));
         Alamat.setDocument(new batasInput((int)200).getKata(Alamat));
@@ -298,8 +370,6 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         MnSurat = new javax.swing.JMenuItem();
         MnTampilkanObatPRB = new javax.swing.JMenuItem();
         internalFrame1 = new widget.InternalFrame();
-        Scroll = new widget.ScrollPane();
-        tbProgramPRB = new widget.Table();
         jPanel3 = new javax.swing.JPanel();
         panelGlass8 = new widget.panelisi();
         BtnSimpan = new widget.Button();
@@ -352,7 +422,14 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         tbObat = new widget.Table();
         jLabel20 = new widget.Label();
         Tanggal = new widget.Tanggal();
+        Scroll2 = new widget.ScrollPane();
+        tbObat1 = new widget.Table();
         ChkInput = new widget.CekBox();
+        panelCari = new widget.panelisi();
+        Scroll3 = new widget.ScrollPane();
+        tbPotensiPRB = new widget.Table();
+        Scroll = new widget.ScrollPane();
+        tbProgramPRB = new widget.Table();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
@@ -394,28 +471,7 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Program PRB di VClaim ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
-        internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
-
-        Scroll.setComponentPopupMenu(jPopupMenu1);
-        Scroll.setName("Scroll"); // NOI18N
-        Scroll.setOpaque(true);
-
-        tbProgramPRB.setAutoCreateRowSorter(true);
-        tbProgramPRB.setComponentPopupMenu(jPopupMenu1);
-        tbProgramPRB.setName("tbProgramPRB"); // NOI18N
-        tbProgramPRB.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbProgramPRBMouseClicked(evt);
-            }
-        });
-        tbProgramPRB.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                tbProgramPRBKeyPressed(evt);
-            }
-        });
-        Scroll.setViewportView(tbProgramPRB);
-
-        internalFrame1.add(Scroll, java.awt.BorderLayout.CENTER);
+        internalFrame1.setLayout(new java.awt.BorderLayout());
 
         jPanel3.setName("jPanel3"); // NOI18N
         jPanel3.setOpaque(false);
@@ -557,7 +613,7 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-11-2021" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-07-2024" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -571,7 +627,7 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-11-2021" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-07-2024" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -857,7 +913,7 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         Scroll1.setViewportView(tbObat);
 
         FormInput.add(Scroll1);
-        Scroll1.setBounds(83, 156, 655, 80);
+        Scroll1.setBounds(30, 160, 710, 80);
 
         jLabel20.setText("Tanggal PRB :");
         jLabel20.setName("jLabel20"); // NOI18N
@@ -866,7 +922,7 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         jLabel20.setBounds(565, 130, 80, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-11-2021" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-07-2024" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -878,6 +934,20 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         });
         FormInput.add(Tanggal);
         Tanggal.setBounds(648, 130, 90, 23);
+
+        Scroll2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Data Resep Dokter", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11))); // NOI18N
+        Scroll2.setName("Scroll2"); // NOI18N
+
+        tbObat1.setName("tbObat1"); // NOI18N
+        tbObat1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbObat1MouseClicked(evt);
+            }
+        });
+        Scroll2.setViewportView(tbObat1);
+
+        FormInput.add(Scroll2);
+        Scroll2.setBounds(760, 10, 800, 150);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -903,6 +973,45 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         PanelInput.add(ChkInput, java.awt.BorderLayout.PAGE_END);
 
         internalFrame1.add(PanelInput, java.awt.BorderLayout.PAGE_START);
+
+        panelCari.setBorder(null);
+        panelCari.setName("panelCari"); // NOI18N
+        panelCari.setPreferredSize(new java.awt.Dimension(44, 44));
+        panelCari.setLayout(new java.awt.GridLayout(2, 0, 0, 1));
+
+        Scroll3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(239, 244, 234)), "Data Pasien Potensi PRB", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11))); // NOI18N
+        Scroll3.setName("Scroll3"); // NOI18N
+        Scroll3.setOpaque(true);
+        Scroll3.setPreferredSize(new java.awt.Dimension(452, 100));
+
+        tbPotensiPRB.setName("tbPotensiPRB"); // NOI18N
+        Scroll3.setViewportView(tbPotensiPRB);
+
+        panelCari.add(Scroll3);
+
+        Scroll.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(239, 244, 234)), "Data PRB Terkirim Ke BPJS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11))); // NOI18N
+        Scroll.setName("Scroll"); // NOI18N
+        Scroll.setOpaque(true);
+        Scroll.setPreferredSize(new java.awt.Dimension(452, 100));
+
+        tbProgramPRB.setAutoCreateRowSorter(true);
+        tbProgramPRB.setComponentPopupMenu(jPopupMenu1);
+        tbProgramPRB.setName("tbProgramPRB"); // NOI18N
+        tbProgramPRB.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbProgramPRBMouseClicked(evt);
+            }
+        });
+        tbProgramPRB.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tbProgramPRBKeyPressed(evt);
+            }
+        });
+        Scroll.setViewportView(tbProgramPRB);
+
+        panelCari.add(Scroll);
+
+        internalFrame1.add(panelCari, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(internalFrame1, java.awt.BorderLayout.CENTER);
 
@@ -989,6 +1098,7 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
         tampil();
+        tampil2();
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -1436,6 +1546,10 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }     
     }//GEN-LAST:event_MnTampilkanObatPRBActionPerformed
 
+    private void tbObat1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbObat1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tbObat1MouseClicked
+
     /**
     * @param args the command line arguments
     */
@@ -1486,6 +1600,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox Saran;
     private widget.ScrollPane Scroll;
     private widget.ScrollPane Scroll1;
+    private widget.ScrollPane Scroll2;
+    private widget.ScrollPane Scroll3;
     private widget.TextBox TCari;
     private widget.Tanggal Tanggal;
     private widget.Button btnDokterDPJP;
@@ -1508,9 +1624,12 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Label jLabel9;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.panelisi panelCari;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
     private widget.Table tbObat;
+    private widget.Table tbObat1;
+    public widget.Table tbPotensiPRB;
     private widget.Table tbProgramPRB;
     // End of variables declaration//GEN-END:variables
 
@@ -1561,6 +1680,44 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 }
             }
             LCount.setText(""+tabMode.getRowCount());
+        }catch(SQLException e){
+            System.out.println("Notifikasi : "+e);
+        }        
+    }
+    
+    public void tampil2() {
+        Valid.tabelKosong(tabMode3);
+        try{     
+            ps=koneksi.prepareStatement("SELECT rp.no_rawat, bs.no_sep, pr.prb, ps.no_rkm_medis, ps.nm_pasien, pl.nm_poli, dr.nm_dokter,\n" +
+            "(SELECT dps.kd_penyakit FROM diagnosa_pasien dps WHERE dps.no_rawat = rp.no_rawat and dps.prioritas = '1' limit 1) AS kd_icd\n" +
+            "FROM bridging_sep bs\n" +
+            "INNER JOIN reg_periksa rp ON rp.no_rawat = bs.no_rawat\n" +
+            "INNER JOIN bpjs_prb pr ON pr.no_sep = bs.no_sep\n" +
+            "INNER JOIN pasien ps ON ps.no_rkm_medis = rp.no_rkm_medis\n" +
+            "INNER JOIN poliklinik pl ON pl.kd_poli = rp.kd_poli\n" +
+            "INNER JOIN dokter dr ON dr.kd_dokter = rp.kd_dokter\n" +
+            "WHERE bs.tglsep BETWEEN ? AND ? ");
+            try {
+                ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
+                ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
+                rs=ps.executeQuery();
+                while(rs.next()){
+                    tabMode3.addRow(new Object[]{
+                        rs.getString("no_rawat"),rs.getString("no_sep"),rs.getString("prb"),rs.getString("no_rkm_medis"),
+                        rs.getString("nm_pasien"),rs.getString("nm_poli"),rs.getString("nm_dokter"),rs.getString("kd_icd")
+                    });
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+            LCount.setText(""+tabMode3.getRowCount());
         }catch(SQLException e){
             System.out.println("Notifikasi : "+e);
         }        
@@ -1634,9 +1791,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
-            ChkInput.setVisible(false);            
-            PanelInput.setPreferredSize(new Dimension(WIDTH,20));
-            FormInput.setVisible(false);      
+            ChkInput.setVisible(false);
+            PanelInput.setPreferredSize(new Dimension(WIDTH,266));
+            FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }
     }
