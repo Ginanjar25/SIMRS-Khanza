@@ -15950,7 +15950,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         TNoReg.setText("");
         TNoRw.setText("");
         Kd2.setText("");
-        //DTPReg.setDate(new Date());
+        DTPReg.setDate(new Date());
         TNoRM.setText("");
         TPasien.setText("");
         TPngJwb.setText("");
