@@ -7899,6 +7899,7 @@ private void MnDataRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                     String soap = Sequel.cariIsi("SELECT CONCAT(tgl_perawatan, jam_rawat, keluhan) as soap FROM pemeriksaan_ralan WHERE no_rawat = ? limit 1", TNoRw.getText());
                     if(!Bridging_SEP.isBlank() && soap.isBlank()){
                         MnRiwayatPerawatanICareNIKActionPerformed(null);
+//                        MnRiwayatPerawatanICareNoKartuActionPerformed(null);
                     }
                 } 
             }                               

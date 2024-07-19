@@ -6883,69 +6883,69 @@ public class DlgKamarInap extends javax.swing.JDialog {
                              tbKamIn.requestFocus();
                 }else{
                     //append kamar 
-                    Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "'", "lama='0', ttl_biaya='0'");
-                    try {
-                    psrekapkamar = koneksi.prepareStatement("SELECT gr.*, COUNT(gr.tgl_masuk) AS lama, (COUNT(gr.tgl_masuk)*gr.tarif) AS total FROM (\n"
-                            + "		SELECT ki.no_rawat, ki.kd_kamar, ki.tgl_masuk, max(ki.jam_masuk)jam_masuk, ki.tgl_billing, ki.tarif, ki.titip, ki.status_kamar\n"
-                            + "			FROM side_db.detail_pindah_kamar ki\n"
-                            + "			JOIN (\n"
-                            + "				SELECT no_rawat, kd_kamar, tgl_masuk, jam_masuk, tgl_billing, MAX(tarif) AS tarif, titip, status_kamar\n"
-                            + "				FROM side_db.detail_pindah_kamar\n"
-                            + "				WHERE no_rawat =? "
-                            + "				GROUP BY tgl_billing\n"
-                            + "			) dpk ON dpk.tgl_billing = ki.tgl_billing AND dpk.tarif = ki.tarif \n"
-                            + "			WHERE ki.no_rawat =? "
-                            + "	GROUP BY tgl_billing\n"
-                            + ") gr\n"
-                            + "GROUP BY gr.tgl_masuk, gr.jam_masuk");
-                    try {
-                        psrekapkamar.setString(1, TNoRwCari.getText());
-                        psrekapkamar.setString(2, TNoRwCari.getText());
-                        rsrekapkamar = psrekapkamar.executeQuery();
-                        while (rsrekapkamar.next()) {
-                            System.out.println("Lama = " + rsrekapkamar.getString("lama"));
-                            if (1==1){
-                                System.out.println("bukan titip");
-                                String cekTitipJam23 = Sequel.cariIsi("SELECT "
-                                        + "if(SUBSTRING_INDEX(pr.catatan,'#',1) > '23:00:00','Yes','No') AS hasil_cek FROM permintaan_ranap pr WHERE pr.no_rawat = '" + TNoRwCari.getText() + "'");
-                                if (cekTitipJam23.equals("Yes")) {
-                                    if (rsrekapkamar.isFirst()) {
-                                        int lamaMinSatu = Integer.parseInt(rsrekapkamar.getString("lama")) - 1;
-                                        int tarifMinSatu = Integer.parseInt(rsrekapkamar.getString("total")) - Integer.parseInt(rsrekapkamar.getString("tarif")) ;                                        
-                                        Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "' "
-                                                + "and kd_kamar='" + rsrekapkamar.getString("kd_kamar") + "' "
-                                                + "and tgl_masuk='" + rsrekapkamar.getString("tgl_masuk") + "' "
-                                                + "and jam_masuk='" + rsrekapkamar.getString("jam_masuk") + "' ",
-                                                "lama='" + lamaMinSatu + "', ttl_biaya='" + tarifMinSatu + "'");
-                                    } else {
-                                        Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "' "
-                                                + "and kd_kamar='" + rsrekapkamar.getString("kd_kamar") + "' "
-                                                + "and tgl_masuk='" + rsrekapkamar.getString("tgl_masuk") + "' "
-                                                + "and jam_masuk='" + rsrekapkamar.getString("jam_masuk") + "' ",
-                                                "lama='" + rsrekapkamar.getString("lama") + "', ttl_biaya='" + rsrekapkamar.getString("total") + "'");
-                                    }
-                                } else {
-                                    Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "' "
-                                            + "and kd_kamar='" + rsrekapkamar.getString("kd_kamar") + "' "
-                                            + "and tgl_masuk='" + rsrekapkamar.getString("tgl_masuk") + "' "
-                                            + "and jam_masuk='" + rsrekapkamar.getString("jam_masuk") + "' ",
-                                            "lama='" + rsrekapkamar.getString("lama") + "', ttl_biaya='" + rsrekapkamar.getString("total") + "'");
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Notifikasi : " + e);
-                    } finally {
-                        if (rsrekapkamar != null) {
-                            rsrekapkamar.close();
-                        }
-                        if (rsrekapkamar != null) {
-                            rsrekapkamar.close();
-                        }
-                    }
-                } catch (Exception e) {
-                    System.out.println("");
-                }
+//                    Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "'", "lama='0', ttl_biaya='0'");
+//                    try {
+//                    psrekapkamar = koneksi.prepareStatement("SELECT gr.*, COUNT(gr.tgl_masuk) AS lama, (COUNT(gr.tgl_masuk)*gr.tarif) AS total FROM (\n"
+//                            + "		SELECT ki.no_rawat, ki.kd_kamar, ki.tgl_masuk, max(ki.jam_masuk)jam_masuk, ki.tgl_billing, ki.tarif, ki.titip, ki.status_kamar\n"
+//                            + "			FROM side_db.detail_pindah_kamar ki\n"
+//                            + "			JOIN (\n"
+//                            + "				SELECT no_rawat, kd_kamar, tgl_masuk, jam_masuk, tgl_billing, MAX(tarif) AS tarif, titip, status_kamar\n"
+//                            + "				FROM side_db.detail_pindah_kamar\n"
+//                            + "				WHERE no_rawat =? "
+//                            + "				GROUP BY tgl_billing\n"
+//                            + "			) dpk ON dpk.tgl_billing = ki.tgl_billing AND dpk.tarif = ki.tarif \n"
+//                            + "			WHERE ki.no_rawat =? "
+//                            + "	GROUP BY tgl_billing\n"
+//                            + ") gr\n"
+//                            + "GROUP BY gr.tgl_masuk, gr.jam_masuk");
+//                    try {
+//                        psrekapkamar.setString(1, TNoRwCari.getText());
+//                        psrekapkamar.setString(2, TNoRwCari.getText());
+//                        rsrekapkamar = psrekapkamar.executeQuery();
+//                        while (rsrekapkamar.next()) {
+//                            System.out.println("Lama = " + rsrekapkamar.getString("lama"));
+//                            if (1==1){
+//                                System.out.println("bukan titip");
+//                                String cekTitipJam23 = Sequel.cariIsi("SELECT "
+//                                        + "if(SUBSTRING_INDEX(pr.catatan,'#',1) > '23:00:00','Yes','No') AS hasil_cek FROM permintaan_ranap pr WHERE pr.no_rawat = '" + TNoRwCari.getText() + "'");
+//                                if (cekTitipJam23.equals("Yes")) {
+//                                    if (rsrekapkamar.isFirst()) {
+//                                        int lamaMinSatu = Integer.parseInt(rsrekapkamar.getString("lama")) - 1;
+//                                        int tarifMinSatu = Integer.parseInt(rsrekapkamar.getString("total")) - Integer.parseInt(rsrekapkamar.getString("tarif")) ;                                        
+//                                        Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "' "
+//                                                + "and kd_kamar='" + rsrekapkamar.getString("kd_kamar") + "' "
+//                                                + "and tgl_masuk='" + rsrekapkamar.getString("tgl_masuk") + "' "
+//                                                + "and jam_masuk='" + rsrekapkamar.getString("jam_masuk") + "' ",
+//                                                "lama='" + lamaMinSatu + "', ttl_biaya='" + tarifMinSatu + "'");
+//                                    } else {
+//                                        Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "' "
+//                                                + "and kd_kamar='" + rsrekapkamar.getString("kd_kamar") + "' "
+//                                                + "and tgl_masuk='" + rsrekapkamar.getString("tgl_masuk") + "' "
+//                                                + "and jam_masuk='" + rsrekapkamar.getString("jam_masuk") + "' ",
+//                                                "lama='" + rsrekapkamar.getString("lama") + "', ttl_biaya='" + rsrekapkamar.getString("total") + "'");
+//                                    }
+//                                } else {
+//                                    Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "' "
+//                                            + "and kd_kamar='" + rsrekapkamar.getString("kd_kamar") + "' "
+//                                            + "and tgl_masuk='" + rsrekapkamar.getString("tgl_masuk") + "' "
+//                                            + "and jam_masuk='" + rsrekapkamar.getString("jam_masuk") + "' ",
+//                                            "lama='" + rsrekapkamar.getString("lama") + "', ttl_biaya='" + rsrekapkamar.getString("total") + "'");
+//                                }
+//                            }
+//                        }
+//                    } catch (Exception e) {
+//                        System.out.println("Notifikasi : " + e);
+//                    } finally {
+//                        if (rsrekapkamar != null) {
+//                            rsrekapkamar.close();
+//                        }
+//                        if (rsrekapkamar != null) {
+//                            rsrekapkamar.close();
+//                        }
+//                    }
+//                } catch (Exception e) {
+//                    System.out.println("");
+//                }
                     try {
                         pscaripiutang=koneksi.prepareStatement("select tgl_piutang from piutang_pasien where no_rkm_medis=? and status='Belum Lunas' order by tgl_piutang asc limit 1");
                         try {
