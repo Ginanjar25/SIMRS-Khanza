@@ -33,7 +33,7 @@ public class frmUtama extends javax.swing.JFrame {
 
     private Connection koneksi = koneksiDB.condb();
     private sekuel Sequel = new sekuel();
-    private String requestJson, URL = "", utc = "", link = "", datajam = "", datasoap = "",
+    private String requestJson, URL = "", utc = "", link = "", datajam = "", datasoap = "",cekTask345="",
             nol_jam = "", nol_menit = "", nol_detik = "", jam = "", menit = "", detik = "", hari = "", noresep = "", task3 = "", task4 = "", task5 = "", task6 = "", task7 = "", task99 = "",
             kodepoli = "", kodedokter = "", kodebpjs = Sequel.cariIsi("select password_asuransi.kd_pj from password_asuransi");
     private ApiMobileJKN api = new ApiMobileJKN();
@@ -220,7 +220,7 @@ public class frmUtama extends javax.swing.JFrame {
                     Tanggal2.setText(tanggalFormat.format(date));
                 }
                 if(detik.equals("01")&&((nilai_menit%5)==0)){
-//                if (detik.equals("01") && (nilai_menit == 02)) {
+//                if (detik.equals("01") && (nilai_menit == 41)) {
                     day = cal.get(Calendar.DAY_OF_WEEK);
                     switch (day) {
                         case 1:
@@ -1021,7 +1021,7 @@ public class frmUtama extends javax.swing.JFrame {
                                                 }
                                             }
                                             
-                                            String cekTask345 = Sequel.cariIsi("SELECT COUNT(ts.taskid) FROM referensi_mobilejkn_bpjs_taskid ts WHERE ts.taskid IN ('3','4','5') AND  ts.statuskirim = 'Sudah' and ts.no_rawat =?", rs.getString("no_rawat"));
+                                            cekTask345 = Sequel.cariIsi("SELECT COUNT(ts.taskid) FROM referensi_mobilejkn_bpjs_taskid ts WHERE ts.taskid IN ('3','4','5') AND  ts.statuskirim = 'Sudah' and ts.no_rawat =?", rs.getString("no_rawat"));
                                             if (task6.equals("") && !cekTask345.equals("")) {
                                                 noresep = Sequel.cariIsi("select resep_obat.no_resep from resep_obat where resep_obat.no_rawat=?", rs.getString("no_rawat"));
                                                 if (!noresep.equals("")) {
