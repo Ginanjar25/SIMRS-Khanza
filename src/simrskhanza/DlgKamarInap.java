@@ -11,6 +11,7 @@
  */
 
 package simrskhanza;
+import bridging.ApiBPJS;
 import bridging.BPJSCekDataIndukKecelakaan;
 import bridging.BPJSCekSuplesiJasaRaharja;
 import rekammedis.RMRiwayatPerawatan;
@@ -28,6 +29,8 @@ import surat.SuratKontrol;
 import bridging.INACBGPerawatanCorona;
 import bridging.PCareDataPendaftaran;
 import bridging.SisruteRujukanKeluar;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import laporan.DlgDiagnosaPenyakit;
 import informasi.InformasiAnalisaKamin;
 import keuangan.DlgKamar;
@@ -167,6 +170,10 @@ import surat.SuratPulangAtasPermintaanSendiri;
 import surat.SuratSakit;
 import surat.SuratSakitPihak2;
 import java.time.LocalDate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import rekammedis.RMDataResumePerawatPasienRanap;
 
 /**
@@ -195,7 +202,15 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private int i,row=0;
     private double lama=0,persenbayi=0,hargakamar=0;
     private String gabungkan="",norawatgabung="",kamaryangdigabung="",dokterranap="",bangsal="",diagnosa_akhir="",namakamar="",umur="0",sttsumur="Th",order="order by bangsal.nm_bangsal,kamar_inap.tgl_masuk,kamar_inap.jam_masuk";
-
+    private ApiBPJS api=new ApiBPJS();
+    private HttpHeaders headers;
+    private HttpEntity requestEntity;
+    private ObjectMapper mapper = new ObjectMapper();
+    private JsonNode root;
+    private JsonNode nameNode;
+    private JsonNode response;
+    private String utc="",requestJson="",URL="",link="";
+    
     /** Creates new form DlgKamarInap
      * @param parent
        @param modal */
@@ -6175,6 +6190,61 @@ public class DlgKamarInap extends javax.swing.JDialog {
                         tabMode.removeRow(tbKamIn.getSelectedRow());
                         try {
                             if(cmbStatus.getSelectedItem().equals("Meninggal")){
+                                //update SEP Meninggal jika sep ditemukan
+                                String sttsMeninggal="",noSep="",tglMeninggal="",jamMeninggal="",ksg="";                                
+                                noSep = Sequel.cariIsi("SELECT bs.no_sep FROM bridging_sep bs WHERE bs.no_rawat=?",norawat.getText());
+                                tglMeninggal = CmbTahun.getSelectedItem()+"-"+CmbBln.getSelectedItem()+"-"+CmbTgl.getSelectedItem();
+                                jamMeninggal = cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem();                                
+                                sttsMeninggal = "4";
+                                ksg = "";
+                                System.out.println(noSep);
+                                if(!noSep.equals("")){
+                                    try {
+                                        headers = new HttpHeaders();
+                                        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+                                        headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
+                                        utc = String.valueOf(api.GetUTCdatetimeAsString());
+                                        headers.add("X-Timestamp", utc);
+                                        headers.add("X-Signature", api.getHmac(utc));
+                                        headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
+                                        URL = link + "/SEP/2.0/updtglplg";
+                                        requestJson ="{" +
+                                                        "\"request\":" +
+                                                           "{" +
+                                                              "\"t_sep\":" +
+                                                                 "{" +
+                                                                  "\"noSep\":\""+noSep+"\"," +
+                                                                  "\"statusPulang\":\""+sttsMeninggal+"\"," +
+                                                                  "\"noSuratMeninggal\":\""+ksg+"\"," +
+                                                                  "\"tglMeninggal\":\""+tglMeninggal+"\"," +
+                                                                  "\"tglPulang\":\""+tglMeninggal+"\"," +
+                                                                  "\"noLPManual\":\""+ksg+"\"," +
+                                                                  "\"user\":\"RSPW"+akses.getkode()+"\"" +                                            
+                                                                 "}" +
+                                                           "}" +
+                                                       "}";
+                                        System.out.println("JSON : " + requestJson);
+                                        requestEntity = new HttpEntity(requestJson, headers);
+                                        root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.PUT, requestEntity, String.class).getBody());
+                                        nameNode = root.path("metaData");
+                                        System.out.println("code : " + nameNode.path("code").asText());
+                                        System.out.println("message : " + nameNode.path("message").asText());
+                                        if (nameNode.path("code").asText().equals("200")) {
+                                            Sequel.mengedit("bridging_sep", "no_sep=?", "tglpulang=?", 2, new String[]{
+                                                tglMeninggal + " " + jamMeninggal,noSep
+                                            });                                        
+                                        } else {
+                                            System.out.println(nameNode.path("code").asText()+" "+nameNode.path("message").asText());
+                                            JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
+                                        }
+                                    } catch (Exception ex) {
+                                        System.out.println("Notifikasi Bridging Simpan : " + ex);
+                                        if (ex.toString().contains("UnknownHostException")) {
+                                            JOptionPane.showMessageDialog(null, "Koneksi ke server BPJS terputus...!");
+                                        }
+                                    }
+                                }                                
+                                
                                 DlgPasienMati dlgPasienMati=new DlgPasienMati(null,false);
                                 dlgPasienMati.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                                 dlgPasienMati.setLocationRelativeTo(internalFrame1);

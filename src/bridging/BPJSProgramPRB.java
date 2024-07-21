@@ -135,7 +135,7 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         tbProgramPRB.setDefaultRenderer(Object.class, new WarnaTable());
         
         tabMode3=new DefaultTableModel(null,new Object[]{
-            "No.Rawat","No. SEP","PRB","No. RM","Nama Pasien","Poliklinik","Dokter","ICD 9"}){
+            "No.Rawat","No. SEP","PRB","No. RM","Nama Pasien","Alamat","Poliklinik","KD Dok.","Dokter","ICD 9"}){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         tbPotensiPRB.setModel(tabMode3);
@@ -143,24 +143,28 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         tbPotensiPRB.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbPotensiPRB.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 8; i++) {
+        for (i = 0; i < 10; i++) {
             TableColumn column = tbPotensiPRB.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(105);
             }else if(i==1){
-                column.setPreferredWidth(70);
+                column.setPreferredWidth(105);
             }else if(i==2){
                 column.setPreferredWidth(150);
             }else if(i==3){
-                column.setPreferredWidth(180);
+                column.setPreferredWidth(70);
             }else if(i==4){
                 column.setPreferredWidth(150);
             }else if(i==5){
-                column.setPreferredWidth(85);
+                column.setPreferredWidth(110);
             }else if(i==6){
-                column.setPreferredWidth(122);
+                column.setPreferredWidth(110);
             }else if(i==7){
-                column.setPreferredWidth(80);
+                column.setPreferredWidth(110);
+            }else if(i==8){
+                column.setPreferredWidth(110);
+            }else if(i==9){
+                column.setPreferredWidth(110);
             }
         }
         tbPotensiPRB.setDefaultRenderer(Object.class, new WarnaTable());
@@ -1688,8 +1692,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public void tampil2() {
         Valid.tabelKosong(tabMode3);
         try{     
-            ps=koneksi.prepareStatement("SELECT rp.no_rawat, bs.no_sep, pr.prb, ps.no_rkm_medis, ps.nm_pasien, pl.nm_poli, dr.nm_dokter,\n" +
-            "(SELECT dps.kd_penyakit FROM diagnosa_pasien dps WHERE dps.no_rawat = rp.no_rawat and dps.prioritas = '1' limit 1) AS kd_icd\n" +
+            ps=koneksi.prepareStatement("select rp.no_rawat, bs.no_sep, pr.prb, ps.no_rkm_medis, ps.nm_pasien, rp.almt_pj, pl.nm_poli,dr.kd_dokter, dr.nm_dokter,\n" +
+            "IFNULL('-',(SELECT dps.kd_penyakit FROM diagnosa_pasien dps WHERE dps.no_rawat = rp.no_rawat and dps.prioritas = '1' limit 1)) AS kd_icd \n" +
             "FROM bridging_sep bs\n" +
             "INNER JOIN reg_periksa rp ON rp.no_rawat = bs.no_rawat\n" +
             "INNER JOIN bpjs_prb pr ON pr.no_sep = bs.no_sep\n" +
@@ -1704,7 +1708,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 while(rs.next()){
                     tabMode3.addRow(new Object[]{
                         rs.getString("no_rawat"),rs.getString("no_sep"),rs.getString("prb"),rs.getString("no_rkm_medis"),
-                        rs.getString("nm_pasien"),rs.getString("nm_poli"),rs.getString("nm_dokter"),rs.getString("kd_icd")
+                        rs.getString("nm_pasien"),rs.getString("almt_pj"),rs.getString("nm_poli"),rs.getString("kd_dokter"),rs.getString("nm_dokter"),rs.getString("kd_icd")
                     });
                 }
             } catch (Exception e) {
