@@ -26,6 +26,7 @@ import fungsi.validasi;
 import fungsi.akses;
 import java.awt.Cursor;
 import java.awt.event.KeyEvent;
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -52,6 +53,7 @@ public final class BPJSCekReferensiDiagnosaPRB extends javax.swing.JDialog {
     private JsonNode root;
     private JsonNode nameNode;
     private JsonNode response;
+    private FileReader myObj;
 
     /** Creates new form DlgKamar
      * @param parent
@@ -332,41 +334,68 @@ public final class BPJSCekReferensiDiagnosaPRB extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     public void tampil(String poli) {
+//        try {
+//            headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_JSON);
+//	    headers.add("X-Cons-ID",koneksiDB.CONSIDAPIBPJS());
+//	    utc=String.valueOf(api.GetUTCdatetimeAsString());
+//	    headers.add("X-Timestamp",utc);
+//	    headers.add("X-Signature",api.getHmac(utc));
+//            headers.add("user_key",koneksiDB.USERKEYAPIBPJS());
+//	    requestEntity = new HttpEntity(headers);
+//	    root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.GET, requestEntity, String.class).getBody());
+//            nameNode = root.path("metaData");
+//            if(nameNode.path("code").asText().equals("200")){
+//                Valid.tabelKosong(tabMode);
+//                response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc));
+//                //response = root.path("response");
+//                if(response.path("list").isArray()){
+//                    i=1;
+//                    for(JsonNode list:response.path("list")){
+//                        if(list.path("kode").asText().toLowerCase().contains(poli.toLowerCase())||
+//                                list.path("nama").asText().toLowerCase().contains(poli.toLowerCase())){
+//                            tabMode.addRow(new Object[]{
+//                                i+".",list.path("kode").asText(),list.path("nama").asText()
+//                            });
+//                        }
+//                        i++;
+//                    }
+//                }
+//            }else {
+//                JOptionPane.showMessageDialog(null,nameNode.path("message").asText());                
+//            }   
+//        } catch (Exception ex) {
+//            System.out.println("Notifikasi : "+ex);
+//            if(ex.toString().contains("UnknownHostException")){
+//                JOptionPane.showMessageDialog(rootPane,"Koneksi ke server BPJS terputus...!");
+//            }
+//        }
+        
         try {
-            headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-	    headers.add("X-Cons-ID",koneksiDB.CONSIDAPIBPJS());
-	    utc=String.valueOf(api.GetUTCdatetimeAsString());
-	    headers.add("X-Timestamp",utc);
-	    headers.add("X-Signature",api.getHmac(utc));
-            headers.add("user_key",koneksiDB.USERKEYAPIBPJS());
-	    requestEntity = new HttpEntity(headers);
-	    root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.GET, requestEntity, String.class).getBody());
-            nameNode = root.path("metaData");
-            if(nameNode.path("code").asText().equals("200")){
-                Valid.tabelKosong(tabMode);
-                response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc));
-                //response = root.path("response");
-                if(response.path("list").isArray()){
-                    i=1;
-                    for(JsonNode list:response.path("list")){
-                        if(list.path("kode").asText().toLowerCase().contains(poli.toLowerCase())||
-                                list.path("nama").asText().toLowerCase().contains(poli.toLowerCase())){
+            myObj = new FileReader("./cache/referensiprb.iyem");
+            root = mapper.readTree(myObj);
+            Valid.tabelKosong(tabMode);
+            response = root.path("poli");
+            if(response.isArray()){
+                if(Poli.getText().trim().equals("")){
+                    for(JsonNode list:response){
+                        tabMode.addRow(new Object[]{
+                            list.path("no").asText(),list.path("kdUnit").asText(),list.path("prb").asText()
+                        });
+                    }
+                }else{
+                    for(JsonNode list:response){
+                        if(list.path("kdUnit").asText().toLowerCase().contains(Poli.getText().toLowerCase())||list.path("prb").asText().toLowerCase().contains(Poli.getText().toLowerCase())){
                             tabMode.addRow(new Object[]{
-                                i+".",list.path("kode").asText(),list.path("nama").asText()
+                                list.path("no").asText(),list.path("kdUnit").asText(),list.path("prb").asText()
                             });
                         }
-                        i++;
                     }
                 }
-            }else {
-                JOptionPane.showMessageDialog(null,nameNode.path("message").asText());                
-            }   
+            }
+            myObj.close();
         } catch (Exception ex) {
             System.out.println("Notifikasi : "+ex);
-            if(ex.toString().contains("UnknownHostException")){
-                JOptionPane.showMessageDialog(rootPane,"Koneksi ke server BPJS terputus...!");
-            }
         }
     }    
 

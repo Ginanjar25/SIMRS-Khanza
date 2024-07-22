@@ -6234,6 +6234,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                                 tglMeninggal + " " + jamMeninggal,noSep
                                             });                                        
                                         } else {
+                                            Sequel.menyimpantf("trackersql", "now(),?,?", "trackersql", 2, new String[]{
+                                                akses.getalamatip()+" "+nameNode.path("code").asText()+" "+nameNode.path("message").asText(), akses.getkode()
+                                            });
                                             System.out.println(nameNode.path("code").asText()+" "+nameNode.path("message").asText());
                                             JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
                                         }

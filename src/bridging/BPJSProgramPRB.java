@@ -135,7 +135,7 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         tbProgramPRB.setDefaultRenderer(Object.class, new WarnaTable());
         
         tabMode3=new DefaultTableModel(null,new Object[]{
-            "No.Rawat","No. SEP","PRB","No. RM","Nama Pasien","Alamat","Poliklinik","KD Dok.","Dokter","ICD 9"}){
+            "No.Rawat","Tgl. SEP","No. SEP","PRB","No. RM","Nama Pasien","Alamat","Poliklinik","KD Dok.","Dokter","Diagnosa","No. Kartu","E-Mail"}){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         tbPotensiPRB.setModel(tabMode3);
@@ -143,27 +143,33 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         tbPotensiPRB.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbPotensiPRB.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < 13; i++) {
             TableColumn column = tbPotensiPRB.getColumnModel().getColumn(i);
             if(i==0){
-                column.setPreferredWidth(105);
+                column.setPreferredWidth(108);
             }else if(i==1){
-                column.setPreferredWidth(105);
+                column.setPreferredWidth(80);
             }else if(i==2){
-                column.setPreferredWidth(150);
+                column.setPreferredWidth(130);
             }else if(i==3){
-                column.setPreferredWidth(70);
+                column.setPreferredWidth(90);
             }else if(i==4){
-                column.setPreferredWidth(150);
+                column.setPreferredWidth(60);
             }else if(i==5){
-                column.setPreferredWidth(110);
+                column.setPreferredWidth(170);
             }else if(i==6){
-                column.setPreferredWidth(110);
+                column.setPreferredWidth(190);
             }else if(i==7){
-                column.setPreferredWidth(110);
+                column.setPreferredWidth(180);
             }else if(i==8){
-                column.setPreferredWidth(110);
+                column.setPreferredWidth(50);
             }else if(i==9){
+                column.setPreferredWidth(160);
+            }else if(i==10){
+                column.setPreferredWidth(80);
+            }else if(i==11){
+                column.setPreferredWidth(110);
+            }else if(i==12){
                 column.setPreferredWidth(110);
             }
         }
@@ -428,6 +434,8 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         Tanggal = new widget.Tanggal();
         Scroll2 = new widget.ScrollPane();
         tbObat1 = new widget.Table();
+        jLabel12 = new widget.Label();
+        diagicd = new widget.TextBox();
         ChkInput = new widget.CekBox();
         panelCari = new widget.panelisi();
         Scroll3 = new widget.ScrollPane();
@@ -951,7 +959,22 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         Scroll2.setViewportView(tbObat1);
 
         FormInput.add(Scroll2);
-        Scroll2.setBounds(760, 10, 800, 150);
+        Scroll2.setBounds(760, 50, 800, 150);
+
+        jLabel12.setText("Diagnosa:");
+        jLabel12.setName("jLabel12"); // NOI18N
+        FormInput.add(jLabel12);
+        jLabel12.setBounds(760, 20, 50, 23);
+
+        diagicd.setHighlighter(null);
+        diagicd.setName("diagicd"); // NOI18N
+        diagicd.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                diagicdKeyPressed(evt);
+            }
+        });
+        FormInput.add(diagicd);
+        diagicd.setBounds(820, 20, 730, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -989,6 +1012,16 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         Scroll3.setPreferredSize(new java.awt.Dimension(452, 100));
 
         tbPotensiPRB.setName("tbPotensiPRB"); // NOI18N
+        tbPotensiPRB.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbPotensiPRBMouseClicked(evt);
+            }
+        });
+        tbPotensiPRB.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tbPotensiPRBKeyPressed(evt);
+            }
+        });
         Scroll3.setViewportView(tbPotensiPRB);
 
         panelCari.add(Scroll3);
@@ -1554,6 +1587,30 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         // TODO add your handling code here:
     }//GEN-LAST:event_tbObat1MouseClicked
 
+    private void tbPotensiPRBKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbPotensiPRBKeyPressed
+         if(tabMode3.getRowCount()!=0){
+            if((evt.getKeyCode()==KeyEvent.VK_ENTER)||(evt.getKeyCode()==KeyEvent.VK_UP)||(evt.getKeyCode()==KeyEvent.VK_DOWN)){
+                try {
+                    getData2();
+                } catch (java.lang.NullPointerException e) {
+                }
+            }
+        }
+    }//GEN-LAST:event_tbPotensiPRBKeyPressed
+
+    private void tbPotensiPRBMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbPotensiPRBMouseClicked
+        if(tabMode3.getRowCount()!=0){
+            try {
+                getData2();
+            } catch (java.lang.NullPointerException e) {
+            }
+        }
+    }//GEN-LAST:event_tbPotensiPRBMouseClicked
+
+    private void diagicdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_diagicdKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_diagicdKeyPressed
+
     /**
     * @param args the command line arguments
     */
@@ -1610,9 +1667,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Tanggal Tanggal;
     private widget.Button btnDokterDPJP;
     private widget.Button btnProgramPRB;
+    private widget.TextBox diagicd;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel10;
     private widget.Label jLabel11;
+    private widget.Label jLabel12;
     private widget.Label jLabel13;
     private widget.Label jLabel14;
     private widget.Label jLabel15;
@@ -1693,22 +1752,24 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         Valid.tabelKosong(tabMode3);
         try{     
             ps=koneksi.prepareStatement("select rp.no_rawat, bs.no_sep, pr.prb, ps.no_rkm_medis, ps.nm_pasien, rp.almt_pj, pl.nm_poli,dr.kd_dokter, dr.nm_dokter,\n" +
-            "IFNULL('-',(SELECT dps.kd_penyakit FROM diagnosa_pasien dps WHERE dps.no_rawat = rp.no_rawat and dps.prioritas = '1' limit 1)) AS kd_icd \n" +
+            "COALESCE((SELECT dps.kd_penyakit FROM diagnosa_pasien dps WHERE dps.no_rawat = rp.no_rawat and dps.prioritas = '1' limit 1),'-') AS kd_icd, bs.no_kartu, ps.email, bs.tglsep \n" +
             "FROM bridging_sep bs\n" +
             "INNER JOIN reg_periksa rp ON rp.no_rawat = bs.no_rawat\n" +
             "INNER JOIN bpjs_prb pr ON pr.no_sep = bs.no_sep\n" +
             "INNER JOIN pasien ps ON ps.no_rkm_medis = rp.no_rkm_medis\n" +
             "INNER JOIN poliklinik pl ON pl.kd_poli = rp.kd_poli\n" +
             "INNER JOIN dokter dr ON dr.kd_dokter = rp.kd_dokter\n" +
-            "WHERE bs.tglsep BETWEEN ? AND ? ");
+            "WHERE bs.tglsep BETWEEN ? AND ? AND bs.no_sep NOT IN (SELECT bsb.no_sep FROM bridging_srb_bpjs bsb) ");
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
                 rs=ps.executeQuery();
                 while(rs.next()){
+                    String kdDpjpBpjs = Sequel.cariIsi("SELECT mdp.kd_dokter_bpjs FROM maping_dokter_dpjpvclaim mdp WHERE mdp.kd_dokter =?",rs.getString("kd_dokter"));
                     tabMode3.addRow(new Object[]{
-                        rs.getString("no_rawat"),rs.getString("no_sep"),rs.getString("prb"),rs.getString("no_rkm_medis"),
-                        rs.getString("nm_pasien"),rs.getString("almt_pj"),rs.getString("nm_poli"),rs.getString("kd_dokter"),rs.getString("nm_dokter"),rs.getString("kd_icd")
+                        rs.getString("no_rawat"),rs.getString("tglsep"),rs.getString("no_sep"),rs.getString("prb"),rs.getString("no_rkm_medis"),
+                        rs.getString("nm_pasien"),rs.getString("almt_pj"),rs.getString("nm_poli"),kdDpjpBpjs,rs.getString("nm_dokter"),rs.getString("kd_icd"),
+                        rs.getString("no_kartu"),rs.getString("email")
                     });
                 }
             } catch (Exception e) {
@@ -1768,6 +1829,85 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 System.out.println("Notifikasi : "+e);
             } 
             Valid.SetTgl(Tanggal,tbProgramPRB.getValueAt(tbProgramPRB.getSelectedRow(),8).toString());
+        }
+    }
+    
+    private void getData2() {
+        if(tbPotensiPRB.getSelectedRow()!= -1){
+            NoRawat.setText(tbPotensiPRB.getValueAt(tbPotensiPRB.getSelectedRow(),0).toString()); 
+            NoRM.setText(tbPotensiPRB.getValueAt(tbPotensiPRB.getSelectedRow(),4).toString()); 
+            NmPasien.setText(tbPotensiPRB.getValueAt(tbPotensiPRB.getSelectedRow(),5).toString()); 
+            Alamat.setText(tbPotensiPRB.getValueAt(tbPotensiPRB.getSelectedRow(),6).toString());  
+            Email.setText(tbPotensiPRB.getValueAt(tbPotensiPRB.getSelectedRow(),12).toString());  
+            NoKartu.setText(tbPotensiPRB.getValueAt(tbPotensiPRB.getSelectedRow(),11).toString());  
+            NoSEP.setText(tbPotensiPRB.getValueAt(tbPotensiPRB.getSelectedRow(),2).toString());            
+            KdDPJP.setText(tbPotensiPRB.getValueAt(tbPotensiPRB.getSelectedRow(),8).toString());   
+            NmDPJP.setText(tbPotensiPRB.getValueAt(tbPotensiPRB.getSelectedRow(),9).toString());
+            KdProgram.setText("");  
+            NmProgram.setText("");            
+            String diagnosa = Sequel.cariIsi("SELECT CONCAT(a.kd_penyakit,' - ',a.nm_penyakit) FROM penyakit a WHERE a.kd_penyakit=?",tbPotensiPRB.getValueAt(tbPotensiPRB.getSelectedRow(),10).toString());
+            diagicd.setText(diagnosa);               
+            Valid.tabelKosong(tabMode4);
+            Valid.tabelKosong(tabMode2);
+            try{     
+                ps=koneksi.prepareStatement("SELECT dpo.jml, dpo.kode_brng, dbr.nama_brng, ap.aturan FROM detail_pemberian_obat dpo\n" +
+                    "JOIN databarang dbr ON dbr.kode_brng = dpo.kode_brng\n" +
+                    "LEFT JOIN aturan_pakai ap ON ap.no_rawat = dpo.no_rawat AND ap.kode_brng= dpo.kode_brng\n" +
+                    "WHERE dpo.no_rawat =?");
+                try {
+                    ps.setString(1,tbPotensiPRB.getValueAt(tbPotensiPRB.getSelectedRow(),0).toString());
+                    rs=ps.executeQuery();
+                    while(rs.next()){
+                        tabMode4.addRow(new Object[]{
+                            rs.getDouble("jml"),rs.getString("kode_brng"),rs.getString("nama_brng"),rs.getString("aturan"),rs.getString("aturan")
+                        });
+                        
+                        try {
+                            headers = new HttpHeaders();
+                            headers.setContentType(MediaType.APPLICATION_JSON);
+                            headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
+                            utc = String.valueOf(api.GetUTCdatetimeAsString());
+                            headers.add("X-Timestamp", utc);
+                            headers.add("X-Signature", api.getHmac(utc));
+                            headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
+                            requestEntity = new HttpEntity(headers);
+                            URL = link + "/referensi/obatprb/" + rs.getString("nama_brng").replaceAll(" ","").substring(0,5);
+                            System.out.println(URL);
+                            //System.out.println(rest.exchange(URL, HttpMethod.GET, requestEntity, String.class).getBody());
+                            root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.GET, requestEntity, String.class).getBody());
+                            nameNode = root.path("metaData");
+                            if (nameNode.path("code").asText().equals("200")) {
+                                response = mapper.readTree(api.Decrypt(root.path("response").asText(), utc));
+                                //response = root.path("response");
+                                if (response.path("list").isArray()) {
+                                    for (JsonNode list : response.path("list")) {
+                                        tabMode2.addRow(new Object[]{
+                                            "", list.path("kode").asText(), list.path("nama").asText(), "", ""
+                                        });
+                                    }
+                                }
+                            } 
+                        } catch (Exception ex) {
+                            System.out.println("Notifikasi : " + ex);
+                            if (ex.toString().contains("UnknownHostException")) {
+                                JOptionPane.showMessageDialog(rootPane, "Koneksi ke server BPJS terputus...!");
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Notif : "+e);
+                } finally{
+                    if(rs!=null){
+                        rs.close();
+                    }
+                    if(ps!=null){
+                        ps.close();
+                    }
+                }
+            }catch(Exception e){
+                System.out.println("Notifikasi : "+e);
+            } 
+            Valid.SetTgl(Tanggal,tbPotensiPRB.getValueAt(tbPotensiPRB.getSelectedRow(),1).toString());
         }
     }
    
