@@ -310,6 +310,7 @@ public final class ICareRiwayatPerawatan extends javax.swing.JDialog {
             nameNode = root.path("metaData");
             if(nameNode.path("code").asText().equals("200")){
                 response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc));
+                String url = response.path("url").asText();
                 System.out.println("Response : "+response.path("url"));
                 try {
                     loadURL(response.path("url").asText());

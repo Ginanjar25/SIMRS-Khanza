@@ -23,7 +23,7 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
         }else{
             component.setBackground(new Color(255,255,255));
             component.setForeground(new Color(50,50,50));
-        } 
+        }
         if(table.getValueAt(row,10).toString().equals("Sudah")){
             component.setBackground(new Color(200,0,0));
             component.setForeground(new Color(255,230,230));
@@ -36,6 +36,12 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
         }else if(table.getValueAt(row,10).toString().equals("Dirawat")){
             component.setBackground(new Color(119,221,119));
             component.setForeground(new Color(245,255,245));
+        } else if(table.getValueAt(row,10).toString().equals("Belum") && table.getValueAt(row,9).toString().contains("BPJS")){
+            component.setBackground(new Color(0, 153, 76));
+            component.setForeground(new Color(255,255,255));
+        }else if(table.getValueAt(row,10).toString().equals("Belum") && table.getValueAt(row,9).toString().contains("UMUM")){
+            component.setBackground(new Color(0, 100, 255));
+            component.setForeground(new Color(255,255,255));
         }
         if(table.getValueAt(row,15).toString().equals("Sudah Bayar")){
             component.setBackground(new Color(50,50,50));

@@ -1401,6 +1401,8 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         BtnPenilaianTambahanBunuhDiri = new widget.Button();
         BtnPenilaianTambahanPerilakuKekerasan = new widget.Button();
         BtnPenilaianTambahanMelarikanDiri = new widget.Button();
+        jLabelCaraBayar = new widget.Label();
+        TCaraBayar = new widget.Label();
 
         BagianRS.setEditable(false);
         BagianRS.setText("0");
@@ -3332,6 +3334,17 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         });
         FormInput.add(ChkJln);
         ChkJln.setBounds(906, 10, 23, 23);
+        
+        jLabelCaraBayar.setText("Cara Bayar :");
+        jLabelCaraBayar.setName("jLabel3"); 
+        FormInput.add(jLabelCaraBayar);
+        jLabelCaraBayar.setBounds(950, 10, 70, 23);
+        
+        TCaraBayar.setText("-");
+        TCaraBayar.setFont(new java.awt.Font("Tahoma", 1, 14));
+        TCaraBayar.setName("jLabel3"); 
+        FormInput.add(TCaraBayar);
+        TCaraBayar.setBounds(1000, 10, 70, 23);
 
         internalFrame1.add(FormInput, java.awt.BorderLayout.PAGE_START);
 
@@ -8677,6 +8690,8 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     // End of variables declaration//GEN-END:variables
     private widget.Button BtnSkorBromagePascaAnestesi,BtnPenilaianPreInduksi,BtnHasilPemeriksaanUSGUrologi,BtnHasilPemeriksaanUSGGynecologi,BtnHasilPemeriksaanEKG,BtnHasilPemeriksaanUSGNeonatus,BtnHasilEndoskopiFaringLaring,BtnHasilEndoskopiHidung,BtnHasilEndoskopiTelinga,
                           BtnAwalKeperawatanNeonatus,BtnPenilaianPasienImunitasRendah,BtnCatatanKeseimbanganCairan,BtnCatatanObservasiCHBP,BtnCatatanObservasiInduksiPersalinan,BtnPermintaanKonsultasiMedik;
+    private widget.Label jLabelCaraBayar;
+    private widget.Label TCaraBayar;
     
     public void tampilDr() {
         Valid.tabelKosong(tabModeDr);
@@ -9034,6 +9049,12 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         TNmPrwPetugas.setText("");
         TKdPrwDokterPetugas.setText("");
         TNmPrwDokterPetugas.setText("");
+        
+        TCaraBayar.setText(Sequel.cariIsi("SELECT CONCAT(penjab.png_jawab, ' ',COALESCE(bridging_sep.klsrawat, '')) AS cara_bayar FROM reg_periksa " +
+        "INNER JOIN penjab ON penjab.kd_pj = reg_periksa.kd_pj " +
+        "LEFT JOIN bridging_sep on bridging_sep.no_rawat = reg_periksa.no_rawat " +
+        "WHERE reg_periksa.no_rawat = ?", norwt));
+        
     }
     
     public void setKamar(String kamar) {

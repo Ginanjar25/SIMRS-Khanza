@@ -6926,7 +6926,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                             jamselesai=rs.getString("jam_selesai");
                             kuota=rs.getInt("kuota");
                             int interval = 6;
-                            if(kodedokterreg.equals("27")){
+                            if(kodedokterreg.equals("D27")){
                                 interval = 4;
                             }
                             datajam=Sequel.cariIsi("select DATE_ADD(concat('"+Valid.SetTgl(TanggalSEP.getSelectedItem()+"")+"',' ','"+jammulai+"'),INTERVAL "+(Integer.parseInt(nomorreg)*interval)+" MINUTE) ");

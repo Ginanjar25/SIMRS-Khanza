@@ -263,7 +263,11 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             "Kode Dokter","Dokter Dituju","No.RM","Pasien",
             "Poliklinik","Penanggung Jawab","Alamat P.J.","Hubungan P.J.",
             "Biaya Reg","Jenis Bayar","Status","No.Rawat","Tanggal",
-            "Jam","No.Reg","Status Bayar","Stts Poli","Kd PJ","Kd Poli","No.Telp Pasien"}){
+            "Jam","No.Reg","Status Bayar","Stts Poli","Kd PJ","Kd Poli","No.Telp Pasien",
+            "No.Reg","Dokter Dituju","No.RM","Pasien","Jenis Bayar",
+            "Poliklinik","Kode Dokter","Penanggung Jawab","Alamat P.J.","Hubungan P.J.",
+            "Biaya Reg","Status","No.Rawat","Tanggal",
+            "Jam","Status Bayar","Stts Poli","Kd PJ","Kd Poli","No.Telp Pasien"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         tbKasirRalan.setModel(tabModekasir);
@@ -271,42 +275,59 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         tbKasirRalan.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbKasirRalan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 20; i++) {
+        for (i = 0; i < 40; i++) {
             TableColumn column = tbKasirRalan.getColumnModel().getColumn(i);
             if(i==0){
-                column.setPreferredWidth(70);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==1){
-                column.setPreferredWidth(180);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==2){
-                column.setPreferredWidth(65);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==3){
-                column.setPreferredWidth(170);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==4){
-                column.setPreferredWidth(140);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==5){
-                column.setPreferredWidth(130);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==6){
-                column.setPreferredWidth(160);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==7){
-                column.setPreferredWidth(80);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==8){
-                column.setPreferredWidth(60);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==9){
-                column.setPreferredWidth(100);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==10){
-                column.setPreferredWidth(75);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==11){
-                column.setPreferredWidth(105);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==12){
-                column.setPreferredWidth(65);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==13){
-                column.setPreferredWidth(55);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==14){
-                column.setPreferredWidth(47);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==15){
-                column.setPreferredWidth(70);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==16){
-                column.setPreferredWidth(50);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==17){
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
@@ -314,6 +335,49 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
             }else if(i==19){
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+            }else if(i==20){
+                column.setPreferredWidth(47);
+            }else if(i==21){
+                column.setPreferredWidth(180);
+            }else if(i==22){
+                column.setPreferredWidth(65);
+            }else if(i==23){
+                column.setPreferredWidth(170);
+            }else if(i==24){
+                column.setPreferredWidth(100);
+            }else if(i==25){
+                column.setPreferredWidth(140);
+            }else if(i==26){
+                column.setPreferredWidth(70);
+            }else if(i==27){
+                column.setPreferredWidth(130);
+            }else if(i==28){
+                column.setPreferredWidth(160);
+            }else if(i==29){
+                column.setPreferredWidth(80);
+            }else if(i==30){
+                column.setPreferredWidth(60);
+            }else if(i==31){
+                column.setPreferredWidth(75);
+            }else if(i==32){
+                column.setPreferredWidth(105);
+            }else if(i==33){
+                column.setPreferredWidth(65);
+            }else if(i==34){
+                column.setPreferredWidth(55);
+            }else if(i==35){
+                column.setPreferredWidth(70);
+            }else if(i==36){
+                column.setPreferredWidth(50);
+            }else if(i==37){
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+            }else if(i==38){
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+            }else if(i==39){
                 column.setPreferredWidth(95);
             }
         }
@@ -330,7 +394,10 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         tabModekasir2=new DefaultTableModel(null,new String[]{
             "Kd.Dokter","Dokter Rujukan","Nomer RM","Pasien",
             "Poliklinik Rujukan","Penanggung Jawab","Alamat P.J.","Hubungan P.J.",
-            "Jenis Bayar","Status","No.Rawat","Tanggal","Jam","Kode Poli","Kode PJ","No.Telp Pasien"}){
+            "Jenis Bayar","Status","No.Rawat","Tanggal","Jam","Kode Poli","Kode PJ","No.Telp Pasien",
+            "Kd.Dokter","Dokter Rujukan","Nomer RM","Pasien","Jenis Bayar",
+            "Poliklinik Rujukan","Penanggung Jawab","Alamat P.J.","Hubungan P.J.",
+            "Status","No.Rawat","Tanggal","Jam","Kode Poli","Kode PJ","No.Telp Pasien"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         tbKasirRalan2.setModel(tabModekasir2);
@@ -338,34 +405,47 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         tbKasirRalan2.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbKasirRalan2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 16; i++) {
+        for (i = 0; i < 32; i++) {
             TableColumn column = tbKasirRalan2.getColumnModel().getColumn(i);
             if(i==0){
-                column.setPreferredWidth(70);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==1){
-                column.setPreferredWidth(180);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==2){
-                column.setPreferredWidth(70);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==3){
-                column.setPreferredWidth(180);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==4){
-                column.setPreferredWidth(140);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==5){
-                column.setPreferredWidth(140);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==6){
-                column.setPreferredWidth(180);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==7){
-                column.setPreferredWidth(90);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==8){
-                column.setPreferredWidth(100);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==9){
-                column.setPreferredWidth(70);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==10){
-                column.setPreferredWidth(105);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==11){
-                column.setPreferredWidth(65);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==12){
-                column.setPreferredWidth(55);
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==13){
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
@@ -373,6 +453,41 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
             }else if(i==15){
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+            }else if(i==16){
+                column.setPreferredWidth(70);
+            }else if(i==17){
+                column.setPreferredWidth(180);
+            }else if(i==18){
+                column.setPreferredWidth(70);
+            }else if(i==19){
+                column.setPreferredWidth(180);
+            }else if(i==20){
+                column.setPreferredWidth(100);
+            }else if(i==21){
+                column.setPreferredWidth(140);
+            }else if(i==22){
+                column.setPreferredWidth(140);
+            }else if(i==23){
+                column.setPreferredWidth(180);
+            }else if(i==24){
+                column.setPreferredWidth(90);
+            }else if(i==25){
+                column.setPreferredWidth(70);
+            }else if(i==26){
+                column.setPreferredWidth(105);
+            }else if(i==27){
+                column.setPreferredWidth(65);
+            }else if(i==28){
+                column.setPreferredWidth(55);
+            }else if(i==29){
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+            }else if(i==30){
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+            }else if(i==31){
                 column.setPreferredWidth(110);
             }
         }
@@ -6836,7 +6951,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             if(evt.getClickCount()==1){
                 if(norawatdipilih.equals("")){
                     i=tbKasirRalan.getSelectedColumn();
-                    if(i==3){
+                    if(i==23){
                         if(validasicatatan.equals("Yes")){
                             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                             LabelCatatan.setText(Sequel.cariIsi("select catatan_pasien.catatan from catatan_pasien where catatan_pasien.no_rkm_medis=?",TNoRMCari.getText()));
@@ -7683,6 +7798,22 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                     if(MnKamarInap.isEnabled()==true){
                         MnKamarInapActionPerformed(null);
                     }                    
+                }else if(i==20){
+                    if(akses.gettindakan_ralan()==true){
+                        MnDataRalanActionPerformed(null);
+                    }
+                }else if(i==21){
+                    if(akses.getberi_obat()==true){
+                        MnPemberianObatActionPerformed(null);
+                    }                    
+                }else if(i==22){
+                    //if(var.getbilling_ralan()==true){
+                        MnBillingActionPerformed(null);
+                    //}                    
+                }else if(i==23){
+                    if(MnKamarInap.isEnabled()==true){
+                        MnKamarInapActionPerformed(null);
+                    }                    
                 }
             }
         }
@@ -7710,6 +7841,20 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                 }else if(i==2){
                     MnBillingActionPerformed(null);
                 }else if(i==3){
+                    if(MnKamarInap.isEnabled()==true){
+                        MnKamarInapActionPerformed(null);
+                    }                    
+                }else if(i==20){
+                    if(akses.gettindakan_ralan()==true){
+                        MnDataRalanActionPerformed(null);
+                    }
+                }else if(i==21){
+                    if(akses.getberi_obat()==true){
+                        MnPemberianObatActionPerformed(null);
+                    }                    
+                }else if(i==22){
+                    MnBillingActionPerformed(null);
+                }else if(i==23){
                     if(MnKamarInap.isEnabled()==true){
                         MnKamarInapActionPerformed(null);
                     }                    
@@ -9144,6 +9289,22 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                     if(MnKamarInap1.isEnabled()==true){
                         MnKamarInap1ActionPerformed(null);
                     }                    
+                }else if(i==16){
+                    if(akses.gettindakan_ralan()==true){
+                        MnRawatJalan1ActionPerformed(null);                        
+                    }
+                }else if(i==17){
+                    if(akses.getberi_obat()==true){
+                        MnPemberianObat1ActionPerformed(null);
+                    }                    
+                }else if(i==18){
+                    //if(var.getbilling_ralan()==true){
+                        MnBilling1ActionPerformed(null);
+                    //}                    
+                }else if(i==19){
+                    if(MnKamarInap1.isEnabled()==true){
+                        MnKamarInap1ActionPerformed(null);
+                    }                    
                 }
             }
         }
@@ -9172,6 +9333,23 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                         MnBilling1ActionPerformed(null);
                     //}                    
                 }else if(i==3){
+                    if(MnKamarInap1.isEnabled()==true){
+                        MnKamarInap1ActionPerformed(null);
+                    }                    
+                }
+                 if(i==16){
+                    if(akses.gettindakan_ralan()==true){
+                        MnRawatJalan1ActionPerformed(null);                        
+                    }
+                }else if(i==17){
+                    if(akses.getberi_obat()==true){
+                        MnPemberianObat1ActionPerformed(null);
+                    }                    
+                }else if(i==18){
+                    //if(var.getbilling_ralan()==true){
+                        MnBilling1ActionPerformed(null);
+                    //}                    
+                }else if(i==19){
                     if(MnKamarInap1.isEnabled()==true){
                         MnKamarInap1ActionPerformed(null);
                     }                    
@@ -14772,8 +14950,9 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
             pskasir=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
                 "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,poliklinik.nm_poli,"+
                 "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts,penjab.png_jawab,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur, "+
-                "reg_periksa.status_bayar,reg_periksa.status_poli,reg_periksa.kd_pj,reg_periksa.kd_poli,pasien.no_tlp "+
+                "reg_periksa.status_bayar,reg_periksa.status_poli,reg_periksa.kd_pj,reg_periksa.kd_poli,pasien.no_tlp, CONCAT(penjab.png_jawab, ' ',COALESCE(bridging_sep.klsrawat, '')) AS cara_bayar "+
                 "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+                "LEFT JOIN bridging_sep ON bridging_sep.no_rawat = reg_periksa.no_rawat "+
                 "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli inner join penjab on reg_periksa.kd_pj=penjab.kd_pj where  "+
                 "reg_periksa.tgl_registrasi between ? and ? and reg_periksa.status_lanjut='Ralan'"+tampildiagnosa+
                 (semua?"and reg_periksa.stts != 'Batal'":"and reg_periksa.kd_pj like ? and poliklinik.nm_poli like ? and dokter.nm_dokter like ? and reg_periksa.stts like ? and reg_periksa.status_bayar like ? and "+
@@ -14811,6 +14990,10 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                         rskasir.getString(9),rskasir.getString(10),rskasir.getString(11),rskasir.getString(12),Valid.SetAngka(rskasir.getDouble(13)),
                         rskasir.getString("png_jawab"),rskasir.getString(14),rskasir.getString("no_rawat"),rskasir.getString("tgl_registrasi"),
                         rskasir.getString("jam_reg"),rskasir.getString(1),rskasir.getString("status_bayar"),rskasir.getString("status_poli"),
+                        rskasir.getString("kd_pj"),rskasir.getString("kd_poli"),rskasir.getString("no_tlp"),  
+                        rskasir.getString(1),rskasir.getString(6),rskasir.getString(7),rskasir.getString(8)+" ("+rskasir.getString("umur")+")",rskasir.getString("cara_bayar"),
+                        rskasir.getString(9),rskasir.getString(5),rskasir.getString(10),rskasir.getString(11),rskasir.getString(12),Valid.SetAngka(rskasir.getDouble(13)),
+                        rskasir.getString(14),rskasir.getString("no_rawat"),rskasir.getString("tgl_registrasi"), rskasir.getString("jam_reg"),rskasir.getString("status_bayar"),rskasir.getString("status_poli"),
                         rskasir.getString("kd_pj"),rskasir.getString("kd_poli"),rskasir.getString("no_tlp")
                     });
                 }                
@@ -14837,10 +15020,11 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
             pskasir=koneksi.prepareStatement("select reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
                 "rujukan_internal_poli.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,poliklinik.nm_poli,"+
                 "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.stts,penjab.png_jawab,rujukan_internal_poli.kd_poli,"+
-                "concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,reg_periksa.kd_pj,pasien.no_tlp "+
+                "concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,reg_periksa.kd_pj,pasien.no_tlp, CONCAT(penjab.png_jawab, ' ',COALESCE(bridging_sep.klsrawat, '')) AS cara_bayar "+
                 "from reg_periksa inner join rujukan_internal_poli on rujukan_internal_poli.no_rawat=reg_periksa.no_rawat "+
                 "inner join dokter on rujukan_internal_poli.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                 "inner join poliklinik on rujukan_internal_poli.kd_poli=poliklinik.kd_poli inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
+                "LEFT JOIN bridging_sep ON bridging_sep.no_rawat = reg_periksa.no_rawat " +
                 "where reg_periksa.status_lanjut='Ralan' and reg_periksa.tgl_registrasi between ? and ? "+
                 (semua?"":"and poliklinik.nm_poli like ? and  dokter.nm_dokter like ? and reg_periksa.stts like ? and "+
                 "(reg_periksa.no_reg like ? or reg_periksa.no_rawat like ? or reg_periksa.tgl_registrasi like ? or rujukan_internal_poli.kd_dokter like ? "+
@@ -14874,6 +15058,11 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                         rskasir.getString("no_rkm_medis"),rskasir.getString("nm_pasien")+" ("+rskasir.getString("umur")+")",
                         rskasir.getString("nm_poli"),rskasir.getString("p_jawab"),rskasir.getString("almt_pj"),rskasir.getString("hubunganpj"),
                         rskasir.getString("png_jawab"),rskasir.getString("stts"),rskasir.getString("no_rawat"),rskasir.getString("tgl_registrasi"),
+                        rskasir.getString("jam_reg"),rskasir.getString("kd_poli"),rskasir.getString("kd_pj"),rskasir.getString("no_tlp"),
+                        rskasir.getString("kd_dokter"),rskasir.getString("nm_dokter"),
+                        rskasir.getString("no_rkm_medis"),rskasir.getString("nm_pasien")+" ("+rskasir.getString("umur")+")",rskasir.getString("cara_bayar"),
+                        rskasir.getString("nm_poli"),rskasir.getString("p_jawab"),rskasir.getString("almt_pj"),rskasir.getString("hubunganpj"),
+                        rskasir.getString("stts"),rskasir.getString("no_rawat"),rskasir.getString("tgl_registrasi"),
                         rskasir.getString("jam_reg"),rskasir.getString("kd_poli"),rskasir.getString("kd_pj"),rskasir.getString("no_tlp")
                     });
                 }                
