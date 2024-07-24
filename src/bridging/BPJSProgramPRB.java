@@ -269,18 +269,21 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
                 public void insertUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
                         tampil();
+                        tampil2();
                     }
                 }
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
                         tampil();
+                        tampil2();
                     }
                 }
                 @Override
                 public void changedUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
                         tampil();
+                        tampil2();
                     }
                 }
             });
@@ -625,7 +628,7 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-07-2024" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "22-07-2024" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -639,7 +642,7 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-07-2024" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "22-07-2024" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -934,7 +937,7 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         jLabel20.setBounds(565, 130, 80, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-07-2024" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "22-07-2024" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -1148,7 +1151,8 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();        
+        tampil();
+        tampil2();
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -1289,6 +1293,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         }
                         emptTeks();
                         tampil();
+                        tampil2();
                     }
                 }  
             } catch (Exception ex) {
@@ -1759,10 +1764,18 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             "INNER JOIN pasien ps ON ps.no_rkm_medis = rp.no_rkm_medis\n" +
             "INNER JOIN poliklinik pl ON pl.kd_poli = rp.kd_poli\n" +
             "INNER JOIN dokter dr ON dr.kd_dokter = rp.kd_dokter\n" +
-            "WHERE bs.tglsep BETWEEN ? AND ? AND bs.no_sep NOT IN (SELECT bsb.no_sep FROM bridging_srb_bpjs bsb) ");
+            "WHERE bs.tglsep BETWEEN ? AND ? AND bs.no_sep NOT IN (SELECT bsb.no_sep FROM bridging_srb_bpjs bsb) "+
+            (TCari.getText().trim().equals("")?"":" and (ps.nm_pasien like ? or ps.no_rkm_medis like ? or rp.almt_pj like ? or rp.no_rawat like ? or dr.nm_dokter like ?)"));
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
+                if(!TCari.getText().equals("")){
+                    ps.setString(3,"%"+TCari.getText().trim()+"%");
+                    ps.setString(4,"%"+TCari.getText().trim()+"%");
+                    ps.setString(5,"%"+TCari.getText().trim()+"%");
+                    ps.setString(6,"%"+TCari.getText().trim()+"%");
+                    ps.setString(7,"%"+TCari.getText().trim()+"%");
+                }
                 rs=ps.executeQuery();
                 while(rs.next()){
                     String kdDpjpBpjs = Sequel.cariIsi("SELECT mdp.kd_dokter_bpjs FROM maping_dokter_dpjpvclaim mdp WHERE mdp.kd_dokter =?",rs.getString("kd_dokter"));
