@@ -4288,6 +4288,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         dlgobt.setNoRm(NoRawat,NoRM,Pasien,TglPeresepan,JamPeresepan);
         dlgobt.isCek();
         dlgobt.tampilobat2(NoResep);
+        dlgobt.setNoResep(NoResep);
         dlgobt.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         dlgobt.setLocationRelativeTo(internalFrame1);
         TeksKosong();

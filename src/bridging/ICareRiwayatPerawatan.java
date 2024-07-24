@@ -318,7 +318,7 @@ public final class ICareRiwayatPerawatan extends javax.swing.JDialog {
                     System.out.println("Notifikasi : "+ex);
                 }
             }else {
-                JOptionPane.showMessageDialog(null,nameNode.path("message").asText());                
+                JOptionPane.showMessageDialog(null,"Maaf, ICARE hanya bisa diakses di hari terbit SEP");                
             }   
         } catch (Exception ex) {
             System.out.println("Notifikasi : "+ex.getMessage());

@@ -11,6 +11,7 @@
  */
 package simrskhanza;
 
+import bridging.ICareRiwayatPerawatan;
 import rekammedis.RMRiwayatPerawatan;
 import surat.SuratKontrol;
 import keuangan.DlgCariPerawatanRanap;
@@ -1403,6 +1404,9 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         BtnPenilaianTambahanMelarikanDiri = new widget.Button();
         jLabelCaraBayar = new widget.Label();
         TCaraBayar = new widget.Label();
+        btnIcare = new widget.Button();
+        TPotensiPRB = new widget.Label();
+        
 
         BagianRS.setEditable(false);
         BagianRS.setText("0");
@@ -2201,6 +2205,19 @@ public final class DlgRawatInap extends javax.swing.JDialog {
 
         panelGlass12.add(scrollPane2);
         scrollPane2.setBounds(73, 115, 360, 38);
+        
+        
+        btnIcare.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnIcare.setText("Akses ICARE BPJS");
+        btnIcare.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnIcare.setName("btnIcare"); // NOI18N
+        btnIcare.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIcareActionPerformed(evt);
+            }
+        });
+        panelGlass12.add(btnIcare);
+        btnIcare.setBounds(910, 10, 170, 22);
 
         jLabel8.setText("Subjek :");
         jLabel8.setName("jLabel8"); // NOI18N
@@ -3335,17 +3352,19 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         FormInput.add(ChkJln);
         ChkJln.setBounds(906, 10, 23, 23);
         
+        jLabelCaraBayar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabelCaraBayar.setText("Cara Bayar :");
-        jLabelCaraBayar.setName("jLabel3"); 
+        jLabelCaraBayar.setName("jLabelCaraBayar"); 
         FormInput.add(jLabelCaraBayar);
-        jLabelCaraBayar.setBounds(950, 10, 70, 23);
+        jLabelCaraBayar.setBounds(950, 10, 100, 23);
         
+        TCaraBayar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         TCaraBayar.setText("-");
         TCaraBayar.setFont(new java.awt.Font("Tahoma", 1, 14));
-        TCaraBayar.setName("jLabel3"); 
+        TCaraBayar.setName("TCaraBayar"); 
         FormInput.add(TCaraBayar);
-        TCaraBayar.setBounds(1000, 10, 70, 23);
-
+        TCaraBayar.setBounds(1020, 10, 400, 23);
+        
         internalFrame1.add(FormInput, java.awt.BorderLayout.PAGE_START);
 
         PanelAccor.setBackground(new java.awt.Color(255, 255, 255));
@@ -8358,6 +8377,25 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
     }
     
+    private void btnIcareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No.Rawat");
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                String variabel=Sequel.cariIsi("select maping_dokter_dpjpvclaim.kd_dokter_bpjs from maping_dokter_dpjpvclaim where maping_dokter_dpjpvclaim.kd_dokter=?",KdDok.getText());
+                if(!variabel.equals("")){
+                    ICareRiwayatPerawatan dlgki=new ICareRiwayatPerawatan(null,false);
+                    dlgki.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                    dlgki.setLocationRelativeTo(internalFrame1);
+                    dlgki.setPasien(Sequel.cariIsi("select pasien.no_peserta from pasien where pasien.no_rkm_medis=?",TNoRM.getText()),variabel);   
+                    dlgki.setVisible(true);
+                }else{
+                    JOptionPane.showMessageDialog(null,"Maaf, Dokter tidak terdaftar di mapping dokter BPJS...!!!"); 
+                }
+                this.setCursor(Cursor.getDefaultCursor());  
+        }
+    }
+    
     /**
     * @param args the command line arguments
     */
@@ -8692,6 +8730,8 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                           BtnAwalKeperawatanNeonatus,BtnPenilaianPasienImunitasRendah,BtnCatatanKeseimbanganCairan,BtnCatatanObservasiCHBP,BtnCatatanObservasiInduksiPersalinan,BtnPermintaanKonsultasiMedik;
     private widget.Label jLabelCaraBayar;
     private widget.Label TCaraBayar;
+    private widget.Button btnIcare;
+    private widget.Label TPotensiPRB;
     
     public void tampilDr() {
         Valid.tabelKosong(tabModeDr);
@@ -9049,12 +9089,10 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         TNmPrwPetugas.setText("");
         TKdPrwDokterPetugas.setText("");
         TNmPrwDokterPetugas.setText("");
-        
         TCaraBayar.setText(Sequel.cariIsi("SELECT CONCAT(penjab.png_jawab, ' ',COALESCE(bridging_sep.klsrawat, '')) AS cara_bayar FROM reg_periksa " +
         "INNER JOIN penjab ON penjab.kd_pj = reg_periksa.kd_pj " +
         "LEFT JOIN bridging_sep on bridging_sep.no_rawat = reg_periksa.no_rawat " +
-        "WHERE reg_periksa.no_rawat = ?", norwt));
-        
+        "WHERE reg_periksa.no_rawat = ?", norwt) + Sequel.cariIsi("SELECT CONCAT(' - ', bpjs_prb.prb) as prb FROM bpjs_prb INNER JOIN bridging_sep ON bridging_sep.no_sep = bpjs_prb.no_sep WHERE bridging_sep.no_rawat = ?", norwt));
     }
     
     public void setKamar(String kamar) {

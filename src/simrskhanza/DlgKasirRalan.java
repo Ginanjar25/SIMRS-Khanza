@@ -8469,6 +8469,20 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 if(tbKasirRalan.getSelectedRow()>-1){
                     tabModekasir.setValueAt("Batal",tbKasirRalan.getSelectedRow(),10);
                 }
+                if (!Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText()).isBlank()) {
+                    if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "nobooking=?", "status='Batal',validasi=now()", 1, new String[]{
+                        Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
+                    }) == true) {
+                        Sequel.menyimpan2("referensi_mobilejkn_bpjs_batal", "?,?,?,now(),?,?,?", 6, new String[]{
+                            TNoRMCari.getText(),
+                            TNoRw.getText(),
+                            Sequel.cariIsi("SELECT rmb.nomorreferensi FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText()),
+                            "Dibatalkan Oleh " + akses.getkode() + "",
+                            "Belum",
+                            Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
+                        });
+                    }
+                }
             }
         }
     }//GEN-LAST:event_MnBatalActionPerformed

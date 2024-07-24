@@ -533,6 +533,8 @@ public final class DlgCariObat extends javax.swing.JDialog {
         TKamar = new widget.TextBox();
         TCaraBayar = new widget.TextBox();
         jLabel15 = new widget.Label();
+        TAlergi = new widget.TextBox();
+        jLabelAlergi = new widget.Label();
         TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -761,7 +763,7 @@ public final class DlgCariObat extends javax.swing.JDialog {
 
         FormInput.setBackground(new java.awt.Color(215, 225, 215));
         FormInput.setName("FormInput"); // NOI18N
-        FormInput.setPreferredSize(new java.awt.Dimension(100, 130));
+        FormInput.setPreferredSize(new java.awt.Dimension(100, 165));
         FormInput.setLayout(null);
 
         jLabel5.setText("Total :");
@@ -850,7 +852,7 @@ public final class DlgCariObat extends javax.swing.JDialog {
         jLabel8.setBounds(4, 40, 65, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-07-2024" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "24-07-2024" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -987,13 +989,13 @@ public final class DlgCariObat extends javax.swing.JDialog {
         jLabel13.setName("jLabel13"); // NOI18N
         jLabel13.setPreferredSize(new java.awt.Dimension(68, 23));
         FormInput.add(jLabel13);
-        jLabel13.setBounds(20, 100, 50, 23);
+        jLabel13.setBounds(10, 100, 60, 23);
 
         TKamar.setEditable(false);
         TKamar.setName("TKamar"); // NOI18N
         TKamar.setPreferredSize(new java.awt.Dimension(207, 23));
         FormInput.add(TKamar);
-        TKamar.setBounds(70, 100, 280, 23);
+        TKamar.setBounds(72, 100, 280, 23);
 
         TCaraBayar.setEditable(false);
         TCaraBayar.setName("TCaraBayar"); // NOI18N
@@ -1006,6 +1008,23 @@ public final class DlgCariObat extends javax.swing.JDialog {
         jLabel15.setPreferredSize(new java.awt.Dimension(68, 23));
         FormInput.add(jLabel15);
         jLabel15.setBounds(380, 100, 65, 23);
+
+        TAlergi.setEditable(false);
+        TAlergi.setHighlighter(null);
+        TAlergi.setMaxLenth(200);
+        TAlergi.setName("TAlergi"); // NOI18N
+        TAlergi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TAlergiActionPerformed(evt);
+            }
+        });
+        FormInput.add(TAlergi);
+        TAlergi.setBounds(72, 130, 610, 24);
+
+        jLabelAlergi.setText("Alergi :");
+        jLabelAlergi.setName("jLabelAlergi"); // NOI18N
+        FormInput.add(jLabelAlergi);
+        jLabelAlergi.setBounds(10, 130, 60, 23);
 
         internalFrame1.add(FormInput, java.awt.BorderLayout.PAGE_START);
 
@@ -2020,6 +2039,10 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         this.setCursor(Cursor.getDefaultCursor());  
     }//GEN-LAST:event_ppStok1ActionPerformed
 
+    private void TAlergiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TAlergiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TAlergiActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -2062,6 +2085,7 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     private widget.ScrollPane Scroll;
     private widget.ScrollPane Scroll1;
     private widget.ScrollPane Scroll2;
+    private widget.TextBox TAlergi;
     private widget.TextBox TCaraBayar;
     public widget.TextBox TCari;
     private widget.TextBox TKamar;
@@ -2083,6 +2107,7 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     private widget.Label jLabel6;
     private widget.Label jLabel7;
     private widget.Label jLabel8;
+    private widget.Label jLabelAlergi;
     private javax.swing.JPanel jPanel3;
     private widget.TextBox kdgudang;
     private widget.Label label12;
@@ -3480,6 +3505,10 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         TCaraBayar.setText(Sequel.cariIsi("select penjab.png_jawab from reg_periksa INNER JOIN penjab ON penjab.kd_pj = reg_periksa.kd_pj where reg_periksa.no_rawat=?",norwt));
         TKamar.setText(Sequel.cariIsi("SELECT poliklinik.nm_poli FROM reg_periksa INNER JOIN poliklinik ON poliklinik.kd_poli = reg_periksa.kd_poli WHERE reg_periksa.no_rawat = ?",norwt));
         TCari.requestFocus();
+    }
+    
+    public void setNoResep(String no_resep) {        
+      TAlergi.setText(Sequel.cariIsi("select alergi from resep_obat where no_resep = ?", no_resep));
     }
     
     private void jam(){

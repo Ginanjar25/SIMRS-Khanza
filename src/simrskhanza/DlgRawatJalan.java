@@ -1666,6 +1666,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         BtnPenilaianTambahanPerilakuKekerasan = new widget.Button();
         BtnPenilaianTambahanMelarikanDiri = new widget.Button();
         button4 = new widget.Button();
+        TPotensiPRB = new widget.Label();
         //TCaraBayar = new widget.TextBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -3648,24 +3649,19 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         FormInput.add(ChkJln);
         ChkJln.setBounds(906, 10, 23, 23);
         
+        jLabelCaraBayar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabelCaraBayar.setText("Cara Bayar :");
-        jLabelCaraBayar.setName("jLabel3"); 
+        jLabelCaraBayar.setName("jLabelCaraBayar"); 
         FormInput.add(jLabelCaraBayar);
-        jLabelCaraBayar.setBounds(950, 10, 70, 23);
+        jLabelCaraBayar.setBounds(950, 10, 100, 23);
         
+        TCaraBayar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         TCaraBayar.setText("-");
         TCaraBayar.setFont(new java.awt.Font("Tahoma", 1, 14));
-        TCaraBayar.setName("jLabel3"); 
+        TCaraBayar.setName("TCaraBayar"); 
         FormInput.add(TCaraBayar);
-        TCaraBayar.setBounds(1000, 10, 70, 23);
-        
-        
-//        TCaraBayar.setEditable(false);
-//        TCaraBayar.setHighlighter(null);
-//        TCaraBayar.setName("TCaraBayar"); 
-//        FormInput.add(TCaraBayar);
-//        TCaraBayar.setBounds(1050, 10, 125, 23);
-
+        TCaraBayar.setBounds(1020, 10, 400, 23);
+       
         internalFrame1.add(FormInput, java.awt.BorderLayout.PAGE_START);
 
         PanelAccor.setBackground(new java.awt.Color(255, 255, 255));
@@ -9818,6 +9814,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Label jLabelCaraBayar;
     private widget.Label TCaraBayar;
     //private widget.TextBox TCaraBayar;
+    private widget.Label TPotensiPRB;
     
     private void tampilDr() {
         Valid.tabelKosong(tabModeDr);
@@ -10059,7 +10056,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         TCaraBayar.setText(Sequel.cariIsi("SELECT CONCAT(penjab.png_jawab, ' ',COALESCE(bridging_sep.klsrawat, '')) AS cara_bayar FROM reg_periksa " +
         "INNER JOIN penjab ON penjab.kd_pj = reg_periksa.kd_pj " +
         "LEFT JOIN bridging_sep on bridging_sep.no_rawat = reg_periksa.no_rawat " +
-        "WHERE reg_periksa.no_rawat = ?", norwt));
+        "WHERE reg_periksa.no_rawat = ?", norwt) + Sequel.cariIsi("SELECT CONCAT(' - ', bpjs_prb.prb) as prb FROM bpjs_prb INNER JOIN bridging_sep ON bridging_sep.no_sep = bpjs_prb.no_sep WHERE bridging_sep.no_rawat = ?", norwt));
         TNoRw.setText(norwt);
         TCari.setText("");
         DTPCari1.setDate(tgl1);
@@ -10917,7 +10914,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         TCaraBayar.setText(Sequel.cariIsi("SELECT CONCAT(penjab.png_jawab, ' ',COALESCE(bridging_sep.klsrawat, '')) AS cara_bayar FROM reg_periksa " +
         "INNER JOIN penjab ON penjab.kd_pj = reg_periksa.kd_pj " +
         "LEFT JOIN bridging_sep on bridging_sep.no_rawat = reg_periksa.no_rawat " +
-        "WHERE reg_periksa.no_rawat = ?", norwt));
+        "WHERE reg_periksa.no_rawat = ?", norwt) + " - " + Sequel.cariIsi("SELECT bpjs_prb.prb FROM bpjs_prb INNER JOIN bridging_sep ON bridging_sep.no_sep = bpjs_prb.no_sep WHERE bridging_sep.no_rawat = ?", norwt));
         TabRawatMouseClicked(null);
     }
     
