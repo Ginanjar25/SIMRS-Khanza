@@ -7975,10 +7975,10 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
             Sequel.mengedit("tagihan_bpd_jateng","no_rkm_medis=?","no_rkm_medis=?",2,new String[]{
                 NoRmTujuan.getText(),TNo.getText()
             });
-            Sequel.mengedit("referensi_mobilejkn_bpjs","no_rkm_medis=?","no_rkm_medis=?",2,new String[]{
+            Sequel.mengedit("referensi_mobilejkn_bpjs","norm=?","norm=?",2,new String[]{
                 NoRmTujuan.getText(),TNo.getText()
             });
-            Sequel.mengedit("side_db.reg_periksa_website","no_rkm_medis=?","no_rkm_medis=?",2,new String[]{
+            Sequel.mengedit("side_db.reg_periksa_website","norm=?","norm=?",2,new String[]{
                 NoRmTujuan.getText(),TNo.getText()
             });
             if(Sequel.meghapustf("pasien","no_rkm_medis",TNo.getText())==true){
