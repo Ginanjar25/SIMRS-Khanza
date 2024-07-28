@@ -1374,7 +1374,7 @@ private void kdgudangKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         try{
             ps=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng,databarang.kode_sat, databarang.h_beli, "+
                 " ifnull(date_format(databarang.expire,'%d-%m-%Y'),'00-00-0000'),databarang.kode_satbesar,databarang.isi, "+
-                " (databarang.h_beli*databarang.isi) as hargabesar from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
+                " (databarang.h_beli*databarang.isi) as hargabesar, round((databarang.h_beli*100)/111) from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
                 " where databarang.status='1' and databarang.kode_brng like ? or "+
                 " databarang.status='1' and databarang.nama_brng like ? or "+
                 " databarang.status='1' and jenis.nama like ? order by databarang.nama_brng");
@@ -1388,7 +1388,7 @@ private void kdgudangKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                         tabMode.addRow(new Object[]{
                             "",rs.getString(6),rs.getString(1),
                             rs.getString(2),rs.getString(3),true,
-                            rs.getString(5),rs.getDouble(8),0,0,0,0,0,"",
+                            rs.getString(5),rs.getDouble(9),0,0,0,0,0,"",
                             0,0,0,0,0,0,0,0,0,0,0,rs.getDouble(7),1,0
                         });
                     } 
@@ -1397,7 +1397,7 @@ private void kdgudangKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
                         tabMode.addRow(new Object[]{
                             "",rs.getString(6),rs.getString(1),
                             rs.getString(2),rs.getString(3),false,
-                            rs.getString(5),rs.getDouble(8),0,0,0,0,0,"",
+                            rs.getString(5),rs.getDouble(9),0,0,0,0,0,"",
                             0,0,0,0,0,0,0,0,0,0,0,rs.getDouble(7),1,0
                         });
                     } 
