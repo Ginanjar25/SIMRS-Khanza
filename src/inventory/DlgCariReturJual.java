@@ -15,6 +15,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -38,7 +40,7 @@ public class DlgCariReturJual extends javax.swing.JDialog {
     private PreparedStatement ps,ps2;
     private ResultSet rs,rs2;
     private String tanggal="",noret="",ptg="",sat="",bar="",nonot="";  
-    private int no=0,i=0;
+    private int no=0,i=0, getno=0;
     private String aktifkanbatch="no";
     private boolean sukses=true;
 
@@ -222,6 +224,7 @@ public class DlgCariReturJual extends javax.swing.JDialog {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
         ppHapus = new javax.swing.JMenuItem();
+        ppCetak = new javax.swing.JMenuItem();
         internalFrame1 = new widget.InternalFrame();
         scrollPane1 = new widget.ScrollPane();
         tbRetur = new widget.Table();
@@ -276,6 +279,22 @@ public class DlgCariReturJual extends javax.swing.JDialog {
         });
         jPopupMenu1.add(ppHapus);
 
+        ppCetak.setBackground(new java.awt.Color(255, 255, 254));
+        ppCetak.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppCetak.setForeground(new java.awt.Color(50, 50, 50));
+        ppCetak.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppCetak.setText("Cetak Retur");
+        ppCetak.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppCetak.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppCetak.setName("ppCetak"); // NOI18N
+        ppCetak.setPreferredSize(new java.awt.Dimension(150, 25));
+        ppCetak.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppCetakActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(ppCetak);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
@@ -307,6 +326,11 @@ public class DlgCariReturJual extends javax.swing.JDialog {
         tbRetur.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbRetur.setComponentPopupMenu(jPopupMenu1);
         tbRetur.setName("tbRetur"); // NOI18N
+        tbRetur.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbReturMouseClicked(evt);
+            }
+        });
         scrollPane1.setViewportView(tbRetur);
 
         internalFrame1.add(scrollPane1, java.awt.BorderLayout.CENTER);
@@ -672,11 +696,14 @@ public class DlgCariReturJual extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
+        NoRetur.setText("");
         NoNota.setText("");
         kdbar.setText("");
         nmbar.setText("");
         kdsat.setText("");
         nmsat.setText("");
+        Kdptg.setText("");
+        Nmptg.setText("");
         tampil();
     }//GEN-LAST:event_BtnAllActionPerformed
 
@@ -810,7 +837,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             if(rs.next()){        
                 Sequel.AutoComitFalse();
                 sukses=true;
-                ps2=koneksi.prepareStatement("select detreturjual.kode_brng,detreturjual.jml_retur,detreturjual.no_batch,detreturjual.no_faktur from detreturjual where detreturjual.no_retur_jual=? ");
+                ps2=koneksi.prepareStatement("select kode_brng,jml_retur,no_batch,no_faktur from detreturjual where no_retur_jual=? ");
                 try {
                     ps2.setString(1,rs.getString(1));
                     rs2=ps2.executeQuery();
@@ -883,6 +910,80 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         tampil();
     }//GEN-LAST:event_formWindowOpened
 
+    private void ppCetakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppCetakActionPerformed
+        // TODO add your handling code here:
+        if(tabMode.getRowCount()==0){
+             JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
+             NoRetur.requestFocus();
+        }else if(NoRetur.getText().trim().equals("")){
+             JOptionPane.showMessageDialog(null,"Maaf, Klik No Resep untuk mencetak aturan pakai...!!!!");
+        }else if(!(NoRetur.getText().trim().equals(""))){
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            Map<String, Object> param = new HashMap<>();  
+            
+            String no_retur = tbRetur.getValueAt(tbRetur.getSelectedRow(),0).toString();
+            String no_rm = tbRetur.getValueAt(tbRetur.getSelectedRow(),3).toString().substring(0, 6);
+            String alamat_pasien = Sequel.cariIsi("select alamat from pasien where no_rkm_medis = ?", no_rm);
+            
+            String no_rawat;
+            if (no_retur.contains("RJ")) {
+            // Jika no_retur mengandung "RJ", ambil string setelah "RJ"
+                int startIndex = no_retur.indexOf("RJ") + 2;
+                no_rawat = no_retur.substring(startIndex);
+            } else {
+                // Jika tidak mengandung "RJ", gunakan no_retur langsung
+                no_rawat = no_retur.substring(0, 17);
+            }
+            
+            String kelas = Sequel.cariIsi("SELECT km.kelas FROM kamar_inap ki INNER JOIN kamar km ON km.kd_kamar = ki.kd_kamar WHERE ki.no_rawat = ? AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1", no_rawat);
+        
+            if(kelas.equals("")){
+                kelas = "Rawat Jalan";
+            }
+           
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            String formattedDate = now.format(formatter);
+            
+            param.put("namars",akses.getnamars());
+            param.put("alamatrs",akses.getalamatrs());
+            param.put("kotars",akses.getkabupatenrs());
+            param.put("propinsirs",akses.getpropinsirs());
+            param.put("kontakrs",akses.getkontakrs());
+            param.put("emailrs",akses.getemailrs());
+            param.put("tanggal", formattedDate);
+            param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
+            param.put("no_retur", no_retur); 
+            param.put("no_rm",no_rm);
+            param.put("pasien", Sequel.cariIsi("select nm_pasien from pasien where no_rkm_medis = ?", no_rm));
+            param.put("alamat_pasien", alamat_pasien);
+            param.put("no_rawat",no_rawat);
+            
+            Valid.MyReport("rptReturObat.jasper","report","::[ Aturan Pakai Obat ]::",param);
+            
+//            if(Sequel.cariInteger(
+//                    "select count(*) from resep_obat inner join "+
+//                    "aturan_pakai on resep_obat.no_rawat=aturan_pakai.no_rawat and "+
+//                    "resep_obat.tgl_perawatan=aturan_pakai.tgl_perawatan and " +
+//                    "resep_obat.jam=aturan_pakai.jam where resep_obat.no_resep=? and aturan_pakai.aturan<>''",NoResep.getText())>0){
+//                
+//                Valid.MyReport("rptReturObat.jasper","report","::[ Aturan Pakai Obat ]::",param);
+//            }
+            
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }//GEN-LAST:event_ppCetakActionPerformed
+
+    private void tbReturMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbReturMouseClicked
+        // TODO add your handling code here:
+         if(tabMode.getRowCount()!=0){
+            try {
+                getData();
+            } catch (java.lang.NullPointerException e) {
+            }
+        }
+    }//GEN-LAST:event_tbReturMouseClicked
+
     /**
     * @param args the command line arguments
     */
@@ -934,6 +1035,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private widget.panelisi panelisi1;
     private widget.panelisi panelisi4;
     private widget.panelisi panelisijual;
+    private javax.swing.JMenuItem ppCetak;
     private javax.swing.JMenuItem ppHapus;
     private widget.ScrollPane scrollPane1;
     private widget.Table tbRetur;
@@ -1057,6 +1159,16 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             ppHapus.setEnabled(false);
         }  
     }
-
+    
+     private void getData() {
+        if(tbRetur.getSelectedRow()!= -1){
+            getno=1;
+            NoRetur.setText(tbRetur.getValueAt(tbRetur.getSelectedRow(),0).toString()); 
+            Kdptg.setText(tbRetur.getValueAt(tbRetur.getSelectedRow(),2).toString().replaceAll("[^0-9]", ""));
+            Nmptg.setText(tbRetur.getValueAt(tbRetur.getSelectedRow(),2).toString().replaceAll("[0-9,]", "").trim());
+               
+            getno=0;
+        }
+    }
  
 }
