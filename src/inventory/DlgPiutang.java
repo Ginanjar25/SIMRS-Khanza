@@ -36,7 +36,7 @@ public class DlgPiutang extends javax.swing.JDialog {
     private double ttljual=0,stok,jumlah;
     private PreparedStatement ps;
     private ResultSet rs;
-    private String aktifkanbatch="no",pilihanetiket,hppfarmasi="";
+    private String aktifkanbatch="no",pilihanetiket,hppfarmasi="",DEPOAKTIFOBAT="", kd_bangsal="";
     private boolean sukses=true;
     private DlgCariAturanPakai aturan_pakai=new DlgCariAturanPakai(null,false);
 
@@ -392,6 +392,13 @@ public class DlgPiutang extends javax.swing.JDialog {
         } catch (Exception e) {
             hppfarmasi="dasar";
         }
+        try {
+            DEPOAKTIFOBAT = koneksiDB.DEPOAKTIFOBAT();
+        } catch (Exception e) {
+            System.out.println("E : "+e);
+            DEPOAKTIFOBAT = "";
+        }
+        
     }
 
     /** This method is called from within the constructor to
@@ -1929,6 +1936,24 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             kdptg.setText(akses.getkode());
             nmptg.setText(form.petugas.tampil3(kdptg.getText()));
         }        
+    }
+    
+    public void isCek2(String status, String NoRW){
+        String bangsaldefault=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1");
+        if(!DEPOAKTIFOBAT.equals("")){
+            kd_bangsal=DEPOAKTIFOBAT;
+        }else{
+            if(status.equals("ralan")){
+                kd_bangsal=Sequel.cariIsi("select set_depo_ralan.kd_bangsal from set_depo_ralan where set_depo_ralan.kd_poli=?",Sequel.cariIsi("select reg_periksa.kd_poli from reg_periksa where reg_periksa.no_rawat=?",NoRW));
+                if(kd_bangsal.equals("")){
+                    kd_bangsal=bangsaldefault;
+                }
+            }else if(status.equals("ranap")){
+                kd_bangsal=akses.getkdbangsal();
+            } 
+        }
+//        System.out.println("KOde Bangsal " + kd_bangsal);
+        kdgudang.setText(kd_bangsal); 
     }
     
     

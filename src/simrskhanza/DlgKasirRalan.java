@@ -10711,6 +10711,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 JOptionPane.showMessageDialog(null,"Maaf, Pasien sudah masuk Kamar Inap. Gunakan billing Ranap..!!!");
             }else {
                 DlgPiutang penjualan=new DlgPiutang(null,false);
+                penjualan.isCek2("ralan", TNoRwCari.getText());
                 penjualan.isCek();
                 penjualan.emptTeks();
                 penjualan.setPasien(TNoRwCari.getText(),TNoRMCari.getText(),TPasienCari.getText());  
