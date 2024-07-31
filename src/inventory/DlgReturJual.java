@@ -37,7 +37,7 @@ public class DlgReturJual extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private riwayatobat Trackobat=new riwayatobat();
     private String formvalid="";
-    private String aktifkanbatch="no",norawat="";
+    private String aktifkanbatch="no",norawat="", DEPOAKTIFOBAT="", kd_bangsal="";
     private boolean sukses=true;
 
     /** Creates new form DlgProgramStudi
@@ -1418,7 +1418,14 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     
     public void isCek(){   
         autonomor();
-        Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi",kdgudang);
+        String bangsaldefault=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1");
+        if(!DEPOAKTIFOBAT.equals("")){
+            kd_bangsal=DEPOAKTIFOBAT;
+        }else{
+            kd_bangsal=bangsaldefault;
+        }
+        kdgudang.setText(kd_bangsal); 
+//        Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi",kdgudang);
         nmgudang.setText(bangsal.tampil3(kdgudang.getText())); 
         if(akses.getjml2()>=1){
             Kdptg.setEditable(false);
@@ -1473,6 +1480,35 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }
         
         formvalid="No";
+    }
+        
+    public void isCek2(String status, String NoRW){
+        autonomor();
+        String bangsaldefault=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1");
+        if(!DEPOAKTIFOBAT.equals("")){
+            kd_bangsal=DEPOAKTIFOBAT;
+        }else{
+            if(status.equals("ralan")){
+                kd_bangsal=Sequel.cariIsi("select set_depo_ralan.kd_bangsal from set_depo_ralan where set_depo_ralan.kd_poli=?",Sequel.cariIsi("select reg_periksa.kd_poli from reg_periksa where reg_periksa.no_rawat=?",NoRW));
+                if(kd_bangsal.equals("")){
+                    kd_bangsal=bangsaldefault;
+                }
+            }else if(status.equals("ranap")){
+                kd_bangsal=akses.getkdbangsal();
+            } 
+        }
+        kdgudang.setText(kd_bangsal); 
+        nmgudang.setText(bangsal.tampil3(kdgudang.getText())); 
+        if(akses.getjml2()>=1){
+            Kdptg.setEditable(false);
+            BtnPtg.setEnabled(false);
+            BtnSimpan.setEnabled(akses.getretur_dari_pembeli());
+            BtnTambah.setEnabled(akses.getretur_dari_pembeli());
+            BtnHapus.setEnabled(akses.getretur_dari_pembeli());
+            BtnBatal.setEnabled(akses.getretur_dari_pembeli());
+            Kdptg.setText(akses.getkode());
+            Nmptg.setText(form.petugas.tampil3(Kdptg.getText())); 
+        }
     }
     
     private void cariBatch() {
@@ -1562,7 +1598,9 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                             Trackobat.catatRiwayat(rs.getString(2),rs.getDouble(6),0,"Retur Jual",akses.getkode(),kdgudang.getText(),"Simpan","","",NoRetur.getText()+" "+kdmem.getText()+" "+nmmem.getText());
                             Sequel.menyimpan("gudangbarang","'"+rs.getString(2)+"','"+kdgudang.getText()+"','"+rs.getString(6)+"','',''", 
                                    "stok=stok+'"+rs.getString(6)+"'","kode_brng='"+rs.getString(2)+"' and kd_bangsal='"+kdgudang.getText()+"' and no_batch='' and no_faktur=''");
-                        } 
+                        }
+                        formvalid = "Yes";
+                        autonomor();
                     }else{
                        sukses=false;
                     }                                 

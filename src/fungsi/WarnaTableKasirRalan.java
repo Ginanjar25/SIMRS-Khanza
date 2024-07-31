@@ -25,8 +25,8 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
             component.setForeground(new Color(50,50,50));
         }
         if(table.getValueAt(row,10).toString().equals("Sudah")){
-            component.setBackground(new Color(200,0,0));
-            component.setForeground(new Color(255,230,230));
+            component.setBackground(new Color(255/255f, 51/255f, 51/255f, 0.8f));
+            component.setForeground(new Color(245,255,245));
         }else if(table.getValueAt(row,10).toString().equals("Batal")){
             component.setBackground(new Color(255,243,109));
             component.setForeground(new Color(120,110,50));
@@ -40,11 +40,11 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
             component.setBackground(new Color(0/255f, 160/255f, 42/255f, 0.61f));
             component.setForeground(new Color(0,0,0));
         }else if(table.getValueAt(row,10).toString().equals("Belum") && table.getValueAt(row,9).toString().contains("UMUM")){
-            component.setBackground(new Color(0, 100, 255));
-            component.setForeground(new Color(255,255,255));
+            component.setBackground(new Color(51/255f, 133/255f, 255/255f, 0.61f));
+            component.setForeground(new Color(0,0,0));
         }
         if(table.getValueAt(row,15).toString().equals("Sudah Bayar")){
-            component.setBackground(new Color(50,50,50));
+            component.setBackground(new Color(50/255f,50/255f,50/255f, 0.76f));
             component.setForeground(new Color(255,255,255));
         }
         return component;

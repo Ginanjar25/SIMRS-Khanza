@@ -12170,7 +12170,8 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                         DlgReturJual returjual=new DlgReturJual(null,false);
                         returjual.emptTeks();
-                        returjual.isCek();
+//                        returjual.isCek();
+                        returjual.isCek2("ralan", TNoRwCari.getText());
                         returjual.setPasien(TNoRMCari.getText(),TNoRwCari.getText());
                         returjual.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                         returjual.setLocationRelativeTo(internalFrame1);
@@ -14962,6 +14963,8 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         Valid.tabelKosong(tabModekasir);
         try{   
             semua=caripenjab.equals("")&&CrPoli.getText().trim().equals("")&&CrPtg.getText().trim().equals("")&&cmbStatus.getSelectedItem().toString().equals("Semua")&&cmbStatusBayar.getSelectedItem().toString().equals("Semua")&&TCari.getText().trim().equals("");
+            boolean batal=cmbStatus.getSelectedItem().toString().equals("Batal");
+//            System.out.println(batal);
             pskasir=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
                 "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,poliklinik.nm_poli,"+
                 "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts,penjab.png_jawab,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur, "+
@@ -14969,8 +14972,8 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                 "LEFT JOIN bridging_sep ON bridging_sep.no_rawat = reg_periksa.no_rawat "+
                 "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli inner join penjab on reg_periksa.kd_pj=penjab.kd_pj where  "+
-                "reg_periksa.tgl_registrasi between ? and ? and reg_periksa.status_lanjut='Ralan'"+tampildiagnosa+
-                (semua?"and reg_periksa.stts != 'Batal'":"and reg_periksa.kd_pj like ? and poliklinik.nm_poli like ? and dokter.nm_dokter like ? and reg_periksa.stts like ? and reg_periksa.status_bayar like ? and "+
+                "reg_periksa.tgl_registrasi between ? and ? and reg_periksa.status_lanjut='Ralan'"+tampildiagnosa +
+                (semua?"and reg_periksa.stts != 'Batal'":"and reg_periksa.kd_pj like ? and poliklinik.nm_poli like ? and dokter.nm_dokter like ? " +(batal ? "and reg_periksa.stts = ? ": "and reg_periksa.stts like ? and reg_periksa.stts != 'Batal' ") +" and reg_periksa.status_bayar like ? and "+
                 "(reg_periksa.no_reg like ? or reg_periksa.no_rawat like ? or reg_periksa.tgl_registrasi like ? or reg_periksa.kd_dokter like ? or dokter.nm_dokter like ? or reg_periksa.no_rkm_medis like ? or pasien.nm_pasien like ? or poliklinik.nm_poli like ? or "+
                 "reg_periksa.p_jawab like ? or penjab.png_jawab like ? or reg_periksa.almt_pj like ? or reg_periksa.status_bayar like ? or reg_periksa.hubunganpj like ?) ")+terbitsep+
                 "order by "+order);
@@ -14981,7 +14984,6 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                     pskasir.setString(3,"%"+caripenjab+"%");
                     pskasir.setString(4,"%"+CrPoli.getText()+"%");
                     pskasir.setString(5,"%"+CrPtg.getText()+"%");
-                    pskasir.setString(6,"%"+cmbStatus.getSelectedItem().toString().replaceAll("Semua","")+"%");
                     pskasir.setString(7,"%"+cmbStatusBayar.getSelectedItem().toString().replaceAll("Semua","")+"%");
                     pskasir.setString(8,"%"+TCari.getText().trim()+"%");
                     pskasir.setString(9,"%"+TCari.getText().trim()+"%");
@@ -14996,6 +14998,11 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                     pskasir.setString(18,"%"+TCari.getText().trim()+"%");
                     pskasir.setString(19,"%"+TCari.getText().trim()+"%");
                     pskasir.setString(20,"%"+TCari.getText().trim()+"%");
+                    if(batal){
+                        pskasir.setString(6,"Batal");                       
+                    } else {
+                        pskasir.setString(6,"%"+cmbStatus.getSelectedItem().toString().replaceAll("Semua","")+"%");
+                    }
                 }
                 
                 rskasir=pskasir.executeQuery();

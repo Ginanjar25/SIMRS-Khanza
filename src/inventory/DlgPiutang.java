@@ -1927,7 +1927,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         autoNomor();
         Ongkir.setText("0");
         UangMuka.setText("0");
-        Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi",kdgudang);
+//        Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi",kdgudang);
         nmgudang.setText(bangsal.tampil3(kdgudang.getText())); 
         if(akses.getjml2()>=1){
             kdptg.setEditable(false);

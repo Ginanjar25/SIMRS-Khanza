@@ -42,7 +42,7 @@ public class DlgPiutangKry extends javax.swing.JDialog {
     private double ttljual = 0, stok, jumlah;
     private PreparedStatement ps;
     private ResultSet rs;
-    private String aktifkanbatch = "no", pilihanetiket, hppfarmasi = "";
+    private String aktifkanbatch = "no", pilihanetiket, hppfarmasi = "", DEPOAKTIFOBAT="", kd_bangsal="";
     private boolean sukses = true;
     private DlgCariAturanPakai aturan_pakai = new DlgCariAturanPakai(null, false);
 
@@ -61,6 +61,13 @@ public class DlgPiutangKry extends javax.swing.JDialog {
         } catch (Exception e) {
             System.out.println("E : " + e);
             aktifkanbatch = "no";
+        }
+        
+        try {
+            DEPOAKTIFOBAT = koneksiDB.DEPOAKTIFOBAT();
+        } catch (Exception e) {
+            System.out.println("E : "+e);
+            DEPOAKTIFOBAT = "";
         }
         Calendar calendar = Calendar.getInstance();   
         calendar.add(Calendar.DATE, 40);
@@ -2146,7 +2153,8 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         autoNomor();
         Ongkir.setText("0");
         UangMuka.setText("0");
-        Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi", kdgudang);
+//        Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi", kdgudang);
+        isCek2();
         nmgudang.setText(bangsal.tampil3(kdgudang.getText()));
         if (akses.getjml2() >= 1) {
             kdptg.setEditable(false);
@@ -2155,6 +2163,17 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             kdptg.setText(akses.getkode());
             nmptg.setText(form.petugas.tampil3(kdptg.getText()));
         }
+    }
+    
+    public void isCek2(){
+        String bangsaldefault=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1");
+        if(!DEPOAKTIFOBAT.equals("")){
+            kd_bangsal=DEPOAKTIFOBAT;
+        }else{
+            kd_bangsal=bangsaldefault;
+        }
+//        System.out.println("KOde Bangsal " + kd_bangsal);
+        kdgudang.setText(kd_bangsal); 
     }
 
     private void cariBatch() {

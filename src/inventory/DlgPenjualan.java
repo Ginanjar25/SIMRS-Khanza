@@ -42,7 +42,7 @@ public class DlgPenjualan extends javax.swing.JDialog {
     private int jml=0,i=0,row,kolom=0,reply,index;
     public DlgCariAturanPakai aturan_pakai=new DlgCariAturanPakai(null,false);
     private String verifikasi_penjualan_di_kasir="",Penjualan_Obat="",HPP_Obat_Jual_Bebas="",Persediaan_Obat_Jual_Bebas="",
-            status="Belum Dibayar",pilihanetiket="",hppfarmasi="",kode_akun_bayar="",tampilkan_ppnobat_ralan="",PPN_Keluaran="";
+            status="Belum Dibayar",pilihanetiket="",hppfarmasi="",kode_akun_bayar="",tampilkan_ppnobat_ralan="",PPN_Keluaran="",DEPOAKTIFOBAT="", kd_bangsal="";
     private PreparedStatement ps,psstok,pscaribatch;
     private ResultSet rs,rsstok;
     private String[] no,kodebarang,kandungan,namabarang,kategori,satuan,aturanpakai,nobatch,nofaktur,kadaluarsa;
@@ -606,6 +606,13 @@ public class DlgPenjualan extends javax.swing.JDialog {
             PersenppnObat.setText("11");
         }else{
             PersenppnObat.setText("0");
+        }
+        
+        try {
+            DEPOAKTIFOBAT = koneksiDB.DEPOAKTIFOBAT();
+        } catch (Exception e) {
+            System.out.println("E : "+e);
+            DEPOAKTIFOBAT = "";
         }
     }
     
@@ -3851,8 +3858,9 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     
     public void isCek(){
         autoNomor();
+        isCek2();
         TCari.requestFocus();
-        Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi",kdgudang);
+//        Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi",kdgudang);
         Sequel.cariIsi("select bangsal.nm_bangsal from bangsal where bangsal.kd_bangsal=?",nmgudang,kdgudang.getText());
         if(akses.getjml2()>=1){
             kdptg.setEditable(false);
@@ -3877,6 +3885,17 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }
             
         BtnGudang.setEnabled(akses.getakses_depo_obat());
+    }
+    
+    public void isCek2(){
+        String bangsaldefault=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1");
+        if(!DEPOAKTIFOBAT.equals("")){
+            kd_bangsal=DEPOAKTIFOBAT;
+        }else{
+            kd_bangsal=bangsaldefault;
+        }
+//        System.out.println("KOde Bangsal " + kd_bangsal);
+        kdgudang.setText(kd_bangsal); 
     }
     
     public void autoNomor(){
