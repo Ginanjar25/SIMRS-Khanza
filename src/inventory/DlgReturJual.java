@@ -1598,9 +1598,10 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                             Trackobat.catatRiwayat(rs.getString(2),rs.getDouble(6),0,"Retur Jual",akses.getkode(),kdgudang.getText(),"Simpan","","",NoRetur.getText()+" "+kdmem.getText()+" "+nmmem.getText());
                             Sequel.menyimpan("gudangbarang","'"+rs.getString(2)+"','"+kdgudang.getText()+"','"+rs.getString(6)+"','',''", 
                                    "stok=stok+'"+rs.getString(6)+"'","kode_brng='"+rs.getString(2)+"' and kd_bangsal='"+kdgudang.getText()+"' and no_batch='' and no_faktur=''");
+                            
+//                            formvalid = "Yes";
+//                            autonomor();
                         }
-                        formvalid = "Yes";
-                        autonomor();
                     }else{
                        sukses=false;
                     }                                 

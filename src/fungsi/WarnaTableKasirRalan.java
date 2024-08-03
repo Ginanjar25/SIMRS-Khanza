@@ -25,7 +25,7 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
             component.setForeground(new Color(50,50,50));
         }
         if(table.getValueAt(row,10).toString().equals("Sudah")){
-            component.setBackground(new Color(255/255f, 51/255f, 51/255f, 0.8f));
+            component.setBackground(new Color(255/255f, 51/255f, 51/255f, 0.76f));
             component.setForeground(new Color(245,255,245));
         }else if(table.getValueAt(row,10).toString().equals("Batal")){
             component.setBackground(new Color(255,243,109));
