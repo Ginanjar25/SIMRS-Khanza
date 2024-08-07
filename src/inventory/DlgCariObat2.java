@@ -1244,6 +1244,8 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             Valid.textKosong(TCari,"Data");
         }else if(kdgudang.getText().equals("")){
             Valid.textKosong(TCari,"Lokasi");                              
+        }else if("Yes".equals(cekValidResep())){
+            JOptionPane.showMessageDialog(null,"Maaf, Resep sudah tervalidasi...!!!");
         }else{
             int reply = JOptionPane.showConfirmDialog(rootPane,"Eeiiiiiits, udah bener belum data yang mau disimpan..??","Konfirmasi",JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
@@ -4656,6 +4658,19 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                 System.out.println("Notif : "+e);
             }
         }            
+    }
+    
+    public String cekValidResep(){
+        String validResep = "";
+        validResep = Sequel.cariIsi("SELECT CONCAT(resep_obat.tgl_perawatan, ' ', resep_obat.jam) AS valid_resep FROM resep_obat WHERE resep_obat.no_resep = ?", noresep);
+        
+        if(validResep.equals("0000-00-00 00:00:00")){
+            validResep = "No";
+        }else{
+            validResep = "Yes";
+        }
+        
+        return validResep;
     }
     
     public void setPCare(String aktif,String nokunjung){

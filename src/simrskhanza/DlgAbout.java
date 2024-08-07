@@ -12,18 +12,28 @@
 
 package simrskhanza;
 
+import fungsi.koneksiDB;
+
 /**
  *
  * @author perpustakaan
  */
 public class DlgAbout extends javax.swing.JDialog {
 
+    String BuildVersion = "";
     
     public DlgAbout(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.setLocation(10,10);
         setSize(465,515);
+        
+         try {
+            BuildVersion=koneksiDB.BUILDVERSION();
+        } catch (Exception e) {
+            BuildVersion="Default Version";
+        }
+        jLabel17.setText(BuildVersion);
     }
 
     /** This method is called from within the constructor to

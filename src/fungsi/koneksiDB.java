@@ -1514,4 +1514,14 @@ public class koneksiDB {
         }
         return var;
     }
+    
+    public static String BUILDVERSION(){
+        try{
+             prop.loadFromXML(new FileInputStream("setting/database.xml"));
+             var=prop.getProperty("KHANZABUILDVERSION");
+        }catch(Exception e){
+            var="DEFAULT VERSION"; 
+        }
+        return var;
+    }
 }
