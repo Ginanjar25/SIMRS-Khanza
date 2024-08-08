@@ -3510,8 +3510,10 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     }
     
     public void setNoResep(String no_resep) {        
-      TAlergi.setText(Sequel.cariIsi("select alergi from resep_obat where no_resep = ?", no_resep));
+      TAlergi.setText(Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', 1)) AS alergi from resep_obat where no_resep = ?", no_resep));
       this.noresep = no_resep;
+      String iter = Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', -1)) AS iter from resep_obat where no_resep = ?", no_resep);
+        System.out.println(iter);
     }
     
     private void jam(){

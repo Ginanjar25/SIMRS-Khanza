@@ -1324,7 +1324,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
 }//GEN-LAST:event_DTPTglKeyPressed
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
-                if (ChkAccor1.isSelected() == false) {
+            if (ChkAccor1.isSelected() == false) {
             System.out.println("non gabung");
             if (NoRw.getText().trim().equals("") || NoRM.getText().trim().equals("") || NmPasien.getText().trim().equals("") || TDokter.getText().trim().equals("")) {
                 Valid.textKosong(TCari, "Pasien");
@@ -1490,14 +1490,24 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnBatalKeyPressed
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
-        if(Valid.hapusTabletf(tabMode,NoRw,"permintaan_ranap","no_rawat")==true){
-            tabMode.removeRow(tbObat.getSelectedRow());
-            Valid.hapusTable(tabMode, NoRw, "dpjp_ranap", "no_rawat");
-            Valid.hapusTable(tabMode, NoRawatGabung, "dpjp_ranap", "no_rawat");
-            Valid.hapusTable(tabMode, NoRw, "ranap_gabung", "no_rawat");
-            Valid.hapusTable(tabMode, NoRawatGabung, "reg_periksa", "no_rawat");
-            emptTeks();
-            tampil();
+        int reply = JOptionPane.showConfirmDialog(rootPane, "Apakah Anda Ingin Menghapus Permintaan Ranap : \n"
+                + "No Rawat: " + NoRw.getText() + "/ Nama: " + NmPasien.getText() + "(" + NoRM.getText() + ")", "Konfirmasi", JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            if (Valid.hapusTabletf(tabMode, NoRw, "permintaan_ranap", "no_rawat") == true) {
+                if (Sequel.meghapustf("dpjp_ranap", "no_rawat", NoRw.getText()) == true) {
+                    Sequel.mengedit("kamar", "kd_kamar=?", "status='KOSONG'", 1, new String[]{KdKamar.getText()});
+                    Sequel.meghapustf("dpjp_ranap", "no_rawat", NoRawatGabung.getText());
+                    Sequel.meghapustf("ranap_gabung", "no_rawat", NoRw.getText());
+                    Sequel.meghapustf("reg_periksa", "no_rawat", NoRawatGabung.getText());
+                    tabMode.removeRow(tbObat.getSelectedRow());
+                }
+//            Valid.hapusTable(tabMode, NoRw, "dpjp_ranap", "no_rawat");
+//            Valid.hapusTable(tabMode, NoRawatGabung, "dpjp_ranap", "no_rawat");
+//            Valid.hapusTable(tabMode, NoRw, "ranap_gabung", "no_rawat");
+//            Valid.hapusTable(tabMode, NoRawatGabung, "reg_periksa", "no_rawat");
+                emptTeks();
+                tampil();
+            }
         }
 }//GEN-LAST:event_BtnHapusActionPerformed
 
@@ -1642,13 +1652,13 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_ChkInputActionPerformed
 
     private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
-                if (NoRw.getText().trim().equals("") || NoRM.getText().trim().equals("") || NmPasien.getText().trim().equals("")) {
+        if (NoRw.getText().trim().equals("") || NoRM.getText().trim().equals("") || NmPasien.getText().trim().equals("")) {
             Valid.textKosong(TCari, "Pasien");
         } else if (KdBangsal.getText().trim().equals("") || KdKamar.getText().trim().equals("") || NmBangsal.getText().trim().equals("")) {
             Valid.textKosong(btnKamar, "Kamar/Bangsal");
         } else if (Diagnosa.getText().trim().equals("")) {
             Valid.textKosong(Diagnosa, "Diagnosa");
-        } else {
+        }else {
             if (tbObat.getSelectedRow() > -1) {
                 String titip_kamar = "-";
                 if (ChkAccor2.isSelected()) {
@@ -1659,8 +1669,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 if (Sequel.mengedittf("permintaan_ranap", "no_rawat=?", "no_rawat=?,tanggal=?,kd_kamar=?,diagnosa=?,catatan=?", 6, new String[]{
                     NoRw.getText(), Valid.SetTgl(DTPTgl.getSelectedItem() + ""), KdKamar.getText(), Diagnosa.getText(), Catatan.getText() + "#" + titip_kamar, tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString()
                 }) == true) {
-                    tampil();
                     Sequel.mengedit("kamar", "kd_kamar=?", "status='DIBOOKING'", 1, new String[]{KdKamar.getText()});
+                    Sequel.mengedittf("dpjp_ranap", "no_rawat=?", "kd_dokter=?", 2, new String[]{KdDokter1.getText(), NoRw.getText()});
+                    tampil();
                     emptTeks();
                 }
             }
@@ -1736,9 +1747,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }//GEN-LAST:event_ChkAccorActionPerformed
 
     private void BtnKamarInapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKamarInapActionPerformed
-                if (tabMode.getRowCount() == 0) {
+        if (tabMode.getRowCount() == 0) {
             JOptionPane.showMessageDialog(null, "Maaf, table masih kosong...!!!!");
             TCari.requestFocus();
+        } else if((Sequel.cariIsi("select concat(no_rawat, tanggal, kd_kamar, diagnosa, catatan) from permintaan_ranap where no_rawat = ?", NoRw.getText())).isBlank()){
+            JOptionPane.showMessageDialog(null,"Permintaan Ranap tidak tersedia, silahkan hubungi pendaftaran!!");
         } else {
             if (tbObat.getSelectedRow() != -1) {
                 if (Sequel.cariRegistrasi(NoRw.getText()) > 0) {

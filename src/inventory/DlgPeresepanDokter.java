@@ -409,6 +409,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         KdPj = new widget.TextBox();
         LPpn = new widget.Label();
         jLabel6 = new widget.Label();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         internalFrame1 = new widget.InternalFrame();
         panelisi3 = new widget.panelisi();
         label9 = new widget.Label();
@@ -446,6 +447,10 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         LTotalTagihan = new widget.Label();
         TAlergi = new widget.TextBox();
         jLabelAlergi = new widget.Label();
+        rbTidakIter = new widget.RadioButton();
+        rb1Iter = new widget.RadioButton();
+        jLabelIterasi = new widget.Label();
+        rb2Iter = new widget.RadioButton();
         TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
         tbResep = new widget.Table();
@@ -668,7 +673,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         internalFrame1.add(panelisi3, java.awt.BorderLayout.PAGE_END);
 
         FormInput.setName("FormInput"); // NOI18N
-        FormInput.setPreferredSize(new java.awt.Dimension(440, 135));
+        FormInput.setPreferredSize(new java.awt.Dimension(440, 160));
         FormInput.setLayout(null);
 
         TNoRw.setHighlighter(null);
@@ -751,7 +756,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         jLabel8.setBounds(0, 42, 72, 23);
 
         DTPBeri.setForeground(new java.awt.Color(50, 70, 50));
-        DTPBeri.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-07-2024" }));
+        DTPBeri.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-08-2024" }));
         DTPBeri.setDisplayFormat("dd-MM-yyyy");
         DTPBeri.setName("DTPBeri"); // NOI18N
         DTPBeri.setOpaque(false);
@@ -871,6 +876,63 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         jLabelAlergi.setName("jLabelAlergi"); // NOI18N
         FormInput.add(jLabelAlergi);
         jLabelAlergi.setBounds(0, 100, 72, 23);
+
+        buttonGroup1.add(rbTidakIter);
+        rbTidakIter.setSelected(true);
+        rbTidakIter.setText(" Tidak Ada");
+        rbTidakIter.setIconTextGap(1);
+        rbTidakIter.setName("rbTidakIter"); // NOI18N
+        rbTidakIter.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rbTidakIterMouseClicked(evt);
+            }
+        });
+        rbTidakIter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbTidakIterActionPerformed(evt);
+            }
+        });
+        FormInput.add(rbTidakIter);
+        rbTidakIter.setBounds(80, 130, 70, 23);
+
+        buttonGroup1.add(rb1Iter);
+        rb1Iter.setText(" Satu Kali");
+        rb1Iter.setIconTextGap(1);
+        rb1Iter.setName("rb1Iter"); // NOI18N
+        rb1Iter.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rb1IterMouseClicked(evt);
+            }
+        });
+        rb1Iter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rb1IterActionPerformed(evt);
+            }
+        });
+        FormInput.add(rb1Iter);
+        rb1Iter.setBounds(160, 130, 70, 23);
+
+        jLabelIterasi.setText("Iterasi :");
+        jLabelIterasi.setName("jLabelIterasi"); // NOI18N
+        FormInput.add(jLabelIterasi);
+        jLabelIterasi.setBounds(0, 130, 72, 23);
+
+        buttonGroup1.add(rb2Iter);
+        rb2Iter.setText(" Dua Kali");
+        rb2Iter.setIconTextGap(1);
+        rb2Iter.setName("rb2Iter"); // NOI18N
+        rb2Iter.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rb2IterMouseClicked(evt);
+            }
+        });
+        rb2Iter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rb2IterActionPerformed(evt);
+            }
+        });
+        FormInput.add(rb2Iter);
+        rb2Iter.setBounds(240, 130, 80, 23);
 
         internalFrame1.add(FormInput, java.awt.BorderLayout.PAGE_START);
 
@@ -1102,24 +1164,32 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                 ChkJln.setSelected(false);    
                 Sequel.AutoComitFalse();
                 sukses=true;
+                String iter = "";
+                if(rbTidakIter.isSelected()==true){
+                    iter = "";
+                }else if(rb1Iter.isSelected()==true){
+                    iter = "#1";
+                }else {
+                    iter = "#2";
+                }
                 if(ubah==false){
                     if(Sequel.menyimpantf2("resep_obat","?,?,?,?,?,?,?,?,?,?,?","Nomer Resep",11,new String[]{
                         NoResep.getText(),"0000-00-00","00:00:00",TNoRw.getText(),KdDokter.getText(),Valid.SetTgl(DTPBeri.getSelectedItem()+""),
-                        cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),status,"0000-00-00","00:00:00", TAlergi.getText()
+                        cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),status,"0000-00-00","00:00:00", TAlergi.getText()+iter
                         })==true){
                             simpandata();
                     }else{
                         emptTeksobat();
                         if(Sequel.menyimpantf2("resep_obat","?,?,?,?,?,?,?,?,?,?,?","Nomer Resep",11,new String[]{
                             NoResep.getText(),"0000-00-00","00:00:00",TNoRw.getText(),KdDokter.getText(),Valid.SetTgl(DTPBeri.getSelectedItem()+""),
-                            cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),status,"0000-00-00","00:00:00", TAlergi.getText()
+                            cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),status,"0000-00-00","00:00:00", TAlergi.getText()+iter
                             })==true){
                                 simpandata();
                         }else{
                             emptTeksobat();
                             if(Sequel.menyimpantf2("resep_obat","?,?,?,?,?,?,?,?,?,?,?","Nomer Resep",11,new String[]{
                                 NoResep.getText(),"0000-00-00","00:00:00",TNoRw.getText(),KdDokter.getText(),Valid.SetTgl(DTPBeri.getSelectedItem()+""),
-                                cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),status,"0000-00-00","00:00:00", TAlergi.getText()
+                                cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),status,"0000-00-00","00:00:00", TAlergi.getText()+iter
                                 })==true){
                                     simpandata();
                             }else{
@@ -1509,6 +1579,30 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         // TODO add your handling code here:
     }//GEN-LAST:event_TAlergiActionPerformed
 
+    private void rb1IterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rb1IterMouseClicked
+
+    }//GEN-LAST:event_rb1IterMouseClicked
+
+    private void rbTidakIterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rbTidakIterMouseClicked
+
+    }//GEN-LAST:event_rbTidakIterMouseClicked
+
+    private void rbTidakIterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbTidakIterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbTidakIterActionPerformed
+
+    private void rb2IterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rb2IterMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rb2IterMouseClicked
+
+    private void rb1IterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rb1IterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rb1IterActionPerformed
+
+    private void rb2IterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rb2IterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rb2IterActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1556,6 +1650,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private widget.TextBox TPasien;
     private javax.swing.JTabbedPane TabRawat;
     private widget.Button btnDokter;
+    private javax.swing.ButtonGroup buttonGroup1;
     private widget.ComboBox cmbDtk;
     private widget.ComboBox cmbJam;
     private widget.ComboBox cmbMnt;
@@ -1568,12 +1663,16 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private widget.Label jLabel7;
     private widget.Label jLabel8;
     private widget.Label jLabelAlergi;
+    private widget.Label jLabelIterasi;
     private javax.swing.JPanel jPanel3;
     private widget.Label label12;
     private widget.Label label9;
     private widget.panelisi panelisi3;
     private javax.swing.JMenuItem ppBersihkan;
     private javax.swing.JMenuItem ppStok1;
+    private widget.RadioButton rb1Iter;
+    private widget.RadioButton rb2Iter;
+    private widget.RadioButton rbTidakIter;
     private widget.Table tbDetailResepObatRacikan;
     private widget.Table tbObatResepRacikan;
     private widget.Table tbResep;
@@ -1888,7 +1987,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         KdDokter.setText(KodeDokter);
         NmDokter.setText(NamaDokter);
         KdPj.setText(Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?",norwt));
-        TAlergi.setText(Sequel.cariIsi("SELECT resep_obat.alergi FROM resep_obat WHERE resep_obat.no_rawat = ? " +
+        TAlergi.setText(Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', 1)) AS alergi FROM resep_obat WHERE resep_obat.no_rawat = ? " +
                 "ORDER BY CONCAT(resep_obat.tgl_peresepan, ' ', resep_obat.jam_peresepan) DESC LIMIT 1", norwt));
         TCari.requestFocus();
         this.status=status;
