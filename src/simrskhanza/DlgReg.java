@@ -295,7 +295,7 @@ public final class DlgReg extends javax.swing.JDialog {
     // move vertical print position
     private char[] VERTICAL_PRINT_POSITION = {ESC, 'J', '1'};
     private String jmlBookWeb = Sequel.cariIsi("SELECT COUNT(bp.no_booking) FROM booking_periksa bp WHERE bp.tanggal >= CURDATE() AND `status` = 'Belum Dibalas'");
-    private String jmlBookReg = Sequel.cariIsi("SELECT COUNT(br.no_reg) FROM booking_registrasi br WHERE br.tanggal_booking >= CURDATE() AND `status` = 'Belum'");
+    private String jmlBookReg = Sequel.cariIsi("SELECT COUNT(br.no_reg) FROM booking_registrasi br WHERE br.tanggal_periksa >= CURDATE() AND `status` = 'Belum'");
     
 
     /** Creates new form DlgReg
@@ -15235,7 +15235,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     }
    
       private void btnBookingRegActionPerformed(java.awt.event.ActionEvent evt) {                                        
-        btnBookingReg.setText(Sequel.cariIsi("SELECT COUNT(br.no_reg) FROM booking_registrasi br WHERE br.tanggal_booking >= CURDATE() AND `status` = 'Belum'") + " Booking Registrasi Belum Diregistrasikan");
+        btnBookingReg.setText(Sequel.cariIsi("SELECT COUNT(br.no_reg) FROM booking_registrasi br WHERE br.tanggal_periksa >= CURDATE() AND `status` = 'Belum'") + " Booking Registrasi Belum Diregistrasikan");
         bookingreg.isCek();
         bookingreg.TCari.requestFocus();
         bookingreg.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);

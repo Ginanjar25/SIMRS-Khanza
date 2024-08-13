@@ -685,7 +685,7 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-07-2024" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-08-2024" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -699,7 +699,7 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-07-2024" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-08-2024" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -789,7 +789,7 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
         FormInput.setBackground(new java.awt.Color(250, 255, 245));
         FormInput.setBorder(null);
         FormInput.setName("FormInput"); // NOI18N
-        FormInput.setPreferredSize(new java.awt.Dimension(100, 600));
+        FormInput.setPreferredSize(new java.awt.Dimension(100, 712));
         FormInput.setLayout(null);
 
         jLabel4.setText("Keadaan Masuk :");
@@ -1185,7 +1185,7 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
         KetDilanjutkan.setBounds(240, 620, 270, 23);
 
         Kontrol.setForeground(new java.awt.Color(50, 70, 50));
-        Kontrol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-07-2024 10:54:47" }));
+        Kontrol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-08-2024 10:02:58" }));
         Kontrol.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         Kontrol.setName("Kontrol"); // NOI18N
         Kontrol.setOpaque(false);
@@ -1960,10 +1960,10 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
                 while(rs.next()){
                     kodekamar="";namakamar="";tglkeluar="";jamkeluar="";
                     ps2=koneksi.prepareStatement(
-                        "select if(kamar_inap.tgl_keluar='0000-00-00',current_date(),kamar_inap.tgl_keluar) as tgl_keluar,"+
-                        "if(kamar_inap.jam_keluar='00:00:00',current_time(),kamar_inap.jam_keluar) as jam_keluar,kamar_inap.kd_kamar,bangsal.nm_bangsal "+
-                        "from kamar_inap inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal "+
-                        "where kamar_inap.no_rawat=? and kamar_inap.stts_pulang = '-' order by kamar_inap.tgl_keluar desc,kamar_inap.jam_keluar desc limit 1");
+                        "select if(kamar_inap.tgl_keluar='0000-00-00',current_date(),kamar_inap.tgl_keluar) as tgl_keluar, " +
+                        "if(kamar_inap.jam_keluar='00:00:00',current_time(),kamar_inap.jam_keluar) as jam_keluar,kamar_inap.kd_kamar,bangsal.nm_bangsal " +
+                        "from kamar_inap inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal " +
+                        "where kamar_inap.no_rawat=? order by kamar_inap.tgl_keluar desc,kamar_inap.jam_keluar desc limit 1");
                     try {
                         ps2.setString(1,rs.getString("no_rawat"));
                         rs2=ps2.executeQuery();

@@ -1155,6 +1155,8 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             Valid.textKosong(KdDokter,"Dokter");
         }else if(NoResep.getText().trim().equals("")){
             Valid.textKosong(NoResep,"No.Resep");
+        }else if(TAlergi.getText().trim().equals("")){
+            Valid.textKosong(TAlergi,"Alergi");
         }else if(ttl<=0){
             JOptionPane.showMessageDialog(null,"Maaf, silahkan masukkan terlebih dahulu obat yang mau diberikan...!!!");
             TCari.requestFocus();
@@ -1166,7 +1168,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                 sukses=true;
                 String iter = "";
                 if(rbTidakIter.isSelected()==true){
-                    iter = "";
+                    iter = "#0";
                 }else if(rb1Iter.isSelected()==true){
                     iter = "#1";
                 }else {
