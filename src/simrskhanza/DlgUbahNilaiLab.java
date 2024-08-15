@@ -299,6 +299,10 @@ public final class DlgUbahNilaiLab extends javax.swing.JDialog {
         Sequel.mengedit("permintaan_lab","no_rawat=? and tgl_hasil=? and jam_hasil=?","tgl_hasil=?,jam_hasil=?",5,new String[]{
             Valid.SetTgl(Tanggal.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),TNoRw.getText(),tanggal,jam
         });
+        
+        Sequel.mengedit("saran_kesan_lab","no_rawat=? and tgl_periksa=? and jam=?","tgl_periksa=?,jam=?",5,new String[]{
+            Valid.SetTgl(Tanggal.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),TNoRw.getText(),tanggal,jam
+        });
         JOptionPane.showMessageDialog(null,"Proses update hasil pemeriksaan sudah selesai !!!");
         dispose();
         ChkJln.setSelected(true);

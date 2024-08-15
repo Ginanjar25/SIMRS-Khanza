@@ -7360,20 +7360,50 @@ public final class DlgReg extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null,"Pasien sedang dalam masa perawatan di kamar inap..!!");
             TNoRM.requestFocus();
         }else{
-            if(akses.getkode().equals("Admin Utama")){
-                isRegistrasi();
-            }else{
-                if(aktifjadwal.equals("aktif")){
-                    if(Sequel.cariInteger("select count(reg_periksa.no_rawat) from reg_periksa where reg_periksa.kd_dokter='"+KdDokter.getText()+"' and reg_periksa.tgl_registrasi='"+Valid.SetTgl(DTPReg.getSelectedItem()+"")+"' ")>=kuota){
-                        JOptionPane.showMessageDialog(null,"Eiiits, Kuota registrasi penuh..!!!");
-                        TCari.requestFocus();
-                    }else{
+            if (akses.getkode().equals("Admin Utama")) {
+                if (Sequel.cariInteger("select count(reg_periksa.no_rkm_medis) from pasien inner join reg_periksa on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+                        + "WHERE reg_periksa.tgl_registrasi = CURDATE() and pasien.no_rkm_medis=? and reg_periksa.stts != 'Batal' ", TNoRM.getText()) > 0) {
+                    int reply = JOptionPane.showConfirmDialog(rootPane, "Pasien berikut sudah terdaftar di hari yang sama :\n"
+                            + "No. RM : " + TNoRM.getText() + " / Nama: " + TPasien.getText() + "\nApakah tetap ingin melanjutkan pendaftaran ? ",
+                            "Konfirmasi", JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
                         isRegistrasi();
-                    }                    
-                }else{
+                    }
+                } else {
                     isRegistrasi();
-                }  
-            }                          
+                }
+            } else {
+                if (aktifjadwal.equals("aktif")) {
+                    if (Sequel.cariInteger("select count(reg_periksa.no_rawat) from reg_periksa where reg_periksa.kd_dokter='" + KdDokter.getText() + "' and reg_periksa.tgl_registrasi='" + Valid.SetTgl(DTPReg.getSelectedItem() + "") + "' ") >= kuota) {
+                        JOptionPane.showMessageDialog(null, "Eiiits, Kuota registrasi penuh..!!!");
+                        TCari.requestFocus();
+                    } else {
+                        if (Sequel.cariInteger("select count(reg_periksa.no_rkm_medis) from pasien inner join reg_periksa on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+                                + "WHERE reg_periksa.tgl_registrasi = CURDATE() and pasien.no_rkm_medis=? and reg_periksa.stts != 'Batal' ", TNoRM.getText()) > 0) {
+                            int reply = JOptionPane.showConfirmDialog(rootPane, "Pasien berikut sudah terdaftar di hari yang sama :\n"
+                                    + "No. RM : " + TNoRM.getText() + " / Nama: " + TPasien.getText() + "\nApakah tetap ingin melanjutkan pendaftaran ? ",
+                                    "Konfirmasi", JOptionPane.YES_NO_OPTION);
+                            if (reply == JOptionPane.YES_OPTION) {
+                                isRegistrasi();
+                            }
+                        } else {
+                            isRegistrasi();
+                        }
+                    }
+                } else {
+                    if (Sequel.cariInteger("select count(reg_periksa.no_rkm_medis) from pasien inner join reg_periksa on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+                            + "WHERE reg_periksa.tgl_registrasi = CURDATE() and pasien.no_rkm_medis=? and reg_periksa.stts != 'Batal' ", TNoRM.getText()) > 0) {
+                        int reply = JOptionPane.showConfirmDialog(rootPane, "Pasien berikut sudah terdaftar di hari yang sama :\n"
+                                + "No. RM : " + TNoRM.getText() + " / Nama: " + TPasien.getText() + "\nApakah tetap ingin melanjutkan pendaftaran ? ",
+                                "Konfirmasi", JOptionPane.YES_NO_OPTION);
+                        if (reply == JOptionPane.YES_OPTION) {
+                            isRegistrasi();
+                        }
+                    } else {
+                        isRegistrasi();
+                    }
+                }
+            }
         }
 }//GEN-LAST:event_BtnSimpanActionPerformed
 
@@ -10398,6 +10428,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             }else {
                 if(Sequel.cariRegistrasi(TNoRw.getText())>0){
                     JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi..!!");
+                }else if(!Sequel.cariIsi("select concat(no_rawat, tgl_perawatan) from pemeriksaan_ralan where no_rawat = ?", TNoRw.getText()).isBlank()){
+                    JOptionPane.showMessageDialog(rootPane,"Maaf, Pasien "+TNoRw.getText()+" sudah terisi SOAPIE, silahkan konfirmasi ke Rawat Jalan !! ");
                 }else{
                     Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Batal',biaya_reg='0'");
                      Sequel.queryu2("update booking_registrasi set status='Batal' where no_rkm_medis=? and tanggal_periksa=?",2,new String[]{
@@ -15189,6 +15221,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "nobooking=?", "status='Batal',validasi=now()", 1, new String[]{
                     Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
                 }) == true) {
+                    Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Batal',biaya_reg='0'");
                     Sequel.menyimpan2("referensi_mobilejkn_bpjs_batal", "?,?,?,now(),?,?,?", 6, new String[]{
                         tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 7).toString(),
                         tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 2).toString(),

@@ -197,11 +197,11 @@
 				<textFieldExpression><![CDATA[$P{norawat}+ " (" +  $P{norm} + ")"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="393" y="52" width="142" height="12" uuid="dae4002f-edd7-409b-94fb-f48a11113692"/>
+				<reportElement x="409" y="50" width="142" height="12" uuid="dae4002f-edd7-409b-94fb-f48a11113692"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA["No. " + $P{noresep} + " / Iter : "+($P{iter}.equals("") ? "" : $P{iter}+" Kali")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["No. " + $P{noresep}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement mode="Transparent" x="91" y="95" width="5" height="10" uuid="2b59554b-c7e0-45e3-9965-a80a7af5cf35"/>
@@ -285,7 +285,7 @@
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="324" y="65" width="228" height="10" uuid="9207140f-3c00-4c4f-8ba9-7e2406b0ba0e"/>
+				<reportElement x="324" y="65" width="136" height="10" uuid="9207140f-3c00-4c4f-8ba9-7e2406b0ba0e"/>
 				<textElement>
 					<font fontName="Arial" size="8"/>
 				</textElement>
@@ -299,7 +299,7 @@
 				<textFieldExpression><![CDATA[$P{peresep}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="324" y="75" width="228" height="10" uuid="c361cfec-3cb0-4856-b31e-99aca60ef2ab">
+				<reportElement x="324" y="75" width="136" height="10" uuid="c361cfec-3cb0-4856-b31e-99aca60ef2ab">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -453,6 +453,15 @@
 				</textElement>
 				<text><![CDATA[Dx SEP/Dx Ruang]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="466" y="64" width="85" height="12" uuid="81f0c2ba-0c1e-4467-bdee-319ef219d09e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{iter}.equals("0") ? "" : "Iter : " + $P{iter}+" X"]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
