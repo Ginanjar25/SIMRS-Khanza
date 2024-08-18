@@ -2360,6 +2360,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             String status = Sequel.cariIsi("select status from resep_obat where no_resep=?",NoResep.getText());
             String status_lanjut = Sequel.cariIsi("SELECT status_lanjut FROM reg_periksa rp WHERE rp.no_rawat = ?",TNoRw.getText());
             String sumber = "";
+            String bb = "";
             
             Map<String, Object> param = new HashMap<>();  
             param.put("namars",akses.getnamars());
@@ -2381,12 +2382,14 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     
             if(status_lanjut.equals("Ralan")){
                 sumber =Sequel.cariIsi("SELECT p.nm_poli FROM reg_periksa rp INNER JOIN poliklinik p ON p.kd_poli = rp.kd_poli WHERE rp.no_rawat = ?", TNoRw.getText());
+                bb =Sequel.cariIsi("SELECT pr.berat FROM pemeriksaan_ralan pr INNER JOIN reg_periksa rp ON rp.no_rawat = pr.no_rawat WHERE rp.no_rkm_medis = ? AND pr.berat IS NOT NULL AND pr.berat != '' LIMIT 1", TNoRm.getText());
             }else{
                 sumber =Sequel.cariIsi("SELECT b.nm_bangsal FROM kamar_inap ki " +
                                                 "INNER JOIN kamar k ON k.kd_kamar = ki.kd_kamar " +
                                                 "INNER JOIN bangsal b ON b.kd_bangsal = k.kd_bangsal " +
                                                 "WHERE ki.no_rawat = ?", TNoRw.getText())
                                        .replaceAll("Lt1 |Lt2 |Lt3 ", "") + " (" + kelas + ")";
+                bb =Sequel.cariIsi("SELECT pr.berat FROM pemeriksaan_ranap pr INNER JOIN reg_periksa rp ON rp.no_rawat = pr.no_rawat WHERE rp.no_rkm_medis = ? AND pr.berat IS NOT NULL AND pr.berat != '' LIMIT 1", TNoRm.getText());
             }
             
             param.put("tgllahir",Sequel.cariIsi("SELECT tgl_lahir FROM pasien p WHERE p.no_rkm_medis = ?", TNoRm.getText()));
@@ -2406,6 +2409,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 "INNER JOIN kabupaten kb ON kb.kd_kab = ps.kd_kab " +
                 "WHERE ps.no_rkm_medis = ?", TNoRm.getText()));
             param.put("kelas", kelas);
+            param.put("berat", bb);
             param.put("jk", Sequel.cariIsi("SELECT jk FROM pasien p WHERE p.no_rkm_medis = ?", TNoRm.getText()));
             finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",KdDokter.getText());
             param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+NmDokter.getText()+"\nID "+(finger.equals("")?KdDokter.getText():finger)+"\n"+DTPBeri.getSelectedItem());  
