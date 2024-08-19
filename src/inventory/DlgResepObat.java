@@ -2387,7 +2387,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 sumber =Sequel.cariIsi("SELECT b.nm_bangsal FROM kamar_inap ki " +
                                                 "INNER JOIN kamar k ON k.kd_kamar = ki.kd_kamar " +
                                                 "INNER JOIN bangsal b ON b.kd_bangsal = k.kd_bangsal " +
-                                                "WHERE ki.no_rawat = ?", TNoRw.getText())
+                                                "WHERE ki.no_rawat = ? and ki.stts_pulang != 'Pindah Kamar'", TNoRw.getText())
                                        .replaceAll("Lt1 |Lt2 |Lt3 ", "") + " (" + kelas + ")";
                 bb =Sequel.cariIsi("SELECT pr.berat FROM pemeriksaan_ranap pr INNER JOIN reg_periksa rp ON rp.no_rawat = pr.no_rawat WHERE rp.no_rkm_medis = ? AND pr.berat IS NOT NULL AND pr.berat != '' LIMIT 1", TNoRm.getText());
             }
