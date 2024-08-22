@@ -26,6 +26,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.FileInputStream;
 import java.net.URI;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
@@ -38,6 +39,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
 import javax.swing.JOptionPane;
@@ -71,7 +73,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
     private validasi Valid=new validasi();
     private PreparedStatement ps;
     private ResultSet rs;
-    private int i=0,pilihan=1,reply=0,tab=0,kuota=0;
+    private int i=0,pilihan=1,reply=0,tab=0,kuota=0, interval = 0;
     private SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd");
     private ApiBPJS api=new ApiBPJS();
     private ApiMobileJKN apiMobileJKN=new ApiMobileJKN();
@@ -101,6 +103,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private Date parsedDate;
     private String data1 = "", data2 = "", data3 = "", data4 = "", kd_poli_rujukan = "", nm_poli_rujukan="";
+    private static final Properties prop = new Properties(); 
     
     /** Creates new form DlgRujuk
      * @param parent
@@ -923,6 +926,17 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         } catch (Exception e) {
             ADDANTRIANAPIMOBILEJKN="";
             System.out.println("Notif : "+e);
+        }
+        
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            interval = Integer.parseInt(prop.getProperty("INTERVALESTIMASIDEFAULT"));
+        } catch (NumberFormatException e) {
+            // Jika terjadi kesalahan konversi, gunakan nilai default
+            interval = 360;
+        } catch (Exception e) {
+            // Jika terjadi kesalahan saat membaca file atau properti
+            interval = 360;
         }
     }
 
@@ -6925,11 +6939,19 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                             jammulai=rs.getString("jam_mulai");
                             jamselesai=rs.getString("jam_selesai");
                             kuota=rs.getInt("kuota");
-                            int interval = 6;
-                            if(kodedokterreg.equals("D27")){
-                                interval = 4;
+                            if (kodedokterreg.equals("D27")) {
+                                try {
+                                    prop.loadFromXML(new FileInputStream("setting/database.xml"));
+                                    interval = Integer.parseInt(prop.getProperty("INTERVALDRJENAR"));
+                                } catch (NumberFormatException e) {
+                                    // Jika terjadi kesalahan konversi, gunakan nilai default
+                                    interval = 150;
+                                } catch (Exception e) {
+                                    // Jika terjadi kesalahan saat membaca file atau properti
+                                    interval = 150;
+                                }
                             }
-                            datajam=Sequel.cariIsi("select DATE_ADD(concat('"+Valid.SetTgl(TanggalSEP.getSelectedItem()+"")+"',' ','"+jammulai+"'),INTERVAL "+(Integer.parseInt(nomorreg)*interval)+" MINUTE) ");
+                            datajam=Sequel.cariIsi("select DATE_ADD(concat('"+Valid.SetTgl(TanggalSEP.getSelectedItem()+"")+"',' ','"+jammulai+"'),INTERVAL "+(Integer.parseInt(nomorreg)*interval)+" SECOND) ");
                             parsedDate = dateFormat.parse(datajam);
                         }else{
                             statusantrean=false;
