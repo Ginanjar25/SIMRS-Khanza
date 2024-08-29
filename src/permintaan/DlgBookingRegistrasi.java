@@ -1321,7 +1321,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }//GEN-LAST:event_DTPCari4KeyPressed
 
     private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
-        for(i=0;i<tbObat.getRowCount();i++){ 
+        for(i=0;i<tbObat.getRowCount();i++){
             if(tbObat.getValueAt(i,0).toString().equals("true")&&tbObat.getValueAt(i,23).toString().equals("Belum")){
                 Sequel.mengedit("pasien","no_rkm_medis=?","umur=CONCAT(CONCAT(CONCAT(TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()), ' Th '),CONCAT(TIMESTAMPDIFF(MONTH, tgl_lahir, CURDATE()) - ((TIMESTAMPDIFF(MONTH, tgl_lahir, CURDATE()) div 12) * 12), ' Bl ')),CONCAT(TIMESTAMPDIFF(DAY, DATE_ADD(DATE_ADD(tgl_lahir,INTERVAL TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) YEAR), INTERVAL TIMESTAMPDIFF(MONTH, tgl_lahir, CURDATE()) - ((TIMESTAMPDIFF(MONTH, tgl_lahir, CURDATE()) div 12) * 12) MONTH), CURDATE()), ' Hr'))",1,new String[]{tbObat.getValueAt(i,3).toString()});
                 status=Sequel.cariIsi("select if((select count(no_rkm_medis) from reg_periksa where no_rkm_medis='"+tbObat.getValueAt(i,3).toString()+"' and kd_poli='"+tbObat.getValueAt(i,8).toString()+"')>0,'Lama','Baru' )");
@@ -1345,8 +1345,12 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                 String tanggal_now = dateFormat.format(now);                
                 String tanggal_periksa = TanggalPeriksa.getSelectedItem().toString().substring(0,10);
+                String cekRegis = Sequel.cariIsi("select no_rkm_medis from reg_periksa where no_rkm_medis = ? and tgl_registrasi = '"+tanggal_periksa+"'", tbObat.getValueAt(i,3).toString());
                 if(!tanggal_periksa.equals(tanggal_now)){
-                    JOptionPane.showMessageDialog(null,"Maaf, Registrasi belum bisa dilakukan hari ini!");
+                    JOptionPane.showMessageDialog(null,"Maaf, Registrasi belum bisa dilakukan hari ini !");
+                }else if(!cekRegis.isBlank() || !cekRegis.isEmpty()){
+                    JOptionPane.showMessageDialog(null,"Maaf, Pasien sudah terdaftar dihari yang sama !");
+                    tampil();
                 }else{
                     if(Sequel.menyimpantf2("reg_periksa","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Rawat",19,new String[]{
                         tbObat.getValueAt(i,10).toString(),no_rawat,tbObat.getValueAt(i,5).toString(),jam(),
