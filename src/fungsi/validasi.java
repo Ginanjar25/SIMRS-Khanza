@@ -1455,4 +1455,16 @@ public final class validasi {
     public static int milliToDay(long milli) {
         return (int) ((double) milli / (1000 * 24 * 60 * 60));
     }
+    
+   public static String convertToRoman(int number) {
+        // Array untuk menyimpan angka Romawi dari 1 hingga 12
+        String[] romanNumerals = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"};
+        
+        // Mengembalikan angka Romawi yang sesuai dengan nomor bulan
+        if (number >= 1 && number <= 12) {
+            return romanNumerals[number - 1];
+        } else {
+            return "Invalid month"; // Menangani kasus di luar rentang bulan
+        }
+    }
 }

@@ -6190,69 +6190,12 @@ public class DlgKamarInap extends javax.swing.JDialog {
                         tabMode.removeRow(tbKamIn.getSelectedRow());
                         try {
                             if(cmbStatus.getSelectedItem().equals("Meninggal")){
-                                //update SEP Meninggal jika sep ditemukan
-                                String sttsMeninggal="",noSep="",tglMeninggal="",jamMeninggal="",ksg="";                                
-                                noSep = Sequel.cariIsi("SELECT bs.no_sep FROM bridging_sep bs WHERE bs.no_rawat=?",norawat.getText());
-                                tglMeninggal = CmbTahun.getSelectedItem()+"-"+CmbBln.getSelectedItem()+"-"+CmbTgl.getSelectedItem();
-                                jamMeninggal = cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem();                                
-                                sttsMeninggal = "4";
-                                ksg = "";
-                                System.out.println(noSep);
-                                if(!noSep.equals("")){
-                                    try {
-                                        headers = new HttpHeaders();
-                                        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-                                        headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
-                                        utc = String.valueOf(api.GetUTCdatetimeAsString());
-                                        headers.add("X-Timestamp", utc);
-                                        headers.add("X-Signature", api.getHmac(utc));
-                                        headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
-                                        URL = link + "/SEP/2.0/updtglplg";
-                                        requestJson ="{" +
-                                                        "\"request\":" +
-                                                           "{" +
-                                                              "\"t_sep\":" +
-                                                                 "{" +
-                                                                  "\"noSep\":\""+noSep+"\"," +
-                                                                  "\"statusPulang\":\""+sttsMeninggal+"\"," +
-                                                                  "\"noSuratMeninggal\":\""+ksg+"\"," +
-                                                                  "\"tglMeninggal\":\""+tglMeninggal+"\"," +
-                                                                  "\"tglPulang\":\""+tglMeninggal+"\"," +
-                                                                  "\"noLPManual\":\""+ksg+"\"," +
-                                                                  "\"user\":\"RSPW"+akses.getkode()+"\"" +                                            
-                                                                 "}" +
-                                                           "}" +
-                                                       "}";
-                                        System.out.println("JSON : " + requestJson);
-                                        requestEntity = new HttpEntity(requestJson, headers);
-                                        root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.PUT, requestEntity, String.class).getBody());
-                                        nameNode = root.path("metaData");
-                                        System.out.println("code : " + nameNode.path("code").asText());
-                                        System.out.println("message : " + nameNode.path("message").asText());
-                                        if (nameNode.path("code").asText().equals("200")) {
-                                            Sequel.mengedit("bridging_sep", "no_sep=?", "tglpulang=?", 2, new String[]{
-                                                tglMeninggal + " " + jamMeninggal,noSep
-                                            });                                        
-                                        } else {
-                                            Sequel.menyimpantf("trackersql", "now(),?,?", "trackersql", 2, new String[]{
-                                                akses.getalamatip()+" "+nameNode.path("code").asText()+" "+nameNode.path("message").asText(), akses.getkode()
-                                            });
-                                            System.out.println(nameNode.path("code").asText()+" "+nameNode.path("message").asText());
-                                            JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
-                                        }
-                                    } catch (Exception ex) {
-                                        System.out.println("Notifikasi Bridging Simpan : " + ex);
-                                        if (ex.toString().contains("UnknownHostException")) {
-                                            JOptionPane.showMessageDialog(null, "Koneksi ke server BPJS terputus...!");
-                                        }
-                                    }
-                                }                                
-                                
                                 DlgPasienMati dlgPasienMati=new DlgPasienMati(null,false);
                                 dlgPasienMati.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                                 dlgPasienMati.setLocationRelativeTo(internalFrame1);
                                 dlgPasienMati.emptTeks();
                                 dlgPasienMati.setNoRm(TNoRMCari.getText(),TPasienCari.getText()); 
+                                dlgPasienMati.setNoRawat(norawat.getText()); 
                                 dlgPasienMati.isCek();
                                 dlgPasienMati.setVisible(true);
                             }else if(cmbStatus.getSelectedItem().equals("Rujuk")){
