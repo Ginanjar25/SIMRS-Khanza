@@ -266,9 +266,9 @@ public class DlgPasienMati extends javax.swing.JDialog {
         
         try{
             prop.loadFromXML(new FileInputStream("setting/database.xml"));
-            URL=prop.getProperty("URLAPIBPJS");
+            URL=prop.getProperty("URLBPJSUPDATEPULANG");
         }catch(Exception e){
-            URL=""; 
+            URL="https://apijkn.bpjs-kesehatan.go.id/vclaim-rest/SEP/2.0/updtglplg"; 
         }
     }
     
