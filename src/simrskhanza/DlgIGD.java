@@ -12267,7 +12267,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     KdDokter.getText(),TDokter.getText(),TNoRM.getText(),TPasien.getText(),JK.getText(),umur+" "+sttsumur,"IGD",TPngJwb.getText(),TAlmt.getText(),THbngn.getText(),Valid.SetAngka(biaya),
                     TStatus.getText(),nmpnj.getText(),"Belum",kdpnj.getText(),"Belum Bayar"
                 });
-                emptTeks(); 
+                emptTeks();
+                tampil();
             }
     }
 }
