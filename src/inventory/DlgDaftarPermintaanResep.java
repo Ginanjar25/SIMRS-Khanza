@@ -3294,6 +3294,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     String status = Sequel.cariIsi("select status from resep_obat where no_resep=?",NoResep);
                     String status_lanjut = Sequel.cariIsi("SELECT status_lanjut FROM reg_periksa rp WHERE rp.no_rawat = ?",NoRawat);
                     String sumber = "";
+                    String bb = "";
 
                     Map<String, Object> param = new HashMap<>();  
                     param.put("namars",akses.getnamars());
@@ -3315,12 +3316,14 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     
                     if(status_lanjut.equals("Ralan")){
                         sumber =Sequel.cariIsi("SELECT p.nm_poli FROM reg_periksa rp INNER JOIN poliklinik p ON p.kd_poli = rp.kd_poli WHERE rp.no_rawat = ?", NoRawat);
+                        bb =Sequel.cariIsi("SELECT pr.berat FROM pemeriksaan_ralan pr INNER JOIN reg_periksa rp ON rp.no_rawat = pr.no_rawat WHERE rp.no_rkm_medis = ? AND pr.berat IS NOT NULL AND pr.berat != '' LIMIT 1", NoRM);
                     }else{
                         sumber =Sequel.cariIsi("SELECT b.nm_bangsal FROM kamar_inap ki " +
                                                 "INNER JOIN kamar k ON k.kd_kamar = ki.kd_kamar " +
                                                 "INNER JOIN bangsal b ON b.kd_bangsal = k.kd_bangsal " +
                                                 "WHERE ki.no_rawat = ?", NoRawat)
                                        .replaceAll("Lt1 |Lt2 |Lt3 ", "") + " (" + kelas + ")";
+                        bb =Sequel.cariIsi("SELECT pr.berat FROM pemeriksaan_ranap pr INNER JOIN reg_periksa rp ON rp.no_rawat = pr.no_rawat WHERE rp.no_rkm_medis = ? AND pr.berat IS NOT NULL AND pr.berat != '' LIMIT 1", NoRM);
                     }
                     param.put("tgllahir",Sequel.cariIsi("SELECT tgl_lahir FROM pasien p WHERE p.no_rkm_medis = ?", NoRM));
                     param.put("umur",Sequel.cariIsi("SELECT umurdaftar FROM reg_periksa rp WHERE rp.no_rawat = ?", NoRawat));
@@ -3332,7 +3335,6 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         "INNER JOIN penyakit p ON p.kd_penyakit = dp.kd_penyakit " +
                         "WHERE dp.no_rawat = ? AND dp.prioritas = 1", NoRawat));
                     param.put("alamatip",akses.getalamatip());
-                    param.put("status_biaya",akses.getalamatip());
                     param.put("no_urut", getNoUrut(NoResep, status, NoRawat));
                     param.put("alamat", Sequel.cariIsi("SELECT CONCAT(ps.alamat, ', DS. ',kl.nm_kel, ', KEC. ',kc.nm_kec, ',',kb.nm_kab) FROM pasien ps " +
                         "INNER JOIN kelurahan kl ON kl.kd_kel = ps.kd_kel " +
@@ -3341,10 +3343,13 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         "WHERE ps.no_rkm_medis = ?", NoRM));
                     param.put("kelas", kelas);
                     param.put("jk", Sequel.cariIsi("SELECT jk FROM pasien p WHERE p.no_rkm_medis = ?", NoRM));
+                    param.put("berat", bb);
                     finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",KodeDokter);
                     param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+DokterPeresep+"\nID "+(finger.equals("")?KodeDokter:finger)+"\n"+Valid.SetTgl3(TglPeresepan));  
                     param.put("jam",JamPeresepan);
                     param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
+                    param.put("alergi",Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', 1)) AS alergi from resep_obat where no_resep = ?", NoResep));
+                    param.put("iter",Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', -1)) AS iter from resep_obat where no_resep = ?", NoResep));
                     Valid.MyReport("rptLembarObatDanTelaah.jasper","report","::[ Lembar Telaah Resep & Pemberian Obat ]::",param);
                     this.setCursor(Cursor.getDefaultCursor());
                 }
@@ -4619,7 +4624,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " inner join kamar_inap on reg_periksa.no_rawat=kamar_inap.no_rawat "+
                         " inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar "+
                         " inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal "+
-                        " where resep_obat.tgl_peresepan<>'0000-00-00' and and kamar_inap.stts_pulang != 'Pindah Kamar' and resep_obat.status='ranap' and resep_obat.tgl_peresepan between ? and ? "+
+                        " where resep_obat.tgl_peresepan<>'0000-00-00' and kamar_inap.stts_pulang != 'Pindah Kamar' and resep_obat.status='ranap' and resep_obat.tgl_peresepan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
                         "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
@@ -4844,7 +4849,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " inner join kamar_inap on ranap_gabung.no_rawat=kamar_inap.no_rawat "+
                         " inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar "+
                         " inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal "+
-                        " where resep_obat.tgl_peresepan<>'0000-00-00' and and kamar_inap.stts_pulang != 'Pindah Kamar' and resep_obat.status='ranap' and resep_obat.tgl_peresepan between ? and ? "+
+                        " where resep_obat.tgl_peresepan<>'0000-00-00' and kamar_inap.stts_pulang != 'Pindah Kamar' and resep_obat.status='ranap' and resep_obat.tgl_peresepan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and bangsal.nm_bangsal like ? and "+
                         "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
                         "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or dokter.nm_dokter like ? or penjab.png_jawab like ?)")+
