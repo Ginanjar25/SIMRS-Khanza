@@ -2384,11 +2384,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 sumber =Sequel.cariIsi("SELECT p.nm_poli FROM reg_periksa rp INNER JOIN poliklinik p ON p.kd_poli = rp.kd_poli WHERE rp.no_rawat = ?", TNoRw.getText());
                 bb =Sequel.cariIsi("SELECT pr.berat FROM pemeriksaan_ralan pr INNER JOIN reg_periksa rp ON rp.no_rawat = pr.no_rawat WHERE rp.no_rkm_medis = ? AND pr.berat IS NOT NULL AND pr.berat != '' LIMIT 1", TNoRm.getText());
             }else{
-                sumber =Sequel.cariIsi("SELECT b.nm_bangsal FROM kamar_inap ki " +
-                                                "INNER JOIN kamar k ON k.kd_kamar = ki.kd_kamar " +
-                                                "INNER JOIN bangsal b ON b.kd_bangsal = k.kd_bangsal " +
-                                                "WHERE ki.no_rawat = ? and ki.stts_pulang != 'Pindah Kamar'", TNoRw.getText())
-                                       .replaceAll("Lt1 |Lt2 |Lt3 ", "") + " (" + kelas + ")";
+                 sumber = Sequel.cariIsi("SELECT b.nm_bangsal, CONCAT(ki.tgl_masuk, ki.jam_masuk) FROM kamar_inap ki "
+                                + "INNER JOIN kamar k ON k.kd_kamar = ki.kd_kamar "
+                                + "INNER JOIN bangsal b ON b.kd_bangsal = k.kd_bangsal "
+                                + "WHERE ki.no_rawat = ? and ki.stts_pulang <> 'Pindah Kamar' ORDER BY ki.tgl_masuk DESC, ki.jam_masuk DESC LIMIT 1", TNoRw.getText())
+                                .replaceAll("Lt1 |Lt2 |Lt3 ", "") + " (" + kelas + ")";
                 bb =Sequel.cariIsi("SELECT pr.berat FROM pemeriksaan_ranap pr INNER JOIN reg_periksa rp ON rp.no_rawat = pr.no_rawat WHERE rp.no_rkm_medis = ? AND pr.berat IS NOT NULL AND pr.berat != '' LIMIT 1", TNoRm.getText());
             }
             

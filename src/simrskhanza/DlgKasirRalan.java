@@ -14964,8 +14964,8 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         try{   
             semua=caripenjab.equals("")&&CrPoli.getText().trim().equals("")&&CrPtg.getText().trim().equals("")&&cmbStatus.getSelectedItem().toString().equals("Semua")&&cmbStatusBayar.getSelectedItem().toString().equals("Semua")&&TCari.getText().trim().equals("");
             boolean batal=cmbStatus.getSelectedItem().toString().equals("Batal");
-            boolean penjab = caripenjab.equals("");
-            boolean status = cmbStatusBayar.getSelectedItem().toString().equals("Semua");
+            boolean penjab = CrPtg.getText().trim().equals("");
+            boolean status = cmbStatus.getSelectedItem().toString().equals("Semua");
 //            System.out.println(batal);
             pskasir=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
                 "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,poliklinik.nm_poli,"+
