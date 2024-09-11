@@ -1977,7 +1977,26 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         } 
     }
     
-    public void setNoRm(String norwt,Date tanggal, String jam,String menit,String detik,String KodeDokter,String NamaDokter,String status) {        
+    public void setNoRm(String norwt,Date tanggal, String jam,String menit,String detik,String KodeDokter,String NamaDokter,String status) {
+        String Alergi = "";
+        String noRkmMedis = Sequel.cariIsi("SELECT no_rkm_medis FROM reg_periksa WHERE no_rawat = ?", norwt);
+        String statusLanjut = Sequel.cariIsi("SELECT status_lanjut FROM reg_periksa WHERE no_rawat = ?", norwt);
+        if (statusLanjut.equals("Ralan")) {
+            // Cek alergi di pemeriksaan_ralan
+            Alergi = Sequel.cariIsi("SELECT pemeriksaan_ralan.alergi FROM pemeriksaan_ralan WHERE pemeriksaan_ralan.no_rawat = ? "
+                    + "AND pemeriksaan_ralan.alergi <> '' ORDER BY pemeriksaan_ralan.tgl_perawatan desc, pemeriksaan_ralan.jam_rawat desc LIMIT 1", norwt);
+        } else {
+            // Cek alergi di pemeriksaan_ranap
+            Alergi = Sequel.cariIsi("SELECT pemeriksaan_ranap.alergi FROM pemeriksaan_ranap WHERE pemeriksaan_ranap.no_rawat = ? "
+                    + "AND pemeriksaan_ranap.alergi <> '' ORDER BY pemeriksaan_ranap.tgl_perawatan desc, pemeriksaan_ranap.jam_rawat desc LIMIT 1", norwt);
+        }
+        // Jika alergi kosong, cek di resep_obat
+        if (Alergi == null || Alergi.isBlank()) {
+            Alergi = Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', 1)) AS alergi FROM resep_obat "
+                        + "INNER JOIN reg_periksa ON reg_periksa.no_rawat = resep_obat.no_rawat "
+                        + "WHERE reg_periksa.no_rkm_medis = ? "
+                        + "ORDER BY CONCAT(resep_obat.tgl_peresepan, ' ', resep_obat.jam_peresepan) DESC LIMIT 1", noRkmMedis);
+        }
         TNoRw.setText(norwt);
         Sequel.cariIsi("select concat(pasien.no_rkm_medis,' ',pasien.nm_pasien,' (',pasien.umur,')') from reg_periksa inner join pasien "+
                     " on reg_periksa.no_rkm_medis=pasien.no_rkm_medis where no_rawat=? ",TPasien,TNoRw.getText());
@@ -1989,8 +2008,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         KdDokter.setText(KodeDokter);
         NmDokter.setText(NamaDokter);
         KdPj.setText(Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?",norwt));
-        TAlergi.setText(Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', 1)) AS alergi FROM resep_obat WHERE resep_obat.no_rawat = ? " +
-                "ORDER BY CONCAT(resep_obat.tgl_peresepan, ' ', resep_obat.jam_peresepan) DESC LIMIT 1", norwt));
+        TAlergi.setText(Alergi);
         TCari.requestFocus();
         this.status=status;
         SetHarga();
