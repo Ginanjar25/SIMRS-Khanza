@@ -221,7 +221,7 @@ public final class DlgUbahNilaiLab extends javax.swing.JDialog {
         TPasien.setBounds(310, 10, 300, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-11-2019" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-09-2024" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -286,23 +286,27 @@ public final class DlgUbahNilaiLab extends javax.swing.JDialog {
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         ChkJln.setSelected(false);
         for(i=0;i<tbPemeriksaan.getRowCount();i++){ 
-            Sequel.mengedit("detail_periksa_lab","no_rawat=? and kd_jenis_prw=? and tgl_periksa=? and jam=? and id_template=?","nilai=?,nilai_rujukan=?,keterangan=?,tgl_periksa=?,jam=?",10,new String[]{
-                tbPemeriksaan.getValueAt(i,1).toString(),tbPemeriksaan.getValueAt(i,3).toString(),tbPemeriksaan.getValueAt(i,4).toString(),Valid.SetTgl(Tanggal.getSelectedItem()+""),
-                CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),TNoRw.getText(),tbPemeriksaan.getValueAt(i,6).toString(),tanggal,jam,tbPemeriksaan.getValueAt(i,5).toString()
+            Sequel.mengedit("detail_periksa_lab",
+                    "no_rawat=? and kd_jenis_prw=? and tgl_periksa=? and jam=? and id_template=?",
+                    "nilai=?,nilai_rujukan=?,keterangan=?",
+                    8,
+                    new String[]{
+                tbPemeriksaan.getValueAt(i,1).toString(),tbPemeriksaan.getValueAt(i,3).toString(),tbPemeriksaan.getValueAt(i,4).toString(),
+                TNoRw.getText(),tbPemeriksaan.getValueAt(i,6).toString(),tanggal,jam,tbPemeriksaan.getValueAt(i,5).toString()
             });
         }
         
-        Sequel.mengedit("periksa_lab","no_rawat=? and tgl_periksa=? and jam=?","tgl_periksa=?,jam=?",5,new String[]{
-            Valid.SetTgl(Tanggal.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),TNoRw.getText(),tanggal,jam
-        });
-        
-        Sequel.mengedit("permintaan_lab","no_rawat=? and tgl_hasil=? and jam_hasil=?","tgl_hasil=?,jam_hasil=?",5,new String[]{
-            Valid.SetTgl(Tanggal.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),TNoRw.getText(),tanggal,jam
-        });
-        
-        Sequel.mengedit("saran_kesan_lab","no_rawat=? and tgl_periksa=? and jam=?","tgl_periksa=?,jam=?",5,new String[]{
-            Valid.SetTgl(Tanggal.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),TNoRw.getText(),tanggal,jam
-        });
+//        Sequel.mengedit("periksa_lab","no_rawat=? and tgl_periksa=? and jam=?","tgl_periksa=?,jam=?",5,new String[]{
+//            Valid.SetTgl(Tanggal.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),TNoRw.getText(),tanggal,jam
+//        });
+//        
+//        Sequel.mengedit("permintaan_lab","no_rawat=? and tgl_hasil=? and jam_hasil=?","tgl_hasil=?,jam_hasil=?",5,new String[]{
+//            Valid.SetTgl(Tanggal.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),TNoRw.getText(),tanggal,jam
+//        });
+//        
+//        Sequel.mengedit("saran_kesan_lab","no_rawat=? and tgl_periksa=? and jam=?","tgl_periksa=?,jam=?",5,new String[]{
+//            Valid.SetTgl(Tanggal.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),TNoRw.getText(),tanggal,jam
+//        });
         JOptionPane.showMessageDialog(null,"Proses update hasil pemeriksaan sudah selesai !!!");
         dispose();
         ChkJln.setSelected(true);
