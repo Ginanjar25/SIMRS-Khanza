@@ -49,7 +49,7 @@ public class DlgPenelusuranLogin extends javax.swing.JDialog {
     public DlgPenelusuranLogin(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        tabMode=new DefaultTableModel(null,new Object[]{"NIP","Nama Pegawai","Tanggal Login","Jam Login"}){
+        tabMode=new DefaultTableModel(null,new Object[]{"NIP","Nama Pegawai","Tanggal Login","Jam Login","IP Addres"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         tbObat.setModel(tabMode);
@@ -58,7 +58,7 @@ public class DlgPenelusuranLogin extends javax.swing.JDialog {
         tbObat.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             TableColumn column = tbObat.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(120);
@@ -67,6 +67,8 @@ public class DlgPenelusuranLogin extends javax.swing.JDialog {
             }else if(i==2){
                 column.setPreferredWidth(120);
             }else if(i==3){
+                column.setPreferredWidth(120);
+            }else if(i==4){
                 column.setPreferredWidth(120);
             }
         }
@@ -520,16 +522,22 @@ public class DlgPenelusuranLogin extends javax.swing.JDialog {
         Valid.tabelKosong(tabMode);
         try{    
             ps=koneksi.prepareStatement(
-                    "select tracker.nip,tracker.tgl_login,tracker.jam_login from tracker  "+
+                    "select tracker.nip,tracker.tgl_login,tracker.jam_login,tsq.ip from tracker  "+
+                    "JOIN ( "+
+                    "	SELECT SUBSTRING(aa.tanggal,1,10) AS tanggal, SUBSTRING(aa.tanggal,12,21) AS jam, SUBSTRING_INDEX(aa.sqle,'insert',1) AS ip  " +
+                    "	FROM trackersql aa WHERE SUBSTRING(aa.tanggal,1,10) between ? and ? AND aa.sqle LIKE '%insert into tracker%' " +
+                    ") tsq ON tsq.tanggal = tracker.tgl_login AND tsq.jam = tracker.jam_login "+
                     "where tracker.tgl_login between ? and ? and tracker.nip like ? order by tracker.tgl_login");
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
-                ps.setString(3,"%"+TCari.getText().trim()+"%");
+                ps.setString(3,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
+                ps.setString(4,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
+                ps.setString(5,"%"+TCari.getText().trim()+"%");
                 rs=ps.executeQuery();
                 while(rs.next()){
                     tabMode.addRow(new Object[]{
-                        rs.getString(1),Sequel.cariIsi("select pegawai.nama from pegawai where pegawai.nik=?",rs.getString(1)),rs.getString(2),rs.getString(3)
+                        rs.getString(1),Sequel.cariIsi("select pegawai.nama from pegawai where pegawai.nik=?",rs.getString(1)),rs.getString(2),rs.getString(3),rs.getString(4)
                     });
                 }
             } catch (Exception e) {
