@@ -9071,6 +9071,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     }
     
     public void setNoRm(String norwt,Date awal,Date akhir) {
+        ChkJln.setSelected(true);
         TNoRw.setText(norwt);
         isRawat();
         KdDok2.setText(KdDok.getText());

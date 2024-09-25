@@ -10076,6 +10076,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         ChkInput3.setSelected(true);
         isForm4();
         TabRawatMouseClicked(null);
+        ChkJln.setSelected(true);
     }
     
     private void isForm(){

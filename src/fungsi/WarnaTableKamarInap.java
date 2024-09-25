@@ -19,16 +19,12 @@ public class WarnaTableKamarInap extends DefaultTableCellRenderer {
         Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         if (row % 2 == 1){
             component.setBackground(new Color(255,244,244));
-            component.setForeground(new Color(50,50,50));
         }else{
             component.setBackground(new Color(255,255,255));
-            component.setForeground(new Color(50,50,50));
         } 
         if(table.getValueAt(row,6).toString().equals("UMUM") && table.getValueAt(row,7).toString().contains("Kelas 3")){
             component.setBackground(new Color(255/255f, 51/255f, 51/255f, 0.76f));
-            component.setForeground(new Color(245,255,245));
 //            component.setBackground(new Color(51/255f, 133/255f, 255/255f, 0.61f));
-//            component.setForeground(new Color(0,0,0));
         }
        
         
