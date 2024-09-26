@@ -3944,17 +3944,15 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                                             JOptionPane.showMessageDialog(rootPane, "Koneksi ke server BPJS terputus...!");
                                         }
                                     }
-                                    System.out.println("Jml SEP Terbit dengan No Rujukan tsb : "+i);
-                                    if(i==0){
-                                        reply = JOptionPane.showConfirmDialog(null,"Terdeteksi Kunjungan Internal dengan No. Rukujan Baru \n Rujukan = "+nm_poli_rujukan+" \n Tujuan = "+NmPoli.getText()+ "\n Kirim Antrol saja, dan buat SEP di VClaim","Konfirmasi",JOptionPane.YES_NO_OPTION);
-                                        if (reply == JOptionPane.YES_OPTION) {
-                                            if(SimpanAntrianSepVclaim()==true){
-                                                JOptionPane.showMessageDialog(null, "Antrian Online Berhasil");
-                                            }else{
-                                                JOptionPane.showMessageDialog(rootPane, "Antrian Online Gagal");
-                                            }
-                                        }                                        
-                                    }                                    
+                                    System.out.println("Jml SEP Terbit dengan No Rujukan tsb : " + i);
+                                    if (i == 0) {
+                                        JOptionPane.showMessageDialog(null, "Terdeteksi Kunjungan Internal dengan No. Rukujan Baru \n Rujukan = " + nm_poli_rujukan + " \n Tujuan = " + NmPoli.getText() + "\n Kirim Antrol saja, dan buat SEP di VClaim");
+                                        if (SimpanAntrianSepVclaim() == true) {
+                                            JOptionPane.showMessageDialog(null, "Antrian Online Berhasil");
+                                        } else {
+                                            JOptionPane.showMessageDialog(rootPane, "Antrian Online Gagal");
+                                        }
+                                    }
                                 }
 
                                 try {
