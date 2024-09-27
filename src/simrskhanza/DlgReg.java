@@ -15213,30 +15213,34 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }
     }                                       
 
-    private void button2ActionPerformed(java.awt.event.ActionEvent evt) {                                        
+    private void button2ActionPerformed(java.awt.event.ActionEvent evt) {
         if (tbPetugas.getSelectedRow() != -1) {
             if (!"JKN".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
                 JOptionPane.showMessageDialog(null, "Maaf, Pasien tidak daftar melalui Mobile JKN..!!!");
             } else {
-                if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "nobooking=?", "status='Batal',validasi=now()", 1, new String[]{
-                    Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
-                }) == true) {
-                    Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Batal',biaya_reg='0'");
-                    Sequel.menyimpan2("referensi_mobilejkn_bpjs_batal", "?,?,?,now(),?,?,?", 6, new String[]{
-                        tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 7).toString(),
-                        tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 2).toString(),
-                        Sequel.cariIsi("SELECT rmb.nomorreferensi FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText()),
-                        "Dibatalkan Oleh " + akses.getkode() + "",
-                        "Belum",
+                int reply = JOptionPane.showConfirmDialog(rootPane, "Apakah Anda Ingin Batal Check In JKN Pasien : \n"
+                        + "No Rawat: " + TNoRw.getText() + "/ Nama: " + TPasien.getText() + "(" + TNoRM.getText() + ")", "Konfirmasi", JOptionPane.YES_NO_OPTION);
+                if (reply == JOptionPane.YES_OPTION) {
+                    if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "nobooking=?", "status='Batal',validasi=now()", 1, new String[]{
                         Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
-                    });
-                    tampil();
+                    }) == true) {
+                        Valid.editTable(tabMode, "reg_periksa", "no_rawat", TNoRw, "stts='Batal',biaya_reg='0'");
+                        Sequel.menyimpan2("referensi_mobilejkn_bpjs_batal", "?,?,?,now(),?,?,?", 6, new String[]{
+                            tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 7).toString(),
+                            tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 2).toString(),
+                            Sequel.cariIsi("SELECT rmb.nomorreferensi FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText()),
+                            "Dibatalkan Oleh " + akses.getkode() + "",
+                            "Belum",
+                            Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
+                        });
+                        tampil();
+                    }
                 }
             }
         } else {
             JOptionPane.showMessageDialog(null, "Silahkan pilih dulu data yang mau dibatalkan..!!");
         }
-    }                                       
+    }                                     
 
     private void button3ActionPerformed(java.awt.event.ActionEvent evt) {                                        
         if (tabMode.getRowCount() == 0) {

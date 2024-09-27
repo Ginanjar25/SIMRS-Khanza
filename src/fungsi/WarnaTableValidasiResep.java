@@ -26,7 +26,7 @@ public class WarnaTableValidasiResep extends DefaultTableCellRenderer {
         } 
         if(table.getValueAt(row,12).toString().equals("UMUM") && table.getValueAt(row,13).toString().equals("Kelas 3")){
             component.setBackground(new Color(255/255f, 51/255f, 51/255f, 0.76f));
-//            component.setForeground(new Color(245,255,245));
+//            component.setForeground(new Color(255,255,245));
 //            component.setBackground(new Color(51/255f, 133/255f, 255/255f, 0.61f));
 //            component.setForeground(new Color(0,0,0));
         }
