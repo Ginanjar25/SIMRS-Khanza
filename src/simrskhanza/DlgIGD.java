@@ -34,6 +34,7 @@ import bridging.SisruteRujukanKeluar;
 import laporan.DlgFrekuensiPenyakitRalan;
 import keuangan.DlgBilingRalan;
 import fungsi.WarnaTable;
+import fungsi.WarnaTableIGD;
 import fungsi.batasInput;
 import grafikanalisa.grafikperiksaperagama;
 import grafikanalisa.grafikperiksaperbulan;
@@ -267,7 +268,7 @@ public final class DlgIGD extends javax.swing.JDialog {
 
         Object[] row={"P","No.Reg","No.Rawat","Tanggal","Jam","Kd.Dokter","Dokter Dituju","Nomer RM",
             "Pasien","J.K.","Umur","Poliklinik","Penanggung Jawab","Alamat P.J.","Hubungan dg P.J.",
-            "Biaya Regristrasi","Status","Jenis Bayar","Stts Rawat","Kd PJ","Status Bayar"};
+            "Biaya Regristrasi","Status","Jenis Bayar","Stts Rawat","Kd PJ","Status Bayar","FP"};
         tabMode=new DefaultTableModel(null,row){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -282,7 +283,7 @@ public final class DlgIGD extends javax.swing.JDialog {
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
-                 java.lang.Object.class
+                 java.lang.Object.class,java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -294,7 +295,7 @@ public final class DlgIGD extends javax.swing.JDialog {
         tbPetugas.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbPetugas.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 21; i++) {
+        for (i = 0; i < 22; i++) {
             TableColumn column = tbPetugas.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(20);
@@ -339,9 +340,11 @@ public final class DlgIGD extends javax.swing.JDialog {
                 column.setMaxWidth(0);
             }else if(i==20){
                 column.setPreferredWidth(70);
+            }else if(i==21){
+                column.setPreferredWidth(70);
             }
         }
-        tbPetugas.setDefaultRenderer(Object.class, new WarnaTable());
+        tbPetugas.setDefaultRenderer(Object.class, new WarnaTableIGD());
 
         TNoReg.setDocument(new batasInput((byte)8).getKata(TNoReg));
         TNoRw.setDocument(new batasInput((byte)17).getKata(TNoRw));
@@ -996,6 +999,10 @@ public final class DlgIGD extends javax.swing.JDialog {
         ChkTracker = new widget.CekBox();
         ChkInput = new widget.CekBox();
         R1 = new widget.RadioButton();
+        
+        labelFinger1 = new widget.Label();
+        labelFinger2 = new widget.Label();
+        labelFinger3 = new widget.Label();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
         
@@ -11389,6 +11396,11 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private javax.swing.JMenuItem MnPenilaianPreInduksi,MnHasilPemeriksaanEKG,MnSudahTerbitSEP,MnPenilaianPasienImunitasRendah,MnCatatanKeseimbanganCairan,MnCatatanObservasiCHBP,MnCatatanObservasiInduksiPersalinan;
     private javax.swing.JMenuItem ppResumePerawat;
     private widget.RadioButton R1;
+    private widget.Label labelFinger1;
+    private widget.Label labelFinger2;
+    private widget.Label labelFinger3;
+    private javax.swing.JPanel jPanelFinger1;
+    private javax.swing.JPanel jPanelFinger2;
     
     private void tampil() {
         Valid.tabelKosong(tabMode);   
@@ -11400,10 +11412,10 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         try{  
             ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
                    "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli,"+
-                   "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,reg_periksa.stts,reg_periksa.kd_pj,reg_periksa.status_bayar "+
+                   "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,reg_periksa.stts,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(fr.nokartu),\"Belum\",\"Sudah\") AS fingerprint "+
                    "from reg_periksa inner join dokter inner join pasien inner join poliklinik inner join penjab "+
                    "on reg_periksa.kd_dokter=dokter.kd_dokter and reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "and reg_periksa.kd_pj=penjab.kd_pj and reg_periksa.kd_poli=poliklinik.kd_poli  where  "+
+                   "and reg_periksa.kd_pj=penjab.kd_pj and reg_periksa.kd_poli=poliklinik.kd_poli LEFT JOIN side_db.fingerprint_bpjs fr ON fr.nokartu = pasien.no_peserta AND fr.tanggal = reg_periksa.tgl_registrasi  where  "+
                    "poliklinik.kd_poli='IGDK' and reg_periksa.tgl_registrasi between ? and ? "+
                    (TCari.getText().trim().equals("")?"":"and (reg_periksa.no_reg like ? or reg_periksa.no_rawat like ? or reg_periksa.tgl_registrasi like ? or "+
                    "reg_periksa.kd_dokter like ? or dokter.nm_dokter like ? or reg_periksa.no_rkm_medis like ? or "+
@@ -11435,7 +11447,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                         rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9),
                         rs.getString(10),rs.getString(11),rs.getString(12),rs.getString(13),rs.getString(14),
                         Valid.SetAngka(rs.getDouble(15)),rs.getString(16),rs.getString(17),rs.getString(18),
-                        rs.getString("kd_pj"),rs.getString("status_bayar")
+                        rs.getString("kd_pj"),rs.getString("status_bayar"),rs.getString("fingerprint")
                     });
                 } 
             } catch (Exception e) {
@@ -12149,6 +12161,36 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         MnRMCatatanMonitoring.add(MnCatatanObservasiIGD);
         MnRMCatatanMonitoring.add(MnCatatanObservasiCHBP);
         MnRMCatatanMonitoring.add(MnCatatanObservasiInduksiPersalinan);
+        
+        labelFinger1.setText("Ket. Verifikasi Biometric :");
+        labelFinger1.setName("labelFinger1"); // NOI18N
+        FormInput.add(labelFinger1);
+        labelFinger1.setBounds(900, 10, 150, 14);
+        
+        labelFinger2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        labelFinger2.setText("Belum");
+        labelFinger2.setName("labelFinger2"); // NOI18N
+        FormInput.add(labelFinger2);
+        labelFinger2.setBounds(960, 30, 150, 14);
+        
+        labelFinger3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        labelFinger3.setText("Sudah");
+        labelFinger3.setName("labelFinger3"); // NOI18N
+        FormInput.add(labelFinger3);
+        labelFinger3.setBounds(960, 60, 150, 14);
+        
+        jPanelFinger1 = new javax.swing.JPanel();
+        jPanelFinger2 = new javax.swing.JPanel();
+        
+        jPanelFinger1.setBackground(new java.awt.Color(255, 112, 67));
+        jPanelFinger1.setName("jPanelFinger1"); // NOI18N
+        FormInput.add(jPanelFinger1);
+        jPanelFinger1.setBounds(920, 30, 30, 20);
+        
+        jPanelFinger2.setBackground(new java.awt.Color(192, 202, 51));
+        jPanelFinger2.setName("jPanelFinger2"); // NOI18N
+        FormInput.add(jPanelFinger2);
+        jPanelFinger2.setBounds(920, 60, 30, 20);
     }
     
     private void ganti(){

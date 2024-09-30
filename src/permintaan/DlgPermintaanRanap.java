@@ -4,6 +4,7 @@ import bridging.BPJSDataSEP;
 import bridging.BPJSSPRI;
 import fungsi.BackgroundMusic;
 import fungsi.WarnaTable;
+import fungsi.WarnaTablePermintaanRanap;
 import fungsi.batasInput;
 import fungsi.koneksiDB;
 import fungsi.sekuel;
@@ -91,7 +92,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Rawat","No.RM","Nama Pasien","J.K.","Umur","No.Telp","Cara Bayar","Asal Poli/Unit","Dokter Yang Memeriksa",
                 "Tanggal","No.Bad/Kamar","Kode Bangsal","Kamar Diminta","Tarif Kamar","Diagnosa Awal","Catatan","KodeDokter",
-                "Kd_Dok","Dokter DPJP","Gabung"
+                "Kd_Dok","Dokter DPJP","Gabung","Biometric"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -101,7 +102,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         tbObat.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 18; i++) {
+        for (i = 0; i < 19; i++) {
             TableColumn column = tbObat.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(105);
@@ -137,12 +138,12 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
                 column.setPreferredWidth(150);
             }else if(i==15){
                 column.setPreferredWidth(150);
-            } else if (i == 16 || i == 17 || i == 18) {
+            } else if (i == 16 || i == 17 || i == 18|| i == 19) {
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
             }
         }
-        tbObat.setDefaultRenderer(Object.class, new WarnaTable());
+        tbObat.setDefaultRenderer(Object.class, new WarnaTablePermintaanRanap());
 
         NoRw.setDocument(new batasInput((byte)17).getKata(NoRw));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
@@ -459,6 +460,11 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         TDokterBayi = new widget.TextBox();
         BtnDokterBayi = new widget.Button();
         ChkAccor2 = new widget.CekBox();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
         PanelAccor = new widget.PanelBiasa();
         ChkAccor = new widget.CekBox();
         ScrollMenu = new widget.ScrollPane();
@@ -720,7 +726,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         R2.setPreferredSize(new java.awt.Dimension(165, 23));
         panelCari.add(R2);
 
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-05-2024" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-09-2024" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -743,7 +749,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         jLabel25.setPreferredSize(new java.awt.Dimension(30, 23));
         panelCari.add(jLabel25);
 
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-05-2024" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-09-2024" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -811,7 +817,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         NmPasien.setBounds(288, 10, 330, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-05-2024" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-09-2024" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -1129,6 +1135,34 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         });
         FormInput.add(ChkAccor2);
         ChkAccor2.setBounds(510, 130, 80, 20);
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel1.setText("Sudah");
+        jLabel1.setName("jLabel1"); // NOI18N
+        FormInput.add(jLabel1);
+        jLabel1.setBounds(1160, 60, 60, 14);
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel2.setText("Ket. Verifikasi Biometric :");
+        jLabel2.setName("jLabel2"); // NOI18N
+        FormInput.add(jLabel2);
+        jLabel2.setBounds(1120, 10, 150, 14);
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        jLabel3.setText("Belum");
+        jLabel3.setName("jLabel3"); // NOI18N
+        FormInput.add(jLabel3);
+        jLabel3.setBounds(1160, 30, 60, 14);
+
+        jPanel1.setBackground(new java.awt.Color(192, 202, 51));
+        jPanel1.setName("jPanel1"); // NOI18N
+        FormInput.add(jPanel1);
+        jPanel1.setBounds(1120, 60, 30, 20);
+
+        jPanel2.setBackground(new java.awt.Color(255, 112, 67));
+        jPanel2.setName("jPanel2"); // NOI18N
+        FormInput.add(jPanel2);
+        jPanel2.setBounds(1120, 30, 30, 20);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -2247,6 +2281,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Button btnKamar;
     private javax.swing.ButtonGroup buttonGroup1;
     private widget.InternalFrame internalFrame1;
+    private javax.swing.JLabel jLabel1;
     private widget.Label jLabel10;
     private widget.Label jLabel11;
     private widget.Label jLabel12;
@@ -2255,14 +2290,18 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Label jLabel15;
     private widget.Label jLabel16;
     private widget.Label jLabel17;
+    private javax.swing.JLabel jLabel2;
     private widget.Label jLabel20;
     private widget.Label jLabel25;
+    private javax.swing.JLabel jLabel3;
     private widget.Label jLabel48;
     private widget.Label jLabel5;
     private widget.Label jLabel6;
     private widget.Label jLabel7;
     private widget.Label jLabel8;
     private widget.Label jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private widget.panelisi panelCari;
     private widget.panelisi panelGlass10;
@@ -2277,14 +2316,14 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 ps=koneksi.prepareStatement("select permintaan_ranap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,reg_periksa.umurdaftar,reg_periksa.sttsumur,"+
                     "pasien.no_tlp,penjab.png_jawab,poliklinik.nm_poli,dokter.nm_dokter,permintaan_ranap.tanggal,permintaan_ranap.kd_kamar,kamar.kd_bangsal,"+
                     "bangsal.nm_bangsal,kamar.trf_kamar,permintaan_ranap.diagnosa,permintaan_ranap.catatan,reg_periksa.kd_dokter, drpj.kd_dokter AS dp1, drpj.nm_dokter AS dp2, "+
-                    " COALESCE((SELECT ranap_gabung.no_rawat2 FROM ranap_gabung WHERE ranap_gabung.no_rawat=reg_periksa.no_rawat),\"-\") AS gabung from permintaan_ranap "+
+                    " COALESCE((SELECT ranap_gabung.no_rawat2 FROM ranap_gabung WHERE ranap_gabung.no_rawat=reg_periksa.no_rawat),\"-\") AS gabung, if(ISNULL(fr.nokartu),\"Belum\",\"Sudah\") AS fingerprint from permintaan_ranap "+
                     "inner join reg_periksa on permintaan_ranap.no_rawat=reg_periksa.no_rawat "+
                     "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
                     "inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter "+
                     "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli "+
                     "inner join kamar on permintaan_ranap.kd_kamar=kamar.kd_kamar "+
-                    "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = permintaan_ranap.no_rawat INNER JOIN dokter drpj  ON drpj.kd_dokter = dpjp_ranap.kd_dokter  "+
+                    "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = permintaan_ranap.no_rawat INNER JOIN dokter drpj  ON drpj.kd_dokter = dpjp_ranap.kd_dokter LEFT JOIN side_db.fingerprint_bpjs fr ON fr.nokartu = pasien.no_peserta AND fr.tanggal = reg_periksa.tgl_registrasi "+
                     "where permintaan_ranap.no_rawat not in (select DISTINCT no_rawat from kamar_inap) "+
                     (TCari.getText().equals("")?"":"and (permintaan_ranap.no_rawat like ? or reg_periksa.no_rkm_medis like ? or pasien.nm_pasien like ? "+
                     "or penjab.png_jawab like ? or poliklinik.nm_poli like ? or dokter.nm_dokter like ? or bangsal.nm_bangsal like ? "+
@@ -2306,7 +2345,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("jk"),rs.getString("umurdaftar")+" "+rs.getString("sttsumur"),
                             rs.getString("no_tlp"),rs.getString("png_jawab"),rs.getString("nm_poli"),rs.getString("nm_dokter"),rs.getString("tanggal"),rs.getString("kd_kamar"),
                             rs.getString("kd_bangsal"),rs.getString("kd_kamar")+" "+rs.getString("nm_bangsal"),Valid.SetAngka(rs.getDouble("trf_kamar")),rs.getString("diagnosa"),rs.getString("catatan"),
-                            rs.getString("kd_dokter"), rs.getString("dp1"), rs.getString("dp2"), rs.getString("gabung")
+                            rs.getString("kd_dokter"), rs.getString("dp1"), rs.getString("dp2"), rs.getString("gabung"), rs.getString("fingerprint")
                         });
                         psanak = koneksi.prepareStatement(
                                 "select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.no_peserta, "
@@ -2352,14 +2391,14 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 ps=koneksi.prepareStatement("select permintaan_ranap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,reg_periksa.umurdaftar,reg_periksa.sttsumur,"+
                     "pasien.no_tlp,penjab.png_jawab,poliklinik.nm_poli,dokter.nm_dokter,permintaan_ranap.tanggal,permintaan_ranap.kd_kamar,kamar.kd_bangsal,"+
                     "bangsal.nm_bangsal,kamar.trf_kamar,permintaan_ranap.diagnosa,permintaan_ranap.catatan,reg_periksa.kd_dokter, drpj.kd_dokter AS dp1, drpj.nm_dokter AS dp2, "+ 
-                    "COALESCE((SELECT ranap_gabung.no_rawat2 FROM ranap_gabung WHERE ranap_gabung.no_rawat=reg_periksa.no_rawat),\"-\") AS gabung from permintaan_ranap "+
+                    "COALESCE((SELECT ranap_gabung.no_rawat2 FROM ranap_gabung WHERE ranap_gabung.no_rawat=reg_periksa.no_rawat),\"-\") AS gabung, if(ISNULL(fr.nokartu),\"Belum\",\"Sudah\") AS fingerprint from permintaan_ranap "+
                     "inner join reg_periksa on permintaan_ranap.no_rawat=reg_periksa.no_rawat "+
                     "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
                     "inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter "+
                     "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli "+
                     "inner join kamar on permintaan_ranap.kd_kamar=kamar.kd_kamar "+
-                    "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = permintaan_ranap.no_rawat INNER JOIN dokter drpj  ON drpj.kd_dokter = dpjp_ranap.kd_dokter  "+
+                    "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = permintaan_ranap.no_rawat INNER JOIN dokter drpj  ON drpj.kd_dokter = dpjp_ranap.kd_dokter LEFT JOIN side_db.fingerprint_bpjs fr ON fr.nokartu = pasien.no_peserta AND fr.tanggal = reg_periksa.tgl_registrasi "+
                     "where permintaan_ranap.no_rawat in (select DISTINCT no_rawat from kamar_inap) and permintaan_ranap.tanggal between ? and ? "+
                     (TCari.getText().equals("")?"":"and (permintaan_ranap.no_rawat like ? or reg_periksa.no_rkm_medis like ? or pasien.nm_pasien like ? "+
                     "or penjab.png_jawab like ? or poliklinik.nm_poli like ? or dokter.nm_dokter like ? or bangsal.nm_bangsal like ? "+
@@ -2383,7 +2422,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             rs.getString("no_rawat"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("jk"),rs.getString("umurdaftar")+" "+rs.getString("sttsumur"),
                             rs.getString("no_tlp"),rs.getString("png_jawab"),rs.getString("nm_poli"),rs.getString("nm_dokter"),rs.getString("tanggal"),rs.getString("kd_kamar"),
                             rs.getString("kd_bangsal"),rs.getString("kd_kamar")+" "+rs.getString("nm_bangsal"),Valid.SetAngka(rs.getDouble("trf_kamar")),rs.getString("diagnosa"),
-                            rs.getString("catatan"),rs.getString("kd_dokter"), rs.getString("dp1"), rs.getString("dp2"), rs.getString("gabung")
+                            rs.getString("catatan"),rs.getString("kd_dokter"), rs.getString("dp1"), rs.getString("dp2"), rs.getString("gabung"), rs.getString("fingerprint")
                         });
                         psanak = koneksi.prepareStatement(
                                 "select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.no_peserta, "

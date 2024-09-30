@@ -63,6 +63,20 @@ public class WarnaTableKasirRalan1 extends DefaultTableCellRenderer {
                 }
             }
         }
+        
+        if (column == 5) {
+            Object cellValue = table.getValueAt(row, 27); // Get the value of the cell in column 25
+            Object kdpj = table.getValueAt(row, 12);
+            if (cellValue != null) {
+                String cellString = cellValue.toString(); // Convert the value to a string
+                String StringKdpj = kdpj.toString();
+                if ("Sudah".equals(cellString) && "BPJS".equals(StringKdpj)) {
+                    component.setBackground(new Color(192, 202, 51)); // Set background color for "JKN"
+                }else if ("Belum".equals(cellString) && "BPJS".equals(StringKdpj)) {
+                    component.setBackground(new Color(255, 112, 67)); // Set background color for "JKN"
+                }
+            }
+        }
         return component;
     }
 
