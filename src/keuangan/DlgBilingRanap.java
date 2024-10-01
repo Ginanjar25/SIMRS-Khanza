@@ -887,12 +887,16 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         internalFrame1 = new widget.InternalFrame();
         panelGlass1 = new widget.panelisi();
         jLabel3 = new widget.Label();
+        TNaikKelas = new widget.TextBox();
+        NKLabel = new widget.Label();
+        THakKelas = new widget.TextBox();
         TNoRw = new widget.TextBox();
         TNoRM = new widget.TextBox();
         TPasien = new widget.TextBox();
         BtnCari = new widget.Button();
         jLabel4 = new widget.Label();
         DTPTgl = new widget.Tanggal();
+        HKLabel = new widget.Label();
         panelGlass2 = new widget.panelisi();
         BtnSimpan = new widget.Button();
         BtnNota = new widget.Button();
@@ -2008,13 +2012,45 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
-        panelGlass1.setPreferredSize(new java.awt.Dimension(100, 45));
-        panelGlass1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 10));
+        panelGlass1.setPreferredSize(new java.awt.Dimension(100, 70));
+        panelGlass1.setLayout(null);
 
         jLabel3.setText("No.Rawat :");
         jLabel3.setName("jLabel3"); // NOI18N
         jLabel3.setPreferredSize(new java.awt.Dimension(70, 23));
         panelGlass1.add(jLabel3);
+        jLabel3.setBounds(5, 11, 70, 23);
+
+        TNaikKelas.setEditable(false);
+        TNaikKelas.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        TNaikKelas.setName("TNaikKelas"); // NOI18N
+        TNaikKelas.setPreferredSize(new java.awt.Dimension(150, 23));
+        TNaikKelas.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TNaikKelasKeyPressed(evt);
+            }
+        });
+        panelGlass1.add(TNaikKelas);
+        TNaikKelas.setBounds(310, 40, 150, 23);
+
+        NKLabel.setText("Naik Kelas :");
+        NKLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        NKLabel.setName("NKLabel"); // NOI18N
+        NKLabel.setPreferredSize(new java.awt.Dimension(70, 23));
+        panelGlass1.add(NKLabel);
+        NKLabel.setBounds(235, 40, 70, 23);
+
+        THakKelas.setEditable(false);
+        THakKelas.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        THakKelas.setName("THakKelas"); // NOI18N
+        THakKelas.setPreferredSize(new java.awt.Dimension(150, 23));
+        THakKelas.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                THakKelasKeyPressed(evt);
+            }
+        });
+        panelGlass1.add(THakKelas);
+        THakKelas.setBounds(80, 40, 150, 23);
 
         TNoRw.setName("TNoRw"); // NOI18N
         TNoRw.setPreferredSize(new java.awt.Dimension(150, 23));
@@ -2024,16 +2060,19 @@ public class DlgBilingRanap extends javax.swing.JDialog {
             }
         });
         panelGlass1.add(TNoRw);
+        TNoRw.setBounds(79, 11, 150, 23);
 
         TNoRM.setEditable(false);
         TNoRM.setName("TNoRM"); // NOI18N
         TNoRM.setPreferredSize(new java.awt.Dimension(90, 23));
         panelGlass1.add(TNoRM);
+        TNoRM.setBounds(233, 11, 90, 23);
 
         TPasien.setEditable(false);
         TPasien.setName("TPasien"); // NOI18N
         TPasien.setPreferredSize(new java.awt.Dimension(330, 23));
         panelGlass1.add(TPasien);
+        TPasien.setBounds(327, 11, 330, 23);
 
         BtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
         BtnCari.setMnemonic('R');
@@ -2051,13 +2090,15 @@ public class DlgBilingRanap extends javax.swing.JDialog {
             }
         });
         panelGlass1.add(BtnCari);
+        BtnCari.setBounds(661, 11, 28, 23);
 
         jLabel4.setText("Tanggal :");
         jLabel4.setName("jLabel4"); // NOI18N
         jLabel4.setPreferredSize(new java.awt.Dimension(65, 23));
         panelGlass1.add(jLabel4);
+        jLabel4.setBounds(693, 11, 65, 23);
 
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-01-2023 07:41:51" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-09-2024 11:25:15" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -2068,6 +2109,15 @@ public class DlgBilingRanap extends javax.swing.JDialog {
             }
         });
         panelGlass1.add(DTPTgl);
+        DTPTgl.setBounds(762, 11, 140, 23);
+
+        HKLabel.setText("Hak Kelas :");
+        HKLabel.setToolTipText("");
+        HKLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        HKLabel.setName("HKLabel"); // NOI18N
+        HKLabel.setPreferredSize(new java.awt.Dimension(70, 23));
+        panelGlass1.add(HKLabel);
+        HKLabel.setBounds(5, 40, 70, 23);
 
         internalFrame1.add(panelGlass1, java.awt.BorderLayout.PAGE_START);
 
@@ -4578,6 +4628,14 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         // TODO add your handling code here:
     }//GEN-LAST:event_MnCariPeriksaLabMBActionPerformed
 
+    private void THakKelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_THakKelasKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_THakKelasKeyPressed
+
+    private void TNaikKelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNaikKelasKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TNaikKelasKeyPressed
+
 
 
     /**
@@ -4624,6 +4682,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.CekBox ChkPiutang;
     private widget.Tanggal DTPTgl;
     public widget.TextBox Deposit;
+    private widget.Label HKLabel;
     private javax.swing.JMenu MnBayi;
     private javax.swing.JMenuItem MnCariPeriksaLab;
     private javax.swing.JMenuItem MnCariPeriksaLab1;
@@ -4661,12 +4720,15 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private javax.swing.JMenuItem MnTambahan;
     private javax.swing.JMenuItem MnTambahan1;
     private javax.swing.JMenuItem MnUbahLamaInap;
+    private widget.Label NKLabel;
     private javax.swing.JPopupMenu PopupBayar;
     private javax.swing.JPopupMenu PopupPiutang;
     private widget.ScrollPane Scroll;
     private widget.TextBox TCari;
     private widget.TextBox TCari1;
+    public widget.TextBox THakKelas;
     public widget.TextBox TKembali;
+    public widget.TextBox TNaikKelas;
     private widget.TextBox TNoRM;
     public widget.TextBox TNoRw;
     private widget.TextBox TPasien;
@@ -4827,7 +4889,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     prosesCariTambahan(norawatbayi);  
                     prosesCariPotongan(norawatbayi);
                 }
-                
+                setHakNaikKelas();
                 tampilAkunBayar2();
                 tampilAkunPiutang2();
                 isHitung(); 
@@ -4863,7 +4925,8 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     if(pssudahmasuk!=null){
                         pssudahmasuk.close();
                     }
-                }            
+                }
+                setHakNaikKelas();
                 tampilAkunBayarTersimpan();
                 tampilAkunPiutangTersimpan();
                 isHitung(); 
@@ -7461,6 +7524,39 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }catch (Exception ex) {
             System.out.println("Notifikasi : "+ex);            
             JOptionPane.showMessageDialog(null,"Maaf, gagal menyimpan data. Data yang sama dimasukkan sebelumnya...!");
+        }
+    }
+    
+    private void setHakNaikKelas() {
+        String noRawat = TNoRw.getText();
+        String naikKelas = Sequel.cariIsi("select klsnaik from bridging_sep where no_rawat = ?", noRawat);
+        String hakKelas =   Sequel.cariIsi("select klsrawat from bridging_sep where no_rawat = ?", noRawat);;
+
+        switch (naikKelas) {
+            case "8":
+                TNaikKelas.setText("Kelas VIP/VVIP");
+                break;
+            case "3":
+                TNaikKelas.setText("Kelas 1");
+                break;
+            default:
+                TNaikKelas.setText("-");
+                break;
+        }
+        
+        switch (hakKelas) {
+            case "1":
+                THakKelas.setText("Kelas 1");
+                break;
+            case "2":
+                THakKelas.setText("Kelas 2");
+                break;
+            case "3":
+                THakKelas.setText("Kelas 3");
+                break;
+            default:
+                THakKelas.setText("-");
+                break;
         }
     }
 }

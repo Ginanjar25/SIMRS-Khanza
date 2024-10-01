@@ -6991,7 +6991,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                         akses.setkdbangsal(bangsal);
                                     }
 
-                                    billing.TNoRw.setText(norawat.getText());                   
+                                    billing.TNoRw.setText(norawat.getText());
+                                    billing.THakKelas.setText("");
+                                    billing.TNaikKelas.setText("");
                                     billing.isCek();  
                                     billing.isRawat();          
                                     billing.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
@@ -7010,7 +7012,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                     akses.setkdbangsal(bangsal);
                                 }
 
-                                billing.TNoRw.setText(norawat.getText());  
+                                billing.TNoRw.setText(norawat.getText()); 
+                                billing.THakKelas.setText("");
+                                billing.TNaikKelas.setText("");
                                 billing.isCek();
                                 billing.isRawat(); 
                                 billing.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
