@@ -16,19 +16,10 @@
 	<parameter name="emailrs" class="java.lang.String"/>
 	<parameter name="logo" class="java.io.InputStream"/>
 	<parameter name="penyakit" class="java.lang.String"/>
+	<parameter name="jk" class="java.lang.String"/>
 	<parameter name="finger" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[select suratsakitpihak2.no_surat,DATE_FORMAT(suratsakitpihak2.tanggalawal,'%d-%m-%Y')as tanggalawal,DATE_FORMAT(suratsakitpihak2.tanggalakhir,'%d-%m-%Y')as 
-tanggalakhir,suratsakitpihak2.lamasakit,suratsakitpihak2.nama2,
- DATE_FORMAT(suratsakitpihak2.tgl_lahir,'%d-%m-%Y')as tgl_lahirpj,(suratsakitpihak2.umur)as umurpj,(suratsakitpihak2.jk)as jkpj,
- (suratsakitpihak2.alamat)as alamatpj,suratsakitpihak2.hubungan,(suratsakitpihak2.pekerjaan)as pekerjaanpj,suratsakitpihak2.instansi,perusahaan_pasien.nama_perusahaan,
- dokter.nm_dokter,pasien.tgl_lahir,
-DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y')as tgl_registrasi,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,
-pasien.pekerjaan,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat
-from suratsakitpihak2 inner join perusahaan_pasien inner join reg_periksa inner join pasien inner join dokter inner join kelurahan inner join kecamatan inner join kabupaten
-on pasien.perusahaan_pasien=perusahaan_pasien.kode_perusahaan and reg_periksa.no_rkm_medis=pasien.no_rkm_medis and 
-reg_periksa.kd_dokter=dokter.kd_dokter and pasien.kd_kel=kelurahan.kd_kel 
-and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab]]>
+		<![CDATA[]]>
 	</queryString>
 	<field name="no_surat" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="no_surat"/>
@@ -64,7 +55,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 		<property name="com.jaspersoft.studio.field.tree.path" value="suratsakitpihak2"/>
 	</field>
 	<field name="jkpj" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="jk"/>
+		<property name="com.jaspersoft.studio.field.name" value="jkpj"/>
 		<property name="com.jaspersoft.studio.field.label" value="jkpj"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="suratsakitpihak2"/>
 	</field>
@@ -143,33 +134,9 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="530" splitType="Stretch">
-			<textField>
-				<reportElement x="74" y="23" width="476" height="14" uuid="4f4b0512-d5d9-425c-81aa-e3f2be8f7ce8"/>
-				<textElement textAlignment="Left">
-					<font fontName="Tahoma" size="8"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{alamatrs}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="72" y="4" width="478" height="17" uuid="ab67cac9-bb53-4524-8731-e604b8f62411"/>
-				<textElement textAlignment="Left">
-					<font fontName="Tahoma" size="14" isBold="true"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{namars}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="72" y="53" width="480" height="17" uuid="e50338a0-4f98-4456-aea0-a1472af7a2cf"/>
-				<textElement textAlignment="Left">
-					<font fontName="Tahoma" size="10"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{kontakrs}]]></textFieldExpression>
-			</textField>
+		<band height="464" splitType="Stretch">
 			<staticText>
-				<reportElement x="110" y="233" width="7" height="14" uuid="a02177e7-5f0f-46d0-96b5-309adb399670">
+				<reportElement x="93" y="241" width="7" height="14" uuid="a02177e7-5f0f-46d0-96b5-309adb399670">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -179,7 +146,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="32" y="218" width="79" height="14" uuid="9d9b41dc-7946-48d7-a3e9-b06c778ec3ec">
+				<reportElement x="14" y="226" width="79" height="14" uuid="9d9b41dc-7946-48d7-a3e9-b06c778ec3ec">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -189,7 +156,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[Nama Pasien]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="116" width="554" height="14" uuid="8ae8ffd7-52f7-402e-a235-b90d5e457176">
+				<reportElement x="0" y="124" width="554" height="14" uuid="8ae8ffd7-52f7-402e-a235-b90d5e457176">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Justified">
@@ -199,7 +166,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[Yang bertanda tangan dibawah ini menerangkan bahwa:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="110" y="248" width="7" height="14" uuid="2af15e86-9e69-4fb6-ab1a-6de320c0a3b3">
+				<reportElement x="93" y="256" width="7" height="14" uuid="2af15e86-9e69-4fb6-ab1a-6de320c0a3b3">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -209,7 +176,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="110" y="218" width="7" height="14" uuid="bde61269-cb09-49e5-898e-d6907bb79e0b">
+				<reportElement x="93" y="226" width="7" height="14" uuid="bde61269-cb09-49e5-898e-d6907bb79e0b">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -219,7 +186,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="32" y="248" width="79" height="14" uuid="3939f3b5-d7e0-4db4-8b10-41f1ca7050ad">
+				<reportElement x="14" y="256" width="79" height="14" uuid="3939f3b5-d7e0-4db4-8b10-41f1ca7050ad">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -229,7 +196,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[Alamat]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="122" y="218" width="186" height="14" uuid="5af2717e-7ccb-42de-bdb8-9cac568d2214">
+				<reportElement x="100" y="226" width="427" height="14" uuid="5af2717e-7ccb-42de-bdb8-9cac568d2214">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -239,7 +206,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<textFieldExpression><![CDATA[$F{nm_pasien}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="32" y="233" width="79" height="14" uuid="f19613f8-9966-420e-943e-23b303fa63e9">
+				<reportElement x="14" y="241" width="79" height="14" uuid="f19613f8-9966-420e-943e-23b303fa63e9">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -249,17 +216,17 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[Jenis Kelamin ]]></text>
 			</staticText>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement x="122" y="233" width="186" height="14" uuid="211b5cbd-075a-440c-b4f6-310568f4b727">
+				<reportElement x="100" y="241" width="426" height="14" uuid="211b5cbd-075a-440c-b4f6-310568f4b727">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
 					<font fontName="Tahoma" size="10"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{jk}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{jk}.equals("L") ? "Laki-Laki" : "Perempuan"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="122" y="248" width="432" height="14" uuid="dc4d4891-b28e-46d4-8b7e-a392584ee479">
+				<reportElement x="100" y="256" width="432" height="14" uuid="dc4d4891-b28e-46d4-8b7e-a392584ee479">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -268,26 +235,14 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				</textElement>
 				<textFieldExpression><![CDATA[$F{alamat}]]></textFieldExpression>
 			</textField>
-			<image scaleImage="FillFrame" onErrorType="Blank">
-				<reportElement x="0" y="0" width="70" height="70" uuid="142c268b-d926-4b16-8e4c-96100c96f48b"/>
-				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
-			</image>
 			<line direction="BottomUp">
-				<reportElement x="0" y="73" width="552" height="1" uuid="0c2ad32c-da6e-473a-b249-d13e51c24fa7"/>
+				<reportElement x="0" y="80" width="552" height="1" uuid="0c2ad32c-da6e-473a-b249-d13e51c24fa7"/>
 				<graphicElement>
 					<pen lineWidth="1.25"/>
 				</graphicElement>
 			</line>
-			<textField>
-				<reportElement x="74" y="39" width="480" height="12" uuid="74394004-1023-4b3d-905f-83a3eb1ec641"/>
-				<textElement textAlignment="Left">
-					<font fontName="Tahoma" size="8"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{kotars}+", "+$P{propinsirs}]]></textFieldExpression>
-			</textField>
 			<staticText>
-				<reportElement x="-1" y="77" width="555" height="17" uuid="4c0fbab1-bfa9-46b0-ae37-d1ff151f3d8d"/>
+				<reportElement x="-1" y="85" width="555" height="17" uuid="4c0fbab1-bfa9-46b0-ae37-d1ff151f3d8d"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" size="12" isBold="true" isUnderline="true"/>
 					<paragraph lineSpacing="Single"/>
@@ -295,7 +250,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[SURAT KETERANGAN SAKIT]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="108" y="149" width="7" height="14" uuid="ed006d15-7e34-49a1-a104-c0b226cfd61f">
+				<reportElement x="93" y="158" width="7" height="14" uuid="ed006d15-7e34-49a1-a104-c0b226cfd61f">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement>
@@ -305,7 +260,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="31" y="149" width="70" height="14" uuid="527d4cdb-8348-4761-bac0-925a8e365056">
+				<reportElement x="16" y="158" width="77" height="14" uuid="527d4cdb-8348-4761-bac0-925a8e365056">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement>
@@ -315,7 +270,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[Pekerjaan]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="31" y="134" width="72" height="14" uuid="780fc935-c78b-4356-8bc7-cf2d6f322d78">
+				<reportElement x="16" y="143" width="77" height="14" uuid="780fc935-c78b-4356-8bc7-cf2d6f322d78">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement>
@@ -325,7 +280,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[Nama]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="108" y="181" width="7" height="14" uuid="2a00b7b5-7171-41fc-9089-8898cb93ffc8">
+				<reportElement x="93" y="189" width="7" height="14" uuid="2a00b7b5-7171-41fc-9089-8898cb93ffc8">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -335,7 +290,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="108" y="134" width="7" height="14" uuid="19e7e4e6-9d6c-4234-be09-aad311bd7ab1">
+				<reportElement x="93" y="143" width="7" height="14" uuid="19e7e4e6-9d6c-4234-be09-aad311bd7ab1">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement>
@@ -345,7 +300,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="31" y="181" width="72" height="14" uuid="9720d98f-ad3d-4d76-ba35-df32745bc7b7">
+				<reportElement x="17" y="189" width="76" height="14" uuid="9720d98f-ad3d-4d76-ba35-df32745bc7b7">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -354,68 +309,18 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				</textElement>
 				<text><![CDATA[Alamat]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="235" y="265" width="20" height="14" uuid="3fe1f8b1-a8fe-4e4c-b794-b796a5ff5ee3">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="79" y="273" width="475" height="14" uuid="3fe1f8b1-a8fe-4e4c-b794-b796a5ff5ee3">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
 					<font fontName="Tahoma" size="10"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{lamasakit}]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd MMMMM yyyy">
-				<reportElement x="443" y="265" width="74" height="14" uuid="89df2541-0690-416e-9dba-9ff4b9336aa8">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center">
-					<font fontName="Tahoma" size="10"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{tanggalawal}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Mendampingi pasien selama "+$F{lamasakit} + " hari, karena sakit terhitung dari tanggal " + $F{tanggalawal} + " s/d " +  $F{tanggalakhir}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="83" y="280" width="74" height="14" uuid="2fdf9b15-ad4e-45b6-80f6-fb966bcb2fdf">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Left">
-					<font fontName="Tahoma" size="10"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<text><![CDATA[sampai dengan]]></text>
-			</staticText>
-			<textField pattern="dd MMMMM yyyy">
-				<reportElement x="160" y="280" width="104" height="14" uuid="7b2922f8-fa95-4627-b470-f2c013e2c862">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Tahoma" size="10"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{tanggalakhir}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="92" y="265" width="134" height="14" uuid="3d38e927-b948-4bbe-81f4-fb6c7b710b3f">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Justified">
-					<font fontName="Tahoma" size="10"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<text><![CDATA[Mendampingi pasien selama]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="263" y="265" width="27" height="14" uuid="69348dbc-93df-4550-b688-c1c29b19c588">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Tahoma" size="10"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<text><![CDATA[hari]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="1" y="311" width="379" height="14" uuid="9c12cf67-af7a-45bc-b414-f493db08ccc5">
+				<reportElement x="1" y="308" width="379" height="14" uuid="9c12cf67-af7a-45bc-b414-f493db08ccc5">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -425,17 +330,17 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[Demikian agar yang berkepentingan harap maklum.]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="294" width="480" height="14" uuid="fe81356d-937e-439b-bac4-bfc926be0238">
+				<reportElement x="79" y="291" width="475" height="14" uuid="fe81356d-937e-439b-bac4-bfc926be0238">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
 					<font fontName="Tahoma" size="10"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{penyakit}.equals( "" ) ? "" : "Diagnosa	: " + $P{penyakit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{penyakit}.equals( "" ) ? "-" : $P{penyakit}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="265" width="70" height="14" uuid="b8f1c8b1-300b-4794-bdc2-45f8f8109bb0">
+				<reportElement x="0" y="273" width="70" height="14" uuid="b8f1c8b1-300b-4794-bdc2-45f8f8109bb0">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -445,7 +350,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[Keterangan]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="80" y="265" width="9" height="14" uuid="ba47d674-ba3a-44ca-a7c5-3d61aeff03d9">
+				<reportElement x="70" y="273" width="9" height="14" uuid="ba47d674-ba3a-44ca-a7c5-3d61aeff03d9">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -454,18 +359,8 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="287" y="265" width="153" height="14" uuid="954d2c6d-d5fd-4dfd-93d3-d76f3efad974">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Justified">
-					<font fontName="Tahoma" size="10"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<text><![CDATA[karena sakit terhitung dari tanggal]]></text>
-			</staticText>
 			<textField>
-				<reportElement x="380" y="465" width="172" height="17" uuid="7ef02f45-fde9-4fa1-a47a-0e169cd7f314"/>
+				<reportElement x="380" y="438" width="172" height="17" uuid="7ef02f45-fde9-4fa1-a47a-0e169cd7f314"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph lineSpacing="Single"/>
@@ -473,7 +368,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<textFieldExpression><![CDATA[$F{dpjp}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="380" y="376" width="172" height="20" uuid="74e2bec5-d348-492e-8e42-e5b4d00bd8c2">
+				<reportElement x="380" y="349" width="172" height="20" uuid="74e2bec5-d348-492e-8e42-e5b4d00bd8c2">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -483,7 +378,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[Pemeriksa]]></text>
 			</staticText>
 			<textField pattern="dd MMMMM yyyy">
-				<reportElement x="380" y="360" width="173" height="14" uuid="2d735759-7e1f-4514-8d37-acade6a1a810">
+				<reportElement x="380" y="333" width="173" height="14" uuid="2d735759-7e1f-4514-8d37-acade6a1a810">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -493,7 +388,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<textFieldExpression><![CDATA[$P{kotars}+", "+$F{tanggalakhir}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="122" y="134" width="185" height="14" uuid="2362ccf8-6e5f-478a-aba1-aa4796078b46">
+				<reportElement x="100" y="143" width="430" height="14" uuid="2362ccf8-6e5f-478a-aba1-aa4796078b46">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement>
@@ -502,7 +397,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<textFieldExpression><![CDATA[$F{nama2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="122" y="149" width="150" height="14" uuid="8e1ded16-fccf-4500-b4e9-9331c308c3b7">
+				<reportElement x="100" y="158" width="430" height="14" uuid="8e1ded16-fccf-4500-b4e9-9331c308c3b7">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement>
@@ -511,7 +406,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<textFieldExpression><![CDATA[$F{pekerjaanpj}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="122" y="181" width="431" height="14" uuid="3c58c4da-7e14-4d07-bb1e-a1aba6bfdecc">
+				<reportElement x="100" y="189" width="431" height="14" uuid="3c58c4da-7e14-4d07-bb1e-a1aba6bfdecc">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -520,7 +415,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<textFieldExpression><![CDATA[$F{alamatpj}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="193" y="92" width="167" height="14" uuid="18879ac8-270b-4c07-ae44-2b34d4233f4e">
+				<reportElement x="193" y="100" width="167" height="14" uuid="18879ac8-270b-4c07-ae44-2b34d4233f4e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -529,7 +424,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<textFieldExpression><![CDATA["No. "+$F{no_surat}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="31" y="164" width="70" height="14" uuid="e769ee61-6f1d-4f4a-89a6-d46c9c1cf90c">
+				<reportElement x="16" y="173" width="77" height="14" uuid="e769ee61-6f1d-4f4a-89a6-d46c9c1cf90c">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -539,7 +434,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[Instansi]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="108" y="164" width="7" height="14" uuid="69238629-225e-4508-a34c-0ad403054267">
+				<reportElement x="93" y="173" width="7" height="14" uuid="69238629-225e-4508-a34c-0ad403054267">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -549,7 +444,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="122" y="164" width="240" height="14" uuid="0d1e8e6b-fab1-43b1-919a-d5f597f0567a">
+				<reportElement x="100" y="173" width="430" height="14" uuid="0d1e8e6b-fab1-43b1-919a-d5f597f0567a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -558,7 +453,7 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<textFieldExpression><![CDATA[$F{instansi}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="2" y="200" width="381" height="14" uuid="e089be81-4457-4857-ab86-ac99ed50e814">
+				<reportElement x="2" y="208" width="381" height="14" uuid="e089be81-4457-4857-ab86-ac99ed50e814">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -567,13 +462,87 @@ and suratsakitpihak2.no_rawat=reg_periksa.no_rawat and pasien.kd_kec=kecamatan.k
 				<textFieldExpression><![CDATA["Nama tersebut adalah " +$F{hubungan}+" dari pasien :"]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement x="380" y="392" width="172" height="71" isRemoveLineWhenBlank="true" uuid="3f49d2b3-d8e1-4e8d-82b5-42e09a0411b3">
+				<reportElement x="380" y="365" width="172" height="71" isRemoveLineWhenBlank="true" uuid="3f49d2b3-d8e1-4e8d-82b5-42e09a0411b3">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
 					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
 				</jr:QRCode>
 			</componentElement>
+			<staticText>
+				<reportElement x="0" y="291" width="70" height="14" uuid="6c141afa-39b3-46e7-8249-a8358771f1e1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Tahoma" size="10"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Diagnosa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="70" y="291" width="9" height="14" uuid="9088ecef-48c9-41f2-b9c9-fab5c9643482">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Tahoma" size="10"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="74" y="21" width="410" height="16" uuid="9dcab68f-3a15-4f3a-a6bb-2a068ee4ea28"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="10"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{alamatrs}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="72" y="4" width="412" height="17" uuid="03dbf569-e17b-4ebc-a9b6-cc8dc22a3d4a"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="14" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{namars}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="72" y="48" width="412" height="15" uuid="5feb2ac5-1371-428b-b8b8-fa1f978a20ff">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="10"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{kontakrs}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement x="10" y="-13" width="120" height="109" uuid="7ba1d480-3994-40ed-a0e0-d765aeb1089a"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="74" y="34" width="410" height="15" uuid="f652f2e3-1f18-48d1-b7d5-22e550ae923f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="10"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{kotars}+", "+$P{propinsirs}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement x="450" y="4" width="90" height="74" uuid="0ff4d3db-0cd3-4bb6-a79e-8d52d356a6bd"/>
+				<imageExpression><![CDATA["Z:/IT RSPW/Adit/KhanzaHMSWindows BARU/KhanzaHMSWindows/gambar/paripurna.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="72" y="63" width="412" height="15" uuid="f6884b5e-93bd-4041-86e4-5cad6f81fa58">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="10"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{emailrs}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<summary>
