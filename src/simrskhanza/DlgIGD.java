@@ -11412,11 +11412,14 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         try{  
             ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
                    "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli,"+
-                   "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,reg_periksa.stts,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(fr.nokartu),\"Belum\",\"Sudah\") AS fingerprint "+
+                   "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,reg_periksa.stts,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(fp.nokartu),\"Belum\",\"Sudah\") AS fingerprint "+
                    "from reg_periksa inner join dokter inner join pasien inner join poliklinik inner join penjab "+
                    "on reg_periksa.kd_dokter=dokter.kd_dokter and reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                   "and reg_periksa.kd_pj=penjab.kd_pj and reg_periksa.kd_poli=poliklinik.kd_poli LEFT JOIN side_db.fingerprint_bpjs fr ON fr.nokartu = pasien.no_peserta AND fr.tanggal = reg_periksa.tgl_registrasi  where  "+
-                   "poliklinik.kd_poli='IGDK' and reg_periksa.tgl_registrasi between ? and ? "+
+                   "and reg_periksa.kd_pj=penjab.kd_pj and reg_periksa.kd_poli=poliklinik.kd_poli "+ 
+                   "LEFT JOIN ( " +
+                   "    SELECT nokartu, MIN(tanggal) AS min_tanggal FROM side_db.fingerprint_bpjs GROUP BY nokartu " +
+                   ") fp ON fp.nokartu = pasien.no_peserta AND fp.min_tanggal BETWEEN reg_periksa.tgl_registrasi AND DATE_ADD(reg_periksa.tgl_registrasi, INTERVAL CASE WHEN reg_periksa.status_lanjut = 'Ralan' THEN 1 ELSE 2 END DAY)"+
+                   "where poliklinik.kd_poli='IGDK' and reg_periksa.tgl_registrasi between ? and ? "+
                    (TCari.getText().trim().equals("")?"":"and (reg_periksa.no_reg like ? or reg_periksa.no_rawat like ? or reg_periksa.tgl_registrasi like ? or "+
                    "reg_periksa.kd_dokter like ? or dokter.nm_dokter like ? or reg_periksa.no_rkm_medis like ? or "+
                    "reg_periksa.stts_daftar like ? or pasien.nm_pasien like ? or poliklinik.nm_poli like ? or "+
