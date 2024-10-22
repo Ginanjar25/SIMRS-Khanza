@@ -2178,7 +2178,8 @@ public final class DlgIGD extends javax.swing.JDialog {
         MnKamarInap.setPreferredSize(new java.awt.Dimension(250, 26));
         MnKamarInap.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MnKamarInapActionPerformed(evt);
+//                MnKamarInapActionPerformed(evt);
+                MnPermintaanRanapActionPerformed(evt);
             }
         });
         jPopupMenu1.add(MnKamarInap);

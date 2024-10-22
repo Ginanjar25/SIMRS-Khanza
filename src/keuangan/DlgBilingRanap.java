@@ -897,6 +897,8 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         jLabel4 = new widget.Label();
         DTPTgl = new widget.Tanggal();
         HKLabel = new widget.Label();
+        TNoSEP = new widget.TextBox();
+        NoSEPLabel = new widget.Label();
         panelGlass2 = new widget.panelisi();
         BtnSimpan = new widget.Button();
         BtnNota = new widget.Button();
@@ -2098,7 +2100,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         panelGlass1.add(jLabel4);
         jLabel4.setBounds(693, 11, 65, 23);
 
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-09-2024 11:25:15" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "22-10-2024 10:53:10" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -2118,6 +2120,30 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         HKLabel.setPreferredSize(new java.awt.Dimension(70, 23));
         panelGlass1.add(HKLabel);
         HKLabel.setBounds(5, 40, 70, 23);
+
+        TNoSEP.setEditable(false);
+        TNoSEP.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        TNoSEP.setName("TNoSEP"); // NOI18N
+        TNoSEP.setPreferredSize(new java.awt.Dimension(150, 23));
+        TNoSEP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TNoSEPActionPerformed(evt);
+            }
+        });
+        TNoSEP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TNoSEPKeyPressed(evt);
+            }
+        });
+        panelGlass1.add(TNoSEP);
+        TNoSEP.setBounds(530, 40, 190, 23);
+
+        NoSEPLabel.setText("No. SEP :");
+        NoSEPLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        NoSEPLabel.setName("NoSEPLabel"); // NOI18N
+        NoSEPLabel.setPreferredSize(new java.awt.Dimension(70, 23));
+        panelGlass1.add(NoSEPLabel);
+        NoSEPLabel.setBounds(465, 40, 60, 23);
 
         internalFrame1.add(panelGlass1, java.awt.BorderLayout.PAGE_START);
 
@@ -4636,6 +4662,14 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         // TODO add your handling code here:
     }//GEN-LAST:event_TNaikKelasKeyPressed
 
+    private void TNoSEPKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNoSEPKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TNoSEPKeyPressed
+
+    private void TNoSEPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TNoSEPActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TNoSEPActionPerformed
+
 
 
     /**
@@ -4721,6 +4755,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private javax.swing.JMenuItem MnTambahan1;
     private javax.swing.JMenuItem MnUbahLamaInap;
     private widget.Label NKLabel;
+    private widget.Label NoSEPLabel;
     private javax.swing.JPopupMenu PopupBayar;
     private javax.swing.JPopupMenu PopupPiutang;
     private widget.ScrollPane Scroll;
@@ -4731,6 +4766,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     public widget.TextBox TNaikKelas;
     private widget.TextBox TNoRM;
     public widget.TextBox TNoRw;
+    public widget.TextBox TNoSEP;
     private widget.TextBox TPasien;
     private javax.swing.JTabbedPane TabRawat;
     private widget.TextBox TagihanPPn;
@@ -7530,7 +7566,8 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void setHakNaikKelas() {
         String noRawat = TNoRw.getText();
         String naikKelas = Sequel.cariIsi("select klsnaik from bridging_sep where no_rawat = ?", noRawat);
-        String hakKelas =   Sequel.cariIsi("select klsrawat from bridging_sep where no_rawat = ?", noRawat);;
+        String hakKelas =   Sequel.cariIsi("select klsrawat from bridging_sep where no_rawat = ?", noRawat);
+        Sequel.cariIsi("select no_sep from bridging_sep where no_rawat = ?", TNoSEP, noRawat);
 
         switch (naikKelas) {
             case "8":

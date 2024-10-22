@@ -8699,20 +8699,32 @@ private void MnKamarInapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                 if(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),19).toString().equals("Batal")){
                     JOptionPane.showMessageDialog(null,"Pasien berstatus batal periksa...!");
                 }else{
-                    if(Sequel.cariRegistrasi(TNoRw.getText())>0){
-                        JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi..!!");
-                    }else{
+                    if(Sequel.cariInteger("select count(kamar_inap.no_rawat) from kamar_inap where kamar_inap.no_rawat=?",TNoRw.getText())>0){
+                        JOptionPane.showMessageDialog(null,"Maaf, Pasien sudah masuk Kamar Inap. Gunakan billing Ranap..!!!");
+                    }else {
                         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                        akses.setstatus(true);
-                        DlgKamarInap dlgki=new DlgKamarInap(null,false);
-                        dlgki.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-                        dlgki.setLocationRelativeTo(internalFrame1);
-                        dlgki.emptTeks();
-                        dlgki.isCek();
-                        dlgki.setNoRm(TNoRw.getText(),TNoRM.getText(),TPasien.getText());   
-                        dlgki.setVisible(true);
+                        DlgPermintaanRanap form=new DlgPermintaanRanap(null,false);
+                        form.isCek();
+                        form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                        form.setLocationRelativeTo(internalFrame1);
+                        form.setNoRm(TNoRw.getText(),TNoRM.getText(),TPasien.getText(),TDokter.getText(),TPngJwb.getText(),TPoli.getText(),Sequel.cariIsi("select pasien.no_tlp from pasien where pasien.no_rkm_medis=?",TNoRM.getText()));
+                        form.setVisible(true);
                         this.setCursor(Cursor.getDefaultCursor());
                     }
+//                    if(Sequel.cariRegistrasi(TNoRw.getText())>0){
+//                        JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi..!!");
+//                    }else{
+//                        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//                        akses.setstatus(true);
+//                        DlgKamarInap dlgki=new DlgKamarInap(null,false);
+//                        dlgki.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+//                        dlgki.setLocationRelativeTo(internalFrame1);
+//                        dlgki.emptTeks();
+//                        dlgki.isCek();
+//                        dlgki.setNoRm(TNoRw.getText(),TNoRM.getText(),TPasien.getText());   
+//                        dlgki.setVisible(true);
+//                        this.setCursor(Cursor.getDefaultCursor());
+//                    }
                 }
             }
         }        

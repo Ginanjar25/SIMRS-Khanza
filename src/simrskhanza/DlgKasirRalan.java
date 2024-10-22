@@ -8237,20 +8237,36 @@ private void MnKamarInapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                 if(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),10).toString().equals("Batal")){
                     JOptionPane.showMessageDialog(null,"Pasien berstatus batal periksa...!");
                 }else{
-                    if(Sequel.cariRegistrasi(TNoRw.getText())>0){
-                        JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi..!!");
-                    }else{ 
-                        akses.setstatus(true);
-                        kamarinap.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-                        kamarinap.setLocationRelativeTo(internalFrame1);
-                        kamarinap.emptTeks();
-                        if(akses.getbilling_ralan()==true){
-                            otomatisRalan();
-                        }
-                        kamarinap.isCek();
-                        kamarinap.setNoRm(TNoRw.getText(),TNoRMCari.getText(),TPasienCari.getText()); 
-                        kamarinap.setVisible(true);                    
+                    if(Sequel.cariInteger("select count(kamar_inap.no_rawat) from kamar_inap where kamar_inap.no_rawat=?",TNoRw.getText())>0){
+                        JOptionPane.showMessageDialog(null,"Maaf, Pasien sudah masuk Kamar Inap. Gunakan billing Ranap..!!!");
+                    }else {
+                        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                        DlgPermintaanRanap form=new DlgPermintaanRanap(null,false);
+                        form.isCek();
+                        form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                        form.setLocationRelativeTo(internalFrame1);
+                        form.setNoRm(TNoRw.getText(),TNoRMCari.getText(),TPasienCari.getText(),
+                                tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(), 1).toString(),
+                                tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(), 9).toString(),
+                                tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(), 4).toString(),
+                                Sequel.cariIsi("select pasien.no_tlp from pasien where pasien.no_rkm_medis=?",TNoRMCari.getText()));
+                        form.setVisible(true);
+                        this.setCursor(Cursor.getDefaultCursor());
                     }
+//                    if(Sequel.cariRegistrasi(TNoRw.getText())>0){
+//                        JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi..!!");
+//                    }else{ 
+//                        akses.setstatus(true);
+//                        kamarinap.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+//                        kamarinap.setLocationRelativeTo(internalFrame1);
+//                        kamarinap.emptTeks();
+//                        if(akses.getbilling_ralan()==true){
+//                            otomatisRalan();
+//                        }
+//                        kamarinap.isCek();
+//                        kamarinap.setNoRm(TNoRw.getText(),TNoRMCari.getText(),TPasienCari.getText()); 
+//                        kamarinap.setVisible(true);                    
+//                    }
                 }
             }            
         }
