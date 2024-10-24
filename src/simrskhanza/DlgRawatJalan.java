@@ -10077,6 +10077,8 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         isForm4();
         TabRawatMouseClicked(null);
         ChkJln.setSelected(true);
+        SetPj(Sequel.cariIsi("select kd_pj from reg_periksa where no_rawat = ?", norwt));
+        SetPoli(Sequel.cariIsi("select kd_poli from reg_periksa where no_rawat = ?", norwt));
     }
     
     private void isForm(){
@@ -10918,6 +10920,8 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         "LEFT JOIN bridging_sep on bridging_sep.no_rawat = reg_periksa.no_rawat " +
         "WHERE reg_periksa.no_rawat = ?", norwt) + " - " + Sequel.cariIsi("SELECT bpjs_prb.prb FROM bpjs_prb INNER JOIN bridging_sep ON bridging_sep.no_sep = bpjs_prb.no_sep WHERE bridging_sep.no_rawat = ?", norwt));
         TabRawatMouseClicked(null);
+        SetPj(Sequel.cariIsi("select kd_pj from reg_periksa where no_rawat = ?", norwt));
+        SetPoli(Sequel.cariIsi("select kd_poli from reg_periksa where no_rawat = ?", norwt));
     }
     
     public void SetPoli(String KodePoli){
