@@ -369,7 +369,7 @@ public final class DlgReg extends javax.swing.JDialog {
             }else if(i==11){
                 column.setPreferredWidth(140);
             }else if(i==12){
-                column.setPreferredWidth(80);
+                column.setPreferredWidth(100);
             }else if(i==13){
                 column.setPreferredWidth(200);
             }else if(i==14){
@@ -377,7 +377,7 @@ public final class DlgReg extends javax.swing.JDialog {
             }else if(i==15){
                 column.setPreferredWidth(90);
             }else if(i==16){
-                column.setPreferredWidth(80);
+                column.setPreferredWidth(100);
             }else if(i==17){
                 column.setPreferredWidth(50);
             }else if(i==18){
