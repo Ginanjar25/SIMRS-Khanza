@@ -15224,6 +15224,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 }) == true) {
                     Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()});
                     Sequel.meghapus("referensi_mobilejkn_bpjs_batal", "no_rawat_batal", TNoRw.getText());
+                    simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
                     tampil();
                 }
             }
@@ -15305,6 +15306,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 if (Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()}) == true) {
                     Valid.editTable(tabMode, "reg_periksa", "no_rawat", TNoRw, "stts='Belum',biaya_reg='"+TBiaya.getText()+"'");
                     Sequel.mengedittf("side_db.reg_periksa_website", "no_rawat=?", "status='Checkin'", 1, new String[]{TNoRw.getText()});
+                    simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
                     JOptionPane.showMessageDialog(rootPane, "Berhasil Chekin");
                     tampil();
                 }
@@ -16496,12 +16498,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     }
                     break;
                 case "dokter + poli":  
-                    if(Sequel.cariInteger("select ifnull(MAX(CONVERT(booking_registrasi.no_reg,signed)),0) from booking_registrasi where booking_registrasi.kd_dokter='"+KdDokter.getText()+"' and booking_registrasi.kd_poli='"+kdpoli.getText()+"' and booking_registrasi.tanggal_periksa='"+Valid.SetTgl(DTPReg.getSelectedItem()+"")+"'")>=
-                            Sequel.cariInteger("select ifnull(MAX(CONVERT(reg_periksa.no_reg,signed)),0) from reg_periksa where reg_periksa.kd_dokter='"+KdDokter.getText()+"' and reg_periksa.kd_poli='"+kdpoli.getText()+"' and reg_periksa.tgl_registrasi='"+Valid.SetTgl(DTPReg.getSelectedItem()+"")+"'")){
-                        Valid.autoNomer3("select ifnull(MAX(CONVERT(booking_registrasi.no_reg,signed)),0) from booking_registrasi where booking_registrasi.kd_dokter='"+KdDokter.getText()+"' and booking_registrasi.kd_poli='"+kdpoli.getText()+"' and booking_registrasi.tanggal_periksa='"+Valid.SetTgl(DTPReg.getSelectedItem()+"")+"'","",3,TNoReg);
-                    }else{
-                        Valid.autoNomer3("select ifnull(MAX(CONVERT(reg_periksa.no_reg,signed)),0) from reg_periksa where kd_dokter='"+KdDokter.getText()+"' and reg_periksa.kd_poli='"+kdpoli.getText()+"' and reg_periksa.tgl_registrasi='"+Valid.SetTgl(DTPReg.getSelectedItem()+"")+"'","",3,TNoReg);
-                    }                    
+                    setNoRegDokterAndPoli();
                     break;
                 default:
                     if(Sequel.cariInteger("select ifnull(MAX(CONVERT(booking_registrasi.no_reg,signed)),0) from booking_registrasi where booking_registrasi.kd_poli='"+kdpoli.getText()+"' and booking_registrasi.tanggal_periksa='"+Valid.SetTgl(DTPReg.getSelectedItem()+"")+"'")>=
@@ -16659,13 +16656,15 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 KdDokter.getText(),TNoRM.getText(),kdpoli.getText(),TPngJwb.getText(),TAlmt.getText(),THbngn.getText(),TBiaya.getText(),"Belum",
                 TStatus.getText(),"Ralan",kdpnj.getText(),umur,sttsumur,"Belum Bayar",status})==true){
             ceksukses=true;
+            simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
         }else{
             isNumber();
             if(Sequel.menyimpantf2("reg_periksa","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Rawat",19,
                     new String[]{TNoReg.getText(),TNoRw.getText(),Valid.SetTgl(DTPReg.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),
                     KdDokter.getText(),TNoRM.getText(),kdpoli.getText(),TPngJwb.getText(),TAlmt.getText(),THbngn.getText(),TBiaya.getText(),"Belum",
                     TStatus.getText(),"Ralan",kdpnj.getText(),umur,sttsumur,"Belum Bayar",status})==true){
-                ceksukses=true;            
+                ceksukses=true;
+                simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
             }else{
                 isNumber();
                 if(Sequel.menyimpantf2("reg_periksa","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Rawat",19,
@@ -16673,6 +16672,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                         KdDokter.getText(),TNoRM.getText(),kdpoli.getText(),TPngJwb.getText(),TAlmt.getText(),THbngn.getText(),TBiaya.getText(),"Belum",
                         TStatus.getText(),"Ralan",kdpnj.getText(),umur,sttsumur,"Belum Bayar",status})==true){
                     ceksukses=true;
+                    simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
                 }else{
                     isNumber();
                     if(Sequel.menyimpantf2("reg_periksa","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Rawat",19,
@@ -16680,13 +16680,15 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                             KdDokter.getText(),TNoRM.getText(),kdpoli.getText(),TPngJwb.getText(),TAlmt.getText(),THbngn.getText(),TBiaya.getText(),"Belum",
                             TStatus.getText(),"Ralan",kdpnj.getText(),umur,sttsumur,"Belum Bayar",status})==true){
                         ceksukses=true;
+                        simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
                     }else{
                         isNumber();
                         if(Sequel.menyimpantf("reg_periksa","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Rawat",19,
                                 new String[]{TNoReg.getText(),TNoRw.getText(),Valid.SetTgl(DTPReg.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),
                                 KdDokter.getText(),TNoRM.getText(),kdpoli.getText(),TPngJwb.getText(),TAlmt.getText(),THbngn.getText(),TBiaya.getText(),"Belum",
                                 TStatus.getText(),"Ralan",kdpnj.getText(),umur,sttsumur,"Belum Bayar",status})==true){
-                            ceksukses=true;            
+                            ceksukses=true;
+                            simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
                         }else{
                             TNoRM.requestFocus();
                             isNumber();
@@ -17241,5 +17243,41 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             tabMode.setValueAt(kdpnj.getText(),tbPetugas.getSelectedRow(),22);
             emptTeks();
         }
+    }
+    
+    private void simpanAntrianPoli(String no_rawat, String kd_poli, String kd_dokter, String status_antri, String created_at, String updated_at, String no_antrian){
+        String poli_bpjs = "";
+        if(kd_poli.equals("U0026")){
+            poli_bpjs = "LAK";
+        }else{
+            poli_bpjs = Sequel.cariIsi("select mpb.kd_poli_bpjs from maping_poli_bpjs mpb where mpb.kd_poli_rs = ?", kd_poli);
+        }
+        
+        Sequel.menyimpan("antripoli", "'" + kd_dokter + "', '" + kd_poli + "', '" + status_antri + "', '" + no_rawat + "', " + created_at + ", NULL, '" + no_antrian + "', '" + poli_bpjs +"'");
+    }
+    
+    private void setNoRegDokterAndPoli(){
+        
+        String kdDokter = KdDokter.getText();
+        String kdPoli = kdpoli.getText();
+        String tanggalPeriksa = Valid.SetTgl(DTPReg.getSelectedItem() + "");
+
+        int booking_reg = Sequel.cariInteger("select ifnull(MAX(CONVERT(booking_registrasi.no_reg,signed)),0) from booking_registrasi where booking_registrasi.kd_poli='" + kdPoli + "' and booking_registrasi.tanggal_periksa='" + tanggalPeriksa + "'");
+        int reg_periksa = Sequel.cariInteger("select ifnull(MAX(CONVERT(reg_periksa.no_reg,signed)),0) from reg_periksa where reg_periksa.kd_dokter='" + kdDokter + "' and reg_periksa.kd_poli='" + kdPoli + "' and reg_periksa.tgl_registrasi='" + tanggalPeriksa + "'");
+        int loket = Sequel.cariInteger("select ifnull(MAX(CONVERT(antriloketcetak.nomor,signed)),0)  from antriloketcetak where antriloketcetak.kd_dokter ='" + kdDokter + "' and antriloketcetak.kd_poli='" + kdPoli + "' and antriloketcetak.asal = 'Baru'  and antriloketcetak.tanggal ='" + tanggalPeriksa + "' ");
+        int maxOverall = Math.max(booking_reg, Math.max(reg_periksa, loket));
+
+        if (maxOverall == booking_reg) {
+            System.out.println("dari booking");
+            Valid.autoNomer3("select ifnull(MAX(CONVERT(booking_registrasi.no_reg,signed)),0) from booking_registrasi where booking_registrasi.kd_dokter='" + kdDokter + "' and booking_registrasi.kd_poli='" + kdPoli + "' and booking_registrasi.tanggal_periksa='" + tanggalPeriksa + "'", "", 3, TNoReg);
+        } else if (maxOverall == reg_periksa) {
+            System.out.println("dari reg");
+            Valid.autoNomer3("select ifnull(MAX(CONVERT(reg_periksa.no_reg,signed)),0) from reg_periksa where kd_dokter='" + kdDokter + "' and reg_periksa.kd_poli='" + kdPoli + "' and reg_periksa.tgl_registrasi='" + tanggalPeriksa + "'", "", 3, TNoReg);
+        } else {
+            System.out.println("dari loket");
+            Valid.autoNomer3("select ifnull(MAX(CONVERT(antriloketcetak.nomor,signed)),0) from antriloketcetak where antriloketcetak.kd_dokter='" + kdDokter + "' and antriloketcetak.asal = 'Baru' and antriloketcetak.kd_poli='" + kdPoli + "' and antriloketcetak.tanggal='" + tanggalPeriksa + "'", "", 3, TNoReg);
+        }
+
+        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(reg_periksa.no_rawat,6),signed)),0) from reg_periksa where reg_periksa.tgl_registrasi='" + tanggalPeriksa + "' ", tanggalPeriksa.replaceAll("-", "/") + "/", 6, TNoRw);
     }
 }

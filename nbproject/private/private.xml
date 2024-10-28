@@ -20,11 +20,15 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/GINANJAR/Documents/master/Ginanjar/SIMRS-Khanza/src/simrskhanza/DlgPasien.java</file>
-            <file>file:/C:/Users/GINANJAR/Documents/master/Ginanjar/SIMRS-Khanza/src/simrskhanza/DlgKabupaten.java</file>
-            <file>file:/C:/Users/GINANJAR/Documents/master/Ginanjar/SIMRS-Khanza/src/bridging/YaskiReferensiPropinsi.java</file>
-            <file>file:/C:/Users/GINANJAR/Documents/master/Ginanjar/SIMRS-Khanza/src/simrskhanza/DlgKecamatan.java</file>
-            <file>file:/C:/Users/GINANJAR/Documents/master/Ginanjar/SIMRS-Khanza/src/fungsi/sekuel.java</file>
+            <file>file:/C:/Development/Personal%20Project/KHANZA%20RSPW/src/fungsi/akses.java</file>
+            <file>file:/C:/Development/Personal%20Project/KHANZA%20RSPW/src/rekammedis/RMPenilaianAwalMedisIGD.java</file>
+            <file>file:/C:/Development/Personal%20Project/KHANZA%20RSPW/src/simrskhanza/DlgKasirRalan.java</file>
+            <file>file:/C:/Development/Personal%20Project/KHANZA%20RSPW/src/simrskhanza/DlgRawatJalan.java</file>
+            <file>file:/C:/Development/Personal%20Project/KHANZA%20RSPW/src/simrskhanza/DlgIGD.java</file>
+            <file>file:/C:/Development/Personal%20Project/KHANZA%20RSPW/src/simrskhanza/DlgReg.java</file>
+            <file>file:/C:/Development/Personal%20Project/KHANZA%20RSPW/src/permintaan/DlgPermintaanRanap.java</file>
+            <file>file:/C:/Development/Personal%20Project/KHANZA%20RSPW/src/fungsi/sekuel.java</file>
+            <file>file:/C:/Development/Personal%20Project/KHANZA%20RSPW/src/bridging/BPJSSuratKontrol.java</file>
         </group>
     </open-files>
 </project-private>
