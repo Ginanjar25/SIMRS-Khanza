@@ -608,6 +608,7 @@ public class DlgReturJual extends javax.swing.JDialog {
         panelisi4.add(label27);
         label27.setBounds(592, 10, 80, 23);
 
+        Hargaretur.setEditable(false);
         Hargaretur.setName("Hargaretur"); // NOI18N
         Hargaretur.setPreferredSize(new java.awt.Dimension(80, 23));
         Hargaretur.addKeyListener(new java.awt.event.KeyAdapter() {
