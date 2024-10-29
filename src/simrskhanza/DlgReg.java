@@ -17228,12 +17228,12 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         JLabelSKDP = new javax.swing.JPanel();
         
         labelSKDP.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        labelSKDP.setText("Belum Terbit SKDP");
+        labelSKDP.setText("Sudah Terbit SKDP");
         labelSKDP.setName("labelSKDP"); // NOI18N
         FormInput.add(labelSKDP);
         labelSKDP.setBounds(1110, 90, 150, 14);
         
-        JLabelSKDP.setBackground(new java.awt.Color(255, 0, 0));
+        JLabelSKDP.setBackground(new java.awt.Color(0, 230, 230));
         JLabelSKDP.setName("JLabelSKDP"); // NOI18N
         FormInput.add(JLabelSKDP);
         JLabelSKDP.setBounds(1070, 90, 30, 20);

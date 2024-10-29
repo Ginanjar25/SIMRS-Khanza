@@ -58,8 +58,8 @@ public class WarnaTableKasirRalan1 extends DefaultTableCellRenderer {
                 String statusString = status.toString();
                 String skdpString = skdp.toString();
 
-                if (jenis_bayarString.contains("BPJS") && "Sudah".equals(statusString) && "Belum".equals(skdpString)) {
-                    component.setBackground(new Color(255, 0, 0));
+                if (jenis_bayarString.contains("BPJS") && "Sudah".equals(statusString) && "Sudah".equals(skdpString)) {
+                    component.setBackground(new Color(0, 230, 230));
                 }
             }
         }
