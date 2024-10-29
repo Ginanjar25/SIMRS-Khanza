@@ -48,6 +48,20 @@ public class WarnaTableKasirRalan1 extends DefaultTableCellRenderer {
                     component.setBackground(new Color(255, 204, 0)); // Set background color for "JKN"
                 }
             }
+            
+            Object jenis_bayar = table.getValueAt(row, 12); // Nilai di kolom ke-24
+            Object status = table.getValueAt(row, 19);
+            Object skdp = table.getValueAt(row, 28);
+
+            if (jenis_bayar != null) {
+                String jenis_bayarString = jenis_bayar.toString();
+                String statusString = status.toString();
+                String skdpString = skdp.toString();
+
+                if (jenis_bayarString.contains("BPJS") && "Sudah".equals(statusString) && "Belum".equals(skdpString)) {
+                    component.setBackground(new Color(255, 0, 0));
+                }
+            }
         }
         
         if (column == 4) {

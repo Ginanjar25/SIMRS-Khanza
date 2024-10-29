@@ -7089,7 +7089,7 @@ public final class DlgReg extends javax.swing.JDialog {
         label5.setName("label5"); // NOI18N
         FormInput.add(label5);
         label5.setBounds(1110, 60, 150, 14);
-
+        
         jPanel6.setBackground(new java.awt.Color(0, 204, 204));
         jPanel6.setName("jPanel6"); // NOI18N
         FormInput.add(jPanel6);
@@ -15869,6 +15869,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             MnPenilaianPasienImunitasRendah,MnCatatanKeseimbanganCairan,MnCatatanObservasiCHBP,MnCatatanObservasiInduksiPersalinan,MnPermintaanKonsultasiMedik;
     private javax.swing.JMenu MnHasilUSG,MnHasilEndoskopi;
     private widget.RadioButton R1;
+    private widget.Label labelSKDP;
+    private javax.swing.JPanel JLabelSKDP;
     
     private void tampil() {
         Valid.tabelKosong(tabMode);
@@ -17222,6 +17224,19 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         FormInput.add(jPanelFinger2);
         jPanelFinger2.setBounds(1420, 60, 30, 20);
         
+        labelSKDP = new widget.Label();
+        JLabelSKDP = new javax.swing.JPanel();
+        
+        labelSKDP.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        labelSKDP.setText("Belum Terbit SKDP");
+        labelSKDP.setName("labelSKDP"); // NOI18N
+        FormInput.add(labelSKDP);
+        labelSKDP.setBounds(1110, 90, 150, 14);
+        
+        JLabelSKDP.setBackground(new java.awt.Color(255, 0, 0));
+        JLabelSKDP.setName("JLabelSKDP"); // NOI18N
+        FormInput.add(JLabelSKDP);
+        JLabelSKDP.setBounds(1070, 90, 30, 20);
         
     }
     
