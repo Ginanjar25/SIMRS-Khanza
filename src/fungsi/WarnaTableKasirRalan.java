@@ -51,7 +51,7 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
         }
         
         // Kondisi khusus untuk kolom 23, logika ini menimpa pengaturan warna sebelumnya
-        if (column == 40) {
+        if (column == 32) {
             Object jenis_bayar = table.getValueAt(row, 24); // Nilai di kolom ke-24
             Object status = table.getValueAt(row, 31);
             Object skdp = table.getValueAt(row, 40);
@@ -67,6 +67,23 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
                 }
             }
         }
+        
+//        if (column == 40) {
+//            Object jenis_bayar = table.getValueAt(row, 24); // Nilai di kolom ke-24
+//            Object status = table.getValueAt(row, 31);
+//            Object skdp = table.getValueAt(row, 40);
+//
+//            if (jenis_bayar != null) {
+//                String jenis_bayarString = jenis_bayar.toString();
+//                String statusString = status.toString();
+//                String skdpString = skdp.toString();
+//
+//                if (jenis_bayarString.contains("BPJS") && "Sudah".equals(statusString) && "Belum".equals(skdpString)) {
+//                    component.setBackground(new Color(255, 255, 0)); // Warna lain untuk kondisi lainnya
+//                    component.setForeground(Color.BLACK);
+//                }
+//            }
+//        }
 
         return component;
     }

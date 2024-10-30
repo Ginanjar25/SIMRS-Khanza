@@ -6867,7 +6867,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         TPasienCari.setName("TPasienCari"); // NOI18N
         TPasienCari.setPreferredSize(new java.awt.Dimension(250, 23));
         panelGlass9.add(TPasienCari);
-
+        
         internalFrame1.add(panelGlass9, java.awt.BorderLayout.PAGE_START);
 
         getContentPane().add(internalFrame1, java.awt.BorderLayout.CENTER);
@@ -14980,6 +14980,8 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private javax.swing.JMenu MnHasilUSG,MnHasilEndoskopi;
     private javax.swing.JMenuItem MnLaporanOperasi;
     private javax.swing.JMenuItem ppResumePerawat;
+    private widget.Label labelSKDP;
+    private javax.swing.JPanel JLabelSKDP;
     
     private void tampilkasir() {     
         Valid.tabelKosong(tabModekasir);
