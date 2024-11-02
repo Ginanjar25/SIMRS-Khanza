@@ -2507,6 +2507,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                 });
                 LCount.setText(""+tabMode.getRowCount());
                 emptTeks();
+                Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Sudah'");
         }
     }
 }
