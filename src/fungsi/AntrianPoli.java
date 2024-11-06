@@ -40,80 +40,109 @@ public class AntrianPoli {
         }
     }
 
-    public void kirimAntrean() {
+public void kirimAntrean(String kd_poli) {
+    System.out.println(kd_poli);
+    try {
+        String kd_dokter = akses.getkode();
+        JSONObject jsonBody = new JSONObject();
+
+        // Query to fetch doctor and schedule information
+        ps = koneksi.prepareStatement(
+            "SELECT d.kd_dokter, d.nm_dokter, p.nm_poli, " +
+            "concat(j.jam_mulai, ' - ', j.jam_selesai) AS jam_dokter, DAYNAME(NOW()) AS hari, j.hari_kerja " +
+            "FROM dokter d " +
+            "INNER JOIN jadwal j ON j.kd_dokter = d.kd_dokter " +
+            "INNER JOIN poliklinik p ON p.kd_poli = j.kd_poli " +
+            "WHERE j.kd_dokter = ? AND j.kd_poli = ? " +
+            "AND j.hari_kerja = CASE DAYNAME(NOW()) " +
+            " WHEN 'Monday' THEN 'SENIN' " +
+            " WHEN 'Tuesday' THEN 'SELASA' " +
+            " WHEN 'Wednesday' THEN 'RABU' " +
+            " WHEN 'Thursday' THEN 'KAMIS' " +
+            " WHEN 'Friday' THEN 'JUMAT' " +
+            " WHEN 'Saturday' THEN 'SABTU' " +
+            " WHEN 'Sunday' THEN 'AKHAD' " +
+            "END"
+        );
+        ps.setString(1, kd_dokter);
+        ps.setString(2, kd_poli);
+        rs = ps.executeQuery();
+
+        if (rs.next()) {
+            jsonBody.put("kode_dokter", rs.getString("kd_dokter"));
+            jsonBody.put("nama_dokter", rs.getString("nm_dokter"));
+            jsonBody.put("jam_dokter", rs.getString("jam_dokter"));
+            jsonBody.put("nama_poli", rs.getString("nm_poli"));
+        }
+
+        JSONArray queueNumber = new JSONArray();
+        JSONArray waitingList = new JSONArray();
+        ps = koneksi.prepareStatement(
+            "SELECT ap.kd_dokter, ap.kd_poli, ap.status, ap.no_rawat, ap.no_antrian, " +
+            "DATE(NOW()) AS tanggal, CONCAT(ap.poli_bpjs, ' - ', ap.no_antrian) AS no_reg, " +
+            "ap.created_at, ap.updated_at, rp.stts " +
+            "FROM antripoli ap INNER JOIN reg_periksa rp ON rp.no_rawat = ap.no_rawat " +
+            "WHERE ap.kd_dokter = ? " +
+            "AND ap.kd_poli = ? AND ap.status = '0' " +
+            "AND DATE(ap.created_at) = DATE(NOW()) " +
+            "AND rp.stts != 'Sudah' " +
+            "ORDER BY ap.no_antrian ASC LIMIT 4;"
+        );
+        ps.setString(1, kd_dokter);
+        ps.setString(2, kd_poli);
+        rs = ps.executeQuery();
+
+        int count = 0;
+        while (rs.next()) {
+            JSONObject antrean = new JSONObject();
+            antrean.put("no_antrean", rs.getString("no_reg"));
+            antrean.put("no_rawat", rs.getString("no_rawat"));
+            if (count == 0) {
+                queueNumber.put(antrean);
+            } else {
+                waitingList.put(antrean);
+            }
+            count++;
+        }
+
+        // Fill waitingList with "000" placeholders until it has 6 items
+        while (waitingList.length() < 3) {
+            JSONObject emptyAntrean = new JSONObject();
+            emptyAntrean.put("no_antrean", "000");
+            emptyAntrean.put("no_rawat", "000");
+            waitingList.put(emptyAntrean);
+        }
+
+        jsonBody.put("queueNumber", queueNumber);
+        jsonBody.put("waitingList", waitingList);
+
+        String getIP = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where IP = ?", akses.getalamatip());
+        URL url = new URL(link + "/" + getIP);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
+
+        String jsonInputString = jsonBody.toString();
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        int responseCode = connection.getResponseCode();
+        System.out.println("Response Code: " + responseCode);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
         try {
-            String kd_dokter = akses.getkode();
-            JSONObject jsonBody = new JSONObject();
-            
-            // Query untuk mengambil informasi dokter dan poli
-            ps = koneksi.prepareStatement(
-                "SELECT d.kd_dokter, d.nm_dokter, p.nm_poli, " +
-                "concat(j.jam_mulai, ' - ', j.jam_selesai) AS jam_dokter " +
-                "FROM dokter d " +
-                "JOIN poliklinik p ON d.kd_poli = p.kd_poli " +
-                "JOIN jadwal j ON d.kd_dokter = j.kd_dokter " +
-                "WHERE d.kd_dokter = ? LIMIT 1"
-            );
-            ps.setString(1, kd_dokter);
-            rs = ps.executeQuery();
-            
-            if (rs.next()) {
-                jsonBody.put("kode_dokter", rs.getString("kd_dokter"));
-                jsonBody.put("nama_dokter", rs.getString("nm_dokter"));
-                jsonBody.put("nama_poli", rs.getString("nm_poli"));
-                jsonBody.put("jam_dokter", rs.getString("jam_dokter"));
-            }
-            
-            // Query untuk mengambil data antrean
-            JSONArray queueNumber = new JSONArray();
-            JSONArray waitingList = new JSONArray();
-            ps = koneksi.prepareStatement(
-                "SELECT no_antrian, no_rawat " +
-                "FROM antripoli " +
-                "WHERE kd_dokter = ? AND status = '0' " +
-                "ORDER BY no_antrian ASC LIMIT 6"
-            );
-            ps.setString(1, kd_dokter);
-            rs = ps.executeQuery();
-
-            int count = 0;
-            while (rs.next()) {
-                JSONObject antrean = new JSONObject();
-                antrean.put("no_antrean", rs.getString("no_antrian"));
-                antrean.put("no_rawat", rs.getString("no_rawat"));
-                if (count == 0) {
-                    queueNumber.put(antrean);
-                } else {
-                    waitingList.put(antrean);
-                }
-                count++;
-            }
-            jsonBody.put("queueNumber", queueNumber);
-            jsonBody.put("waitingList", waitingList);
-
-            // Kirim data ke API Bun.js
-            String getIP = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where IP = ?", akses.getalamatip());
-            URL url = new URL(link + "/" +getIP);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setDoOutput(true);
-
-            // Mengubah JSON objek ke String dan mengirimkannya
-            String jsonInputString = jsonBody.toString();
-            try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
-
-            // Mendapatkan response dari server
-            int responseCode = connection.getResponseCode();
-            System.out.println("Response Code: " + responseCode);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
+}
 
     public static String URLAPIANTRIAN(){
         try {
