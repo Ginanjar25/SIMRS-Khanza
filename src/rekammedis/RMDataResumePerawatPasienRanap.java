@@ -2132,11 +2132,16 @@ public final class RMDataResumePerawatPasienRanap extends javax.swing.JDialog {
     }
     
     public void isCek(){
-        BtnSimpan.setEnabled(akses.gettindakan_ranap());
-        BtnHapus.setEnabled(akses.gettindakan_ranap());
-        BtnEdit.setEnabled(akses.gettindakan_ranap());
-        BtnPrint.setEnabled(akses.gettindakan_ranap()); 
-        ppBerkasDigital.setEnabled(akses.gettindakan_ranap());    
+//        BtnSimpan.setEnabled(akses.gettindakan_ranap());
+//        BtnHapus.setEnabled(akses.gettindakan_ranap());
+//        BtnEdit.setEnabled(akses.gettindakan_ranap());
+//        BtnPrint.setEnabled(akses.gettindakan_ranap()); 
+//        ppBerkasDigital.setEnabled(akses.gettindakan_ranap());    
+        BtnSimpan.setEnabled(akses.getsoap_perawatan());
+        BtnHapus.setEnabled(akses.getsoap_perawatan());
+        BtnEdit.setEnabled(akses.getsoap_perawatan());
+        BtnPrint.setEnabled(akses.getsoap_perawatan()); 
+        ppBerkasDigital.setEnabled(akses.getsoap_perawatan());
         if(akses.getjml2()>=1){
             NIP.setEditable(false);
             BtnPetugas.setEnabled(false);

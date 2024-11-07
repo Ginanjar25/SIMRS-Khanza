@@ -1338,6 +1338,7 @@ public final class RMDataResumePerawatPasien extends javax.swing.JDialog {
         internalFrame1.add(PanelInput, java.awt.BorderLayout.PAGE_START);
 
         getContentPane().add(internalFrame1, java.awt.BorderLayout.CENTER);
+        internalFrame1.getAccessibleContext().setAccessibleName("::[ Data Resume Medis Pasien Rawat Jalan ]::");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -2142,11 +2143,16 @@ public final class RMDataResumePerawatPasien extends javax.swing.JDialog {
     }
     
     public void isCek(){
-        BtnSimpan.setEnabled(akses.gettindakan_ranap());
-        BtnHapus.setEnabled(akses.gettindakan_ranap());
-        BtnEdit.setEnabled(akses.gettindakan_ranap());
-        BtnPrint.setEnabled(akses.gettindakan_ranap()); 
-        ppBerkasDigital.setEnabled(akses.gettindakan_ranap());    
+//        BtnSimpan.setEnabled(akses.gettindakan_ralan());
+//        BtnHapus.setEnabled(akses.gettindakan_ralan());
+//        BtnEdit.setEnabled(akses.gettindakan_ralan());
+//        BtnPrint.setEnabled(akses.gettindakan_ralan()); 
+//        ppBerkasDigital.setEnabled(akses.gettindakan_ralan());    
+        BtnSimpan.setEnabled(akses.getsoap_perawatan());
+        BtnHapus.setEnabled(akses.getsoap_perawatan());
+        BtnEdit.setEnabled(akses.getsoap_perawatan());
+        BtnPrint.setEnabled(akses.getsoap_perawatan()); 
+        ppBerkasDigital.setEnabled(akses.getsoap_perawatan());    
         if(akses.getjml2()>=1){
             NIP.setEditable(false);
             BtnPetugas.setEnabled(false);
