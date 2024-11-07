@@ -17960,7 +17960,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         MnCatatanKeseimbanganCairan.setEnabled(akses.getbalance_cairan());
         MnCatatanObservasiCHBP.setEnabled(akses.getcatatan_observasi_chbp());
         MnPermintaanKonsultasiMedik.setEnabled(akses.getkonsultasi_medik());
-        ppResumePerawat.setEnabled(akses.gettindakan_ranap());
+        ppResumePerawat.setEnabled(akses.getsoap_perawatan());
         
         if(akses.getkode().equals("Admin Utama")){
             MnFilterDPJP.setEnabled(true);

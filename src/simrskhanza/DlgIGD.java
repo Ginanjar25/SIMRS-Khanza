@@ -11812,7 +11812,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         MnPenilaianPasienImunitasRendah.setEnabled(akses.getpenilaian_pasien_imunitas_rendah());
         MnCatatanKeseimbanganCairan.setEnabled(akses.getbalance_cairan());
         MnCatatanObservasiInduksiPersalinan.setEnabled(akses.getcatatan_observasi_induksi_persalinan());
-        ppResumePerawat.setEnabled(akses.gettindakan_ralan());
+        ppResumePerawat.setEnabled(akses.getsoap_perawatan());
         
         if(!akses.getkode().equals("Admin Utama")){
             BtnHapus.setEnabled(false);

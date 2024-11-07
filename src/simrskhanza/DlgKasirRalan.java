@@ -15351,7 +15351,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         MnCatatanKeseimbanganCairan.setEnabled(akses.getbalance_cairan());
         MnCatatanObservasiInduksiPersalinan.setEnabled(akses.getcatatan_observasi_induksi_persalinan());
         MnPermintaanKonsultasiMedik.setEnabled(akses.getkonsultasi_medik());
-        ppResumePerawat.setEnabled(akses.gettindakan_ralan());
+        ppResumePerawat.setEnabled(akses.getsoap_perawatan());
         
         if(akses.getkode().equals("Admin Utama")){
             MnHapusData.setEnabled(true);
