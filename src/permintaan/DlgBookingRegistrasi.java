@@ -1367,9 +1367,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         Sequel.queryu2("update booking_registrasi set status='Terdaftar' where no_rkm_medis=? and tanggal_periksa=?",2,new String[]{
                             tbObat.getValueAt(i,3).toString(),tbObat.getValueAt(i,5).toString()
                         });
-                        
-                        simpanAntrianPoli(no_rawat, tbObat.getValueAt(i,8).toString(), tbObat.getValueAt(i,6).toString(), "0", "now()", "0000-00-00 00:00:00", NoReg.getText());
-                        
                     }
                 }
             }
@@ -1916,18 +1913,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             tampil();
         } 
     }
-    
-    private void simpanAntrianPoli(String no_rawat, String kd_poli, String kd_dokter, String status_antri, String created_at, String updated_at, String no_antrian){
-        String poli_bpjs = "";
-        if(kd_poli.equals("U0026")){
-            poli_bpjs = "LAK";
-        }else{
-            poli_bpjs = Sequel.cariIsi("select mpb.kd_poli_bpjs from maping_poli_bpjs mpb where mpb.kd_poli_rs = ?", kd_poli);
-        }
         
-        Sequel.menyimpan("antripoli", "'" + kd_dokter + "', '" + kd_poli + "', '" + status_antri + "', '" + no_rawat + "', " + created_at + ", NULL, '" + no_antrian + "', '" + poli_bpjs +"'");
-    }
-    
     private void setNoRegDokterAndPoli(){
         
         String kdDokter = KdDokter.getText();

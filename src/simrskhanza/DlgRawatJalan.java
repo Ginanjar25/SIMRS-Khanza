@@ -6144,9 +6144,9 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
             if(i==JOptionPane.YES_OPTION){
                 if(Sequel.mengedittf("reg_periksa","no_rawat=?","stts=?",2,new String[]{"Sudah",TNoRw.getText()})==true){
                     Sequel.menyimpan("mutasi_berkas","'"+TNoRw.getText()+"','Sudah Kembali',now(),'0000-00-00 00:00:00',now(),'0000-00-00 00:00:00','0000-00-00 00:00:00'","status='Sudah Kembali',kembali=now()","no_rawat='"+TNoRw.getText()+"'");
-//                    Sequel.mengedit("antripoli","no_rawat = ?", "status=?", 2, new String[]{"1", TNoRw.getText()});
+//                    Sequel.mengedit("antripoli","no_rawat = ?", "status=?, updated_at = now() ", 2, new String[]{"1", TNoRw.getText()});
                 }
-                Sequel.mengedit("antripoli","no_rawat = ?", "status=?", 2, new String[]{"1", TNoRw.getText()});
+                Sequel.mengedit("antripoli","no_rawat = ?", "status=?, updated_at = now() ", 2, new String[]{"1", TNoRw.getText()});
             }
         } catch (Exception e) {
         }
