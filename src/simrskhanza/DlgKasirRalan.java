@@ -200,6 +200,7 @@ import surat.SuratPulangAtasPermintaanSendiri;
 import surat.SuratSakit;
 import surat.SuratSakitPihak2;
 import surat.SuratTidakHamil;
+import fungsi.AntrianPoli;
 
 /**
  *
@@ -210,6 +211,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
+    private AntrianPoli antriPoli = new AntrianPoli();
     private PreparedStatement psotomatis,psotomatis2,pskasir,pscaripiutang,psrekening;
     private ResultSet rskasir,rsrekening,rs;
     private String aktifkanparsial="no",kamar_inap_kasir_ralan=Sequel.cariIsi("select set_jam_minimal.kamar_inap_kasir_ralan from set_jam_minimal"),caripenjab="",filter="no",bangsal=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1"),nonota="",
@@ -8052,6 +8054,10 @@ private void MnDataRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 //                        MnRiwayatPerawatanICareNIKActionPerformed(null);
                         MnRiwayatPerawatanICareNoKartuActionPerformed(null);
                     }
+                    if(!getIPAntrian().isBlank()){
+                        antriPoli.kirimAntrean(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString());
+                    }
+                    
                 } 
             }                               
         }
@@ -15907,6 +15913,14 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
             JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
             tbKasirRalan.requestFocus();
         } 
+    }
+    
+    private String getIPAntrian(){
+        String IPAddress = akses.getalamatip();
+        
+        String getIPAntrian = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where IP = ?", IPAddress);
+        
+        return getIPAntrian;
     }
     
     private void initKasirRalan() {
