@@ -457,6 +457,7 @@ public class DlgBookingRegistrasi extends javax.swing.JDialog {
         ppBersihkan = new javax.swing.JMenuItem();
         ppSemua = new javax.swing.JMenuItem();
         ppCSVWARocket = new javax.swing.JMenuItem();
+        ppCetakBuktiBooking = new javax.swing.JMenuItem();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -561,6 +562,23 @@ public class DlgBookingRegistrasi extends javax.swing.JDialog {
             }
         });
         Popup.add(ppCSVWARocket);
+
+        ppCetakBuktiBooking.setBackground(new java.awt.Color(255, 255, 254));
+        ppCetakBuktiBooking.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppCetakBuktiBooking.setForeground(new java.awt.Color(50, 50, 50));
+        ppCetakBuktiBooking.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppCetakBuktiBooking.setText("Cetak Bukti Booking");
+        ppCetakBuktiBooking.setToolTipText("");
+        ppCetakBuktiBooking.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppCetakBuktiBooking.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppCetakBuktiBooking.setName("ppCetakBuktiBooking"); // NOI18N
+        ppCetakBuktiBooking.setPreferredSize(new java.awt.Dimension(170, 25));
+        ppCetakBuktiBooking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppCetakBuktiBookingActionPerformed(evt);
+            }
+        });
+        Popup.add(ppCetakBuktiBooking);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -794,7 +812,7 @@ public class DlgBookingRegistrasi extends javax.swing.JDialog {
         R2.setPreferredSize(new java.awt.Dimension(125, 23));
         panelCari.add(R2);
 
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-07-2024" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-11-2024" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -817,7 +835,7 @@ public class DlgBookingRegistrasi extends javax.swing.JDialog {
         jLabel22.setPreferredSize(new java.awt.Dimension(25, 23));
         panelCari.add(jLabel22);
 
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-07-2024" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-11-2024" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -840,7 +858,7 @@ public class DlgBookingRegistrasi extends javax.swing.JDialog {
         R3.setPreferredSize(new java.awt.Dimension(135, 23));
         panelCari.add(R3);
 
-        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-07-2024" }));
+        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-11-2024" }));
         DTPCari3.setDisplayFormat("dd-MM-yyyy");
         DTPCari3.setName("DTPCari3"); // NOI18N
         DTPCari3.setOpaque(false);
@@ -863,7 +881,7 @@ public class DlgBookingRegistrasi extends javax.swing.JDialog {
         jLabel25.setPreferredSize(new java.awt.Dimension(25, 23));
         panelCari.add(jLabel25);
 
-        DTPCari4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-07-2024" }));
+        DTPCari4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-11-2024" }));
         DTPCari4.setDisplayFormat("dd-MM-yyyy");
         DTPCari4.setName("DTPCari4"); // NOI18N
         DTPCari4.setOpaque(false);
@@ -947,7 +965,7 @@ public class DlgBookingRegistrasi extends javax.swing.JDialog {
         TPasien.setBounds(151, 10, 311, 23);
 
         TanggalBooking.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalBooking.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-07-2024 11:44:30" }));
+        TanggalBooking.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-11-2024 07:14:48" }));
         TanggalBooking.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TanggalBooking.setName("TanggalBooking"); // NOI18N
         TanggalBooking.setOpaque(false);
@@ -1027,7 +1045,7 @@ public class DlgBookingRegistrasi extends javax.swing.JDialog {
         jLabel14.setBounds(506, 40, 70, 23);
 
         TanggalPeriksa.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalPeriksa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-07-2024 11:44:30" }));
+        TanggalPeriksa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-11-2024 07:14:48" }));
         TanggalPeriksa.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TanggalPeriksa.setName("TanggalPeriksa"); // NOI18N
         TanggalPeriksa.setOpaque(false);
@@ -1606,6 +1624,21 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }//GEN-LAST:event_ppCSVWARocketActionPerformed
 
+    private void ppCetakBuktiBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppCetakBuktiBookingActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    Map<String, Object> param = new HashMap<>();
+                    param.put("namars", akses.getnamars());
+                    param.put("alamatrs", akses.getalamatrs());
+                    param.put("kotars", akses.getkabupatenrs());
+                    param.put("propinsirs", akses.getpropinsirs());
+                    param.put("kontakrs", akses.getkontakrs());
+                    param.put("emailrs", akses.getemailrs());
+                    param.put("kodeBooking",tbObat.getValueAt(tbObat.getSelectedRow(),5).toString().replaceAll("-","")+tbObat.getValueAt(tbObat.getSelectedRow(),3).toString());
+                    Valid.MyReportqry("rptBuktiRegisterOffline.jasper", "report", "::[ Antrian Loket ]::",
+                            "SELECT CURDATE()", param);
+                    this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_ppCetakBuktiBookingActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1680,6 +1713,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.panelisi panelGlass8;
     private javax.swing.JMenuItem ppBersihkan;
     private javax.swing.JMenuItem ppCSVWARocket;
+    private javax.swing.JMenuItem ppCetakBuktiBooking;
     private javax.swing.JMenuItem ppSemua;
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables

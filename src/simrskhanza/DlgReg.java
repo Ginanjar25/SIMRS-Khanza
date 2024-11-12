@@ -297,6 +297,7 @@ public final class DlgReg extends javax.swing.JDialog {
     private String jmlBookWeb = Sequel.cariIsi("SELECT COUNT(bp.no_booking) FROM booking_periksa bp WHERE bp.tanggal >= CURDATE() AND `status` = 'Belum Dibalas'");
     private String jmlBookReg = Sequel.cariIsi("SELECT COUNT(br.no_reg) FROM booking_registrasi br WHERE br.tanggal_periksa >= CURDATE() AND `status` = 'Belum'");
     
+    
 
     /** Creates new form DlgReg
      * @param parent
@@ -559,6 +560,15 @@ public final class DlgReg extends javax.swing.JDialog {
                             + "WHERE reg_periksa.tgl_registrasi = CURDATE() and pasien.no_rkm_medis=?", TNoRM.getText()) > 0) {
                         JOptionPane.showMessageDialog(null, "Pasien dengan No. RM : " + TNoRM.getText() + " Sudah terdaftar di hari yang sama...!");
                         TNoRM.requestFocus();
+                    }
+                    if(Sequel.cariInteger("SELECT count(ps.no_rkm_medis) FROM pasien ps WHERE ps.tgl_daftar = CURDATE() AND ps.no_rkm_medis =?",TNoRM.getText()) == 1) {
+                        //JOptionPane.showMessageDialog(null, "Pasien Baru");
+                        TNoReg.setText("");
+                        NoRegBooking.setText("");
+                        WindowSetNoreg.setSize(430,130);
+                        WindowSetNoreg.setLocationRelativeTo(internalFrame1);
+                        WindowSetNoreg.setAlwaysOnTop(false);
+                        WindowSetNoreg.setVisible(true);
                     }
                 }
             }
@@ -6792,7 +6802,7 @@ public final class DlgReg extends javax.swing.JDialog {
         FormInput.add(TNoRM);
         TNoRM.setBounds(520, 12, 110, 23);
 
-        TNoReg.setEditable(false);
+        TNoReg.setEditable(true);
         TNoReg.setHighlighter(null);
         TNoReg.setName("TNoReg"); // NOI18N
         TNoReg.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -15395,7 +15405,46 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             }                
         }
     }
+    private void BtnCloseWinSetNoregActionPerformed(java.awt.event.ActionEvent evt) {                                            
+        WindowSetNoreg.dispose();
+    } 
     
+    private void BtnSimpanNoregActionPerformed (java.awt.event.ActionEvent evt){
+        TNoReg.setText(NoRegBooking.getText());
+        WindowSetNoreg.dispose();
+    }
+    
+    private void NoRegBookingKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNoRMKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            String splitKdPoli = NoRegBooking.getText();
+            if (splitKdPoli.contains("-")) {
+                String kdPoliBpj = NoRegBooking.getText().split("-")[0];
+                String noReg = splitKdPoli.split("-")[1];
+                String kdPoliRs = Sequel.cariIsi("SELECT mpb.kd_poli_rs FROM maping_poli_bpjs mpb WHERE mpb.kd_poli_bpjs='" + kdPoliBpj + "'");
+                if (!kdPoliRs.equals("")) {
+                    String kdDokter = Sequel.cariIsi("SELECT alc.kd_dokter FROM antriloketcetak alc WHERE alc.tanggal = CURDATE() AND alc.asal = 'Baru' AND alc.nomor = '" + noReg + "' AND alc.kd_poli = '" + kdPoliRs + "'");
+                    if (!kdDokter.equals("")) {
+                        String namaDokter = Sequel.cariIsi("SELECT dr.nm_dokter FROM dokter dr WHERE dr.kd_dokter = '" + kdDokter + "'");
+                        String namaPoliklinik = Sequel.cariIsi("SELECT pl.nm_poli FROM poliklinik pl WHERE pl.kd_poli ='" + kdPoliRs + "' ");
+                        String biayaPoli = Sequel.cariIsi("SELECT pl.registrasi FROM poliklinik pl WHERE pl.kd_poli ='" + kdPoliRs + "' ");
+                        TNoReg.setText(noReg);
+                        KdDokter.setText(kdDokter);
+                        TDokter.setText(namaDokter);
+                        kdpoli.setText(kdPoliRs);
+                        TPoli.setText(namaPoliklinik);
+                        TBiaya.setText(biayaPoli);
+                        WindowSetNoreg.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Maaf, Nomor Registrasi " + splitKdPoli + " tidak ditemukan...!!!");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Maaf, Kode Poli Registrasi " + splitKdPoli + " tidak ditemukan...!!!");
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "Maaf, Format No.Reg " + splitKdPoli + " salah...!!!");
+            }
+        }
+    }
     /**
     * @param args the command line arguments
     */
@@ -15873,6 +15922,12 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.RadioButton R1;
     private widget.Label labelSKDP;
     private javax.swing.JPanel JLabelSKDP;
+    private javax.swing.JDialog WindowSetNoreg;
+    private widget.InternalFrame internalFrameSetNoReg;
+    private widget.Button BtnCloseWinSetNoreg;
+    private widget.Label labelSetNoReg;
+    private widget.TextBox NoRegBooking;
+    private widget.Button BtnSimpanNoreg;
     
     private void tampil() {
         Valid.tabelKosong(tabMode);
@@ -17234,6 +17289,71 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         JLabelSKDP.setName("JLabelSKDP"); // NOI18N
         FormInput.add(JLabelSKDP);
         JLabelSKDP.setBounds(1070, 90, 30, 20);
+        
+        internalFrameSetNoReg = new widget.InternalFrame();
+        internalFrameSetNoReg.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "::[ Set No. Reg ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrameSetNoReg.setName("internalFrameSetNoReg"); // NOI18N
+        internalFrameSetNoReg.setLayout(null);
+        
+        WindowSetNoreg = new javax.swing.JDialog();
+        WindowSetNoreg.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        WindowSetNoreg.setModal(true);
+        WindowSetNoreg.setName("WindowSetNoreg"); // NOI18N
+        WindowSetNoreg.setUndecorated(true);
+        WindowSetNoreg.setResizable(false);
+        WindowSetNoreg.getContentPane().add(internalFrameSetNoReg, java.awt.BorderLayout.CENTER);
+        
+        BtnCloseWinSetNoreg = new widget.Button();
+        BtnCloseWinSetNoreg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cross.png"))); // NOI18N
+        BtnCloseWinSetNoreg.setMnemonic('P');
+        BtnCloseWinSetNoreg.setText("Tutup");
+        BtnCloseWinSetNoreg.setToolTipText("Alt+P");
+        BtnCloseWinSetNoreg.setName("BtnCloseIn6"); // NOI18N
+        BtnCloseWinSetNoreg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnCloseWinSetNoregActionPerformed(evt);
+            }
+        });
+        internalFrameSetNoReg.add(BtnCloseWinSetNoreg);
+        BtnCloseWinSetNoreg.setBounds(130, 87, 100, 30);
+        
+        labelSetNoReg = new widget.Label();
+        labelSetNoReg.setText("No. Reg :");
+        labelSetNoReg.setName("labelSetNoReg"); // NOI18N
+        labelSetNoReg.setPreferredSize(new java.awt.Dimension(35, 23));
+        internalFrameSetNoReg.add(labelSetNoReg);
+        labelSetNoReg.setBounds(0, 22, 105, 23);
+        
+        NoRegBooking = new widget.TextBox();
+        NoRegBooking.setHighlighter(null);
+        NoRegBooking.setName("NoRegBooking"); // NOI18N
+        NoRegBooking.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                //NoRmTujuanKeyPressed(evt);
+            }
+        });
+        internalFrameSetNoReg.add(NoRegBooking);
+        NoRegBooking.setBounds(108, 22, 100, 23);
+
+        BtnSimpanNoreg = new widget.Button();
+
+        BtnSimpanNoreg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
+        BtnSimpanNoreg.setMnemonic('S');
+        BtnSimpanNoreg.setText("Simpan");
+        BtnSimpanNoreg.setToolTipText("Alt+S");
+        BtnSimpanNoreg.setName("BtnSimpan6"); // NOI18N
+        BtnSimpanNoreg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSimpanNoregActionPerformed(evt);
+            }
+        });
+        NoRegBooking.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                NoRegBookingKeyPressed(evt);
+            }
+        });
+        internalFrameSetNoReg.add(BtnSimpanNoreg);
+        BtnSimpanNoreg.setBounds(20, 87, 100, 30);
         
     }
     
