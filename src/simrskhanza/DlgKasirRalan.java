@@ -8055,7 +8055,7 @@ private void MnDataRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                         MnRiwayatPerawatanICareNoKartuActionPerformed(null);
                     }
                     if(!getIPAntrian().isBlank()){
-                        antriPoli.kirimAntrean(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString());
+                        antriPoli.kirimAntrean(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString(), tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),0).toString());
                     }
                     
                 } 
@@ -15918,7 +15918,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private String getIPAntrian(){
         String IPAddress = akses.getalamatip();
         
-        String getIPAntrian = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where IP = ?", IPAddress);
+        String getIPAntrian = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", IPAddress);
         
         return getIPAntrian;
     }

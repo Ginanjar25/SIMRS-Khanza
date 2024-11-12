@@ -40,10 +40,9 @@ public class AntrianPoli {
         }
     }
 
-public void kirimAntrean(String kd_poli) {
+public void kirimAntrean(String kd_poli, String kd_dokter) {
     System.out.println(kd_poli);
     try {
-        String kd_dokter = akses.getkode();
         JSONObject jsonBody = new JSONObject();
 
         // Query to fetch doctor and schedule information
@@ -116,7 +115,7 @@ public void kirimAntrean(String kd_poli) {
         jsonBody.put("queueNumber", queueNumber);
         jsonBody.put("waitingList", waitingList);
 
-        String getIP = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where IP = ?", akses.getalamatip());
+        String getIP = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", akses.getalamatip());
         URL url = new URL(link + "/" + getIP);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
