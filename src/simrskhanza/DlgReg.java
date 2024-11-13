@@ -15318,7 +15318,6 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 if (Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()}) == true) {
                     Valid.editTable(tabMode, "reg_periksa", "no_rawat", TNoRw, "stts='Belum',biaya_reg='"+TBiaya.getText()+"'");
                     Sequel.mengedittf("side_db.reg_periksa_website", "no_rawat=?", "status='Checkin'", 1, new String[]{TNoRw.getText()});
-//                    simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
                     JOptionPane.showMessageDialog(rootPane, "Berhasil Chekin");
                     tampil();
                 }
@@ -17395,8 +17394,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }else{
             poli_bpjs = Sequel.cariIsi("select mpb.kd_poli_bpjs from maping_poli_bpjs mpb where mpb.kd_poli_rs = ?", kd_poli);
         }
+//        System.out.println(no_antrian + " " + no_rawat + " " + kd_poli + " " + kd_dokter + " " + status_antri);
         
-        Sequel.menyimpan("antripoli", "'" + kd_dokter + "', '" + kd_poli + "', '" + status_antri + "', '" + no_rawat + "', " + no_antrian + "', '" + poli_bpjs +"', " + created_at + ", NULL");
+        Sequel.menyimpan("antripoli", "'" + kd_dokter + "', '" + kd_poli + "', '" + status_antri + "', '" + no_rawat + "', '" + no_antrian + "', '" + poli_bpjs +"', NOW(), NOW() ");
     }
     
     private void setNoRegDokterAndPoli(){
@@ -17411,13 +17411,13 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         int maxOverall = Math.max(booking_reg, Math.max(reg_periksa, loket));
 
         if (maxOverall == booking_reg) {
-            System.out.println("dari booking");
+//            System.out.println("dari booking");
             Valid.autoNomer3("select ifnull(MAX(CONVERT(booking_registrasi.no_reg,signed)),0) from booking_registrasi where booking_registrasi.kd_dokter='" + kdDokter + "' and booking_registrasi.kd_poli='" + kdPoli + "' and booking_registrasi.tanggal_periksa='" + tanggalPeriksa + "'", "", 3, TNoReg);
         } else if (maxOverall == reg_periksa) {
-            System.out.println("dari reg");
+//            System.out.println("dari reg");
             Valid.autoNomer3("select ifnull(MAX(CONVERT(reg_periksa.no_reg,signed)),0) from reg_periksa where kd_dokter='" + kdDokter + "' and reg_periksa.kd_poli='" + kdPoli + "' and reg_periksa.tgl_registrasi='" + tanggalPeriksa + "'", "", 3, TNoReg);
         } else {
-            System.out.println("dari loket");
+//            System.out.println("dari loket");
             Valid.autoNomer3("select ifnull(MAX(CONVERT(antriloketcetak.nomor,signed)),0) from antriloketcetak where antriloketcetak.kd_dokter='" + kdDokter + "' and antriloketcetak.asal = 'Baru' and antriloketcetak.kd_poli='" + kdPoli + "' and antriloketcetak.tanggal='" + tanggalPeriksa + "'", "", 3, TNoReg);
         }
 

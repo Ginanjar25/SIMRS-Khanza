@@ -1634,8 +1634,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     param.put("kontakrs", akses.getkontakrs());
                     param.put("emailrs", akses.getemailrs());
                     param.put("kodeBooking",tbObat.getValueAt(tbObat.getSelectedRow(),5).toString().replaceAll("-","")+tbObat.getValueAt(tbObat.getSelectedRow(),3).toString());
-                    Valid.MyReportqry("rptBuktiRegisterOffline.jasper", "report", "::[ Antrian Loket ]::",
-                            "SELECT CURDATE()", param);
+                    Valid.MyReport("rptBuktiRegisterOffline.jasper", "report", "::[ Antrian Loket ]::", param);
                     this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_ppCetakBuktiBookingActionPerformed
 
