@@ -12177,6 +12177,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
             Valid.MyReport("rptBarcodeRawat3.jasper",param,"::[ Barcode No.RM ]::");
             this.setCursor(Cursor.getDefaultCursor());
+            simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
         }
     }//GEN-LAST:event_MnBarcode2ActionPerformed
 
