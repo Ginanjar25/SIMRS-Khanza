@@ -522,8 +522,12 @@
                                 <Component class="widget.Label" name="jLabel28">
                                   <Properties>
                                     <Property name="text" type="java.lang.String" value="Plan/Keputusan :"/>
+                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="jLabel28" noResource="true"/>
                                   </Properties>
+                                  <AuxValues>
+                                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jLabel28.setVisible(false);"/>
+                                  </AuxValues>
                                   <Constraints>
                                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                                       <AbsoluteConstraints x="362" y="10" width="90" height="23"/>
@@ -537,7 +541,7 @@
                                     </Property>
                                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                                       <StringArray count="1">
-                                        <StringItem index="0" value="01-08-2023 11:11:45"/>
+                                        <StringItem index="0" value="19-11-2024 16:43:50"/>
                                       </StringArray>
                                     </Property>
                                     <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy HH:mm:ss"/>
@@ -574,11 +578,15 @@
                                     </Property>
                                     <Property name="selected" type="boolean" value="true"/>
                                     <Property name="text" type="java.lang.String" value="Ruang Resusitasi"/>
+                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="PrimerResusitasi" noResource="true"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[40, 20]"/>
                                     </Property>
                                   </Properties>
+                                  <AuxValues>
+                                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="PrimerResusitasi.setVisible(false);"/>
+                                  </AuxValues>
                                   <Constraints>
                                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                                       <AbsoluteConstraints x="456" y="10" width="120" height="23"/>
@@ -594,8 +602,12 @@
                                       <Color blue="0" green="0" red="fa" type="rgb"/>
                                     </Property>
                                     <Property name="text" type="java.lang.String" value="Ruang Kritis"/>
+                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="PrimerKritis" noResource="true"/>
                                   </Properties>
+                                  <AuxValues>
+                                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="PrimerKritis.setVisible(false);"/>
+                                  </AuxValues>
                                   <Constraints>
                                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                                       <AbsoluteConstraints x="590" y="10" width="100" height="23"/>
@@ -970,8 +982,8 @@
                                               </Properties>
                                               <Constraints>
                                                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                                                  <JTabbedPaneConstraints tabName="Skala 1">
-                                                    <Property name="tabTitle" type="java.lang.String" value="Skala 1"/>
+                                                  <JTabbedPaneConstraints tabName="DOA (Death On Arrival)">
+                                                    <Property name="tabTitle" type="java.lang.String" value="DOA (Death On Arrival)"/>
                                                   </JTabbedPaneConstraints>
                                                 </Constraint>
                                               </Constraints>
@@ -1005,8 +1017,8 @@
                                               </Properties>
                                               <Constraints>
                                                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                                                  <JTabbedPaneConstraints tabName="Skala 2">
-                                                    <Property name="tabTitle" type="java.lang.String" value="Skala 2"/>
+                                                  <JTabbedPaneConstraints tabName="Zona Merah">
+                                                    <Property name="tabTitle" type="java.lang.String" value="Zona Merah"/>
                                                   </JTabbedPaneConstraints>
                                                 </Constraint>
                                               </Constraints>
@@ -1363,6 +1375,9 @@
                                     <Property name="text" type="java.lang.String" value="Plan/Keputusan :"/>
                                     <Property name="name" type="java.lang.String" value="jLabel37" noResource="true"/>
                                   </Properties>
+                                  <AuxValues>
+                                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jLabel37.setVisible(false);"/>
+                                  </AuxValues>
                                   <Constraints>
                                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                                       <AbsoluteConstraints x="362" y="10" width="90" height="23"/>
@@ -1376,7 +1391,7 @@
                                     </Property>
                                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                                       <StringArray count="1">
-                                        <StringItem index="0" value="01-08-2023 11:11:46"/>
+                                        <StringItem index="0" value="19-11-2024 16:43:54"/>
                                       </StringArray>
                                     </Property>
                                     <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy HH:mm:ss"/>
@@ -1412,11 +1427,15 @@
                                       <Color blue="0" green="c8" red="c8" type="rgb"/>
                                     </Property>
                                     <Property name="text" type="java.lang.String" value="Zona Kuning"/>
+                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="SekunderZonaKuning" noResource="true"/>
                                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                                       <Dimension value="[40, 20]"/>
                                     </Property>
                                   </Properties>
+                                  <AuxValues>
+                                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="SekunderZonaKuning.setVisible(false);"/>
+                                  </AuxValues>
                                   <Constraints>
                                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                                       <AbsoluteConstraints x="456" y="10" width="120" height="23"/>
@@ -1432,8 +1451,12 @@
                                       <Color blue="0" green="aa" red="0" type="rgb"/>
                                     </Property>
                                     <Property name="text" type="java.lang.String" value="Zona Hijau"/>
+                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="SekunderZonaHijau" noResource="true"/>
                                   </Properties>
+                                  <AuxValues>
+                                    <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="SekunderZonaHijau.setVisible(false);"/>
+                                  </AuxValues>
                                   <Constraints>
                                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                                       <AbsoluteConstraints x="590" y="10" width="100" height="23"/>
@@ -1805,8 +1828,8 @@
                                               </Properties>
                                               <Constraints>
                                                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                                                  <JTabbedPaneConstraints tabName="Skala 3">
-                                                    <Property name="tabTitle" type="java.lang.String" value="Skala 3"/>
+                                                  <JTabbedPaneConstraints tabName="Zona Kuning">
+                                                    <Property name="tabTitle" type="java.lang.String" value="Zona Kuning"/>
                                                   </JTabbedPaneConstraints>
                                                 </Constraint>
                                               </Constraints>
@@ -1840,8 +1863,8 @@
                                               </Properties>
                                               <Constraints>
                                                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                                                  <JTabbedPaneConstraints tabName="Skala 4">
-                                                    <Property name="tabTitle" type="java.lang.String" value="Skala 4"/>
+                                                  <JTabbedPaneConstraints tabName="Zona Hijau">
+                                                    <Property name="tabTitle" type="java.lang.String" value="Zona Hijau"/>
                                                   </JTabbedPaneConstraints>
                                                 </Constraint>
                                               </Constraints>
@@ -1875,8 +1898,8 @@
                                               </Properties>
                                               <Constraints>
                                                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                                                  <JTabbedPaneConstraints tabName="Skala 5">
-                                                    <Property name="tabTitle" type="java.lang.String" value="Skala 5"/>
+                                                  <JTabbedPaneConstraints tabName="Non-Emergency">
+                                                    <Property name="tabTitle" type="java.lang.String" value="Non-Emergency"/>
                                                   </JTabbedPaneConstraints>
                                                 </Constraint>
                                               </Constraints>
@@ -2005,7 +2028,7 @@
                             </Property>
                             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                               <StringArray count="1">
-                                <StringItem index="0" value="01-08-2023 11:11:47"/>
+                                <StringItem index="0" value="19-11-2024 16:43:54"/>
                               </StringArray>
                             </Property>
                             <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy HH:mm:ss"/>
@@ -2305,7 +2328,7 @@
                         </Property>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="1">
-                            <StringItem index="0" value="01-08-2023"/>
+                            <StringItem index="0" value="19-11-2024"/>
                           </StringArray>
                         </Property>
                         <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy"/>
@@ -2333,7 +2356,7 @@
                         </Property>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="1">
-                            <StringItem index="0" value="01-08-2023"/>
+                            <StringItem index="0" value="19-11-2024"/>
                           </StringArray>
                         </Property>
                         <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy"/>

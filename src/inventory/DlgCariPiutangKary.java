@@ -425,7 +425,7 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
         label18 = new widget.Label();
         Tgl2 = new widget.Tanggal();
 
-        jPopupMenu1.setName("jPopupMenu1"); // NOI18N
+        jPopupMenu1.setName("jPopupMenu1");
 
         ppCetakNota.setBackground(new java.awt.Color(255, 255, 254));
         ppCetakNota.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -587,6 +587,11 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
         tbDokter.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbDokter.setComponentPopupMenu(jPopupMenu1);
         tbDokter.setName("tbDokter"); // NOI18N
+        tbDokter.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbDokterMouseClicked(evt);
+            }
+        });
         scrollPane1.setViewportView(tbDokter);
 
         internalFrame1.add(scrollPane1, java.awt.BorderLayout.CENTER);
@@ -1258,14 +1263,17 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                 bayarpiutang1.emptTeks();
                 String norm = Sequel.cariIsi("select no_rkm_medis from piutang where nota_piutang='" + tbDokter.getValueAt(tbDokter.getSelectedRow(), 0).toString() + "'");
                 String nama = Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis='" + norm + "'");
-//                bayarpiutang1.setData(
-//                        tbDokter.getValueAt(tbDokter.getSelectedRow(), 0).toString(),
-//                        norm,
-//                        nama);
                 bayarpiutang1.setData(
                         tbDokter.getValueAt(tbDokter.getSelectedRow(), 0).toString(),
+                        norm,
+                        nama);
+                bayarpiutang1.setDataKary(
                         tbDokter.getValueAt(tbDokter.getSelectedRow(), 2).toString(),
                         tbDokter.getValueAt(tbDokter.getSelectedRow(), 3).toString());
+//                bayarpiutang1.setData(
+//                        tbDokter.getValueAt(tbDokter.getSelectedRow(), 0).toString(),
+//                        tbDokter.getValueAt(tbDokter.getSelectedRow(), 2).toString(),
+//                        tbDokter.getValueAt(tbDokter.getSelectedRow(), 3).toString());
                 bayarpiutang1.tampil();
                 bayarpiutang1.setSize(this.getWidth() - 20, this.getHeight() - 20);
                 bayarpiutang1.setLocationRelativeTo(this);
@@ -1501,6 +1509,15 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         }
     }//GEN-LAST:event_ppLembarObat1ActionPerformed
 
+    private void tbDokterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbDokterMouseClicked
+        if(tabMode.getRowCount()!=0){
+            try {
+                getData();
+            } catch (java.lang.NullPointerException e) {
+            }
+        }
+    }//GEN-LAST:event_tbDokterMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -1734,6 +1751,16 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             ppHapus.setEnabled(true);
         } else {
             ppHapus.setEnabled(false);
+        }
+    }
+    
+    private void getData() {
+//        String petugas = Sequel.cariIsi("select nama from petugas where nip=?", akses.getkode());
+        int row=tbDokter.getSelectedRow();
+        if(row!= -1){
+            NoNota.setText(tbDokter.getValueAt(row,0).toString());
+            kdmem.setText(tbDokter.getValueAt(row,2).toString());
+            nmmem.setText(tbDokter.getValueAt(row,3).toString());
         }
     }
 
