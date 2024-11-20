@@ -1953,7 +1953,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         String kdPoli = KdPoli.getText();
         String tanggalPeriksa = Valid.SetTgl(TanggalPeriksa.getSelectedItem() + "");
 
-        int booking_reg = Sequel.cariInteger("select ifnull(MAX(CONVERT(booking_registrasi.no_reg,signed)),0) from booking_registrasi where booking_registrasi.kd_poli='" + kdPoli + "' and booking_registrasi.tanggal_periksa='" + tanggalPeriksa + "'");
+        int booking_reg = Sequel.cariInteger("select ifnull(MAX(CONVERT(booking_registrasi.no_reg,signed)),0) from booking_registrasi where booking_registrasi.kd_dokter = '"+kdDokter+"' and booking_registrasi.kd_poli='" + kdPoli + "' and booking_registrasi.tanggal_periksa='" + tanggalPeriksa + "'");
         int reg_periksa = Sequel.cariInteger("select ifnull(MAX(CONVERT(reg_periksa.no_reg,signed)),0) from reg_periksa where reg_periksa.kd_dokter='" + kdDokter + "' and reg_periksa.kd_poli='" + kdPoli + "' and reg_periksa.tgl_registrasi='" + tanggalPeriksa + "'");
         int loket = Sequel.cariInteger("select ifnull(MAX(CONVERT(antriloketcetak.nomor,signed)),0)  from antriloketcetak where antriloketcetak.kd_dokter ='" + kdDokter + "' and antriloketcetak.kd_poli='" + kdPoli + "' and antriloketcetak.asal = 'Baru'  and antriloketcetak.tanggal ='" + tanggalPeriksa + "' ");
         int maxOverall = Math.max(booking_reg, Math.max(reg_periksa, loket));
