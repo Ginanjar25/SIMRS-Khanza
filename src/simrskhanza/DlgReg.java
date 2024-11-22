@@ -15408,41 +15408,49 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private void BtnCloseWinSetNoregActionPerformed(java.awt.event.ActionEvent evt) {                                            
         WindowSetNoreg.dispose();
     } 
-    
-    private void BtnSimpanNoregActionPerformed (java.awt.event.ActionEvent evt){
-        TNoReg.setText(NoRegBooking.getText());
-        WindowSetNoreg.dispose();
-    }
-    
-    private void NoRegBookingKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNoRMKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String splitKdPoli = NoRegBooking.getText();
-            if (splitKdPoli.contains("-")) {
-                String kdPoliBpj = NoRegBooking.getText().split("-")[0];
-                String noReg = splitKdPoli.split("-")[1];
-                String kdPoliRs = Sequel.cariIsi("SELECT mpb.kd_poli_rs FROM maping_poli_bpjs mpb WHERE mpb.kd_poli_bpjs='" + kdPoliBpj + "'");
-                if (!kdPoliRs.equals("")) {
-                    String kdDokter = Sequel.cariIsi("SELECT alc.kd_dokter FROM antriloketcetak alc WHERE alc.tanggal = CURDATE() AND alc.asal = 'Baru' AND alc.nomor = '" + noReg + "' AND alc.kd_poli = '" + kdPoliRs + "'");
-                    if (!kdDokter.equals("")) {
-                        String namaDokter = Sequel.cariIsi("SELECT dr.nm_dokter FROM dokter dr WHERE dr.kd_dokter = '" + kdDokter + "'");
-                        String namaPoliklinik = Sequel.cariIsi("SELECT pl.nm_poli FROM poliklinik pl WHERE pl.kd_poli ='" + kdPoliRs + "' ");
-                        String biayaPoli = Sequel.cariIsi("SELECT pl.registrasi FROM poliklinik pl WHERE pl.kd_poli ='" + kdPoliRs + "' ");
-                        TNoReg.setText(noReg);
-                        KdDokter.setText(kdDokter);
-                        TDokter.setText(namaDokter);
-                        kdpoli.setText(kdPoliRs);
-                        TPoli.setText(namaPoliklinik);
-                        TBiaya.setText(biayaPoli);
-                        WindowSetNoreg.dispose();
+ 
+    private void BtnSimpanNoregActionPerformed(java.awt.event.ActionEvent evt) {
+        String splitKdPoli = NoRegBooking.getText();
+        if (splitKdPoli.contains("-")) {
+            String[] parts = splitKdPoli.split("-");
+            if (parts.length == 2) { // Pastikan split menghasilkan 2 elemen
+                String kdPoliBpj = parts[0];
+                String noReg = parts[1];
+                if (!noReg.isEmpty()) {
+                    String kdPoliRs = Sequel.cariIsi("SELECT mpb.kd_poli_rs FROM maping_poli_bpjs mpb WHERE mpb.kd_poli_bpjs='" + kdPoliBpj + "'");
+                    if (!kdPoliRs.equals("")) {
+                        String kdDokter = Sequel.cariIsi("SELECT alc.kd_dokter FROM antriloketcetak alc WHERE alc.tanggal = CURDATE() AND alc.asal = 'Baru' AND alc.nomor = '" + noReg + "' AND alc.kd_poli = '" + kdPoliRs + "'");
+                        if (!kdDokter.equals("")) {
+                            String namaDokter = Sequel.cariIsi("SELECT dr.nm_dokter FROM dokter dr WHERE dr.kd_dokter = '" + kdDokter + "'");
+                            String namaPoliklinik = Sequel.cariIsi("SELECT pl.nm_poli FROM poliklinik pl WHERE pl.kd_poli ='" + kdPoliRs + "' ");
+                            String biayaPoli = Sequel.cariIsi("SELECT pl.registrasi FROM poliklinik pl WHERE pl.kd_poli ='" + kdPoliRs + "' ");
+                            TNoReg.setText(noReg);
+                            KdDokter.setText(kdDokter);
+                            TDokter.setText(namaDokter);
+                            kdpoli.setText(kdPoliRs);
+                            TPoli.setText(namaPoliklinik);
+                            TBiaya.setText(biayaPoli);
+                            WindowSetNoreg.dispose();
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Maaf, Nomor Registrasi " + splitKdPoli + " tidak ditemukan...!!!");
+                        }
                     } else {
-                        JOptionPane.showMessageDialog(null, "Maaf, Nomor Registrasi " + splitKdPoli + " tidak ditemukan...!!!");
+                        JOptionPane.showMessageDialog(null, "Maaf, Kode Poli Registrasi " + splitKdPoli + " tidak ditemukan...!!!");
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Maaf, Kode Poli Registrasi " + splitKdPoli + " tidak ditemukan...!!!");
                 }
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Maaf, Format No.Reg " + splitKdPoli + " salah...!!!");
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Maaf, Format No.Reg " + splitKdPoli + " salah...!!!");
+        }
+    }
+    
+    private void NoRegBookingKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNoRMKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            BtnSimpanNoregActionPerformed(null);
         }
     }
     /**
@@ -17358,11 +17366,11 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     }
     
     private void ganti(){
-        if(Sequel.queryu2tf("update reg_periksa set no_rawat=?,no_reg=?,kd_dokter=?,no_rkm_medis=?,kd_poli=?,"+
-                            "p_jawab=?,almt_pj=?,biaya_reg=?,hubunganpj=?,stts_daftar=?,kd_pj=?,umurdaftar=?,sttsumur=? where no_rawat=?",14,
+        if(Sequel.queryu2tf("update reg_periksa set no_reg=?,kd_dokter=?,no_rkm_medis=?,kd_poli=?,"+
+                            "p_jawab=?,almt_pj=?,biaya_reg=?,hubunganpj=?,stts_daftar=?,kd_pj=?,umurdaftar=?,sttsumur=? where no_rawat=?",13,
             new String[]{
-                TNoRw.getText(),TNoReg.getText(),KdDokter.getText(),TNoRM.getText(),kdpoli.getText(),TPngJwb.getText(),
-                TAlmt.getText(),TBiaya.getText(),THbngn.getText(),TStatus.getText(),kdpnj.getText(),umur,sttsumur,TNoRw.getText()
+                TNoReg.getText(),KdDokter.getText(),TNoRM.getText(),kdpoli.getText(),TPngJwb.getText(),
+                TAlmt.getText(),TBiaya.getText(),THbngn.getText(),TStatus.getText(),kdpnj.getText(),umur,sttsumur,tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString()
             })==true){
             tabMode.setValueAt(TNoReg.getText(),tbPetugas.getSelectedRow(),1);
             tabMode.setValueAt(TNoRw.getText(),tbPetugas.getSelectedRow(),2);
