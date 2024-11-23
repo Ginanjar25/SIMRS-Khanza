@@ -7620,11 +7620,11 @@ public final class DlgReg extends javax.swing.JDialog {
                     }else{
                         if(akses.getedit_registrasi()==true){
                             if(Sequel.cekTanggal48jam(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),3).toString()+" "+tbPetugas.getValueAt(tbPetugas.getSelectedRow(),4).toString(),Sequel.ambiltanggalsekarang())==true){
-                                String no_rm = Sequel.cariIsi("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.no_rawat =?", TNoRw.getText());
-                                String nama = Sequel.cariIsi("SELECT p.nm_pasien FROM pasien p WHERE p.no_rkm_medis =?", no_rm);
+                                String no_rm = tbPetugas.getValueAt(tbPetugas.getSelectedRow(),7).toString();
+                                String nama = tbPetugas.getValueAt(tbPetugas.getSelectedRow(),8).toString();
                                 if(!no_rm.equals(TNoRM.getText())){
                                     int reply = JOptionPane.showConfirmDialog(rootPane,"No Rawat "+TNoRw.getText()+ " sudah terdaftar untuk \nPasien : " + nama +" (" + no_rm +"). \n"
-                                            + "Apakah ingin mengganti ke \nPasien : "+ TPasien.getText() + " (" + TNoRM.getText()+") ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                                            + "Apakah yakin ingin mengganti Ke: "+ TPasien.getText() + " (" + TNoRM.getText()+") ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
                                     if (reply == JOptionPane.YES_OPTION) {
                                         ganti();
                                      }
@@ -17372,6 +17372,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 TNoReg.getText(),KdDokter.getText(),TNoRM.getText(),kdpoli.getText(),TPngJwb.getText(),
                 TAlmt.getText(),TBiaya.getText(),THbngn.getText(),TStatus.getText(),kdpnj.getText(),umur,sttsumur,tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString()
             })==true){
+            ubahAntrianPoli();
             tabMode.setValueAt(TNoReg.getText(),tbPetugas.getSelectedRow(),1);
             tabMode.setValueAt(TNoRw.getText(),tbPetugas.getSelectedRow(),2);
 //            tabMode.setValueAt(Valid.SetTgl(DTPReg.getSelectedItem()+""),tbPetugas.getSelectedRow(),3);
@@ -17407,6 +17408,19 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         
         Sequel.menyimpan("antripoli", "'" + kd_dokter + "', '" + kd_poli + "', '" + status_antri + "', '" + no_rawat + "', '" + no_antrian + "', '" + poli_bpjs +"', NOW(), NOW() ");
     }
+    
+    private void ubahAntrianPoli(){
+        String poli_bpjs = "";
+        if(kdpoli.getText().equals("U0026")){
+            poli_bpjs = "LAK";
+        }else{
+            poli_bpjs = Sequel.cariIsi("select mpb.kd_poli_bpjs from maping_poli_bpjs mpb where mpb.kd_poli_rs = ?", kdpoli.getText());
+        }
+        
+        Sequel.mengedittf("antripoli", "no_rawat=?", "kd_dokter=?, kd_poli=?, no_antrian=?, poli_bpjs=?", 5, new String[]{KdDokter.getText(), kdpoli.getText(),TNoReg.getText(), poli_bpjs, TNoRw.getText()});
+    }
+
+
     
     private void setNoRegDokterAndPoli(){
         

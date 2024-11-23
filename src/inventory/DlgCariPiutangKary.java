@@ -68,7 +68,7 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
         }
 
         tabMode = new DefaultTableModel(null, new Object[]{
-            "No.Nota", "Tanggal", "NIK", "Nama Karyawan", "Jenis", "OngKir", "Uang Muka", "Piutang"
+            "No.Nota", "Tanggal", "NIK", "Nama Karyawan", "Jenis", "OngKir", "Uang Muka", "Piutang", "Status"
         }) {
             @Override
             public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -80,7 +80,7 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800, 800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 7; i++) {
+        for (i = 0; i < 9; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);
             if (i == 0) {
                 column.setPreferredWidth(90);
@@ -98,6 +98,8 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
                 column.setPreferredWidth(60);
             } else if (i == 7) {
                 column.setPreferredWidth(70);
+            }else if (i == 8) {
+                column.setPreferredWidth(100);
             }
         }
         tbDokter.setDefaultRenderer(Object.class, new WarnaTable());
@@ -1594,55 +1596,35 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             nofak = " and piutang.nota_piutang='" + NoNota.getText() + "' ";
         }
         if (!nmmem.getText().equals("")) {
-            mem = " and piutang.nm_pasien='" + nmmem.getText() + "' ";
+            mem = " and piutang.catatan like='%" + nmmem.getText() + "%' ";
         }
         if (!nmptg.getText().equals("")) {
             ptg = " and petugas.nama='" + nmptg.getText() + "' ";
-        }
-        if (!nmsat.getText().equals("")) {
-            sat = " and jenis.nama='" + nmsat.getText() + "' ";
-        }
-        if (!nmbar.getText().equals("")) {
-            bar = " and databarang.nama_brng='" + nmbar.getText() + "' ";
         }
 
         Valid.tabelKosong(tabMode);
         try {
             ttljual = 0;
-            ttldisc = 0;
-            ttlall = 0;
             ps = koneksi.prepareStatement(
-                    "select piutang.nota_piutang, piutang.tgl_piutang, "
-                    + "piutang.nip,petugas.nama, "
-                    + "piutang.no_rkm_medis,piutang.nm_pasien, "
-                    + "piutang.catatan,piutang.jns_jual,piutang.ongkir,"
-                    + "piutang.uangmuka,piutang.sisapiutang,piutang.tgltempo,bangsal.nm_bangsal  "
-                    + " from piutang inner join petugas inner join bangsal inner join jenis "
-                    + " inner join detailpiutang inner join databarang inner join kodesatuan "
-                    + " on detailpiutang.kode_brng=databarang.kode_brng "
-                    + " and piutang.kd_bangsal=bangsal.kd_bangsal "
-                    + " and detailpiutang.kode_sat=kodesatuan.kode_sat "
-                    + " and piutang.nota_piutang=detailpiutang.nota_piutang "
-                    + " and piutang.nip=petugas.nip and databarang.kdjns=jenis.kdjns "
-                    + " where " + tanggal + nofak + mem + ptg + sat + bar + " and piutang.nota_piutang like '%" + TCari.getText() + "%' or "
-                    + tanggal + nofak + mem + ptg + sat + bar + " and piutang.no_rkm_medis like '%" + TCari.getText() + "%' or "
-                    + tanggal + nofak + mem + ptg + sat + bar + " and piutang.nm_pasien like '%" + TCari.getText() + "%' or "
-                    + tanggal + nofak + mem + ptg + sat + bar + " and piutang.nip like '%" + TCari.getText() + "%' or "
-                    + tanggal + nofak + mem + ptg + sat + bar + " and petugas.nama like '%" + TCari.getText() + "%' or "
-                    + tanggal + nofak + mem + ptg + sat + bar + " and piutang.catatan like '%" + TCari.getText() + "%' or "
-                    + tanggal + nofak + mem + ptg + sat + bar + " and bangsal.nm_bangsal like '%" + TCari.getText() + "%' or "
-                    + tanggal + nofak + mem + ptg + sat + bar + " and piutang.jns_jual like '%" + TCari.getText() + "%' or "
-                    + tanggal + nofak + mem + ptg + sat + bar + " and detailpiutang.kode_brng like '%" + TCari.getText() + "%' or "
-                    + tanggal + nofak + mem + ptg + sat + bar + " and databarang.nama_brng like '%" + TCari.getText() + "%' or "
-                    + tanggal + nofak + mem + ptg + sat + bar + " and detailpiutang.kode_sat like '%" + TCari.getText() + "%' or "
-                    + tanggal + nofak + mem + ptg + sat + bar + " and jenis.nama like '%" + TCari.getText() + "%' "
-                    + " group by piutang.nota_piutang order by piutang.tgl_piutang,piutang.nota_piutang ");
+                    "select piutang.nota_piutang, piutang.tgl_piutang,piutang.nip,petugas.nama, " +
+                    "piutang.no_rkm_medis,piutang.nm_pasien, " +
+                    "piutang.catatan,piutang.jns_jual,piutang.ongkir, " +
+                    "piutang.uangmuka,piutang.sisapiutang, " +
+                    "IF(IFNULL(bayar_piutang.besar_cicilan, 0) - piutang.sisapiutang = 0, 'Lunas', 'Belum Lunas') AS lunas, SUM(detailpiutang.subtotal) AS total " +
+                    "from piutang inner join petugas inner join detailpiutang " +
+                    "on piutang.nota_piutang=detailpiutang.nota_piutang " +
+                    "and piutang.nip=petugas.nip " +
+                    "LEFT JOIN bayar_piutang ON bayar_piutang.no_rawat = piutang.nota_piutang " +
+                    " where piutang.nota_piutang LIKE '%HK%' and " + tanggal + nofak + mem + ptg +" and (piutang.nota_piutang like '%" + TCari.getText() + "%' " +
+                    "or piutang.no_rkm_medis like '%"+TCari.getText()+"%' or piutang.nm_pasien like '%"+TCari.getText()+"%' " +
+                    "or piutang.nip like '%"+TCari.getText()+"%' or petugas.nama like '%"+TCari.getText()+"%' or piutang.catatan like '%"+TCari.getText()+"%')" +
+                    " group by piutang.nota_piutang order by piutang.tgl_piutang,piutang.nota_piutang ");
             try {
                 rs = ps.executeQuery();
                 while (rs.next()) {
-                    if (rs.getString(1).substring(0,2).equals("HK") &&  !rs.getString(11).equals("0")){
-                        String str = rs.getString(7);
+                    String str = rs.getString(7);
                         String[] arrOfStr = str.split("-", 2);
+                        ttljual = ttljual + rs.getDouble(13);
                         tabMode.addRow(new String[]{
                             rs.getString(1),
                             rs.getString(2),
@@ -1651,66 +1633,9 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                             rs.getString(8),
                             df2.format(rs.getDouble(9)),
                             df2.format(rs.getDouble(10)),
-                            df2.format(rs.getDouble(11))
-                        });
-                    }                  
-
-                    //tabMode.addRow(new String[]{"","No.Batch","No.Faktur","Piutang di "+rs.getString(13),"Satuan","Harga","Jml","Subtotal","Disk(%)","Diskon(Rp)","Total"});
-                    subttlall = 0;
-                    subttldisc = 0;
-                    subttljual = 0;
-                    sisapiutang = 0;
-                    cicilan = 0;
-
-                    no = 1;
-                    ps2 = koneksi.prepareStatement("select detailpiutang.kode_brng,databarang.nama_brng, detailpiutang.kode_sat,"
-                            + " kodesatuan.satuan,detailpiutang.h_jual, detailpiutang.jumlah,detailpiutang.subtotal, detailpiutang.dis, "
-                            + " detailpiutang.bsr_dis, detailpiutang.total,detailpiutang.no_batch,detailpiutang.no_faktur,detailpiutang.aturan_pakai  "
-                            + " from detailpiutang inner join databarang inner join kodesatuan inner join jenis "
-                            + " on detailpiutang.kode_brng=databarang.kode_brng and databarang.kdjns=jenis.kdjns "
-                            + " and detailpiutang.kode_sat=kodesatuan.kode_sat where "
-                            + " detailpiutang.nota_piutang='" + rs.getString(1) + "' " + sat + bar + " and detailpiutang.kode_brng like '%" + TCari.getText() + "%' or "
-                            + " detailpiutang.nota_piutang='" + rs.getString(1) + "' " + sat + bar + " and databarang.nama_brng like '%" + TCari.getText() + "%' or "
-                            + " detailpiutang.nota_piutang='" + rs.getString(1) + "' " + sat + bar + " and detailpiutang.kode_sat like '%" + TCari.getText() + "%' or "
-                            + " detailpiutang.nota_piutang='" + rs.getString(1) + "' " + sat + bar + " and jenis.nama like '%" + TCari.getText() + "%' order by detailpiutang.kode_brng  ");
-                    try {
-                        rs2 = ps2.executeQuery();
-                        while (rs2.next()) {
-                            ttlall = ttlall + rs2.getDouble(7);
-                            subttlall = subttlall + rs2.getDouble(7);
-                            ttldisc = ttldisc + rs2.getDouble(9);
-                            subttldisc = subttldisc + rs2.getDouble(9);
-                            ttljual = ttljual + rs2.getDouble(10);
-                            subttljual = subttljual + rs2.getDouble(10);
-//                            tabMode.addRow(new String[]{
-//                                "",no+". "+rs2.getString("no_batch"),rs2.getString("no_faktur"),rs2.getString("kode_brng")+" "+rs2.getString("nama_brng")+" "+rs2.getString("aturan_pakai"),
-//                                rs2.getString("satuan"),df2.format(rs2.getDouble("h_jual")),rs2.getString("jumlah"),df2.format(rs2.getDouble("subtotal")),
-//                                rs2.getString("dis"),df2.format(rs2.getDouble("bsr_dis")),df2.format(rs2.getDouble("total"))
-//                            });
-                            no++;
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Notif : " + e);
-                    } finally {
-                        if (rs2 != null) {
-                            rs2.close();
-                        }
-                        if (ps2 != null) {
-                            ps2.close();
-                        }
-                    }
-
-                    cicilan = Sequel.cariIsiAngka("select sum(besar_cicilan) from bayar_piutang where no_rawat='" + rs.getString(1) + "' ");
-                    sisapiutang = rs.getDouble(11) - cicilan;
-                    if (sisapiutang < 1) {
-                        status = "Lunas";
-                    } else if (sisapiutang > 1) {
-                        telat = Sequel.cariIsiAngka("select TO_DAYS('" + rs.getString(12) + "')-TO_DAYS(current_date()) as day");
-                        status = "Belum Lunas" + Sequel.cariIsi("select if(" + telat + " < 0,', Telat Bayar','')");
-                    }
-                    //tabMode.addRow(new String[]{"","Total",":","","",""," ",df2.format(subttlall),"",df2.format(subttldisc),df2.format(subttljual)});    
-                    //tabMode.addRow(new String[]{"","Jatuh Tempo",": "+rs.getString(12),"","","","","","","Bsr.Cicilan",": "+df2.format(cicilan)});  
-                    //tabMode.addRow(new String[]{"","Status",": "+status,"","","","","","","Sisa Piutang",": "+df2.format(sisapiutang)}); 
+                            df2.format(rs.getDouble(11)),
+                            rs.getString(12)
+                        });                
                 }
             } catch (Exception e) {
                 System.out.println("Notif : " + e);

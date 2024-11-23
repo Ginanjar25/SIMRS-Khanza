@@ -1079,6 +1079,7 @@ import ziscsr.ZISPengeluaranPenerimaDankes;
 import ziscsr.ZISPenghasilanPenerimaDankes;
 import ziscsr.ZISTernakPenerimaDankes;
 import ziscsr.ZISUkuranRumahPenerimaDankes;
+import fungsi.AntrianPoli;
 
 
 /**
@@ -1089,6 +1090,7 @@ public class frmUtama extends javax.swing.JFrame {
     private final Connection koneksi=koneksiDB.condb();
     private final sekuel Sequel=new sekuel();
     private final validasi Valid=new validasi();
+    private final AntrianPoli antriPoli = new AntrianPoli();
     private final DlgKasirRalan kasirralan=new DlgKasirRalan(this,false);
     private final DlgReg reg=new DlgReg(this,false);
     private final DlgIGD igd=new DlgIGD(this,false);
@@ -1101,6 +1103,7 @@ public class frmUtama extends javax.swing.JFrame {
     private int jmlmenu=0,grid=0,tinggi=0,i=0,menuawal=0;
     private String coder_nik="",pilihpage="",judulform="",tampilkantni=Sequel.cariIsi("select set_tni_polri.tampilkan_tni_polri from set_tni_polri"),
             AKTIFKANTRACKSQL=koneksiDB.AKTIFKANTRACKSQL();
+    
     
     private frmUtama() {
         super();
@@ -8413,6 +8416,12 @@ public class frmUtama extends javax.swing.JFrame {
                     btnResepObatDepan.setEnabled(akses.getresep_obat());
                     if(AKTIFKANTRACKSQL.equals("yes")){
                         Sequel.menyimpan("tracker","'"+edAdmin.getText()+"',current_date(),current_time()","Login");
+                    }
+                    if(!getIPAntrian().isBlank()){
+                        String kd_poli = Sequel.cariIsi("select kd_poli from jadwal where kd_dokter = ? group by kd_poli", akses.getkode());
+                        if(!kd_poli.isBlank()){
+                             antriPoli.kirimAntrianAwal(kd_poli, akses.getkode());
+                        }
                     }
                 }else if((akses.getjml1()==0)&&(akses.getjml2()==0)){
                     JOptionPane.showMessageDialog(null,"Maaf, Gagal login. ID User atau password ada yang salah ...!");
@@ -44681,5 +44690,13 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         btnKonsultasiMedik.setName("btnKonsultasiMedik"); 
         btnKonsultasiMedik.setPreferredSize(new java.awt.Dimension(200, 90));
         btnKonsultasiMedik.addActionListener(this::btnKonsultasiMedikActionPerformed);
+    }
+    
+    private String getIPAntrian(){
+        String IPAddress = akses.getalamatip();
+        
+        String getIPAntrian = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", IPAddress);
+        
+        return getIPAntrian;
     }
 }

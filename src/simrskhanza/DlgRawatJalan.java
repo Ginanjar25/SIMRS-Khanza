@@ -10059,7 +10059,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         TCaraBayar.setText(Sequel.cariIsi("SELECT CONCAT(penjab.png_jawab, ' ',COALESCE(bridging_sep.klsrawat, '')) AS cara_bayar FROM reg_periksa " +
         "INNER JOIN penjab ON penjab.kd_pj = reg_periksa.kd_pj " +
         "LEFT JOIN bridging_sep on bridging_sep.no_rawat = reg_periksa.no_rawat " +
-        "WHERE reg_periksa.no_rawat = ?", norwt) + Sequel.cariIsi("SELECT CONCAT(' - ', bpjs_prb.prb) as prb FROM bpjs_prb INNER JOIN bridging_sep ON bridging_sep.no_sep = bpjs_prb.no_sep WHERE bridging_sep.no_rawat = ?", norwt));
+        "WHERE reg_periksa.no_rawat = ?", norwt) + Sequel.cariIsi("SELECT CONCAT(' - ', bpjs_prb.prb) as prb FROM bpjs_prb INNER JOIN bridging_sep ON bridging_sep.no_sep = bpjs_prb.no_sep WHERE bridging_sep.no_rawat = ? and bpjs_prb.prb like '%Potensi%'", norwt));
         TNoRw.setText(norwt);
         TCari.setText("");
         DTPCari1.setDate(tgl1);
