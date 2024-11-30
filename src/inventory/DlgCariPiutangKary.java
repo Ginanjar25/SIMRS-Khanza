@@ -1615,7 +1615,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                     "on piutang.nota_piutang=detailpiutang.nota_piutang " +
                     "and piutang.nip=petugas.nip " +
                     "LEFT JOIN bayar_piutang ON bayar_piutang.no_rawat = piutang.nota_piutang " +
-                    " where piutang.nota_piutang LIKE '%HK%' and " + tanggal + nofak + mem + ptg +" and (piutang.nota_piutang like '%" + TCari.getText() + "%' " +
+                    "where piutang.nota_piutang LIKE '%HK%' and " + tanggal + " and (piutang.nota_piutang like '%" + TCari.getText() + "%' " +
                     "or piutang.no_rkm_medis like '%"+TCari.getText()+"%' or piutang.nm_pasien like '%"+TCari.getText()+"%' " +
                     "or piutang.nip like '%"+TCari.getText()+"%' or petugas.nama like '%"+TCari.getText()+"%' or piutang.catatan like '%"+TCari.getText()+"%')" +
                     " group by piutang.nota_piutang order by piutang.tgl_piutang,piutang.nota_piutang ");
