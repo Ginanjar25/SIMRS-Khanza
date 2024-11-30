@@ -268,7 +268,7 @@ public final class DlgIGD extends javax.swing.JDialog {
 
         Object[] row={"P","No.Reg","No.Rawat","Tanggal","Jam","Kd.Dokter","Dokter Dituju","Nomer RM",
             "Pasien","J.K.","Umur","Poliklinik","Penanggung Jawab","Alamat P.J.","Hubungan dg P.J.",
-            "Biaya Regristrasi","Status","Jenis Bayar","Stts Rawat","Kd PJ","Status Bayar","FP"};
+            "Biaya Regristrasi","Status","Jenis Bayar","Stts Rawat","Kd PJ","Status Bayar","FP","Readmisi"};
         tabMode=new DefaultTableModel(null,row){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -283,7 +283,7 @@ public final class DlgIGD extends javax.swing.JDialog {
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
-                 java.lang.Object.class,java.lang.Object.class
+                 java.lang.Object.class,java.lang.Object.class,java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -412,6 +412,11 @@ public final class DlgIGD extends javax.swing.JDialog {
                         isNumber();
                     }
                     TNoRM.requestFocus();
+                    if (Sequel.cariInteger("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.tgl_registrasi BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) "
+                            + "AND CURDATE() AND rp.kd_poli = 'IGDK' AND rp.no_rkm_medis =?", TNoRM.getText()) > 0 ) {
+                        JOptionPane.showMessageDialog(null, "Pasien dengan No. RM : " + TNoRM.getText() + " Potensi Re-Admisi IGD...!");
+                        TNoRM.requestFocus();
+                    }
                 }
             }
             @Override
@@ -1003,6 +1008,8 @@ public final class DlgIGD extends javax.swing.JDialog {
         labelFinger1 = new widget.Label();
         labelFinger2 = new widget.Label();
         labelFinger3 = new widget.Label();
+        labelFinger4 = new widget.Label();
+        labelFinger5 = new widget.Label();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
         
@@ -5297,7 +5304,7 @@ public final class DlgIGD extends javax.swing.JDialog {
                    isRegistrasiIGD();
                 }
             }else {
-                isRegistrasiIGD();
+                isRegistrasiIGD();                
             }    
         }
 }//GEN-LAST:event_BtnSimpanActionPerformed
@@ -11400,8 +11407,11 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Label labelFinger1;
     private widget.Label labelFinger2;
     private widget.Label labelFinger3;
+    private widget.Label labelFinger4;
+    private widget.Label labelFinger5;
     private javax.swing.JPanel jPanelFinger1;
     private javax.swing.JPanel jPanelFinger2;
+    private javax.swing.JPanel jPanelFinger3;
     
     private void tampil() {
         Valid.tabelKosong(tabMode);   
@@ -11413,13 +11423,14 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         try{  
             ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
                    "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli,"+
-                   "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,reg_periksa.stts,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(fp.nokartu),\"Belum\",\"Sudah\") AS fingerprint "+
+                   "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,reg_periksa.stts,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(fp.nokartu),\"Belum\",\"Sudah\") AS fingerprint, if(ISNULL(side_db.readmisi_igd.no_rawat),\"No\",\"Yes\") AS readmisi "+
                    "from reg_periksa inner join dokter inner join pasien inner join poliklinik inner join penjab "+
                    "on reg_periksa.kd_dokter=dokter.kd_dokter and reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                    "and reg_periksa.kd_pj=penjab.kd_pj and reg_periksa.kd_poli=poliklinik.kd_poli "+ 
                    "LEFT JOIN ( " +
                    "    SELECT nokartu, MAX(tanggal) AS min_tanggal FROM side_db.fingerprint_bpjs GROUP BY nokartu " +
                    ") fp ON fp.nokartu = pasien.no_peserta AND fp.min_tanggal BETWEEN reg_periksa.tgl_registrasi AND DATE_ADD(reg_periksa.tgl_registrasi, INTERVAL CASE WHEN reg_periksa.status_lanjut = 'Ralan' THEN 1 ELSE 2 END DAY)"+
+                   " left join side_db.readmisi_igd on reg_periksa.no_rawat = side_db.readmisi_igd.no_rawat "+
                    "where poliklinik.kd_poli='IGDK' and reg_periksa.tgl_registrasi between ? and ? "+
                    (TCari.getText().trim().equals("")?"":"and (reg_periksa.no_reg like ? or reg_periksa.no_rawat like ? or reg_periksa.tgl_registrasi like ? or "+
                    "reg_periksa.kd_dokter like ? or dokter.nm_dokter like ? or reg_periksa.no_rkm_medis like ? or "+
@@ -11451,7 +11462,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                         rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9),
                         rs.getString(10),rs.getString(11),rs.getString(12),rs.getString(13),rs.getString(14),
                         Valid.SetAngka(rs.getDouble(15)),rs.getString(16),rs.getString(17),rs.getString(18),
-                        rs.getString("kd_pj"),rs.getString("status_bayar"),rs.getString("fingerprint")
+                        rs.getString("kd_pj"),rs.getString("status_bayar"),rs.getString("fingerprint"),rs.getString("readmisi")
                     });
                 } 
             } catch (Exception e) {
@@ -12171,6 +12182,16 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         FormInput.add(labelFinger1);
         labelFinger1.setBounds(900, 10, 150, 14);
         
+        labelFinger4.setText("Potensi Re-Admisi IGD :");
+        labelFinger4.setName("labelFinger4"); // NOI18N
+        FormInput.add(labelFinger4);
+        labelFinger4.setBounds(1030, 10, 150, 14);
+        
+        labelFinger5.setText("Potensi");
+        labelFinger5.setName("labelFinger5"); // NOI18N
+        FormInput.add(labelFinger5);
+        labelFinger5.setBounds(1015, 30, 150, 14);
+        
         labelFinger2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         labelFinger2.setText("Belum");
         labelFinger2.setName("labelFinger2"); // NOI18N
@@ -12185,6 +12206,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         
         jPanelFinger1 = new javax.swing.JPanel();
         jPanelFinger2 = new javax.swing.JPanel();
+        jPanelFinger3 = new javax.swing.JPanel();
         
         jPanelFinger1.setBackground(new java.awt.Color(255, 112, 67));
         jPanelFinger1.setName("jPanelFinger1"); // NOI18N
@@ -12195,6 +12217,11 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         jPanelFinger2.setName("jPanelFinger2"); // NOI18N
         FormInput.add(jPanelFinger2);
         jPanelFinger2.setBounds(920, 60, 30, 20);
+        
+        jPanelFinger3.setBackground(new java.awt.Color(157, 157, 161));
+        jPanelFinger3.setName("jPanelFinger3"); // NOI18N
+        FormInput.add(jPanelFinger3);
+        jPanelFinger3.setBounds(1080, 30, 30, 20);
     }
     
     private void ganti(){
@@ -12303,6 +12330,10 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                         Sequel.menyimpan2("rujuk_masuk","'"+TNoRw.getText()+"','"+AsalRujukan.getText()+"','"+alamatperujuk+"','"+nosisrute+"','0','"+AsalRujukan.getText()+"','-','-','-','"+NoBalasan.getText()+"'","No.Rujuk"); 
                         nosisrute="";
                     }                    
+                }
+                if (Sequel.cariInteger("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.tgl_registrasi BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) "
+                        + "AND CURDATE() AND rp.kd_poli = 'IGDK' AND rp.no_rkm_medis =?", TNoRM.getText()) > 0) {
+                    Sequel.menyimpantf2("side_db.readmisi_igd", "?", "No.Rawat", 1, new String[]{TNoRw.getText()});
                 }
                 if(ChkTracker.isSelected()==true){
                     ctk();

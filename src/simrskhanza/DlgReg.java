@@ -555,7 +555,6 @@ public final class DlgReg extends javax.swing.JDialog {
                         isNumber();
                     }
                     TNoRM.requestFocus();
-                    System.out.println("lokasi dispose notif");
                     if (Sequel.cariInteger("select count(reg_periksa.no_rkm_medis) from pasien inner join reg_periksa on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
                             + "WHERE reg_periksa.tgl_registrasi = CURDATE() and pasien.no_rkm_medis=?", TNoRM.getText()) > 0) {
                         JOptionPane.showMessageDialog(null, "Pasien dengan No. RM : " + TNoRM.getText() + " Sudah terdaftar di hari yang sama...!");
@@ -16781,7 +16780,11 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 }else{
                     Sequel.menyimpan2("rujuk_masuk","'"+TNoRw.getText()+"','"+AsalRujukan.getText()+"','"+alamatperujuk+"','"+nosisrute+"','0','"+AsalRujukan.getText()+"','-','-','-','"+NoBalasan.getText()+"'","No.Rujuk"); 
                     nosisrute="";
-                }                    
+                }                
+                if (Sequel.cariInteger("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.tgl_registrasi BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) "
+                        + "AND CURDATE() AND rp.kd_poli = 'IGDK' AND rp.no_rkm_medis =?", TNoRM.getText()) > 0) {
+                    Sequel.menyimpantf2("side_db.readmisi_igd", "?", "No.Rawat", 1, new String[]{TNoRw.getText()});
+                }
             }
             if(ChkTracker.isSelected()==true){
                 ctk();
