@@ -37,6 +37,17 @@ public class WarnaTableIGD extends DefaultTableCellRenderer {
                 }
             }
         }
+        if (column == 3) {
+            Object cellValue = table.getValueAt(row, 22); // Get the value of the cell in column 25
+            Object kdpj = table.getValueAt(row, 20);
+            if (cellValue != null) {
+                String cellString = cellValue.toString(); // Convert the value to a string
+                String StringKdpj = kdpj.toString();
+                if ("Yes".equals(cellString) ) {
+                    component.setBackground(new Color(157, 157, 161)); // Set background color for "JKN"
+                }
+            }
+        }
         return component;
     }
 
