@@ -12,6 +12,7 @@
 package simrskhanza;
 
 import usu.widget.util.WidgetUtilities;
+import fungsi.RedirectSystemOutToDatabase;
 
 /**
  *
@@ -23,6 +24,7 @@ public class SIMRSKhanza {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        RedirectSystemOutToDatabase.redirectSystemOut();
         WidgetUtilities.invokeLater(() -> {
            frmUtama utama=frmUtama.getInstance();
            utama.isWall();
