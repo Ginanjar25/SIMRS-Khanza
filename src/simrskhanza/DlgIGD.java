@@ -412,11 +412,6 @@ public final class DlgIGD extends javax.swing.JDialog {
                         isNumber();
                     }
                     TNoRM.requestFocus();
-                    if (Sequel.cariInteger("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.tgl_registrasi BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) "
-                            + "AND CURDATE() AND rp.kd_poli = 'IGDK' AND rp.no_rkm_medis =?", TNoRM.getText()) > 0 ) {
-                        JOptionPane.showMessageDialog(null, "Pasien dengan No. RM : " + TNoRM.getText() + " Potensi Re-Admisi IGD...!");
-                        TNoRM.requestFocus();
-                    }
                 }
             }
             @Override
@@ -5333,6 +5328,9 @@ public final class DlgIGD extends javax.swing.JDialog {
         for(i=0;i<tbPetugas.getRowCount();i++){ 
             if(tbPetugas.getValueAt(i,0).toString().equals("true")){
                 if(Sequel.meghapustf("reg_periksa","no_rawat",tbPetugas.getValueAt(i,2).toString())==true){
+                    if("Yes".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 22).toString())) {
+                        Sequel.meghapustf("side_db.readmisi_igd","no_rawat",tbPetugas.getValueAt(i,2).toString());
+                    }
                     tabMode.removeRow(i);
                     i--;
                 }
@@ -12331,18 +12329,22 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                         nosisrute="";
                     }                    
                 }
-                if (Sequel.cariInteger("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.tgl_registrasi BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) "
-                        + "AND CURDATE() AND rp.kd_poli = 'IGDK' AND rp.no_rkm_medis =?", TNoRM.getText()) > 0) {
-                    Sequel.menyimpantf2("side_db.readmisi_igd", "?", "No.Rawat", 1, new String[]{TNoRw.getText()});
+                if (kdpnj.getText().equals("BPJ")) {
+                    if (Sequel.cariInteger("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.tgl_registrasi BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) "
+                            + "AND CURDATE() AND rp.kd_poli = 'IGDK' AND rp.tgl_registrasi !=CURDATE() AND rp.kd_pj = 'BPJ' AND rp.no_rkm_medis =?", TNoRM.getText()) > 0) {
+                        Sequel.menyimpantf2("side_db.readmisi_igd", "?", "No.Rawat", 1, new String[]{TNoRw.getText()});
+                    }
                 }
                 if(ChkTracker.isSelected()==true){
                     ctk();
                 }
-                tabMode.addRow(new Object[] {
-                    false,TNoReg.getText(),TNoRw.getText(),Valid.SetTgl(DTPReg.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),
-                    KdDokter.getText(),TDokter.getText(),TNoRM.getText(),TPasien.getText(),JK.getText(),umur+" "+sttsumur,"IGD",TPngJwb.getText(),TAlmt.getText(),THbngn.getText(),Valid.SetAngka(biaya),
-                    TStatus.getText(),nmpnj.getText(),"Belum",kdpnj.getText(),"Belum Bayar"
-                });
+//                tabMode.addRow(new Object[] {
+//                    false,TNoReg.getText(),TNoRw.getText(),Valid.SetTgl(DTPReg.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),
+//                    KdDokter.getText(),TDokter.getText(),TNoRM.getText(),TPasien.getText(),JK.getText(),umur+" "+sttsumur,"IGD",TPngJwb.getText(),TAlmt.getText(),THbngn.getText(),Valid.SetAngka(biaya),
+//                    TStatus.getText(),nmpnj.getText(),"Belum",kdpnj.getText(),"Belum Bayar"
+//                });
+                tampil();
+                
                 emptTeks();
                 tampil();
             }
