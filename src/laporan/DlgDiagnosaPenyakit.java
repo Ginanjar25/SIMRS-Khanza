@@ -156,6 +156,7 @@ public class DlgDiagnosaPenyakit extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         internalFrame1 = new widget.InternalFrame();
         jPanel3 = new javax.swing.JPanel();
         panelGlass8 = new widget.panelisi();
@@ -176,6 +177,8 @@ public class DlgDiagnosaPenyakit extends javax.swing.JDialog {
         jLabel6 = new widget.Label();
         TCari = new widget.TextBox();
         BtnCari = new widget.Button();
+        DiagnosaUtama = new widget.RadioButton();
+        DiagnosaSementara = new widget.RadioButton();
         FormInput = new widget.PanelBiasa();
         jLabel3 = new widget.Label();
         TNoRw = new widget.TextBox();
@@ -340,7 +343,7 @@ public class DlgDiagnosaPenyakit extends javax.swing.JDialog {
         jLabel14.setPreferredSize(new java.awt.Dimension(63, 23));
         panelGlass9.add(jLabel14);
 
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-09-2019" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-12-2024" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -352,7 +355,7 @@ public class DlgDiagnosaPenyakit extends javax.swing.JDialog {
         jLabel19.setPreferredSize(new java.awt.Dimension(18, 23));
         panelGlass9.add(jLabel19);
 
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-09-2019" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "05-12-2024" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -369,11 +372,11 @@ public class DlgDiagnosaPenyakit extends javax.swing.JDialog {
 
         jLabel6.setText("Key Word :");
         jLabel6.setName("jLabel6"); // NOI18N
-        jLabel6.setPreferredSize(new java.awt.Dimension(87, 23));
+        jLabel6.setPreferredSize(new java.awt.Dimension(70, 23));
         panelGlass9.add(jLabel6);
 
         TCari.setName("TCari"); // NOI18N
-        TCari.setPreferredSize(new java.awt.Dimension(367, 23));
+        TCari.setPreferredSize(new java.awt.Dimension(210, 23));
         TCari.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 TCariKeyPressed(evt);
@@ -397,6 +400,25 @@ public class DlgDiagnosaPenyakit extends javax.swing.JDialog {
             }
         });
         panelGlass9.add(BtnCari);
+
+        buttonGroup1.add(DiagnosaUtama);
+        DiagnosaUtama.setForeground(new java.awt.Color(0, 0, 0));
+        DiagnosaUtama.setSelected(true);
+        DiagnosaUtama.setText("Diagnosa Utama");
+        DiagnosaUtama.setName("DiagnosaUtama"); // NOI18N
+        DiagnosaUtama.setPreferredSize(new java.awt.Dimension(100, 20));
+        panelGlass9.add(DiagnosaUtama);
+
+        buttonGroup1.add(DiagnosaSementara);
+        DiagnosaSementara.setForeground(new java.awt.Color(0, 0, 0));
+        DiagnosaSementara.setText("Diagnosa Sementara");
+        DiagnosaSementara.setName("DiagnosaSementara"); // NOI18N
+        DiagnosaSementara.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DiagnosaSementaraActionPerformed(evt);
+            }
+        });
+        panelGlass9.add(DiagnosaSementara);
 
         jPanel3.add(panelGlass9, java.awt.BorderLayout.PAGE_START);
 
@@ -490,8 +512,15 @@ public class DlgDiagnosaPenyakit extends javax.swing.JDialog {
             Valid.textKosong(TNoRw,"No.Rawat");
         }else{ 
             panelDiagnosa1.setRM(TNoRw.getText(),TNoRM.getText(),Valid.SetTgl(DTPCari1.getSelectedItem()+""),Valid.SetTgl(DTPCari2.getSelectedItem()+""),Status.getSelectedItem().toString(),TCari.getText().trim());
-            panelDiagnosa1.simpan();
-        }
+            if(DiagnosaUtama.isSelected()){
+                panelDiagnosa1.simpan();
+            }else{
+                int reply = JOptionPane.showConfirmDialog(rootPane,"Apakah anda yakin ingin menyimpan Diagnosa dan Prosedur sementara berikut ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                if(reply == JOptionPane.YES_OPTION){
+                    panelDiagnosa1.simpanICDSementara();
+                }
+            }
+           }
 }//GEN-LAST:event_BtnSimpanActionPerformed
 
     private void BtnSimpanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSimpanKeyPressed
@@ -593,6 +622,10 @@ public class DlgDiagnosaPenyakit extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_formWindowActivated
 
+    private void DiagnosaSementaraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DiagnosaSementaraActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_DiagnosaSementaraActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -619,6 +652,8 @@ public class DlgDiagnosaPenyakit extends javax.swing.JDialog {
     private widget.Button BtnSimpan;
     private widget.Tanggal DTPCari1;
     private widget.Tanggal DTPCari2;
+    private widget.RadioButton DiagnosaSementara;
+    private widget.RadioButton DiagnosaUtama;
     private widget.PanelBiasa FormInput;
     private widget.Label LCount;
     private widget.ComboBox Status;
@@ -626,6 +661,7 @@ public class DlgDiagnosaPenyakit extends javax.swing.JDialog {
     private widget.TextBox TNoRM;
     private widget.TextBox TNoRw;
     private widget.TextBox TPasien;
+    private javax.swing.ButtonGroup buttonGroup1;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel10;
     private widget.Label jLabel14;
@@ -640,8 +676,6 @@ public class DlgDiagnosaPenyakit extends javax.swing.JDialog {
     private widget.panelisi panelGlass9;
     // End of variables declaration//GEN-END:variables
 
-    
-
     private void isRawat() {
          Sequel.cariIsi("select reg_periksa.no_rkm_medis from reg_periksa where reg_periksa.no_rawat=? ",TNoRM,TNoRw.getText());
     }
@@ -650,8 +684,6 @@ public class DlgDiagnosaPenyakit extends javax.swing.JDialog {
         Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=? ",TPasien,TNoRM.getText());
     }
 
-
-    
     public void setNoRm(String norwt, Date tgl1, Date tgl2,String status) {
         TNoRw.setText(norwt);
         TCari.setText(norwt);
@@ -663,17 +695,19 @@ public class DlgDiagnosaPenyakit extends javax.swing.JDialog {
         panelDiagnosa1.setRM(TNoRw.getText(),TNoRM.getText(),Valid.SetTgl(DTPCari1.getSelectedItem()+""),Valid.SetTgl(DTPCari2.getSelectedItem()+""),Status.getSelectedItem().toString(),TCari.getText().trim());
     }
     
-    
-    
     public void isCek(){
         BtnSimpan.setEnabled(akses.getdiagnosa_pasien());
         BtnHapus.setEnabled(akses.getdiagnosa_pasien());        
         BtnPrint.setEnabled(akses.getdiagnosa_pasien());
         panelDiagnosa1.btnTambahPenyakit.setEnabled(akses.getpenyakit());
         panelDiagnosa1.btnTambahProsedur.setEnabled(akses.geticd9());
+        
+        String isDokter = Sequel.cariIsi("select 1 from dokter where kd_dokter = ?", akses.getkode());
+        
+        if(isDokter.length() >= 1){
+            DiagnosaUtama.isSelected();
+            DiagnosaUtama.setVisible(false);
+            DiagnosaSementara.setVisible(false);
+        }
     }
-
-    
-
-
 }

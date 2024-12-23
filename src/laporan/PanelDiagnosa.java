@@ -5,6 +5,7 @@
  */
 package laporan;
 
+import fungsi.TarifInacbg;
 import fungsi.WarnaTable;
 import fungsi.batasInput;
 import fungsi.koneksiDB;
@@ -37,6 +38,7 @@ public class PanelDiagnosa extends widget.panelisi {
     private Connection koneksi=koneksiDB.condb();
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
+    private TarifInacbg tarifInacbg = new TarifInacbg();
     private PreparedStatement pspenyakit,psdiagnosapasien,psprosedur,pstindakanpasien, pslist;
     private ResultSet rs;
     private int jml=0,i=0,index=0;
@@ -1201,5 +1203,52 @@ public class PanelDiagnosa extends widget.panelisi {
     }
 
 
-    
+    public void simpanICDSementara() {
+        StringBuilder diagnosaBuilder = new StringBuilder();
+        StringBuilder prosedurBuilder = new StringBuilder();
+
+        try {
+            koneksi.setAutoCommit(false);
+
+            // Menyusun diagnosa
+            for (int i = 0; i < tbDiagnosa.getRowCount(); i++) {
+                if (tbDiagnosa.getValueAt(i, 0).toString().equals("true")) {
+                    if (diagnosaBuilder.length() > 0) {
+                        diagnosaBuilder.append("#");
+                    }
+                    diagnosaBuilder.append(tbDiagnosa.getValueAt(i, 1).toString());
+                }
+            }
+
+            // Menyusun prosedur
+            for (int i = 0; i < tbProsedur.getRowCount(); i++) {
+                if (tbProsedur.getValueAt(i, 0).toString().equals("true")) {
+                    if (prosedurBuilder.length() > 0) {
+                        prosedurBuilder.append("#");
+                    }
+                    prosedurBuilder.append(tbProsedur.getValueAt(i, 1).toString());
+                }
+            }
+
+//             Menyimpan ke database
+            Sequel.menyimpan("side_db.icd_sementara", "?,?,?", "Penyakit", 3, new String[]{
+                norawat, diagnosaBuilder.toString(), prosedurBuilder.toString()
+            });
+            
+            tarifInacbg.kirimICDGrouping(norawat, diagnosaBuilder.toString(), prosedurBuilder.toString());
+            
+            koneksi.setAutoCommit(true);
+
+            // Reset checkbox di tabel diagnosa dan prosedur
+            for (int i = 0; i < tbDiagnosa.getRowCount(); i++) {
+                tbDiagnosa.setValueAt(false, i, 0);
+            }
+            for (int i = 0; i < tbProsedur.getRowCount(); i++) {
+                tbProsedur.setValueAt(false, i, 0);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Maaf, gagal menyimpan data. Kemungkinan ada data diagnosa atau prosedur yang sama dimasukkan sebelumnya...!");
+        }
+        pilihTab();
+    }
 }

@@ -780,6 +780,12 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         BtnCari = new widget.Button();
         jLabel4 = new widget.Label();
         DTPTgl = new widget.Tanggal();
+        HKLabel = new widget.Label();
+        THakKelas = new widget.TextBox();
+        NKLabel = new widget.Label();
+        TNaikKelas = new widget.TextBox();
+        NoSEPLabel = new widget.Label();
+        TNoSEP = new widget.TextBox();
         TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
         tbBilling = new widget.Table();
@@ -1723,13 +1729,14 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
-        panelGlass1.setPreferredSize(new java.awt.Dimension(100, 45));
-        panelGlass1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 10));
+        panelGlass1.setPreferredSize(new java.awt.Dimension(100, 70));
+        panelGlass1.setLayout(null);
 
         jLabel3.setText("No.Rawat :");
         jLabel3.setName("jLabel3"); // NOI18N
         jLabel3.setPreferredSize(new java.awt.Dimension(70, 23));
         panelGlass1.add(jLabel3);
+        jLabel3.setBounds(5, 11, 70, 23);
 
         TNoRw.setHighlighter(null);
         TNoRw.setName("TNoRw"); // NOI18N
@@ -1740,18 +1747,21 @@ public class DlgBilingRalan extends javax.swing.JDialog {
             }
         });
         panelGlass1.add(TNoRw);
+        TNoRw.setBounds(79, 11, 150, 23);
 
         TNoRM.setEditable(false);
         TNoRM.setHighlighter(null);
         TNoRM.setName("TNoRM"); // NOI18N
         TNoRM.setPreferredSize(new java.awt.Dimension(100, 23));
         panelGlass1.add(TNoRM);
+        TNoRM.setBounds(233, 11, 100, 23);
 
         TPasien.setEditable(false);
         TPasien.setHighlighter(null);
         TPasien.setName("TPasien"); // NOI18N
         TPasien.setPreferredSize(new java.awt.Dimension(320, 23));
         panelGlass1.add(TPasien);
+        TPasien.setBounds(337, 11, 320, 23);
 
         BtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
         BtnCari.setMnemonic('R');
@@ -1769,13 +1779,15 @@ public class DlgBilingRalan extends javax.swing.JDialog {
             }
         });
         panelGlass1.add(BtnCari);
+        BtnCari.setBounds(661, 11, 28, 23);
 
         jLabel4.setText("Tanggal :");
         jLabel4.setName("jLabel4"); // NOI18N
         jLabel4.setPreferredSize(new java.awt.Dimension(65, 23));
         panelGlass1.add(jLabel4);
+        jLabel4.setBounds(693, 11, 65, 23);
 
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "12-08-2023 01:32:33" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-12-2024 15:40:12" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -1786,6 +1798,70 @@ public class DlgBilingRalan extends javax.swing.JDialog {
             }
         });
         panelGlass1.add(DTPTgl);
+        DTPTgl.setBounds(762, 11, 140, 23);
+
+        HKLabel.setText("Hak Kelas :");
+        HKLabel.setToolTipText("");
+        HKLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        HKLabel.setName("HKLabel"); // NOI18N
+        HKLabel.setPreferredSize(new java.awt.Dimension(70, 23));
+        panelGlass1.add(HKLabel);
+        HKLabel.setBounds(5, 40, 70, 23);
+
+        THakKelas.setEditable(false);
+        THakKelas.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        THakKelas.setName("THakKelas"); // NOI18N
+        THakKelas.setPreferredSize(new java.awt.Dimension(150, 23));
+        THakKelas.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                THakKelasKeyPressed(evt);
+            }
+        });
+        panelGlass1.add(THakKelas);
+        THakKelas.setBounds(80, 40, 150, 23);
+
+        NKLabel.setText("Naik Kelas :");
+        NKLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        NKLabel.setName("NKLabel"); // NOI18N
+        NKLabel.setPreferredSize(new java.awt.Dimension(70, 23));
+        panelGlass1.add(NKLabel);
+        NKLabel.setBounds(235, 40, 70, 23);
+
+        TNaikKelas.setEditable(false);
+        TNaikKelas.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        TNaikKelas.setName("TNaikKelas"); // NOI18N
+        TNaikKelas.setPreferredSize(new java.awt.Dimension(150, 23));
+        TNaikKelas.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TNaikKelasKeyPressed(evt);
+            }
+        });
+        panelGlass1.add(TNaikKelas);
+        TNaikKelas.setBounds(310, 40, 150, 23);
+
+        NoSEPLabel.setText("No. SEP :");
+        NoSEPLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        NoSEPLabel.setName("NoSEPLabel"); // NOI18N
+        NoSEPLabel.setPreferredSize(new java.awt.Dimension(70, 23));
+        panelGlass1.add(NoSEPLabel);
+        NoSEPLabel.setBounds(465, 40, 60, 23);
+
+        TNoSEP.setEditable(false);
+        TNoSEP.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        TNoSEP.setName("TNoSEP"); // NOI18N
+        TNoSEP.setPreferredSize(new java.awt.Dimension(160, 23));
+        TNoSEP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TNoSEPActionPerformed(evt);
+            }
+        });
+        TNoSEP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TNoSEPKeyPressed(evt);
+            }
+        });
+        panelGlass1.add(TNoSEP);
+        TNoSEP.setBounds(530, 40, 190, 23);
 
         internalFrame1.add(panelGlass1, java.awt.BorderLayout.PAGE_START);
 
@@ -3958,6 +4034,22 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         // TODO add your handling code here:
     }//GEN-LAST:event_MnCariPeriksaLabMBActionPerformed
 
+    private void THakKelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_THakKelasKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_THakKelasKeyPressed
+
+    private void TNaikKelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNaikKelasKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TNaikKelasKeyPressed
+
+    private void TNoSEPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TNoSEPActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TNoSEPActionPerformed
+
+    private void TNoSEPKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNoSEPKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TNoSEPKeyPressed
+
  
 
     /**
@@ -4003,6 +4095,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private widget.Button BtnTambahPotongan;
     private widget.Button BtnView;
     private widget.Tanggal DTPTgl;
+    private widget.Label HKLabel;
     private javax.swing.JMenuItem MnCariPeriksaLab;
     private javax.swing.JMenuItem MnCariPeriksaLabMB;
     private javax.swing.JMenuItem MnCariPeriksaLabPA;
@@ -4024,15 +4117,20 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private javax.swing.JMenuItem MnPotongan;
     private javax.swing.JMenuItem MnRawatJalan;
     private javax.swing.JMenuItem MnTambahan;
+    private widget.Label NKLabel;
+    private widget.Label NoSEPLabel;
     private javax.swing.JPopupMenu PopupBayar;
     private javax.swing.JPopupMenu PopupPiutang;
     private widget.ScrollPane Scroll;
     private widget.TextBox TCari;
     private widget.TextBox TCari1;
     private widget.TextBox TDokter;
+    public widget.TextBox THakKelas;
     public widget.TextBox TKembali;
+    public widget.TextBox TNaikKelas;
     private widget.TextBox TNoRM;
     public widget.TextBox TNoRw;
+    public widget.TextBox TNoSEP;
     private widget.TextBox TPasien;
     private javax.swing.JTabbedPane TabRawat;
     private widget.TextBox TagihanPPn;
@@ -4263,6 +4361,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
              }  
              TCari.setText("");
              TCari1.setText("");
+             setHakNaikKelas();
              tampilAkunBayar2();
              tampilAkunPiutang2();
              isHitung(); 
@@ -4299,7 +4398,8 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 }
                 
                 TCari.setText("");
-                TCari1.setText("");                
+                TCari1.setText("");   
+                setHakNaikKelas();
                 tampilAkunBayarTersimpan();
                 tampilAkunPiutangTersimpan();
                 isHitung(); 
@@ -6130,5 +6230,38 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         }
     }
     
+    private void setHakNaikKelas() {
+        String noRawat = TNoRw.getText();
+        String naikKelas = Sequel.cariIsi("select klsnaik from bridging_sep where no_rawat = ?", noRawat);
+        String hakKelas =   Sequel.cariIsi("select klsrawat from bridging_sep where no_rawat = ?", noRawat);
+        Sequel.cariIsi("select no_sep from bridging_sep where no_rawat = ?", TNoSEP, noRawat);
+
+        switch (naikKelas) {
+            case "8":
+                TNaikKelas.setText("Kelas VIP/VVIP");
+                break;
+            case "3":
+                TNaikKelas.setText("Kelas 1");
+                break;
+            default:
+                TNaikKelas.setText("-");
+                break;
+        }
+        
+        switch (hakKelas) {
+            case "1":
+                THakKelas.setText("Kelas 1");
+                break;
+            case "2":
+                THakKelas.setText("Kelas 2");
+                break;
+            case "3":
+                THakKelas.setText("Kelas 3");
+                break;
+            default:
+                THakKelas.setText("-");
+                break;
+        }
+    }
     
 }

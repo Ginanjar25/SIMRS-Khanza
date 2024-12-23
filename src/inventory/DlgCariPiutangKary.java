@@ -402,6 +402,7 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
         kdsat = new widget.TextBox();
         btnSatuan = new widget.Button();
         nmsat = new widget.TextBox();
+        Bayar = new javax.swing.JComboBox<>();
         panelisi1 = new widget.panelisi();
         label10 = new widget.Label();
         TCari = new widget.TextBox();
@@ -611,7 +612,7 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
         label17.setName("label17"); // NOI18N
         label17.setPreferredSize(new java.awt.Dimension(65, 23));
         panelisi4.add(label17);
-        label17.setBounds(295, 10, 90, 23);
+        label17.setBounds(285, 10, 50, 23);
 
         kdbar.setName("kdbar"); // NOI18N
         kdbar.setPreferredSize(new java.awt.Dimension(80, 23));
@@ -621,13 +622,13 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
             }
         });
         panelisi4.add(kdbar);
-        kdbar.setBounds(389, 10, 110, 23);
+        kdbar.setBounds(340, 10, 100, 23);
 
         nmbar.setEditable(false);
         nmbar.setName("nmbar"); // NOI18N
         nmbar.setPreferredSize(new java.awt.Dimension(207, 23));
         panelisi4.add(nmbar);
-        nmbar.setBounds(501, 10, 270, 23);
+        nmbar.setBounds(445, 10, 210, 23);
 
         BtnBarang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         BtnBarang.setMnemonic('4');
@@ -640,7 +641,7 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
             }
         });
         panelisi4.add(BtnBarang);
-        BtnBarang.setBounds(774, 10, 28, 23);
+        BtnBarang.setBounds(660, 10, 28, 23);
 
         label24.setText("Jenis :");
         label24.setName("label24"); // NOI18N
@@ -680,6 +681,18 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
         });
         panelisi4.add(nmsat);
         nmsat.setBounds(130, 10, 115, 23);
+
+        Bayar.setBackground(new java.awt.Color(255, 255, 255));
+        Bayar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        Bayar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semua", "Lunas", "Belum Lunas" }));
+        Bayar.setName("Bayar"); // NOI18N
+        Bayar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BayarActionPerformed(evt);
+            }
+        });
+        panelisi4.add(Bayar);
+        Bayar.setBounds(700, 10, 120, 22);
 
         jPanel1.add(panelisi4, java.awt.BorderLayout.CENTER);
 
@@ -1085,7 +1098,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         } else if (tabMode.getRowCount() != 0) {
             Sequel.queryu("delete from temporary where temp37='" + akses.getalamatip() + "'");
             int row = tabMode.getRowCount();
-            for (int i = 0; i < row; i++) {
+            int i = 0;
+            for (i = 0; i < row; i++) {
                 Sequel.menyimpan("temporary", "'" + i + "','"
                         + tabMode.getValueAt(i, 0).toString() + "','"
                         + tabMode.getValueAt(i, 1).toString() + "','"
@@ -1095,15 +1109,15 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         + tabMode.getValueAt(i, 5).toString() + "','"
                         + tabMode.getValueAt(i, 6).toString() + "','"
                         + tabMode.getValueAt(i, 7).toString() + "','"
-                        + tabMode.getValueAt(i, 8).toString() + "','"
-                        + tabMode.getValueAt(i, 9).toString() + "','"
-                        + tabMode.getValueAt(i, 10).toString() + "','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
+                        + tabMode.getValueAt(i, 8).toString() + "','','','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
             }
-            i++;
-            Sequel.menyimpan("temporary", "'" + i + "','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
-            i++;
-            Sequel.menyimpan("temporary", "'" + i + "','Jml.Total :','','','','','','','','','','" + LTotal.getText() + "','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
-
+            if(i == row){
+                i++;
+                Sequel.menyimpan("temporary", "'" + i + "','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
+                i++;
+                Sequel.menyimpan("temporary", "'" + i + "','Jml.Total :','','','','','','','','','','" + LTotal.getText() + "','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
+            }
+           
             Map<String, Object> param = new HashMap<>();
             param.put("namars", akses.getnamars());
             param.put("alamatrs", akses.getalamatrs());
@@ -1520,6 +1534,10 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         }
     }//GEN-LAST:event_tbDokterMouseClicked
 
+    private void BayarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BayarActionPerformed
+        tampil();
+    }//GEN-LAST:event_BayarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1537,6 +1555,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> Bayar;
     private widget.Button BtnAll;
     private widget.Button BtnBarang;
     private widget.Button BtnCari;
@@ -1598,10 +1617,18 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         if (!nmmem.getText().equals("")) {
             mem = " and piutang.catatan like='%" + nmmem.getText() + "%' ";
         }
-        if (!nmptg.getText().equals("")) {
-            ptg = " and petugas.nama='" + nmptg.getText() + "' ";
+        String bayar = Bayar.getSelectedItem().toString();
+        switch(bayar){
+              case "Semua":
+                    status = "";
+                    break;
+              case "Lunas":
+                  status = " and IFNULL(bayar_piutang.besar_cicilan, 0) - piutang.sisapiutang = 0 ";
+                  break;
+              case "Belum Lunas":
+                  status = " and IFNULL(bayar_piutang.besar_cicilan, 0) - piutang.sisapiutang != 0 ";
+                  break;
         }
-
         Valid.tabelKosong(tabMode);
         try {
             ttljual = 0;
@@ -1615,9 +1642,9 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                     "on piutang.nota_piutang=detailpiutang.nota_piutang " +
                     "and piutang.nip=petugas.nip " +
                     "LEFT JOIN bayar_piutang ON bayar_piutang.no_rawat = piutang.nota_piutang " +
-                    "where piutang.nota_piutang LIKE '%HK%' and " + tanggal + " and (piutang.nota_piutang like '%" + TCari.getText() + "%' " +
+                    "where piutang.nota_piutang LIKE '%HK%'" + status + " and " + tanggal + " and (piutang.nota_piutang like '%" + TCari.getText() + "%' " +
                     "or piutang.no_rkm_medis like '%"+TCari.getText()+"%' or piutang.nm_pasien like '%"+TCari.getText()+"%' " +
-                    "or piutang.nip like '%"+TCari.getText()+"%' or petugas.nama like '%"+TCari.getText()+"%' or piutang.catatan like '%"+TCari.getText()+"%')" +
+                    "or piutang.catatan like '%"+TCari.getText()+"%')" +
                     " group by piutang.nota_piutang order by piutang.tgl_piutang,piutang.nota_piutang ");
             try {
                 rs = ps.executeQuery();

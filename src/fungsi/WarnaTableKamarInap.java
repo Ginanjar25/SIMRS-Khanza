@@ -26,9 +26,9 @@ public class WarnaTableKamarInap extends DefaultTableCellRenderer {
             component.setBackground(new Color(255/255f, 51/255f, 51/255f, 0.76f));
 //            component.setBackground(new Color(51/255f, 133/255f, 255/255f, 0.61f));
         }
-       
-        
-        
+        if(table.getValueAt(row,6).toString().equals("BPJS") && table.getValueAt(row,44).toString().equals("Sudah")){
+            component.setBackground(new Color(255, 184, 77));
+        }
         return component;
     }
 

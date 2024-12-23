@@ -24,6 +24,8 @@ public class RedirectSystemOutToDatabase {
 
     private static Properties prop = new Properties();
     private String LOGPATHNAS = koneksiDB.AKTIFKANTRACKSQL();
+    private static int interval = 0;
+    
 
     public static void redirectSystemOut() {
         System.out.println("Global Error Handler, System.out aktif .");
@@ -97,6 +99,18 @@ public class RedirectSystemOutToDatabase {
         }
 
         private void saveToDatabase(String message) {
+            
+            try {
+                prop.loadFromXML(new FileInputStream("setting/database.xml"));
+                interval = Integer.parseInt(prop.getProperty("INTERVALSAVELOG"));
+            } catch (NumberFormatException e) {
+                // Jika terjadi kesalahan konversi, gunakan nilai default
+                interval = 3;
+            } catch (Exception e) {
+                // Jika terjadi kesalahan saat membaca file atau properti
+                interval = 3;
+            }
+            
             final Connection connect = koneksiDB.condb();
             PreparedStatement ps;
 
@@ -156,7 +170,8 @@ public class RedirectSystemOutToDatabase {
 
                             long currentTime = System.currentTimeMillis();
                             long creationTimeMillis = creationTime.toMillis();
-                            long threeDaysInMillis = 3 * 24 * 60 * 60 * 1000; // 3 hari dalam milidetik
+                            long threeDaysInMillis = interval * 24 * 60 * 60 * 1000; // 3 hari dalam milidetik
+//                            long threeDaysInMillis = 3 * 24 * 60 * 60 * 1000; // 3 hari dalam milidetik
 
                             if (currentTime - creationTimeMillis > threeDaysInMillis) {
                                 boolean deleted = logFileNas.delete();
