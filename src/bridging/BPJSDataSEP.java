@@ -67,7 +67,7 @@ import rekammedis.RMRiwayatPerawatan;
  * @author perpustakaan
  */
 public final class BPJSDataSEP extends javax.swing.JDialog {
-    private DefaultTableModel tabMode,tabModeInternal;
+    private DefaultTableModel tabMode,tabModeInternal, tabModeRiwayat;
     private Connection koneksi=koneksiDB.condb();
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
@@ -382,6 +382,30 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
             }
         }
         tbDataSEPInternal.setDefaultRenderer(Object.class, new WarnaTable());
+        
+        //tabel riwayat
+         Object[] row={"No.","Riwayat SEP","No. SKDP"};
+        tabModeRiwayat=new DefaultTableModel(null,row){
+              @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
+        };
+        tbRiwayatSep.setModel(tabModeRiwayat);
+
+        //tbKamar.setDefaultRenderer(Object.class, new WarnaTable(panelJudul.getBackground(),tbKamar.getBackground()));
+        tbRiwayatSep.setPreferredScrollableViewportSize(new Dimension(500,500));
+        tbRiwayatSep.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        for (i = 0; i < 3; i++) {
+            TableColumn column = tbRiwayatSep.getColumnModel().getColumn(i);
+            if(i==0){
+                column.setPreferredWidth(35);
+            }else if(i==1){
+                column.setPreferredWidth(230);
+            }else if(i==2){
+                column.setPreferredWidth(150);
+            }
+        }
+        
+        tbRiwayatSep.setDefaultRenderer(Object.class, new WarnaTable());
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
         TCariInternal.setDocument(new batasInput((byte)100).getKata(TCariInternal));
@@ -1138,9 +1162,9 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         btnSuplesi = new widget.Button();
         jLabel55 = new widget.Label();
         NoLP = new widget.TextBox();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        list_skdp = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
+        Scroll3 = new widget.ScrollPane();
+        tbRiwayatSep = new widget.Table();
         internalFrame4 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbDataSEP = new widget.Table();
@@ -1584,7 +1608,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         internalFrame5.add(jLabel26);
         jLabel26.setBounds(6, 32, 70, 23);
 
-        TanggalPulang.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-09-2024 12:07:40" }));
+        TanggalPulang.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-12-2024 08:32:55" }));
         TanggalPulang.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TanggalPulang.setName("TanggalPulang"); // NOI18N
         TanggalPulang.setOpaque(false);
@@ -1630,7 +1654,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         internalFrame5.add(jLabel48);
         jLabel48.setBounds(291, 62, 120, 23);
 
-        TanggalKematian.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-09-2024" }));
+        TanggalKematian.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-12-2024" }));
         TanggalKematian.setDisplayFormat("dd-MM-yyyy");
         TanggalKematian.setEnabled(false);
         TanggalKematian.setName("TanggalKematian"); // NOI18N
@@ -1698,7 +1722,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         jLabel30.setBounds(0, 25, 102, 23);
 
         TanggalRujukKeluar.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalRujukKeluar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-09-2024" }));
+        TanggalRujukKeluar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-12-2024" }));
         TanggalRujukKeluar.setDisplayFormat("dd-MM-yyyy");
         TanggalRujukKeluar.setName("TanggalRujukKeluar"); // NOI18N
         TanggalRujukKeluar.setOpaque(false);
@@ -1881,7 +1905,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         jLabel50.setBounds(638, 55, 80, 23);
 
         TanggalKunjungRujukan.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalKunjungRujukan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-09-2024" }));
+        TanggalKunjungRujukan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-12-2024" }));
         TanggalKunjungRujukan.setDisplayFormat("dd-MM-yyyy");
         TanggalKunjungRujukan.setName("TanggalKunjungRujukan"); // NOI18N
         TanggalKunjungRujukan.setOpaque(false);
@@ -2151,7 +2175,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         jLabel20.setBounds(187, 102, 65, 23);
 
         TanggalSEP.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalSEP.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-09-2024" }));
+        TanggalSEP.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-12-2024" }));
         TanggalSEP.setDisplayFormat("dd-MM-yyyy");
         TanggalSEP.setName("TanggalSEP"); // NOI18N
         TanggalSEP.setOpaque(false);
@@ -2171,7 +2195,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         jLabel22.setBounds(0, 102, 90, 23);
 
         TanggalRujuk.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalRujuk.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-09-2024" }));
+        TanggalRujuk.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-12-2024" }));
         TanggalRujuk.setDisplayFormat("dd-MM-yyyy");
         TanggalRujuk.setName("TanggalRujuk"); // NOI18N
         TanggalRujuk.setOpaque(false);
@@ -2533,7 +2557,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         jLabel38.setBounds(594, 132, 40, 23);
 
         TanggalKKL.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalKKL.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-09-2024" }));
+        TanggalKKL.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-12-2024" }));
         TanggalKKL.setDisplayFormat("dd-MM-yyyy");
         TanggalKKL.setEnabled(false);
         TanggalKKL.setName("TanggalKKL"); // NOI18N
@@ -2982,23 +3006,23 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         FormInput.add(NoLP);
         NoLP.setBounds(632, 162, 95, 23);
 
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-        list_skdp.setColumns(20);
-        list_skdp.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        list_skdp.setRows(3);
-        list_skdp.setTabSize(1);
-        list_skdp.setName("list_skdp"); // NOI18N
-        jScrollPane1.setViewportView(list_skdp);
-
-        FormInput.add(jScrollPane1);
-        jScrollPane1.setBounds(740, 30, 200, 60);
-
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        jLabel3.setText("List SKD dari VCLAIM :");
+        jLabel3.setText("::[Histori Pelayanan BPJS ]::");
         jLabel3.setName("jLabel3"); // NOI18N
         FormInput.add(jLabel3);
-        jLabel3.setBounds(740, 10, 160, 14);
+        jLabel3.setBounds(740, 10, 150, 14);
+
+        Scroll3.setName("Scroll3"); // NOI18N
+        Scroll3.setOpaque(true);
+
+        tbRiwayatSep.setAutoCreateRowSorter(true);
+        tbRiwayatSep.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
+        tbRiwayatSep.setName("tbRiwayatSep"); // NOI18N
+        tbRiwayatSep.setRowHeight(122);
+        Scroll3.setViewportView(tbRiwayatSep);
+
+        FormInput.add(Scroll3);
+        Scroll3.setBounds(740, 30, 470, 420);
 
         Scroll1.setViewportView(FormInput);
 
@@ -3044,7 +3068,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-09-2024" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-12-2024" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -3058,7 +3082,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-09-2024" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-12-2024" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -3149,7 +3173,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         panelGlass10.add(jLabel51);
 
         DTPCariInternal.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCariInternal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-09-2024" }));
+        DTPCariInternal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-12-2024" }));
         DTPCariInternal.setDisplayFormat("dd-MM-yyyy");
         DTPCariInternal.setName("DTPCariInternal"); // NOI18N
         DTPCariInternal.setOpaque(false);
@@ -3163,7 +3187,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         panelGlass10.add(jLabel52);
 
         DTPCariInternal2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCariInternal2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-09-2024" }));
+        DTPCariInternal2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-12-2024" }));
         DTPCariInternal2.setDisplayFormat("dd-MM-yyyy");
         DTPCariInternal2.setName("DTPCariInternal2"); // NOI18N
         DTPCariInternal2.setOpaque(false);
@@ -3906,89 +3930,89 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                                 nm_poli_rujukan = response.path("poliRujukan").path("nama").asText();
                                 nomor_rujukan = response.path("noKunjungan").asText();
                                 
-                                if(!KdPoli.getText().equals(response.path("poliRujukan").path("kode").asText())){
-                                    i = 0;
-                                    Calendar cal = Calendar.getInstance();
-                                    cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH)-2,1); // to get previous year add -1
-                                    Date Year = cal.getTime();
-                                    DTPCari1.setDate(Year);
-                                    try {
-                                        headers = new HttpHeaders();
-                                        headers.setContentType(MediaType.APPLICATION_JSON);
-                                        headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
-                                        utc = String.valueOf(api.GetUTCdatetimeAsString());
-                                        headers.add("X-Timestamp", utc);
-                                        headers.add("X-Signature", api.getHmac(utc));
-                                        headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
-                                        requestEntity = new HttpEntity(headers);
-                                        URL = link + "/monitoring/HistoriPelayanan/NoKartu/" + data1 + "/tglMulai/" + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + "/tglAkhir/" + Valid.SetTgl(DTPCari2.getSelectedItem() + "");
-                                        root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.GET, requestEntity, String.class).getBody());
-                                        nameNode = root.path("metaData");
-                                        if (nameNode.path("code").asText().equals("200")) {
-                                            Valid.tabelKosong(tabMode);
-                                            response = mapper.readTree(api.Decrypt(root.path("response").asText(), utc)).path("histori");
-                                            //response = root.path("response").path("histori");
-                                            if (response.isArray()) {                                                
-                                                for (JsonNode list : response) {
-                                                    if(list.path("noRujukan").asText().equals(nomor_rujukan)){
-                                                        i++;
-                                                    }                                                    
-                                                }
-                                            }
-                                        } else {
-                                            JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
-                                        }
-                                    } catch (Exception ex) {
-                                        System.out.println("Notifikasi Peserta : " + ex);
-                                        if (ex.toString().contains("UnknownHostException")) {
-                                            JOptionPane.showMessageDialog(rootPane, "Koneksi ke server BPJS terputus...!");
-                                        }
-                                    }
-                                    System.out.println("Jml SEP Terbit dengan No Rujukan tsb : " + i);
-                                    if (i == 0) {
-                                        JOptionPane.showMessageDialog(null, "Terdeteksi Kunjungan Internal dengan No. Rukujan Baru \n Rujukan = " + nm_poli_rujukan + " \n Tujuan = " + NmPoli.getText() + "\n Kirim Antrol saja, dan buat SEP di VClaim");
-                                        if (SimpanAntrianSepVclaim() == true) {
-                                            JOptionPane.showMessageDialog(null, "Antrian Online Berhasil");
-                                        } else {
-                                            JOptionPane.showMessageDialog(rootPane, "Antrian Online Gagal");
-                                        }
-                                    }
-                                }
+//                                if(!KdPoli.getText().equals(response.path("poliRujukan").path("kode").asText())){
+//                                    i = 0;
+//                                    Calendar cal = Calendar.getInstance();
+//                                    cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH)-2,1); // to get previous year add -1
+//                                    Date Year = cal.getTime();
+//                                    DTPCari1.setDate(Year);
+//                                    try {
+//                                        headers = new HttpHeaders();
+//                                        headers.setContentType(MediaType.APPLICATION_JSON);
+//                                        headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
+//                                        utc = String.valueOf(api.GetUTCdatetimeAsString());
+//                                        headers.add("X-Timestamp", utc);
+//                                        headers.add("X-Signature", api.getHmac(utc));
+//                                        headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
+//                                        requestEntity = new HttpEntity(headers);
+//                                        URL = link + "/monitoring/HistoriPelayanan/NoKartu/" + data1 + "/tglMulai/" + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + "/tglAkhir/" + Valid.SetTgl(DTPCari2.getSelectedItem() + "");
+//                                        root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.GET, requestEntity, String.class).getBody());
+//                                        nameNode = root.path("metaData");
+//                                        if (nameNode.path("code").asText().equals("200")) {
+//                                            Valid.tabelKosong(tabMode);
+//                                            response = mapper.readTree(api.Decrypt(root.path("response").asText(), utc)).path("histori");
+//                                            //response = root.path("response").path("histori");
+//                                            if (response.isArray()) {                                                
+//                                                for (JsonNode list : response) {
+//                                                    if(list.path("noRujukan").asText().equals(nomor_rujukan)){
+//                                                        i++;
+//                                                    }                                                    
+//                                                }
+//                                            }
+//                                        } else {
+//                                            JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
+//                                        }
+//                                    } catch (Exception ex) {
+//                                        System.out.println("Notifikasi Peserta : " + ex);
+//                                        if (ex.toString().contains("UnknownHostException")) {
+//                                            JOptionPane.showMessageDialog(rootPane, "Koneksi ke server BPJS terputus...!");
+//                                        }
+//                                    }
+//                                    System.out.println("Jml SEP Terbit dengan No Rujukan tsb : " + i);
+//                                    if (i == 0) {
+//                                        JOptionPane.showMessageDialog(null, "Terdeteksi Kunjungan Internal dengan No. Rukujan Baru \n Rujukan = " + nm_poli_rujukan + " \n Tujuan = " + NmPoli.getText() + "\n Kirim Antrol saja, dan buat SEP di VClaim");
+//                                        if (SimpanAntrianSepVclaim() == true) {
+//                                            JOptionPane.showMessageDialog(null, "Antrian Online Berhasil");
+//                                        } else {
+//                                            JOptionPane.showMessageDialog(rootPane, "Antrian Online Gagal");
+//                                        }
+//                                    }
+//                                }
 
-                                try {
-                                    URL = link + "/RencanaKontrol/ListRencanaKontrol/Bulan/" + data3 + "/Tahun/" + data2 + "/Nokartu/" + data1 + "/filter/2";
-                                    headers = new HttpHeaders();
-                                    headers.setContentType(MediaType.APPLICATION_JSON);
-                                    headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
-                                    utc = String.valueOf(api.GetUTCdatetimeAsString());
-                                    headers.add("X-Timestamp", utc);
-                                    headers.add("X-Signature", api.getHmac(utc));
-                                    headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
-                                    requestEntity = new HttpEntity(headers);
-                                    root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.GET, requestEntity, String.class).getBody());
-                                    nameNode = root.path("metaData");
-
-                                    if (nameNode.path("code").asText().equals("200")) {
-                                        response = mapper.readTree(api.Decrypt(root.path("response").asText(), utc)).path("list");
-
-                                        if (response.isArray()) {
-                                            i = 1;
-                                            for (JsonNode list : response) {
-                                                if (!list.path("noSuratKontrol").asText().equals("") && !list.path("terbitSEP").asText().equals("Sudah")) {
-                                                    list_skdp.append(list.path("noSuratKontrol").asText() + "\n");
-                                                } else {
-                                                    list_skdp.append("Sudah terbit SEP\n");
-                                                }
-                                                i++;
-                                            }
-                                        }
-                                    } else {
-                                        list_skdp.append("FKTP");
-                                    }
-
-                                } catch (Exception e) {
-                                    System.out.println(e);
-                                }
+//                                try {
+//                                    URL = link + "/RencanaKontrol/ListRencanaKontrol/Bulan/" + data3 + "/Tahun/" + data2 + "/Nokartu/" + data1 + "/filter/2";
+//                                    headers = new HttpHeaders();
+//                                    headers.setContentType(MediaType.APPLICATION_JSON);
+//                                    headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
+//                                    utc = String.valueOf(api.GetUTCdatetimeAsString());
+//                                    headers.add("X-Timestamp", utc);
+//                                    headers.add("X-Signature", api.getHmac(utc));
+//                                    headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
+//                                    requestEntity = new HttpEntity(headers);
+//                                    root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.GET, requestEntity, String.class).getBody());
+//                                    nameNode = root.path("metaData");
+//
+//                                    if (nameNode.path("code").asText().equals("200")) {
+//                                        response = mapper.readTree(api.Decrypt(root.path("response").asText(), utc)).path("list");
+//
+//                                        if (response.isArray()) {
+//                                            i = 1;
+//                                            for (JsonNode list : response) {
+//                                                if (!list.path("noSuratKontrol").asText().equals("") && !list.path("terbitSEP").asText().equals("Sudah")) {
+//                                                    list_skdp.append(list.path("noSuratKontrol").asText() + "\n");
+//                                                } else {
+//                                                    list_skdp.append("Sudah terbit SEP\n");
+//                                                }
+//                                                i++;
+//                                            }
+//                                        }
+//                                    } else {
+//                                        list_skdp.append("FKTP");
+//                                    }
+//
+//                                } catch (Exception e) {
+//                                    System.out.println(e);
+//                                }
                             } else {
                                 System.out.println(nameNode.path("code").asText());
                                 System.out.println("RUJUKAN SKDP KOSONG");
@@ -4012,6 +4036,55 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                             System.out.println("Gagal get RUJUKAN" + e);
                         }
 
+                        //mulai menampilkan riwayat                
+                        try {
+                            Calendar cal = Calendar.getInstance();
+                            cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) - 2, 1); // to get previous year add -1
+                            Date Year = cal.getTime();
+                            DTPCari1.setDate(Year);
+
+                            headers = new HttpHeaders();
+                            headers.setContentType(MediaType.APPLICATION_JSON);
+                            headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
+                            utc = String.valueOf(api.GetUTCdatetimeAsString());
+                            headers.add("X-Timestamp", utc);
+                            headers.add("X-Signature", api.getHmac(utc));
+                            headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
+                            requestEntity = new HttpEntity(headers);
+                            URL = link + "/monitoring/HistoriPelayanan/NoKartu/" + no_peserta + "/tglMulai/" + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + "/tglAkhir/" + Valid.SetTgl(DTPCari2.getSelectedItem() + "");
+                            root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.GET, requestEntity, String.class).getBody());
+                            nameNode = root.path("metaData");
+                            if (nameNode.path("code").asText().equals("200")) {
+                                Valid.tabelKosong(tabModeRiwayat);
+                                response = mapper.readTree(api.Decrypt(root.path("response").asText(), utc)).path("histori");
+                                //response = root.path("response").path("histori");
+                                if (response.isArray()) {
+                                    i = 1;
+                                    for (JsonNode list : response) {
+                                        tabModeRiwayat.addRow(new Object[]{
+                                            i + ".",
+                                            "<html><b>" + list.path("noSep").asText() + "</b><br>"
+                                            + list.path("jnsPelayanan").asText().replaceAll("1", "Rawat Inap").replaceAll("2", "Rawat Jalan") + "<br>"
+                                            + list.path("poli").asText() + "<br>"
+                                            + "Tgl SEP : " + list.path("tglSep").asText() + "<br>"
+                                            + list.path("noRujukan").asText() + "<br>"
+                                            + list.path("diagnosa").asText() + "<br>"
+                                            + list.path("ppkPelayanan").asText() + "</html>",
+                                            Sequel.cariIsi("SELECT bsk.no_surat FROM bridging_surat_kontrol_bpjs bsk WHERE bsk.no_sep =?",list.path("noSep").asText())
+                                        });
+                                        i++;
+                                    }
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
+                            }
+                        } catch (Exception ex) {
+                            System.out.println("Notifikasi Peserta : " + ex);
+                            if (ex.toString().contains("UnknownHostException")) {
+                                JOptionPane.showMessageDialog(rootPane, "Koneksi ke server BPJS terputus...!");
+                            }
+                        }
+
                         //jika semua null(default nya isi parameter ini)
                         JenisPeserta.setText(cekViaBPJSKartu.jenisPesertaketerangan);
                         Status.setText(cekViaBPJSKartu.statusPesertaketerangan);
@@ -4033,60 +4106,60 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                     }
                 }else{
                     dispose();
-                }                    
-            } 
+                }
+            }
         }
     }//GEN-LAST:event_formWindowOpened
 
     private void ppSEPBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppSEPBtnPrintActionPerformed
-        if(TabRawat.getSelectedIndex()==1){
-            if(tbDataSEP.getSelectedRow()!= -1){
-                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
+        if (TabRawat.getSelectedIndex() == 1) {
+            if (tbDataSEP.getSelectedRow() != -1) {
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 Map<String, Object> param = new HashMap<>();
-                param.put("namars",akses.getnamars());
-                param.put("alamatrs",akses.getalamatrs());
-                param.put("kotars",akses.getkabupatenrs());
-                param.put("propinsirs",akses.getpropinsirs());
-                param.put("kontakrs",akses.getkontakrs());
-                param.put("prb",Sequel.cariIsi("select bpjs_prb.prb from bpjs_prb where bpjs_prb.no_sep=?",tbDataSEP.getValueAt(tbDataSEP.getSelectedRow(),0).toString()));
-                param.put("logo",Sequel.cariGambar("select gambar.bpjs from gambar")); 
-                param.put("parameter",tbDataSEP.getValueAt(tbDataSEP.getSelectedRow(),0).toString());
-                if(JenisPelayanan.getSelectedIndex()==0){
-                    Valid.MyReport("rptBridgingSEP.jasper","report","::[ Cetak SEP ]::",param);
-                }else{
-                    Valid.MyReport("rptBridgingSEP2.jasper","report","::[ Cetak SEP ]::",param);
-                }                
+                param.put("namars", akses.getnamars());
+                param.put("alamatrs", akses.getalamatrs());
+                param.put("kotars", akses.getkabupatenrs());
+                param.put("propinsirs", akses.getpropinsirs());
+                param.put("kontakrs", akses.getkontakrs());
+                param.put("prb", Sequel.cariIsi("select bpjs_prb.prb from bpjs_prb where bpjs_prb.no_sep=?", tbDataSEP.getValueAt(tbDataSEP.getSelectedRow(), 0).toString()));
+                param.put("logo", Sequel.cariGambar("select gambar.bpjs from gambar"));
+                param.put("parameter", tbDataSEP.getValueAt(tbDataSEP.getSelectedRow(), 0).toString());
+                if (JenisPelayanan.getSelectedIndex() == 0) {
+                    Valid.MyReport("rptBridgingSEP.jasper", "report", "::[ Cetak SEP ]::", param);
+                } else {
+                    Valid.MyReport("rptBridgingSEP2.jasper", "report", "::[ Cetak SEP ]::", param);
+                }
                 this.setCursor(Cursor.getDefaultCursor());
-            }else{
-                JOptionPane.showMessageDialog(null,"Maaf, silahkan pilih data SEP yang mau dicetak...!!!!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Maaf, silahkan pilih data SEP yang mau dicetak...!!!!");
                 BtnBatal.requestFocus();
-            } 
-        }else if(TabRawat.getSelectedIndex()==2){
-            if(tbDataSEPInternal.getSelectedRow()!= -1){
-                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
+            }
+        } else if (TabRawat.getSelectedIndex() == 2) {
+            if (tbDataSEPInternal.getSelectedRow() != -1) {
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 Map<String, Object> param = new HashMap<>();
-                param.put("namars",akses.getnamars());
-                param.put("alamatrs",akses.getalamatrs());
-                param.put("kotars",akses.getkabupatenrs());
-                param.put("propinsirs",akses.getpropinsirs());
-                param.put("kontakrs",akses.getkontakrs());
-                param.put("prb",Sequel.cariIsi("select bpjs_prb.prb from bpjs_prb where bpjs_prb.no_sep=?",tbDataSEPInternal.getValueAt(tbDataSEPInternal.getSelectedRow(),0).toString()));
-                param.put("logo",Sequel.cariGambar("select gambar.bpjs from gambar")); 
-                param.put("no_sep",tbDataSEPInternal.getValueAt(tbDataSEPInternal.getSelectedRow(),0).toString());
-                param.put("noskdp",tbDataSEPInternal.getValueAt(tbDataSEPInternal.getSelectedRow(),43).toString());
-                param.put("tglrujukan",tbDataSEPInternal.getValueAt(tbDataSEPInternal.getSelectedRow(),5).toString());
-                param.put("kdpolitujuan",tbDataSEPInternal.getValueAt(tbDataSEPInternal.getSelectedRow(),15).toString());
-                if(JenisPelayanan.getSelectedIndex()==0){
-                    Valid.MyReport("rptBridgingSEPInternal.jasper","report","::[ Cetak SEP Internal ]::",param);
-                }else{
-                    Valid.MyReport("rptBridgingSEPInternal2.jasper","report","::[ Cetak SEP Internal ]::",param);
-                }                
+                param.put("namars", akses.getnamars());
+                param.put("alamatrs", akses.getalamatrs());
+                param.put("kotars", akses.getkabupatenrs());
+                param.put("propinsirs", akses.getpropinsirs());
+                param.put("kontakrs", akses.getkontakrs());
+                param.put("prb", Sequel.cariIsi("select bpjs_prb.prb from bpjs_prb where bpjs_prb.no_sep=?", tbDataSEPInternal.getValueAt(tbDataSEPInternal.getSelectedRow(), 0).toString()));
+                param.put("logo", Sequel.cariGambar("select gambar.bpjs from gambar"));
+                param.put("no_sep", tbDataSEPInternal.getValueAt(tbDataSEPInternal.getSelectedRow(), 0).toString());
+                param.put("noskdp", tbDataSEPInternal.getValueAt(tbDataSEPInternal.getSelectedRow(), 43).toString());
+                param.put("tglrujukan", tbDataSEPInternal.getValueAt(tbDataSEPInternal.getSelectedRow(), 5).toString());
+                param.put("kdpolitujuan", tbDataSEPInternal.getValueAt(tbDataSEPInternal.getSelectedRow(), 15).toString());
+                if (JenisPelayanan.getSelectedIndex() == 0) {
+                    Valid.MyReport("rptBridgingSEPInternal.jasper", "report", "::[ Cetak SEP Internal ]::", param);
+                } else {
+                    Valid.MyReport("rptBridgingSEPInternal2.jasper", "report", "::[ Cetak SEP Internal ]::", param);
+                }
                 this.setCursor(Cursor.getDefaultCursor());
-            }else{
-                JOptionPane.showMessageDialog(null,"Maaf, silahkan pilih data SEP yang mau dicetak...!!!!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Maaf, silahkan pilih data SEP yang mau dicetak...!!!!");
                 BtnBatal.requestFocus();
-            } 
-        }       
+            }
+        }
     }//GEN-LAST:event_ppSEPBtnPrintActionPerformed
 
     private void ppPulangBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppPulangBtnPrintActionPerformed
@@ -5991,6 +6064,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
     private widget.ScrollPane Scroll;
     private widget.ScrollPane Scroll1;
     private widget.ScrollPane Scroll2;
+    private widget.ScrollPane Scroll3;
     private widget.TextBox Status;
     private widget.ComboBox StatusPulang;
     private widget.ComboBox Suplesi;
@@ -6089,8 +6163,6 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
     private widget.Label jLabel7;
     private widget.Label jLabel8;
     private widget.Label jLabel9;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea list_skdp;
     private widget.panelisi panelGlass10;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
@@ -6124,6 +6196,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
     private javax.swing.JMenuItem ppSuratPRI;
     private widget.Table tbDataSEP;
     private widget.Table tbDataSEPInternal;
+    private widget.Table tbRiwayatSep;
     // End of variables declaration//GEN-END:variables
 
     public void tampil() {        
