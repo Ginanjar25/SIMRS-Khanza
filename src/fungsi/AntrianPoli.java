@@ -126,7 +126,7 @@ public void kirimAntrean(String kd_poli, String kd_dokter) {
             byte[] input = jsonInputString.getBytes("utf-8");
             os.write(input, 0, input.length);
         }
-    int responseCode = connection.getResponseCode();
+        connection.getResponseCode();
     } catch (Exception e) {
         e.printStackTrace();
     } finally {
@@ -225,7 +225,7 @@ public void kirimAntrianAwal(String kd_poli, String kd_dokter) {
             byte[] input = jsonInputString.getBytes("utf-8");
             os.write(input, 0, input.length);
         }
-    int responseCode = connection.getResponseCode();
+        connection.getResponseCode();
     } catch (Exception e) {
         e.printStackTrace();
     } finally {
