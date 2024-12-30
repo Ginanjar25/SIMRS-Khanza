@@ -7,11 +7,15 @@ import fungsi.sekuel;
 import fungsi.validasi;
 import fungsi.akses;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -46,9 +50,10 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
     private DecimalFormat df2 = new DecimalFormat("###,###,###,###,###,###,###");
     private double ttljual = 0, subttljual = 0, ttldisc = 0, subttldisc = 0, ttlall = 0,
             subttlall = 0, sisapiutang = 0, cicilan = 0, telat = 0;
-    private String status = "", aktifkanbatch = "no", nofak = "", mem = "", ptg = "", sat = "", bar = "", tanggal = "", kodedokter = "", namadokter = "", nomorrm = "", finger = "";
+    private String status = "", aktifkanbatch = "no", nofak = "", mem = "", ptg = "", sat = "", bar = "", tanggal = "", kodedokter = "", namadokter = "", nomorrm = "", finger = "",pilihan="";
     private int no = 0, i = 0;
     private boolean sukses = true;
+    private StringBuilder htmlContent;
 
     /**
      * Creates new form DlgProgramStudi
@@ -1111,13 +1116,13 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         + tabMode.getValueAt(i, 7).toString() + "','"
                         + tabMode.getValueAt(i, 8).toString() + "','','','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
             }
-            if(i == row){
+            if (i == row) {
                 i++;
                 Sequel.menyimpan("temporary", "'" + i + "','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
                 i++;
                 Sequel.menyimpan("temporary", "'" + i + "','Jml.Total :','','','','','','','','','','" + LTotal.getText() + "','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
             }
-           
+
             Map<String, Object> param = new HashMap<>();
             param.put("namars", akses.getnamars());
             param.put("alamatrs", akses.getalamatrs());
@@ -1126,9 +1131,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             param.put("kontakrs", akses.getkontakrs());
             param.put("emailrs", akses.getemailrs());
             param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
-            Valid.MyReportqry("rptPiutang.jasper", "report", "::[ Transaksi Piutang Barang ]::", "select * from temporary where temporary.temp37='" + akses.getalamatip() + "' order by temporary.no", param);
+            Valid.MyReportqry("rptPiutangKry.jasper", "report", "::[ Transaksi Piutang Barang ]::", "select * from temporary where temporary.temp37='" + akses.getalamatip() + "' order by temporary.no", param);
         }
-        this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnPrintActionPerformed
 
     private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnPrintKeyPressed

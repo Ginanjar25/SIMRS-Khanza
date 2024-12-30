@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import fungsi.koneksiDB;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.util.HashMap;
@@ -159,6 +160,52 @@ public void simpanGrouping(String kode_inacbg, Integer tarif, Integer tarifNaik,
         }
     } catch (Exception e) {
         e.printStackTrace();
+    }
+}
+
+public void updateTarifRanap() {
+    HttpURLConnection connection = null;
+    BufferedReader br = null;
+    try {
+        URL url = new URL(link + "/data-ranap");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Content-Type", "application/json");
+
+        // Periksa status response
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            // Membaca respons
+            br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+            StringBuilder responseBuilder = new StringBuilder();
+            String responseLine;
+            while ((responseLine = br.readLine()) != null) {
+                responseBuilder.append(responseLine.trim());
+            }
+
+            // Parsing JSON respons
+            JSONObject jsonResponse = new JSONObject(responseBuilder.toString());
+            int status = jsonResponse.getInt("status");
+            if (status == 200) {
+                JSONObject body = jsonResponse.getJSONObject("body"); // Akses 'body'
+                if (body.length() > 0) {
+                    System.out.println("Message: " + body.getString("message"));
+                }
+            } else {
+                System.err.println("Error: " + jsonResponse.getJSONObject("body").getString("error"));
+            }
+        } else {
+            System.err.println("HTTP error code: " + responseCode);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (br != null) br.close();
+            if (connection != null) connection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

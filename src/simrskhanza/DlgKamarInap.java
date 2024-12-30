@@ -31,6 +31,7 @@ import bridging.PCareDataPendaftaran;
 import bridging.SisruteRujukanKeluar;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fungsi.TarifInacbg;
 import laporan.DlgDiagnosaPenyakit;
 import informasi.InformasiAnalisaKamin;
 import keuangan.DlgKamar;
@@ -192,6 +193,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private DlgCariReg reg=new DlgCariReg(null,false);
     public  DlgBilingRanap billing=new DlgBilingRanap( null,false);
     public  DlgDiagnosaPenyakit diagnosa=new DlgDiagnosaPenyakit(null,false);
+    private TarifInacbg tarifInacbg = new TarifInacbg();
     private SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd");
     private SimpleDateFormat dateformat2 = new SimpleDateFormat("dd-MM-yyyy");
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -6159,10 +6161,10 @@ public class DlgKamarInap extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
+        tarifInacbg.updateTarifRanap();
         if(namakamar.equals("")){
             BangsalCari.setText("");
         }
-        
         cmbStatusBayar.setSelectedItem("Semua");
         order="order by bangsal.nm_bangsal,kamar_inap.tgl_masuk,kamar_inap.jam_masuk";
         terbitsep="";
@@ -6173,7 +6175,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     namadokter=akses.getkode();
                 }
             } 
-        }       
+        }
         tampil();
     }//GEN-LAST:event_BtnAllActionPerformed
 
