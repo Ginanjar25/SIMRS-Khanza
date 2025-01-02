@@ -321,6 +321,7 @@ public class DlgBookingRegistrasi extends javax.swing.JDialog {
                     TNoRM.setText(pasien.getTable4().getValueAt(pasien.getTable4().getSelectedRow(),1).toString());
                     TPasien.setText(pasien.getTable4().getValueAt(pasien.getTable4().getSelectedRow(),2).toString());   
                 }
+                isNomer();
                 TNoRM.requestFocus();
             }
             @Override

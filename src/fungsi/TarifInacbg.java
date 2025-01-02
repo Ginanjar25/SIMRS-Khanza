@@ -187,10 +187,7 @@ public void updateTarifRanap() {
             JSONObject jsonResponse = new JSONObject(responseBuilder.toString());
             int status = jsonResponse.getInt("status");
             if (status == 200) {
-                JSONObject body = jsonResponse.getJSONObject("body"); // Akses 'body'
-                if (body.length() > 0) {
-                    System.out.println("Message: " + body.getString("message"));
-                }
+                System.out.println("SUKSES REFRESH DATA RANAP");
             } else {
                 System.err.println("Error: " + jsonResponse.getJSONObject("body").getString("error"));
             }
