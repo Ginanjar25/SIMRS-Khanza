@@ -146,6 +146,7 @@ public final class DlgCariCaraBayar extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        TPilihan = new widget.Label();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbKamar = new widget.Table();
@@ -166,6 +167,10 @@ public final class DlgCariCaraBayar extends javax.swing.JDialog {
         Scroll4 = new widget.ScrollPane();
         LoadHTML = new widget.editorpane();
         Berakhir = new widget.Label();
+
+        TPilihan.setText("Key Word :");
+        TPilihan.setName("TPilihan"); // NOI18N
+        TPilihan.setPreferredSize(new java.awt.Dimension(68, 23));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -491,6 +496,7 @@ public final class DlgCariCaraBayar extends javax.swing.JDialog {
     private widget.ScrollPane Scroll;
     private widget.ScrollPane Scroll4;
     private widget.TextBox TCari;
+    public widget.Label TPilihan;
     private widget.InternalFrame internalFrame1;
     private widget.Label label10;
     private widget.Label label9;
@@ -542,6 +548,14 @@ public final class DlgCariCaraBayar extends javax.swing.JDialog {
   
     public JTable getTable(){
         return tbKamar;
+    }
+    
+    public widget.Label getPilihan(){
+        return TPilihan;
+    }
+    
+    public void setPilihan(String pilihan){        
+        TPilihan.setText(pilihan);
     }
     
     public void isCek(){        

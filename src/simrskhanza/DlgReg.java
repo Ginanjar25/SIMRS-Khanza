@@ -883,8 +883,13 @@ public final class DlgReg extends javax.swing.JDialog {
             public void windowClosed(WindowEvent e) {
                 if(akses.getform().equals("DlgReg")){
                     if(pasien.penjab.getTable().getSelectedRow()!= -1){
-                        kdpnj.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),1).toString());
-                        nmpnj.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),2).toString());
+                        if(pasien.penjab.getPilihan().getText().equals("1")){
+                            kdpnj.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),1).toString());
+                            nmpnj.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),2).toString());
+                        }else{
+                            kdpnj.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),1).toString());
+                            nmpnj2.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),2).toString());
+                        }                        
                     }    
                     kdpnj.requestFocus();
                 }
@@ -7003,7 +7008,7 @@ public final class DlgReg extends javax.swing.JDialog {
         jLabel23.setText("Asal Rujukan :");
         jLabel23.setName("jLabel23"); // NOI18N
         FormInput.add(jLabel23);
-        jLabel23.setBounds(426, 132, 90, 23);
+        jLabel23.setBounds(426, 162, 90, 23);
 
         AsalRujukan.setName("AsalRujukan"); // NOI18N
         AsalRujukan.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -7012,7 +7017,7 @@ public final class DlgReg extends javax.swing.JDialog {
             }
         });
         FormInput.add(AsalRujukan);
-        AsalRujukan.setBounds(520, 132, 330, 23);
+        AsalRujukan.setBounds(520, 162, 330, 23);
 
         btnPenjab1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         btnPenjab1.setMnemonic('2');
@@ -7024,7 +7029,7 @@ public final class DlgReg extends javax.swing.JDialog {
             }
         });
         FormInput.add(btnPenjab1);
-        btnPenjab1.setBounds(852, 132, 28, 23);
+        btnPenjab1.setBounds(852, 162, 28, 23);
 
         ChkTracker.setBorder(null);
         ChkTracker.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -9176,6 +9181,17 @@ private void kdpnjKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdp
 
 private void btnPenjabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPenjabActionPerformed
         akses.setform("DlgReg");
+        pasien.penjab.setPilihan("1");
+        pasien.penjab.onCari();
+        pasien.penjab.isCek();
+        pasien.penjab.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        pasien.penjab.setLocationRelativeTo(internalFrame1);
+        pasien.penjab.setVisible(true);
+}//GEN-LAST:event_btnPenjabActionPerformed
+
+private void btnPenjab2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPenjabActionPerformed
+        akses.setform("DlgReg");
+        pasien.penjab.setPilihan("2");
         pasien.penjab.onCari();
         pasien.penjab.isCek();
         pasien.penjab.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
@@ -15935,6 +15951,11 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Label labelSetNoReg;
     private widget.TextBox NoRegBooking;
     private widget.Button BtnSimpanNoreg;
+    private widget.Label jLabelJenisBayar2;
+    private widget.TextBox nmpnj2;
+    private widget.Button btnPenjab2;
+    private widget.Label jLabelNoKaBayar2;
+    private widget.TextBox NoKa2;
     
     private void tampil() {
         Valid.tabelKosong(tabMode);
@@ -16314,12 +16335,12 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
-            PanelInput.setPreferredSize(new Dimension(WIDTH,188));
+            PanelInput.setPreferredSize(new Dimension(WIDTH,230));
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
             ChkInput.setVisible(false);            
-            PanelInput.setPreferredSize(new Dimension(WIDTH, 188));
+            PanelInput.setPreferredSize(new Dimension(WIDTH, 230));
             FormInput.setVisible(true);
             ChkInput.setVisible(true);
         }
@@ -17369,6 +17390,48 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         internalFrameSetNoReg.add(BtnSimpanNoreg);
         BtnSimpanNoreg.setBounds(20, 87, 100, 30);
         
+        //CaraBayar2
+        jLabelJenisBayar2 = new widget.Label();
+        jLabelJenisBayar2.setText("Jenis Bayar 2 :");
+        jLabelJenisBayar2.setName("jLabelJenisBayar2"); // NOI18N
+        FormInput.add(jLabelJenisBayar2);
+        jLabelJenisBayar2.setBounds(426, 132, 90, 23);
+        
+        nmpnj2 = new widget.TextBox();
+        nmpnj2.setEditable(false);
+        nmpnj2.setName("nmpnj2"); // NOI18N
+        FormInput.add(nmpnj2);
+        nmpnj2.setBounds(520, 132, 140, 23);
+        
+        btnPenjab2 = new widget.Button();
+        btnPenjab2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        btnPenjab2.setMnemonic('2');
+        btnPenjab2.setToolTipText("ALt+2");
+        btnPenjab2.setName("btnPenjab"); // NOI18N
+        btnPenjab2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+               btnPenjab2ActionPerformed(evt);
+            }
+        });
+        FormInput.add(btnPenjab2);
+        btnPenjab2.setBounds(662, 132, 28, 23);
+        
+        jLabelNoKaBayar2 = new widget.Label();
+        jLabelNoKaBayar2.setText("No. Ka2 :");
+        jLabelNoKaBayar2.setName("jLabelNoKaBayar2"); // NOI18N
+        FormInput.add(jLabelNoKaBayar2);
+        jLabelNoKaBayar2.setBounds(691, 132, 45, 23);
+
+        NoKa2 = new widget.TextBox();
+        NoKa2.setHighlighter(null);
+        NoKa2.setName("NoKa2"); // NOI18N
+        NoKa2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+             //   NoKaKeyPressed(evt);
+            }
+        });
+        FormInput.add(NoKa2);
+        NoKa2.setBounds(738, 132, 109, 23);
     }
     
     private void ganti(){
