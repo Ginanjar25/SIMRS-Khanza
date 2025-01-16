@@ -141,6 +141,8 @@ import rekammedis.RMSkriningNutrisiDewasa;
 import rekammedis.RMSkriningNutrisiLansia;
 import rekammedis.RMTimeOutSebelumInsisi;
 import rekammedis.RMTransferPasienAntarRuang;
+import bridging.SatuSehatCariAllergy;
+import bridging.SatuSehatCariAllergyReaction;
 
 /**
  *
@@ -148,17 +150,19 @@ import rekammedis.RMTransferPasienAntarRuang;
  */
 public final class DlgRawatInap extends javax.swing.JDialog {
     private final DefaultTableModel tabModeDr,tabModePr,tabModeDrPr,
-            tabModePemeriksaan,tabModeObstetri,tabModeGinekologi;
+            tabModePemeriksaan,tabModeObstetri,tabModeGinekologi,TabModeAlergi;
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
     private Jurnal jur=new Jurnal();
     private Connection koneksi=koneksiDB.condb();
     public  DlgCariPerawatanRanap perawatan=new DlgCariPerawatanRanap(null,false);
     public  DlgCariPerawatanRanap2 perawatan2=new DlgCariPerawatanRanap2(null,false);
-    public  DlgCariPegawai pegawai=new DlgCariPegawai(null,false);  
+    public  DlgCariPegawai pegawai=new DlgCariPegawai(null,false);
+    private SatuSehatCariAllergy alergi=new SatuSehatCariAllergy(null,false);
+    private SatuSehatCariAllergyReaction alergiReaction=new SatuSehatCariAllergyReaction(null,false);
     public  DlgCariPasien pasien=new DlgCariPasien(null,false);
     private RMCari5SOAPTerakhir soapterakhir=new RMCari5SOAPTerakhir(null,false);  
-    private PreparedStatement ps,ps2,ps3,ps4,ps5,psrekening,ps6;
+    private PreparedStatement ps,ps2,ps3,ps4,ps5,psrekening,ps6,ps7;
     private ResultSet rs,rsrekening;
     private int i=0,tinggi=0;
     private boolean sukses=false;  
@@ -657,12 +661,73 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                 column.setPreferredWidth(200);
             }else if(i==22) {
                 column.setPreferredWidth(200);
-            }  
+            }
         }
         tbPemeriksaanGinekologi.setDefaultRenderer(Object.class, new WarnaTable());
 
-        kdptg.setDocument(new batasInput((byte)20).getKata(kdptg));
-        kdptg2.setDocument(new batasInput((byte)20).getKata(kdptg2));
+        TabModeAlergi = new DefaultTableModel(null, new Object[]{
+            "P", "No.R.M.", "Nama Pasien", "Kode Dokter", "Nama Dokter", "Alergi Code", "System", "Alergi", "Reaksi Code", "System", "Reaksi", "Kategory", "Severity"}) {
+            @Override
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                boolean a = false;
+                if (colIndex == 0) {
+                    a = true;
+                }
+                return a;
+            }
+            Class[] types = new Class[]{
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+
+            @Override
+            public Class getColumnClass(int columnIndex) {
+                return types[columnIndex];
+            }
+        };
+        tbAlergi.setModel(TabModeAlergi);
+        tbAlergi.setPreferredScrollableViewportSize(new Dimension(500, 500));
+        tbAlergi.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        for (i = 0; i < 13; i++) {
+            TableColumn column = tbAlergi.getColumnModel().getColumn(i);
+            if (i == 0) {
+                column.setPreferredWidth(20);
+            } else if (i == 1) {
+                column.setPreferredWidth(85);
+            } else if (i == 2) {
+                column.setPreferredWidth(200);
+            } else if (i == 3) {
+                column.setPreferredWidth(100);
+            } else if (i == 4) {
+                column.setPreferredWidth(150);
+            } else if (i == 5) {
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+            } else if (i == 6) {
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+            } else if (i == 7) {
+                column.setPreferredWidth(300);
+            } else if (i == 8) {
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+            } else if (i == 9) {
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+            } else if (i == 10) {
+                column.setPreferredWidth(150);
+            } else if (i == 11) {
+                column.setPreferredWidth(100);
+            } else if (i == 12) {
+                column.setPreferredWidth(100);
+            }
+        }
+        tbAlergi.setDefaultRenderer(Object.class, new WarnaTable());
+
+        kdptg.setDocument(new batasInput((byte) 20).getKata(kdptg));
+        kdptg2.setDocument(new batasInput((byte) 20).getKata(kdptg2));
         KdDok.setDocument(new batasInput((byte)20).getKata(KdDok));
         KdDok2.setDocument(new batasInput((byte)20).getKata(KdDok2));
         TNoRw.setDocument(new batasInput((byte)17).getKata(TNoRw));        
@@ -718,6 +783,8 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                             tampilPemeriksaanObstetri();
                         }else if(TabRawat.getSelectedIndex()==5){
                             tampilPemeriksaanGinekologi();
+                        }else if(TabRawat.getSelectedIndex()==6){
+                            tampilAlergi();
                         }
                     }                        
                 }
@@ -736,6 +803,8 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                             tampilPemeriksaanObstetri();
                         }else if(TabRawat.getSelectedIndex()==5){
                             tampilPemeriksaanGinekologi();
+                        }else if(TabRawat.getSelectedIndex()==6){
+                            tampilAlergi();
                         }
                     }
                 }
@@ -754,6 +823,8 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                             tampilPemeriksaanObstetri();
                         }else if(TabRawat.getSelectedIndex()==5){
                             tampilPemeriksaanGinekologi();
+                        }else if(TabRawat.getSelectedIndex()==6){
+                            tampilAlergi();
                         }
                     }
                 }
@@ -869,7 +940,12 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                             KdDok2.setText(perawatan.dokter.getTable().getValueAt(perawatan.dokter.getTable().getSelectedRow(),0).toString());
                             TDokter2.setText(perawatan.dokter.getTable().getValueAt(perawatan.dokter.getTable().getSelectedRow(),1).toString());
                             KdDok2.requestFocus();
-                        }  
+                        }else if(TabRawat.getSelectedIndex()==6){
+                            System.out.println("sss");
+                            KdDok4.setText(perawatan.dokter.getTable().getValueAt(perawatan.dokter.getTable().getSelectedRow(),0).toString());
+                            TDokter4.setText(perawatan.dokter.getTable().getValueAt(perawatan.dokter.getTable().getSelectedRow(),1).toString());
+                            KdDok4.requestFocus();
+                        } 
                     }   
                 }
             }
@@ -1027,6 +1103,79 @@ public final class DlgRawatInap extends javax.swing.JDialog {
             @Override
             public void windowDeactivated(WindowEvent e) {}
         });
+       
+        alergi.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+            }
+            @Override
+            public void windowClosing(WindowEvent e) {
+            }
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (akses.getform().equals("DlgRawatInap")) {
+                    if (alergi.getTable().getSelectedRow() != -1) {
+                        if (TabRawat.getSelectedIndex() == 6) {
+                            KdAlergi.setText(alergi.getTable().getValueAt(alergi.getTable().getSelectedRow(), 0).toString());
+                            TSystemCode.setText(alergi.getTable().getValueAt(alergi.getTable().getSelectedRow(), 1).toString());
+                            TDisplayAlergi.setText(alergi.getTable().getValueAt(alergi.getTable().getSelectedRow(), 2).toString());
+                            KdAlergi.requestFocus();
+                        }
+                    }
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {
+            }
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+            }
+            @Override
+            public void windowActivated(WindowEvent e) {
+            }
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+            }
+        });
+
+        alergiReaction.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (akses.getform().equals("DlgRawatInap")) {
+                    if (alergiReaction.getTable().getSelectedRow() != -1) {
+                        if (TabRawat.getSelectedIndex() == 6) {
+                            TReaksiCode.setText(alergiReaction.getTable().getValueAt(alergiReaction.getTable().getSelectedRow(), 0).toString());
+                            TReaksiSystem.setText(alergiReaction.getTable().getValueAt(alergiReaction.getTable().getSelectedRow(), 1).toString());
+                            TReaksiDisplay.setText(alergiReaction.getTable().getValueAt(alergiReaction.getTable().getSelectedRow(), 2).toString());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+            }
+        });
         
         ChkInput.setSelected(false);
         isForm(); 
@@ -1034,6 +1183,8 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         isForm2();
         ChkInput2.setSelected(false);
         isForm3(); 
+        ChkInput3.setSelected(true);
+        isForm4(); 
         ChkAccor.setSelected(true);
         isMenu();
         jam();
@@ -1407,7 +1558,36 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         btnIcare = new widget.Button();
         TPotensiPRB = new widget.Label();
         
-
+        //FORM ALERGI
+        jLabel84 = new widget.Label();
+        jLabel85 = new widget.Label();
+        jLabel86 = new widget.Label();
+        jLabel87 = new widget.Label();
+        jLabel88 = new widget.Label();
+        jLabel89 = new widget.Label();
+        jLabel90 = new widget.Label();
+        internalFrame9 = new widget.InternalFrame();
+        PanelInput4 = new javax.swing.JPanel();
+        ChkInput3 = new widget.CekBox();
+        panelGlass16 = new widget.panelisi();
+        jLabel58 = new widget.Label();
+        jLabel59 = new widget.Label();
+        KdDok4 = new widget.TextBox();
+        KdAlergi = new widget.TextBox();
+        TDokter4 = new widget.TextBox();
+        TSystemCode = new widget.TextBox();
+        TDisplayAlergi = new widget.TextBox();
+        TReaksiCode = new widget.TextBox();
+        TReaksiSystem = new widget.TextBox();
+        TReaksiDisplay = new widget.TextBox();
+        BtnSeekDokter4 = new widget.Button();
+        BtnSeekCariAlergi = new widget.Button();
+        BtnSeekCariReaksiAlergi = new widget.Button();
+        Scroll12 = new widget.ScrollPane();
+        tbAlergi = new widget.Table();
+        cmbKategory = new widget.ComboBox();
+        cmbSeverity = new widget.ComboBox();
+        
         BagianRS.setEditable(false);
         BagianRS.setText("0");
         BagianRS.setName("BagianRS"); // NOI18N
@@ -2169,6 +2349,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                 TAlergiKeyPressed(evt);
             }
         });
+        TAlergi.setEditable(false);
         panelGlass12.add(TAlergi);
         TAlergi.setBounds(543, 10, 360, 23);
 
@@ -2897,6 +3078,8 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         internalFrame7.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         internalFrame7.setName("internalFrame7"); // NOI18N
         internalFrame7.setLayout(new java.awt.BorderLayout(1, 1));
+        
+        
 
         Scroll5.setName("Scroll5"); // NOI18N
         Scroll5.setOpaque(true);
@@ -4695,6 +4878,217 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                 BtnPenilaianTambahanMelarikanDiriActionPerformed(evt);
             }
         });
+        
+        //ALERGI FORM
+        
+        internalFrame9.setBackground(new java.awt.Color(235, 255, 235));
+        internalFrame9.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        internalFrame9.setName("internalFrame9"); 
+        internalFrame9.setLayout(new java.awt.BorderLayout(1, 1));
+        
+        PanelInput4.setName("PanelInput4"); 
+        PanelInput4.setOpaque(false);
+        PanelInput4.setPreferredSize(new java.awt.Dimension(192, 155));
+        PanelInput4.setLayout(new java.awt.BorderLayout(1, 1));
+        
+        ChkInput3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); 
+        ChkInput3.setMnemonic('I');
+        ChkInput3.setText(".: Input Data");
+        ChkInput3.setToolTipText("Alt+I");
+        ChkInput3.setBorderPainted(true);
+        ChkInput3.setBorderPaintedFlat(true);
+        ChkInput3.setFocusable(false);
+        ChkInput3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ChkInput3.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ChkInput3.setName("ChkInput3"); 
+        ChkInput3.setPreferredSize(new java.awt.Dimension(192, 20));
+        ChkInput3.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); 
+        ChkInput3.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); 
+        ChkInput3.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); 
+        ChkInput3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChkInput3ActionPerformed(evt);
+            }
+        });
+        PanelInput4.add(ChkInput3, java.awt.BorderLayout.PAGE_END);
+        panelGlass16.setName("panelGlass16"); 
+        panelGlass16.setPreferredSize(new java.awt.Dimension(44, 104));
+        panelGlass16.setLayout(null); 
+        
+        //baris 1
+        KdDok4.setHighlighter(null);
+        KdDok4.setName("KdDok3"); 
+        KdDok4.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                //KdDok3KeyPressed(evt);
+            }
+        });
+        panelGlass16.add(KdDok4);
+        KdDok4.setBounds(64, 10, 146, 23);    
+        
+        TDokter4.setEditable(false);
+        TDokter4.setHighlighter(null);
+        TDokter4.setName("TDokter4"); 
+        panelGlass16.add(TDokter4);
+        TDokter4.setBounds(212, 10, 534, 23);
+        
+        jLabel84.setText("Dokter :");
+        jLabel84.setName("jLabel84"); 
+        panelGlass16.add(jLabel84);
+        jLabel84.setBounds(0, 10, 60, 23);
+        
+        BtnSeekDokter4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); 
+        BtnSeekDokter4.setMnemonic('4');
+        BtnSeekDokter4.setToolTipText("ALt+4");
+        BtnSeekDokter4.setName("BtnSeekDokter3"); 
+        BtnSeekDokter4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSeekDokter4ActionPerformed(evt);
+            }
+        });
+        panelGlass16.add(BtnSeekDokter4);
+        BtnSeekDokter4.setBounds(749, 10, 28, 23);
+        
+        PanelInput4.add(panelGlass16, java.awt.BorderLayout.CENTER);
+        internalFrame9.add(PanelInput4, java.awt.BorderLayout.PAGE_START);
+        
+        Scroll12.setName("Scroll12"); 
+        Scroll12.setOpaque(true);  
+        
+        //baris 2
+        jLabel86.setText("Code :");
+        jLabel86.setName("jLabel86"); 
+        panelGlass16.add(jLabel86);
+        jLabel86.setBounds(0, 40, 60, 23);
+        
+        KdAlergi.setHighlighter(null);
+        KdAlergi.setName("KdAlergi"); 
+        KdAlergi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                //KdDok3KeyPressed(evt);
+            }
+        });
+        panelGlass16.add(KdAlergi);
+        KdAlergi.setBounds(65, 40, 140, 23);        
+        
+        jLabel87.setText("System :");
+        jLabel87.setName("jLabel87"); 
+        panelGlass16.add(jLabel87);
+        jLabel87.setBounds(205, 40, 50, 23);
+        
+        TSystemCode.setEditable(false);
+        TSystemCode.setHighlighter(null);
+        TSystemCode.setName("TSystemCode"); 
+        panelGlass16.add(TSystemCode);
+        TSystemCode.setBounds(260, 40, 200, 23);        
+        
+        jLabel88.setText("Display :");
+        jLabel88.setName("jLabel88"); 
+        panelGlass16.add(jLabel88);
+        jLabel88.setBounds(465, 40, 50, 23);
+        
+        TDisplayAlergi.setEditable(false);
+        TDisplayAlergi.setHighlighter(null);
+        TDisplayAlergi.setName("TDisplayAlergi"); 
+        panelGlass16.add(TDisplayAlergi);
+        TDisplayAlergi.setBounds(515, 40, 300, 23);
+
+        BtnSeekCariAlergi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); 
+        BtnSeekCariAlergi.setMnemonic('4');
+        BtnSeekCariAlergi.setToolTipText("ALt+4");
+        BtnSeekCariAlergi.setName("BtnSeekCariAlergi"); 
+        BtnSeekCariAlergi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSeekCariAlergiActionPerformed(evt);
+            }
+        });
+        panelGlass16.add(BtnSeekCariAlergi);
+        BtnSeekCariAlergi.setBounds(820, 40, 28, 23);
+        
+        //baris 3
+        jLabel89.setText("Reaksi :");
+        jLabel89.setName("jLabel89"); 
+        panelGlass16.add(jLabel89);
+        jLabel89.setBounds(0, 70, 60, 23);
+        
+        TReaksiCode.setEditable(false);
+        TReaksiCode.setHighlighter(null);
+        TReaksiCode.setName("TReaksiCode"); 
+        panelGlass16.add(TReaksiCode);
+        TReaksiCode.setBounds(65, 70, 140, 23); 
+        
+        TReaksiSystem.setEditable(false);
+        TReaksiSystem.setHighlighter(null);
+        TReaksiSystem.setName("TReaksiSystem"); 
+        panelGlass16.add(TReaksiSystem);
+        TReaksiSystem.setBounds(210, 70, 200, 23); 
+        
+        TReaksiDisplay.setEditable(false);
+        TReaksiDisplay.setHighlighter(null);
+        TReaksiDisplay.setName("TReaksiDisplay"); 
+        panelGlass16.add(TReaksiDisplay);
+        TReaksiDisplay.setBounds(415, 70, 200, 23); 
+        
+        BtnSeekCariReaksiAlergi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); 
+        BtnSeekCariReaksiAlergi.setMnemonic('4');
+        BtnSeekCariReaksiAlergi.setToolTipText("ALt+4");
+        BtnSeekCariReaksiAlergi.setName("BtnSeekCariReaksiAlergi"); 
+        BtnSeekCariReaksiAlergi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSeekCariReaksiAlergiActionPerformed(evt);
+            }
+        });
+        panelGlass16.add(BtnSeekCariReaksiAlergi);
+        BtnSeekCariReaksiAlergi.setBounds(615, 70, 28, 23);
+        
+        //baris4
+        jLabel90.setText("Kategory :");
+        jLabel90.setName("jLabel90"); 
+        panelGlass16.add(jLabel90);
+        jLabel90.setBounds(0, 100, 60, 23);
+        
+        cmbKategory.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Makanan", "Medication", "Lingkungan", "Biologis" }));
+        cmbKategory.setName("cmbKategory"); // NOI18N
+        cmbKategory.setPreferredSize(new java.awt.Dimension(62, 28));
+        cmbKategory.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                //cmbKategoryKeyPressed(evt);
+            }
+        });
+        panelGlass16.add(cmbKategory);
+        cmbKategory.setBounds(65, 100, 120, 23);
+        
+        jLabel85.setText("Severity :");
+        jLabel85.setName("jLabel85"); 
+        panelGlass16.add(jLabel85);
+        jLabel85.setBounds(185, 100, 60, 23);
+        
+        cmbSeverity.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "low", "high", "unable-to-assess" }));
+        cmbSeverity.setName("cmbSeverity"); // NOI18N
+        cmbSeverity.setPreferredSize(new java.awt.Dimension(62, 28));
+        cmbSeverity.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                //cmbSeverityKeyPressed(evt);
+            }
+        });
+        panelGlass16.add(cmbSeverity);
+        cmbSeverity.setBounds(245, 100, 120, 23);
+        
+        tbAlergi.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
+        tbAlergi.setName("tbAlergi"); 
+        tbAlergi.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbAlergiMouseClicked(evt);
+            }
+        });
+        tbAlergi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                //tbAlergiKeyReleased(evt);
+            }
+        });
+        Scroll12.setViewportView(tbAlergi);
+        internalFrame9.add(Scroll12, java.awt.BorderLayout.CENTER);
+        TabRawat.addTab("Alergi", internalFrame9);
 
         ScrollMenu.setViewportView(FormMenu);
 
@@ -4769,9 +5163,11 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         ChkInput.setSelected(true);
         ChkInput1.setSelected(true);
         ChkInput2.setSelected(true);
+        ChkInput3.setSelected(true);
         isForm(); 
         isForm2();
         isForm3();
+        isForm4();
         TSuhu.setText("");
         TKdPrw.setText("");
         TNmPrw.setText("");
@@ -4791,7 +5187,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         TEvaluasi.setText("");
         TRespirasi.setText("");
         TGCS.setText("");
-        TAlergi.setText("");
+        TAlergi.setText(Sequel.cariIsi("SELECT GROUP_CONCAT(mal.display SEPARATOR ', ') AS alergi FROM alergi aa JOIN satu_sehat_ref_allergy mal ON mal.code = aa.alergi_code WHERE aa.no_rkm_medis=?",TNoRM.getText()));
         TTnd.setText("0");
         BagianRS.setText("0");
         Bhp.setText("0");
@@ -4825,6 +5221,12 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         TCavumDouglas.setText("");
         cmbKesadaran.setSelectedIndex(0);
         TNoRw.requestFocus();
+        KdAlergi.setText("");
+        TSystemCode.setText("");
+        TDisplayAlergi.setText("");
+        TReaksiCode.setText("");
+        TReaksiSystem.setText("");
+        TReaksiDisplay.setText("");     
 }//GEN-LAST:event_BtnBatalActionPerformed
 
     private void BtnBatalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnBatalKeyPressed
@@ -5235,6 +5637,34 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                         }
                     }
                 }   break;
+                case 6:
+                if(TabModeAlergi.getRowCount()==0){
+                    JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
+                    TNoRw.requestFocus();
+                }else{
+                    for(i=0;i<tbAlergi.getRowCount();i++){
+                        if(tbAlergi.getValueAt(i,0).toString().equals("true")){
+                            if(akses.getkode().equals("Admin Utama")){
+                                Sequel.queryu("delete from alergi where no_rkm_medis='"+tbAlergi.getValueAt(i,1).toString()+
+                                        "' and kd_dokter='"+tbAlergi.getValueAt(i,3).toString()+
+                                        "' and alergi_code='"+tbAlergi.getValueAt(i,5).toString()+"'" );
+                                TabModeAlergi.removeRow(i);
+                                i--;
+                            } else {
+                                if (akses.getkode().equals(tbAlergi.getValueAt(i, 3).toString())) {
+                                    Sequel.queryu("delete from alergi where no_rkm_medis='"+tbAlergi.getValueAt(i,1).toString()+
+                                        "' and kd_dokter='"+tbAlergi.getValueAt(i,3).toString()+
+                                        "' and alergi_code='"+tbAlergi.getValueAt(i,5).toString()+"'" );
+                                    TabModeAlergi.removeRow(i);
+                                    i--;
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "Hanya bisa dihapus oleh dokter yang bersangkutan..!!");
+                                }
+                            }
+                        }
+                    }
+                    LCount.setText(""+TabModeAlergi.getRowCount());
+                }   break;
             default:
                 break;
         }
@@ -5530,6 +5960,9 @@ public final class DlgRawatInap extends javax.swing.JDialog {
             case 5:
                 tampilPemeriksaanGinekologi();
                 break;
+            case 6:
+                tampilAlergi();
+                break;
             default:
                 break;
         }
@@ -5563,6 +5996,9 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                 break;
             case 5:
                 tampilPemeriksaanGinekologi();
+                break;
+            case 6:
+                tampilAlergi();
                 break;
             default:
                 break;
@@ -5996,6 +6432,54 @@ private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                             TCari.requestFocus();
                         }
                     }   break; 
+                case 6:
+                    if (!KdAlergi.getText().trim().equals("")) {
+                        if (tbAlergi.getSelectedRow() > -1) {
+                            if (akses.getkode().equals("Admin Utama")) {
+                                if (Sequel.mengedittf("alergi",
+                                        "no_rkm_medis='" + tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 1)
+                                        + "' and kd_dokter='" + tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 3)
+                                        + "' and alergi_code='" + tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 5)
+                                        + "' and reaction_code='" + tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 8) + "' ",
+                                        "alergi_code='" + KdAlergi.getText() + "',reaction_code='" + TReaksiCode.getText() + "',"
+                                        + "kategori='" + cmbKategory.getSelectedItem() + "',severity='" + cmbSeverity.getSelectedItem() + "' ") == true) {
+                                    tbAlergi.setValueAt(KdAlergi.getText(), tbAlergi.getSelectedRow(), 5);
+                                    tbAlergi.setValueAt(TSystemCode.getText(), tbAlergi.getSelectedRow(), 6);
+                                    tbAlergi.setValueAt(TDisplayAlergi.getText(), tbAlergi.getSelectedRow(), 7);
+                                    tbAlergi.setValueAt(TReaksiCode.getText(), tbAlergi.getSelectedRow(), 8);
+                                    tbAlergi.setValueAt(TReaksiSystem.getText(), tbAlergi.getSelectedRow(), 9);
+                                    tbAlergi.setValueAt(TReaksiDisplay.getText(), tbAlergi.getSelectedRow(), 10);
+                                    tbAlergi.setValueAt(cmbKategory.getSelectedItem(), tbAlergi.getSelectedRow(), 11);
+                                    tbAlergi.setValueAt(cmbSeverity.getSelectedItem(), tbAlergi.getSelectedRow(), 12);
+                                }
+                            } else {
+                                if (akses.getkode().equals(tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 3))) {
+                                    if (Sequel.mengedittf("alergi",
+                                            "no_rkm_medis='" + tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 1)
+                                            + "' and kd_dokter='" + tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 3)
+                                            + "' and alergi_code='" + tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 5)
+                                            + "' and reaction_code='" + tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 8) + "' ",
+                                            "alergi_code='" + KdAlergi.getText() + "',reaction_code='" + TReaksiCode.getText() + "',"
+                                            + "kategori='" + cmbKategory.getSelectedItem() + "',severity='" + cmbSeverity.getSelectedItem() + "' ") == true) {
+                                        tbAlergi.setValueAt(KdAlergi.getText(), tbAlergi.getSelectedRow(), 5);
+                                        tbAlergi.setValueAt(TSystemCode.getText(), tbAlergi.getSelectedRow(), 6);
+                                        tbAlergi.setValueAt(TDisplayAlergi.getText(), tbAlergi.getSelectedRow(), 7);
+                                        tbAlergi.setValueAt(TReaksiCode.getText(), tbAlergi.getSelectedRow(), 8);
+                                        tbAlergi.setValueAt(TReaksiSystem.getText(), tbAlergi.getSelectedRow(), 9);
+                                        tbAlergi.setValueAt(TReaksiDisplay.getText(), tbAlergi.getSelectedRow(), 10);
+                                        tbAlergi.setValueAt(cmbKategory.getSelectedItem(), tbAlergi.getSelectedRow(), 11);
+                                        tbAlergi.setValueAt(cmbSeverity.getSelectedItem(), tbAlergi.getSelectedRow(), 12);
+                                    }
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "Hanya bisa diganti oleh dokter yang bersangkutan..!!");
+                                }
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(rootPane, "Silahkan pilih data yang mau diganti..!!");
+                            TCari.requestFocus();
+                        }
+                    }
+                    break;
                 default:
                     break;                
             }
@@ -6056,6 +6540,33 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         perawatan.dokter.setLocationRelativeTo(internalFrame1);
         perawatan.dokter.setVisible(true);
     }//GEN-LAST:event_BtnSeekDokterActionPerformed
+    
+    private void BtnSeekDokter4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeekDokter3ActionPerformed
+        akses.setform("DlgRawatInap");
+        perawatan.dokter.emptTeks();
+        perawatan.dokter.isCek();
+        perawatan.dokter.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        perawatan.dokter.setLocationRelativeTo(internalFrame1);
+        perawatan.dokter.setVisible(true);
+    }//GEN-LAST:event_BtnSeekDokter3ActionPerformed
+    
+    private void BtnSeekCariAlergiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeekDokter3ActionPerformed
+        akses.setform("DlgRawatInap");
+        alergi.emptTeks();
+        //alergi.isCek();
+        alergi.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+        alergi.setLocationRelativeTo(internalFrame1);
+        alergi.setVisible(true);
+    }//GEN-LAST:event_BtnSeekDokter3ActionPerformed
+    
+    private void BtnSeekCariReaksiAlergiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeekDokter3ActionPerformed
+        akses.setform("DlgRawatInap");
+        alergiReaction.emptTeks();
+        //alergi.isCek();
+        alergiReaction.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+        alergiReaction.setLocationRelativeTo(internalFrame1);
+        alergiReaction.setVisible(true);
+    }//GEN-LAST:event_BtnSeekDokter3ActionPerformed
 
     private void TKdPrwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdPrwKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
@@ -6418,6 +6929,15 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             }
         }
     }//GEN-LAST:event_tbPemeriksaanGinekologiMouseClicked
+    
+    private void tbAlergiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbCatatanMouseClicked
+        if(TabModeAlergi.getRowCount()!=0){
+            try {
+                getDataAlergi();
+            } catch (java.lang.NullPointerException e) {
+            }
+        }
+    }//GEN-LAST:event_tbCatatanMouseClicked
 
     private void Scroll5KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Scroll5KeyPressed
         // TODO add your handling code here:
@@ -6426,6 +6946,10 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void ChkInput2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkInput2ActionPerformed
         isForm3();
     }//GEN-LAST:event_ChkInput2ActionPerformed
+    
+    private void ChkInput3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkInput3ActionPerformed
+        isForm4();
+    }//GEN-LAST:event_ChkInput3ActionPerformed
 
     private void TInspeksiVulvaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TInspeksiVulvaKeyPressed
         Valid.pindah(evt,TInspeksi,TInspekuloGine);
@@ -8733,6 +9257,34 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button btnIcare;
     private widget.Label TPotensiPRB;
     
+    //ALERGI FORM
+    private widget.Button BtnSeekDokter4;
+    private widget.Button BtnSeekCariAlergi;
+    private widget.Button BtnSeekCariReaksiAlergi;
+    private widget.CekBox ChkInput3;
+    private widget.TextBox KdDok4;
+    private widget.TextBox KdAlergi;
+    private javax.swing.JPanel PanelInput4;
+    private widget.ScrollPane Scroll12;
+    private widget.TextBox TDokter4;
+    private widget.TextBox TSystemCode;
+    private widget.TextBox TDisplayAlergi;
+    private widget.TextBox TReaksiCode;
+    private widget.TextBox TReaksiSystem;
+    private widget.TextBox TReaksiDisplay;
+    private widget.InternalFrame internalFrame9;
+    private widget.Label jLabel84;
+    private widget.Label jLabel85;
+    private widget.Label jLabel86;
+    private widget.Label jLabel87;
+    private widget.Label jLabel88;
+    private widget.Label jLabel89;
+    private widget.Label jLabel90;
+    private widget.panelisi panelGlass16;
+    private widget.Table tbAlergi;
+    private widget.ComboBox cmbKategory;
+    private widget.ComboBox cmbSeverity;
+    
     public void tampilDr() {
         Valid.tabelKosong(tabModeDr);
         try{
@@ -9049,10 +9601,13 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     TCariPasien.setText(TNoRM.getText());
                     TPasien.setText(rs.getString("pasien"));
                     KdDok.setText(Sequel.cariIsi("select dpjp_ranap.kd_dokter from dpjp_ranap where dpjp_ranap.no_rawat=?",TNoRw.getText()));
+                    KdDok4.setText(Sequel.cariIsi("select dpjp_ranap.kd_dokter from dpjp_ranap where dpjp_ranap.no_rawat=?",TNoRw.getText()));
                     if(KdDok.getText().equals("")){
                         KdDok.setText(rs.getString("kd_dokter"));
+                        KdDok4.setText(rs.getString("kd_dokter"));
                     }
                     TDokter.setText(perawatan.dokter.tampil3(KdDok.getText()));
+                    TDokter4.setText(perawatan.dokter.tampil3(KdDok.getText()));
                     TanggalRegistrasi.setText(rs.getString("tgl_registrasi")+" "+rs.getString("jam_reg"));
                 }
             } catch (Exception e) {
@@ -9521,6 +10076,21 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 cmbDtk.setEnabled(false);
             }
         }
+        if (Sequel.cariInteger("SELECT COUNT(dr.kd_dokter) FROM dokter dr WHERE dr.kd_dokter=? ",akses.getkode())>0){
+            DTPTgl.setEditable(false);
+            DTPTgl.setEnabled(false);
+            ChkJln.setEnabled(false);
+            cmbJam.setEnabled(false);
+            cmbMnt.setEnabled(false);
+            cmbDtk.setEnabled(false);
+        }else{
+            DTPTgl.setEditable(true);
+            DTPTgl.setEnabled(true);
+            ChkJln.setEnabled(true);
+            cmbJam.setEnabled(true);
+            cmbMnt.setEnabled(true);
+            cmbDtk.setEnabled(true);
+        }
     }
     
     private void jam(){
@@ -9579,6 +10149,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     }
 
     private void tampilPemeriksaan() {
+        TAlergi.setText(Sequel.cariIsi("SELECT GROUP_CONCAT(mal.display SEPARATOR ', ') AS alergi FROM alergi aa JOIN satu_sehat_ref_allergy mal ON mal.code = aa.alergi_code WHERE aa.no_rkm_medis=?",TNoRM.getText()));
         Valid.tabelKosong(tabModePemeriksaan);
         try{  
             ps4=koneksi.prepareStatement("select pemeriksaan_ranap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,"+
@@ -9655,7 +10226,8 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             cmbKesadaran.setSelectedItem(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),14).toString()); 
             TKeluhan.setText(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),15).toString()); 
             TPemeriksaan.setText(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),16).toString()); 
-            TAlergi.setText(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),17).toString()); 
+            //TAlergi.setText(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),17).toString()); 
+            TAlergi.setText(Sequel.cariIsi("SELECT GROUP_CONCAT(mal.display SEPARATOR ', ') AS alergi FROM alergi aa JOIN satu_sehat_ref_allergy mal ON mal.code = aa.alergi_code WHERE aa.no_rkm_medis=?",TNoRM.getText()));
             TPenilaian.setText(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),18).toString()); 
             TindakLanjut.setText(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),19).toString()); 
             TInstruksi.setText(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),20).toString());  
@@ -9840,6 +10412,68 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         LCount.setText(""+tabModeGinekologi.getRowCount());
     }
     
+    private void getDataAlergi() {
+        if (tbAlergi.getSelectedRow() != -1) {
+            KdDok4.setText(tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 3).toString());
+            TDokter4.setText(tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 4).toString());
+            
+            KdAlergi.setText(tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 5).toString());
+            TSystemCode.setText(tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 6).toString());
+            TDisplayAlergi.setText(tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 7).toString());            
+            
+            TReaksiCode.setText(tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 8).toString());
+            TReaksiSystem.setText(tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 9).toString());
+            TReaksiDisplay.setText(tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 10).toString());
+            
+            cmbKategory.setSelectedItem(tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 11).toString());
+            cmbSeverity.setSelectedItem(tbAlergi.getValueAt(tbAlergi.getSelectedRow(), 12).toString());
+        }
+    }
+        
+    private void tampilAlergi() {
+        Valid.tabelKosong(TabModeAlergi);
+        try{  
+            ps7=koneksi.prepareStatement("SELECT alg.no_rkm_medis, ps.nm_pasien, alg.kd_dokter, dr.nm_dokter, malg.code, malg.system, malg.display, algr.kode, algr.system, algr.display, alg.kategori, alg.severity  FROM alergi alg\n" +
+            "JOIN dokter dr ON dr.kd_dokter = alg.kd_dokter \n" +
+            "JOIN pasien ps ON ps.no_rkm_medis = alg.no_rkm_medis\n" +
+            "JOIN satu_sehat_ref_allergy malg ON malg.code = alg.alergi_code\n" +
+            "JOIN satu_sehat_ref_allergy_reaction algr ON algr.kode = alg.reaction_code where alg.no_rkm_medis like ? "); 
+            try{
+                ps7.setString(1,"%"+TCariPasien.getText()+"%");
+                rs=ps7.executeQuery();
+                while(rs.next()){
+                    TabModeAlergi.addRow(new Object[]{
+                        false,
+                        rs.getString(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getString(5),
+                        rs.getString(6),
+                        rs.getString(7),
+                        rs.getString(8),
+                        rs.getString(9),
+                        rs.getString(10),
+                        rs.getString(11),
+                        rs.getString(12),
+                    });
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi Alergi : "+e);
+            } finally{
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps7 != null) {
+                    ps7.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+        LCount.setText("" + TabModeAlergi.getRowCount());
+    }
+    
     private void getDataPemeriksaanGinekologi() {
          if(tbPemeriksaanGinekologi.getSelectedRow()!= -1) {
 //            TNoRw.setText(tbPemeriksaanGinekologi.getValueAt(tbPemeriksaanGinekologi.getSelectedRow(),1).toString());
@@ -9880,6 +10514,20 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             PanelInput3.setPreferredSize(new Dimension(WIDTH,20));
             panelGlass15.setVisible(false);      
             ChkInput2.setVisible(true);
+        }
+    }
+    
+    private void isForm4(){
+        if(ChkInput3.isSelected()==true){
+            ChkInput3.setVisible(false);
+            PanelInput4.setPreferredSize(new Dimension(WIDTH,155));
+            panelGlass16.setVisible(true);      
+            ChkInput3.setVisible(true);
+        }else if(ChkInput3.isSelected()==false){           
+            ChkInput3.setVisible(false);            
+            PanelInput4.setPreferredSize(new Dimension(WIDTH,20));
+            panelGlass16.setVisible(false);      
+            ChkInput3.setVisible(true);
         }
     }
     
@@ -10509,6 +11157,36 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                             LCount.setText(""+tabModeGinekologi.getRowCount());
                     }
                 } break;
+                case 6:
+                if((!KdDok4.getText().trim().equals(""))&&(!TDokter4.getText().trim().equals(""))&&(!KdAlergi.getText().trim().equals(""))){
+                    if(Sequel.menyimpantf("alergi","?,?,?,?,?,?","Data",6,new String[]{
+                        TNoRM.getText(),
+                        KdDok4.getText(),
+                        KdAlergi.getText(),
+                        TReaksiCode.getText(),
+                        cmbKategory.getSelectedItem()+"",
+                        cmbSeverity.getSelectedItem()+""
+                    })==true){
+                        TabModeAlergi.addRow(new Object[]{
+                            false,
+                            TNoRM.getText(),
+                            TPasien.getText(),
+                            KdDok4.getText(),
+                            TDokter4.getText(),
+                            KdAlergi.getText(),
+                            TSystemCode.getText(),
+                            TDisplayAlergi.getText(),
+                            TReaksiCode.getText(),
+                            TReaksiSystem.getText(),
+                            TReaksiDisplay.getText(),
+                            cmbKategory.getSelectedItem()+"",
+                            cmbSeverity.getSelectedItem()+""                                
+                        });
+                        LCount.setText(""+TabModeAlergi.getRowCount());
+                        BtnBatalActionPerformed(null);
+                    }
+                }
+                break;
             default:
                 break;
         }
