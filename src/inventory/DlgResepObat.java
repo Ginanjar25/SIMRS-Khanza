@@ -1510,6 +1510,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     "select resep_obat.no_resep,resep_obat.tgl_perawatan,resep_obat.jam,pasien.tgl_lahir, "+
                     "resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,databarang.nama_brng,"+
                     "aturan_pakai.aturan,detail_pemberian_obat.jml,kodesatuan.satuan,pasien.jk,reg_periksa.umurdaftar,reg_periksa.sttsumur "+
+                    ",(SELECT ab.kadaluarsa FROM pemesanan aa " +
+                    "JOIN detailpesan ab ON ab.no_faktur = aa.no_faktur " +
+                    "WHERE ab.kode_brng = databarang.kode_brng ORDER BY aa.tgl_pesan DESC  LIMIT 1) AS exp "+
                     "from resep_obat inner join reg_periksa inner join pasien inner join "+
                     "aturan_pakai inner join databarang inner join detail_pemberian_obat "+
                     "inner join kodesatuan on resep_obat.no_rawat=reg_periksa.no_rawat  "+
@@ -1524,6 +1527,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     "where resep_obat.no_resep='"+NoResep.getText()+"' and aturan_pakai.aturan<>''",param);
             }
             
+            param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
             if(Sequel.cariInteger(
                     "select count(*) from resep_obat inner join "+
                     "obat_racikan on resep_obat.no_rawat=obat_racikan.no_rawat and "+
@@ -1533,6 +1537,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     "select resep_obat.no_resep,resep_obat.tgl_perawatan,resep_obat.jam,pasien.tgl_lahir," +
                     "resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,obat_racikan.nama_racik," +
                     "obat_racikan.aturan_pakai,obat_racikan.jml_dr,metode_racik.nm_racik,pasien.jk,reg_periksa.umurdaftar,reg_periksa.sttsumur " +
+                    ", (SELECT ab.kadaluarsa FROM pemesanan aa " +
+                    "JOIN detailpesan ab ON ab.no_faktur = aa.no_faktur " +
+                    "WHERE ab.kode_brng = dpo.kode_brng ORDER BY aa.tgl_pesan DESC  LIMIT 1) AS exp "+
                     "from resep_obat inner join reg_periksa inner join pasien inner join " +
                     "obat_racikan inner join metode_racik on resep_obat.no_rawat=reg_periksa.no_rawat " +
                     "and reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
@@ -1540,7 +1547,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     "and resep_obat.no_rawat=obat_racikan.no_rawat and " +
                     "resep_obat.tgl_perawatan=obat_racikan.tgl_perawatan and " +
                     "resep_obat.jam=obat_racikan.jam and resep_obat.no_rawat=obat_racikan.no_rawat "+
-                    "where resep_obat.no_resep='"+NoResep.getText()+"'",param);
+                    " INNER JOIN detail_pemberian_obat dpo ON dpo.no_rawat = resep_obat.no_rawat AND dpo.tgl_perawatan = resep_obat.tgl_perawatan AND dpo.jam = resep_obat.jam "+
+                    "where resep_obat.no_resep='"+NoResep.getText()+"' AND (SELECT ab.kadaluarsa FROM pemesanan aa JOIN detailpesan ab ON ab.no_faktur = aa.no_faktur WHERE ab.kode_brng = dpo.kode_brng  ORDER BY aa.tgl_pesan DESC  LIMIT 1) != '0000-00-00' order by exp desc limit 1",param);
             }                
             this.setCursor(Cursor.getDefaultCursor());
         }
