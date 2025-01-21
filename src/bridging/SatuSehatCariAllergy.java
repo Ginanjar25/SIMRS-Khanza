@@ -341,7 +341,7 @@ public final class SatuSehatCariAllergy extends javax.swing.JDialog {
             fileWriter = new FileWriter(file);
             iyem="";
             ps=koneksi.prepareStatement(
-                   "SELECT * FROM master_alergi");
+                   "SELECT * FROM satu_sehat_ref_allergy");
             try {
                 rs=ps.executeQuery();
                 while(rs.next()){

@@ -3807,7 +3807,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         panelGlass16.add(jLabel87);
         jLabel87.setBounds(0, 100, 60, 23);
         
-        cmbKategory.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Makanan", "Medication", "Lingkungan", "Biologis" }));
+        cmbKategory.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-Pilih-","Makanan", "Medication", "Lingkungan", "Biologis" }));
         cmbKategory.setName("cmbKategory"); // NOI18N
         cmbKategory.setPreferredSize(new java.awt.Dimension(62, 28));
         cmbKategory.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -3823,7 +3823,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         panelGlass16.add(jLabel88);
         jLabel88.setBounds(185, 100, 60, 23);
         
-        cmbSeverity.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "low", "high", "unable-to-assess" }));
+        cmbSeverity.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-Pilih-","low", "high", "unable-to-assess" }));
         cmbSeverity.setName("cmbSeverity"); // NOI18N
         cmbSeverity.setPreferredSize(new java.awt.Dimension(62, 28));
         cmbSeverity.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -5777,7 +5777,9 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         TDisplayAlergi.setText("");
         TReaksiCode.setText("");
         TReaksiSystem.setText("");
-        TReaksiDisplay.setText("");        
+        TReaksiDisplay.setText("");
+        cmbKategory.setSelectedIndex(0);
+        cmbSeverity.setSelectedIndex(0);        
 }//GEN-LAST:event_BtnBatalActionPerformed
 
     private void BtnBatalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnBatalKeyPressed
@@ -12969,31 +12971,44 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 }
                 break;
             case 8:
-                if((!KdDok4.getText().trim().equals(""))&&(!TDokter4.getText().trim().equals(""))&&(!KdAlergi.getText().trim().equals(""))){
-                    if(Sequel.menyimpantf("alergi","?,?,?,?,?,?","Data",6,new String[]{
-                        TNoRM.getText(),
-                        KdDok4.getText(),
-                        KdAlergi.getText(),
-                        TReaksiCode.getText(),
-                        cmbKategory.getSelectedItem()+"",
-                        cmbSeverity.getSelectedItem()+""
-                    })==true){
-                        TabModeAlergi.addRow(new Object[]{
-                            false,
-                            TNoRM.getText(),
-                            TPasien.getText(),
-                            KdDok4.getText(),
-                            TDokter4.getText(),
-                            KdAlergi.getText(),
-                            TSystemCode.getText(),
-                            TDisplayAlergi.getText(),
-                            TReaksiCode.getText(),
-                            TReaksiSystem.getText(),
-                            TReaksiDisplay.getText(),
-                            cmbKategory.getSelectedItem()+"",
-                            cmbSeverity.getSelectedItem()+""                                
-                        });
-                        LCount.setText(""+TabModeAlergi.getRowCount());
+                if ((!KdDok4.getText().trim().equals("")) && (!TDokter4.getText().trim().equals(""))) {
+                    if (!KdAlergi.getText().trim().equals("")) {
+                        if (!TReaksiCode.getText().trim().equals("")) {
+                            if ((cmbKategory.getSelectedIndex() > 0) && (cmbSeverity.getSelectedIndex() > 0)) {
+                                if (Sequel.menyimpantf("alergi", "?,?,?,?,?,?", "Data", 6, new String[]{
+                                    TNoRM.getText(),
+                                    KdDok4.getText(),
+                                    KdAlergi.getText(),
+                                    TReaksiCode.getText(),
+                                    cmbKategory.getSelectedItem() + "",
+                                    cmbSeverity.getSelectedItem() + ""
+                                }) == true) {
+                                    TabModeAlergi.addRow(new Object[]{
+                                        false,
+                                        TNoRM.getText(),
+                                        TPasien.getText(),
+                                        KdDok4.getText(),
+                                        TDokter4.getText(),
+                                        KdAlergi.getText(),
+                                        TSystemCode.getText(),
+                                        TDisplayAlergi.getText(),
+                                        TReaksiCode.getText(),
+                                        TReaksiSystem.getText(),
+                                        TReaksiDisplay.getText(),
+                                        cmbKategory.getSelectedItem() + "",
+                                        cmbSeverity.getSelectedItem() + ""
+                                    });
+                                    LCount.setText("" + TabModeAlergi.getRowCount());
+                                    BtnBatalActionPerformed(null);
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Pilih Kategori dan Severity");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Pilih Reaksi alergi");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Pilih Alergi");
                     }
                 }
                 break;
