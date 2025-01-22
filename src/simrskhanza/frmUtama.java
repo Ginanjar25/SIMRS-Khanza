@@ -8420,7 +8420,11 @@ public class frmUtama extends javax.swing.JFrame {
                     if(!getIPAntrian().isBlank()){
                         String kd_poli = Sequel.cariIsi("select kd_poli from jadwal where kd_dokter = ? group by kd_poli", akses.getkode());
                         if(!kd_poli.isBlank()){
-                             antriPoli.kirimAntrianAwal(kd_poli, akses.getkode());
+                             if(kd_poli.equals("IGDK")){
+                                 antriPoli.kirimAntrianAwalIGD(kd_poli, akses.getkode());
+                             }else {
+                                 antriPoli.kirimAntrianAwal(kd_poli, akses.getkode());
+                             }
                         }
                     }
                 }else if((akses.getjml1()==0)&&(akses.getjml2()==0)){

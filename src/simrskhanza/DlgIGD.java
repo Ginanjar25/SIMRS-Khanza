@@ -31,6 +31,7 @@ import bridging.INACBGPerawatanCorona;
 import bridging.InhealthDataSJP;
 import bridging.PCareDataPendaftaran;
 import bridging.SisruteRujukanKeluar;
+import fungsi.AntrianPoli;
 import laporan.DlgFrekuensiPenyakitRalan;
 import keuangan.DlgBilingRalan;
 import fungsi.WarnaTable;
@@ -198,6 +199,7 @@ public final class DlgIGD extends javax.swing.JDialog {
     private DlgPasien pasien=new DlgPasien(null,false);
     private DlgCariDokter dokter=new DlgCariDokter(null,false);
     private DlgRujukMasuk rujukmasuk=new DlgRujukMasuk(null,false);
+    private AntrianPoli antriPoli = new AntrianPoli();
     private PreparedStatement ps,ps3,pscaripiutang;
     private ResultSet rs;
     private boolean ceksukses=false;
@@ -6542,6 +6544,9 @@ private void MnRawatJalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                     dlgrwjl.setNoRm(TNoRw.getText(),DTPCari1.getDate(),DTPCari2.getDate());
                     dlgrwjl.setVisible(true);
                     this.setCursor(Cursor.getDefaultCursor());
+                    if(!getIPAntrian().isBlank()){
+                        antriPoli.kirimAntreanIGD("IGDK", tbPetugas.getValueAt(tbPetugas.getSelectedRow(),5).toString());
+                    }
                 }
             }
                                 
@@ -8823,6 +8828,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         if(TPasien.getText().trim().equals("")){
             JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
         }else{
+            simpanAntrianIGD(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString(), tbPetugas.getValueAt(tbPetugas.getSelectedRow(),5).toString(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             Map<String, Object> param = new HashMap<>();
             param.put("namars",akses.getnamars());
@@ -9190,6 +9196,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 form.setLocationRelativeTo(internalFrame1);
                 form.setVisible(true);
                 this.setCursor(Cursor.getDefaultCursor());
+                if(!getIPAntrian().isBlank()){
+                    antriPoli.kirimAntreanIGD("IGDK", tbPetugas.getValueAt(tbPetugas.getSelectedRow(),5).toString());
+                }
             }
         }
     }//GEN-LAST:event_MnPeniliaianAwalMedisIGDActionPerformed
@@ -12455,5 +12464,17 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 emptTeks();
                 tampil();
             }
+    }
+    
+    private void simpanAntrianIGD(String no_rawat, String kd_dokter, String status_antri, String created_at, String updated_at, String no_antrian){
+        Sequel.menyimpan("antripoli", "'" + kd_dokter + "', 'IGDK', '" + status_antri + "', '" + no_rawat + "', '" + no_antrian + "', 'IGD', NOW(), NOW() ");
+    }
+    
+    private String getIPAntrian(){
+        String IPAddress = akses.getalamatip();
+        
+        String getIPAntrian = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", IPAddress);
+        
+        return getIPAntrian;
     }
 }
