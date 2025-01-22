@@ -17567,16 +17567,18 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     "  (IFNULL(inacbg_grouping_stage1.asli, 0) + IFNULL(inacbg_grouping_stage1.tambahan, 0)) <= tarif_berjalan.tarif, \n" +
                     "  'Sudah', \n" +
                     "  'Belum'\n" +
-                ") AS limit_tarif\n" +
+                ") AS limit_tarif, if(ISNULL(penjab_cara_bayar2.png_jawab),'',CONCAT('/', penjab_cara_bayar2.png_jawab)) AS cara_bayar2 \n" +
                 "from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis\n" +
                 "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = reg_periksa.no_rawat inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar \n" +
                 "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel\n" +
                 "inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab \n" +
                 "inner join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter \n" +
-                "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj\n" +
                 "LEFT JOIN side_db.temp_tarif_berjalan tarif_berjalan ON tarif_berjalan.no_rawat = kamar_inap.no_rawat\n" +
                 "LEFT JOIN bridging_sep ON bridging_sep.no_rawat = reg_periksa.no_rawat\n" +
                 "LEFT JOIN inacbg_grouping_stage1 ON inacbg_grouping_stage1.no_sep = bridging_sep.no_sep\n"+
+                "LEFT JOIN penjab AS penjab ON pasien.kd_pj = penjab.kd_pj\n" +
+                "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
+                "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj " +
                (namadokter.equals("")?"where "+key+" "+order:"inner join dpjp_ranap on dpjp_ranap.no_rawat=reg_periksa.no_rawat where dpjp_ranap.kd_dokter='"+namadokter+"' and "+key+" "+order));
             try {
                 rs=ps.executeQuery();
@@ -17589,7 +17591,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                         rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")),rs.getString("stts_pulang"),
                         rs.getString("lama"),rs.getString("nm_dokter"),rs.getString("kd_kamar"),rs.getString("status_bayar"),rs.getString("agama"),
                         rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+" ("+rs.getString("umur")+")",
-                        rs.getString("alamat"),rs.getString("no_tlp"),rs.getString("png_jawab"),
+                        rs.getString("alamat"),rs.getString("no_tlp"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),
                         rs.getString("kamar") + " (" + rs.getString("kelas") + ")",Valid.SetAngka(rs.getDouble("trf_kamar")),rs.getString("diagnosa_awal"),
                         rs.getString("diagnosa_akhir"),rs.getString("tgl_masuk"),rs.getString("jam_masuk"),rs.getString("tgl_keluar"),
                         rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")),Valid.SetAngka(rs.getDouble("selisih_tarif")),

@@ -34,6 +34,18 @@ import kepegawaian.DlgCariPetugas;
 import keuangan.DlgBayarPiutangKry;
 import simrskhanza.DlgPasien;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.Locale;
+import jxl.CellReferenceHelper;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+import jxl.write.*;
+
 public class DlgCariPiutangKary extends javax.swing.JDialog {
 
     private final DefaultTableModel tabMode;
@@ -50,7 +62,8 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
     private DecimalFormat df2 = new DecimalFormat("###,###,###,###,###,###,###");
     private double ttljual = 0, subttljual = 0, ttldisc = 0, subttldisc = 0, ttlall = 0,
             subttlall = 0, sisapiutang = 0, cicilan = 0, telat = 0;
-    private String status = "", aktifkanbatch = "no", nofak = "", mem = "", ptg = "", sat = "", bar = "", tanggal = "", kodedokter = "", namadokter = "", nomorrm = "", finger = "",pilihan="";
+    private String status = "", aktifkanbatch = "no", nofak = "", mem = "", ptg = "", sat = "", bar = "", tanggal = "", 
+            kodedokter = "", namadokter = "", nomorrm = "", finger = "", pilihan = "", order = " order by piutang.tgl_piutang,piutang.nota_piutang ", dokter="", group=" group by piutang.nota_piutang ";
     private int no = 0, i = 0;
     private boolean sukses = true;
     private StringBuilder htmlContent;
@@ -73,7 +86,7 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
         }
 
         tabMode = new DefaultTableModel(null, new Object[]{
-            "No.Nota", "Tanggal", "NIK", "Nama Karyawan", "Jenis", "OngKir", "Uang Muka", "Piutang", "Status"
+            "No.Nota", "Tanggal", "NIK", "Nama Karyawan", "Jenis", "OngKir", "Uang Muka", "Sisa Piutang","Total Piutang", "Status", "Unit"
         }) {
             @Override
             public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -85,7 +98,7 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800, 800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < 11; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);
             if (i == 0) {
                 column.setPreferredWidth(90);
@@ -103,9 +116,13 @@ public class DlgCariPiutangKary extends javax.swing.JDialog {
                 column.setPreferredWidth(60);
             } else if (i == 7) {
                 column.setPreferredWidth(70);
-            }else if (i == 8) {
+            } else if (i == 8) {
                 column.setPreferredWidth(100);
-            }
+            } else if (i == 9) {
+                column.setPreferredWidth(100);
+            } else if (i == 10) {
+                column.setPreferredWidth(150);
+            } 
         }
         tbDokter.setDefaultRenderer(Object.class, new WarnaTable());
 
@@ -1096,43 +1113,61 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
 
     private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        BtnCariActionPerformed(evt);
-        if (tabMode.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(null, "Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
-            TCari.requestFocus();
-        } else if (tabMode.getRowCount() != 0) {
-            Sequel.queryu("delete from temporary where temp37='" + akses.getalamatip() + "'");
-            int row = tabMode.getRowCount();
-            int i = 0;
-            for (i = 0; i < row; i++) {
-                Sequel.menyimpan("temporary", "'" + i + "','"
-                        + tabMode.getValueAt(i, 0).toString() + "','"
-                        + tabMode.getValueAt(i, 1).toString() + "','"
-                        + tabMode.getValueAt(i, 2).toString() + "','"
-                        + tabMode.getValueAt(i, 3).toString() + "','"
-                        + tabMode.getValueAt(i, 4).toString() + "','"
-                        + tabMode.getValueAt(i, 5).toString() + "','"
-                        + tabMode.getValueAt(i, 6).toString() + "','"
-                        + tabMode.getValueAt(i, 7).toString() + "','"
-                        + tabMode.getValueAt(i, 8).toString() + "','','','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
-            }
-            if (i == row) {
-                i++;
-                Sequel.menyimpan("temporary", "'" + i + "','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
-                i++;
-                Sequel.menyimpan("temporary", "'" + i + "','Jml.Total :','','','','','','','','','','" + LTotal.getText() + "','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
-            }
+        try {
+            pilihan = (String) JOptionPane.showInputDialog(null, "Silahkan pilih laporan..!", "Pilihan Cetak", JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Laporan 1 (EXCEL)", "Laporan 2 (PDF)"}, "Laporan 2 (PDF)");
+            switch (pilihan) {
+                case "Laporan 1 (EXCEL)":
+                    exportExcel();
+                break;
 
-            Map<String, Object> param = new HashMap<>();
-            param.put("namars", akses.getnamars());
-            param.put("alamatrs", akses.getalamatrs());
-            param.put("kotars", akses.getkabupatenrs());
-            param.put("propinsirs", akses.getpropinsirs());
-            param.put("kontakrs", akses.getkontakrs());
-            param.put("emailrs", akses.getemailrs());
-            param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
-            Valid.MyReportqry("rptPiutangKry.jasper", "report", "::[ Transaksi Piutang Barang ]::", "select * from temporary where temporary.temp37='" + akses.getalamatip() + "' order by temporary.no", param);
+                case "Laporan 2 (PDF)":
+                    this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    BtnCariActionPerformed(evt);
+                    if (tabMode.getRowCount() == 0) {
+                        JOptionPane.showMessageDialog(null, "Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
+                        TCari.requestFocus();
+                    } else if (tabMode.getRowCount() != 0) {
+                        Sequel.queryu("delete from temporary where temp37='" + akses.getalamatip() + "'");
+                        int row = tabMode.getRowCount();
+                        int i = 0;
+                        for (i = 0; i < row; i++) {
+                            Sequel.menyimpan("temporary", "'" + i + "','"
+                                    + tabMode.getValueAt(i, 0).toString() + "','"
+                                    + tabMode.getValueAt(i, 1).toString() + "','"
+                                    + tabMode.getValueAt(i, 2).toString() + "','"
+                                    + tabMode.getValueAt(i, 3).toString() + "','"
+                                    + tabMode.getValueAt(i, 4).toString() + "','"
+                                    + tabMode.getValueAt(i, 5).toString() + "','"
+                                    + tabMode.getValueAt(i, 6).toString() + "','"
+                                    + tabMode.getValueAt(i, 7).toString() + "','"
+                                    + tabMode.getValueAt(i, 8).toString() + "','','','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
+                        }
+                        if (i == row) {
+                            i++;
+                            Sequel.menyimpan("temporary", "'" + i + "','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
+                            i++;
+                            Sequel.menyimpan("temporary", "'" + i + "','Jml.Total :','','','','','','','','','','" + LTotal.getText() + "','','','','','','','','','','','','','','','','','','','','','','','','','','" + akses.getalamatip() + "'", "Transaksi Piutang");
+                        }
+
+                        Map<String, Object> param = new HashMap<>();
+                        param.put("namars", akses.getnamars());
+                        param.put("alamatrs", akses.getalamatrs());
+                        param.put("kotars", akses.getkabupatenrs());
+                        param.put("propinsirs", akses.getpropinsirs());
+                        param.put("kontakrs", akses.getkontakrs());
+                        param.put("emailrs", akses.getemailrs());
+                        param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
+                        Valid.MyReportqry("rptPiutangKry.jasper", "report", "::[ Transaksi Piutang Barang ]::", "select * from temporary where temporary.temp37='" + akses.getalamatip() + "' order by temporary.no", param);
+                    }
+                    break;
+            }
+        } catch (Exception e) {
+            System.out.println("Gagal Mencetak Data : " + e);
         }
+        group=" group by piutang.nota_piutang ";
+        order = " order by piutang.tgl_piutang,piutang.nota_piutang ";
+        dokter = "";
+        tampil();
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnPrintActionPerformed
 
@@ -1531,7 +1566,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     }//GEN-LAST:event_ppLembarObat1ActionPerformed
 
     private void tbDokterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbDokterMouseClicked
-        if(tabMode.getRowCount()!=0){
+        if (tabMode.getRowCount() != 0) {
             try {
                 getData();
             } catch (java.lang.NullPointerException e) {
@@ -1623,51 +1658,56 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             mem = " and piutang.catatan like='%" + nmmem.getText() + "%' ";
         }
         String bayar = Bayar.getSelectedItem().toString();
-        switch(bayar){
-              case "Semua":
-                    status = "";
-                    break;
-              case "Lunas":
-                  status = " and IFNULL(bayar_piutang.besar_cicilan, 0) - piutang.sisapiutang = 0 ";
-                  break;
-              case "Belum Lunas":
-                  status = " and IFNULL(bayar_piutang.besar_cicilan, 0) - piutang.sisapiutang != 0 ";
-                  break;
+        switch (bayar) {
+            case "Semua":
+                status = "";
+                break;
+            case "Lunas":
+                status = " and IFNULL(bayar_piutang.besar_cicilan, 0) - piutang.sisapiutang = 0 ";
+                break;
+            case "Belum Lunas":
+                status = " and IFNULL(bayar_piutang.besar_cicilan, 0) - piutang.sisapiutang != 0 ";
+                break;
         }
         Valid.tabelKosong(tabMode);
         try {
             ttljual = 0;
             ps = koneksi.prepareStatement(
-                    "select piutang.nota_piutang, piutang.tgl_piutang,piutang.nip,petugas.nama, " +
-                    "piutang.no_rkm_medis,piutang.nm_pasien, " +
-                    "piutang.catatan,piutang.jns_jual,piutang.ongkir, " +
-                    "piutang.uangmuka,piutang.sisapiutang, " +
-                    "IF(IFNULL(bayar_piutang.besar_cicilan, 0) - piutang.sisapiutang = 0, 'Lunas', 'Belum Lunas') AS lunas, SUM(detailpiutang.subtotal) AS total " +
-                    "from piutang inner join petugas inner join detailpiutang " +
-                    "on piutang.nota_piutang=detailpiutang.nota_piutang " +
-                    "and piutang.nip=petugas.nip " +
-                    "LEFT JOIN bayar_piutang ON bayar_piutang.no_rawat = piutang.nota_piutang " +
-                    "where piutang.nota_piutang LIKE '%HK%'" + status + " and " + tanggal + " and (piutang.nota_piutang like '%" + TCari.getText() + "%' " +
-                    "or piutang.no_rkm_medis like '%"+TCari.getText()+"%' or piutang.nm_pasien like '%"+TCari.getText()+"%' " +
-                    "or piutang.catatan like '%"+TCari.getText()+"%')" +
-                    " group by piutang.nota_piutang order by piutang.tgl_piutang,piutang.nota_piutang ");
+                    "select piutang.nota_piutang, piutang.tgl_piutang,piutang.nip,petugas.nama,\n" +
+                    "piutang.no_rkm_medis,piutang.nm_pasien,\n" +
+                    "piutang.catatan,piutang.jns_jual,piutang.ongkir,\n" +
+                    "piutang.uangmuka,piutang.sisapiutang,\n" +
+                    "IF(IFNULL(bayar_piutang.besar_cicilan, 0) - piutang.sisapiutang = 0, 'Lunas', 'Belum Lunas') AS lunas, SUM(detailpiutang.subtotal) AS total,\n" +
+                    "SUBSTRING_INDEX(piutang.catatan,'-',1) AS nik_pasien, if(pegawai.jbtn LIKE '%Dokter Spesialis%', 'DOKTER SPESIALIS', if(pegawai.jbtn LIKE '%Dokter Umum%', 'DOKTER IGD', departemen.nama)) AS jabatan\n" +
+                    "from piutang inner join petugas inner join detailpiutang\n" +
+                    "on piutang.nota_piutang=detailpiutang.nota_piutang\n" +
+                    "and piutang.nip=petugas.nip\n" +
+                    "LEFT JOIN bayar_piutang ON bayar_piutang.no_rawat = piutang.nota_piutang\n" +
+                    "LEFT JOIN pegawai ON pegawai.nik = SUBSTRING_INDEX(piutang.catatan, '-', 1)\n" +
+                    "LEFT JOIN departemen ON departemen.dep_id = pegawai.departemen "
+                    + "where piutang.nota_piutang LIKE '%HK%'" + status + " and "+dokter + tanggal + " and (piutang.nota_piutang like '%" + TCari.getText() + "%' "
+                    + "or piutang.no_rkm_medis like '%" + TCari.getText() + "%' or piutang.nm_pasien like '%" + TCari.getText() + "%' "
+                    + "or piutang.catatan like '%" + TCari.getText() + "%')"
+                    + group + order);
             try {
                 rs = ps.executeQuery();
                 while (rs.next()) {
-                    String str = rs.getString(7);
-                        String[] arrOfStr = str.split("-", 2);
-                        ttljual = ttljual + rs.getDouble(13);
-                        tabMode.addRow(new String[]{
-                            rs.getString(1),
-                            rs.getString(2),
-                            arrOfStr[0],
-                            arrOfStr[1],
-                            rs.getString(8),
-                            df2.format(rs.getDouble(9)),
-                            df2.format(rs.getDouble(10)),
-                            df2.format(rs.getDouble(11)),
-                            rs.getString(12)
-                        });                
+                    String str = rs.getString("catatan");
+                    String[] arrOfStr = str.split("-", 2);
+                    ttljual = ttljual + rs.getDouble("total");
+                    tabMode.addRow(new String[]{
+                        rs.getString("nota_piutang"),
+                        rs.getString("tgl_piutang"),
+                        arrOfStr[0],
+                        arrOfStr[1],
+                        rs.getString("jns_jual"),
+                        df2.format(rs.getDouble("ongkir")),
+                        df2.format(rs.getDouble("uangmuka")),
+                        df2.format(rs.getDouble("sisapiutang")),
+                        df2.format(rs.getDouble("total")),
+                        rs.getString("lunas"),
+                        rs.getString("jabatan").toUpperCase()
+                    });
                 }
             } catch (Exception e) {
                 System.out.println("Notif : " + e);
@@ -1710,15 +1750,249 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             ppHapus.setEnabled(false);
         }
     }
-    
+
     private void getData() {
 //        String petugas = Sequel.cariIsi("select nama from petugas where nip=?", akses.getkode());
-        int row=tbDokter.getSelectedRow();
-        if(row!= -1){
-            NoNota.setText(tbDokter.getValueAt(row,0).toString());
-            kdmem.setText(tbDokter.getValueAt(row,2).toString());
-            nmmem.setText(tbDokter.getValueAt(row,3).toString());
+        int row = tbDokter.getSelectedRow();
+        if (row != -1) {
+            NoNota.setText(tbDokter.getValueAt(row, 0).toString());
+            kdmem.setText(tbDokter.getValueAt(row, 2).toString());
+            nmmem.setText(tbDokter.getValueAt(row, 3).toString());
         }
     }
 
+    private void exportExcel() {
+        try {
+             // Contoh data tanggal
+            String dataTanggal = Valid.SetTgl(Tgl1.getSelectedItem() + "");
+
+            // Parsing tanggal dan mendapatkan nama bulan
+            LocalDate date = LocalDate.parse(dataTanggal, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            String namaBulan = date.getMonth().getDisplayName(TextStyle.FULL, new Locale("id", "ID"));
+            String tahun = String.valueOf(date.getYear());
+
+            // Membuat nama file dengan bulan
+            String namaFile = "LaporanPiutang" + tahun + ".xls";
+            // Buat workbook dan sheet
+            File file = new File(namaFile);
+            WritableWorkbook workbook;
+
+             if (file.exists()) {
+                try {
+                    // Jika file sudah ada, buka workbook
+                    Workbook existingWorkbook = Workbook.getWorkbook(file);
+                    workbook = Workbook.createWorkbook(file, existingWorkbook);
+                    System.out.println("File ditemukan. Membuka file dan menambahkan sheet baru.");
+                } catch (BiffException e) {
+                    e.printStackTrace();
+                    System.out.println("Terjadi kesalahan saat membaca file Excel.");
+                    return;
+                }
+            } else {
+                // Jika file belum ada, buat workbook baru
+                workbook = Workbook.createWorkbook(file);
+                System.out.println("File tidak ditemukan. Membuat file baru.");
+            }
+            int sheetCount = workbook.getNumberOfSheets();
+            String namaSheetBaru = namaBulan + " " + (sheetCount + 1);;
+            WritableSheet sheet = workbook.createSheet(namaSheetBaru, sheetCount);
+            // === Styling untuk Judul ===
+            WritableFont titleFont = new WritableFont(WritableFont.ARIAL, 14, WritableFont.BOLD);
+            WritableCellFormat titleFormat = new WritableCellFormat(titleFont);
+            titleFormat.setAlignment(Alignment.CENTRE); // Teks di tengah
+            titleFormat.setVerticalAlignment(VerticalAlignment.CENTRE); // Vertikal di tengah
+            titleFormat.setBorder(Border.BOTTOM, BorderLineStyle.NONE);
+            titleFormat.setBackground(Colour.WHITE); // Background hijau muda
+
+            // === Styling Header ===
+            WritableFont headerFont = new WritableFont(WritableFont.ARIAL, 11, WritableFont.BOLD);
+            WritableCellFormat headerFormat = new WritableCellFormat(headerFont);
+            headerFormat.setBackground(Colour.LIGHT_ORANGE); // Background abu-abu
+            headerFormat.setBorder(Border.ALL, BorderLineStyle.THIN); // Border tipis
+            headerFormat.setAlignment(Alignment.CENTRE); // Teks di tengah
+
+            // === Styling Data ===
+            WritableFont dataFont = new WritableFont(WritableFont.ARIAL, 11); // Gunakan font Cambria
+            WritableCellFormat dataFormat = new WritableCellFormat(dataFont);
+            dataFormat.setWrap(true); // Bungkus teks jika panjang
+            dataFormat.setBorder(Border.ALL, BorderLineStyle.THIN); // Border tipis
+
+            // === Styling Header ===
+            WritableFont footerFont = new WritableFont(WritableFont.ARIAL, 11, WritableFont.BOLD);
+            WritableCellFormat footerFormat = new WritableCellFormat(footerFont);
+            footerFormat.setBackground(Colour.LIGHT_ORANGE); // Background abu-abu
+            footerFormat.setBorder(Border.ALL, BorderLineStyle.THIN); // Border tipis
+            footerFormat.setAlignment(Alignment.RIGHT); // Teks di tengah
+
+            // === Tambahkan Judul ===
+            String title = "RINCIAN HUTANG OBAT KARYAWAN";
+            int totalColumns = 12; // Jumlah kolom header
+            sheet.mergeCells(0, 0, totalColumns - 1, 0); // Merge dari kolom 0 sampai 8 (total 9 kolom)
+            Label titleLabel = new Label(0, 0, title, titleFormat);
+            sheet.addCell(titleLabel);
+            int[] columnOrder = {3, 2, 10, 5, 5, 5, 5, 5, 5, 8, 8}; // Contoh: Kolom ke-1 mengambil data dari indeks ke-2, dst.
+
+            // Tambahkan header (di baris kedua)
+            //TABLE 1
+            String[] headers = {"NO", "NAMA", "NIK", "UNIT", "KARCIS", "POLI", "RANAP", "SELISIH BPJS", "LAB", "RO", "OBAT", "JUMLAH"};
+            int[] columnWidth = {5, 40, 10, 20, 12, 12, 12, 15, 12, 12, 13, 17};
+            for (int i = 0; i < headers.length; i++) {
+                Label label = new Label(i, 2, headers[i], headerFormat); // Baris 1 untuk header
+                sheet.addCell(label);
+                sheet.setColumnView(i, columnWidth[i]);
+                sheet.setRowView(i + 2, 300);
+            }
+            sheet.setRowView(2, 500); // Tinggi baris header
+            group= " group BY SUBSTRING_INDEX(piutang.catatan, '-', 1) ";
+            order = " order by departemen.dep_id ";
+            dokter = " pegawai.jbtn NOT LIKE '%Dokter Spesialis%' and ";
+            tampil();
+
+            // Tambahkan data dan rumus
+            for (int i = 0; i < tabMode.getRowCount(); i++) {
+                // Tambahkan nomor baris
+                Label noLabel = new Label(0, i + 3, String.valueOf(i + 1), dataFormat); // Kolom No.
+                sheet.addCell(noLabel);
+
+                // Tambahkan data berdasarkan columnOrder
+                for (int j = 1; j < headers.length - 1; j++) { // Kolom data kecuali kolom terakhir
+                    int index = columnOrder[j - 1]; // Ambil indeks data sesuai urutan
+                    Object value = tabMode.getValueAt(i, index); // Ambil nilai dari tabel
+                    if (value != null) {
+                        try {
+                            if (j > 2) {
+                                double numericValue = Double.parseDouble(value.toString().replace(",", "")); // Konversi String ke double
+                                jxl.write.Number numberCell = new jxl.write.Number(j, i + 3, numericValue, dataFormat);
+                                sheet.addCell(numberCell);
+                            } else {
+                                String displayValue = value.toString().isEmpty() ? "-" : value.toString();
+                                Label dataLabel = new Label(j, i + 3, displayValue, dataFormat); // Tambahkan string
+                                sheet.addCell(dataLabel);
+                            }
+                        } catch (NumberFormatException e) {
+                            String displayValue = value.toString().isEmpty() ? "-" : value.toString();
+                            Label dataLabel = new Label(j, i + 3, displayValue, dataFormat); // Tambahkan string
+                            sheet.addCell(dataLabel);
+                        }
+                    } else {
+                        // Jika null, tambahkan string default
+                        Label dataLabel = new Label(j, i + 3, "-", dataFormat);
+                        sheet.addCell(dataLabel);
+                    }
+                }
+
+                int startCol = 4; // Indeks kolom KARCIS (E di Excel)
+                int endCol = 10; // Indeks kolom OBAT (K di Excel)
+                int excelRow = i + 3 + 1; // Tambahkan 1 agar sesuai dengan baris Excel
+                String formula = String.format("SUM(%s%d:%s%d)",
+                        CellReferenceHelper.getColumnReference(startCol), excelRow,
+                        CellReferenceHelper.getColumnReference(endCol), excelRow);
+                Formula sumFormula = new Formula(headers.length - 1, i + 3, formula, dataFormat);
+                sheet.addCell(sumFormula);
+            }
+
+            // Tambahkan baris terakhir untuk total
+            int totalRow = tabMode.getRowCount() + 3; // Baris terakhir + header offset
+            int jumlahCol = headers.length - 1; // Kolom JUMLAH (paling akhir)
+
+            // Tambahkan label "TOTAL" dan merge cell dari kolom 0 sampai 3
+            sheet.mergeCells(0, totalRow, 3, totalRow); // Merge cell dari kolom 0 sampai 3 untuk baris total
+            Label totalLabel = new Label(0, totalRow, "TOTAL", headerFormat); // Label "TOTAL"
+            sheet.addCell(totalLabel);
+
+            // Tambahkan formula SUM di setiap kolom mulai dari kolom 4 hingga kolom terakhir
+            for (int j = 4; j < headers.length; j++) { // Mulai dari kolom 4 (kolom KARCIS)
+                String totalFormula = String.format("SUM(%s%d:%s%d)",
+                        CellReferenceHelper.getColumnReference(j), 4, // Kolom j, baris data pertama (baris 4)
+                        CellReferenceHelper.getColumnReference(j), totalRow); // Kolom j, baris terakhir data
+                Formula totalSum = new Formula(j, totalRow, totalFormula, footerFormat); // Tambahkan formula di kolom j
+                sheet.addCell(totalSum);
+            }
+            
+            //TABLE 2
+            group= " group BY SUBSTRING_INDEX(piutang.catatan, '-', 1) ";
+            order = " order by departemen.dep_id ";
+            dokter = " pegawai.jbtn LIKE '%Dokter Spesialis%' and ";
+            tampil();
+
+            // Tentukan header awal tabel kedua berdasarkan total row tabel pertama
+            int header2 = totalRow + 2; // Tambahkan 2 baris untuk spasi antar-tabel
+
+// Tambahkan header untuk tabel kedua
+            for (int i = 0; i < headers.length; i++) {
+                Label label = new Label(i, header2, headers[i], headerFormat); // Baris header kedua
+                sheet.addCell(label);
+                sheet.setColumnView(i, columnWidth[i]);
+            }
+            sheet.setRowView(header2, 500); // Tinggi baris header tabel kedua
+
+// Tambahkan data untuk tabel kedua
+            for (int i = 0; i < tabMode.getRowCount(); i++) {
+                // Tambahkan nomor baris
+                Label noLabel = new Label(0, header2 + i + 1, String.valueOf(i + 1), dataFormat);
+                sheet.addCell(noLabel);
+
+                // Tambahkan data berdasarkan columnOrder
+                for (int j = 1; j < headers.length - 1; j++) { // Kolom data kecuali kolom terakhir
+                    int index = columnOrder[j - 1];
+                    Object value = tabMode.getValueAt(i, index);
+                    if (value != null) {
+                        try {
+                            if (j > 2) {
+                                double numericValue = Double.parseDouble(value.toString().replace(",", ""));
+                                jxl.write.Number numberCell = new jxl.write.Number(j, header2 + i + 1, numericValue, dataFormat);
+                                sheet.addCell(numberCell);
+                            } else {
+                                String displayValue = value.toString().isEmpty() ? "-" : value.toString();
+                                Label dataLabel = new Label(j, header2 + i + 1, displayValue, dataFormat);
+                                sheet.addCell(dataLabel);
+                            }
+                        } catch (NumberFormatException e) {
+                            String displayValue = value.toString().isEmpty() ? "-" : value.toString();
+                            Label dataLabel = new Label(j, header2 + i + 1, displayValue, dataFormat);
+                            sheet.addCell(dataLabel);
+                        }
+                    } else {
+                        Label dataLabel = new Label(j, header2 + i + 1, "-", dataFormat);
+                        sheet.addCell(dataLabel);
+                    }
+                }
+
+                // Tambahkan formula SUM untuk setiap baris tabel kedua
+                int startCol = 4;
+                int endCol = 10;
+                int excelRow = header2 + i + 2; // Sesuaikan baris Excel untuk tabel kedua
+                String formula = String.format("SUM(%s%d:%s%d)",
+                        CellReferenceHelper.getColumnReference(startCol), excelRow,
+                        CellReferenceHelper.getColumnReference(endCol), excelRow);
+                Formula sumFormula = new Formula(headers.length - 1, header2 + i + 1, formula, dataFormat);
+                sheet.addCell(sumFormula);
+            }
+
+// Tambahkan total untuk tabel kedua
+            int totalRow2 = header2 + tabMode.getRowCount() + 1; // Baris total tabel kedua
+            sheet.mergeCells(0, totalRow2, 3, totalRow2); // Merge cell dari kolom 0 sampai 3
+            Label totalLabel2 = new Label(0, totalRow2, "TOTAL", headerFormat);
+            sheet.addCell(totalLabel2);
+
+// Tambahkan formula SUM di kolom untuk tabel kedua
+            for (int j = 4; j < headers.length; j++) {
+                String totalFormula2 = String.format("SUM(%s%d:%s%d)",
+                        CellReferenceHelper.getColumnReference(j), header2 + 1, // Kolom j, baris data pertama tabel kedua
+                        CellReferenceHelper.getColumnReference(j), totalRow2); // Kolom j, baris terakhir data tabel kedua
+                Formula totalSum2 = new Formula(j, totalRow2, totalFormula2, footerFormat);
+                sheet.addCell(totalSum2);
+            }
+
+            // Simpan file Excel
+            workbook.write();
+            workbook.close();
+            JOptionPane.showMessageDialog(null, "Laporan berhasil diekspor ke Excel: " + file.getAbsolutePath());
+            Desktop.getDesktop().open(file); // Membuka file setelah dibuat
+        } catch (IOException | WriteException e) {
+            JOptionPane.showMessageDialog(null, "Gagal membuat file Excel: " + e.getMessage());
+        }
+        dokter = "";
+        group=" group by piutang.nota_piutang ";
+    }
 }

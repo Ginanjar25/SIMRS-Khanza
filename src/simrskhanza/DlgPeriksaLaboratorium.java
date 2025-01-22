@@ -24,12 +24,10 @@ import fungsi.koneksiDB;
 import fungsi.sekuel;
 import fungsi.validasi;
 import fungsi.akses;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -40,16 +38,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.AbstractCellEditor;
-import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import keuangan.Jurnal;
 
@@ -136,12 +129,9 @@ public final class DlgPeriksaLaboratorium extends javax.swing.JDialog {
             if(i==0){
                 column.setPreferredWidth(20);
             }else if(i==1){
-//                column.setPreferredWidth(180);
                 column.setPreferredWidth(250);
             }else if(i==2){
                 column.setPreferredWidth(130);
-//                column.setPreferredWidth(300);
-//                column.setCellEditor(new TextAreaEditor());
             }else if(i==3){
                 column.setPreferredWidth(70);
             }else if(i==4){
@@ -425,8 +415,6 @@ public final class DlgPeriksaLaboratorium extends javax.swing.JDialog {
         } catch (Exception ex) {            
             aktifkanparsial="no";
         }
-        
-        
     }
 
     /** This method is called from within the constructor to
@@ -446,7 +434,6 @@ public final class DlgPeriksaLaboratorium extends javax.swing.JDialog {
         Popup = new javax.swing.JPopupMenu();
         ppBersihkan = new javax.swing.JMenuItem();
         ppSemua = new javax.swing.JMenuItem();
-        jTextField1 = new javax.swing.JTextField();
         internalFrame1 = new widget.InternalFrame();
         panelGlass8 = new widget.panelisi();
         BtnSimpan = new widget.Button();
@@ -554,9 +541,6 @@ public final class DlgPeriksaLaboratorium extends javax.swing.JDialog {
             }
         });
         Popup.add(ppSemua);
-
-        jTextField1.setText("jTextField1");
-        jTextField1.setName("jTextField1"); // NOI18N
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -819,7 +803,7 @@ public final class DlgPeriksaLaboratorium extends javax.swing.JDialog {
         NmPtg.setBounds(546, 42, 249, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "31-12-2024" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-10-2022" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -1004,13 +988,8 @@ public final class DlgPeriksaLaboratorium extends javax.swing.JDialog {
         Scroll.setName("Scroll"); // NOI18N
         Scroll.setOpaque(true);
 
-        tbPemeriksaan.setToolTipText("");
-        tbPemeriksaan.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_NEXT_COLUMN);
         tbPemeriksaan.setComponentPopupMenu(Popup);
-        tbPemeriksaan.setEditingColumn(2);
         tbPemeriksaan.setName("tbPemeriksaan"); // NOI18N
-        tbPemeriksaan.setRowHeight(50);
-        tbPemeriksaan.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         Scroll.setViewportView(tbPemeriksaan);
 
         PanelCariUtama.add(Scroll, java.awt.BorderLayout.CENTER);
@@ -1595,7 +1574,6 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Label jLabel6;
     private widget.Label jLabel7;
     private widget.Label jLabel9;
-    private javax.swing.JTextField jTextField1;
     private widget.panelisi panelGlass11;
     private widget.panelisi panelGlass8;
     private javax.swing.JMenuItem ppBersihkan;
@@ -3284,39 +3262,4 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         ChkJln.setSelected(true);
     }
 
-    static class TextAreaEditor extends AbstractCellEditor implements TableCellEditor {
-
-        private final JTextArea textArea;
-        private final JScrollPane scrollPane;
-
-        public TextAreaEditor() {
-            textArea = new JTextArea();
-            textArea.setLineWrap(true);
-            textArea.setWrapStyleWord(true);
-            textArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-            textArea.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyPressed(KeyEvent e) {
-                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        e.consume(); // Hindari perpindahan cell
-                        textArea.append("\n"); // Tambahkan baris baru
-                    }
-                }
-            });
-
-            scrollPane = new JScrollPane(textArea);
-        }
-
-        @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            textArea.setText(value != null ? value.toString() : "");
-            return scrollPane;
-        }
-
-        @Override
-        public Object getCellEditorValue() {
-            return textArea.getText();
-        }
-    }
-    
 }

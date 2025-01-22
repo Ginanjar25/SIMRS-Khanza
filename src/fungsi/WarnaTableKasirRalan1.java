@@ -42,9 +42,9 @@ public class WarnaTableKasirRalan1 extends DefaultTableCellRenderer {
             if (cellValue != null) {
                 String cellString = cellValue.toString(); // Convert the value to a string
                 String StringKdpj = kdpj.toString();
-                if ("BRD".equals(cellString) && "BPJS".equals(StringKdpj)) {
+                if ("BRD".equals(cellString) && StringKdpj.contains("BPJS")) {
                     component.setBackground(new Color(102, 204, 0)); // Set background color for "JKN"
-                }else if ("VCL".equals(cellString) && "BPJS".equals(StringKdpj)) {
+                }else if ("VCL".equals(cellString) && StringKdpj.contains("BPJS")) {
                     component.setBackground(new Color(255, 204, 0)); // Set background color for "JKN"
                 }
             }
@@ -84,9 +84,9 @@ public class WarnaTableKasirRalan1 extends DefaultTableCellRenderer {
             if (cellValue != null) {
                 String cellString = cellValue.toString(); // Convert the value to a string
                 String StringKdpj = kdpj.toString();
-                if ("Sudah".equals(cellString) && "BPJS".equals(StringKdpj)) {
+                if ("Sudah".equals(cellString) && StringKdpj.contains("BPJS")) {
                     component.setBackground(new Color(192, 202, 51)); // Set background color for "JKN"
-                }else if ("Belum".equals(cellString) && "BPJS".equals(StringKdpj)) {
+                }else if ("Belum".equals(cellString) && StringKdpj.contains("BPJS")) {
                     component.setBackground(new Color(255, 112, 67)); // Set background color for "JKN"
                 }
             }

@@ -2772,7 +2772,7 @@
                           <Properties>
                             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                               <StringArray count="1">
-                                <StringItem index="0" value="07-01-2025"/>
+                                <StringItem index="0" value="20-01-2025"/>
                               </StringArray>
                             </Property>
                             <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy"/>
@@ -2994,7 +2994,7 @@
                           <Properties>
                             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                               <StringArray count="1">
-                                <StringItem index="0" value="07-01-2025"/>
+                                <StringItem index="0" value="20-01-2025"/>
                               </StringArray>
                             </Property>
                             <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy"/>
@@ -3090,7 +3090,7 @@
                         </Component>
                         <Component class="widget.Label" name="jLabel24">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Asuransi 1 :"/>
+                            <Property name="text" type="java.lang.String" value="BPJS :"/>
                             <Property name="name" type="java.lang.String" value="jLabel24" noResource="true"/>
                           </Properties>
                           <Constraints>
@@ -3101,7 +3101,8 @@
                         </Component>
                         <Component class="widget.TextBox" name="Kdpnj">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="-"/>
+                            <Property name="editable" type="boolean" value="false"/>
+                            <Property name="text" type="java.lang.String" value="BPJ"/>
                             <Property name="highlighter" type="javax.swing.text.Highlighter" editor="org.netbeans.modules.form.ComponentChooserEditor">
                               <ComponentRef name="null"/>
                             </Property>
@@ -3119,9 +3120,12 @@
                         <Component class="widget.TextBox" name="nmpnj">
                           <Properties>
                             <Property name="editable" type="boolean" value="false"/>
-                            <Property name="text" type="java.lang.String" value="-"/>
+                            <Property name="text" type="java.lang.String" value="BPJS"/>
                             <Property name="name" type="java.lang.String" value="nmpnj" noResource="true"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nmpnjActionPerformed"/>
+                          </Events>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                               <AbsoluteConstraints x="560" y="50" width="110" height="23"/>
@@ -3135,6 +3139,7 @@
                             </Property>
                             <Property name="mnemonic" type="int" value="49"/>
                             <Property name="toolTipText" type="java.lang.String" value="ALt+1"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                             <Property name="name" type="java.lang.String" value="BtnPenjab" noResource="true"/>
                           </Properties>
                           <Events>
@@ -3491,7 +3496,7 @@
                         </Component>
                         <Component class="widget.Label" name="jLabel28">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="No.Ka 1 :"/>
+                            <Property name="text" type="java.lang.String" value="No.Kartu :"/>
                             <Property name="name" type="java.lang.String" value="jLabel28" noResource="true"/>
                           </Properties>
                           <Constraints>
