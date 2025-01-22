@@ -730,8 +730,8 @@ public class DlgPasien extends javax.swing.JDialog {
                 if(akses.getform().equals("DlgPasien")){
                     if(penjab.getTable().getSelectedRow()!= -1){
                         if(penjab.getPilihan().getText().equals("1")){
-                            Kdpnj.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),1).toString());
-                            nmpnj.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),2).toString());
+//                            Kdpnj.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),1).toString());
+//                            nmpnj.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),2).toString());
                         }else{
                             Kdpnj1.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),1).toString());
                             nmpnj1.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),2).toString());
@@ -10640,7 +10640,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                 cmbAgama.setSelectedItem(tbPasien.getValueAt(tbPasien.getSelectedRow(),12).toString());
                 TTlp.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),14).toString());
                 Saudara.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),18).toString());
-                nmpnj.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),19).toString());
+//                nmpnj.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),19).toString());
                 TNoPeserta.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),20).toString());
                 NmIbu.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),7).toString());
                 CMbPnd.setSelectedItem(tbPasien.getValueAt(tbPasien.getSelectedRow(),16).toString());
@@ -10656,7 +10656,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                 EMail.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),31).toString());
                 kdcacat.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),32).toString());
                 nmcacat.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),33).toString());
-                Kdpnj.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),34).toString());
+//                Kdpnj.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),34).toString());
                 Alamat.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),35).toString());
                 Kelurahan.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),36).toString());
                 Kecamatan.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),37).toString());
@@ -10925,7 +10925,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                 cmbAgama.setSelectedItem(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 12).toString());
                 TTlp.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 14).toString());
                 Saudara.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 18).toString());
-                nmpnj.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 19).toString());
+//                nmpnj.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 19).toString());
                 TNoPeserta.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 20).toString());
                 NmIbu.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 7).toString());
                 CMbPnd.setSelectedItem(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 16).toString());
@@ -10941,7 +10941,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                 EMail.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 31).toString());
                 kdcacat.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 32).toString());
                 nmcacat.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 33).toString());
-                Kdpnj.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 34).toString());
+//                Kdpnj.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 34).toString());
                 Alamat.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 35).toString());
                 Kelurahan.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 36).toString());
                 Kecamatan.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 37).toString());
@@ -10952,6 +10952,8 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                 KecamatanPj.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 42).toString());
                 KabupatenPj.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 43).toString());
                 PropinsiPj.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 44).toString());
+                Kdpnj1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),47).toString());
+                nmpnj1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),45).toString());
 
                 chkTNI.setSelected(false);
                 kdgolongantni.setText("");
