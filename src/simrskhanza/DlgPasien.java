@@ -236,7 +236,7 @@ public class DlgPasien extends javax.swing.JDialog {
             "Keluarga", "Nama Keluarga", "Asuransi/Askes", "No.Peserta", "Daftar", "Pekerjaan P.J.", "Alamat P.J.",
             "ID Suku", "Suku/Bangsa", "ID Bahasa", "Bahasa", "ID Peru", "Instansi/Perusahaan", "NIP/NRP", "Email",
             "Id Cacat", "Cacat Fisik", "kd_pj", "alamat", "nm_kel", "nm_kec", "nm_kab", "nm_prop", "alamatpj", "kelurahanpj",
-            "kecamatanpj", "kabupatenpj", "propinsipj","Asuransi Lain", "No.Peserta"
+            "kecamatanpj", "kabupatenpj", "propinsipj","Asuransi Lain", "No.Peserta", "kd_pj2"
         }) {
             @Override
             public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -9544,7 +9544,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                             + "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_pasien2.kd_pj = penjab_cara_bayar2.kd_pj\n"
                             + "where concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab,', ',propinsi.nm_prop) like ? "
                             + "and (pasien.no_rkm_medis like ? or  pasien.nm_pasien like ? or pasien.no_ktp like ? or pasien.no_peserta like ? or pasien.tmp_lahir like ? "
-                            + "or pasien.tgl_lahir like ? or penjab.png_jawab like ? or pasien.alamat like ? or pasien.gol_darah like ? or pasien.pekerjaan like ? "
+                            + "or pasien.tgl_lahir like ? or penjab1.png_jawab like ? or pasien.alamat like ? or pasien.gol_darah like ? or pasien.pekerjaan like ? "
                             + "or pasien.stts_nikah like ? or pasien.nip like ? or cacat_fisik.nama_cacat like ? or pasien.namakeluarga like ? or perusahaan_pasien.nama_perusahaan like ? "
                             + "or bahasa_pasien.nama_bahasa like ? or suku_bangsa.nama_suku_bangsa like ? or pasien.agama like ? or pasien.nm_ibu like ? or pasien.tgl_daftar like ? "
                             + "or pasien.no_tlp like ?) GROUP BY pasien.no_rkm_medis order by pasien.no_rkm_medis desc");
@@ -9589,7 +9589,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                             + "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_pasien2.kd_pj = penjab_cara_bayar2.kd_pj\n"
                             + "where concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab,', ',propinsi.nm_prop) like ? "
                             + "and (pasien.no_rkm_medis like ? or  pasien.nm_pasien like ? or pasien.no_ktp like ? or pasien.no_peserta like ? or pasien.tmp_lahir like ? "
-                            + "or pasien.tgl_lahir like ? or penjab.png_jawab like ? or pasien.alamat like ? or pasien.gol_darah like ? or pasien.pekerjaan like ? "
+                            + "or pasien.tgl_lahir like ? or penjab1.png_jawab like ? or pasien.alamat like ? or pasien.gol_darah like ? or pasien.pekerjaan like ? "
                             + "or pasien.stts_nikah like ? or pasien.nip like ? or cacat_fisik.nama_cacat like ? or pasien.namakeluarga like ? or perusahaan_pasien.nama_perusahaan like ? "
                             + "or bahasa_pasien.nama_bahasa like ? or suku_bangsa.nama_suku_bangsa like ? or pasien.agama like ? or pasien.nm_ibu like ? or pasien.tgl_daftar like ? "
                             + "or pasien.no_tlp like ?) GROUP BY pasien.no_rkm_medis order by pasien.no_rkm_medis desc limit ?");    
@@ -10667,9 +10667,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                 KecamatanPj.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),42).toString());
                 KabupatenPj.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),43).toString());
                 PropinsiPj.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),44).toString());
-                Kdpnj1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),47).toString());
-                nmpnj1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),45).toString());
-                TNoPeserta1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),46).toString());
+                
                 chkTNI.setSelected(false);
                 kdgolongantni.setText("");
                 nmgolongantni.setText("");
@@ -10696,10 +10694,13 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                 BtnSatuanTNI.setEnabled(false);
                 BtnJabatanTNI.setEnabled(false);
                 BtnPangkatTNI.setEnabled(false);
-
+                
                 Valid.SetTgl(DTPLahir,tbPasien.getValueAt(tbPasien.getSelectedRow(),6).toString());
-                Valid.SetTgl(DTPDaftar,tbPasien.getValueAt(tbPasien.getSelectedRow(),13).toString());  
+                Valid.SetTgl(DTPDaftar,tbPasien.getValueAt(tbPasien.getSelectedRow(),13).toString()); 
                 panggilPhoto();
+                Kdpnj1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),47).toString());
+                nmpnj1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),45).toString());
+                TNoPeserta1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),46).toString());
             } catch (Exception ex) {
             }   
         }
@@ -10951,9 +10952,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                 KelurahanPj.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 41).toString());
                 KecamatanPj.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 42).toString());
                 KabupatenPj.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 43).toString());
-                PropinsiPj.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 44).toString());
-                Kdpnj1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),47).toString());
-                nmpnj1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),45).toString());
+                PropinsiPj.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 44).toString());                
 
                 chkTNI.setSelected(false);
                 kdgolongantni.setText("");
@@ -10985,6 +10984,8 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                 Valid.SetTgl(DTPLahir, tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 6).toString());
                 Valid.SetTgl(DTPDaftar, tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(), 13).toString());
                 panggilPhoto();
+                Kdpnj1.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(),47).toString());
+                nmpnj1.setText(tbPasienHint.getValueAt(tbPasienHint.getSelectedRow(),45).toString());
             } catch (Exception ex) {
                 System.out.println(ex);
             }

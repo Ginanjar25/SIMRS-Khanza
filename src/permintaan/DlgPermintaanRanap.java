@@ -2034,6 +2034,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 param.put("kamar", KdKamar.getText() + " " + NmBangsal.getText());
                 param.put("kamar2", NmBangsal.getText());
                 param.put("kls_bpjs", Sequel.cariIsi("select bsep.klsrawat FROM bridging_sep bsep WHERE bsep.no_rawat =? ", NoRw.getText()));
+                param.put("penjab", Sequel.cariIsi("SELECT CONCAT(pj1.png_jawab,' / ',pj2.png_jawab) AS penjab FROM reg_periksa rp JOIN penjab pj1 ON pj1.kd_pj = rp.kd_pj JOIN (SELECT *  FROM penjab_reg  WHERE `order` != 1) rp2 ON rp2.no_rawat = rp.no_rawat JOIN penjab AS pj2 ON pj2.kd_pj = rp2.kd_pj WHERE rp.no_rawat=? ", NoRw.getText()));
                 param.put("dpjp", Sequel.cariIsi("select dokter.nm_dokter from dpjp_ranap inner join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter where dpjp_ranap.no_rawat=? ", NoRw.getText()));
                 param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
                 Valid.MyReportqry("rptGelangPasienDewasa.jasper", "report", "::[ Gelang Pasien Ibu ]::", "select pasien.no_rkm_medis, pasien.nm_pasien, pasien.no_ktp, pasien.jk, "
@@ -2060,6 +2061,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     param2.put("kamar", KdKamar.getText() + " " + NmBangsal.getText());
                     param2.put("kamar2", NmBangsal.getText());
                     param2.put("kls_bpjs", Sequel.cariIsi("select bsep.klsrawat FROM bridging_sep bsep WHERE bsep.no_rawat =? ", isGabung));
+                    param.put("penjab", Sequel.cariIsi("SELECT CONCAT(pj1.png_jawab,' / ',pj2.png_jawab) AS penjab FROM reg_periksa rp JOIN penjab pj1 ON pj1.kd_pj = rp.kd_pj JOIN (SELECT *  FROM penjab_reg  WHERE `order` != 1) rp2 ON rp2.no_rawat = rp.no_rawat JOIN penjab AS pj2 ON pj2.kd_pj = rp2.kd_pj WHERE rp.no_rawat =? ", isGabung));
                     param2.put("dpjp", Sequel.cariIsi("select dokter.nm_dokter from dpjp_ranap inner join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter where dpjp_ranap.no_rawat=? ", isGabung));
                     param2.put("logo", Sequel.cariGambar("select setting.logo from setting"));
                     RmBayi = Sequel.cariIsi("SELECT (SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.no_rawat = gr.no_rawat2) AS rm_bayi FROM ranap_gabung gr WHERE gr.no_rawat =?", NoRw.getText());

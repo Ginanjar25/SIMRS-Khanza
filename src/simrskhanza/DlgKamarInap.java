@@ -17600,9 +17600,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     });
                     psanak=koneksi.prepareStatement(
                         "select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.no_peserta, "+
-                        "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamat "+
+                        "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamat, dr.nm_dokter "+
                         "from reg_periksa inner join pasien on pasien.no_rkm_medis=reg_periksa.no_rkm_medis "+
-                        "inner join ranap_gabung on ranap_gabung.no_rawat2=reg_periksa.no_rawat where ranap_gabung.no_rawat=?");            
+                        "inner join ranap_gabung on ranap_gabung.no_rawat2=reg_periksa.no_rawat INNER JOIN dpjp_ranap dpjp ON dpjp.no_rawat = ranap_gabung.no_rawat2 INNER JOIN dokter dr ON dr.kd_dokter= dpjp.kd_dokter where ranap_gabung.no_rawat=?");            
                     try {
                         psanak.setString(1,rs.getString(1));
                         rs2=psanak.executeQuery();
@@ -17614,6 +17614,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 "",rs.getString("tgl_masuk"),rs.getString("jam_masuk"),rs.getString("tgl_keluar"),
                                 rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")*(persenbayi/100)),rs.getString("stts_pulang"),
                                 rs.getString("lama"),rs.getString("nm_dokter"),rs.getString("kd_kamar"),rs.getString("status_bayar")
+                                
+                                ,"","",rs2.getString("no_rkm_medis")+" - "+rs2.getString("nm_pasien")+" ("+rs2.getString("umur")+")",
+                                "","","","","","","","","","","","","","", "", "","",rs2.getString("nm_dokter"),"","",""
                             });
                         }
                     }catch(Exception ex){
