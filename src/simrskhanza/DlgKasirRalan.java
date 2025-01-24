@@ -15006,7 +15006,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 "LEFT JOIN bridging_sep ON bridging_sep.no_rawat = reg_periksa.no_rawat " +
                 "LEFT JOIN bridging_surat_kontrol_bpjs skdp on skdp.no_sep = bridging_sep.no_sep " +
                 "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli " +
-                "LEFT JOIN penjab AS penjab ON pasien.kd_pj = penjab.kd_pj\n" +
+                "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj\n" +
                 "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
                 "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj " +
                 "where reg_periksa.tgl_registrasi BETWEEN ? and ? and reg_periksa.status_lanjut='Ralan'"+tampildiagnosa +

@@ -17576,7 +17576,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 "LEFT JOIN side_db.temp_tarif_berjalan tarif_berjalan ON tarif_berjalan.no_rawat = kamar_inap.no_rawat\n" +
                 "LEFT JOIN bridging_sep ON bridging_sep.no_rawat = reg_periksa.no_rawat\n" +
                 "LEFT JOIN inacbg_grouping_stage1 ON inacbg_grouping_stage1.no_sep = bridging_sep.no_sep\n"+
-                "LEFT JOIN penjab AS penjab ON pasien.kd_pj = penjab.kd_pj\n" +
+                "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj\n" +
                 "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
                 "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj " +
                (namadokter.equals("")?"where "+key+" "+order:"inner join dpjp_ranap on dpjp_ranap.no_rawat=reg_periksa.no_rawat where dpjp_ranap.kd_dokter='"+namadokter+"' and "+key+" "+order));
