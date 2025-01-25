@@ -1978,7 +1978,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }//GEN-LAST:event_BtnPersetujuanRanapActionPerformed
 
     private void BtnSuratPRI1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSuratPRI1ActionPerformed
-        String isGabung = "";
         if (NoRw.getText().trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu pasien...!!!");
         } else {
@@ -1992,36 +1991,16 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             param.put("emailrs", akses.getemailrs());
             param.put("no_rawat", NoRw.getText());
             param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
-            Valid.MyReport("rptBarcodeRawat4_2.jasper", param, "::[ Label Ibu ]::");
-            this.setCursor(Cursor.getDefaultCursor());
-
-            isGabung = Sequel.cariIsi("SELECT rg.no_rawat2 AS gabung FROM reg_periksa rp LEFT JOIN ranap_gabung rg ON rg.no_rawat = rp.no_rawat WHERE rp.no_rawat =?", NoRw.getText());
-            if (isGabung != null) {
-                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                Map<String, Object> param2 = new HashMap<>();
-                param2.put("namars", akses.getnamars());
-                param2.put("alamatrs", akses.getalamatrs());
-                param2.put("kotars", akses.getkabupatenrs());
-                param2.put("propinsirs", akses.getpropinsirs());
-                param2.put("kontakrs", akses.getkontakrs());
-                param2.put("emailrs", akses.getemailrs());
-                param2.put("no_rawat", isGabung);
-                param2.put("logo", Sequel.cariGambar("select setting.logo from setting"));
-                Valid.MyReport("rptBarcodeRawat4_3.jasper", param2, "::[ Label Bayi ]::");
-                this.setCursor(Cursor.getDefaultCursor());
-                System.out.println(isGabung);
-            }
-
+            Valid.MyReport("rptBarcodeRawat4_2.jasper", param, "::[ Label ]::");
+            this.setCursor(Cursor.getDefaultCursor());           
         }
     }//GEN-LAST:event_BtnSuratPRI1ActionPerformed
 
     private void BtnSuratPRI2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSuratPRI2ActionPerformed
-        String isGabung = "", RmBayi = "";
-        if (tabMode.getRowCount() == 0 || NoRw.getText().equals("")) {
+       if (tabMode.getRowCount() == 0 || NoRw.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Maaf, data kamar inap pasien sudah habis...!!!!");
             //BtnIn.requestFocus();
         } else {
-            if (1 == 1) {
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 Map<String, Object> param = new HashMap<>();
                 param.put("namars", akses.getnamars());
@@ -2037,7 +2016,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 param.put("penjab", CaraBayar.getText());
                 param.put("dpjp", Sequel.cariIsi("select dokter.nm_dokter from dpjp_ranap inner join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter where dpjp_ranap.no_rawat=? ", NoRw.getText()));
                 param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
-                Valid.MyReportqry("rptGelangPasienDewasa.jasper", "report", "::[ Gelang Pasien Ibu ]::", "select pasien.no_rkm_medis, pasien.nm_pasien, pasien.no_ktp, pasien.jk, "
+                Valid.MyReportqry("rptGelangPasienDewasa.jasper", "report", "::[ Gelang Pasien ]::", "select pasien.no_rkm_medis, pasien.nm_pasien, pasien.no_ktp, pasien.jk, "
                     + "pasien.tmp_lahir, pasien.tgl_lahir,pasien.nm_ibu, concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat, pasien.gol_darah, pasien.pekerjaan,"
                     + "pasien.stts_nikah,pasien.agama,pasien.tgl_daftar,pasien.no_tlp,pasien.umur,"
                     + "pasien.pnd, pasien.keluarga, pasien.namakeluarga,penjab.png_jawab,pasien.pekerjaanpj,"
@@ -2046,36 +2025,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     + "inner join penjab on pasien.kd_pj=penjab.kd_pj and pasien.kd_kel=kelurahan.kd_kel "
                     + "and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab  where pasien.no_rkm_medis='" + NoRM.getText() + "' ", param);
                 this.setCursor(Cursor.getDefaultCursor());
-
-                isGabung = Sequel.cariIsi("SELECT rg.no_rawat2 AS gabung FROM reg_periksa rp LEFT JOIN ranap_gabung rg ON rg.no_rawat = rp.no_rawat WHERE rp.no_rawat =?", NoRw.getText());
-                if (isGabung != null) {
-                    this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                    Map<String, Object> param2 = new HashMap<>();
-                    param2.put("namars", akses.getnamars());
-                    param2.put("alamatrs", akses.getalamatrs());
-                    param2.put("kotars", akses.getkabupatenrs());
-                    param2.put("propinsirs", akses.getpropinsirs());
-                    param2.put("kontakrs", akses.getkontakrs());
-                    param2.put("emailrs", akses.getemailrs());
-                    param2.put("tanggal", DTPTgl.getDate().toString());
-                    param2.put("kamar", KdKamar.getText() + " " + NmBangsal.getText());
-                    param2.put("kamar2", NmBangsal.getText());
-                    param2.put("kls_bpjs", Sequel.cariIsi("select bsep.klsrawat FROM bridging_sep bsep WHERE bsep.no_rawat =? ", isGabung));
-                    param.put("penjab", CaraBayar.getText());
-                    param2.put("dpjp", Sequel.cariIsi("select dokter.nm_dokter from dpjp_ranap inner join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter where dpjp_ranap.no_rawat=? ", isGabung));
-                    param2.put("logo", Sequel.cariGambar("select setting.logo from setting"));
-                    RmBayi = Sequel.cariIsi("SELECT (SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.no_rawat = gr.no_rawat2) AS rm_bayi FROM ranap_gabung gr WHERE gr.no_rawat =?", NoRw.getText());
-                    Valid.MyReportqry("rptGelangPasienDewasa2.jasper", "report", "::[ Gelang Pasien Bayi ]::", "select pasien.no_rkm_medis, pasien.nm_pasien, pasien.no_ktp, pasien.jk, "
-                        + "pasien.tmp_lahir, pasien.tgl_lahir,pasien.nm_ibu, concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat, pasien.gol_darah, pasien.pekerjaan,"
-                        + "pasien.stts_nikah,pasien.agama,pasien.tgl_daftar,pasien.no_tlp,pasien.umur,"
-                        + "pasien.pnd, pasien.keluarga, pasien.namakeluarga,penjab.png_jawab,pasien.pekerjaanpj,"
-                        + "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamatpj from pasien "
-                        + "inner join kelurahan inner join kecamatan inner join kabupaten "
-                        + "inner join penjab on pasien.kd_pj=penjab.kd_pj and pasien.kd_kel=kelurahan.kd_kel "
-                        + "and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab  where pasien.no_rkm_medis='" + RmBayi + "' ", param2);
-                    this.setCursor(Cursor.getDefaultCursor());
-                }
-            }
         }
     }//GEN-LAST:event_BtnSuratPRI2ActionPerformed
 
@@ -2318,7 +2267,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 ps=koneksi.prepareStatement("select permintaan_ranap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,reg_periksa.umurdaftar,reg_periksa.sttsumur,"+
                     "pasien.no_tlp,penjab.png_jawab,poliklinik.nm_poli,dokter.nm_dokter,permintaan_ranap.tanggal,permintaan_ranap.kd_kamar,kamar.kd_bangsal,"+
                     "CONCAT(bangsal.nm_bangsal, '', SUBSTRING_INDEX(kamar.kd_kamar, '-', -1)) AS nm_bangsal,kamar.trf_kamar,permintaan_ranap.diagnosa,permintaan_ranap.catatan,reg_periksa.kd_dokter, drpj.kd_dokter AS dp1, drpj.nm_dokter AS dp2, "+
-                    " COALESCE((SELECT ranap_gabung.no_rawat2 FROM ranap_gabung WHERE ranap_gabung.no_rawat=reg_periksa.no_rawat),\"-\") AS gabung, if(ISNULL(fr.nokartu),\"Belum\",\"Sudah\") AS fingerprint from permintaan_ranap "+
+                    " COALESCE((SELECT ranap_gabung.no_rawat2 FROM ranap_gabung WHERE ranap_gabung.no_rawat=reg_periksa.no_rawat),'-') AS gabung, if(ISNULL(fr.nokartu),\"Belum\",\"Sudah\") AS fingerprint from permintaan_ranap "+
                     "inner join reg_periksa on permintaan_ranap.no_rawat=reg_periksa.no_rawat "+
                     "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
@@ -2326,7 +2275,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli "+
                     "inner join kamar on permintaan_ranap.kd_kamar=kamar.kd_kamar "+
                     "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = permintaan_ranap.no_rawat INNER JOIN dokter drpj  ON drpj.kd_dokter = dpjp_ranap.kd_dokter LEFT JOIN side_db.fingerprint_bpjs fr ON fr.nokartu = pasien.no_peserta AND fr.tanggal = reg_periksa.tgl_registrasi "+
-                    "where permintaan_ranap.no_rawat not in (select DISTINCT no_rawat from kamar_inap) "+
+                    "where permintaan_ranap.no_rawat not in (select DISTINCT no_rawat from kamar_inap UNION select DISTINCT no_rawat2 from ranap_gabung) "+
                     (TCari.getText().equals("")?"":"and (permintaan_ranap.no_rawat like ? or reg_periksa.no_rkm_medis like ? or pasien.nm_pasien like ? "+
                     "or penjab.png_jawab like ? or poliklinik.nm_poli like ? or dokter.nm_dokter like ? or bangsal.nm_bangsal like ? "+
                     "or permintaan_ranap.diagnosa like ?)")+" order by permintaan_ranap.tanggal");
@@ -2349,35 +2298,35 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             rs.getString("kd_bangsal"),rs.getString("kd_kamar")+" "+rs.getString("nm_bangsal"),Valid.SetAngka(rs.getDouble("trf_kamar")),rs.getString("diagnosa"),rs.getString("catatan"),
                             rs.getString("kd_dokter"), rs.getString("dp1"), rs.getString("dp2"), rs.getString("gabung"), rs.getString("fingerprint")
                         });
-                        psanak = koneksi.prepareStatement(
-                                "select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.no_peserta, "
-                                + "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamat, dpjp_ranap.kd_dokter, dokter.nm_dokter "
-                                + "from reg_periksa inner join pasien on pasien.no_rkm_medis=reg_periksa.no_rkm_medis "
-                                + "inner join ranap_gabung on ranap_gabung.no_rawat2=reg_periksa.no_rawat "
-                                + "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = ranap_gabung.no_rawat2 "
-                                + "INNER JOIN dokter ON dokter.kd_dokter = dpjp_ranap.kd_dokter "
-                                + "where ranap_gabung.no_rawat=?");
-                        try {
-                            psanak.setString(1, rs.getString("no_rawat"));
-                            rs2 = psanak.executeQuery();
-                            if (rs2.next()) {
-                                tabMode.addRow(new String[]{
-                                    "", rs2.getString("no_rkm_medis"), rs2.getString("nm_pasien"), rs.getString("jk"), rs2.getString("umur"),
-                                    "", rs.getString("png_jawab"), "", "", rs.getString("tanggal"), rs.getString("kd_kamar"),
-                                    rs.getString("kd_bangsal"), rs.getString("kd_kamar") + " " + rs.getString("nm_bangsal"), Valid.SetAngka(rs.getDouble("trf_kamar")), "", "",
-                                    "", rs2.getString("kd_dokter"), rs2.getString("nm_dokter"), "Bayi"
-                                });
-                            }
-                        } catch (Exception ex) {
-                            System.out.println("Notifikasi : " + ex);
-                        } finally {
-                            if (rs2 != null) {
-                                rs2.close();
-                            }
-                            if (psanak != null) {
-                                psanak.close();
-                            }
-                        }
+//                        psanak = koneksi.prepareStatement(
+//                                "select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.no_peserta, "
+//                                + "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamat, dpjp_ranap.kd_dokter, dokter.nm_dokter "
+//                                + "from reg_periksa inner join pasien on pasien.no_rkm_medis=reg_periksa.no_rkm_medis "
+//                                + "inner join ranap_gabung on ranap_gabung.no_rawat2=reg_periksa.no_rawat "
+//                                + "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = ranap_gabung.no_rawat2 "
+//                                + "INNER JOIN dokter ON dokter.kd_dokter = dpjp_ranap.kd_dokter "
+//                                + "where ranap_gabung.no_rawat=?");
+//                        try {
+//                            psanak.setString(1, rs.getString("no_rawat"));
+//                            rs2 = psanak.executeQuery();
+//                            if (rs2.next()) {
+//                                tabMode.addRow(new String[]{
+//                                    "", rs2.getString("no_rkm_medis"), rs2.getString("nm_pasien"), rs.getString("jk"), rs2.getString("umur"),
+//                                    "", rs.getString("png_jawab"), "", "", rs.getString("tanggal"), rs.getString("kd_kamar"),
+//                                    rs.getString("kd_bangsal"), rs.getString("kd_kamar") + " " + rs.getString("nm_bangsal"), Valid.SetAngka(rs.getDouble("trf_kamar")), "", "",
+//                                    "", rs2.getString("kd_dokter"), rs2.getString("nm_dokter"), "Bayi"
+//                                });
+//                            }
+//                        } catch (Exception ex) {
+//                            System.out.println("Notifikasi : " + ex);
+//                        } finally {
+//                            if (rs2 != null) {
+//                                rs2.close();
+//                            }
+//                            if (psanak != null) {
+//                                psanak.close();
+//                            }
+//                        }
                     }
                 } catch (Exception e) {
                     System.out.println("Notif Kamar : "+e);
@@ -2401,7 +2350,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli "+
                     "inner join kamar on permintaan_ranap.kd_kamar=kamar.kd_kamar "+
                     "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = permintaan_ranap.no_rawat INNER JOIN dokter drpj  ON drpj.kd_dokter = dpjp_ranap.kd_dokter LEFT JOIN side_db.fingerprint_bpjs fr ON fr.nokartu = pasien.no_peserta AND fr.tanggal = reg_periksa.tgl_registrasi "+
-                    "where permintaan_ranap.no_rawat in (select DISTINCT no_rawat from kamar_inap) and permintaan_ranap.tanggal between ? and ? "+
+                    "where permintaan_ranap.no_rawat in (select DISTINCT no_rawat from kamar_inap UNION select DISTINCT no_rawat2 from ranap_gabung) and permintaan_ranap.tanggal between ? and ? "+
                     (TCari.getText().equals("")?"":"and (permintaan_ranap.no_rawat like ? or reg_periksa.no_rkm_medis like ? or pasien.nm_pasien like ? "+
                     "or penjab.png_jawab like ? or poliklinik.nm_poli like ? or dokter.nm_dokter like ? or bangsal.nm_bangsal like ? "+
                     "or permintaan_ranap.diagnosa like ?)")+" order by permintaan_ranap.tanggal");
@@ -2426,35 +2375,35 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             rs.getString("kd_bangsal"),rs.getString("kd_kamar")+" "+rs.getString("nm_bangsal"),Valid.SetAngka(rs.getDouble("trf_kamar")),rs.getString("diagnosa"),
                             rs.getString("catatan"),rs.getString("kd_dokter"), rs.getString("dp1"), rs.getString("dp2"), rs.getString("gabung"), rs.getString("fingerprint")
                         });
-                        psanak = koneksi.prepareStatement(
-                                "select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.no_peserta, "
-                                + "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamat, dpjp_ranap.kd_dokter, dokter.nm_dokter "
-                                + "from reg_periksa inner join pasien on pasien.no_rkm_medis=reg_periksa.no_rkm_medis "
-                                + "inner join ranap_gabung on ranap_gabung.no_rawat2=reg_periksa.no_rawat "
-                                + "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = ranap_gabung.no_rawat2 "
-                                + "INNER JOIN dokter ON dokter.kd_dokter = dpjp_ranap.kd_dokter "
-                                + "where ranap_gabung.no_rawat=?");
-                        try {
-                            psanak.setString(1, rs.getString("no_rawat"));
-                            rs2 = psanak.executeQuery();
-                            if (rs2.next()) {
-                                tabMode.addRow(new String[]{
-                                    "", rs2.getString("no_rkm_medis"), rs2.getString("nm_pasien"), rs.getString("jk"), rs2.getString("umur"),
-                                    "", rs.getString("png_jawab"), "", "", rs.getString("tanggal"), rs.getString("kd_kamar"),
-                                    rs.getString("kd_bangsal"), rs.getString("kd_kamar") + " " + rs.getString("nm_bangsal"), Valid.SetAngka(rs.getDouble("trf_kamar")), "", "",
-                                    "", rs2.getString("kd_dokter"), rs2.getString("nm_dokter"), "Bayi"
-                                });
-                            }
-                        } catch (Exception ex) {
-                            System.out.println("Notifikasi : " + ex);
-                        } finally {
-                            if (rs2 != null) {
-                                rs2.close();
-                            }
-                            if (psanak != null) {
-                                psanak.close();
-                            }
-                        }
+//                        psanak = koneksi.prepareStatement(
+//                                "select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.no_peserta, "
+//                                + "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamat, dpjp_ranap.kd_dokter, dokter.nm_dokter "
+//                                + "from reg_periksa inner join pasien on pasien.no_rkm_medis=reg_periksa.no_rkm_medis "
+//                                + "inner join ranap_gabung on ranap_gabung.no_rawat2=reg_periksa.no_rawat "
+//                                + "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = ranap_gabung.no_rawat2 "
+//                                + "INNER JOIN dokter ON dokter.kd_dokter = dpjp_ranap.kd_dokter "
+//                                + "where ranap_gabung.no_rawat=?");
+//                        try {
+//                            psanak.setString(1, rs.getString("no_rawat"));
+//                            rs2 = psanak.executeQuery();
+//                            if (rs2.next()) {
+//                                tabMode.addRow(new String[]{
+//                                    "", rs2.getString("no_rkm_medis"), rs2.getString("nm_pasien"), rs.getString("jk"), rs2.getString("umur"),
+//                                    "", rs.getString("png_jawab"), "", "", rs.getString("tanggal"), rs.getString("kd_kamar"),
+//                                    rs.getString("kd_bangsal"), rs.getString("kd_kamar") + " " + rs.getString("nm_bangsal"), Valid.SetAngka(rs.getDouble("trf_kamar")), "", "",
+//                                    "", rs2.getString("kd_dokter"), rs2.getString("nm_dokter"), "Bayi"
+//                                });
+//                            }
+//                        } catch (Exception ex) {
+//                            System.out.println("Notifikasi : " + ex);
+//                        } finally {
+//                            if (rs2 != null) {
+//                                rs2.close();
+//                            }
+//                            if (psanak != null) {
+//                                psanak.close();
+//                            }
+//                        }
                     }
                 } catch (Exception e) {
                     System.out.println("Notif Kamar : "+e);
