@@ -7343,7 +7343,11 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             resume.isCek();
             resume.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
             resume.setLocationRelativeTo(internalFrame1);
-            resume.setNoRm(TNoRw.getText(),DTPCari2.getDate());
+            if(Sequel.cariIsi("select no_rawat2 from ranap_gabung where no_rawat2 = ?", TNoRw.getText()).equals(TNoRw.getText())){
+                resume.setNoRm2(TNoRw.getText(),DTPCari2.getDate());
+            }else{
+                resume.setNoRm(TNoRw.getText(),DTPCari2.getDate());
+            }
             resume.tampil();
             resume.setVisible(true);
             this.setCursor(Cursor.getDefaultCursor());
@@ -7360,7 +7364,11 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             resume_perawat.isCek();
             resume_perawat.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
             resume_perawat.setLocationRelativeTo(internalFrame1);
-            resume_perawat.setNoRm(TNoRw.getText(),DTPCari2.getDate());
+            if(Sequel.cariIsi("select no_rawat2 from ranap_gabung where no_rawat2 = ?", TNoRw.getText()).equals(TNoRw.getText())){
+                 resume_perawat.setNoRm2(TNoRw.getText(),DTPCari2.getDate());
+             }else{
+                 resume_perawat.setNoRm(TNoRw.getText(),DTPCari2.getDate());
+             }
             resume_perawat.tampil();
             resume_perawat.setVisible(true);
             this.setCursor(Cursor.getDefaultCursor());

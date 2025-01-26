@@ -3018,11 +3018,162 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         }
     }
     
+    private void isRawat2() {
+        try {
+            ps=koneksi.prepareStatement(
+                    "select reg_periksa.no_rkm_medis,pasien.nm_pasien,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,\n" +
+                    "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.kd_pj,penjab.png_jawab,\n" +
+                    "if(kamar_inap.tgl_keluar='0000-00-00',current_date(),kamar_inap.tgl_keluar) as tgl_keluar,\n" +
+                    "if(kamar_inap.jam_keluar='00:00:00',current_time(),kamar_inap.jam_keluar) as jam_keluar, permintaan_ranap.diagnosa,\n" +
+                    "kamar_inap.kd_kamar,bangsal.nm_bangsal from reg_periksa \n" +
+                    "inner join pasien on pasien.no_rkm_medis=reg_periksa.no_rkm_medis \n" +
+                    "inner join dokter on dokter.kd_dokter=reg_periksa.kd_dokter \n" +
+                    "inner join penjab on penjab.kd_pj=reg_periksa.kd_pj\n" +
+                    "INNER JOIN ranap_gabung ON ranap_gabung.no_rawat2 = reg_periksa.no_rawat \n" +
+                    "inner join kamar_inap on kamar_inap.no_rawat=ranap_gabung.no_rawat \n" +
+                    "inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar \n" +
+                    "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal \n" +
+                    "left JOIN permintaan_ranap ON permintaan_ranap.no_rawat = reg_periksa.no_rawat\n" +
+                    "where reg_periksa.no_rawat=? order by kamar_inap.stts_pulang = '-' desc, kamar_inap.tgl_keluar desc,kamar_inap.jam_keluar desc limit 1 ");
+            try {
+                ps.setString(1,TNoRw.getText());
+                rs=ps.executeQuery();
+                if(rs.next()){
+                    DTPCari1.setDate(rs.getDate("tgl_registrasi"));
+                    TNoRM.setText(rs.getString("no_rkm_medis"));
+                    TPasien.setText(rs.getString("nm_pasien"));
+                    Masuk.setText(rs.getString("tgl_registrasi"));
+                    JamMasuk.setText(rs.getString("jam_reg"));
+                    Keluar.setText(rs.getString("tgl_keluar"));
+                    JamKeluar.setText(rs.getString("jam_keluar"));
+                    DiagnosaAwal.setText(rs.getString("diagnosa"));
+                    KdPj.setText(rs.getString("kd_pj"));
+                    CaraBayar.setText(rs.getString("png_jawab"));
+                    KdRuang.setText(rs.getString("kd_kamar"));
+                    NmRuang.setText(rs.getString("nm_bangsal"));
+                    KodeDokterPengirim.setText(rs.getString("kd_dokter"));
+                    NamaDokterPengirim.setText(rs.getString("nm_dokter"));
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif : "+e);
+        }
+    }
+    
     public void setNoRm(String norwt, Date tgl2) {
         TNoRw.setText(norwt);
         TCari.setText(norwt);
         DTPCari2.setDate(tgl2);    
         isRawat();              
+        ChkInput.setSelected(true);
+        isForm();
+        CaraKeluar.requestFocus();
+        try {
+            ps=koneksi.prepareStatement(
+                    "select diagnosa_pasien.kd_penyakit,penyakit.nm_penyakit,diagnosa_pasien.prioritas "+
+                    "from diagnosa_pasien inner join penyakit on diagnosa_pasien.kd_penyakit=penyakit.kd_penyakit "+
+                    "where diagnosa_pasien.no_rawat=? order by diagnosa_pasien.prioritas ");
+            try {
+                ps.setString(1,norwt);
+                rs=ps.executeQuery();
+                while(rs.next()){
+                    if(rs.getInt("prioritas")==1){
+                        KodeDiagnosaUtama.setText(rs.getString("kd_penyakit"));
+                        DiagnosaUtama.setText(rs.getString("nm_penyakit"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==2){
+                        KodeDiagnosaSekunder1.setText(rs.getString("kd_penyakit"));
+                        DiagnosaSekunder1.setText(rs.getString("nm_penyakit"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==3){
+                        KodeDiagnosaSekunder2.setText(rs.getString("kd_penyakit"));
+                        DiagnosaSekunder2.setText(rs.getString("nm_penyakit"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==4){
+                        KodeDiagnosaSekunder3.setText(rs.getString("kd_penyakit"));
+                        DiagnosaSekunder3.setText(rs.getString("nm_penyakit"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==5){
+                        KodeDiagnosaSekunder4.setText(rs.getString("kd_penyakit"));
+                        DiagnosaSekunder4.setText(rs.getString("nm_penyakit"));
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif : "+e);
+        } 
+        
+        try {
+            ps=koneksi.prepareStatement(
+                    "select prosedur_pasien.kode,icd9.deskripsi_panjang, prosedur_pasien.prioritas "+
+                    "from prosedur_pasien inner join icd9 on prosedur_pasien.kode=icd9.kode "+
+                    "where prosedur_pasien.no_rawat=? order by prosedur_pasien.prioritas ");
+            try {
+                ps.setString(1,norwt);
+                rs=ps.executeQuery();
+                while(rs.next()){
+                    if(rs.getInt("prioritas")==1){
+                        KodeProsedurUtama.setText(rs.getString("kode"));
+                        ProsedurUtama.setText(rs.getString("deskripsi_panjang"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==2){
+                        KodeProsedurSekunder1.setText(rs.getString("kode"));
+                        ProsedurSekunder1.setText(rs.getString("deskripsi_panjang"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==3){
+                        KodeProsedurSekunder2.setText(rs.getString("kode"));
+                        ProsedurSekunder2.setText(rs.getString("deskripsi_panjang"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==4){
+                        KodeProsedurSekunder3.setText(rs.getString("kode"));
+                        ProsedurSekunder3.setText(rs.getString("deskripsi_panjang"));
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif : "+e);
+        } 
+    }
+    
+     public void setNoRm2(String norwt, Date tgl2) {
+        TNoRw.setText(norwt);
+        TCari.setText(norwt);
+        DTPCari2.setDate(tgl2);    
+        isRawat2();              
         ChkInput.setSelected(true);
         isForm();
         CaraKeluar.requestFocus();

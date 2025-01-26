@@ -11392,11 +11392,11 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 resume.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                                 resume.setLocationRelativeTo(internalFrame1);
                                 if(R1.isSelected()==true){
-                                    resume.setNoRm(rs2.getString("no_rawat2"),new Date());
+                                    resume.setNoRm2(rs2.getString("no_rawat2"),new Date());
                                 }else if(R2.isSelected()==true){
-                                    resume.setNoRm(rs2.getString("no_rawat2"),DTPCari2.getDate());
+                                    resume.setNoRm2(rs2.getString("no_rawat2"),DTPCari2.getDate());
                                 }else if(R3.isSelected()==true){
-                                    resume.setNoRm(rs2.getString("no_rawat2"),DTPCari4.getDate());
+                                    resume.setNoRm2(rs2.getString("no_rawat2"),DTPCari4.getDate());
                                 }
                                 resume.tampil();
                                 resume.setVisible(true);
@@ -11459,11 +11459,11 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 resume_perawat.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                                 resume_perawat.setLocationRelativeTo(internalFrame1);
                                 if(R1.isSelected()==true){
-                                    resume_perawat.setNoRm(rs2.getString("no_rawat2"),new Date());
+                                    resume_perawat.setNoRm2(rs2.getString("no_rawat2"),new Date());
                                 }else if(R2.isSelected()==true){
-                                    resume_perawat.setNoRm(rs2.getString("no_rawat2"),DTPCari2.getDate());
+                                    resume_perawat.setNoRm2(rs2.getString("no_rawat2"),DTPCari2.getDate());
                                 }else if(R3.isSelected()==true){
-                                    resume_perawat.setNoRm(rs2.getString("no_rawat2"),DTPCari4.getDate());
+                                    resume_perawat.setNoRm2(rs2.getString("no_rawat2"),DTPCari4.getDate());
                                 }
                                 resume_perawat.tampil();
                                 resume_perawat.setVisible(true);
