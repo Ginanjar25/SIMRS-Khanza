@@ -1366,6 +1366,8 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
                 Valid.textKosong(btnKamar, "Kamar/Bangsal");
             } else if (Diagnosa.getText().trim().equals("")) {
                 Valid.textKosong(Diagnosa, "Diagnosa");
+            } else if(Sequel.cariIsi("select no_rawat2 from ranap_gabung where no_rawat2 = ?", NoRw.getText()).equals(NoRw.getText())){
+                JOptionPane.showMessageDialog(null, "Pasien dengan No. RM : " + NoRM.getText()+" " + NmPasien.getText() +" Sudah terdaftar di Ranap Gabung Ibu & Bayi ");
             } else {
                 String titip_kamar = "-";
                 if (ChkAccor2.isSelected()) {
@@ -1402,7 +1404,9 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
                 Valid.textKosong(TRMBayi, "RM Bayi");
             } else if (KdDokterBayi.getText().trim().equals("")) {
                 Valid.textKosong(KdDokterBayi, "DPJP Bayi");
-            } else {
+            } else if(Sequel.cariIsi("select no_rawat2 from ranap_gabung where no_rawat2 = ?", NoRw.getText()).equals(NoRw.getText())){
+                JOptionPane.showMessageDialog(null, "Pasien dengan No. RM : " + NoRM.getText()+" " + NmPasien.getText() +" Sudah terdaftar di Ranap Gabung Ibu & Bayi ");
+            }else {
                 if (Sequel.menyimpantf("permintaan_ranap", "?,?,?,?,?", "Pasien", 5, new String[]{
                     NoRw.getText(),
                     Valid.SetTgl(DTPTgl.getSelectedItem() + ""),
@@ -1786,7 +1790,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             TCari.requestFocus();
         } else if((Sequel.cariIsi("select concat(no_rawat, tanggal, kd_kamar, diagnosa, catatan) from permintaan_ranap where no_rawat = ?", NoRw.getText())).isBlank()){
             JOptionPane.showMessageDialog(null,"Permintaan Ranap tidak tersedia, silahkan hubungi pendaftaran!!");
-        } else {
+        } else if(Sequel.cariIsi("select no_rawat2 from ranap_gabung where no_rawat2 = ?", NoRw.getText()).equals(NoRw.getText())){
+                JOptionPane.showMessageDialog(null, "Pasien dengan No. RM : \n" + NoRM.getText()+" " + NmPasien.getText() + " No Rawat : "+NoRw.getText() +" /nSudah terdaftar di Ranap Gabung Ibu & Bayi. ");
+        }else {
             if (tbObat.getSelectedRow() != -1) {
                 if (Sequel.cariRegistrasi(NoRw.getText()) > 0) {
                     JOptionPane.showMessageDialog(rootPane, "Data billing sudah terverifikasi..!!");
