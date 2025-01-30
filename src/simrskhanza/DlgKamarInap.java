@@ -8839,7 +8839,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                             Valid.autoNomer3("select (ifnull(MAX(CONVERT(RIGHT(no_rawat,6),signed)),0)+1) from reg_periksa where tgl_registrasi='" + Valid.SetTgl(DTPRawatGabung.getSelectedItem() + "") + "' ", dateformat.format(DTPRawatGabung.getDate())+"/", 6, NoRawatGabung);
                             if (Sequel.menyimpantf2("reg_periksa", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Reg Periksa", 19,
                                     new String[]{rs.getString("no_reg"), NoRawatGabung.getText(), Valid.SetTgl(DTPRawatGabung.getSelectedItem() + ""), Catatan.getText(),
-                                        rs.getString("kd_dokter"), NoRmBayi.getText(), rs.getString("kd_poli"), rs.getString("p_jawab"),
+                                        "-", NoRmBayi.getText(), rs.getString("kd_poli"), rs.getString("p_jawab"),
                                         rs.getString("almt_pj"), rs.getString("hubunganpj"), rs.getString("biaya_reg"), "Belum", "Baru", "Ranap", rs.getString("kd_pj"), umur, sttsumur, "Sudah Bayar", "Baru"}) == true) {
                                 Sequel.menyimpan("ranap_gabung", "?,?", "Data Ranap Gabung", 2, new String[]{
                                     norawat.getText(), NoRawatGabung.getText()
@@ -17859,7 +17859,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     });
                     psanak=koneksi.prepareStatement(
                         "select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.no_peserta, "+
-                        "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamat, dr.nm_dokter "+
+                        "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamat, dr.nm_dokter, reg_periksa.tgl_registrasi, reg_periksa.jam_reg "+
                         "from reg_periksa inner join pasien on pasien.no_rkm_medis=reg_periksa.no_rkm_medis "+
                         "inner join ranap_gabung on ranap_gabung.no_rawat2=reg_periksa.no_rawat left JOIN dpjp_ranap dpjp ON dpjp.no_rawat = ranap_gabung.no_rawat2 LEFT JOIN dokter dr ON dr.kd_dokter= dpjp.kd_dokter where ranap_gabung.no_rawat=?");            
                     try {
@@ -17875,7 +17875,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 rs.getString("lama"),rs.getString("nm_dokter"),rs.getString("kd_kamar"),rs.getString("status_bayar")
                                 
                                 ,"","",rs2.getString("no_rkm_medis")+" - "+rs2.getString("nm_pasien")+" ("+rs2.getString("umur")+")",
-                                "","","","","","","","","","","","","","", "", "","",rs2.getString("nm_dokter"),"","",""
+                                "","","","","","","",rs2.getString("tgl_registrasi"),rs2.getString("jam_reg"),"","","","","", "", "","",rs2.getString("nm_dokter"),"","",""
                             });
                         }
                     }catch(Exception ex){
