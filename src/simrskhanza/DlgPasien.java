@@ -11008,6 +11008,13 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
         return tbPasienHint;
     }
     
+    public void isPasienBooking(String nama,String alamat){
+        TCari.setText(nama);
+        Carialamat.setText(alamat);
+        TabRawat.setSelectedIndex(1);
+        pilihantampil();
+    }
+    
     public void isCek(){
         BtnSimpan.setEnabled(akses.getpasien());
         BtnHapus.setEnabled(akses.getpasien());

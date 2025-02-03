@@ -222,6 +222,7 @@ import surat.SuratSakit;
 import surat.SuratSakitPihak2;
 import surat.SuratTidakHamil;
 import permintaan.DlgBookingRegistrasi;
+import permintaan.DlgBookingKuota;
 /**
  *
  * @author dosen
@@ -239,6 +240,7 @@ public final class DlgReg extends javax.swing.JDialog {
     public  DlgRujukMasuk rujukmasuk=new DlgRujukMasuk(null,false);
     public  DlgBookingWeb bookingweb = new DlgBookingWeb(null, false);
     public  DlgBookingRegistrasi bookingreg = new DlgBookingRegistrasi(null, false);
+    public  DlgBookingKuota bookingkuota = new DlgBookingKuota(null, false);
     private PreparedStatement ps,ps3,pscaripiutang;
     private ResultSet rs;
     private int pilihan=0,i=0,kuota=0,jmlparsial=0;
@@ -7185,6 +7187,8 @@ public final class DlgReg extends javax.swing.JDialog {
         FormInput.add(button4);
         button4.setBounds(910, 120, 270, 22);
         
+
+        
         btnBookingReg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
         btnBookingReg.setText("Booking Registrasi Pasien Baru");
         btnBookingReg.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -10069,7 +10073,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }else if(TPasien.getText().trim().equals("")){
             JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
             tbPetugas.requestFocus();
-        }else{
+        }else if (Sequel.cariInteger("SELECT COUNT(rp.no_rawat) FROM reg_periksa rp WHERE rp.stts = 'Batal' AND rp.no_rawat=?", TNoRw.getText()) > 0) {
+                JOptionPane.showMessageDialog(null, "Maaf, Status Registrasi Pasien Batal");
+            }else{
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             akses.setform("DlgReg");
             BPJSDataSEP dlgki=new BPJSDataSEP(null,false);
@@ -12366,7 +12372,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }else if(TNoRw.getText().trim().equals("")){
             JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
             tbPetugas.requestFocus();
-        }else{
+        }else if (Sequel.cariInteger("SELECT COUNT(rp.no_rawat) FROM reg_periksa rp WHERE rp.stts = 'Batal' AND rp.no_rawat=?", TNoRw.getText()) > 0) {
+                JOptionPane.showMessageDialog(null, "Maaf, Status Registrasi Pasien Batal");
+            }else{
             if(tbPetugas.getSelectedRow()!= -1){
                 try {
                     ps=koneksi.prepareStatement("select bridging_sep.no_sep,bridging_sep.no_kartu,bridging_sep.tanggal_lahir,bridging_sep.jkel,bridging_sep.nmdiagnosaawal from bridging_sep where bridging_sep.no_rawat=?");
@@ -15323,6 +15331,14 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         bookingweb.setVisible(true);
     }
    
+   private void btnKuotaActionPerformed(java.awt.event.ActionEvent evt) {
+        bookingkuota.isCek();
+        bookingkuota.TCari.requestFocus();
+        bookingkuota.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+        bookingkuota.setLocationRelativeTo(internalFrame1);
+        bookingkuota.setVisible(true);
+    }
+   
       private void btnBookingRegActionPerformed(java.awt.event.ActionEvent evt) {                                        
         btnBookingReg.setText(Sequel.cariIsi("SELECT COUNT(br.no_reg) FROM booking_registrasi br WHERE br.tanggal_periksa >= CURDATE() AND `status` = 'Belum'") + " Booking Registrasi Belum Diregistrasikan");
         bookingreg.isCek();
@@ -15827,6 +15843,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Button button6;
     private widget.Button btnCetakLabel;
     private widget.Button btnBookingReg;
+    private widget.Button btnBookingKuota;
     private widget.InternalFrame internalFrame1;
     private widget.InternalFrame internalFrame4;
     private widget.InternalFrame internalFrame5;
@@ -17483,6 +17500,20 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
              //   NoKaKeyPressed(evt);
             }
         });
+        
+        btnBookingKuota = new widget.Button();
+
+        btnBookingKuota.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnBookingKuota.setText("Booking Kuota");
+        btnBookingKuota.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnBookingKuota.setName("btnBookingKuota"); // NOI18N
+        btnBookingKuota.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKuotaActionPerformed(evt);
+            }
+        });
+        FormInput.add(btnBookingKuota);
+        btnBookingKuota.setBounds(910, 150, 150, 22);
     }
     
     private void ganti(){

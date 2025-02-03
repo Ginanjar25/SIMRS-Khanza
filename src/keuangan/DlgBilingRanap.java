@@ -2868,9 +2868,13 @@ private void tbBillingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
                             if(akses.gettambahan_biaya()==true){
                                 MnTambahanActionPerformed(null);
                             }
-                        }else if(tbBilling.getValueAt(tbBilling.getSelectedRow(), kolom).toString().contains("Potongan Biaya")){
+                        }else if(tbBilling.getValueAt(tbBilling.getSelectedRow(), kolom).toString().equals("Potongan Biaya")){
                             if(akses.getpotongan_biaya()==true){
                                 MnPotonganActionPerformed(null);
+                            }
+                        }else if(tbBilling.getValueAt(tbBilling.getSelectedRow(), kolom).toString().equals("Potongan Biaya Bayi")){
+                            if(akses.getpotongan_biaya()==true){
+                                MnPotongan1ActionPerformed(null);
                             }
                         }
                     } catch (Exception e) {
@@ -2925,9 +2929,13 @@ private void tbBillingMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:e
                                 if(akses.gettambahan_biaya()==true){
                                     MnTambahanActionPerformed(null);
                                 }
-                            }else if(tbBilling.getValueAt(tbBilling.getSelectedRow(), kolom).toString().contains("Potongan Biaya")){
-                                if(akses.getpotongan_biaya()==true){
+                            }else if (tbBilling.getValueAt(tbBilling.getSelectedRow(), kolom).toString().equals("Potongan Biaya")) {
+                                if (akses.getpotongan_biaya() == true) {
                                     MnPotonganActionPerformed(null);
+                                }
+                            }else if (tbBilling.getValueAt(tbBilling.getSelectedRow(), kolom).toString().equals("Potongan Biaya Bayi")) {
+                                if (akses.getpotongan_biaya() == true) {
+                                    MnPotongan1ActionPerformed(null);
                                 }
                             }
                         } catch (Exception ex) {
@@ -3043,9 +3051,13 @@ private void tbBillingKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                             if(akses.gettambahan_biaya()==true){
                                 MnTambahanActionPerformed(null);
                             }
-                        }else if(tbBilling.getValueAt(tbBilling.getSelectedRow(), kolom).toString().contains("Potongan Biaya")){
+                        }else if(tbBilling.getValueAt(tbBilling.getSelectedRow(), kolom).toString().equals("Potongan Biaya")){
                             if(akses.getpotongan_biaya()==true){
                                 MnPotonganActionPerformed(null);
+                            }
+                        }else if(tbBilling.getValueAt(tbBilling.getSelectedRow(), kolom).toString().equals("Potongan Biaya Bayi")){
+                            if(akses.getpotongan_biaya()==true){
+                                MnPotongan1ActionPerformed(null);
                             }
                         }
                     } catch (Exception e) {
@@ -3099,9 +3111,13 @@ private void tbBillingKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                             if(akses.gettambahan_biaya()==true){
                                 MnTambahanActionPerformed(null);
                             }
-                        }else if(tbBilling.getValueAt(tbBilling.getSelectedRow(), kolom).toString().contains("Potongan Biaya")){
+                        }else if(tbBilling.getValueAt(tbBilling.getSelectedRow(), kolom).toString().equals("Potongan Biaya")){
                             if(akses.getpotongan_biaya()==true){
                                 MnPotonganActionPerformed(null);
+                            }
+                        }else if(tbBilling.getValueAt(tbBilling.getSelectedRow(), kolom).toString().equals("Potongan Biaya Bayi")){
+                            if(akses.getpotongan_biaya()==true){
+                                MnPotongan1ActionPerformed(null);
                             }
                         }
                     }                        
@@ -4923,7 +4939,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     prosesCariObat(norawatbayi);  
                     prosesResepPulang(norawatbayi);
                     prosesCariTambahan(norawatbayi);  
-                    prosesCariPotongan(norawatbayi);
+                    prosesCariPotonganBayi(norawatbayi);
                 }
                 setHakNaikKelas();
                 tampilAkunBayar2();
@@ -6552,6 +6568,44 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                         tabModeRwJlDr.addRow(new Object[]{true,"Potongan Biaya",":","",null,null,null,null,"Potongan"});       
                     }else{
                         tabModeRwJlDr.addRow(new Object[]{false,"Potongan Biaya",":","",null,null,null,null,"Potongan"});       
+                    }
+                    rspotonganbiaya.beforeFirst();
+                    while(rspotonganbiaya.next()){                    
+                        tabModeRwJlDr.addRow(new Object[]{true,"                           ",rspotonganbiaya.getString("nama_pengurangan"),":",
+                                   rspotonganbiaya.getDouble("besar_pengurangan"),1,0,(-1*rspotonganbiaya.getDouble("besar_pengurangan")),"Potongan"});
+                        subttl=subttl+rspotonganbiaya.getDouble("besar_pengurangan");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Notifikasi : "+e);
+                } finally{
+                    if(rspotonganbiaya!=null){
+                        rspotonganbiaya.close();
+                    }     
+                    if(pspotonganbiaya!=null){
+                        pspotonganbiaya.close();
+                    }     
+                }
+             } catch (Exception ex) {
+                System.out.println("Notifikasi : "+ex);
+             }
+             if(subttl>1){
+                tabModeRwJlDr.addRow(new Object[]{true,"","Total Potongan : "+Valid.SetAngka(subttl),"",null,null,null,null,"TtlPotongan"});
+             } 
+    }
+    
+    private void prosesCariPotonganBayi(String norawatBayi) {             
+             x++;
+             subttl=0;
+             try {
+                pspotonganbiaya=koneksi.prepareStatement(sqlpspotonganbiaya);
+                try {
+                    pspotonganbiaya.setString(1,norawatBayi);
+                    rspotonganbiaya=pspotonganbiaya.executeQuery();
+                    rspotonganbiaya.last();
+                    if(rspotonganbiaya.getRow()>0){
+                        tabModeRwJlDr.addRow(new Object[]{true,"Potongan Biaya Bayi",":","",null,null,null,null,"Potongan"});       
+                    }else{
+                        tabModeRwJlDr.addRow(new Object[]{false,"Potongan Biaya Bayi",":","",null,null,null,null,"Potongan"});       
                     }
                     rspotonganbiaya.beforeFirst();
                     while(rspotonganbiaya.next()){                    
