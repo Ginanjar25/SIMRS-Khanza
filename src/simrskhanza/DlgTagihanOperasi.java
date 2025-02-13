@@ -17,6 +17,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
@@ -186,10 +190,10 @@ public class DlgTagihanOperasi extends javax.swing.JDialog {
         kdonloop5.setDocument(new batasInput((byte)20).getKata(kdonloop5));
         kdpjanak.setDocument(new batasInput((byte)20).getKata(kdpjanak));        
         kddrumum.setDocument(new batasInput((byte)20).getKata(kddrumum));      
-        PreOp.setDocument(new batasInput((int)100).getKata(PreOp));      
-        PostOp.setDocument(new batasInput((int)100).getKata(PostOp));      
-        Jaringan.setDocument(new batasInput((int)100).getKata(Jaringan));
-        Laporan.setDocument(new batasInput((int)8000).getKata(Laporan));
+//        PreOp.setDocument(new batasInput((int)100).getKata(PreOp));      
+//        PostOp.setDocument(new batasInput((int)100).getKata(PostOp));      
+//        Jaringan.setDocument(new batasInput((int)100).getKata(Jaringan));
+//        Laporan.setDocument(new batasInput((int)8000).getKata(Laporan));
         
         TCariPaket.setDocument(new batasInput((byte)100).getKata(TCari)); 
         TCari.setDocument(new batasInput((byte)100).getKata(TCari)); 
@@ -378,12 +382,12 @@ public class DlgTagihanOperasi extends javax.swing.JDialog {
             @Override
             public void windowClosed(WindowEvent e) {
                 if(template.getTable().getSelectedRow()!= -1){  
-                    PreOp.setText(template.getTable().getValueAt(template.getTable().getSelectedRow(),2).toString());
-                    PostOp.setText(template.getTable().getValueAt(template.getTable().getSelectedRow(),3).toString());
-                    Jaringan.setText(template.getTable().getValueAt(template.getTable().getSelectedRow(),4).toString());
-                    DikirimPA.setSelectedItem(template.getTable().getValueAt(template.getTable().getSelectedRow(),5).toString());
-                    Laporan.setText(template.getTable().getValueAt(template.getTable().getSelectedRow(),6).toString());
-                    Laporan.requestFocus();
+//                    PreOp.setText(template.getTable().getValueAt(template.getTable().getSelectedRow(),2).toString());
+//                    PostOp.setText(template.getTable().getValueAt(template.getTable().getSelectedRow(),3).toString());
+//                    Jaringan.setText(template.getTable().getValueAt(template.getTable().getSelectedRow(),4).toString());
+//                    DikirimPA.setSelectedItem(template.getTable().getValueAt(template.getTable().getSelectedRow(),5).toString());
+//                    Laporan.setText(template.getTable().getValueAt(template.getTable().getSelectedRow(),6).toString());
+//                    Laporan.requestFocus();
                 }            
             }
             @Override
@@ -644,20 +648,6 @@ public class DlgTagihanOperasi extends javax.swing.JDialog {
         nmonloop5 = new widget.TextBox();
         kdonloop5 = new widget.TextBox();
         label38 = new widget.Label();
-        label12 = new widget.Label();
-        tgl2 = new widget.Tanggal();
-        PreOp = new widget.TextBox();
-        jLabel6 = new widget.Label();
-        jLabel7 = new widget.Label();
-        PostOp = new widget.TextBox();
-        jLabel8 = new widget.Label();
-        Jaringan = new widget.TextBox();
-        jLabel9 = new widget.Label();
-        DikirimPA = new widget.ComboBox();
-        scrollPane2 = new widget.ScrollPane();
-        Laporan = new widget.TextArea();
-        jLabel10 = new widget.Label();
-        btnTemplate = new widget.Button();
 
         Kd2.setName("Kd2"); // NOI18N
         Kd2.setPreferredSize(new java.awt.Dimension(207, 23));
@@ -1896,112 +1886,6 @@ public class DlgTagihanOperasi extends javax.swing.JDialog {
         FormInput.add(label38);
         label38.setBounds(406, 370, 101, 23);
 
-        label12.setText("Selesai :");
-        label12.setName("label12"); // NOI18N
-        label12.setPreferredSize(new java.awt.Dimension(70, 23));
-        FormInput.add(label12);
-        label12.setBounds(406, 400, 101, 23);
-
-        tgl2.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
-        tgl2.setName("tgl2"); // NOI18N
-        tgl2.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                tgl2KeyPressed(evt);
-            }
-        });
-        FormInput.add(tgl2);
-        tgl2.setBounds(510, 400, 150, 23);
-
-        PreOp.setHighlighter(null);
-        PreOp.setName("PreOp"); // NOI18N
-        PreOp.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                PreOpKeyPressed(evt);
-            }
-        });
-        FormInput.add(PreOp);
-        PreOp.setBounds(148, 430, 256, 23);
-
-        jLabel6.setText("Diagnosis Pre-operatif :");
-        jLabel6.setName("jLabel6"); // NOI18N
-        FormInput.add(jLabel6);
-        jLabel6.setBounds(0, 430, 145, 23);
-
-        jLabel7.setText("Diagnosis Post-operatif :");
-        jLabel7.setName("jLabel7"); // NOI18N
-        FormInput.add(jLabel7);
-        jLabel7.setBounds(0, 460, 145, 23);
-
-        PostOp.setHighlighter(null);
-        PostOp.setName("PostOp"); // NOI18N
-        PostOp.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                PostOpKeyPressed(evt);
-            }
-        });
-        FormInput.add(PostOp);
-        PostOp.setBounds(148, 460, 256, 23);
-
-        jLabel8.setText("Jaringan di-Eksisi / -Insisi :");
-        jLabel8.setName("jLabel8"); // NOI18N
-        FormInput.add(jLabel8);
-        jLabel8.setBounds(0, 490, 145, 23);
-
-        Jaringan.setHighlighter(null);
-        Jaringan.setName("Jaringan"); // NOI18N
-        Jaringan.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                JaringanKeyPressed(evt);
-            }
-        });
-        FormInput.add(Jaringan);
-        Jaringan.setBounds(148, 490, 256, 23);
-
-        jLabel9.setText("Dikirim Pemeriksaan PA :");
-        jLabel9.setName("jLabel9"); // NOI18N
-        FormInput.add(jLabel9);
-        jLabel9.setBounds(0, 520, 145, 23);
-
-        DikirimPA.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ya", "Tidak" }));
-        DikirimPA.setName("DikirimPA"); // NOI18N
-        DikirimPA.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                DikirimPAKeyPressed(evt);
-            }
-        });
-        FormInput.add(DikirimPA);
-        DikirimPA.setBounds(148, 520, 130, 23);
-
-        scrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        scrollPane2.setName("scrollPane2"); // NOI18N
-
-        Laporan.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        Laporan.setColumns(20);
-        Laporan.setRows(5);
-        Laporan.setName("Laporan"); // NOI18N
-        scrollPane2.setViewportView(Laporan);
-
-        FormInput.add(scrollPane2);
-        scrollPane2.setBounds(510, 430, 320, 112);
-
-        jLabel10.setText("Laporan Operasi :");
-        jLabel10.setName("jLabel10"); // NOI18N
-        FormInput.add(jLabel10);
-        jLabel10.setBounds(406, 430, 101, 23);
-
-        btnTemplate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
-        btnTemplate.setMnemonic('2');
-        btnTemplate.setToolTipText("Alt+2");
-        btnTemplate.setName("btnTemplate"); // NOI18N
-        btnTemplate.setPreferredSize(new java.awt.Dimension(28, 23));
-        btnTemplate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTemplateActionPerformed(evt);
-            }
-        });
-        FormInput.add(btnTemplate);
-        btnTemplate.setBounds(479, 460, 28, 23);
-
         scrollPane1.setViewportView(FormInput);
 
         PanelInput.add(scrollPane1, java.awt.BorderLayout.CENTER);
@@ -2747,6 +2631,55 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi, data tidak boleh dihapus.\nSilahkan hubungi bagian kasir/keuangan ..!!");
                 TCariPaket.requestFocus();
             }else{
+                Map<String, String> reportMap = new HashMap<>();                
+                try{    
+                    psobat=koneksi.prepareStatement("SELECT * FROM laporan_operasi lo WHERE lo.no_rawat =?");
+                    try{
+                        psobat.setString(1,TNoRw.getText());
+                        rs=psobat.executeQuery();
+                        while(rs.next()){
+                            //reportList.add(rs.getString("nm_perawatan"));
+                            String kodePaket = rs.getString("tanggal").substring(0, 19);
+                            String namaPerawatan = rs.getString("tanggal").substring(0, 19)+" "+rs.getString("diagnosa_preop");
+                            reportMap.put(namaPerawatan, kodePaket);
+                        }
+                    }catch(SQLException e){
+                        System.out.println(e);
+                    }finally{
+                        if(rs!=null){
+                            rs.close();
+                        }
+                        if(psobat!=null){
+                            psobat.close();
+                        }
+                    }
+                }catch(SQLException e){
+                    System.out.println("Notifikasi : "+e);
+                }               
+                
+                List<String> reportLabels = new ArrayList<>(reportMap.keySet());
+                String[] reportArray = reportLabels.toArray(new String[0]);
+                
+                if(reportArray.length>0){
+                    String selectedLabel = (String) JOptionPane.showInputDialog(
+                            null,
+                            "Silahkan pilih Laporan Operasi..!",
+                            "Laporan operasi",
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,
+                            reportArray,
+                            reportArray.length > 0 ? reportArray[0] : null // Default to the first report if available
+                    );
+
+                    if(selectedLabel != null){
+                        String selectedValue = reportMap.get(selectedLabel);
+                        //System.out.println("Selected report: " + selectedLabel + ", Value: " + selectedValue);
+                        Valid.SetTgl2(tgl,selectedValue);
+                    }else{
+                        System.out.println("No report selected.");
+                    }
+                }
+                
                 Sequel.AutoComitFalse();
                 sukses=true;
                 ttljmdokter=0;ttljmpetugas=0;ttlpendapatan=0;ttlbhp=0;
@@ -2833,17 +2766,22 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     ttlpendapatan=ttlpendapatan+ttlbhp;
                 }
                     
-                if(sukses==true){
-                    if(!Laporan.getText().equals("")){
-                        if(Sequel.menyimpantf2("laporan_operasi","?,?,?,?,?,?,?,?","laporan operasi",8,new String[]{
-                                TNoRw.getText(),Valid.SetTgl(tgl.getSelectedItem()+"")+" "+tgl.getSelectedItem().toString().substring(11,19),PreOp.getText(),
-                                PostOp.getText(),Jaringan.getText(),Valid.SetTgl(tgl2.getSelectedItem()+"")+" "+tgl2.getSelectedItem().toString().substring(11,19),
-                                DikirimPA.getSelectedItem().toString(),Laporan.getText()
-                            })==false){
-                            sukses=false;
-                        }
-                    }
-                }   
+//                if(sukses==true){
+//                    if(!Laporan.getText().equals("")){
+//                        if(Sequel.menyimpantf2("laporan_operasi","?,?,?,?,?,?,?,?","laporan operasi",8,new String[]{
+//                                TNoRw.getText(),
+//                                Valid.SetTgl(tgl.getSelectedItem()+"")+" "+tgl.getSelectedItem().toString().substring(11,19),
+//                                PreOp.getText(),
+//                                PostOp.getText(),
+//                                Jaringan.getText(),
+//                                Valid.SetTgl(tgl2.getSelectedItem()+"")+" "+tgl2.getSelectedItem().toString().substring(11,19),
+//                                DikirimPA.getSelectedItem().toString(),
+//                                Laporan.getText()
+//                            })==false){
+//                            sukses=false;
+//                        }
+//                    }
+//                }   
                 
                 if(sukses==true){
                     if(status.equals("Ranap")){
@@ -2898,11 +2836,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     }
                     tampil2();
                     LTotal.setText("Total Biaya : 0");
-                    PreOp.setText("");
-                    PostOp.setText("");
-                    Jaringan.setText("");
-                    Laporan.setText("");
-                    jenis.setText("");
+//                    PreOp.setText("");
+//                    PostOp.setText("");
+//                    Jaringan.setText("");
+//                    Laporan.setText("");
+//                    jenis.setText("");
                     JOptionPane.showMessageDialog(rootPane,"Proses simpan selesai...!");
                 }else{
                     JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
@@ -2962,28 +2900,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }//GEN-LAST:event_btnOnloop5ActionPerformed
 
     private void kdonloop5KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdonloop5KeyPressed
-        Valid.pindah(evt,kdonloop4,tgl2);
+        //Valid.pindah(evt,kdonloop4,tgl2);
     }//GEN-LAST:event_kdonloop5KeyPressed
-
-    private void tgl2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tgl2KeyPressed
-        Valid.pindah(evt,kdonloop5,PreOp);
-    }//GEN-LAST:event_tgl2KeyPressed
-
-    private void PreOpKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PreOpKeyPressed
-        Valid.pindah(evt,tgl2,PostOp);
-    }//GEN-LAST:event_PreOpKeyPressed
-
-    private void PostOpKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PostOpKeyPressed
-        Valid.pindah(evt,PreOp,Jaringan);
-    }//GEN-LAST:event_PostOpKeyPressed
-
-    private void JaringanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JaringanKeyPressed
-        Valid.pindah(evt,PostOp,DikirimPA);
-    }//GEN-LAST:event_JaringanKeyPressed
-
-    private void DikirimPAKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DikirimPAKeyPressed
-        Valid.pindah(evt,Jaringan,Laporan);
-    }//GEN-LAST:event_DikirimPAKeyPressed
 
     private void BtnOperator1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnOperator1KeyPressed
         Valid.pindah(evt,tgl,BtnOperator2);
@@ -2996,14 +2914,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private void btnOperator3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnOperator3KeyPressed
         Valid.pindah(evt,BtnOperator2,BtnAnastesi);
     }//GEN-LAST:event_btnOperator3KeyPressed
-
-    private void btnTemplateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTemplateActionPerformed
-        template.emptTeks();
-        template.isCek();
-        template.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        template.setLocationRelativeTo(internalFrame1);
-        template.setVisible(true);
-    }//GEN-LAST:event_btnTemplateActionPerformed
 
     /**
     * @param args the command line arguments
@@ -3037,17 +2947,12 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Button BtnTambah;
     private widget.Button BtnTambahOperasi;
     private widget.CekBox ChkInput;
-    private widget.ComboBox DikirimPA;
     private widget.panelisi FormInput;
-    private widget.TextBox Jaringan;
     private widget.ComboBox Kategori;
     private widget.TextBox Kd2;
     private widget.Label LTotal;
-    private widget.TextArea Laporan;
     private javax.swing.JPanel PanelInput;
     private javax.swing.JPopupMenu Popup;
-    private widget.TextBox PostOp;
-    private widget.TextBox PreOp;
     private widget.ScrollPane Scroll;
     private widget.ScrollPane Scroll1;
     private widget.TextBox TCari;
@@ -3070,18 +2975,12 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Button btnOperator3;
     private widget.Button btnPrwLuar;
     private widget.Button btnPrwRes;
-    private widget.Button btnTemplate;
     private widget.Button btndrpjanak;
     private widget.Button btndrumum;
     private widget.InternalFrame internalFrame1;
-    private widget.Label jLabel10;
     private widget.Label jLabel3;
     private widget.Label jLabel4;
     private widget.Label jLabel5;
-    private widget.Label jLabel6;
-    private widget.Label jLabel7;
-    private widget.Label jLabel8;
-    private widget.Label jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -3111,7 +3010,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox kdprwresust;
     private widget.Label label10;
     private widget.Label label11;
-    private widget.Label label12;
     private widget.Label label14;
     private widget.Label label17;
     private widget.Label label18;
@@ -3164,11 +3062,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.panelisi panelisi5;
     private javax.swing.JMenuItem ppBersihkan;
     private widget.ScrollPane scrollPane1;
-    private widget.ScrollPane scrollPane2;
     private widget.Table tbObat;
     private widget.Table tbtindakan;
     private widget.Tanggal tgl;
-    private widget.Tanggal tgl2;
     // End of variables declaration//GEN-END:variables
 
     private void tampil() {  
@@ -3652,13 +3548,14 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
-            PanelInput.setPreferredSize(new Dimension(WIDTH,internalFrame1.getHeight()-79));
+            //PanelInput.setPreferredSize(new Dimension(WIDTH,internalFrame1.getHeight()-79));
+            PanelInput.setPreferredSize(new Dimension(WIDTH,500));
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
             ChkInput.setVisible(false);            
-            PanelInput.setPreferredSize(new Dimension(WIDTH,20));
-            FormInput.setVisible(false);      
+            PanelInput.setPreferredSize(new Dimension(WIDTH,500));
+            FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }
     }
