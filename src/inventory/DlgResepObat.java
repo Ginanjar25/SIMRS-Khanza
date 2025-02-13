@@ -2401,7 +2401,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             }
             
             param.put("tgllahir",Sequel.cariIsi("SELECT tgl_lahir FROM pasien p WHERE p.no_rkm_medis = ?", TNoRm.getText()));
-            param.put("umur",Sequel.cariIsi("SELECT umurdaftar FROM reg_periksa rp WHERE rp.no_rawat = ?", TNoRw.getText()));
+            param.put("umur",Sequel.cariIsi("SELECT concat(rp.umurdaftar,' ',rp.sttsumur) as umur FROM reg_periksa rp WHERE rp.no_rawat = ?", TNoRw.getText()));
             param.put("sumber",sumber);
             param.put("nokartu",Sequel.cariIsi("SELECT bs.no_kartu FROM bridging_sep bs WHERE bs.no_rawat = ?", TNoRw.getText()));
             param.put("no_sep",Sequel.cariIsi("SELECT bs.no_sep FROM bridging_sep bs WHERE bs.no_rawat = ?", TNoRw.getText()));

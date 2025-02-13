@@ -41,7 +41,7 @@ public final class DlgRl38 extends javax.swing.JDialog {
     private validasi Valid=new validasi();
     private PreparedStatement pstindakan,pstindakan2;
     private ResultSet rstindakan,rstindakan2;
-    private int i=0,a=0,ttl=0;   
+    private int i=0,a=0,ttl=0, ttlL = 0, ttlP = 0, ttlBPJS=0, ttlUMUM=0,ttlAsuransi=0;   
     /** Creates new form DlgLhtBiaya
      * @param parent
      * @param modal */
@@ -51,7 +51,9 @@ public final class DlgRl38 extends javax.swing.JDialog {
         this.setLocation(8,1);
         setSize(885,674);
 
-        Object[] rowRwJlDr={"No.","Jenis Kegiatan","Jumlah"};
+        Object[] rowRwJlDr={"No.","Jenis Kegiatan","Jumlah", "Laki-Laki", "Perempuan", 
+            "Rata-Rata (Laki-Laki)", "Rata-Rata (Perempuan)", "BPJS", "UMUM", "ASURANSI",
+            "Rata-Rata (BPJS)", "Rata-Rata (UMUM)", "Rata-Rata (ASURANSI)"};
         tabMode=new DefaultTableModel(null,rowRwJlDr){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -60,14 +62,34 @@ public final class DlgRl38 extends javax.swing.JDialog {
         tbBangsal.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbBangsal.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < 13; i++) {
             TableColumn column = tbBangsal.getColumnModel().getColumn(i);
-            if(i==0){
+            if (i == 0) {
                 column.setPreferredWidth(35);
-            }else if(i==1){
+            } else if (i == 1) {
                 column.setPreferredWidth(400);
-            }else{
+            } else if (i == 2) {
                 column.setPreferredWidth(60);
+            } else if (i == 3) {
+                column.setPreferredWidth(100);
+            } else if (i == 4) {
+                column.setPreferredWidth(100);
+            } else if (i == 5) {
+                column.setPreferredWidth(120);
+            } else if (i == 6) {
+                column.setPreferredWidth(120);
+            } else if (i == 7) {
+                column.setPreferredWidth(120);
+            } else if (i == 8) {
+                column.setPreferredWidth(120);
+            } else if (i == 9) {
+                column.setPreferredWidth(120);
+            }else if (i == 10) {
+                column.setPreferredWidth(120);
+            }else if (i == 11) {
+                column.setPreferredWidth(120);
+            }else if (i == 12) {
+                column.setPreferredWidth(120);
             }
         }
         tbBangsal.setDefaultRenderer(Object.class, new WarnaTable());
@@ -77,11 +99,42 @@ public final class DlgRl38 extends javax.swing.JDialog {
 
         
         try {            
-            pstindakan=koneksi.prepareStatement("select jns_perawatan_lab.nm_perawatan,count(jns_perawatan_lab.nm_perawatan),jns_perawatan_lab.kd_jenis_prw from periksa_lab "+
-                    "inner join jns_perawatan_lab on periksa_lab.kd_jenis_prw=jns_perawatan_lab.kd_jenis_prw "+
+            pstindakan=koneksi.prepareStatement("select jns_perawatan_lab.nm_perawatan,count(jns_perawatan_lab.nm_perawatan),jns_perawatan_lab.kd_jenis_prw, \n" +
+                    "COUNT(CASE WHEN pasien.jk = 'L' THEN 1 END) AS jumlah_laki_laki,\n" +
+                    "COUNT(CASE WHEN pasien.jk = 'P' THEN 1 END) AS jumlah_perempuan,\n" +
+                    "ROUND((SUM(IF(pasien.jk = 'L', 1, 0)) / COUNT(periksa_lab.kd_jenis_prw)) * 100) AS persen_laki_laki,\n" +
+                    "ROUND((SUM(IF(pasien.jk = 'P', 1, 0)) / COUNT(periksa_lab.kd_jenis_prw)) * 100) AS persen_perempuan,\n" +
+                    "COUNT(CASE WHEN reg_periksa.kd_pj = 'BPJ' then 1 END) AS jumlah_bpjs,\n" +
+                    "COUNT(CASE WHEN reg_periksa.kd_pj = 'A09' then 1 END) AS jumlah_umum,\n" +
+                    "COUNT(CASE WHEN reg_periksa.kd_pj NOT IN ('A09','BPJ') then 1 END) AS jumlah_asuransi,\n" +
+                    "COUNT(CASE WHEN reg_periksa.kd_pj = 'BPJ' then 1 END) AS jumlah_bpjs,\n" +
+                    "COUNT(CASE WHEN reg_periksa.kd_pj = 'A09' then 1 END) AS jumlah_umum,\n" +
+                    "COUNT(CASE WHEN reg_periksa.kd_pj NOT IN ('A09','BPJ') then 1 END) AS jumlah_asuransi,\n" +
+                    "ROUND((SUM(IF(reg_periksa.kd_pj = 'BPJ', 1, 0)) / count(periksa_lab.kd_jenis_prw)) * 100) AS persen_bpjs,\n" +
+                    "ROUND((SUM(IF(reg_periksa.kd_pj = 'A09', 1, 0)) / count(periksa_lab.kd_jenis_prw)) * 100) AS persen_umum,\n" +
+                    "ROUND((SUM(IF(reg_periksa.kd_pj NOT IN ('BPJ','A09'), 1, 0)) / count(periksa_lab.kd_jenis_prw)) * 100) AS persen_asuransi\n" +
+                    "from periksa_lab " +
+                    "inner join jns_perawatan_lab on periksa_lab.kd_jenis_prw=jns_perawatan_lab.kd_jenis_prw \n" +
+                    "INNER JOIN reg_periksa ON reg_periksa.no_rawat = periksa_lab.no_rawat\n" +
+                    "INNER JOIN pasien ON pasien.no_rkm_medis = reg_periksa.no_rkm_medis "+
                     "where periksa_lab.tgl_periksa between ? and ? and jns_perawatan_lab.nm_perawatan like ? group by jns_perawatan_lab.nm_perawatan ");
-            pstindakan2=koneksi.prepareStatement("select template_laboratorium.Pemeriksaan,count(template_laboratorium.Pemeriksaan) from detail_periksa_lab "+
-                    "inner join template_laboratorium on detail_periksa_lab.id_template=template_laboratorium.id_template "+
+            pstindakan2=koneksi.prepareStatement("select template_laboratorium.Pemeriksaan,count(template_laboratorium.Pemeriksaan),\n" +
+                    "COUNT(CASE WHEN pasien.jk = 'L' THEN 1 END) AS jumlah_laki_laki,\n" +
+                    "COUNT(CASE WHEN pasien.jk = 'P' THEN 1 END) AS jumlah_perempuan,\n" +
+                    "COUNT(CASE WHEN reg_periksa.kd_pj = \"BPJ\" then 1 END) AS jumlah_bpjs,\n" +
+                    "COUNT(CASE WHEN reg_periksa.kd_pj = \"A09\" then 1 END) AS jumlah_umum,\n" +
+                    "ROUND((SUM(IF(pasien.jk = 'L', 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_laki_laki,\n" +
+                    "ROUND((SUM(IF(pasien.jk = 'P', 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_perempuan,\n" +
+                    "COUNT(CASE WHEN reg_periksa.kd_pj = 'BPJ' then 1 END) AS jumlah_bpjs,\n" +
+                    "COUNT(CASE WHEN reg_periksa.kd_pj = 'A09' then 1 END) AS jumlah_umum,\n" +
+                    "COUNT(CASE WHEN reg_periksa.kd_pj NOT IN ('A09','BPJ') then 1 END) AS jumlah_asuransi,\n" +
+                    "ROUND((SUM(IF(reg_periksa.kd_pj = 'BPJ', 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_bpjs,\n" +
+                    "ROUND((SUM(IF(reg_periksa.kd_pj = 'A09', 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_umum,\n" +
+                    "ROUND((SUM(IF(reg_periksa.kd_pj NOT IN ('BPJ','A09'), 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_asuransi\n" +
+                    "from detail_periksa_lab \n" +
+                    "inner join template_laboratorium on detail_periksa_lab.id_template=template_laboratorium.id_template \n" +
+                    "INNER JOIN reg_periksa ON reg_periksa.no_rawat = detail_periksa_lab.no_rawat\n" +
+                    "INNER JOIN pasien ON pasien.no_rkm_medis = reg_periksa.no_rkm_medis "+
                     "where detail_periksa_lab.tgl_periksa between ? and ? and template_laboratorium.Pemeriksaan like ? and template_laboratorium.kd_jenis_prw=? group by template_laboratorium.Pemeriksaan ");
         } catch (Exception e) {
             System.out.println(e);
@@ -280,7 +333,17 @@ public final class DlgRl38 extends javax.swing.JDialog {
                     Sequel.menyimpan("temporary","'"+r+"','"+
                                     tabMode.getValueAt(r,0).toString()+"','"+
                                     tabMode.getValueAt(r,1).toString()+"','"+
-                                    tabMode.getValueAt(r,2).toString()+"','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Rekap Nota Pembayaran");
+                                    tabMode.getValueAt(r,2).toString()+"','"+
+                                    tabMode.getValueAt(r,3).toString()+"','"+
+                                    tabMode.getValueAt(r,4).toString()+"','"+
+                                    tabMode.getValueAt(r,5).toString()+"','"+
+                                    tabMode.getValueAt(r,6).toString()+"','"+
+                                    tabMode.getValueAt(r,7).toString()+"','"+
+                                    tabMode.getValueAt(r,8).toString()+"','"+
+                                    tabMode.getValueAt(r,9).toString()+"','"+
+                                    tabMode.getValueAt(r,10).toString()+"','"+
+                                    tabMode.getValueAt(r,11).toString()+"','"+
+                                    tabMode.getValueAt(r,12).toString()+"','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Rekap Nota Pembayaran");
                 }                    
             }
                
@@ -397,9 +460,17 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             rstindakan=pstindakan.executeQuery();
             i=1;
             ttl=0;
+            ttlL=0;
+            ttlP=0;
+            ttlBPJS=0;
+            ttlUMUM=0;
+            ttlAsuransi=0;
             while(rstindakan.next()){
                 tabMode.addRow(new Object[]{
-                    i,rstindakan.getString(1),rstindakan.getInt(2)
+                    i,rstindakan.getString(1),rstindakan.getInt(2), rstindakan.getInt("jumlah_laki_laki"), 
+                    rstindakan.getInt("jumlah_perempuan"), rstindakan.getInt("persen_laki_laki")+" %",rstindakan.getInt("persen_perempuan")+" %",
+                    rstindakan.getInt("jumlah_bpjs"), rstindakan.getInt("jumlah_umum"),rstindakan.getInt("jumlah_asuransi"),
+                    rstindakan.getInt("persen_bpjs")+" %", rstindakan.getInt("persen_umum")+" %",rstindakan.getInt("persen_asuransi")+" %"
                 });
                 pstindakan2.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
                 pstindakan2.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
@@ -409,19 +480,32 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 a=1;
                 while(rstindakan2.next()){
                     tabMode.addRow(new Object[]{
-                        i+"."+a,rstindakan2.getString(1),rstindakan2.getInt(2)
+                        i+"."+a,rstindakan2.getString(1),rstindakan2.getInt(2), rstindakan2.getInt("jumlah_laki_laki"), 
+                        rstindakan2.getInt("jumlah_perempuan"), rstindakan2.getInt("persen_laki_laki")+" %",rstindakan2.getInt("persen_perempuan")+" %",
+                         rstindakan2.getInt("jumlah_bpjs"), rstindakan2.getInt("jumlah_umum"),rstindakan2.getInt("jumlah_asuransi"),
+                    rstindakan2.getInt("persen_bpjs")+" %", rstindakan2.getInt("persen_umum")+" %",rstindakan2.getInt("persen_asuransi")+" %"
                     });
                     ttl=ttl+rstindakan2.getInt(2);
+                    ttlL=ttlL+rstindakan2.getInt("jumlah_laki_laki");
+                    ttlP=ttlP+rstindakan2.getInt("jumlah_perempuan");
+                    ttlBPJS=ttlBPJS+rstindakan2.getInt("jumlah_bpjs");
+                    ttlUMUM=ttlUMUM+rstindakan2.getInt("jumlah_umum");
+                    ttlAsuransi=ttlAsuransi+rstindakan2.getInt("jumlah_asuransi");
                     a++;                    
                 }
                 ttl=ttl+rstindakan.getInt(2);
+                ttlL=ttlL+rstindakan.getInt("jumlah_laki_laki");
+                ttlP=ttlP+rstindakan.getInt("jumlah_perempuan");
+                ttlBPJS=ttlBPJS+rstindakan.getInt("jumlah_bpjs");
+                ttlUMUM=ttlUMUM+rstindakan.getInt("jumlah_umum");
+                ttlAsuransi=ttlAsuransi+rstindakan.getInt("jumlah_asuransi");
                 i++;                    
             }
             
             
             if(i>1){
                 tabMode.addRow(new Object[]{
-                    "","TOTAL",ttl
+                    "","TOTAL",ttl, ttlL, ttlP, "", "",ttlBPJS, ttlUMUM, ttlAsuransi, "", "",""
                 });
             }
             this.setCursor(Cursor.getDefaultCursor());

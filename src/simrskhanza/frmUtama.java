@@ -8421,7 +8421,7 @@ public class frmUtama extends javax.swing.JFrame {
                         String kd_poli = Sequel.cariIsi("select kd_poli from jadwal where kd_dokter = ? group by kd_poli", akses.getkode());
                         if(!kd_poli.isBlank()){
                              if(kd_poli.equals("IGDK")){
-                                 antriPoli.kirimAntrianAwalIGD(kd_poli, akses.getkode());
+                                 antriPoli.kirimAntrianIGD(kd_poli, akses.getkode());
                              }else {
                                  antriPoli.kirimAntrianAwal(kd_poli, akses.getkode());
                              }

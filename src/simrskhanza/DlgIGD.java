@@ -81,6 +81,7 @@ import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import kepegawaian.DlgCariPetugas;
 import keuangan.DlgBilingParsialRalan;
 import keuangan.DlgLhtPiutang;
 import laporan.DlgBerkasRawat;
@@ -199,6 +200,7 @@ public final class DlgIGD extends javax.swing.JDialog {
     private DlgPasien pasien=new DlgPasien(null,false);
     private DlgCariDokter dokter=new DlgCariDokter(null,false);
     private DlgRujukMasuk rujukmasuk=new DlgRujukMasuk(null,false);
+    private DlgCariPetugas petugas=new DlgCariPetugas(null,false);
     private AntrianPoli antriPoli = new AntrianPoli();
     private PreparedStatement ps,ps3,pscaripiutang;
     private ResultSet rs;
@@ -209,7 +211,7 @@ public final class DlgIGD extends javax.swing.JDialog {
     private String kdigd="",nosisrute="",aktifkanparsial="no",URUTNOREG="",terbitsep="",
             status="Baru",alamatperujuk="-",umur="0",sttsumur="Th",IPPRINTERTRACER="",norawatdipilih="",normdipilih="",
             validasiregistrasi=Sequel.cariIsi("select set_validasi_registrasi.wajib_closing_kasir from set_validasi_registrasi"),
-            validasicatatan=Sequel.cariIsi("select set_validasi_catatan.tampilkan_catatan from set_validasi_catatan"),variabel="", stts="";
+            validasicatatan=Sequel.cariIsi("select set_validasi_catatan.tampilkan_catatan from set_validasi_catatan"),variabel="", stts="", ptg="";
     private char ESC = 27;
     // ganti kertas
     private char[] FORM_FEED = {12};
@@ -334,7 +336,7 @@ public final class DlgIGD extends javax.swing.JDialog {
             }else if(i==16){
                 column.setPreferredWidth(50);
             }else if(i==17){
-                column.setPreferredWidth(80);
+                column.setPreferredWidth(120);
             }else if(i==18){
                 column.setPreferredWidth(70);
             }else if(i==19){
@@ -387,6 +389,8 @@ public final class DlgIGD extends javax.swing.JDialog {
         
         ChkInput.setSelected(false);
         isForm(); 
+        
+        WindowSetDisplay.setSize(630,180);
         
         pasien.addWindowListener(new WindowListener() {
             @Override
@@ -656,6 +660,37 @@ public final class DlgIGD extends javax.swing.JDialog {
             public void keyReleased(KeyEvent e) {}
         });
         
+        
+        petugas.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (ptg.equals("1")) {
+                    KdPetugas1.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(), 0).toString());
+                    NmPetugas1.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(), 1).toString());
+                    KdPetugas1.requestFocus();
+                } else if (ptg.equals("2")) {
+                    KdPetugas2.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(), 0).toString());
+                    NmPetugas2.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(), 1).toString());
+                    KdPetugas2.requestFocus();
+                } else if (ptg.equals("3")) {
+                    KdPetugas3.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(), 0).toString());
+                    NmPetugas3.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(), 1).toString());
+                    KdPetugas3.requestFocus();
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
         DlgCatatan.setSize(595,34);
         
         try {
@@ -1019,6 +1054,28 @@ public final class DlgIGD extends javax.swing.JDialog {
         kdpnj1 = new widget.TextBox();
         nmpnj1 = new widget.TextBox();
         btnPenjab2 = new widget.Button();
+        
+        BtnSetDisplay = new widget.Button();
+        WindowSetDisplay = new javax.swing.JDialog();
+        internalFrameSetDisplay = new widget.InternalFrame();
+        BtnSimpanSetDisplay = new widget.Button();
+        BtnCloseSetDisplay = new widget.Button();
+        BtnClearSetDisplay = new widget.Button();
+        
+        jLabelPetugas1 = new widget.Label();
+        KdPetugas1 = new widget.TextBox();
+        NmPetugas1 = new widget.TextBox();
+        btnPetugas1 = new widget.Button();
+        
+        jLabelPetugas2 = new widget.Label();
+        KdPetugas2 = new widget.TextBox();
+        NmPetugas2 = new widget.TextBox();
+        btnPetugas2 = new widget.Button();
+        
+        jLabelPetugas3 = new widget.Label();
+        KdPetugas3 = new widget.TextBox();
+        NmPetugas3 = new widget.TextBox();
+        btnPetugas3 = new widget.Button();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
         
@@ -4799,7 +4856,24 @@ public final class DlgIGD extends javax.swing.JDialog {
             }
         });
         panelGlass6.add(BtnKeluar);
-
+        
+        BtnSetDisplay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Doctor.png"))); // NOI18N
+        BtnSetDisplay.setMnemonic('K');
+        BtnSetDisplay.setText("Set Display");
+        BtnSetDisplay.setToolTipText("Alt+K");
+        BtnSetDisplay.setName("BtnSetDisplay"); // NOI18N
+        BtnSetDisplay.setPreferredSize(new java.awt.Dimension(200, 30));
+        BtnSetDisplay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSetDisplayActionPerformed(evt);
+            }
+        });
+        BtnSetDisplay.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnSetDisplayKeyPressed(evt);
+            }
+        });
+        panelGlass6.add(BtnSetDisplay);
         jPanel2.add(panelGlass6, java.awt.BorderLayout.PAGE_END);
 
         panelGlass7.setName("panelGlass7"); // NOI18N
@@ -5241,7 +5315,155 @@ public final class DlgIGD extends javax.swing.JDialog {
         internalFrame1.add(PanelInput, java.awt.BorderLayout.PAGE_START);
 
         getContentPane().add(internalFrame1, java.awt.BorderLayout.CENTER);
+        
+        WindowSetDisplay.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        WindowSetDisplay.setName("WindowSetDisplay"); // NOI18N
+        WindowSetDisplay.setUndecorated(true);
+        WindowSetDisplay.setResizable(false);
 
+        internalFrameSetDisplay.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Set Display IGD ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrameSetDisplay.setName("internalFrameSetDisplay"); // NOI18N
+        internalFrameSetDisplay.setLayout(null);
+        
+        BtnCloseSetDisplay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cross.png"))); // NOI18N
+        BtnCloseSetDisplay.setMnemonic('U');
+        BtnCloseSetDisplay.setText("Tutup");
+        BtnCloseSetDisplay.setToolTipText("Alt+U");
+        BtnCloseSetDisplay.setName("BtnCloseSetDisplay"); // NOI18N
+        BtnCloseSetDisplay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                WindowSetDisplay.dispose();
+            }
+        });
+        internalFrameSetDisplay.add(BtnCloseSetDisplay);
+        BtnCloseSetDisplay.setBounds(510, 120, 100, 30);
+        
+        BtnClearSetDisplay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
+        BtnClearSetDisplay.setMnemonic('U');
+        BtnClearSetDisplay.setText("Tutup");
+        BtnClearSetDisplay.setToolTipText("Alt+U");
+        BtnClearSetDisplay.setName("BtnClearSetDisplay"); // NOI18N
+        BtnClearSetDisplay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnClearSetDisplayActionPerformed(evt);
+            }
+        });
+        internalFrameSetDisplay.add(BtnClearSetDisplay);
+        BtnClearSetDisplay.setBounds(100, 120, 100, 30);
+
+        BtnSimpanSetDisplay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
+        BtnSimpanSetDisplay.setMnemonic('S');
+        BtnSimpanSetDisplay.setText("Simpan");
+        BtnSimpanSetDisplay.setToolTipText("Alt+S");
+        BtnSimpanSetDisplay.setName("BtnSimpanGabung"); // NOI18N
+        BtnSimpanSetDisplay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSimpanSetDisplayActionPerformed(evt);
+            }
+        });
+        internalFrameSetDisplay.add(BtnSimpanSetDisplay);
+        BtnSimpanSetDisplay.setBounds(17, 120, 100, 30);
+        
+        jLabelPetugas1.setText("Petugas 1 : ");
+        jLabelPetugas1.setName("jLabelPetugas1"); // NOI18N
+        internalFrameSetDisplay.add(jLabelPetugas1);
+        jLabelPetugas1.setBounds(2, 30, 87, 23);
+
+        KdPetugas1.setHighlighter(null);
+        KdPetugas1.setName("KdPetugas1"); // NOI18N
+        KdPetugas1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                private DlgCariPetugas petugas=new DlgCariPetugas(null,false);
+            }
+        });
+        internalFrameSetDisplay.add(KdPetugas1);
+        KdPetugas1.setBounds(92, 30, 100, 23);
+
+        NmPetugas1.setEditable(false);
+        NmPetugas1.setName("NmPetugas1"); // NOI18N
+        internalFrameSetDisplay.add(NmPetugas1);
+        NmPetugas1.setBounds(193, 30, 350, 23);
+
+        btnPetugas1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        btnPetugas1.setMnemonic('7');
+        btnPetugas1.setToolTipText("ALt+7");
+        btnPetugas1.setName("btnPetugas1"); // NOI18N
+        btnPetugas1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ptg = "1";
+                btnPetugasActionPerformed(evt);
+            }
+        });
+        internalFrameSetDisplay.add(btnPetugas1);
+        btnPetugas1.setBounds(546, 30, 28, 23);
+        
+        jLabelPetugas2.setText("Petugas 2 : ");
+        jLabelPetugas2.setName("jLabelPetugas2"); // NOI18N
+        internalFrameSetDisplay.add(jLabelPetugas2);
+        jLabelPetugas2.setBounds(2, 60, 87, 23);
+
+        KdPetugas2.setHighlighter(null);
+        KdPetugas2.setName("KdPetugas2"); // NOI18N
+        KdPetugas2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                kdPetugas1KeyPressed(evt);
+            }
+        });
+        internalFrameSetDisplay.add(KdPetugas2);
+        KdPetugas2.setBounds(92, 60, 100, 23);
+
+        NmPetugas2.setEditable(false);
+        NmPetugas2.setName("NmPetugas2"); // NOI18N
+        internalFrameSetDisplay.add(NmPetugas2);
+        NmPetugas2.setBounds(193, 60, 350, 23);
+
+        btnPetugas2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        btnPetugas2.setMnemonic('7');
+        btnPetugas2.setToolTipText("ALt+7");
+        btnPetugas2.setName("btnPetugas2"); // NOI18N
+        btnPetugas2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ptg = "2";
+                btnPetugasActionPerformed(evt);
+            }
+        });
+        internalFrameSetDisplay.add(btnPetugas2);
+        btnPetugas2.setBounds(546, 60, 28, 23);
+        
+        jLabelPetugas3.setText("Petugas 3 : ");
+        jLabelPetugas3.setName("jLabelPetugas3"); // NOI18N
+        internalFrameSetDisplay.add(jLabelPetugas3);
+        jLabelPetugas3.setBounds(2, 90, 87, 23);
+
+        KdPetugas3.setHighlighter(null);
+        KdPetugas3.setName("KdPetugas3"); // NOI18N
+        KdPetugas3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                kdPetugas1KeyPressed(evt);
+            }
+        });
+        internalFrameSetDisplay.add(KdPetugas3);
+        KdPetugas3.setBounds(92, 90, 100, 23);
+
+        NmPetugas3.setEditable(false);
+        NmPetugas3.setName("NmPetugas2"); // NOI18N
+        internalFrameSetDisplay.add(NmPetugas3);
+        NmPetugas3.setBounds(193, 90, 350, 23);
+
+        btnPetugas3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        btnPetugas3.setMnemonic('7');
+        btnPetugas3.setToolTipText("ALt+7");
+        btnPetugas3.setName("btnPetugas2"); // NOI18N
+        btnPetugas3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ptg = "3";
+                btnPetugasActionPerformed(evt);
+            }
+        });
+        internalFrameSetDisplay.add(btnPetugas3);
+        btnPetugas3.setBounds(546, 90, 28, 23);
+
+        WindowSetDisplay.getContentPane().add(internalFrameSetDisplay, java.awt.BorderLayout.CENTER);
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -6547,8 +6769,8 @@ private void MnRawatJalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                     dlgrwjl.setNoRm(TNoRw.getText(),DTPCari1.getDate(),DTPCari2.getDate());
                     dlgrwjl.setVisible(true);
                     this.setCursor(Cursor.getDefaultCursor());
-                    if(!getIPAntrian().isBlank()){
-                        antriPoli.kirimAntreanIGD("IGDK", tbPetugas.getValueAt(tbPetugas.getSelectedRow(),5).toString());
+                    if(getIPAntrian().equals("igd")){
+                        antriPoli.kirimAntrianIGD("IGDK", tbPetugas.getValueAt(tbPetugas.getSelectedRow(),5).toString());
                     }
                 }
             }
@@ -9207,8 +9429,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 form.setLocationRelativeTo(internalFrame1);
                 form.setVisible(true);
                 this.setCursor(Cursor.getDefaultCursor());
-                if(!getIPAntrian().isBlank()){
-                    antriPoli.kirimAntreanIGD("IGDK", tbPetugas.getValueAt(tbPetugas.getSelectedRow(),5).toString());
+                if(getIPAntrian().equals("igd")){
+                    antriPoli.kirimAntrianIGD("IGDK", tbPetugas.getValueAt(tbPetugas.getSelectedRow(),5).toString());
                 }
             }
         }
@@ -11512,6 +11734,28 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Label jLabelpj2;
     private widget.Button btnPenjab2;
     
+    private widget.Button BtnSetDisplay;
+    private javax.swing.JDialog WindowSetDisplay;
+    private widget.InternalFrame internalFrameSetDisplay;
+    private widget.Button BtnSimpanSetDisplay;
+    private widget.Button BtnCloseSetDisplay;
+    private widget.Button BtnClearSetDisplay;
+    
+    private widget.Label jLabelPetugas1;
+    private widget.TextBox KdPetugas1;
+    private widget.TextBox NmPetugas1;
+    private widget.Button btnPetugas1;
+    
+    private widget.Label jLabelPetugas2;
+    private widget.TextBox KdPetugas2;
+    private widget.TextBox NmPetugas2;
+    private widget.Button btnPetugas2;
+    
+    private widget.Label jLabelPetugas3;
+    private widget.TextBox KdPetugas3;
+    private widget.TextBox NmPetugas3;
+    private widget.Button btnPetugas3;
+    
     private void tampil() {
         Valid.tabelKosong(tabMode);   
          if(R1.isSelected()==false){
@@ -11524,7 +11768,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli,\n" +
                     "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,reg_periksa.stts,reg_periksa.kd_pj,reg_periksa.status_bayar, \n" +
                     "if(ISNULL(fp.nokartu),'Belum','Sudah') AS fingerprint, if(ISNULL(side_db.readmisi_igd.no_rawat),'No','Yes') AS readmisi,\n" +
-                    "if(ISNULL(penjab_cara_bayar2.png_jawab),'',CONCAT(' - ', penjab_cara_bayar2.png_jawab)) AS cara_bayar2,\n" +
+                    "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_cara_bayar2.png_jawab = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2,\n" +
                     "if(ISNULL(penjab_reg.no_kartu),'',CONCAT(' - ', penjab_reg.no_kartu)) AS no_kartu2, \n" +
                     "IFNULL(penjab_reg.kd_pj, '') AS kd_pj2\n" +
                     "from reg_periksa inner join dokter inner join pasien inner join poliklinik\n" +
@@ -11969,6 +12213,13 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                CmbMenit.setEnabled(true);
                CmbDetik.setEnabled(true);
            }
+        }
+        String isDokter = Sequel.cariIsi("select 1 from dokter where kd_dokter = ?", akses.getkode());
+        
+        if(isDokter.length() >= 1){
+            BtnSetDisplay.setVisible(false);
+        }else{
+            BtnSetDisplay.setVisible(true);
         }
     }
     
@@ -12495,4 +12746,48 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         
         return getIPAntrian;
     }
+    
+    private void BtnSetDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
+        String isDokter = Sequel.cariIsi("select 1 from dokter where kd_dokter = ?", akses.getkode());
+        
+        if(isDokter.length() == 0){
+             KdPetugas1.setText(akses.getkode());
+             Sequel.cariIsi("select petugas.nama from petugas where petugas.nip = ?", NmPetugas1, akses.getkode());
+        }
+         WindowSetDisplay.setLocationRelativeTo(internalFrame1);
+         WindowSetDisplay.setVisible(true);
+    }//GEN-LAST:event_BtnKeluarActionPerformed
+
+    private void BtnSetDisplayKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnKeluarKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
+            BtnSetDisplayActionPerformed(null);
+        } else {
+            Valid.pindah(evt, BtnPrint, TCari);
+        }
+    }//GEN-LAST:event_BtnKeluarKeyPressed
+    
+    private void BtnSimpanSetDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanGabungActionPerformed
+        antriPoli.kirimAntrianPerawatIGD(KdPetugas1.getText(), NmPetugas1.getText(), KdPetugas2.getText(), NmPetugas2.getText(), KdPetugas3.getText(), NmPetugas3.getText());
+    }//GEN-LAST:event_BtnSimpanGabungActionPerformed
+    
+    private void BtnCloseSetDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCloseGabungActionPerformed
+        WindowSetDisplay.dispose();
+    }//GEN-LAST:event_BtnCloseGabungActionPerformed
+    
+    private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {    
+        petugas.emptTeks();
+        petugas.isCek();
+        petugas.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        petugas.setLocationRelativeTo(internalFrame1);
+        petugas.setVisible(true);
+    }    
+    
+    private void BtnClearSetDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnClearSetDisplayActionPerformed
+        KdPetugas1.setText("");
+        NmPetugas1.setText("");
+        KdPetugas2.setText("");
+        NmPetugas2.setText("");
+        KdPetugas3.setText("");
+        NmPetugas3.setText("");
+    }//GEN-LAST:event_BtnClearSetDisplayActionPerformed
 }

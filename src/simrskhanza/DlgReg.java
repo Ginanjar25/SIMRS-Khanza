@@ -15980,6 +15980,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Label jLabelNoKaBayar2;
     private widget.TextBox NoKa2;
     private widget.TextBox kdpnj2;
+    private widget.RadioButton R2;
+    private widget.Label cob;
     
     private void tampil() {
         Valid.tabelKosong(tabMode);
@@ -15991,41 +15993,41 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         
         try {
             if(CrPoli.getText().trim().equals("")&&CrDokter.getText().equals("")&&TCari.equals("")&&R1.isSelected()==false){
-                ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,\n" +
-                    "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli,\n" +
-                    "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,reg_periksa.status_poli, \n" +
-                    "reg_periksa.kd_poli,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(bse.no_sep),'VCL','BRD') AS skdp, CASE WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '10' THEN 'WEB' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '01' THEN 'JKN' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '11' THEN 'ONSITE' ELSE 'Unknown' END AS asal, IF(ISNULL(rmb.`status`),IF(ISNULL(regw.`status`),IF(reg_periksa.stts != 'Batal','-','Batal'),regw.`status`),rmb.`status`) AS jknstts, if(ISNULL(fr.nokartu),\"Belum\",\"Sudah\") AS fingerprint,\n" +
-                    "if(ISNULL(skdp.no_surat),'Belum','Sudah') AS terbit_skdp, \n" +
-                    "if(ISNULL(penjab_cara_bayar2.png_jawab),'',CONCAT(' - ', penjab_cara_bayar2.png_jawab)) AS cara_bayar2, \n" +
-                    "if(ISNULL(penjab_reg.no_kartu),'',CONCAT(' - ', penjab_reg.no_kartu)) AS no_kartu2, \n" +
-                    "IFNULL(penjab_reg.kd_pj, '') AS kd_pj2\n" +
-                    "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis \n" +
-                    "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli\n" +
-                    "LEFT JOIN referensi_mobilejkn_bpjs rmb ON rmb.no_rawat = reg_periksa.no_rawat LEFT JOIN side_db.reg_periksa_website regw ON regw.no_rawat = reg_periksa.no_rawat \n" +
-                    "LEFT JOIN bridging_sep bse ON bse.no_rawat = reg_periksa.no_rawat \n" +
-                    "LEFT JOIN side_db.fingerprint_bpjs fr ON fr.nokartu = pasien.no_peserta AND fr.tanggal = reg_periksa.tgl_registrasi \n" +
-                    "LEFT JOIN bridging_surat_kontrol_bpjs skdp on skdp.no_sep = bse.no_sep\n" +
-                    "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj\n" +
-                    "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
+                ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg, " +
+                    "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli, " +
+                    "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,reg_periksa.status_poli, " +
+                    "reg_periksa.kd_poli,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(bse.no_sep),'VCL','BRD') AS skdp, CASE WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '10' THEN 'WEB' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '01' THEN 'JKN' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '11' THEN 'ONSITE' ELSE 'Unknown' END AS asal, IF(ISNULL(rmb.`status`),IF(ISNULL(regw.`status`),IF(reg_periksa.stts != 'Batal','-','Batal'),regw.`status`),rmb.`status`) AS jknstts, if(ISNULL(fr.nokartu),\"Belum\",\"Sudah\") AS fingerprint, " +
+                    "if(ISNULL(skdp.no_surat),'Belum','Sudah') AS terbit_skdp, " +
+                    "CASE WHEN penjab_reg.kd_pj IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2, " +
+                    "if(ISNULL(penjab_reg.no_kartu),'',CONCAT(' - ', penjab_reg.no_kartu)) AS no_kartu2, " +
+                    "IFNULL(penjab_reg.kd_pj, '') AS kd_pj2 " +
+                    "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
+                    "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli " +
+                    "LEFT JOIN referensi_mobilejkn_bpjs rmb ON rmb.no_rawat = reg_periksa.no_rawat LEFT JOIN side_db.reg_periksa_website regw ON regw.no_rawat = reg_periksa.no_rawat " +
+                    "LEFT JOIN bridging_sep bse ON bse.no_rawat = reg_periksa.no_rawat " +
+                    "LEFT JOIN side_db.fingerprint_bpjs fr ON fr.nokartu = pasien.no_peserta AND fr.tanggal = reg_periksa.tgl_registrasi " +
+                    "LEFT JOIN bridging_surat_kontrol_bpjs skdp on skdp.no_sep = bse.no_sep " +
+                    "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj " +
+                    "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat " +
                     "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj " +
                     "where poliklinik.kd_poli<>'IGDK' and reg_periksa.tgl_registrasi between ? and ? "+terbitsep+stts+" order by "+order); 
             }else{
-                ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,\n" +
-                    "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli,\n" +
-                    "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,reg_periksa.status_poli, \n" +
-                    "reg_periksa.kd_poli,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(bse.no_sep),'VCL','BRD') AS skdp, CASE WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '10' THEN 'WEB' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '01' THEN 'JKN' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '11' THEN 'ONSITE' ELSE 'Unknown' END AS asal, IF(ISNULL(rmb.`status`),IF(ISNULL(regw.`status`),IF(reg_periksa.stts != 'Batal','-','Batal'),regw.`status`),rmb.`status`) AS jknstts, if(ISNULL(fr.nokartu),\"Belum\",\"Sudah\") AS fingerprint,\n" +
-                    "if(ISNULL(skdp.no_surat),'Belum','Sudah') AS terbit_skdp, \n" +
-                    "if(ISNULL(penjab_cara_bayar2.png_jawab),'',CONCAT(' - ', penjab_cara_bayar2.png_jawab)) AS cara_bayar2, \n" +
-                    "if(ISNULL(penjab_reg.no_kartu),'',CONCAT(' - ', penjab_reg.no_kartu)) AS no_kartu2, \n" +
-                    "IFNULL(penjab_reg.kd_pj, '') AS kd_pj2\n" +
-                    "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis \n" +
-                    "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli\n" +
-                    "LEFT JOIN referensi_mobilejkn_bpjs rmb ON rmb.no_rawat = reg_periksa.no_rawat LEFT JOIN side_db.reg_periksa_website regw ON regw.no_rawat = reg_periksa.no_rawat \n" +
-                    "LEFT JOIN bridging_sep bse ON bse.no_rawat = reg_periksa.no_rawat \n" +
-                    "LEFT JOIN side_db.fingerprint_bpjs fr ON fr.nokartu = pasien.no_peserta AND fr.tanggal = reg_periksa.tgl_registrasi \n" +
-                    "LEFT JOIN bridging_surat_kontrol_bpjs skdp on skdp.no_sep = bse.no_sep\n" +
-                    "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj\n" +
-                    "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
+                ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg, " +
+                    "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli, " +
+                    "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,reg_periksa.status_poli, " +
+                    "reg_periksa.kd_poli,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(bse.no_sep),'VCL','BRD') AS skdp, CASE WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '10' THEN 'WEB' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '01' THEN 'JKN' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '11' THEN 'ONSITE' ELSE 'Unknown' END AS asal, IF(ISNULL(rmb.`status`),IF(ISNULL(regw.`status`),IF(reg_periksa.stts != 'Batal','-','Batal'),regw.`status`),rmb.`status`) AS jknstts, if(ISNULL(fr.nokartu),\"Belum\",\"Sudah\") AS fingerprint, " +
+                    "if(ISNULL(skdp.no_surat),'Belum','Sudah') AS terbit_skdp, " +
+                    "CASE WHEN penjab_reg.kd_pj IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2, " +
+                    "if(ISNULL(penjab_reg.no_kartu),'',CONCAT(' - ', penjab_reg.no_kartu)) AS no_kartu2, " +
+                    "IFNULL(penjab_reg.kd_pj, '') AS kd_pj2 " +
+                    "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
+                    "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli " +
+                    "LEFT JOIN referensi_mobilejkn_bpjs rmb ON rmb.no_rawat = reg_periksa.no_rawat LEFT JOIN side_db.reg_periksa_website regw ON regw.no_rawat = reg_periksa.no_rawat " +
+                    "LEFT JOIN bridging_sep bse ON bse.no_rawat = reg_periksa.no_rawat " +
+                    "LEFT JOIN side_db.fingerprint_bpjs fr ON fr.nokartu = pasien.no_peserta AND fr.tanggal = reg_periksa.tgl_registrasi " +
+                    "LEFT JOIN bridging_surat_kontrol_bpjs skdp on skdp.no_sep = bse.no_sep " +
+                    "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj " +
+                    "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat " +
                     "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj " +
                     "where poliklinik.kd_poli<>'IGDK' and poliklinik.nm_poli like ? and  dokter.nm_dokter like ? and reg_periksa.tgl_registrasi between ? and ? and  "+
                     "(reg_periksa.no_reg like ? or reg_periksa.no_rawat like ? or reg_periksa.tgl_registrasi like ? or reg_periksa.kd_dokter like ? or "+
@@ -16330,9 +16332,6 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     NoKa.setText(rs.getString("no_peserta"));
                     JK.setText(rs.getString("jk"));
                     NoTelp.setText(rs.getString("no_tlp"));
-                    kdpnj2.setText(rs.getString("kd_pj2"));
-                    nmpnj2.setText(rs.getString("cara_bayar2"));
-                    NoKa2.setText(rs.getString("no_kartu2"));
                     umur="0";
                     sttsumur="Th";
                     if(rs.getInt("tahun")>0){
@@ -16347,6 +16346,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                             sttsumur="Hr";
                         }
                     }
+                    getPenjab2();
                     
                     TPasien.setText(rs.getString("nm_pasien")+" ("+umur+" "+sttsumur+")");
                     switch (rs.getString("daftar")) {
@@ -17467,6 +17467,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         btnPenjab2.setMnemonic('2');
         btnPenjab2.setToolTipText("ALt+2");
         btnPenjab2.setName("btnPenjab"); // NOI18N
+        btnPenjab2.setEnabled(false);
         btnPenjab2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                btnPenjab2ActionPerformed(evt);
@@ -17484,6 +17485,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         NoKa2 = new widget.TextBox();
         NoKa2.setHighlighter(null);
         NoKa2.setName("NoKa2"); // NOI18N
+        NoKa2.setEnabled(false);
         NoKa2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
              //   NoKaKeyPressed(evt);
@@ -17495,11 +17497,29 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         kdpnj2 = new widget.TextBox();
         kdpnj2.setHighlighter(null);
         kdpnj2.setName("kdpnj2"); // NOI18N
+        kdpnj2.setEnabled(false);
         kdpnj2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
              //   NoKaKeyPressed(evt);
             }
         });
+        
+        
+        R2 = new widget.RadioButton();
+        R2.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.pink));
+        R2.setSelected(false);
+        R2.setText("COB");
+        R2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        R2.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        R2.setName("R2"); // NOI18N
+        R2.setPreferredSize(new java.awt.Dimension(95, 23));
+        R2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                R2MouseClicked(evt);
+            }
+        });
+        FormInput.add(R2);
+        R2.setBounds(852, 132, 95, 23);
         
         btnBookingKuota = new widget.Button();
 
@@ -17599,5 +17619,49 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }
 
         Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(reg_periksa.no_rawat,6),signed)),0) from reg_periksa where reg_periksa.tgl_registrasi='" + tanggalPeriksa + "' ", tanggalPeriksa.replaceAll("-", "/") + "/", 6, TNoRw);
+    }
+    
+    private void R2MouseClicked(java.awt.event.MouseEvent evt) {
+        getPenjab2();
+    }
+    
+    private void getPenjab2() {
+        if (R2.isSelected() == false) {
+            btnPenjab2.setEnabled(false);
+            NoKa2.setEnabled(false);
+            kdpnj2.setEnabled(false);
+            kdpnj2.setText("");
+            nmpnj2.setText("");
+            NoKa2.setText("");
+        } else {
+            String penjab2 = Sequel.cariIsi("SELECT CONCAT(penjab_pasien2.kd_pj, '-', penjab.png_jawab,'-', penjab_pasien2.no_kartu) FROM pasien\n"
+                    + "LEFT JOIN ( SELECT *  FROM penjab_pasien  WHERE `order` != 1 ) \n"
+                    + "AS penjab_pasien2 ON penjab_pasien2.no_rm = pasien.no_rkm_medis\n"
+                    + "LEFT JOIN penjab on penjab_pasien2.kd_pj = penjab.kd_pj\n"
+                    + "WHERE pasien.no_rkm_medis=?", TNoRM.getText());
+
+            btnPenjab2.setEnabled(true);
+            NoKa2.setEnabled(true);
+            kdpnj2.setEnabled(true);
+
+            // Tambahkan pengecekan jika `penjab2` null atau kosong
+            if (penjab2 != null && !penjab2.trim().isEmpty()) {
+                String[] parts = penjab2.split("-", 3);
+
+                // Pastikan array memiliki cukup elemen sebelum mengaksesnya
+                String kode = parts.length > 0 ? parts[0] : "";
+                String nama_penjab = parts.length > 1 ? parts[1] : "";
+                String no_kartu = parts.length > 2 ? parts[2] : "";
+
+                kdpnj2.setText(kode);
+                nmpnj2.setText(nama_penjab);
+                NoKa2.setText(no_kartu);
+            } else {
+                // Jika data tidak ditemukan, atur nilai default kosong
+                kdpnj2.setText("");
+                nmpnj2.setText("");
+                NoKa2.setText("");
+            }
+        }
     }
 }

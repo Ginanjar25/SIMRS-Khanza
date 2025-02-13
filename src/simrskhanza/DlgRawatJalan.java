@@ -10578,10 +10578,6 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     }
     
     public void setNoRm(String norwt,Date tgl1,Date tgl2) {
-        TCaraBayar.setText(Sequel.cariIsi("SELECT CONCAT(penjab.png_jawab, ' ',COALESCE(bridging_sep.klsrawat, '')) AS cara_bayar FROM reg_periksa " +
-        "INNER JOIN penjab ON penjab.kd_pj = reg_periksa.kd_pj " +
-        "LEFT JOIN bridging_sep on bridging_sep.no_rawat = reg_periksa.no_rawat " +
-        "WHERE reg_periksa.no_rawat = ?", norwt) + Sequel.cariIsi("SELECT CONCAT(' - ', bpjs_prb.prb) as prb FROM bpjs_prb INNER JOIN bridging_sep ON bridging_sep.no_sep = bpjs_prb.no_sep WHERE bridging_sep.no_rawat = ? and bpjs_prb.prb like '%Potensi%'", norwt));
         TNoRw.setText(norwt);
         TCari.setText("");
         DTPCari1.setDate(tgl1);
@@ -10607,6 +10603,16 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         ChkJln.setSelected(true);
         SetPj(Sequel.cariIsi("select kd_pj from reg_periksa where no_rawat = ?", norwt));
         SetPoli(Sequel.cariIsi("select kd_poli from reg_periksa where no_rawat = ?", norwt));
+        String cara_bayar1 = Sequel.cariIsi("SELECT penjab.png_jawab FROM reg_periksa inner join penjab on penjab.kd_pj = reg_periksa.kd_pj where reg_periksa.no_rawat = ?", norwt);
+        String cara_bayar2 = Sequel.cariIsi("SELECT CASE WHEN penjab_reg.kd_pj IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab.png_jawab) END AS cara_bayar2 FROM reg_periksa\n" +
+        "LEFT JOIN penjab_reg on penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
+        "LEFT JOIN penjab on penjab.kd_pj = penjab_reg.kd_pj\n" +
+        "WHERE reg_periksa.no_rawat=?\n" +
+        "AND penjab_reg.`order` != '1'", norwt);
+        String kelas = Sequel.cariIsi("SELECT COALESCE(bridging_sep.klsrawat, '') AS kelas FROM bridging_sep where bridging_sep.no_rawat = ? ", norwt);
+        String PRB = Sequel.cariIsi("SELECT CONCAT(' - ', bpjs_prb.prb) as prb FROM bpjs_prb INNER JOIN bridging_sep ON bridging_sep.no_sep = bpjs_prb.no_sep WHERE bridging_sep.no_rawat = ? and bpjs_prb.prb like '%Potensi%'", norwt);
+        String result = cara_bayar1 + (cara_bayar2.contains("BPJ") ? cara_bayar2 +" "+ kelas + PRB : " "+ kelas +PRB + cara_bayar2);
+        TCaraBayar.setText(result);
     }
     
     private void isForm(){

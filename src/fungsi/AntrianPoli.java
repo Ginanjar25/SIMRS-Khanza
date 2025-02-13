@@ -49,7 +49,8 @@ public void kirimAntrean(String kd_poli, String kd_dokter) {
         // Query to fetch doctor and schedule information
         ps = koneksi.prepareStatement(
             "SELECT d.kd_dokter, d.nm_dokter, p.nm_poli, " +
-            "concat(j.jam_mulai, ' - ', j.jam_selesai) AS jam_dokter, DAYNAME(NOW()) AS hari, j.hari_kerja " +
+            "CONCAT(TIME_FORMAT(j.jam_mulai, '%H:%i'), ' - ',TIME_FORMAT(j.jam_selesai, '%H:%i')) AS jam_dokter, " +
+            "DAYNAME(NOW()) AS hari, j.hari_kerja " +
             "FROM dokter d " +
             "INNER JOIN jadwal j ON j.kd_dokter = d.kd_dokter " +
             "INNER JOIN poliklinik p ON p.kd_poli = j.kd_poli " +
@@ -117,7 +118,7 @@ public void kirimAntrean(String kd_poli, String kd_dokter) {
         jsonBody.put("waitingList", waitingList);
 
         String getIP = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", akses.getalamatip());
-        URL url = new URL(link + "/" + getIP);
+        URL url = new URL(link + "/poli/" + getIP);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
@@ -148,7 +149,8 @@ public void kirimAntrianAwal(String kd_poli, String kd_dokter) {
         // Query to fetch doctor and schedule information
         ps = koneksi.prepareStatement(
             "SELECT d.kd_dokter, d.nm_dokter, p.nm_poli, " +
-            "concat(j.jam_mulai, ' - ', j.jam_selesai) AS jam_dokter, DAYNAME(NOW()) AS hari, j.hari_kerja " +
+            "CONCAT (TIME_FORMAT(j.jam_mulai, '%H:%i'), ' - ',TIME_FORMAT(j.jam_selesai, '%H:%i')) AS jam_dokter, " +
+            "DAYNAME(NOW()) AS hari, j.hari_kerja " +
             "FROM dokter d " +
             "INNER JOIN jadwal j ON j.kd_dokter = d.kd_dokter " +
             "INNER JOIN poliklinik p ON p.kd_poli = j.kd_poli " +
@@ -216,7 +218,7 @@ public void kirimAntrianAwal(String kd_poli, String kd_dokter) {
         jsonBody.put("waitingList", waitingList);
 
         String getIP = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", akses.getalamatip());
-        URL url = new URL(link + "/" + getIP);
+        URL url = new URL(link + "/poli/" + getIP);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
@@ -240,114 +242,8 @@ public void kirimAntrianAwal(String kd_poli, String kd_dokter) {
     }
 }
 
-public void kirimAntreanIGD(String kd_poli, String kd_dokter) {
-    try {
-        JSONObject jsonBody = new JSONObject();
-        String jamDokter = "";
-
-        // Query to fetch doctor and schedule information
-        ps = koneksi.prepareStatement(
-            "SELECT d.kd_dokter, d.nm_dokter, p.nm_poli, CURRENT_TIME() AS JamSekarang\n" +
-            "FROM dokter d \n" +
-            "LEFT JOIN jadwal j ON j.kd_dokter = d.kd_dokter \n" +
-            "INNER JOIN poliklinik p ON p.kd_poli = j.kd_poli \n" +
-            "WHERE j.kd_dokter = ? AND j.kd_poli = ? LIMIT 1"
-        );
-        ps.setString(1, kd_dokter);
-        ps.setString(2, kd_poli);
-        rs = ps.executeQuery();
-
-        if (rs.next()) {
-            String jamNowStr = rs.getString("JamSekarang"); // Mendapatkan waktu sebagai string
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-            LocalTime jamNow = LocalTime.parse(jamNowStr, timeFormatter); // Konversi ke LocalTime
-
-            // Definisikan rentang waktu
-            LocalTime pagi = LocalTime.parse("07:00:00", timeFormatter);
-            LocalTime siang = LocalTime.parse("14:00:00", timeFormatter);
-            LocalTime malam = LocalTime.parse("21:00:00", timeFormatter);
-
-            if (jamNow.isAfter(pagi) && jamNow.isBefore(siang)) {
-                jamDokter = "07:00:00 - 14:00:00";
-            } else if (jamNow.isAfter(siang) && jamNow.isBefore(malam)) {
-                jamDokter = "14:00:00 - 21:00:00";
-            } else if (jamNow.isAfter(malam) && jamNow.isBefore(pagi)) {
-                jamDokter = "21:00:00 - 07:00:00";
-            }
-            jsonBody.put("kode_dokter", rs.getString("kd_dokter"));
-            jsonBody.put("nama_dokter", rs.getString("nm_dokter"));
-            jsonBody.put("jam_dokter", jamDokter);
-            jsonBody.put("nama_poli", rs.getString("nm_poli"));
-        }
-
-        JSONArray queueNumber = new JSONArray();
-        JSONArray waitingList = new JSONArray();
-        ps = koneksi.prepareStatement(
-            "SELECT ap.kd_dokter, ap.kd_poli, ap.status, ap.no_rawat, ap.no_antrian, " +
-            "DATE(NOW()) AS tanggal, CONCAT(ap.poli_bpjs, ' - ', ap.no_antrian) AS no_reg, " +
-            "ap.created_at, ap.updated_at, rp.stts " +
-            "FROM antripoli ap INNER JOIN reg_periksa rp ON rp.no_rawat = ap.no_rawat " +
-            "WHERE ap.kd_dokter = ? " +
-            "AND ap.kd_poli = ? AND ap.status = '0' " +
-            "AND DATE(ap.created_at) = DATE(NOW()) " +
-            "AND rp.stts != 'Sudah' " +
-            "ORDER BY ap.no_antrian ASC LIMIT 4;"
-        );
-        ps.setString(1, kd_dokter);
-        ps.setString(2, kd_poli);
-        rs = ps.executeQuery();
-
-        int count = 0;
-        while (rs.next()) {
-            JSONObject antrean = new JSONObject();
-            antrean.put("no_antrean", rs.getString("no_reg"));
-            antrean.put("no_rawat", rs.getString("no_rawat"));
-            if (count == 0) {
-                queueNumber.put(antrean);
-            } else {
-                waitingList.put(antrean);
-            }
-            count++;
-        }
-
-        // Fill waitingList with "000" placeholders until it has 6 items
-        while (waitingList.length() < 3) {
-            JSONObject emptyAntrean = new JSONObject();
-            emptyAntrean.put("no_antrean", "000");
-            emptyAntrean.put("no_rawat", "000");
-            waitingList.put(emptyAntrean);
-        }
-
-        jsonBody.put("queueNumber", queueNumber);
-        jsonBody.put("waitingList", waitingList);
-
-        String getIP = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", akses.getalamatip());
-        URL url = new URL(link + "/" + getIP);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setDoOutput(true);
-
-        String jsonInputString = jsonBody.toString();
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = jsonInputString.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
-        connection.getResponseCode();
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        try {
-            if (rs != null) rs.close();
-            if (ps != null) ps.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-}
-
-public void kirimAntrianAwalIGD(String kd_poli, String kd_dokter) {
-     String jamDokter = "";
+public void kirimAntrianIGD(String kd_poli, String kd_dokter) {
+    String jamDokter = "";
     try {
         JSONObject jsonBody = new JSONObject();
         // Query to fetch doctor and schedule information
@@ -373,11 +269,11 @@ public void kirimAntrianAwalIGD(String kd_poli, String kd_dokter) {
             LocalTime malam = LocalTime.parse("21:00:00", timeFormatter);
 
             if (jamNow.isAfter(pagi) && jamNow.isBefore(siang)) {
-                jamDokter = "07:00:00 - 14:00:00";
+                jamDokter = "07:00 - 14:00";
             } else if (jamNow.isAfter(siang) && jamNow.isBefore(malam)) {
-                jamDokter = "14:00:00 - 21:00:00";
+                jamDokter = "14:00 - 21:00";
             } else if (jamNow.isAfter(malam) && jamNow.isBefore(pagi)) {
-                jamDokter = "21:00:00 - 07:00:00";
+                jamDokter = "21:00 - 07:00";
             }
             jsonBody.put("kode_dokter", rs.getString("kd_dokter"));
             jsonBody.put("nama_dokter", rs.getString("nm_dokter"));
@@ -385,49 +281,100 @@ public void kirimAntrianAwalIGD(String kd_poli, String kd_dokter) {
             jsonBody.put("nama_poli", rs.getString("nm_poli"));
         }
 
-        JSONArray queueNumber = new JSONArray();
-        JSONArray waitingList = new JSONArray();
         ps = koneksi.prepareStatement(
-            "SELECT ap.kd_dokter, ap.kd_poli, ap.status, ap.no_rawat, ap.no_antrian, " +
-            "DATE(NOW()) AS tanggal, CONCAT(ap.poli_bpjs, ' - ', ap.no_antrian) AS no_reg, " +
-            "ap.created_at, ap.updated_at, rp.stts " +
-            "FROM antripoli ap INNER JOIN reg_periksa rp ON rp.no_rawat = ap.no_rawat " +
-            "WHERE ap.kd_dokter = ? " +
-            "AND ap.kd_poli = ? AND ap.status = '0' " +
-            "AND DATE(ap.created_at) = DATE(NOW()) " +
-            "AND rp.stts != 'Sudah' " +
-            "ORDER BY ap.no_antrian ASC LIMIT 4;"
+                "SELECT \n"
+                + " SUM(CASE WHEN data_triase_igdsekunder.plan = 'Zona Hijau' THEN 1 ELSE 0 END) AS hijau,\n"
+                + " SUM(CASE WHEN data_triase_igdsekunder.plan = 'Zona Kuning' THEN 1 ELSE 0 END) AS kuning,\n"
+                + " SUM(CASE WHEN data_triase_igdprimer.plan IN ('Ruang Kritis', 'Ruang Resusitasi') THEN 1 ELSE 0 END) AS merah\n"
+                + "FROM reg_periksa\n"
+                + "LEFT JOIN data_triase_igdsekunder \n"
+                + "ON data_triase_igdsekunder.no_rawat = reg_periksa.no_rawat\n"
+                + "LEFT JOIN data_triase_igdprimer \n"
+                + "ON data_triase_igdprimer.no_rawat = reg_periksa.no_rawat\n"
+                + "WHERE reg_periksa.kd_poli = 'IGDK' \n"
+                + "AND reg_periksa.stts = 'Belum' \n"
+                + "AND reg_periksa.tgl_registrasi BETWEEN CURDATE() - INTERVAL 1 DAY AND CURDATE();"
         );
-        ps.setString(1, kd_dokter);
-        ps.setString(2, kd_poli);
         rs = ps.executeQuery();
-
-        JSONObject antrean1 = new JSONObject();
-        antrean1.put("no_antrean", "000");
-        antrean1.put("no_rawat", "000");
-        queueNumber.put(antrean1);
-        int count = 0;
-        while (rs.next()) {
-            JSONObject antrean = new JSONObject();
-            antrean.put("no_antrean", rs.getString("no_reg"));
-            antrean.put("no_rawat", rs.getString("no_rawat"));
-            waitingList.put(antrean);
-            count++;
+        if (rs.next()) {
+            jsonBody.put("green_zone", rs.getString("hijau"));
+            jsonBody.put("yellow_zone", rs.getString("kuning"));
+            jsonBody.put("red_zone", rs.getString("merah"));
         }
-
-        // Fill waitingList with "000" placeholders until it has 6 items
-        while (waitingList.length() < 3) {
-            JSONObject emptyAntrean = new JSONObject();
-            emptyAntrean.put("no_antrean", "000");
-            emptyAntrean.put("no_rawat", "000");
-            waitingList.put(emptyAntrean);
+        
+        
+        JSONArray perawat = new JSONArray();
+        for (int i = 0; i < 3; i++) {
+            JSONObject emptyPerawat = new JSONObject();
+            emptyPerawat.put("nik", "");
+            emptyPerawat.put("nama", "");
+            perawat.put(emptyPerawat);
         }
+        jsonBody.put("perawat", perawat);
+        URL url = new URL(link + "/igd");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
 
-        jsonBody.put("queueNumber", queueNumber);
-        jsonBody.put("waitingList", waitingList);
+        String jsonInputString = jsonBody.toString();
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+        connection.getResponseCode();
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+}
 
-        String getIP = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", akses.getalamatip());
-        URL url = new URL(link + "/" + getIP);
+public void kirimAntrianPerawatIGD(String nik1, String nama1, String nik2, String nama2, String nik3, String nama3) {
+    try {
+        JSONObject jsonBody = new JSONObject();
+        ps = koneksi.prepareStatement(
+                "SELECT \n"
+                + " SUM(CASE WHEN data_triase_igdsekunder.plan = 'Zona Hijau' THEN 1 ELSE 0 END) AS hijau,\n"
+                + " SUM(CASE WHEN data_triase_igdsekunder.plan = 'Zona Kuning' THEN 1 ELSE 0 END) AS kuning,\n"
+                + " SUM(CASE WHEN data_triase_igdprimer.plan IN ('Ruang Kritis', 'Ruang Resusitasi') THEN 1 ELSE 0 END) AS merah\n"
+                + "FROM reg_periksa\n"
+                + "LEFT JOIN data_triase_igdsekunder \n"
+                + "ON data_triase_igdsekunder.no_rawat = reg_periksa.no_rawat\n"
+                + "LEFT JOIN data_triase_igdprimer \n"
+                + "ON data_triase_igdprimer.no_rawat = reg_periksa.no_rawat\n"
+                + "WHERE reg_periksa.kd_poli = 'IGDK' \n"
+                + "AND reg_periksa.stts = 'Belum' \n"
+                + "AND reg_periksa.tgl_registrasi BETWEEN CURDATE() - INTERVAL 1 DAY AND CURDATE();"
+        );
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            jsonBody.put("kode_dokter", "");
+            jsonBody.put("nama_dokter", "");
+            jsonBody.put("jam_dokter", "");
+            jsonBody.put("nama_poli", "IGD");
+            jsonBody.put("green_zone", rs.getString("hijau"));
+            jsonBody.put("yellow_zone", rs.getString("kuning"));
+            jsonBody.put("red_zone", rs.getString("merah"));
+        }
+        JSONArray perawat = new JSONArray();
+        String[] nikArray = {nik1, nik2, nik3};
+        String[] namaArray = {nama1, nama2, nama3};
+
+        for (int i = 0; i < 3; i++) {
+            JSONObject perawatObj = new JSONObject();
+            perawatObj.put("nik", nikArray[i]);
+            perawatObj.put("nama", namaArray[i]);
+            perawat.put(perawatObj);
+        }
+        jsonBody.put("perawat", perawat);
+
+        URL url = new URL(link + "/igd");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");

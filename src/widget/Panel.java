@@ -23,7 +23,8 @@ public class Panel extends JPanel {
     private static final long serialVersionUID = -1;
     private BufferedImage gradientImage;
     private final Color black = new Color(30,30,0);
-    private final Color warna = new Color(80,80,0);
+    private final Color warna = new Color(0, 102, 255);
+    private final Color warna2 = new Color(179, 209, 255);
 
     public Panel() {
         super();
@@ -76,7 +77,7 @@ public class Panel extends JPanel {
         Graphics2D g2 = (Graphics2D) gradientImage.getGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        GradientPaint paint = new GradientPaint(0, 0, black, 0, getHeight(), warna);
+        GradientPaint paint = new GradientPaint(0, 0, warna2, 0, getHeight(), warna);
 
         g2.setPaint(paint);
         g2.fillRect(0, 0, 1, getHeight());

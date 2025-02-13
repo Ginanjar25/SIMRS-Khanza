@@ -469,7 +469,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             }else if(i==19){
                 column.setPreferredWidth(180);
             }else if(i==20){
-                column.setPreferredWidth(100);
+                column.setPreferredWidth(120);
             }else if(i==21){
                 column.setPreferredWidth(140);
             }else if(i==22){
@@ -15001,7 +15001,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,poliklinik.nm_poli, " +
                 "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts,penjab.png_jawab,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur, " +
                 "reg_periksa.status_bayar,reg_periksa.status_poli,reg_periksa.kd_pj,reg_periksa.kd_poli,pasien.no_tlp, CONCAT(penjab.png_jawab, ' ',COALESCE(bridging_sep.klsrawat, '')) AS cara_bayar, " +
-                "if(ISNULL(skdp.no_surat),'Belum','Sudah') AS skdp, if(ISNULL(penjab_cara_bayar2.png_jawab),'',CONCAT('/', penjab_cara_bayar2.png_jawab)) AS cara_bayar2 " +
+                "if(ISNULL(skdp.no_surat),'Belum','Sudah') AS skdp, CASE WHEN penjab_reg.kd_pj IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 " +
                 "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
                 "LEFT JOIN bridging_sep ON bridging_sep.no_rawat = reg_periksa.no_rawat " +
                 "LEFT JOIN bridging_surat_kontrol_bpjs skdp on skdp.no_sep = bridging_sep.no_sep " +
