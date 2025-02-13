@@ -16627,14 +16627,15 @@ public class DlgKamarInap extends javax.swing.JDialog {
         } else {
             if (tbKamIn.getSelectedRow() > -1) {
                 if (!tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString().equals("")) {
-                    this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                    DlgCariTagihanOperasi form=new DlgCariTagihanOperasi(null,false);
-                    //form.emptTeks();      
-                    form.setPasien(norawat.getText());
-                    form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-                    form.setLocationRelativeTo(internalFrame1);
-                    form.setVisible(true);
-                    this.setCursor(Cursor.getDefaultCursor());
+                    if(!TPasien.getText().equals("")){
+                        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                        DlgLaporanOperasi dlgro=new DlgLaporanOperasi(null,false);
+                        dlgro.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                        dlgro.setLocationRelativeTo(internalFrame1);
+                        dlgro.setNoRm(norawat.getText(),TNoRM.getText()+", "+TPasien.getText(),"Ranap");  
+                        dlgro.setVisible(true);
+                        this.setCursor(Cursor.getDefaultCursor());
+                    }
                 }
             }
         }

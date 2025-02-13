@@ -133,6 +133,9 @@ public final class MasterCariTemplateLaporanOperasi extends javax.swing.JDialog 
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
             }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
         });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Master Template Laporan Operasi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
@@ -345,6 +348,10 @@ public final class MasterCariTemplateLaporanOperasi extends javax.swing.JDialog 
             }
         }
     }//GEN-LAST:event_tbKamarMouseClicked
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+       tampil();
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments

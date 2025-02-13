@@ -14204,13 +14204,15 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
             if (tbKasirRalan.getSelectedRow() > -1) {
                 if (!tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(), 0).toString().equals("")) {
                    this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                    DlgCariTagihanOperasi form=new DlgCariTagihanOperasi(null,false);
-                    //form.emptTeks();      
-                    form.setPasien(TNoRw.getText());
-                    form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-                    form.setLocationRelativeTo(internalFrame1);
-                    form.setVisible(true);
-                    this.setCursor(Cursor.getDefaultCursor());
+                    if(!TPasienCari.getText().equals("")){
+                        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                        DlgLaporanOperasi dlgro=new DlgLaporanOperasi(null,false);
+                        dlgro.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                        dlgro.setLocationRelativeTo(internalFrame1);
+                        dlgro.setNoRm(TNoRw.getText(),TNoRMCari.getText()+", "+TPasienCari.getText(),"Ralan");  
+                        dlgro.setVisible(true);
+                        this.setCursor(Cursor.getDefaultCursor());
+                    }
                 }
             }
         }
