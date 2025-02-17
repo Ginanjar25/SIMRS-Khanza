@@ -3595,7 +3595,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(jLabel13);
         jLabel13.setBounds(4, 102, 95, 23);
 
-        DTPLahir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-01-2025" }));
+        DTPLahir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "14-02-2025" }));
         DTPLahir.setDisplayFormat("dd-MM-yyyy");
         DTPLahir.setName("DTPLahir"); // NOI18N
         DTPLahir.setOpaque(false);
@@ -3732,7 +3732,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(TKtp);
         TKtp.setBounds(730, 170, 130, 23);
 
-        DTPDaftar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-01-2025" }));
+        DTPDaftar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "14-02-2025" }));
         DTPDaftar.setDisplayFormat("dd-MM-yyyy");
         DTPDaftar.setName("DTPDaftar"); // NOI18N
         DTPDaftar.setOpaque(false);
@@ -4723,6 +4723,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(jLabel46);
         jLabel46.setBounds(390, 80, 90, 23);
 
+        Kdpnj1.setEditable(false);
         Kdpnj1.setText("-");
         Kdpnj1.setHighlighter(null);
         Kdpnj1.setName("Kdpnj1"); // NOI18N
@@ -5594,11 +5595,17 @@ private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                 }else if(chkPolri.isSelected()==false){
                     Sequel.meghapus("pasien_polri","no_rkm_medis",TNo.getText());
                 }
-             
-                Sequel.mengedit2("penjab_pasien", "no_rm = ? and `order` = '2'", "kd_pj=?, no_kartu=?", 3, new String[]{
-                    Kdpnj1.getText(), TNoPeserta1.getText(), TNo.getText()
-                });
-
+                
+                if (Sequel.cariIsi("select no_rm from penjab_pasien where no_rm = ?", TNo.getText()).isEmpty() && !Kdpnj1.getText().equals("-")) {
+                    Sequel.menyimpan2("penjab_pasien", "?,?,?,?", "Data", 4, new String[]{
+                        TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
+                    });
+                } else {
+                    Sequel.mengedit2("penjab_pasien", "no_rm = ? and `order` = '2'", "kd_pj=?, no_kartu=?", 3, new String[]{
+                        Kdpnj1.getText(), TNoPeserta1.getText(), TNo.getText()
+                    });
+                }
+                
                 if(tbPasien.getSelectedRow()>-1){
                     tbPasien.setValueAt(TNo.getText(),tbPasien.getSelectedRow(), 1);
                     tbPasien.setValueAt(TNm.getText(),tbPasien.getSelectedRow(), 2);
@@ -9514,7 +9521,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                             + "perusahaan_pasien.kode_perusahaan,perusahaan_pasien.nama_perusahaan,pasien.bahasa_pasien,\n"
                             + "bahasa_pasien.nama_bahasa,pasien.suku_bangsa,suku_bangsa.nama_suku_bangsa,pasien.nip,pasien.email,\n"
                             + "cacat_fisik.nama_cacat,pasien.cacat_fisik,pasien.kd_pj,\n"
-                            + "penjab_cara_bayar2.png_jawab AS cara_bayar2, penjab_pasien2.no_kartu AS no_kartu2,penjab_pasien2.kd_pj as kd_pj2 \n"
+                            + "IFNULL(penjab_cara_bayar2.png_jawab, '-') AS cara_bayar2, IFNULL(penjab_pasien2.no_kartu, '-') AS no_kartu2,IFNULL(penjab_pasien2.kd_pj, '-') as kd_pj2 \n"
                             + "from pasien \n"
                             + "inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec \n"
                             + "inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab inner join perusahaan_pasien on perusahaan_pasien.kode_perusahaan=pasien.perusahaan_pasien \n"
@@ -9533,7 +9540,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                             + "perusahaan_pasien.kode_perusahaan,perusahaan_pasien.nama_perusahaan,pasien.bahasa_pasien,\n"
                             + "bahasa_pasien.nama_bahasa,pasien.suku_bangsa,suku_bangsa.nama_suku_bangsa,pasien.nip,pasien.email,\n"
                             + "cacat_fisik.nama_cacat,pasien.cacat_fisik,pasien.kd_pj,\n"
-                            + "penjab_cara_bayar2.png_jawab AS cara_bayar2, penjab_pasien2.no_kartu AS no_kartu2,penjab_pasien2.kd_pj as kd_pj2 \n"
+                            + "IFNULL(penjab_cara_bayar2.png_jawab, '-') AS cara_bayar2, IFNULL(penjab_pasien2.no_kartu, '-') AS no_kartu2,IFNULL(penjab_pasien2.kd_pj, '-') as kd_pj2 \n"
                             + "from pasien \n"
                             + "inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec \n"
                             + "inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab inner join perusahaan_pasien on perusahaan_pasien.kode_perusahaan=pasien.perusahaan_pasien \n"
@@ -9559,7 +9566,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                             + "perusahaan_pasien.kode_perusahaan,perusahaan_pasien.nama_perusahaan,pasien.bahasa_pasien,\n"
                             + "bahasa_pasien.nama_bahasa,pasien.suku_bangsa,suku_bangsa.nama_suku_bangsa,pasien.nip,pasien.email,\n"
                             + "cacat_fisik.nama_cacat,pasien.cacat_fisik,pasien.kd_pj,\n"
-                            + "penjab_cara_bayar2.png_jawab AS cara_bayar2, penjab_pasien2.no_kartu AS no_kartu2,penjab_pasien2.kd_pj as kd_pj2 \n"
+                            + "IFNULL(penjab_cara_bayar2.png_jawab, '-') AS cara_bayar2, IFNULL(penjab_pasien2.no_kartu, '-') AS no_kartu2,IFNULL(penjab_pasien2.kd_pj, '-') as kd_pj2 \n"
                             + "from pasien \n"
                             + "inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec \n"
                             + "inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab inner join perusahaan_pasien on perusahaan_pasien.kode_perusahaan=pasien.perusahaan_pasien \n"
@@ -9578,7 +9585,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                             + "perusahaan_pasien.kode_perusahaan,perusahaan_pasien.nama_perusahaan,pasien.bahasa_pasien,\n"
                             + "bahasa_pasien.nama_bahasa,pasien.suku_bangsa,suku_bangsa.nama_suku_bangsa,pasien.nip,pasien.email,\n"
                             + "cacat_fisik.nama_cacat,pasien.cacat_fisik,pasien.kd_pj,\n"
-                            + "penjab_cara_bayar2.png_jawab AS cara_bayar2, penjab_pasien2.no_kartu AS no_kartu2, penjab_pasien2.kd_pj as kd_pj2 \n"
+                           + "IFNULL(penjab_cara_bayar2.png_jawab, '-') AS cara_bayar2, IFNULL(penjab_pasien2.no_kartu, '-') AS no_kartu2,IFNULL(penjab_pasien2.kd_pj, '-') as kd_pj2 \n"
                             + "from pasien \n"
                             + "inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec \n"
                             + "inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab inner join perusahaan_pasien on perusahaan_pasien.kode_perusahaan=pasien.perusahaan_pasien \n"
@@ -10694,13 +10701,12 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                 BtnSatuanTNI.setEnabled(false);
                 BtnJabatanTNI.setEnabled(false);
                 BtnPangkatTNI.setEnabled(false);
-                
-                Valid.SetTgl(DTPLahir,tbPasien.getValueAt(tbPasien.getSelectedRow(),6).toString());
-                Valid.SetTgl(DTPDaftar,tbPasien.getValueAt(tbPasien.getSelectedRow(),13).toString()); 
-                panggilPhoto();
                 Kdpnj1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),47).toString());
                 nmpnj1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),45).toString());
                 TNoPeserta1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),46).toString());
+                Valid.SetTgl(DTPLahir,tbPasien.getValueAt(tbPasien.getSelectedRow(),6).toString());
+                Valid.SetTgl(DTPDaftar,tbPasien.getValueAt(tbPasien.getSelectedRow(),13).toString()); 
+                panggilPhoto();
             } catch (Exception ex) {
             }   
         }
