@@ -5252,23 +5252,45 @@ public final class DlgIGD extends javax.swing.JDialog {
         jLabelpj2.setBounds(426, 132, 90, 23);
         
         kdpnj1.setHighlighter(null);
+        kdpnj1.setEditable(false);
+        kdpnj1.setEnabled(false);
         kdpnj1.setName("kdpnj1"); // NOI18N
         kdpnj1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                kdpnj1KeyPressed(evt);
+//                kdpnj1KeyPressed(evt);
             }
         });
         FormInput.add(kdpnj1);
         kdpnj1.setBounds(520, 132, 70, 23);
 
         nmpnj1.setEditable(false);
+        nmpnj1.setEnabled(false);
         nmpnj1.setName("nmpnj1"); // NOI18N
         FormInput.add(nmpnj1);
-        nmpnj1.setBounds(592, 132, 259, 23);
+        nmpnj1.setBounds(592, 132, 120, 23);
+        
+        jLabelNoKaBayar2 = new widget.Label();
+        jLabelNoKaBayar2.setText("No. Ka2 :");
+        jLabelNoKaBayar2.setName("jLabelNoKaBayar2"); // NOI18N
+        FormInput.add(jLabelNoKaBayar2);
+        jLabelNoKaBayar2.setBounds(738, 132, 45, 23);
+        
+        NoKa2 = new widget.TextBox();
+        NoKa2.setHighlighter(null);
+        NoKa2.setName("NoKa2"); // NOI18N
+        NoKa2.setEnabled(false);
+        NoKa2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+             //   NoKaKeyPressed(evt);
+            }
+        });
+        FormInput.add(NoKa2);
+        NoKa2.setBounds(785, 132, 95, 23);
         
         
         btnPenjab2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         btnPenjab2.setMnemonic('2');
+        btnPenjab2.setEnabled(false);
         btnPenjab2.setToolTipText("ALt+2");
         btnPenjab2.setName("btnPenjab2"); // NOI18N
         btnPenjab2.addActionListener(new java.awt.event.ActionListener() {
@@ -5277,7 +5299,23 @@ public final class DlgIGD extends javax.swing.JDialog {
             }
         });
         FormInput.add(btnPenjab2);
-        btnPenjab2.setBounds(852, 132, 28, 23);
+        btnPenjab2.setBounds(710, 132, 28, 23);
+        
+        R2 = new widget.RadioButton();
+        R2.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.pink));
+        R2.setSelected(false);
+        R2.setText("COB");
+        R2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        R2.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        R2.setName("R2"); // NOI18N
+        R2.setPreferredSize(new java.awt.Dimension(95, 23));
+        R2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                R2MouseClicked(evt);
+            }
+        });
+        FormInput.add(R2);
+        R2.setBounds(890, 132, 95, 23);
         
         //AKHIR CARA BAYAR 2
 
@@ -11756,6 +11794,10 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.TextBox NmPetugas3;
     private widget.Button btnPetugas3;
     
+    private widget.RadioButton R2;
+    private widget.TextBox NoKa2;
+    private widget.Label jLabelNoKaBayar2;
+    
     private void tampil() {
         Valid.tabelKosong(tabMode);   
          if(R1.isSelected()==false){
@@ -11879,6 +11921,12 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             nmpnj1.setText(penjab2);
             kdpnj.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),19).toString());
             kdpnj1.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),23).toString());
+            if(penjab2.equals("")){
+                R2.setSelected(false);
+            }else{
+                R2.setSelected(true);
+            }
+            getPenjab2();
         }
     }
 
@@ -11996,8 +12044,6 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     kdpnj.setText(rs.getString("kd_pj"));
                     nmpnj.setText(rs.getString("png_jawab"));
                     TStatus.setText(rs.getString("daftar"));
-                    kdpnj1.setText(rs.getString("kd_pj2"));
-                    nmpnj1.setText(rs.getString("cara_bayar2"));
                     JK.setText("jk");
                     umur="0";
                     sttsumur="Th";
@@ -12603,11 +12649,16 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             TNoRw.getText(),TNoReg.getText(),KdDokter.getText(),TNoRM.getText(),"IGDK",TPngJwb.getText(),TAlmt.getText(),""+biaya,THbngn.getText(),
             TStatus.getText(),kdpnj.getText(),umur,sttsumur,TNoRw.getText()
             })==true){
-            
-                Sequel.mengedit2("penjab_reg", "no_rawat = ? and `order` = '2'", "kd_pj=?", 2, new String[]{
-                    kdpnj1.getText(), tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString()
-                });
-                
+                 
+               if (Sequel.cariIsi("select no_rawat from penjab_reg where no_rawat = ?", tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString()).isEmpty() && !kdpnj1.getText().equals("")) {
+                    Sequel.menyimpan2("penjab_reg", "?,?,?,?", "Data", 4, new String[]{
+                           TNoRw.getText(), kdpnj1.getText(), NoKa2.getText(), "2"
+                       });
+               } else {
+                   Sequel.mengedit2("penjab_reg", "no_rawat = ? and `order` = '2'", "kd_pj=?, no_kartu=?", 3, new String[]{
+                        kdpnj1.getText(), NoKa2.getText(), TNoRw.getText()
+                    });
+               }
                 tabMode.setValueAt(TNoReg.getText(),tbPetugas.getSelectedRow(),1);
                 tabMode.setValueAt(TNoRw.getText(),tbPetugas.getSelectedRow(),2);
 //                tabMode.setValueAt(Valid.SetTgl(DTPReg.getSelectedItem()+""),tbPetugas.getSelectedRow(),3);
@@ -12718,9 +12769,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 if(ChkTracker.isSelected()==true){
                     ctk();
                 }
-                 if (!kdpnj1.getText().equals("-") || !kdpnj1.getText().equals("BPJ")) {
+                 if (!kdpnj1.getText().equals("-") || !kdpnj1.getText().equals("")) {
                     Sequel.menyimpan2("penjab_reg", "?,?,?,?", "Data", 4, new String[]{
-                        TNoRw.getText(), kdpnj1.getText(), "", "2"
+                        TNoRw.getText(), kdpnj1.getText(), NoKa2.getText(), "2"
                     });
                 }
 //                tabMode.addRow(new Object[] {
@@ -12790,4 +12841,49 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         KdPetugas3.setText("");
         NmPetugas3.setText("");
     }//GEN-LAST:event_BtnClearSetDisplayActionPerformed
+    
+    private void R2MouseClicked(java.awt.event.MouseEvent evt) {
+        getPenjab2();
+    }
+    
+    private void getPenjab2() {
+        String penjab2 = Sequel.cariIsi("SELECT CONCAT(penjab_reg.kd_pj, '-', penjab.png_jawab,'-', penjab_reg.no_kartu) FROM reg_periksa\n"
+                + "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` != 1 ) \n"
+                + "AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n"
+                + "LEFT JOIN penjab on penjab_reg.kd_pj = penjab.kd_pj\n"
+                + "WHERE reg_periksa.no_rawat=?", TNoRw.getText());
+
+        if (R2.isSelected() == false) {
+            btnPenjab2.setEnabled(false);
+            NoKa2.setEnabled(false);
+            kdpnj1.setEnabled(false);
+            kdpnj1.setText("");
+            nmpnj1.setText("");
+            NoKa2.setText("");
+        } else {
+            btnPenjab2.setEnabled(true);
+            NoKa2.setEnabled(true);
+            kdpnj1.setEnabled(true);
+
+            // Tambahkan pengecekan jika `penjab2` null atau kosong
+            if (penjab2 != null && !penjab2.trim().isEmpty()) {
+                String[] parts = penjab2.split("-", 3);
+
+                // Pastikan array memiliki cukup elemen sebelum mengaksesnya
+                String kode = parts.length > 0 ? parts[0] : "";
+                String nama_penjab = parts.length > 1 ? parts[1] : "";
+                String no_kartu = parts.length > 2 ? parts[2] : "";
+
+                kdpnj1.setText(kode);
+                nmpnj1.setText(nama_penjab);
+                NoKa2.setText(no_kartu);
+            } else {
+                // Jika data tidak ditemukan, atur nilai default kosong
+                kdpnj1.setText("");
+                nmpnj1.setText("");
+                NoKa2.setText("");
+            }
+        }
+    }
+    
 }

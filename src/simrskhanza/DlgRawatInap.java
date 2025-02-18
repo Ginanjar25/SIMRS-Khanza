@@ -9668,19 +9668,23 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     public void setCaraBayar(String no_rawat) {
         String result = "";
         String cara_bayar1 = Sequel.cariIsi("SELECT penjab.png_jawab FROM reg_periksa inner join penjab on penjab.kd_pj = reg_periksa.kd_pj where reg_periksa.no_rawat = ?", no_rawat);
-        String cara_bayar2 = Sequel.cariIsi("SELECT CASE WHEN penjab_reg.kd_pj IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab.png_jawab) END AS cara_bayar2 FROM reg_periksa\n"
+        String cara_bayar2 = Sequel.cariIsi("SELECT CASE WHEN penjab.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab.png_jawab) END AS cara_bayar2 FROM reg_periksa\n"
                 + "LEFT JOIN penjab_reg on penjab_reg.no_rawat = reg_periksa.no_rawat\n"
                 + "LEFT JOIN penjab on penjab.kd_pj = penjab_reg.kd_pj\n"
                 + "WHERE reg_periksa.no_rawat=?\n"
                 + "AND penjab_reg.`order` != '1'", no_rawat);
         String kelas = Sequel.cariIsi("SELECT COALESCE(bridging_sep.klsrawat, '') AS kelas FROM bridging_sep where bridging_sep.no_rawat = ? ", no_rawat);
         String PRB = Sequel.cariIsi("SELECT CONCAT(' - ', bpjs_prb.prb) as prb FROM bpjs_prb INNER JOIN bridging_sep ON bridging_sep.no_sep = bpjs_prb.no_sep WHERE bridging_sep.no_rawat = ? and bpjs_prb.prb like '%Potensi%'", no_rawat);
-        if (cara_bayar1.contains("BPJS")) {
-            result = cara_bayar1 + kelas + PRB + cara_bayar2;
-        } else if (cara_bayar2.contains("BPJS")) {
-            result = cara_bayar1 + cara_bayar2 + " " + kelas + PRB;
+        if (cara_bayar2.isEmpty()) {
+            result = cara_bayar1 + " " + kelas + PRB;
         } else {
-            result = cara_bayar1 + (cara_bayar2.contains("BPJ") ? cara_bayar2 + " " + kelas + PRB : " " + kelas + PRB + cara_bayar2);
+            if (cara_bayar1.contains("BPJS")) {
+                result = cara_bayar1 + " " + kelas + PRB + cara_bayar2;
+            } else if (cara_bayar2.contains("BPJS")) {
+                result = cara_bayar1 + cara_bayar2 + " " + kelas + PRB;
+            } else {
+                result = cara_bayar1 + (cara_bayar2.contains("BPJS") ? cara_bayar2 + " " + kelas + PRB : " " + kelas + PRB + cara_bayar2);
+            }
         }
 //        result = cara_bayar1 + (cara_bayar2.contains("BPJ") ? cara_bayar2 +" "+ kelas + PRB : " "+ kelas +PRB + cara_bayar2);
         TCaraBayar.setText(result);
