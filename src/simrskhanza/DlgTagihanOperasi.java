@@ -2633,14 +2633,14 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             }else{
                 Map<String, String> reportMap = new HashMap<>();                
                 try{    
-                    psobat=koneksi.prepareStatement("SELECT * FROM laporan_operasi lo WHERE lo.no_rawat =?");
+                    psobat=koneksi.prepareStatement("SELECT * FROM laporan_operasi lo JOIN dokter dr ON dr.kd_dokter = lo.kd_dokter WHERE lo.no_rawat =?");
                     try{
                         psobat.setString(1,TNoRw.getText());
                         rs=psobat.executeQuery();
                         while(rs.next()){
                             //reportList.add(rs.getString("nm_perawatan"));
                             String kodePaket = rs.getString("tanggal").substring(0, 19);
-                            String namaPerawatan = rs.getString("tanggal").substring(0, 19)+" "+rs.getString("diagnosa_preop");
+                            String namaPerawatan = rs.getString("tanggal").substring(0, 19)+" "+rs.getString("nm_dokter");
                             reportMap.put(namaPerawatan, kodePaket);
                         }
                     }catch(SQLException e){
