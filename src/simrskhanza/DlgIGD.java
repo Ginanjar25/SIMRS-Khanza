@@ -5263,6 +5263,7 @@ public final class DlgIGD extends javax.swing.JDialog {
         FormInput.add(kdpnj1);
         kdpnj1.setBounds(520, 132, 70, 23);
 
+        nmpnj1.setHighlighter(null);
         nmpnj1.setEditable(false);
         nmpnj1.setEnabled(false);
         nmpnj1.setName("nmpnj1"); // NOI18N
@@ -12856,6 +12857,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         if (R2.isSelected() == false) {
             btnPenjab2.setEnabled(false);
             NoKa2.setEnabled(false);
+            nmpnj1.setEnabled(false);
             kdpnj1.setEnabled(false);
             kdpnj1.setText("");
             nmpnj1.setText("");
@@ -12863,6 +12865,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         } else {
             btnPenjab2.setEnabled(true);
             NoKa2.setEnabled(true);
+            nmpnj1.setEnabled(true);
             kdpnj1.setEnabled(true);
 
             // Tambahkan pengecekan jika `penjab2` null atau kosong
