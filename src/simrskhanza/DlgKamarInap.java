@@ -178,6 +178,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import permintaan.DlgPermintaanFotoBayi;
 import rekammedis.RMDataResumePerawatPasienRanap;
 
 /**
@@ -1310,6 +1311,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         cmbStatusBayar = new widget.ComboBox();
         ppResumePerawat = new javax.swing.JMenuItem();
         ppKelahiranBayi = new javax.swing.JMenuItem();
+        ppPermintaanFotoBayi = new javax.swing.JMenuItem();
         
         jLabelDiagnosa = new widget.Label();
         btnInputDiagnosa = new widget.Button();
@@ -2945,7 +2947,21 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 ppKelahiranBayiBtnActionPerformed(evt);
             }
         });
-        MnDataRM.add(ppKelahiranBayi);
+        
+        ppPermintaanFotoBayi.setBackground(new java.awt.Color(255, 255, 254));
+        ppPermintaanFotoBayi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppPermintaanFotoBayi.setForeground(new java.awt.Color(50, 50, 50));
+        ppPermintaanFotoBayi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppPermintaanFotoBayi.setText("Permintaan Foto Bayi");
+        ppPermintaanFotoBayi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppPermintaanFotoBayi.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppPermintaanFotoBayi.setName("[170,26]"); // NOI18N
+        ppPermintaanFotoBayi.setPreferredSize(new java.awt.Dimension(200, 26));
+        ppPermintaanFotoBayi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppPermintaanFotoBayiBtnActionPerformed(evt);
+            }
+        });
 
         jPopupMenu1.add(MnDataRM);
 
@@ -17879,6 +17895,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private widget.TextBox NoRwIbu;
     private widget.Tanggal DTPRawatGabung;
     private javax.swing.JMenuItem ppKelahiranBayi;
+    private javax.swing.JMenuItem ppPermintaanFotoBayi;
     
     private void tampil() {
         if(R1.isSelected()==true){
@@ -18439,6 +18456,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         MnPermintaanKonsultasiMedik.setEnabled(akses.getkonsultasi_medik());
         ppResumePerawat.setEnabled(akses.getsoap_perawatan());
         ppKelahiranBayi.setEnabled(akses.getkelahiran_bayi());
+        ppPermintaanFotoBayi.setEnabled(akses.getkelahiran_bayi());
         
         if(akses.getkode().equals("Admin Utama")){
             MnFilterDPJP.setEnabled(true);
@@ -18835,6 +18853,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
         MnObservasi.add(MnPenilaianUlangNyeri);
         MnObservasi.add(MnCatatanPersalinan);
         MnObservasi.add(MnCatatanKeseimbanganCairan);
+        MnObservasi.add(ppKelahiranBayi);
+        MnObservasi.add(ppPermintaanFotoBayi);
         
         MnPenilaianAwal.add(MnPenilaianAwalKeperawatanRanap);
         MnPenilaianAwal.add(MnPenilaianAwalKeperawatanKebidanan);
@@ -18875,4 +18895,56 @@ public class DlgKamarInap extends javax.swing.JDialog {
         
         MnPermintaan.add(MnPermintaanKonsultasiMedik);
     }    
+    
+    private void ppPermintaanFotoBayiBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppRiwayatBtnPrintActionPerformed
+        if (tabMode.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Maaf, data pasien sudah habis...!!!!");
+            TCari.requestFocus();
+        } else if (tbKamIn.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu data kamar inap pada table...!!!");
+            TCari.requestFocus();
+        } else {
+            if (tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString().equals("")) {
+                try {
+                    psanak = koneksi.prepareStatement(
+                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");
+                    try {
+                        psanak.setString(1, tbKamIn.getValueAt(tbKamIn.getSelectedRow() - 1, 0).toString());
+                        rs2 = psanak.executeQuery();
+                        if (rs2.next()) {
+                                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                DlgPermintaanFotoBayi form = new DlgPermintaanFotoBayi(null, false);
+                                form.setNoRm( TNoRM.getText(), rs.getString("no_rawat2"));
+                                form.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                                form.setLocationRelativeTo(internalFrame1);
+                                form.setVisible(true);
+                                this.setCursor(Cursor.getDefaultCursor());
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu pasien...!!!");
+                            tbKamIn.requestFocus();
+                        }
+                    } catch (Exception ex) {
+                        System.out.println("Notifikasi : " + ex);
+                    } finally {
+                        if (rs2 != null) {
+                            rs2.close();
+                        }
+                        if (psanak != null) {
+                            psanak.close();
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            } else {
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                DlgPermintaanFotoBayi form = new DlgPermintaanFotoBayi(null, false);
+                form.setNoRm(TNoRM.getText(), tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString());
+                form.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                form.setLocationRelativeTo(internalFrame1);
+                form.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+    }//GEN-LAST:event_ppRiwayatBtnPrintActionPerformed
 }

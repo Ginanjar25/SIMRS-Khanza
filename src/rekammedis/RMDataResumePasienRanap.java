@@ -2818,7 +2818,7 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                         "select if(kamar_inap.tgl_keluar='0000-00-00',current_date(),kamar_inap.tgl_keluar) as tgl_keluar,"+
                         "if(kamar_inap.jam_keluar='00:00:00',current_time(),kamar_inap.jam_keluar) as jam_keluar,kamar_inap.kd_kamar,bangsal.nm_bangsal "+
                         "from kamar_inap inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal "+
-                        "where kamar_inap.no_rawat=? order by kamar_inap.tgl_keluar desc,kamar_inap.jam_keluar desc limit 1");
+                        "where kamar_inap.no_rawat=? and kamar_inap.stts_pulang != 'Pindah Kamar' order by kamar_inap.tgl_keluar desc,kamar_inap.jam_keluar desc limit 1");
                     try {
                         ps2.setString(1,rs.getString("no_rawat"));
                         rs2=ps2.executeQuery();
@@ -2983,7 +2983,7 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                     "inner join kamar_inap on kamar_inap.no_rawat=reg_periksa.no_rawat "+
                     "inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar "+
                     "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal "+
-                    "where reg_periksa.no_rawat=? order by kamar_inap.stts_pulang = '-' desc, kamar_inap.tgl_keluar desc,kamar_inap.jam_keluar desc limit 1 ");
+                    "where reg_periksa.no_rawat=? and kamar_inap.stts_pulang != 'Pindah Kamar' order by kamar_inap.tgl_keluar desc,kamar_inap.jam_keluar desc limit 1 ");
             try {
                 ps.setString(1,TNoRw.getText());
                 rs=ps.executeQuery();
@@ -3034,7 +3034,7 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                     "inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar \n" +
                     "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal \n" +
                     "left JOIN permintaan_ranap ON permintaan_ranap.no_rawat = reg_periksa.no_rawat\n" +
-                    "where reg_periksa.no_rawat=? order by kamar_inap.stts_pulang = '-' desc, kamar_inap.tgl_keluar desc,kamar_inap.jam_keluar desc limit 1 ");
+                    "where reg_periksa.no_rawat=? and kamar_inap.stts_pulang != 'Pindah Kamar' order by kamar_inap.tgl_keluar desc,kamar_inap.jam_keluar desc limit 1 ");
             try {
                 ps.setString(1,TNoRw.getText());
                 rs=ps.executeQuery();

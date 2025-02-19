@@ -1640,7 +1640,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         rs.getString("dokter_ibu"), rs.getString("foto_raw1"), rs.getString("foto_raw2"), rs.getString("foto_jadi1"), 
                         rs.getString("foto_jadi2"), rs.getString("tgl_permintaan").replace(".0", "")
                     });
-                    System.out.println(rs.getString("tgl_permintaan"));
                 }
             } catch (Exception e) {
                 System.out.println("Notif : "+e);
