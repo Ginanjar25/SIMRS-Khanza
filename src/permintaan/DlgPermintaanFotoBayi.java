@@ -1714,18 +1714,20 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     
     public void setNoRm(String norm, String no_rawat) {
         NoRawatBayi.setText(no_rawat);
+        TCari.setText(norm);
         NoRM.setText(norm);
         Sequel.cariIsi("select pasien.nm_pasien from pasien where no_rkm_medis = ?", NmPasien,norm);
         try {
-            ps=koneksi.prepareStatement("SELECT pasien.nm_pasien, pasien.nm_ibu, if(pasien.jk = 'L', 'Laki-Laki', 'Perempuan') AS jk, pasien.tgl_lahir,\n" +
-                "concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur, pasien_bayi.nama_ayah, pasien_bayi.berat_badan,\n" +
-                "pasien_bayi.panjang_badan, pasien_bayi.lingkar_dada, pasien.tgl_lahir, pasien_bayi.jam_lahir, dpjp_ranap.kd_dokter, dokter.nm_dokter\n" +
-                "FROM reg_periksa INNER JOIN pasien ON pasien.no_rkm_medis = reg_periksa.no_rkm_medis\n" +
-                "INNER JOIN ranap_gabung ON ranap_gabung.no_rawat2 = reg_periksa.no_rawat\n" +
-                "LEFT JOIN pasien_bayi ON pasien_bayi.no_rkm_medis = pasien.no_rkm_medis\n" +
-                "LEFT JOIN dpjp_ranap ON dpjp_ranap.no_rawat = reg_periksa.no_rawat\n" +
-                "INNER JOIN dokter ON dokter.kd_dokter = dpjp_ranap.kd_dokter\n" +
-                "WHERE reg_periksa.no_rawat =  ?");
+            ps = koneksi.prepareStatement("SELECT pasien.nm_pasien, pasien.nm_ibu, if(pasien.jk = 'L', 'Laki-Laki', 'Perempuan') AS jk, pasien.tgl_lahir,\n"
+                    + "concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,COALESCE(pasien_bayi.nama_ayah,'') AS nama_ayah, COALESCE(pasien_bayi.berat_badan,'0') AS berat_badan,\n"
+                    + "COALESCE(pasien_bayi.panjang_badan, '0') AS panjang_badan, COALESCE(pasien_bayi.lingkar_dada,'') as lingkar_dada, "
+                    + "pasien.tgl_lahir, COALESCE(pasien_bayi.jam_lahir, '00:00:00') as jam_lahir, dpjp_ranap.kd_dokter, dokter.nm_dokter\n"
+                    + "FROM reg_periksa INNER JOIN pasien ON pasien.no_rkm_medis = reg_periksa.no_rkm_medis\n"
+                    + "INNER JOIN ranap_gabung ON ranap_gabung.no_rawat2 = reg_periksa.no_rawat\n"
+                    + "LEFT JOIN pasien_bayi ON pasien_bayi.no_rkm_medis = pasien.no_rkm_medis\n"
+                    + "LEFT JOIN dpjp_ranap ON dpjp_ranap.no_rawat = reg_periksa.no_rawat\n"
+                    + "INNER JOIN dokter ON dokter.kd_dokter = dpjp_ranap.kd_dokter "
+                    + "WHERE reg_periksa.no_rawat =  ?");
             try {                  
                 ps.setString(1, no_rawat);
                 rs=ps.executeQuery();
