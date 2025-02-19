@@ -1755,7 +1755,12 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         } catch (Exception e) {
             System.out.println(e);
         }
-//       
+        
+        String no_rawat_ibu = Sequel.cariIsi("select ranap_gabung.no_rawat from ranap_gabung where ranap_gabung.no_rawat2=?", no_rawat);
+        if(!no_rawat_ibu.isBlank()){
+            Sequel.cariIsi("Select dpjp_ranap.kd_dokter from dpjp_ranap where dpjp_ranap.no_rawat = ?", KdDokter2,no_rawat_ibu );
+            Sequel.cariIsi("Select dokter.nm_dokter from dpjp_ranap INNER JOIN dokter ON dokter.kd_dokter = dpjp_ranap.kd_dokter where dpjp_ranap.no_rawat = ?", TDokter1,no_rawat_ibu );
+        }
         
         if(Sequel.cariIsi("select pasien.keluarga from pasien where pasien.no_rkm_medis=?",norm).equals("AYAH")){
             Sequel.cariIsi("select pasien.namakeluarga from pasien where pasien.no_rkm_medis=?",NmAyah,norm);
