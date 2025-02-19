@@ -17458,6 +17458,58 @@ public class DlgKamarInap extends javax.swing.JDialog {
         } 
     }
     
+    private void ppPermintaanFotoBayiBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppPermintaanFotoBayiBtnActionPerformed
+        if (tabMode.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Maaf, data pasien sudah habis...!!!!");
+            TCari.requestFocus();
+        } else if (tbKamIn.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu data kamar inap pada table...!!!");
+            TCari.requestFocus();
+        } else {
+            if (tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString().equals("")) {
+                try {
+                    psanak = koneksi.prepareStatement(
+                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");
+                    try {
+                        psanak.setString(1, tbKamIn.getValueAt(tbKamIn.getSelectedRow() - 1, 0).toString());
+                        rs2 = psanak.executeQuery();
+                        if (rs2.next()) {
+                                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                                DlgPermintaanFotoBayi form = new DlgPermintaanFotoBayi(null, false);
+                                form.setNoRm( TNoRM.getText(), rs2.getString("no_rawat2"));
+                                form.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                                form.setLocationRelativeTo(internalFrame1);
+                                form.setVisible(true);
+                                this.setCursor(Cursor.getDefaultCursor());
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu pasien...!!!");
+                            tbKamIn.requestFocus();
+                        }
+                    } catch (Exception ex) {
+                        System.out.println("Notifikasi : " + ex);
+                    } finally {
+                        if (rs2 != null) {
+                            rs2.close();
+                        }
+                        if (psanak != null) {
+                            psanak.close();
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            } else {
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                DlgPermintaanFotoBayi form = new DlgPermintaanFotoBayi(null, false);
+                form.setNoRm(TNoRM.getText(), tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString());
+                form.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                form.setLocationRelativeTo(internalFrame1);
+                form.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+    }//GEN-LAST:event_ppPermintaanFotoBayiBtnActionPerformed
+    
     private void DiagnosaKeyPressed(java.awt.event.KeyEvent evt) {                                    
         Valid.pindah(evt,Diagnosa,Catatan);
     }
@@ -18894,57 +18946,5 @@ public class DlgKamarInap extends javax.swing.JDialog {
         MnPenilaianLain.add(MnPengkajianRestrain);
         
         MnPermintaan.add(MnPermintaanKonsultasiMedik);
-    }    
-    
-    private void ppPermintaanFotoBayiBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppRiwayatBtnPrintActionPerformed
-        if (tabMode.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(null, "Maaf, data pasien sudah habis...!!!!");
-            TCari.requestFocus();
-        } else if (tbKamIn.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu data kamar inap pada table...!!!");
-            TCari.requestFocus();
-        } else {
-            if (tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString().equals("")) {
-                try {
-                    psanak = koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");
-                    try {
-                        psanak.setString(1, tbKamIn.getValueAt(tbKamIn.getSelectedRow() - 1, 0).toString());
-                        rs2 = psanak.executeQuery();
-                        if (rs2.next()) {
-                                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                                DlgPermintaanFotoBayi form = new DlgPermintaanFotoBayi(null, false);
-                                form.setNoRm( TNoRM.getText(), rs.getString("no_rawat2"));
-                                form.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
-                                form.setLocationRelativeTo(internalFrame1);
-                                form.setVisible(true);
-                                this.setCursor(Cursor.getDefaultCursor());
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu pasien...!!!");
-                            tbKamIn.requestFocus();
-                        }
-                    } catch (Exception ex) {
-                        System.out.println("Notifikasi : " + ex);
-                    } finally {
-                        if (rs2 != null) {
-                            rs2.close();
-                        }
-                        if (psanak != null) {
-                            psanak.close();
-                        }
-                    }
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-            } else {
-                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                DlgPermintaanFotoBayi form = new DlgPermintaanFotoBayi(null, false);
-                form.setNoRm(TNoRM.getText(), tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString());
-                form.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
-                form.setLocationRelativeTo(internalFrame1);
-                form.setVisible(true);
-                this.setCursor(Cursor.getDefaultCursor());
-            }
-        }
-    }//GEN-LAST:event_ppRiwayatBtnPrintActionPerformed
+    } 
 }
