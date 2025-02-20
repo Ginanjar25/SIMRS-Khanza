@@ -33,6 +33,7 @@ public class AntrianPoli {
     private static final Properties prop = new Properties();
     private PreparedStatement ps;
     private ResultSet rs;
+    String kd_petugas = "placeholder", kd_petugas2 ="placeholder", kd_petugas3="placeholder", nm_petugas="", nm_petugas2="", nm_petugas3="";
         
     public AntrianPoli(){
         try {
@@ -337,6 +338,13 @@ public void kirimAntrianIGD(String kd_poli, String kd_dokter) {
 
 public void kirimAntrianPerawatIGD(String nik1, String nama1, String nik2, String nama2, String nik3, String nama3) {
     try {
+        kd_petugas = (nik1 == null || nik1.isEmpty()) ? "placeholder" : nik1;
+        kd_petugas2 = (nik2 == null || nik2.isEmpty()) ? "placeholder" : nik2;
+        kd_petugas3 = (nik3 == null || nik3.isEmpty()) ? "placeholder" : nik3;
+        nm_petugas = nama1;
+        nm_petugas2 = nama2;
+        nm_petugas3 = nama3;
+        
         JSONObject jsonBody = new JSONObject();
         ps = koneksi.prepareStatement(
                 "SELECT \n"
@@ -363,8 +371,8 @@ public void kirimAntrianPerawatIGD(String nik1, String nama1, String nik2, Strin
             jsonBody.put("red_zone", rs.getString("merah"));
         }
         JSONArray perawat = new JSONArray();
-        String[] nikArray = {nik1, nik2, nik3};
-        String[] namaArray = {nama1, nama2, nama3};
+        String[] nikArray = {kd_petugas, kd_petugas2, kd_petugas3};
+        String[] namaArray = {nm_petugas, nm_petugas2, nm_petugas3};
 
         for (int i = 0; i < 3; i++) {
             JSONObject perawatObj = new JSONObject();

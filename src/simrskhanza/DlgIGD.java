@@ -5379,7 +5379,7 @@ public final class DlgIGD extends javax.swing.JDialog {
         
         BtnClearSetDisplay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
         BtnClearSetDisplay.setMnemonic('U');
-        BtnClearSetDisplay.setText("Tutup");
+        BtnClearSetDisplay.setText("Clear");
         BtnClearSetDisplay.setToolTipText("Alt+U");
         BtnClearSetDisplay.setName("BtnClearSetDisplay"); // NOI18N
         BtnClearSetDisplay.addActionListener(new java.awt.event.ActionListener() {
@@ -12650,6 +12650,10 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             TNoRw.getText(),TNoReg.getText(),KdDokter.getText(),TNoRM.getText(),"IGDK",TPngJwb.getText(),TAlmt.getText(),""+biaya,THbngn.getText(),
             TStatus.getText(),kdpnj.getText(),umur,sttsumur,TNoRw.getText()
             })==true){
+            
+                if(!kdpnj.getText().equals("BPJ") && (Sequel.cariInteger("select ri.no_rawat from side_db.readmisi_igd ri where ri.no_rawat=?", TNoRw.getText()) > 0)){
+                    Sequel.meghapus("readmisi_igd", "no_rawat", TNoRw.getText());
+                }
                  
                if (Sequel.cariIsi("select no_rawat from penjab_reg where no_rawat = ?", tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString()).isEmpty() && !kdpnj1.getText().equals("")) {
                     Sequel.menyimpan2("penjab_reg", "?,?,?,?", "Data", 4, new String[]{
@@ -12763,7 +12767,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 }
                 if (kdpnj.getText().equals("BPJ")) {
                     if (Sequel.cariInteger("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.tgl_registrasi BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) "
-                            + "AND CURDATE() AND rp.kd_poli = 'IGDK' AND rp.tgl_registrasi !=CURDATE() AND rp.kd_pj = 'BPJ' AND rp.no_rkm_medis =?", TNoRM.getText()) > 0) {
+                            + "AND CURDATE() AND rp.kd_poli = 'IGDK' AND rp.tgl_registrasi !=CURDATE() AND rp.kd_pj = 'BPJ' AND rp.no_rkm_medis =? and rp.stts !='Batal' ", TNoRM.getText()) > 0) {
                         Sequel.menyimpantf2("side_db.readmisi_igd", "?", "No.Rawat", 1, new String[]{TNoRw.getText()});
                     }
                 }
