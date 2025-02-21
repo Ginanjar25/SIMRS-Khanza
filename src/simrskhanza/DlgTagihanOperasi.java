@@ -3548,14 +3548,16 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
-            //PanelInput.setPreferredSize(new Dimension(WIDTH,internalFrame1.getHeight()-79));
-            PanelInput.setPreferredSize(new Dimension(WIDTH,500));
+            PanelInput.setPreferredSize(new Dimension(WIDTH,internalFrame1.getHeight()-79));
+//            PanelInput.setPreferredSize(new Dimension(WIDTH,500));
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
-            ChkInput.setVisible(false);            
-            PanelInput.setPreferredSize(new Dimension(WIDTH,500));
-            FormInput.setVisible(true);      
+            ChkInput.setVisible(false); 
+            PanelInput.setPreferredSize(new Dimension(WIDTH,20));
+            FormInput.setVisible(false);  
+//            PanelInput.setPreferredSize(new Dimension(WIDTH,500));
+//            FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }
     }

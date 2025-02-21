@@ -1817,6 +1817,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         //TCaraBayar = new widget.TextBox();
         cmbKategory = new widget.ComboBox();
         cmbSeverity = new widget.ComboBox();
+        BtnLaporanOperasi = new widget.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -5623,6 +5624,22 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         BtnPenilaianTambahanMelarikanDiri.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnPenilaianTambahanMelarikanDiriActionPerformed(evt);
+            }
+        });
+        
+        BtnLaporanOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
+        BtnLaporanOperasi.setText("Laporan Operasi");
+        BtnLaporanOperasi.setFocusPainted(false);
+        BtnLaporanOperasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnLaporanOperasi.setGlassColor(new java.awt.Color(255, 255, 255));
+        BtnLaporanOperasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        BtnLaporanOperasi.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        BtnLaporanOperasi.setName("BtnLaporanOperasi"); // NOI18N
+        BtnLaporanOperasi.setPreferredSize(new java.awt.Dimension(190, 23));
+        BtnLaporanOperasi.setRoundRect(false);
+        BtnLaporanOperasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnLaporanOperasiActionPerformed(evt);
             }
         });
 
@@ -9953,6 +9970,20 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             this.setCursor(Cursor.getDefaultCursor());
         }
     }
+    
+    private void BtnLaporanOperasiActionPerformed(java.awt.event.ActionEvent evt) {
+        if (TNoRw.getText().trim().equals("") || TPasien.getText().trim().equals("")) {
+            Valid.textKosong(TNoRw, "No.Rawat");
+        } else {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            DlgLaporanOperasi dlgro = new DlgLaporanOperasi(null, false);
+            dlgro.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+            dlgro.setLocationRelativeTo(internalFrame1);
+            dlgro.setNoRm(TNoRw.getText(), TNoRM.getText() + ", " + TPasien.getText(), "Ralan");
+            dlgro.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }
     /**
     * @param args the command line arguments
     */
@@ -10337,6 +10368,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Label TCaraBayar;
     //private widget.TextBox TCaraBayar;
     private widget.Label TPotensiPRB;
+    private widget.Button BtnLaporanOperasi;
     
     private widget.ComboBox cmbKategory;
     private widget.ComboBox cmbSeverity;
@@ -10915,6 +10947,10 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             tinggi=tinggi+24;
         }
         BtnChecklistPostOperasi.setVisible(akses.getchecklist_post_operasi()); 
+        if(akses.getchecklist_post_operasi()==true){
+            tinggi=tinggi+24;
+        }
+        BtnLaporanOperasi.setVisible(true); 
         if(akses.getchecklist_post_operasi()==true){
             tinggi=tinggi+24;
         }
@@ -12674,6 +12710,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         FormMenu.add(BtnPermintaanRad);
         FormMenu.add(BtnPermintaanKonsultasiMedik);
         FormMenu.add(BtnJadwalOperasi);
+        FormMenu.add(BtnLaporanOperasi);
         FormMenu.add(BtnSKDP);
         FormMenu.add(BtnKamar);
         FormMenu.add(BtnTriaseIGD);
