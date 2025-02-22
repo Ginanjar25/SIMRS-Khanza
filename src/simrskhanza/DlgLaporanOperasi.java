@@ -545,7 +545,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
 
         PanelInput.setName("PanelInput"); // NOI18N
         PanelInput.setOpaque(false);
-        PanelInput.setPreferredSize(new java.awt.Dimension(560, 532));
+        PanelInput.setPreferredSize(new java.awt.Dimension(560, 320));
         PanelInput.setLayout(new java.awt.BorderLayout(1, 1));
 
         ChkInput.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
@@ -574,7 +574,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
 
         FormInput.setBorder(null);
         FormInput.setName("FormInput"); // NOI18N
-        FormInput.setPreferredSize(new java.awt.Dimension(89, 553));
+        FormInput.setPreferredSize(new java.awt.Dimension(89, 500));
         FormInput.setLayout(null);
 
         label11.setText("Tangga Jaml Mulai :");
@@ -619,7 +619,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
         label12.setName("label12"); // NOI18N
         label12.setPreferredSize(new java.awt.Dimension(70, 23));
         FormInput.add(label12);
-        label12.setBounds(10, 110, 120, 23);
+        label12.setBounds(10, 100, 120, 23);
 
         tgl2.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         tgl2.setName("tgl2"); // NOI18N
@@ -629,7 +629,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(tgl2);
-        tgl2.setBounds(150, 110, 150, 23);
+        tgl2.setBounds(150, 100, 150, 23);
 
         PreOp.setHighlighter(null);
         PreOp.setName("PreOp"); // NOI18N
@@ -639,12 +639,12 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(PreOp);
-        PreOp.setBounds(460, 110, 340, 23);
+        PreOp.setBounds(460, 100, 340, 23);
 
         jLabel6.setText("Diagnosis Pre-operatif :");
         jLabel6.setName("jLabel6"); // NOI18N
         FormInput.add(jLabel6);
-        jLabel6.setBounds(320, 110, 130, 23);
+        jLabel6.setBounds(320, 100, 130, 23);
 
         jLabel7.setText("Diagnosis Post-operatif :");
         jLabel7.setName("jLabel7"); // NOI18N
@@ -664,7 +664,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
         jLabel8.setText("Jaringan di-Eksisi / -Insisi :");
         jLabel8.setName("jLabel8"); // NOI18N
         FormInput.add(jLabel8);
-        jLabel8.setBounds(310, 150, 140, 23);
+        jLabel8.setBounds(310, 130, 140, 23);
 
         Jaringan.setHighlighter(null);
         Jaringan.setName("Jaringan"); // NOI18N
@@ -674,12 +674,12 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(Jaringan);
-        Jaringan.setBounds(460, 150, 340, 23);
+        Jaringan.setBounds(460, 130, 340, 23);
 
         jLabel9.setText("Dikirim Pemeriksaan PA :");
         jLabel9.setName("jLabel9"); // NOI18N
         FormInput.add(jLabel9);
-        jLabel9.setBounds(10, 150, 120, 23);
+        jLabel9.setBounds(10, 130, 120, 23);
 
         DikirimPA.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ya", "Tidak" }));
         DikirimPA.setName("DikirimPA"); // NOI18N
@@ -689,7 +689,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(DikirimPA);
-        DikirimPA.setBounds(150, 150, 150, 23);
+        DikirimPA.setBounds(150, 130, 150, 23);
 
         scrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         scrollPane2.setName("scrollPane2"); // NOI18N
@@ -698,15 +698,16 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
         Laporan.setColumns(20);
         Laporan.setRows(5);
         Laporan.setName("Laporan"); // NOI18N
+        Laporan.setPreferredSize(new java.awt.Dimension(174, 164));
         scrollPane2.setViewportView(Laporan);
 
         FormInput.add(scrollPane2);
-        scrollPane2.setBounds(130, 200, 680, 290);
+        scrollPane2.setBounds(140, 160, 680, 280);
 
         jLabel10.setText("Laporan Operasi :");
         jLabel10.setName("jLabel10"); // NOI18N
         FormInput.add(jLabel10);
-        jLabel10.setBounds(20, 190, 101, 23);
+        jLabel10.setBounds(30, 160, 101, 14);
 
         btnTemplate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         btnTemplate.setMnemonic('2');
@@ -720,7 +721,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(btnTemplate);
-        btnTemplate.setBounds(20, 220, 100, 23);
+        btnTemplate.setBounds(30, 190, 100, 23);
 
         TPasien.setEditable(false);
         TPasien.setHighlighter(null);
@@ -1447,7 +1448,7 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
     private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
-            PanelInput.setPreferredSize(new Dimension(WIDTH,532));
+            PanelInput.setPreferredSize(new Dimension(WIDTH,320));
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
