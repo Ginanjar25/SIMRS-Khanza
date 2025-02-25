@@ -3020,28 +3020,15 @@ private void MnHapusObatOperasiActionPerformed(java.awt.event.ActionEvent evt) {
     private void MnUbahLaporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnUbahLaporanActionPerformed
         if(tbDokter.getSelectedRow()>-1){
             if(!tbDokter.getValueAt(tbDokter.getSelectedRow(),1).toString().equals("")){
-                try {
-                    rs2=koneksi.prepareStatement(
-                        "select laporan_operasi.diagnosa_preop,laporan_operasi.diagnosa_postop,laporan_operasi.jaringan_dieksekusi,laporan_operasi.selesaioperasi,laporan_operasi.permintaan_pa,"+
-                        "laporan_operasi.laporan_operasi from laporan_operasi where laporan_operasi.no_rawat='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),1)+"' and "+
-                        "laporan_operasi.tanggal='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0)+"'").executeQuery();
-                    if(rs2.next()){
-                        PreOp.setText(rs2.getString("diagnosa_preop"));
-                        PostOp.setText(rs2.getString("diagnosa_postop"));
-                        Jaringan.setText(rs2.getString("jaringan_dieksekusi"));
-                        tgl2.setDate(rs2.getDate("selesaioperasi"));
-                        DikirimPA.setSelectedItem(rs2.getString("permintaan_pa"));
-                        Laporan.setText(rs2.getString("laporan_operasi"));
-                    }
-                    if(rs2!=null){
-                        rs2.close();
-                    }
-                } catch (Exception e) {
-                    System.out.println("Notif : "+e);
-                } 
-                WindowLaporan.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-                WindowLaporan.setLocationRelativeTo(internalFrame1);
-                WindowLaporan.setVisible(true);
+                String  norm= Sequel.cariIsi("select no_rkm_medis from reg_periksa where no_rawat='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),1).toString() +"'");
+                String  nmpasien= Sequel.cariIsi("select nm_pasien from pasien where no_rkm_medis='"+norm +"'");
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                DlgLaporanOperasi dlgro = new DlgLaporanOperasi(null, false);
+                dlgro.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                dlgro.setLocationRelativeTo(internalFrame1);
+                dlgro.setNoRm(tbDokter.getValueAt(tbDokter.getSelectedRow(),1).toString(), norm + ", " + nmpasien, "Ranap");
+                dlgro.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
             }else{
                 JOptionPane.showMessageDialog(rootPane,"Silahkan pilih data, klik pada No.Rawat ..!!");
             } 

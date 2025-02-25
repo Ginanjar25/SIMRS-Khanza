@@ -240,7 +240,7 @@ public final class DlgReg extends javax.swing.JDialog {
     public  DlgRujukMasuk rujukmasuk=new DlgRujukMasuk(null,false);
     public  DlgBookingWeb bookingweb = new DlgBookingWeb(null, false);
     public  DlgBookingRegistrasi bookingreg = new DlgBookingRegistrasi(null, false);
-    public  DlgBookingKuota bookingkuota = new DlgBookingKuota(null, false);
+    public  DlgBookingKuota bookingkuota = new DlgBookingKuota();
     private PreparedStatement ps,ps3,pscaripiutang;
     private ResultSet rs;
     private int pilihan=0,i=0,kuota=0,jmlparsial=0;
