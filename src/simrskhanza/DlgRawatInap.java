@@ -9941,8 +9941,8 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         if(akses.getchecklist_post_operasi()==true){
             tinggi=tinggi+24;
         }
-        BtnLaporanOperasi.setVisible(true); 
-        if(akses.getchecklist_post_operasi()==true){
+        BtnLaporanOperasi.setVisible(akses.gettemplate_laporan_operasi()); 
+        if(akses.gettemplate_laporan_operasi()==true){
             tinggi=tinggi+24;
         }
         BtnRekonsiliasiObat.setVisible(akses.getrekonsiliasi_obat()); 
@@ -10125,7 +10125,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         if(akses.getkonsultasi_medik()==true){
             tinggi=tinggi+24;
         }
-        FormMenu.setPreferredSize(new Dimension(195,(tinggi+10)));
+        FormMenu.setPreferredSize(new Dimension(195,(tinggi+34)));
         
         if(akses.getjml2()>=1){
             KdPeg.setText(akses.getkode());
