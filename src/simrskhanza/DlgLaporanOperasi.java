@@ -973,8 +973,11 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
                         String selectedValue = reportMap.get(selectedLabel);
                         System.out.println("Selected report: " + selectedLabel + ", Value: " + selectedValue);
                         try {
+                            String tglOperasi = Sequel.cariIsi("select tgl_operasi from operasi where no_rawat='"+TNoRw.getText()+"' and kode_paket=?",selectedValue );
                             Sequel.mengedit("operasi", "no_rawat='" + TNoRw.getText() + "' and kode_paket='" + selectedValue + "'",
-                                    "tgl_operasi='" +Valid.SetTgl(tgl.getSelectedItem()+"")+" "+tgl.getSelectedItem().toString().substring(11,19)+ "'");
+                                    "tgl_operasi='" +Valid.SetTgl(tgl.getSelectedItem()+"")+" "+tgl.getSelectedItem().toString().substring(11,19)+ "'");                            
+                            Sequel.mengedit("beri_obat_operasi", "no_rawat='" + TNoRw.getText() + "' and tanggal='" + tglOperasi + "'",
+                                    "tanggal='" +Valid.SetTgl(tgl.getSelectedItem()+"")+" "+tgl.getSelectedItem().toString().substring(11,19)+ "'");
                         } catch (Exception e) {
                             System.out.println(e);
                         }
