@@ -223,6 +223,7 @@ import surat.SuratSakitPihak2;
 import surat.SuratTidakHamil;
 import permintaan.DlgBookingRegistrasi;
 import permintaan.DlgBookingKuota;
+import bridging.BPJSRujukanKeluar;
 /**
  *
  * @author dosen
@@ -4721,7 +4722,7 @@ public final class DlgReg extends javax.swing.JDialog {
                 ppProgramPRBActionPerformed(evt);
             }
         });
-
+        
         ppSuplesiJasaRaharja.setBackground(new java.awt.Color(255, 255, 254));
         ppSuplesiJasaRaharja.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         ppSuplesiJasaRaharja.setForeground(new java.awt.Color(50, 50, 50));
@@ -15490,6 +15491,34 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             BtnSimpanNoregActionPerformed(null);
         }
     }
+    
+    private void ppRujukKeluarActionPerformed(java.awt.event.ActionEvent evt) {
+        
+        if (TabRawat.getSelectedIndex() == 0) {
+            if (tbPetugas.getSelectedRow() != -1) {
+                String nosep = Sequel.cariIsi("SELECT bse.no_sep FROM bridging_sep bse WHERE bse.no_rawat =?", TNoRw.getText());
+                if (!nosep.equals("")) {
+                    this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    akses.setform("DlgReg");                    
+                    String namaPasien = Sequel.cariIsi("SELECT bse.nama_pasien FROM bridging_sep bse WHERE bse.no_sep =?", nosep);
+                    String norm = Sequel.cariIsi("SELECT bse.nomr FROM bridging_sep bse WHERE bse.no_sep =?", nosep);                    
+                    BPJSRujukanKeluar rujuk=new BPJSRujukanKeluar(null,false);
+                    rujuk.tampil();
+                    rujuk.emptTeks();
+                    rujuk.isCek();
+                    rujuk.setRujukKeluar(TNoRw.getText(), nosep,namaPasien, norm);
+                    rujuk.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                    rujuk.setLocationRelativeTo(internalFrame1);
+                    rujuk.setVisible(true);
+                    this.setCursor(Cursor.getDefaultCursor());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Maaf, Pasien  belum terbit SEP ...!!!!");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Maaf, silahkan pilih pasien yang mau dibuatkan rujukan...!!!!");
+            }
+        }        
+    }
     /**
     * @param args the command line arguments
     */
@@ -15982,6 +16011,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.TextBox kdpnj2;
     private widget.RadioButton R2;
     private widget.Label cob;
+    private javax.swing.JMenuItem ppRujukKeluar;
+    private javax.swing.JDialog WindowRujukan;
+    private widget.InternalFrame internalFrame7;
     
     private void tampil() {
         Valid.tabelKosong(tabMode);
@@ -17307,10 +17339,28 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         MnRMRawatJalan.add(MnPenilaianTerapiWicara);
         MnRMRawatJalan.add(MnPenatalaksanaanTerapiOkupasi);
         
+        ppRujukKeluar = new javax.swing.JMenuItem();
+        
+        ppRujukKeluar.setBackground(new java.awt.Color(255, 255, 254));
+        ppRujukKeluar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppRujukKeluar.setForeground(new java.awt.Color(50, 50, 50));
+        ppRujukKeluar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppRujukKeluar.setText("Rujuk Keluar BPJS");
+        ppRujukKeluar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppRujukKeluar.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppRujukKeluar.setName("ppRujukKeluar"); // NOI18N
+        ppRujukKeluar.setPreferredSize(new java.awt.Dimension(320, 26));
+        ppRujukKeluar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppRujukKeluarActionPerformed(evt);
+            }
+        });        
+        
         MnBridging.add(MnSEP);
         MnBridging.add(ppSuratKontrol);
         MnBridging.add(ppSuratPRI);
         MnBridging.add(ppProgramPRB);
+        MnBridging.add(ppRujukKeluar);
         MnBridging.add(ppSuplesiJasaRaharja);
         MnBridging.add(ppDataIndukKecelakaan);
         MnBridging.add(MnBelumTerbitSEP);
