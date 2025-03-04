@@ -12654,16 +12654,19 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 if(!kdpnj.getText().equals("BPJ") && (Sequel.cariInteger("select ri.no_rawat from side_db.readmisi_igd ri where ri.no_rawat=?", TNoRw.getText()) > 0)){
                     Sequel.meghapus("readmisi_igd", "no_rawat", TNoRw.getText());
                 }
-                 
-               if (Sequel.cariIsi("select no_rawat from penjab_reg where no_rawat = ?", tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString()).isEmpty() && !kdpnj1.getText().equals("")) {
-                    Sequel.menyimpan2("penjab_reg", "?,?,?,?", "Data", 4, new String[]{
-                           TNoRw.getText(), kdpnj1.getText(), NoKa2.getText(), "2"
-                       });
-               } else {
-                   Sequel.mengedit2("penjab_reg", "no_rawat = ? and `order` = '2'", "kd_pj=?, no_kartu=?", 3, new String[]{
-                        kdpnj1.getText(), NoKa2.getText(), TNoRw.getText()
-                    });
-               }
+                
+                if (R2.isSelected() == true) {
+                    if (Sequel.cariIsi("select no_rawat from penjab_reg where no_rawat = ?", TNoRw.getText()).isEmpty() && !kdpnj1.getText().trim().equals("")) {
+                        Sequel.menyimpan2("penjab_reg", "?,?,?,?", "Data", 4, new String[]{
+                            TNoRw.getText(), kdpnj1.getText(), NoKa2.getText(), "2"
+                        });
+                    } else {
+                        Sequel.mengedit2("penjab_reg", "no_rawat = ? and `order` = '2'", "kd_pj=?, no_kartu=?", 3, new String[]{
+                            kdpnj1.getText(), NoKa2.getText(), TNoRw.getText()
+                        });
+                    }
+                }
+               
                 tabMode.setValueAt(TNoReg.getText(),tbPetugas.getSelectedRow(),1);
                 tabMode.setValueAt(TNoRw.getText(),tbPetugas.getSelectedRow(),2);
 //                tabMode.setValueAt(Valid.SetTgl(DTPReg.getSelectedItem()+""),tbPetugas.getSelectedRow(),3);
@@ -12774,10 +12777,12 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 if(ChkTracker.isSelected()==true){
                     ctk();
                 }
-                 if (!kdpnj1.getText().equals("-") || !kdpnj1.getText().equals("")) {
-                    Sequel.menyimpan2("penjab_reg", "?,?,?,?", "Data", 4, new String[]{
-                        TNoRw.getText(), kdpnj1.getText(), NoKa2.getText(), "2"
-                    });
+                if (R2.isSelected() == true) {
+                    if (!kdpnj1.getText().trim().equals("")) {
+                        Sequel.menyimpan2("penjab_reg", "?,?,?,?", "Data", 4, new String[]{
+                            TNoRw.getText(), kdpnj1.getText(), NoKa2.getText(), "2"
+                        });
+                    }
                 }
 //                tabMode.addRow(new Object[] {
 //                    false,TNoReg.getText(),TNoRw.getText(),Valid.SetTgl(DTPReg.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),

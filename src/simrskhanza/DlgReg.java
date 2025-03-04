@@ -16904,11 +16904,15 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     Sequel.menyimpantf2("side_db.readmisi_igd", "?", "No.Rawat", 1, new String[]{TNoRw.getText()});
                 }
             }
-            if (!kdpnj2.getText().equals("-") || !kdpnj2.getText().equals("")) {
-                Sequel.menyimpan2("penjab_reg", "?,?,?,?", "Data", 4, new String[]{
-                    TNoRw.getText(), kdpnj2.getText(), NoKa2.getText(), "2"
-                });
+            
+            if (R2.isSelected() == true) {
+                if (!kdpnj2.getText().trim().equals("")) {
+                    Sequel.menyimpan2("penjab_reg", "?,?,?,?", "Data", 4, new String[]{
+                        TNoRw.getText(), kdpnj2.getText(), NoKa2.getText(), "2"
+                    });
+                }
             }
+            
             if(ChkTracker.isSelected()==true){
                 ctk();
             }
@@ -17604,14 +17608,16 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             })==true){
             ubahAntrianPoli();
                     
-            if (Sequel.cariIsi("select no_rawat from penjab_reg where no_rawat = ?", tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString()).isEmpty() && !kdpnj2.getText().equals("")) {
-                 Sequel.menyimpan2("penjab_reg", "?,?,?,?", "Data", 4, new String[]{
-                    TNoRw.getText(), kdpnj2.getText(), NoKa2.getText(), "2"
-                });
-            } else {
-                Sequel.mengedit2("penjab_reg", "no_rawat = ? and `order` = '2'", "kd_pj=?, no_kartu=?", 3, new String[]{
-                    kdpnj2.getText(), NoKa2.getText(), TNoRw.getText()
-                });
+            if (R2.isSelected() == true) {
+                if (Sequel.cariIsi("select no_rawat from penjab_reg where no_rawat = ?", TNoRw.getText()).isEmpty() && !kdpnj2.getText().trim().equals("")) {
+                    Sequel.menyimpan2("penjab_reg", "?,?,?,?", "Data", 4, new String[]{
+                        TNoRw.getText(), kdpnj2.getText(), NoKa2.getText(), "2"
+                    });
+                } else {
+                    Sequel.mengedit2("penjab_reg", "no_rawat = ? and `order` = '2'", "kd_pj=?, no_kartu=?", 3, new String[]{
+                        kdpnj2.getText(), NoKa2.getText(), TNoRw.getText()
+                    });
+                }
             }
             
             tabMode.setValueAt(TNoReg.getText(),tbPetugas.getSelectedRow(),1);

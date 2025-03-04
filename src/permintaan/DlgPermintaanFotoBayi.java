@@ -1731,7 +1731,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             try {                  
                 ps.setString(1, no_rawat);
                 rs=ps.executeQuery();
-                while(rs.next()){
+                if(rs.next()){
                     NmIbu.setText(rs.getString("nm_ibu"));
                     JKel.setSelectedItem(rs.getString("jk"));
                     Valid.SetTgl(Lahir,rs.getString("tgl_lahir"));

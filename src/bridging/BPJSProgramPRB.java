@@ -748,6 +748,7 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
         FormInput.add(Alamat);
         Alamat.setBounds(83, 40, 265, 23);
 
+        Email.setText("prb.rspw@gmail.com");
         Email.setHighlighter(null);
         Email.setName("Email"); // NOI18N
         Email.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1716,7 +1717,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         NoRM.setText(norm);
         NmPasien.setText(namapasien);
         Alamat.setText(alamat);
-        Email.setText(email);
+        if(email.equals("") || email.equals("-")){
+          Email.setText("prb.rspw@gmail.com");  
+        }else{
+            Email.setText(email); 
+        }
         KdDPJP.setText(kodedpjp);
         NmDPJP.setText(namadpjp);
         TCari.setText(nosep);

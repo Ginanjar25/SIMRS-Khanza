@@ -6626,7 +6626,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     }//GEN-LAST:event_TOutKeyPressed
 
     private void tbKamInMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbKamInMouseClicked
-        if(tabMode.getRowCount()!=22){
+        if(tabMode.getRowCount()!=0){
             try {
                 getData();
             } catch (java.lang.NullPointerException e) {
@@ -8843,7 +8843,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
             Valid.textKosong(NoRmBayi, "Pasien");
         } else if (Diagnosa.getText().trim().equals("")) {
             Valid.textKosong(Diagnosa, "Diagnosa");
-        } else {
+        } else if(KdDokter1.getText().trim().equals("")){
+            Valid.textKosong(KdDokter1, "Dokter DPJP bayi");
+        }else {
             int reply = JOptionPane.showConfirmDialog(rootPane, "Apakah Anda Ingin Gabung Ranap Pasien : \n"
                     + "No Rawat: " + norawat.getText() + "/ Nama: " + TPasien.getText() + "(" + TNoRM.getText() + ") \n Dengan Bayi : " + NoRmBayi.getText() + " " + NmBayi.getText(),
                     "Konfirmasi", JOptionPane.YES_NO_OPTION);
@@ -8927,7 +8929,6 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 NoRawatGabung.getText(),
                                 KdDokter1.getText()
                             }) == true) {
-                                System.out.println("simpan dpjp Berhasil" + NoRawatGabung.getText() + KdDokter1.getText());
                                 emptTeks();
                             }
                         }

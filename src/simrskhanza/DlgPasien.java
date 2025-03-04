@@ -5210,7 +5210,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                     Sequel.queryu2("delete from set_no_rkm_medis");
                     Sequel.queryu2("insert into set_no_rkm_medis values(?)",1,new String[]{TNo.getText()});            
                 }
-                if (!Kdpnj1.getText().equals("-") || !Kdpnj1.getText().equals("BPJ")) {
+                if (!Kdpnj1.getText().equals("-") && !Kdpnj1.getText().equals("BPJ")) {
                     Sequel.menyimpan2("penjab_pasien", "?,?,?,?", "Data", 4, new String[]{
                         TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                     });
@@ -5246,7 +5246,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         Sequel.queryu2("delete from set_no_rkm_medis");
                         Sequel.queryu2("insert into set_no_rkm_medis values(?)",1,new String[]{TNo.getText()});            
                     }         
-                    if (!Kdpnj1.getText().equals("-") || !Kdpnj1.getText().equals("BPJ")) {
+                    if (!Kdpnj1.getText().equals("-") && !Kdpnj1.getText().equals("BPJ")) {
                         Sequel.menyimpan2("penjab_pasien", "?,?,?,?", "Data", 4, new String[]{
                             TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                         });
@@ -5282,7 +5282,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                             Sequel.queryu2("delete from set_no_rkm_medis");
                             Sequel.queryu2("insert into set_no_rkm_medis values(?)",1,new String[]{TNo.getText()});            
                         } 
-                        if (!Kdpnj1.getText().equals("-") || !Kdpnj1.getText().equals("BPJ")) {
+                        if (!Kdpnj1.getText().equals("-") && !Kdpnj1.getText().equals("BPJ")) {
                             Sequel.menyimpan2("penjab_pasien", "?,?,?,?", "Data", 4, new String[]{
                                 TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                             });
@@ -5354,7 +5354,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                     Sequel.queryu2("delete from set_no_rkm_medis");
                                     Sequel.queryu2("insert into set_no_rkm_medis values(?)",1,new String[]{TNo.getText()});            
                                 }
-                                if (!Kdpnj1.getText().equals("-") || !Kdpnj1.getText().equals("BPJ")) {
+                                if (!Kdpnj1.getText().equals("-") && !Kdpnj1.getText().equals("BPJ")) {
                                     Sequel.menyimpan2("penjab_pasien", "?,?,?,?", "Data", 4, new String[]{
                                         TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                                     });
