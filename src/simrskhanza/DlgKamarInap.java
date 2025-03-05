@@ -6299,15 +6299,21 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                  param.put("emailrs",akses.getemailrs());   
                                  param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
                                  this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                                 Valid.MyReportqry("rptKamarInap.jasper","report","::[ Data Kamar Inap Pasien ]::","select kamar_inap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab),"+
-                                    "penjab.png_jawab,kamar_inap.kd_kamar,bangsal.nm_bangsal,kamar_inap.trf_kamar,kamar_inap.diagnosa_awal,kamar_inap.diagnosa_akhir," +
-                                    "kamar_inap.tgl_masuk,kamar_inap.jam_masuk,if(kamar_inap.tgl_keluar='0000-00-00','',kamar_inap.tgl_keluar) as tgl_keluar,"+
-                                    "if(kamar_inap.jam_keluar='00:00:00','',kamar_inap.jam_keluar) as jam_keluar,kamar_inap.ttl_biaya,kamar_inap.stts_pulang, lama,dokter.nm_dokter "+
-                                    "from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                                    "inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal "+
-                                    "inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec "+
-                                    "inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter "+
-                                    "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj where  "+key+" order by bangsal.nm_bangsal,kamar_inap.tgl_masuk,kamar_inap.jam_masuk",param);
+                                Valid.MyReportqry("rptKamarInap.jasper", "report", "::[ Data Kamar Inap Pasien ]::", 
+                                      "select reg_periksa.no_rkm_medis,pasien.nm_pasien, pasien.jk,reg_periksa.umurdaftar,kamar_inap.tgl_masuk,dokter.nm_dokter,\n"
+                                    + "kamar_inap.diagnosa_awal ,kecamatan.nm_kec,SUBSTRING(bangsal.nm_bangsal,5) AS kamar,\n"
+                                    + "CASE WHEN bridging_sep.peserta LIKE \"%PBI%\" THEN \"PBI\"  WHEN bridging_sep.peserta = '' \n"
+                                    + "OR bridging_sep.peserta IS NULL THEN '' ELSE \"NON-PBI\" END AS peserta, \n"
+                                    + "COALESCE(CONCAT('KELAS ',bridging_sep.klsrawat), '') AS kelas\n"
+                                    + "from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat \n"
+                                    + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis\n"
+                                    + "inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar\n"
+                                    + "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal\n"
+                                    + "inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec\n"
+                                    + "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = kamar_inap.no_rawat\n"
+                                    + "INNER JOIN dokter ON dokter.kd_dokter = dpjp_ranap.kd_dokter\n"
+                                    + "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj \n"
+                                    + "LEFT JOIN bridging_sep ON bridging_sep.no_rawat = reg_periksa.no_rawat where  " + key + " order by bangsal.nm_bangsal,kamar_inap.tgl_masuk,kamar_inap.jam_masuk", param);
                                  this.setCursor(Cursor.getDefaultCursor());
                               break;
                         case "Laporan 2":
