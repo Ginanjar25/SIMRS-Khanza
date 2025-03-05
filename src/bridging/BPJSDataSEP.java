@@ -3794,6 +3794,9 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                                  KdPropinsi.getText(),NmPropinsi.getText(),KdKabupaten.getText(),NmKabupaten.getText(),KdKecamatan.getText(),NmKecamatan.getText(),KdDPJPLayanan.getText(),
                                  NmDPJPLayanan.getText(),tbDataSEP.getValueAt(tbDataSEP.getSelectedRow(),0).toString()
                              });
+                            if(LakaLantas.getSelectedIndex()>0){
+                                JOptionPane.showMessageDialog(null,"Update KKL Berhasil, Untuk Nomor LP. Silahkan di update melalui Vclaim. !!!");
+                            }
                              Sequel.mengedit("rujuk_masuk","no_rawat=?","no_rawat=?,perujuk=?,no_rujuk=?",4,new String[]{
                                  TNoRw.getText(),NmPpkRujukan.getText(),NoRujukan.getText(),
                                  tbDataSEP.getValueAt(tbDataSEP.getSelectedRow(),1).toString()
