@@ -387,7 +387,6 @@ public class DlgBookingKuota extends javax.swing.JFrame {
         BtnEdit1 = new widget.Button();
         BtnBatal = new widget.Button();
         BtnHapus = new widget.Button();
-        BtnPrint = new widget.Button();
         BtnAll = new widget.Button();
         BtnCekData = new widget.Button();
         BtnKeluar = new widget.Button();
@@ -440,6 +439,9 @@ public class DlgBookingKuota extends javax.swing.JFrame {
         tbObat.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 tbObatKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tbObatKeyReleased(evt);
             }
         });
         Scroll.setViewportView(tbObat);
@@ -520,23 +522,6 @@ public class DlgBookingKuota extends javax.swing.JFrame {
             }
         });
         panelGlass8.add(BtnHapus);
-
-        BtnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
-        BtnPrint.setMnemonic('T');
-        BtnPrint.setText("Cetak");
-        BtnPrint.setToolTipText("Alt+T");
-        BtnPrint.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnPrint.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnPrintActionPerformed(evt);
-            }
-        });
-        BtnPrint.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnPrintKeyPressed(evt);
-            }
-        });
-        panelGlass8.add(BtnPrint);
 
         BtnAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
         BtnAll.setMnemonic('M');
@@ -639,7 +624,7 @@ public class DlgBookingKuota extends javax.swing.JFrame {
         jLabel13.setPreferredSize(new java.awt.Dimension(90, 23));
         panelCari.add(jLabel13);
 
-        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "25-02-2025" }));
+        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-03-2025" }));
         DTPCari3.setDisplayFormat("dd-MM-yyyy");
         DTPCari3.setOpaque(false);
         DTPCari3.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -727,7 +712,7 @@ public class DlgBookingKuota extends javax.swing.JFrame {
         TPasien.setBounds(230, 10, 220, 23);
 
         TanggalPeriksa.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalPeriksa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2025-02-25" }));
+        TanggalPeriksa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2025-03-06" }));
         TanggalPeriksa.setDisplayFormat("yyyy-MM-dd");
         TanggalPeriksa.setOpaque(false);
         TanggalPeriksa.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -895,57 +880,8 @@ public class DlgBookingKuota extends javax.swing.JFrame {
     private void BtnHapusKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnHapusKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             BtnHapusActionPerformed(null);
-        }else{
-            Valid.pindah(evt, BtnBatal, BtnPrint);
         }
     }//GEN-LAST:event_BtnHapusKeyPressed
-
-    private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        if(tabMode.getRowCount()==0){
-            JOptionPane.showMessageDialog(null,"Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
-            BtnBatal.requestFocus();
-        }else if(tabMode.getRowCount()!=0){
-            Map<String, Object> param = new HashMap<>();
-            param.put("namars",akses.getnamars());
-            param.put("alamatrs",akses.getalamatrs());
-            param.put("kotars",akses.getkabupatenrs());
-            param.put("propinsirs",akses.getpropinsirs());
-            param.put("kontakrs",akses.getkontakrs());
-            param.put("emailrs",akses.getemailrs());
-            param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
-            status=" booking_registrasi.tanggal_periksa between '"+Valid.SetTgl(DTPCari3.getSelectedItem()+"")+"' and '"+Valid.SetTgl(DTPCari3.getSelectedItem()+"")+"' ";
-            Valid.MyReportqry("rptBookingRegistrasi.jasper","report","::[ Laporan Daftar Booking Registrasi ]::",
-                "select booking_registrasi.tanggal_booking,booking_registrasi.jam_booking,booking_registrasi.no_rkm_medis, "+
-                "pasien.nm_pasien,booking_registrasi.tanggal_periksa,booking_registrasi.kd_dokter,"+
-                "dokter.nm_dokter,booking_registrasi.kd_poli,poliklinik.nm_poli,booking_registrasi.no_reg, "+
-                "pasien.namakeluarga,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab)as alamatpj,pasien.kelurahanpj,pasien.kecamatanpj,pasien.no_tlp,"+
-                "pasien.kabupatenpj,pasien.propinsipj,pasien.keluarga,TIMESTAMPDIFF(YEAR, pasien.tgl_lahir, CURDATE()) as tahun, "+
-                "(TIMESTAMPDIFF(MONTH, pasien.tgl_lahir, CURDATE()) - ((TIMESTAMPDIFF(MONTH, pasien.tgl_lahir, CURDATE()) div 12) * 12)) as bulan, "+
-                "TIMESTAMPDIFF(DAY, DATE_ADD(DATE_ADD(pasien.tgl_lahir,INTERVAL TIMESTAMPDIFF(YEAR, pasien.tgl_lahir, CURDATE()) YEAR), INTERVAL TIMESTAMPDIFF(MONTH, pasien.tgl_lahir, CURDATE()) - ((TIMESTAMPDIFF(MONTH, pasien.tgl_lahir, CURDATE()) div 12) * 12) MONTH), CURDATE()) as hari, "+
-                "booking_registrasi.limit_reg,booking_registrasi.status,booking_registrasi.kd_pj,penjab.png_jawab "+
-                "from booking_registrasi inner join pasien on booking_registrasi.no_rkm_medis=pasien.no_rkm_medis "+
-                "inner join dokter on booking_registrasi.kd_dokter=dokter.kd_dokter "+
-                "inner join poliklinik on booking_registrasi.kd_poli=poliklinik.kd_poli "+
-                "inner join penjab on booking_registrasi.kd_pj=penjab.kd_pj "+
-                "inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel "+
-                "inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec "+
-                "inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab "+
-                "where "+status+" and booking_registrasi.no_rkm_medis like '%"+TCari.getText().trim()+"%' or "+
-                status+" and pasien.nm_pasien like '%"+TCari.getText().trim()+"%' or "+
-                status+" and poliklinik.nm_poli like '%"+TCari.getText().trim()+"%' or "+
-                status+" and dokter.nm_dokter like '%"+TCari.getText().trim()+"%' order by booking_registrasi.tanggal_booking,dokter.nm_dokter",param);
-        }
-        this.setCursor(Cursor.getDefaultCursor());
-    }//GEN-LAST:event_BtnPrintActionPerformed
-
-    private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnPrintKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            BtnPrintActionPerformed(null);
-        }else{
-            Valid.pindah(evt, BtnHapus, BtnKeluar);
-        }
-    }//GEN-LAST:event_BtnPrintKeyPressed
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
@@ -982,7 +918,7 @@ public class DlgBookingKuota extends javax.swing.JFrame {
     private void BtnKeluarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnKeluarKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             dispose();
-        }else{Valid.pindah(evt,BtnPrint,TCari);}
+        }
     }//GEN-LAST:event_BtnKeluarKeyPressed
 
     private void TCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCariKeyPressed
@@ -1063,6 +999,17 @@ public class DlgBookingKuota extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_BtnDokterKeyPressed
 
+    private void tbObatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbObatKeyReleased
+        if(tabMode.getRowCount()!=0){
+            if((evt.getKeyCode()==KeyEvent.VK_ENTER)||(evt.getKeyCode()==KeyEvent.VK_UP)||(evt.getKeyCode()==KeyEvent.VK_DOWN)){
+                try {
+                    getData();
+                } catch (java.lang.NullPointerException e) {
+                }
+            }
+        }
+    }//GEN-LAST:event_tbObatKeyReleased
+
     /**
      * @param args the command line arguments
      */
@@ -1109,7 +1056,6 @@ public class DlgBookingKuota extends javax.swing.JFrame {
     private widget.Button BtnEdit1;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
-    private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
     private widget.CekBox ChkInput;
     private widget.Tanggal DTPCari3;
@@ -1192,6 +1138,7 @@ private void tampil() {
         TNotelp.setText("");
         KdDokter.setText("");
         NmDokter.setText("");
+        TCatatan.setText("");
     }
     
 
@@ -1245,13 +1192,11 @@ private void tampil() {
         if(akses.getkode().equals("Admin Utama") || akses.getkode().equals("087")){
             BtnSimpan.setEnabled(true);
             BtnHapus.setEnabled(true);
-            BtnPrint.setEnabled(true);
             BtnCekData.setEnabled(true);
             BtnEdit1.setEnabled(true);
         }else{
             BtnSimpan.setEnabled(akses.getbooking_registrasi());
             BtnHapus.setEnabled(false);
-            BtnPrint.setEnabled(akses.getbooking_registrasi());
             BtnCekData.setEnabled(akses.getbooking_registrasi());
             BtnEdit1.setEnabled(akses.getbooking_registrasi());
         }
@@ -1265,9 +1210,9 @@ private void tampil() {
             KdDokter.getText(),
             TPasien.getText(),
             TAlamat.getText(),
-            TNotelp.getText(),
-            TCatatan.getText(),
+            TNotelp.getText(),            
             akses.getkode(),
+            TCatatan.getText(),
             "0000-00-00 00:00:00"
            })==true){
             emptTeks();

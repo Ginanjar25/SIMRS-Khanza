@@ -180,6 +180,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import permintaan.DlgPermintaanFotoBayi;
 import rekammedis.RMDataResumePerawatPasienRanap;
+import bridging.BPJSRujukanKeluar;
 
 /**
  *
@@ -17619,6 +17620,30 @@ public class DlgKamarInap extends javax.swing.JDialog {
         dokter.setVisible(true);
     }        
     
+    private void ppRujukKeluarActionPerformed(java.awt.event.ActionEvent evt) {
+        if (tbKamIn.getSelectedRow() != -1) {
+            String nosep = Sequel.cariIsi("SELECT bse.no_sep FROM bridging_sep bse WHERE bse.no_rawat =?", norawat.getText());
+            if (!nosep.equals("")) {
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                akses.setform("DlgReg");
+                String namaPasien = Sequel.cariIsi("SELECT bse.nama_pasien FROM bridging_sep bse WHERE bse.no_sep =?", nosep);
+                String norm = Sequel.cariIsi("SELECT bse.nomr FROM bridging_sep bse WHERE bse.no_sep =?", nosep);
+                BPJSRujukanKeluar rujuk = new BPJSRujukanKeluar(null, false);
+                rujuk.tampil();
+                rujuk.emptTeks();
+                rujuk.isCek();
+                rujuk.setRujukKeluar(norawat.getText(), nosep, namaPasien, norm);
+                rujuk.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                rujuk.setLocationRelativeTo(internalFrame1);
+                rujuk.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
+            } else {
+                JOptionPane.showMessageDialog(null, "Maaf, Pasien  belum terbit SEP ...!!!!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Maaf, silahkan pilih pasien yang mau dibuatkan rujukan...!!!!");
+        }
+    }
     /**
     * @param args the command line arguments
     */
@@ -18033,6 +18058,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private javax.swing.JMenuItem ppKelahiranBayi;
     private javax.swing.JMenuItem ppPermintaanFotoBayi;
     private javax.swing.JMenuItem MnPasienMeninggal;
+    private javax.swing.JMenuItem ppRujukKeluar;
     
     private void tampil() {
         if(R1.isSelected()==true){
@@ -19001,11 +19027,29 @@ public class DlgKamarInap extends javax.swing.JDialog {
         MnPenilaianAwal.add(MnPenilaianAwalMedisHemodialisa);
         MnPenilaianAwal.add(MnPenilaianFisioterapi);
         
+        ppRujukKeluar = new javax.swing.JMenuItem();
+        
+        ppRujukKeluar.setBackground(new java.awt.Color(255, 255, 254));
+        ppRujukKeluar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppRujukKeluar.setForeground(new java.awt.Color(50, 50, 50));
+        ppRujukKeluar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppRujukKeluar.setText("Rujuk Keluar BPJS");
+        ppRujukKeluar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppRujukKeluar.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppRujukKeluar.setName("ppRujukKeluar"); // NOI18N
+        ppRujukKeluar.setPreferredSize(new java.awt.Dimension(320, 26));
+        ppRujukKeluar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppRujukKeluarActionPerformed(evt);
+            }
+        });
+        
         MenuBPJS.add(MnCekKepesertaan);
         MenuBPJS.add(MnCekNIK);
         MenuBPJS.add(MnSEP);
         MenuBPJS.add(MnDataSEP);
         MenuBPJS.add(ppSuratKontrol);
+        MenuBPJS.add(ppRujukKeluar);
         MenuBPJS.add(ppSuratPRI);
         MenuBPJS.add(ppSuplesiJasaRaharja);
         MenuBPJS.add(ppDataIndukKecelakaan);

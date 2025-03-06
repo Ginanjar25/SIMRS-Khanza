@@ -414,7 +414,7 @@ public final class BPJSRujukanKeluar extends javax.swing.JDialog {
         panelGlass8.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-03-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-03-2025" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -428,7 +428,7 @@ public final class BPJSRujukanKeluar extends javax.swing.JDialog {
         panelGlass8.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-03-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-03-2025" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -610,7 +610,7 @@ public final class BPJSRujukanKeluar extends javax.swing.JDialog {
 
         TanggalRujukKeluar.setEditable(false);
         TanggalRujukKeluar.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalRujukKeluar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-03-2025" }));
+        TanggalRujukKeluar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-03-2025" }));
         TanggalRujukKeluar.setDisplayFormat("dd-MM-yyyy");
         TanggalRujukKeluar.setName("TanggalRujukKeluar"); // NOI18N
         TanggalRujukKeluar.setOpaque(false);
@@ -793,7 +793,7 @@ public final class BPJSRujukanKeluar extends javax.swing.JDialog {
         jLabel50.setBounds(640, 80, 80, 23);
 
         TanggalKunjungRujukan.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalKunjungRujukan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-03-2025" }));
+        TanggalKunjungRujukan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-03-2025" }));
         TanggalKunjungRujukan.setDisplayFormat("dd-MM-yyyy");
         TanggalKunjungRujukan.setName("TanggalKunjungRujukan"); // NOI18N
         TanggalKunjungRujukan.setOpaque(false);
@@ -1061,7 +1061,21 @@ public final class BPJSRujukanKeluar extends javax.swing.JDialog {
     }//GEN-LAST:event_btnPPKRujukan1KeyPressed
 
     private void JenisPelayanan1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_JenisPelayanan1ItemStateChanged
-        // TODO add your handling code here:
+        if(JenisPelayanan1.getSelectedIndex()==0){
+            btnPoli1.setEnabled(false);
+            KdPoli1.setText("");
+            NmPoli1.setText("");
+            btnPoli1.setVisible(false);
+            KdPoli1.setVisible(false);
+            NmPoli1.setVisible(false);
+            LabelPoli1.setVisible(false);
+        }else{
+            btnPoli1.setEnabled(true);
+            btnPoli1.setVisible(true);
+            KdPoli1.setVisible(true);
+            NmPoli1.setVisible(true);
+            LabelPoli1.setVisible(true);
+        }
     }//GEN-LAST:event_JenisPelayanan1ItemStateChanged
 
     private void JenisPelayanan1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JenisPelayanan1KeyPressed
@@ -1383,11 +1397,16 @@ public final class BPJSRujukanKeluar extends javax.swing.JDialog {
     }
     
     public void setRujukKeluar(String norwt, String nosep, String nama, String norm){
+        TanggalRujukKeluar.setEnabled(false);
         TNoRawat.setText(norwt);
         TNoSep.setText(nosep);
         TNama.setText(nama);
         NoRM.setText(norm);
         TCari.setText(norwt);
+        if(Sequel.cariIsi("SELECT bse.jnspelayanan FROM bridging_sep bse WHERE bse.no_sep =?", nosep).equals("1")){
+            JenisPelayanan1.setSelectedIndex(0);
+            btnPoli1.setEnabled(false);
+        }
     }
     
     public static class HttpEntityEnclosingDeleteRequest extends HttpEntityEnclosingRequestBase {

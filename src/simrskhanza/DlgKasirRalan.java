@@ -201,6 +201,7 @@ import surat.SuratSakit;
 import surat.SuratSakitPihak2;
 import surat.SuratTidakHamil;
 import fungsi.AntrianPoli;
+import bridging.BPJSRujukanKeluar;
 
 /**
  *
@@ -14542,6 +14543,33 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 this.setCursor(Cursor.getDefaultCursor());  
             }                
         }
+    }
+    
+    private void ppRujukKeluarActionPerformed(java.awt.event.ActionEvent evt) {
+        if (TabRawat.getSelectedIndex() == 0) {
+            if (tbKasirRalan.getSelectedRow() != -1) {
+                String nosep = Sequel.cariIsi("SELECT bse.no_sep FROM bridging_sep bse WHERE bse.no_rawat =?", TNoRw.getText());
+                if (!nosep.equals("")) {
+                    this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    akses.setform("DlgReg");                    
+                    String namaPasien = Sequel.cariIsi("SELECT bse.nama_pasien FROM bridging_sep bse WHERE bse.no_sep =?", nosep);
+                    String norm = Sequel.cariIsi("SELECT bse.nomr FROM bridging_sep bse WHERE bse.no_sep =?", nosep);                    
+                    BPJSRujukanKeluar rujuk=new BPJSRujukanKeluar(null,false);
+                    rujuk.tampil();
+                    rujuk.emptTeks();
+                    rujuk.isCek();
+                    rujuk.setRujukKeluar(TNoRw.getText(), nosep,namaPasien, norm);
+                    rujuk.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                    rujuk.setLocationRelativeTo(internalFrame1);
+                    rujuk.setVisible(true);
+                    this.setCursor(Cursor.getDefaultCursor());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Maaf, Pasien  belum terbit SEP ...!!!!");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Maaf, silahkan pilih pasien yang mau dibuatkan rujukan...!!!!");
+            }
+        }        
     }
     
     /**
