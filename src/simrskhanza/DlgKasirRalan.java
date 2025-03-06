@@ -202,6 +202,7 @@ import surat.SuratSakitPihak2;
 import surat.SuratTidakHamil;
 import fungsi.AntrianPoli;
 import bridging.BPJSRujukanKeluar;
+import permintaan.DlgBookingKuota;
 
 /**
  *
@@ -6698,6 +6699,20 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             }
         });
         panelGlass7.add(BtnSeek4);
+        
+        btnBookingKuota = new widget.Button();
+
+        btnBookingKuota.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnBookingKuota.setText("Booking Kuota");
+        btnBookingKuota.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnBookingKuota.setName("btnBookingKuota"); // NOI18N
+        btnBookingKuota.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKuotaActionPerformed(evt);
+            }
+        });
+        panelGlass7.add(btnBookingKuota);
+        btnBookingKuota.setBounds(910, 150, 150, 22);
 
         jPanel2.add(panelGlass7, java.awt.BorderLayout.CENTER);
 
@@ -14572,6 +14587,15 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         }        
     }
     
+    private void btnKuotaActionPerformed(java.awt.event.ActionEvent evt) {
+        DlgBookingKuota bookingkuota = new DlgBookingKuota();
+        bookingkuota.isCek();
+        bookingkuota.TCari.requestFocus();
+        bookingkuota.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+        bookingkuota.setLocationRelativeTo(internalFrame1);
+        bookingkuota.setVisible(true);
+    }
+    
     /**
     * @param args the command line arguments
     */
@@ -15018,6 +15042,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private javax.swing.JMenuItem ppResumePerawat;
     private widget.Label labelSKDP;
     private javax.swing.JPanel JLabelSKDP;
+    private widget.Button btnBookingKuota;
     
     private void tampilkasir() {     
         Valid.tabelKosong(tabModekasir);
@@ -15459,6 +15484,14 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         }else{
             BtnSeek4.setEnabled(true);
             CrPoli.setEditable(true);
+        }
+        
+        String isDokter = Sequel.cariIsi("select 1 from dokter where kd_dokter = ?", akses.getkode());
+        
+        if(isDokter.length() >= 1){
+            btnBookingKuota.setVisible(false);
+        }else{
+            btnBookingKuota.setVisible(true);
         }
         
     }
