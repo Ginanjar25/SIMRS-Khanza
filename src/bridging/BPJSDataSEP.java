@@ -3782,6 +3782,10 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                         System.out.println("message : "+nameNode.path("message").asText());
                         JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
                         if(nameNode.path("code").asText().equals("200")){
+                            String KeteranganNoLp = "";
+                            if(!Keterangan.getText().equals("") || !NoLP.getText().equals("")){
+                                KeteranganNoLp = Keterangan.getText()+"/"+NoLP.getText();
+                            }
                             Sequel.mengedit("bridging_sep",
                                  "no_sep=?","no_rawat=?,catatan=?,diagawal=?,nmdiagnosaawal=?,kdpolitujuan=?,nmpolitujuan=?,klsrawat=?,klsnaik=?,pembiayaan=?,"+
                                  "pjnaikkelas=?,lakalantas=?,user=?,nomr=?,nama_pasien=?,tanggal_lahir=?,peserta=?,jkel=?,eksekutif=?,cob=?,notelep=?,katarak=?,tglkkl=?,"+
@@ -3790,7 +3794,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                                  (NaikKelas.getSelectedIndex()>0?NaikKelas.getSelectedItem().toString().substring(0,1):""),(Pembiayaan.getSelectedIndex()>0?Pembiayaan.getSelectedItem().toString().substring(0,1):""),
                                  (PenanggungJawab.getText().equals("")?"":PenanggungJawab.getText()),LakaLantas.getSelectedItem().toString().substring(0,1),user,TNoRM.getText(),TPasien.getText(),TglLahir.getText(),
                                  JenisPeserta.getText(),JK.getText(),Eksekutif.getSelectedItem().toString().substring(0,1),COB.getSelectedItem().toString().substring(0,1),NoTelp.getText(),
-                                 Katarak.getSelectedItem().toString().substring(0,1),tglkkl,Keterangan.getText(),Suplesi.getSelectedItem().toString().substring(0,1),NoSEPSuplesi.getText(),
+                                 Katarak.getSelectedItem().toString().substring(0,1),tglkkl,KeteranganNoLp,Suplesi.getSelectedItem().toString().substring(0,1),NoSEPSuplesi.getText(),
                                  KdPropinsi.getText(),NmPropinsi.getText(),KdKabupaten.getText(),NmKabupaten.getText(),KdKecamatan.getText(),NmKecamatan.getText(),KdDPJPLayanan.getText(),
                                  NmDPJPLayanan.getText(),tbDataSEP.getValueAt(tbDataSEP.getSelectedRow(),0).toString()
                              });
