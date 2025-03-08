@@ -35,6 +35,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
 import javax.swing.JOptionPane;
@@ -78,7 +80,7 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
     private JsonNode nameNode;
     private JsonNode response;
     private ApiBPJS api=new ApiBPJS();
-    private String URL="",link="",utc="",requestJson="",obat="";
+    private String URL="",link="",utc="",requestJson="",obat="", user="";
 
     /** Creates new form DlgResepObat 
      *@param parent
@@ -324,6 +326,12 @@ public final class BPJSProgramPRB extends javax.swing.JDialog {
             link=koneksiDB.URLAPIBPJS();
         } catch (Exception e) {
             System.out.println("E : "+e);
+        }
+        
+        try {
+            user=akses.getkode().replace(" ","").substring(0,9);
+        } catch (Exception e) {
+            user=akses.getkode();
         }
     }
 
@@ -1171,6 +1179,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 requestEntity = new HttpEntity(headers);
                 URL = link+"/PRB/insert";
                 //System.out.println("URL : "+URL);
+                user = "00"+user;
                 requestJson ="{" +
                                 "\"request\":{" +
                                     "\"t_prb\":{" +
@@ -1182,7 +1191,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                                         "\"kodeDPJP\":\""+KdDPJP.getText()+"\"," +
                                         "\"keterangan\":\""+Keterangan.getText()+"\"," +
                                         "\"saran\":\""+Saran.getText()+"\"," +
-                                        "\"user\":\""+KdDPJP.getText()+"\"," +
+                                        "\"user\":\""+user+"\"," +
                                         "\"obat\":" +obat+
                                     "}" +
                                 "}" +
@@ -1192,6 +1201,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.POST, requestEntity, String.class).getBody());
                 nameNode = root.path("metaData");
                 JOptionPane.showMessageDialog(null,nameNode.path("message").asText()); 
+                System.out.println("RESPONSE PRB : " + nameNode.path("code").asText() + " " + nameNode.path("message").asText());
                 if(nameNode.path("code").asText().equals("200")){
                     response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc)).path("noSRB");
                     if(Sequel.menyimpantf("bridging_srb_bpjs","?,?,?,?,?,?,?,?,?,?,?,?","No.SEP SRB",12,new String[]{
@@ -1281,6 +1291,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     requestEntity = new HttpEntity(headers);
                     URL = link+"/PRB/Update";
                     //System.out.println("URL : "+URL);
+                    user = "00"+user;
                     requestJson ="{" +
                                     "\"request\":{" +
                                         "\"t_prb\":{" +
@@ -1291,7 +1302,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                                             "\"kodeDPJP\":\""+KdDPJP.getText()+"\"," +
                                             "\"keterangan\":\""+Keterangan.getText()+"\"," +
                                             "\"saran\":\""+Saran.getText()+"\"," +
-                                            "\"user\":\""+KdDPJP.getText()+"\"," +
+                                            "\"user\":\""+user+"\"," +
                                             "\"obat\":" +obat+
                                         "}" +
                                     "}" +
@@ -1301,6 +1312,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.PUT, requestEntity, String.class).getBody());
                     nameNode = root.path("metaData");
                     JOptionPane.showMessageDialog(null,nameNode.path("message").asText()); 
+                    System.out.println("RESPONSE PRB : " + nameNode.path("code").asText() + " " + nameNode.path("message").asText());
                     if(nameNode.path("code").asText().equals("200")){
                         response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc)).path("noSRB");
                         if(Sequel.queryu2tf("update bridging_srb_bpjs set no_sep=?,no_srb=?,tgl_srb=?,alamat=?,email=?,kodeprogram=?,namaprogram=?,kodedpjp=?,nmdpjp=?,user=?,keterangan=?,saran=? where no_sep=? and no_srb=?",14,new String[]{
@@ -1717,10 +1729,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         NoRM.setText(norm);
         NmPasien.setText(namapasien);
         Alamat.setText(alamat);
-        if(email.equals("") || email.equals("-")){
-          Email.setText("prb.rspw@gmail.com");  
-        }else{
-            Email.setText(email); 
+        
+        if (email.equals("") || email.equals("-")) {
+            setEmailIncrement();
+        } else {
+            Email.setText(email);
         }
         KdDPJP.setText(kodedpjp);
         NmDPJP.setText(namadpjp);
@@ -1866,6 +1879,32 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         ObatPRB.setText("");
         Valid.tabelKosong(tabMode2);
         Alamat.requestFocus();
+    }
+    
+    private void setEmailIncrement(){
+        String e = Sequel.cariIsi("SELECT email FROM bridging_srb_bpjs ORDER BY tgl_srb DESC LIMIT 1");
+
+            // Pola dasar email
+            String baseEmail = "prb.rspw@gmail.com";
+
+            if (e == null || e.isEmpty()) {
+                Email.setText(baseEmail);
+            } else {
+                // Mengecek apakah email memiliki format `+X`
+                Pattern pattern = Pattern.compile("\\+([0-9]+)@");
+                Matcher matcher = pattern.matcher(e);
+
+                if (matcher.find()) {
+                    int currentIncrement = Integer.parseInt(matcher.group(1));
+                    int nextIncrement = (currentIncrement == 3) ? 0 : currentIncrement + 1;
+
+                    // Set email baru dengan increment
+                    Email.setText(nextIncrement == 0 ? baseEmail : baseEmail.replace("@", "+" + nextIncrement + "@"));
+                } else {
+                    // Jika tidak ditemukan +X, maka mulai dari +1
+                    Email.setText(baseEmail.replace("@", "+1@"));
+                }
+            }
     }
     
     @Test
