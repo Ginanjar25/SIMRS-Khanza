@@ -8922,23 +8922,23 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                         NoRawatGabung.getText(), kode, no_kartu, "2"
                                     });
                                 }
-                            }
-                            
-                            Sequel.menyimpantf("permintaan_ranap", "?,?,?,?,?", "Pasien", 5, new String[]{
-                                NoRawatGabung.getText(),
-                                Valid.SetTgl(DTPRawatGabung.getSelectedItem() + ""),
-                                tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 19).toString(),
-                                Diagnosa.getText(),
-                                Catatan.getText() + "#" + titip_kamar
-                            });
 
-                            if (Sequel.menyimpantf("dpjp_ranap", "?,?", "Dokter", 2, new String[]{
-                                NoRawatGabung.getText(),
-                                KdDokter1.getText()
-                            }) == true) {
-                                emptTeks();
-                            }
-                        }
+                                Sequel.menyimpantf("permintaan_ranap", "?,?,?,?,?", "Pasien", 5, new String[]{
+                                    NoRawatGabung.getText(),
+                                    Valid.SetTgl(DTPRawatGabung.getSelectedItem() + ""),
+                                    tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 19).toString(),
+                                    Diagnosa.getText(),
+                                    Catatan.getText() + "#" + titip_kamar
+                                });
+
+                                if (Sequel.menyimpantf("dpjp_ranap", "?,?", "Dokter", 2, new String[]{
+                                    NoRawatGabung.getText(),
+                                    KdDokter1.getText()
+                                }) == true) {
+                                    emptTeks();
+                                }
+                            }                           
+                                                    }
                     } catch (Exception ex) {
                         System.out.println("Notifikasi : " + ex);
                     } finally {
