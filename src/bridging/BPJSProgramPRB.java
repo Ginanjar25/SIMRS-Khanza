@@ -1179,7 +1179,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 requestEntity = new HttpEntity(headers);
                 URL = link+"/PRB/insert";
                 //System.out.println("URL : "+URL);
-                user = "00"+user;
+                user = "0000"+user;
                 requestJson ="{" +
                                 "\"request\":{" +
                                     "\"t_prb\":{" +
@@ -1291,7 +1291,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     requestEntity = new HttpEntity(headers);
                     URL = link+"/PRB/Update";
                     //System.out.println("URL : "+URL);
-                    user = "00"+user;
+                    user = "0000"+user;
                     requestJson ="{" +
                                     "\"request\":{" +
                                         "\"t_prb\":{" +

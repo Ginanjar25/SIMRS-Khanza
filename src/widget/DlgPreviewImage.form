@@ -146,10 +146,7 @@
         </Constraint>
       </Constraints>
 
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout">
-        <Property name="horizontalGap" type="int" value="1"/>
-        <Property name="verticalGap" type="int" value="1"/>
-      </Layout>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
       <SubComponents>
         <Component class="javax.swing.JLabel" name="ImagePrev">
           <Properties>

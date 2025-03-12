@@ -130,7 +130,7 @@ public final class DlgPreviewImage extends javax.swing.JDialog {
         getContentPane().add(panel1, java.awt.BorderLayout.PAGE_END);
 
         internalFrame1.setName("internalFrame1"); // NOI18N
-        internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
+        internalFrame1.setLayout(new java.awt.BorderLayout());
 
         ImagePrev.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ImagePrev.setName("ImagePrev"); // NOI18N
@@ -200,24 +200,25 @@ public final class DlgPreviewImage extends javax.swing.JDialog {
     private widget.PanelJudul panelJudul1;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil(String LocFile) {
+   public void tampil(String LocFile) {
     try {
         FilePath = LocFile;
         // Membaca gambar dari file
         BufferedImage bufferedImage = ImageIO.read(new File(LocFile));
 
-        // Mendapatkan ukuran asli gambar
+        // Dapatkan ukuran dialog
+        int dialogWidth = this.getWidth()-20;
+        int dialogHeight = this.getHeight()-70;
+        System.out.println(dialogHeight);
+
+        // Dapatkan ukuran asli gambar
         int imgWidth = bufferedImage.getWidth();
         int imgHeight = bufferedImage.getHeight();
 
-        // Mendapatkan ukuran JLabel tempat gambar akan ditampilkan
-        int labelWidth = ImagePrev.getWidth();
-        int labelHeight = ImagePrev.getHeight();
-
-        // Menyesuaikan ukuran gambar agar tetap proporsional
-        double scaleX = (double) labelWidth / imgWidth;
-        double scaleY = (double) labelHeight / imgHeight;
-        double scale = Math.max(scaleX, scaleY); // Pilih skala yang lebih kecil agar tidak melebihi JLabel
+        // Menyesuaikan ukuran gambar agar tetap proporsional dengan dialog
+        double scaleX = (double) dialogWidth / imgWidth;
+        double scaleY = (double) dialogHeight / imgHeight;
+        double scale = Math.min(scaleX, scaleY); // Pilih skala yang lebih kecil agar tetap dalam batas dialog
 
         int newWidth = (int) (imgWidth * scale);
         int newHeight = (int) (imgHeight * scale);
@@ -228,11 +229,13 @@ public final class DlgPreviewImage extends javax.swing.JDialog {
         // Menampilkan gambar dalam JLabel
         ImagePrev.setIcon(new ImageIcon(scaledImage));
         ImagePrev.setText(""); // Hapus teks jika gambar muncul
+
     } catch (Exception e) {
-            e.printStackTrace();
-         JOptionPane.showMessageDialog(null, "Maaf, Foto masih kosong, Harap pilih foto terlebih dahulu...!!!!");
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Maaf, Foto masih kosong atau terjadi kesalahan!");
     }
 }
+
     
 public void saveAsFromServer(String serverFilePath) {
     if (serverFilePath == null || serverFilePath.isEmpty()) {
@@ -293,8 +296,6 @@ public String saveToServer(String localFilePath, String noRM, String namaBayi, S
             }
         }
 
-        // Path server dengan struktur folder
-        String link = "\\\\192.168.106.98\\SysAdmin\\Test Foto Bayi\\";
         String serverPath = link + tahun + "\\" + bulan + "\\" + tanggal;
         
         // Pastikan folder tujuan ada

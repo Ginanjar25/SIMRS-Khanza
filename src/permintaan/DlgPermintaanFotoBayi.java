@@ -13,6 +13,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +21,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
@@ -31,6 +37,7 @@ import simrskhanza.DlgCariPasien;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import widget.DlgPreviewImage;
+import static widget.DlgPreviewImage.URLPATHIMAGES;
 
 /**
  *
@@ -53,9 +60,11 @@ public class DlgPermintaanFotoBayi extends javax.swing.JDialog {
     private Date date = new Date();
     private String now = dateFormat.format(date);
     private DlgPreviewImage PrevImage = new DlgPreviewImage(null, false);
-    private String tglcari="";
+    private String tglcari="", link="";
     private boolean aktif=false;
     private File fotoRaw1, fotoRaw2, fotoJadi1, fotoJadi2, fotoSelected;
+    private static String var="";
+    private static final Properties prop = new Properties();
 
     /** Creates new form DlgPemberianInfus
      * @param parent
@@ -279,6 +288,12 @@ public class DlgPermintaanFotoBayi extends javax.swing.JDialog {
             alarm="no";
         }
         
+        try {
+            link = URLEDITIMAGES();
+        } catch (Exception e) {
+            System.out.println("E : " + e);
+        }
+        
         ChkInput.setSelected(true);
         isForm();
         
@@ -302,6 +317,8 @@ public class DlgPermintaanFotoBayi extends javax.swing.JDialog {
         NoRawatIbu = new widget.TextBox();
         NoRawatBayi = new widget.TextBox();
         jFileChooser1 = new javax.swing.JFileChooser();
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        MnEditFoto = new javax.swing.JMenuItem();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -387,6 +404,24 @@ public class DlgPermintaanFotoBayi extends javax.swing.JDialog {
 
         jFileChooser1.setName("jFileChooser1"); // NOI18N
 
+        jPopupMenu1.setName("jPopupMenu1"); // NOI18N
+
+        MnEditFoto.setBackground(new java.awt.Color(255, 255, 254));
+        MnEditFoto.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnEditFoto.setForeground(new java.awt.Color(50, 50, 50));
+        MnEditFoto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnEditFoto.setText("Edit Foto");
+        MnEditFoto.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnEditFoto.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnEditFoto.setName("MnEditFoto"); // NOI18N
+        MnEditFoto.setPreferredSize(new java.awt.Dimension(160, 26));
+        MnEditFoto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnEditFotoActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(MnEditFoto);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
@@ -408,6 +443,7 @@ public class DlgPermintaanFotoBayi extends javax.swing.JDialog {
 
         tbObat.setAutoCreateRowSorter(true);
         tbObat.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
+        tbObat.setComponentPopupMenu(jPopupMenu1);
         tbObat.setName("tbObat"); // NOI18N
         tbObat.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -533,7 +569,7 @@ public class DlgPermintaanFotoBayi extends javax.swing.JDialog {
         jLabel16.setPreferredSize(new java.awt.Dimension(120, 23));
         panelGlass10.add(jLabel16);
 
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "12-03-2025" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -556,7 +592,7 @@ public class DlgPermintaanFotoBayi extends javax.swing.JDialog {
         jLabel26.setPreferredSize(new java.awt.Dimension(30, 23));
         panelGlass10.add(jLabel26);
 
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-02-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "12-03-2025" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -1064,8 +1100,6 @@ public class DlgPermintaanFotoBayi extends javax.swing.JDialog {
         
         if (NoRM.getText().trim().equals("")) {
             Valid.textKosong(NoRM, "No.Rekam Medis");
-        } else if (NmPasien.getText().trim().equals("")) {
-            Valid.textKosong(NmPasien, "Nama Bayi");
         } else if (NmIbu.getText().trim().equals("")) {
             Valid.textKosong(NmIbu, "Nama Ibu");
         } else if (NmAyah.getText().trim().equals("")) {
@@ -1307,6 +1341,15 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             jFileChooser1.setFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "jpeg"));
             int result = jFileChooser1.showOpenDialog(null);
 
+            // Dapatkan daftar file yang ada di direktori saat ini
+            File currentDirectory = jFileChooser1.getCurrentDirectory();
+            File[] files = currentDirectory.listFiles((dir, name) -> name.toLowerCase().matches(".*\\.(jpg|jpeg|png)"));
+
+            // Sort file berdasarkan tanggal terakhir dimodifikasi (terbaru di atas)
+            if (files != null) {
+                Arrays.sort(files, Comparator.comparingLong(File::lastModified).reversed());
+            }
+            
             if (result == JFileChooser.APPROVE_OPTION) {
                 fotoJadi1 = jFileChooser1.getSelectedFile();
                 FotoJadi.setText(fotoJadi1.getAbsolutePath());
@@ -1378,9 +1421,19 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private void BtnFotoBayi1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnFotoBayi1ActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
+            JFileChooser jFileChooser1 = new JFileChooser();
             jFileChooser1.setFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "jpeg"));
-            int result = jFileChooser1.showOpenDialog(null);
 
+            // Dapatkan daftar file yang ada di direktori saat ini
+            File currentDirectory = jFileChooser1.getCurrentDirectory();
+            File[] files = currentDirectory.listFiles((dir, name) -> name.toLowerCase().matches(".*\\.(jpg|jpeg|png)"));
+
+            // Sort file berdasarkan tanggal terakhir dimodifikasi (terbaru di atas)
+            if (files != null) {
+                Arrays.sort(files, Comparator.comparingLong(File::lastModified).reversed());
+            }
+
+            int result = jFileChooser1.showOpenDialog(null);
             if (result == JFileChooser.APPROVE_OPTION) {
                 fotoRaw1 = jFileChooser1.getSelectedFile();
                 FotoRaw.setText(fotoRaw1.getAbsolutePath());
@@ -1396,7 +1449,14 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         try {
             jFileChooser1.setFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "jpeg"));
             int result = jFileChooser1.showOpenDialog(null);
+            // Dapatkan daftar file yang ada di direktori saat ini
+            File currentDirectory = jFileChooser1.getCurrentDirectory();
+            File[] files = currentDirectory.listFiles((dir, name) -> name.toLowerCase().matches(".*\\.(jpg|jpeg|png)"));
 
+            // Sort file berdasarkan tanggal terakhir dimodifikasi (terbaru di atas)
+            if (files != null) {
+                Arrays.sort(files, Comparator.comparingLong(File::lastModified).reversed());
+            }
             if (result == JFileChooser.APPROVE_OPTION) {
                 fotoRaw2 = jFileChooser1.getSelectedFile();
                 FotoRaw1.setText(fotoRaw2.getAbsolutePath());
@@ -1413,6 +1473,15 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             jFileChooser1.setFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "jpeg"));
             int result = jFileChooser1.showOpenDialog(null);
 
+            // Dapatkan daftar file yang ada di direktori saat ini
+            File currentDirectory = jFileChooser1.getCurrentDirectory();
+            File[] files = currentDirectory.listFiles((dir, name) -> name.toLowerCase().matches(".*\\.(jpg|jpeg|png)"));
+
+            // Sort file berdasarkan tanggal terakhir dimodifikasi (terbaru di atas)
+            if (files != null) {
+                Arrays.sort(files, Comparator.comparingLong(File::lastModified).reversed());
+            }
+            
             if (result == JFileChooser.APPROVE_OPTION) {
                 fotoJadi2 = jFileChooser1.getSelectedFile();
                 FotoJadi2.setText(fotoJadi2.getAbsolutePath());
@@ -1445,10 +1514,10 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             try {
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 DlgPreviewImage form = new DlgPreviewImage(null, false);
-                form.tampil(FotoRaw.getText());
-                form.setSize(700, 900);
+                form.setSize(internalFrame1.getWidth()-100,internalFrame1.getHeight()-20);
                 form.setLocationRelativeTo(internalFrame1);
                 form.setVisible(true);
+                form.tampil(FotoRaw.getText());
                 this.setCursor(Cursor.getDefaultCursor());
             } catch (Exception e) {
                 System.out.println("Notif : " + e);
@@ -1465,9 +1534,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             try {
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 DlgPreviewImage form = new DlgPreviewImage(null, false);
-                form.tampil(FotoRaw1.getText());
-                form.setSize(700, 900);
+                form.setSize(internalFrame1.getWidth()-100,internalFrame1.getHeight()-20);
                 form.setLocationRelativeTo(internalFrame1);
+                form.tampil(FotoRaw1.getText());
                 form.setVisible(true);
                 this.setCursor(Cursor.getDefaultCursor());
             } catch (Exception e) {
@@ -1485,9 +1554,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             try {
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 DlgPreviewImage form = new DlgPreviewImage(null, false);
-                form.tampil(FotoJadi.getText());
-                form.setSize(700, 900);
+                form.setSize(internalFrame1.getWidth()-100,internalFrame1.getHeight()-20);
                 form.setLocationRelativeTo(internalFrame1);
+                form.tampil(FotoJadi.getText());
                 form.setVisible(true);
                 this.setCursor(Cursor.getDefaultCursor());
             } catch (Exception e) {
@@ -1505,9 +1574,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             try {
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 DlgPreviewImage form = new DlgPreviewImage(null, false);
-                form.tampil(FotoJadi2.getText());
-                form.setSize(700, 900);
+                form.setSize(internalFrame1.getWidth()-100,internalFrame1.getHeight()-20);
                 form.setLocationRelativeTo(internalFrame1);
+                form.tampil(FotoJadi2.getText());
                 form.setVisible(true);
                 this.setCursor(Cursor.getDefaultCursor());
             } catch (Exception e) {
@@ -1518,6 +1587,37 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             JOptionPane.showMessageDialog(null, "Maaf, Foto masih kosong, Harap pilih foto terlebih dahulu...!!!!");
         }
     }//GEN-LAST:event_BtnPreviewFotoJadi1ActionPerformed
+
+    private void MnEditFotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnEditFotoActionPerformed
+        if (tbObat.getSelectedRow() != -1) {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+            if (!FotoRaw.getText().equals("")) {
+                Valid.panggilUrl2(link + "editfotobayi.php?datafoto=" + NoRM.getText() + "-1");
+
+                if (!FotoRaw1.getText().equals("")) {
+                    // Jalankan delay di thread terpisah
+                    new SwingWorker<Void, Void>() {
+                        @Override
+                        protected Void doInBackground() throws Exception {
+                            Thread.sleep(2000); // Delay 2 detik
+                            return null;
+                        }
+
+                        @Override
+                        protected void done() {
+                            Valid.panggilUrl2(link + "editfotobayi.php?datafoto=" + NoRM.getText() + "-2");
+                        }
+                    }.execute();
+                }
+            }
+
+            this.setCursor(Cursor.getDefaultCursor());
+        } else {
+            JOptionPane.showMessageDialog(null, "Maaf, silahkan pilih data Foto Bayi yang mau dicetak...!!!!");
+            BtnBatal.requestFocus();
+        }
+    }//GEN-LAST:event_MnEditFotoActionPerformed
 
     /**
     * @param args the command line arguments
@@ -1570,6 +1670,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox KdDokter2;
     private widget.Label LCount;
     private widget.Tanggal Lahir;
+    private javax.swing.JMenuItem MnEditFoto;
     private widget.TextBox NmAyah;
     private widget.TextBox NmIbu;
     private widget.TextBox NmPasien;
@@ -1601,6 +1702,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Label jLabel7;
     private widget.Label jLabel8;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private widget.ComboBox jam;
     private widget.Label label23;
     private widget.Label label24;
@@ -1796,5 +1898,15 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     
     private void isMenu2() {
 
+    }
+    
+        public static String URLEDITIMAGES(){
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = prop.getProperty("URLEDITFOTOBAYI");
+        } catch (Exception e) {
+            var = "";
+        }
+        return var;
     }
 }

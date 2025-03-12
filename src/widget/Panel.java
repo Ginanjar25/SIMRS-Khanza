@@ -77,7 +77,7 @@ public class Panel extends JPanel {
         Graphics2D g2 = (Graphics2D) gradientImage.getGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        GradientPaint paint = new GradientPaint(0, 0, warna2, 0, getHeight(), warna);
+        GradientPaint paint = new GradientPaint(0, 0, black, 0, getHeight(), warna);
 
         g2.setPaint(paint);
         g2.fillRect(0, 0, 1, getHeight());
