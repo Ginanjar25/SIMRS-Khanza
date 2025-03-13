@@ -902,6 +902,8 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
             Valid.textKosong(KdDokter,"Dokter");
         }else if(NmPoli.getText().trim().equals("")||NmPoli.getText().trim().equals("")){
             Valid.textKosong(KdPoli,"Poli");
+        }else if(TanggalSurat.getSelectedItem().toString().trim().equals(TanggalKontrol.getSelectedItem().toString().substring(0, 10))){
+            JOptionPane.showMessageDialog(null,"Tanggal surat tidak boleh sama dengan tanggal rencana kontrol");
         }else{
             try {
                 headers = new HttpHeaders();
@@ -1145,6 +1147,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             Valid.textKosong(KdDokter,"Dokter");
         }else if(NmPoli.getText().trim().equals("")||NmPoli.getText().trim().equals("")){
             Valid.textKosong(KdPoli,"Poli");
+        }else if(TanggalSurat.getSelectedItem().toString().trim().equals(TanggalKontrol.getSelectedItem().toString().substring(0, 10))){
+            JOptionPane.showMessageDialog(null,"Tanggal surat tidak boleh sama dengan tanggal rencana kontrol");
         }else{
             if(tbObat.getSelectedRow()!= -1){
                 try {
