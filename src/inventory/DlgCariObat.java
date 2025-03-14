@@ -535,6 +535,10 @@ public final class DlgCariObat extends javax.swing.JDialog {
         jLabel15 = new widget.Label();
         TAlergi = new widget.TextBox();
         jLabelAlergi = new widget.Label();
+        TPRB = new widget.TextBox();
+        jLabelPRB = new widget.Label();
+        TIter = new widget.TextBox();
+        jLabelIter = new widget.Label();
         TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -852,7 +856,7 @@ public final class DlgCariObat extends javax.swing.JDialog {
         jLabel8.setBounds(4, 40, 65, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "24-07-2024" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "14-03-2025" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -1001,7 +1005,7 @@ public final class DlgCariObat extends javax.swing.JDialog {
         TCaraBayar.setName("TCaraBayar"); // NOI18N
         TCaraBayar.setPreferredSize(new java.awt.Dimension(207, 23));
         FormInput.add(TCaraBayar);
-        TCaraBayar.setBounds(450, 100, 110, 23);
+        TCaraBayar.setBounds(450, 100, 230, 23);
 
         jLabel15.setText("Cara Bayar :");
         jLabel15.setName("jLabel15"); // NOI18N
@@ -1019,12 +1023,46 @@ public final class DlgCariObat extends javax.swing.JDialog {
             }
         });
         FormInput.add(TAlergi);
-        TAlergi.setBounds(72, 130, 610, 24);
+        TAlergi.setBounds(72, 130, 280, 24);
 
         jLabelAlergi.setText("Alergi :");
         jLabelAlergi.setName("jLabelAlergi"); // NOI18N
         FormInput.add(jLabelAlergi);
         jLabelAlergi.setBounds(10, 130, 60, 23);
+
+        TPRB.setEditable(false);
+        TPRB.setHighlighter(null);
+        TPRB.setMaxLenth(200);
+        TPRB.setName("TPRB"); // NOI18N
+        TPRB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TPRBActionPerformed(evt);
+            }
+        });
+        FormInput.add(TPRB);
+        TPRB.setBounds(450, 130, 90, 24);
+
+        jLabelPRB.setText("PRB :");
+        jLabelPRB.setName("jLabelPRB"); // NOI18N
+        FormInput.add(jLabelPRB);
+        jLabelPRB.setBounds(380, 130, 65, 23);
+
+        TIter.setEditable(false);
+        TIter.setHighlighter(null);
+        TIter.setMaxLenth(200);
+        TIter.setName("TIter"); // NOI18N
+        TIter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TIterActionPerformed(evt);
+            }
+        });
+        FormInput.add(TIter);
+        TIter.setBounds(580, 130, 90, 24);
+
+        jLabelIter.setText("Iter :");
+        jLabelIter.setName("jLabelIter"); // NOI18N
+        FormInput.add(jLabelIter);
+        jLabelIter.setBounds(535, 130, 40, 23);
 
         internalFrame1.add(FormInput, java.awt.BorderLayout.PAGE_START);
 
@@ -2045,6 +2083,14 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         // TODO add your handling code here:
     }//GEN-LAST:event_TAlergiActionPerformed
 
+    private void TPRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TPRBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TPRBActionPerformed
+
+    private void TIterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TIterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TIterActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -2090,9 +2136,11 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     private widget.TextBox TAlergi;
     private widget.TextBox TCaraBayar;
     public widget.TextBox TCari;
+    private widget.TextBox TIter;
     private widget.TextBox TKamar;
     private widget.TextBox TNoRM;
     private widget.TextBox TNoRw;
+    private widget.TextBox TPRB;
     private widget.TextBox TPasien;
     private javax.swing.JTabbedPane TabRawat;
     private widget.TextBox Tanggal;
@@ -2110,6 +2158,8 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     private widget.Label jLabel7;
     private widget.Label jLabel8;
     private widget.Label jLabelAlergi;
+    private widget.Label jLabelIter;
+    private widget.Label jLabelPRB;
     private javax.swing.JPanel jPanel3;
     private widget.TextBox kdgudang;
     private widget.Label label12;
@@ -3512,8 +3562,8 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     public void setNoResep(String no_resep) {        
       TAlergi.setText(Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', 1)) AS alergi from resep_obat where no_resep = ?", no_resep));
       this.noresep = no_resep;
-      String iter = Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', -1)) AS iter from resep_obat where no_resep = ?", no_resep);
-//        System.out.println(iter);
+      Sequel.cariIsi("SELECT prb from side_db.resep_obat_info where no_resep = ?", TPRB, no_resep);
+      Sequel.cariIsi("SELECT iter from side_db.resep_obat_info where no_resep = ?", TIter, no_resep);
     }
     
     private void jam(){

@@ -903,7 +903,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         }else if(NmPoli.getText().trim().equals("")||NmPoli.getText().trim().equals("")){
             Valid.textKosong(KdPoli,"Poli");
         }else if(TanggalSurat.getSelectedItem().toString().trim().equals(TanggalKontrol.getSelectedItem().toString().substring(0, 10))){
-            JOptionPane.showMessageDialog(null,"Tanggal surat tidak boleh sama dengan tanggal rencana kontrol");
+            JOptionPane.showMessageDialog(null,"Tanggal terbit surat kontrol tidak boleh sama dengan tanggal rencana kontrol");
         }else{
             try {
                 headers = new HttpHeaders();
@@ -1148,7 +1148,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }else if(NmPoli.getText().trim().equals("")||NmPoli.getText().trim().equals("")){
             Valid.textKosong(KdPoli,"Poli");
         }else if(TanggalSurat.getSelectedItem().toString().trim().equals(TanggalKontrol.getSelectedItem().toString().substring(0, 10))){
-            JOptionPane.showMessageDialog(null,"Tanggal surat tidak boleh sama dengan tanggal rencana kontrol");
+            JOptionPane.showMessageDialog(null,"Tanggal terbit surat kontrol tidak boleh sama dengan tanggal rencana kontrol");
         }else{
             if(tbObat.getSelectedRow()!= -1){
                 try {

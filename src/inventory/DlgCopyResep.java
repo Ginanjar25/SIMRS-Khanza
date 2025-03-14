@@ -408,6 +408,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                 JOptionPane.showMessageDialog(rootPane,"Silahkan pilih No.Resep..!!");
             }else {
                 Sequel.meghapus("resep_obat","no_resep",tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),0).toString()); 
+                Sequel.meghapus("side_db.resep_obat_info", "no_resep", tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),0).toString());
                 tampil();               
             }
         }
@@ -597,6 +598,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                 kode_pj,status);
         resep.isCek();
         resep.tampilobat2(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),0).toString());
+        resep.setResepInfo(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),0).toString());
         resep.setVisible(true);
     }
     
@@ -614,6 +616,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                 tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),6).toString(),status);
         resep.isCek();
         resep.tampilobat(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),0).toString());
+        resep.setResepInfo(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),0).toString());
         resep.setVisible(true);   
     }
 }

@@ -410,6 +410,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         LPpn = new widget.Label();
         jLabel6 = new widget.Label();
         buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
         internalFrame1 = new widget.InternalFrame();
         panelisi3 = new widget.panelisi();
         label9 = new widget.Label();
@@ -451,6 +452,9 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         rb1Iter = new widget.RadioButton();
         jLabelIterasi = new widget.Label();
         rb2Iter = new widget.RadioButton();
+        rbNonPRB = new widget.RadioButton();
+        rbPRB = new widget.RadioButton();
+        jLabelPRB = new widget.Label();
         TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
         tbResep = new widget.Table();
@@ -756,7 +760,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         jLabel8.setBounds(0, 42, 72, 23);
 
         DTPBeri.setForeground(new java.awt.Color(50, 70, 50));
-        DTPBeri.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-08-2024" }));
+        DTPBeri.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "13-03-2025" }));
         DTPBeri.setDisplayFormat("dd-MM-yyyy");
         DTPBeri.setName("DTPBeri"); // NOI18N
         DTPBeri.setOpaque(false);
@@ -933,6 +937,46 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         });
         FormInput.add(rb2Iter);
         rb2Iter.setBounds(240, 130, 80, 23);
+
+        buttonGroup2.add(rbNonPRB);
+        rbNonPRB.setSelected(true);
+        rbNonPRB.setText(" Tidak");
+        rbNonPRB.setIconTextGap(1);
+        rbNonPRB.setName("rbNonPRB"); // NOI18N
+        rbNonPRB.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rbNonPRBMouseClicked(evt);
+            }
+        });
+        rbNonPRB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbNonPRBActionPerformed(evt);
+            }
+        });
+        FormInput.add(rbNonPRB);
+        rbNonPRB.setBounds(400, 130, 60, 23);
+
+        buttonGroup2.add(rbPRB);
+        rbPRB.setText(" Ya");
+        rbPRB.setIconTextGap(1);
+        rbPRB.setName("rbPRB"); // NOI18N
+        rbPRB.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rbPRBMouseClicked(evt);
+            }
+        });
+        rbPRB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbPRBActionPerformed(evt);
+            }
+        });
+        FormInput.add(rbPRB);
+        rbPRB.setBounds(460, 130, 70, 23);
+
+        jLabelPRB.setText("PRB :");
+        jLabelPRB.setName("jLabelPRB"); // NOI18N
+        FormInput.add(jLabelPRB);
+        jLabelPRB.setBounds(352, 130, 40, 23);
 
         internalFrame1.add(FormInput, java.awt.BorderLayout.PAGE_START);
 
@@ -1168,32 +1212,48 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                 sukses=true;
                 String iter = "";
                 if(rbTidakIter.isSelected()==true){
-                    iter = "#0";
+                    iter = "0";
                 }else if(rb1Iter.isSelected()==true){
-                    iter = "#1";
+                    iter = "1";
                 }else {
-                    iter = "#2";
+                    iter = "2";
+                }
+                
+                String prb = "";
+                if(rbNonPRB.isSelected()==true){
+                    prb="Tidak";
+                }else{
+                    prb="Ya";
                 }
                 if(ubah==false){
                     if(Sequel.menyimpantf2("resep_obat","?,?,?,?,?,?,?,?,?,?,?","Nomer Resep",11,new String[]{
                         NoResep.getText(),"0000-00-00","00:00:00",TNoRw.getText(),KdDokter.getText(),Valid.SetTgl(DTPBeri.getSelectedItem()+""),
-                        cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),status,"0000-00-00","00:00:00", TAlergi.getText()+iter
+                        cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),status,"0000-00-00","00:00:00", TAlergi.getText()
                         })==true){
-                            simpandata();
+                        simpandata();
+                        Sequel.menyimpan("side_db.resep_obat_info", "?,?,?", "Data Info Resep Obat", 3, new String[]{
+                            NoResep.getText(), iter, prb
+                        });
                     }else{
                         emptTeksobat();
                         if(Sequel.menyimpantf2("resep_obat","?,?,?,?,?,?,?,?,?,?,?","Nomer Resep",11,new String[]{
                             NoResep.getText(),"0000-00-00","00:00:00",TNoRw.getText(),KdDokter.getText(),Valid.SetTgl(DTPBeri.getSelectedItem()+""),
-                            cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),status,"0000-00-00","00:00:00", TAlergi.getText()+iter
+                            cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),status,"0000-00-00","00:00:00", TAlergi.getText()
                             })==true){
                                 simpandata();
+                                Sequel.menyimpan("side_db.resep_obat_info", "?,?,?", "Data Info Resep Obat", 3, new String[]{
+                                    NoResep.getText(), iter, prb
+                                });
                         }else{
                             emptTeksobat();
                             if(Sequel.menyimpantf2("resep_obat","?,?,?,?,?,?,?,?,?,?,?","Nomer Resep",11,new String[]{
                                 NoResep.getText(),"0000-00-00","00:00:00",TNoRw.getText(),KdDokter.getText(),Valid.SetTgl(DTPBeri.getSelectedItem()+""),
-                                cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),status,"0000-00-00","00:00:00", TAlergi.getText()+iter
+                                cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),status,"0000-00-00","00:00:00", TAlergi.getText()
                                 })==true){
                                     simpandata();
+                                    Sequel.menyimpan("side_db.resep_obat_info", "?,?,?", "Data Info Resep Obat", 3, new String[]{
+                                        NoResep.getText(), iter, prb
+                                    });
                             }else{
                                 emptTeksobat();
                                 sukses=false;
@@ -1204,6 +1264,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                     Sequel.meghapus("resep_dokter","no_resep",NoResep.getText());
                     Sequel.meghapus("resep_dokter_racikan","no_resep",NoResep.getText());
                     Sequel.meghapus("resep_dokter_racikan_detail","no_resep",NoResep.getText());
+                    Sequel.mengedit("side_db.resep_obat_info","no_resep='"+NoResep.getText()+"'","iter='"+iter+"', prb='"+prb+"'"); 
                     ubah=false;
                     simpandata();
                 }                                                      
@@ -1605,6 +1666,22 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         // TODO add your handling code here:
     }//GEN-LAST:event_rb2IterActionPerformed
 
+    private void rbNonPRBMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rbNonPRBMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbNonPRBMouseClicked
+
+    private void rbNonPRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbNonPRBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbNonPRBActionPerformed
+
+    private void rbPRBMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rbPRBMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbPRBMouseClicked
+
+    private void rbPRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbPRBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbPRBActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1653,6 +1730,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JTabbedPane TabRawat;
     private widget.Button btnDokter;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
     private widget.ComboBox cmbDtk;
     private widget.ComboBox cmbJam;
     private widget.ComboBox cmbMnt;
@@ -1666,6 +1744,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private widget.Label jLabel8;
     private widget.Label jLabelAlergi;
     private widget.Label jLabelIterasi;
+    private widget.Label jLabelPRB;
     private javax.swing.JPanel jPanel3;
     private widget.Label label12;
     private widget.Label label9;
@@ -1674,6 +1753,8 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JMenuItem ppStok1;
     private widget.RadioButton rb1Iter;
     private widget.RadioButton rb2Iter;
+    private widget.RadioButton rbNonPRB;
+    private widget.RadioButton rbPRB;
     private widget.RadioButton rbTidakIter;
     private widget.Table tbDetailResepObatRacikan;
     private widget.Table tbObatResepRacikan;
@@ -4137,5 +4218,30 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                 }
             }
         }               
+    }
+    
+    public void setResepInfo(String no_resep){
+        String iter = Sequel.cariIsi("SELECT iter from side_db.resep_obat_info where no_resep = ?", no_resep);;
+        String prb=Sequel.cariIsi("SELECT prb from side_db.resep_obat_info where no_resep = ?", no_resep);
+        if(prb.equals("Ya")){
+            rbPRB.setSelected(true);
+        }else{
+            rbNonPRB.setSelected(true);
+        }
+        
+        switch (iter) {
+            case "0":
+                rbTidakIter.setSelected(true);
+                break;
+            case "1":
+                rb1Iter.setSelected(true);
+                break;
+            case "2":
+                rb2Iter.setSelected(true);
+                break;
+            default:
+                rbTidakIter.setSelected(true);
+                break;
+        }
     }
 }

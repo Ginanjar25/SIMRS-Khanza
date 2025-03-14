@@ -2150,7 +2150,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         if(Status.equals("Sudah Terlayani")){
                             JOptionPane.showMessageDialog(rootPane,"Resep sudah tervalidasi ..!!");
                         }else {
-                            Sequel.meghapus("resep_obat","no_resep",NoResep);    
+                            Sequel.meghapus("resep_obat","no_resep",NoResep);
+                            Sequel.meghapus("side_db.resep_obat_info", "no_resep", NoResep);
                             TeksKosong();
                             tampil();
                         }                    
@@ -3352,7 +3353,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     param.put("jam",JamPeresepan);
                     param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
                     param.put("alergi",Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', 1)) AS alergi from resep_obat where no_resep = ?", NoResep));
-                    param.put("iter",Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', -1)) AS iter from resep_obat where no_resep = ?", NoResep));
+                    param.put("iter",Sequel.cariIsi("SELECT iter from side_db.resep_obat_info where no_resep = ?", NoResep));
+                    param.put("prb",Sequel.cariIsi("SELECT prb from side_db.resep_obat_info where no_resep = ?", NoResep));
                     Valid.MyReport("rptLembarObatDanTelaah.jasper","report","::[ Lembar Telaah Resep & Pemberian Obat ]::",param);
                     this.setCursor(Cursor.getDefaultCursor());
                 }
@@ -3532,7 +3534,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     param.put("jam",JamPeresepan);
                     param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
                     param.put("alergi",Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', 1)) AS alergi from resep_obat where no_resep = ?", NoResep));
-                    param.put("iter",Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', -1)) AS iter from resep_obat where no_resep = ?", NoResep));
+                    param.put("iter",Sequel.cariIsi("SELECT iter from side_db.resep_obat_info where no_resep = ?", NoResep));
+                    param.put("prb",Sequel.cariIsi("SELECT prb from side_db.resep_obat_info where no_resep = ?", NoResep));
                     Valid.MyReport("rptLembarObatDanTelaah.jasper","report","::[ Lembar Telaah Resep & Pemberian Obat ]::",param);
                     this.setCursor(Cursor.getDefaultCursor());
                 }

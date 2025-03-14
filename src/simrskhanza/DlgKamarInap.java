@@ -8918,7 +8918,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                     String kode = parts.length > 0 ? parts[0] : "";
 //                                    String nama_penjab = parts.length > 1 ? parts[1] : "";
                                     String no_kartu = parts.length > 2 ? parts[2] : "";
-                                    Sequel.menyimpan("penjab_reg", "?,?,?,?", "Data Penjab Registrasi", 2, new String[]{
+                                    Sequel.menyimpan("penjab_reg", "?,?,?,?", "Data Penjab Registrasi", 4, new String[]{
                                         NoRawatGabung.getText(), kode, no_kartu, "2"
                                     });
                                 }

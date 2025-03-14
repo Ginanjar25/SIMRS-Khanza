@@ -523,6 +523,10 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         jLabel15 = new widget.Label();
         TAlergi = new widget.TextBox();
         jLabelAlergi = new widget.Label();
+        TPRB = new widget.TextBox();
+        jLabelAlergi1 = new widget.Label();
+        TIter = new widget.TextBox();
+        jLabelAlergi2 = new widget.Label();
         TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -763,7 +767,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
 
         FormInput.setBackground(new java.awt.Color(215, 225, 215));
         FormInput.setName("FormInput"); // NOI18N
-        FormInput.setPreferredSize(new java.awt.Dimension(100, 125));
+        FormInput.setPreferredSize(new java.awt.Dimension(100, 130));
         FormInput.setLayout(null);
 
         jLabel5.setText("Tanggal :");
@@ -773,7 +777,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         jLabel5.setBounds(0, 40, 68, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-08-2024" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "14-03-2025" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -976,12 +980,46 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
             }
         });
         FormInput.add(TAlergi);
-        TAlergi.setBounds(72, 100, 610, 24);
+        TAlergi.setBounds(72, 100, 310, 24);
 
         jLabelAlergi.setText("Alergi :");
         jLabelAlergi.setName("jLabelAlergi"); // NOI18N
         FormInput.add(jLabelAlergi);
         jLabelAlergi.setBounds(10, 100, 60, 23);
+
+        TPRB.setEditable(false);
+        TPRB.setHighlighter(null);
+        TPRB.setMaxLenth(200);
+        TPRB.setName("TPRB"); // NOI18N
+        TPRB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TPRBActionPerformed(evt);
+            }
+        });
+        FormInput.add(TPRB);
+        TPRB.setBounds(440, 100, 90, 24);
+
+        jLabelAlergi1.setText("PRB :");
+        jLabelAlergi1.setName("jLabelAlergi1"); // NOI18N
+        FormInput.add(jLabelAlergi1);
+        jLabelAlergi1.setBounds(390, 100, 40, 23);
+
+        TIter.setEditable(false);
+        TIter.setHighlighter(null);
+        TIter.setMaxLenth(200);
+        TIter.setName("TIter"); // NOI18N
+        TIter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TIterActionPerformed(evt);
+            }
+        });
+        FormInput.add(TIter);
+        TIter.setBounds(590, 100, 90, 24);
+
+        jLabelAlergi2.setText("PRB :");
+        jLabelAlergi2.setName("jLabelAlergi2"); // NOI18N
+        FormInput.add(jLabelAlergi2);
+        jLabelAlergi2.setBounds(390, 100, 40, 23);
 
         internalFrame1.add(FormInput, java.awt.BorderLayout.PAGE_START);
 
@@ -1975,6 +2013,14 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         // TODO add your handling code here:
     }//GEN-LAST:event_TAlergiActionPerformed
 
+    private void TPRBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TPRBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TPRBActionPerformed
+
+    private void TIterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TIterActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TIterActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -2015,10 +2061,12 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private widget.TextBox TAlergi;
     private widget.TextBox TCaraBayar;
     private widget.TextBox TCari;
+    private widget.TextBox TIter;
     private widget.TextBox TKamar;
     private widget.TextBox TNoRM;
     private widget.TextBox TNoRM1;
     private widget.TextBox TNoRw;
+    private widget.TextBox TPRB;
     private widget.TextBox TPasien;
     private widget.TextBox TPasien1;
     private javax.swing.JTabbedPane TabRawat;
@@ -2033,6 +2081,8 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private widget.Label jLabel15;
     private widget.Label jLabel5;
     private widget.Label jLabelAlergi;
+    private widget.Label jLabelAlergi1;
+    private widget.Label jLabelAlergi2;
     private javax.swing.JPanel jPanel3;
     private widget.TextBox kdgudang;
     private widget.TextBox kelas;
@@ -2835,7 +2885,8 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         TCari.requestFocus();
     }
     
-     public void setNoResep(String no_resep) {        
+     public void setNoResep(String no_resep) {  
+        Sequel.cariIsi("SELECT prb from side_db.resep_obat_info where no_resep = ?", TPRB, no_resep);
         TAlergi.setText(Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', 1)) AS alergi from resep_obat where no_resep = ?", no_resep));
         this.noresep = no_resep;
     }

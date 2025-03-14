@@ -42,6 +42,7 @@
 	<parameter name="DxRuang" class="java.lang.String"/>
 	<parameter name="alergi" class="java.lang.String"/>
 	<parameter name="iter" class="java.lang.String"/>
+	<parameter name="prb" class="java.lang.String"/>
 	<parameter name="berat" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT temporary_resep.* FROM temporary_resep WHERE temporary_resep.temp37=$P{alamatip} AND temporary_resep.temp36=$P{noresep} order by temporary_resep.no]]>
@@ -359,8 +360,7 @@
 				<textElement>
 					<font fontName="Arial" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($P{jk}.equals("L") ? "Laki-Laki" : "Perempuan") + " / " +($P{berat}.equals("") ? "-" : $P{berat}.replaceAll("[^\\d.]", "") + " Kg")
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($P{jk}.equals("L") ? "Laki-Laki" : "Perempuan") + " / " +($P{berat}.equals("") ? "-" : $P{berat}.replaceAll("[^\\d.]", "") + " Kg")]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement mode="Transparent" x="239" y="95" width="102" height="10" uuid="bc1ec181-a807-44b5-bd0a-ce600292170f"/>
@@ -454,7 +454,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{iter}.equals("0") ? "" : "Iter : " + $P{iter}+" X"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{iter}.equals("0") ? "" : "Iter : " + $P{iter}+"x"]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="96" y="115" width="143" height="24" uuid="430f9433-8635-4d2c-9e1d-bb5ef7d04daa"/>
@@ -479,6 +479,13 @@
 				</textElement>
 				<text><![CDATA[Alamat]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="409" y="38" width="142" height="12" uuid="4b81416a-26fb-493f-9956-78d6af3e629b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{prb}.equals("Ya") ? "PRB" : ""]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
