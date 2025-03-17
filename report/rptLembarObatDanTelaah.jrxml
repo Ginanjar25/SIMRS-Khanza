@@ -199,9 +199,9 @@
 				<textFieldExpression><![CDATA[$P{norawat}+ " (" +  $P{norm} + ")"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="409" y="50" width="142" height="12" uuid="dae4002f-edd7-409b-94fb-f48a11113692"/>
+				<reportElement x="409" y="38" width="142" height="12" uuid="dae4002f-edd7-409b-94fb-f48a11113692"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["No. " + $P{noresep}]]></textFieldExpression>
 			</textField>
@@ -452,9 +452,9 @@
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Arial" size="9"/>
+					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{iter}.equals("0") ? "" : "Iter : " + $P{iter}+"x"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{iter}.isEmpty() ?  "" : ($P{iter}.equals("0") ? "" : "Iter : " + $P{iter}+"x")]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="96" y="115" width="143" height="24" uuid="430f9433-8635-4d2c-9e1d-bb5ef7d04daa"/>
@@ -480,7 +480,7 @@
 				<text><![CDATA[Alamat]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="409" y="38" width="142" height="12" uuid="4b81416a-26fb-493f-9956-78d6af3e629b"/>
+				<reportElement x="409" y="51" width="142" height="12" uuid="4b81416a-26fb-493f-9956-78d6af3e629b"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>

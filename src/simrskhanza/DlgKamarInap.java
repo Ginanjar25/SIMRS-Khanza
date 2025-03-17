@@ -3855,7 +3855,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         MnBarcodeRM9.setForeground(new java.awt.Color(50, 50, 50));
         MnBarcodeRM9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
         MnBarcodeRM9.setMnemonic('L');
-        MnBarcodeRM9.setText("Label Rekam Medis 10");
+        MnBarcodeRM9.setText("Label Rekam Medis 10"); 
         MnBarcodeRM9.setToolTipText("L");
         MnBarcodeRM9.setName("MnBarcodeRM9"); // NOI18N
         MnBarcodeRM9.setPreferredSize(new java.awt.Dimension(180, 26));
@@ -18061,6 +18061,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private javax.swing.JMenuItem ppRujukKeluar;
     
     private void tampil() {
+        int kamar_row = 0;
         if(R1.isSelected()==true){
             kmr=" kamar_inap.stts_pulang='-' and reg_periksa.status_bayar like '%"+cmbStatusBayar.getSelectedItem().toString().replaceAll("Semua","")+"%' ";
             if(!BangsalCari.getText().equals("")){
@@ -18166,6 +18167,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                               psanak.close();
                           }
                     }
+                    kamar_row = kamar_row+1;
                 }
             } catch (Exception e) {
                 System.out.println("Notifikasi : "+e);
@@ -18180,7 +18182,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
-        LCount.setText(""+tabMode.getRowCount());
+//        LCount.setText(""+tabMode.getRowCount());
+        LCount.setText(""+kamar_row);
         //updateHari();
     }
 
