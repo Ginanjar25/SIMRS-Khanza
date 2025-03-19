@@ -18103,7 +18103,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     "  (IFNULL(inacbg_grouping_stage1.asli, 0) + IFNULL(inacbg_grouping_stage1.tambahan, 0)) <= tarif_berjalan.tarif, \n" +
                     "  'Sudah', \n" +
                     "  'Belum'\n" +
-                ") AS limit_tarif,COALESCE(deposit.besar_deposit, 0) AS deposit, " +
+                ") AS limit_tarif,(SELECT COALESCE(SUM(deposit.besar_deposit),0) FROM deposit WHERE deposit.no_rawat = kamar_inap.no_rawat) AS deposit, " +
                 "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 \n" +
                 "from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis\n" +
                 "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = reg_periksa.no_rawat inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar \n" +
@@ -18116,7 +18116,6 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj\n" +
                 "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
                 "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj " +
-                "LEFT JOIN deposit ON deposit.no_rawat = kamar_inap.no_rawat "+
                (namadokter.equals("")?"where "+key+" "+order:"inner join dpjp_ranap on dpjp_ranap.no_rawat=reg_periksa.no_rawat where dpjp_ranap.kd_dokter='"+namadokter+"' and "+key+" "+order));
             try {
                 rs=ps.executeQuery();
