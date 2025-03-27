@@ -8984,6 +8984,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         Sequel.mengedit("reg_periksa","no_rawat='"+Sequel.cariIsi("select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?",norawat.getText())+"'","status_lanjut='Ralan', status_bayar='Belum Bayar'"); 
         Sequel.meghapus("permintaan_ranap","no_rawat",Sequel.cariIsi("select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?",norawat.getText()));
         Sequel.meghapus("ranap_gabung","no_rawat",norawat.getText());
+        Sequel.meghapus("dpjp_ranap", "no_rawat", Sequel.cariIsi("select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?",norawat.getText()));
         NoRawatGabung.setText("");
         NoRmBayi.setText("");
         NmBayi.setText("");    
