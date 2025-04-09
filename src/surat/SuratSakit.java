@@ -922,6 +922,7 @@ public final class SuratSakit extends javax.swing.JDialog {
                 if(kodedokter.isBlank()){
                     kodedokter=Sequel.cariIsi("SELECT kd_dokter FROM reg_periksa WHERE no_rawat = ?",TNoRw.getText());
                 }
+                param.put("sip_dokter",Sequel.cariIsi("select no_ijn_praktek from dokter where kd_dokter = ?", kodedokter));
                 namadokter=Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",kodedokter);
                 finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kodedokter);
                 param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+namadokter+"\nID "+(finger.equals("")?kodedokter:finger)+"\n"+Sequel.cariIsi("select DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y') from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));  
@@ -958,6 +959,7 @@ public final class SuratSakit extends javax.swing.JDialog {
                 if(kodedokter.isBlank()){
                     kodedokter=Sequel.cariIsi("SELECT kd_dokter FROM reg_periksa WHERE no_rawat = ?",TNoRw.getText());
                 }
+                param.put("sip_dokter",Sequel.cariIsi("select no_ijn_praktek from dokter where kd_dokter = ?", kodedokter));
                 finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kodedokter);
                 param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+namadokter+"\nID "+(finger.equals("")?kodedokter:finger)+"\n"+Sequel.cariIsi("select DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y') from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));  
                 Valid.MyReportqry("rptSuratSakit7.jasper","report","::[ Surat Sakit ]::",
@@ -996,6 +998,7 @@ public final class SuratSakit extends javax.swing.JDialog {
                 }
                 finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kodedokter);
                 param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+namadokter+"\nID "+(finger.equals("")?kodedokter:finger)+"\n"+Sequel.cariIsi("select DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y') from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));  
+                param.put("sip_dokter",Sequel.cariIsi("select no_ijn_praktek from dokter where kd_dokter = ?", kodedokter));
                 Valid.MyReport("rptSuratSakit.jasper","report","::[ Surat Sakit ]::",param);
                 this.setCursor(Cursor.getDefaultCursor()); 
         }
@@ -1022,6 +1025,7 @@ public final class SuratSakit extends javax.swing.JDialog {
             namadokter=Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",kodedokter);
             finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kodedokter);
             param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+namadokter+"\nID "+(finger.equals("")?kodedokter:finger)+"\n"+Sequel.cariIsi("select DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y') from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));  
+            param.put("sip_dokter",Sequel.cariIsi("select no_ijn_praktek from dokter where kd_dokter = ?", kodedokter));
             Valid.MyReportqry("rptSuratSakit3.jasper","report","::[ Surat Sakit ]::",
                   "select reg_periksa.no_rawat,dokter.nm_dokter,pasien.keluarga,pasien.namakeluarga,pasien.tgl_lahir,DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y')as tgl_registrasi," +
                   " pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.pekerjaan,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat" +
@@ -1056,6 +1060,7 @@ public final class SuratSakit extends javax.swing.JDialog {
             kodedokter=Sequel.cariIsi("select reg_periksa.kd_dokter from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
             namadokter=Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",kodedokter);
             finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kodedokter);
+            param.put("sip_dokter",Sequel.cariIsi("select no_ijn_praktek from dokter where kd_dokter = ?", kodedokter));
             param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+namadokter+"\nID "+(finger.equals("")?kodedokter:finger)+"\n"+Sequel.cariIsi("select DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y') from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));  
             Valid.MyReportqry("rptSuratSakit4.jasper","report","::[ Surat Sakit ]::",
                       "select reg_periksa.no_rawat,dokter.nm_dokter,pasien.keluarga,pasien.namakeluarga,pasien.tgl_lahir,pasien.jk,DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y')as tgl_registrasi," +

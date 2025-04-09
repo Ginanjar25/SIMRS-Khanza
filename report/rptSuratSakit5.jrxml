@@ -27,6 +27,7 @@
 	<parameter name="nosakit" class="java.lang.String"/>
 	<parameter name="finger" class="java.lang.String"/>
 	<parameter name="no_rawat" class="java.lang.String"/>
+	<parameter name="sip_dokter" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT reg_periksa.kd_dokter,reg_periksa.no_rkm_medis, pasien.nm_pasien, dokter.nm_dokter, pasien.umur,
 				pasien.tgl_lahir, pasien.jk, pasien.pnd, pasien.pekerjaan, pasien.alamatpj, reg_periksa.status_lanjut,
@@ -543,6 +544,16 @@
 				</reportElement>
 				<imageExpression><![CDATA["Z:/IT RSPW/Adit/KhanzaHMSWindows BARU/KhanzaHMSWindows/gambar/line.JPG"]]></imageExpression>
 			</image>
+			<textField>
+				<reportElement x="343" y="486" width="204" height="14" uuid="2cf0708c-dca2-4c57-bd88-00951be094e5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="11"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(No.SIP " + $P{sip_dokter} +")"]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<summary>

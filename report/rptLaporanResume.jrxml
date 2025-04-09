@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.0.0  -->
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="595" pageHeight="842" columnWidth="536" leftMargin="39" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7435c0f7-de74-4940-ae33-c2370e46f8e7">
 	<property name="ireport.zoom" value="1.399522140629204"/>
 	<property name="ireport.x" value="0"/>
@@ -37,7 +37,7 @@ resume_pasien.diagnosa_sekunder,resume_pasien.kd_diagnosa_sekunder,resume_pasien
 resume_pasien.diagnosa_sekunder3,resume_pasien.kd_diagnosa_sekunder3,resume_pasien.diagnosa_sekunder4,resume_pasien.kd_diagnosa_sekunder4,
 resume_pasien.prosedur_utama,resume_pasien.kd_prosedur_utama,resume_pasien.prosedur_sekunder,resume_pasien.kd_prosedur_sekunder, 
 resume_pasien.prosedur_sekunder2,resume_pasien.kd_prosedur_sekunder2,resume_pasien.prosedur_sekunder3,resume_pasien.kd_prosedur_sekunder3, 
-resume_pasien.obat_pulang from resume_pasien inner join reg_periksa on resume_pasien.no_rawat=reg_periksa.no_rawat  
+resume_pasien.obat_pulang, dokter.no_ijn_praktek from resume_pasien inner join reg_periksa on resume_pasien.no_rawat=reg_periksa.no_rawat  
 inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis inner join dokter on resume_pasien.kd_dokter=dokter.kd_dokter 
 inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec 
 inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab inner join propinsi on pasien.kd_prop=propinsi.kd_prop
@@ -185,6 +185,10 @@ where resume_pasien.no_rawat= $P{norawat}]]>
 	<field name="obat_pulang" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="obat_pulang"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="resume_pasien"/>
+	</field>
+	<field name="no_ijn_praktek" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="no_ijn_praktek"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dokter"/>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -508,7 +512,7 @@ where resume_pasien.no_rawat= $P{norawat}]]>
 				<text><![CDATA[Jalannya penyakit selama perawatan :]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="343" y="780" width="182" height="16" uuid="61481e35-032b-4bda-8774-c5fa08d79a61"/>
+				<reportElement positionType="Float" x="343" y="774" width="182" height="10" uuid="61481e35-032b-4bda-8774-c5fa08d79a61"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" size="8" isBold="false" isItalic="false" isUnderline="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -516,7 +520,7 @@ where resume_pasien.no_rawat= $P{norawat}]]>
 				<textFieldExpression><![CDATA[$F{nm_dokter}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="343" y="714" width="182" height="11" uuid="e310e9c8-eb47-4aab-8710-9d2c1ca5fff8"/>
+				<reportElement positionType="Float" x="343" y="708" width="182" height="11" uuid="e310e9c8-eb47-4aab-8710-9d2c1ca5fff8"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -524,7 +528,7 @@ where resume_pasien.no_rawat= $P{norawat}]]>
 				<text><![CDATA[Dokter Penanggung Jawab]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement positionType="Float" x="347" y="728" width="176" height="50" isRemoveLineWhenBlank="true" uuid="92ab0356-8454-4b64-a117-5ac52c90d28f">
+				<reportElement positionType="Float" x="347" y="722" width="176" height="50" isRemoveLineWhenBlank="true" uuid="92ab0356-8454-4b64-a117-5ac52c90d28f">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" errorCorrectionLevel="H">
@@ -1242,6 +1246,14 @@ where resume_pasien.no_rawat= $P{norawat}]]>
 				</textElement>
 				<text><![CDATA[Obat-obatan waktu pulang/nasihat :]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="343" y="785" width="182" height="10" uuid="29246204-0f43-4add-81ba-56c0b9ff24e2"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="8" isBold="false" isItalic="false" isUnderline="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(No.SIP " + $F{no_ijn_praktek} +")"]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>

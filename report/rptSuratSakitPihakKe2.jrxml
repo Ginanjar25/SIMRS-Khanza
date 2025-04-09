@@ -18,6 +18,7 @@
 	<parameter name="penyakit" class="java.lang.String"/>
 	<parameter name="jk" class="java.lang.String"/>
 	<parameter name="finger" class="java.lang.String"/>
+	<parameter name="sip_dokter" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -134,7 +135,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="464" splitType="Stretch">
+		<band height="475" splitType="Stretch">
 			<staticText>
 				<reportElement x="93" y="241" width="7" height="14" uuid="a02177e7-5f0f-46d0-96b5-309adb399670">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -542,6 +543,16 @@
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{emailrs}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="455" width="172" height="14" uuid="1c0b45ab-7870-4eb2-a50e-a36d9b8c6bbb">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="11"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(No.SIP " + $P{sip_dokter} +")"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

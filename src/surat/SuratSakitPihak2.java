@@ -1080,6 +1080,7 @@ public final class SuratSakitPihak2 extends javax.swing.JDialog {
                 finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kodedokter);
                 param.put("jk", Sequel.cariIsi("select pasien.jk from pasien where pasien.no_rkm_medis = ?", TNoRM.getText()));
                 param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+namadokter+"\nID "+(finger.equals("")?kodedokter:finger)+"\n"+Sequel.cariIsi("select DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y') from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));  
+                param.put("sip_dokter",Sequel.cariIsi("select no_ijn_praktek from dokter where kd_dokter = ?", kodedokter));
                 Valid.MyReportqry("rptSuratSakitPihakKe2.jasper","report","::[ Surat Sakit Pihak Ke 2 ]::",
                               " select suratsakitpihak2.no_surat,DATE_FORMAT(suratsakitpihak2.tanggalawal,'%d-%m-%Y')as tanggalawal,DATE_FORMAT(suratsakitpihak2.tanggalakhir,'%d-%m-%Y')as tanggalakhir,suratsakitpihak2.lamasakit,suratsakitpihak2.nama2,"+
                               " DATE_FORMAT(suratsakitpihak2.tgl_lahir,'%d-%m-%Y')as tgl_lahirpj,(suratsakitpihak2.umur)as umurpj,(suratsakitpihak2.jk)as jkpj,"+

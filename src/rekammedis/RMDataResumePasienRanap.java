@@ -2345,12 +2345,14 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                        if(i==2){
                            finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",rs.getString("kd_dokter"));
                            param.put("finger2","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+rs.getString("nm_dokter")+"\nID "+(finger.equals("")?rs.getString("kd_dokter"):finger)+"\n"+Valid.SetTgl3(Keluar.getText()));
-                           param.put("namadokter2",rs.getString("nm_dokter")); 
+                           param.put("namadokter2",rs.getString("nm_dokter"));
+                           param.put("sip_dokter2",Sequel.cariIsi("select no_ijn_praktek from dokter where kd_dokter = ?", rs.getString("kd_dokter")));
                        }
                        if(i==3){
                            finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",rs.getString("kd_dokter"));
                            param.put("finger3","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+rs.getString("nm_dokter")+"\nID "+(finger.equals("")?rs.getString("kd_dokter"):finger)+"\n"+Valid.SetTgl3(Keluar.getText()));
                            param.put("namadokter3",rs.getString("nm_dokter")); 
+                           param.put("sip_dokter3",Sequel.cariIsi("select no_ijn_praktek from dokter where kd_dokter = ?", rs.getString("kd_dokter")));
                        }
                        i++;
                     }

@@ -1185,6 +1185,7 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
                 finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kodeoperator);
                 String nm_dokter = Sequel.cariIsi("SELECT dr.nm_dokter FROM dokter dr WHERE dr.kd_dokter =?",kodeoperator);
                 param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+nm_dokter+"\nID "+(finger.equals("")?kodeoperator:finger)+"\n"+Valid.SetTgl3(tbObat.getValueAt(tbObat.getSelectedRow(),3).toString()));
+                param.put("sip_dokter",Sequel.cariIsi("select no_ijn_praktek from dokter where kd_dokter = ?", kodeoperator));
                 if(Sequel.cariIsi("select reg_periksa.status_lanjut from reg_periksa where reg_periksa.no_rawat=?",tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()).equals("Ralan")){
                     try {
                         try {

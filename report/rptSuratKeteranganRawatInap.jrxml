@@ -18,6 +18,7 @@
 	<parameter name="nosakit" class="java.lang.String"/>
 	<parameter name="finger" class="java.lang.String"/>
 	<parameter name="no_rawat" class="java.lang.String"/>
+	<parameter name="sip_dokter" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT reg_periksa.kd_dokter, reg_periksa.no_rkm_medis, pasien.nm_pasien, dokter.nm_dokter, pasien.tgl_lahir, pasien.jk, pasien.umur,
                 pasien.pnd, pasien.pekerjaan, pasien.alamatpj, reg_periksa.status_lanjut, CONCAT(pasien.alamat, ' ', kecamatan.nm_kec, ' ', kabupaten.nm_kab) AS alamat,
@@ -496,6 +497,16 @@
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{TanggalAkhir}+"."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="349" y="462" width="203" height="14" uuid="1c934ef7-08b7-4b6e-a886-1c601185b849">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="11"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(No.SIP " + $P{sip_dokter} +")"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

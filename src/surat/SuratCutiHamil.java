@@ -806,6 +806,8 @@ public final class SuratCutiHamil extends javax.swing.JDialog {
                 finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",tbObat.getValueAt(tbObat.getSelectedRow(),9).toString());
                 param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+tbObat.getValueAt(tbObat.getSelectedRow(),10).toString()+"\nID "+(finger.equals("")?tbObat.getValueAt(tbObat.getSelectedRow(),9).toString():finger)+"\n"+Valid.SetTgl3(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()));  
                 param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
+                String kodedokter=Sequel.cariIsi("select reg_periksa.kd_dokter from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
+                param.put("sip_dokter",Sequel.cariIsi("select no_ijn_praktek from dokter where kd_dokter = ?", kodedokter));
                 Valid.MyReportqry("rptSuratCutiHamil.jasper","report","::[ Surat Cuti Hamil ]::",
                               "select surat_cuti_hamil.no_surat,surat_cuti_hamil.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,dokter.nm_dokter,"+
                               "pasien.pekerjaan,reg_periksa.tgl_registrasi,surat_cuti_hamil.keterangan_hamil,surat_cuti_hamil.terhitung_mulai, "+                  
