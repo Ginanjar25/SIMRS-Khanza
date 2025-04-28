@@ -84,9 +84,9 @@ public final class RMKonsultasiDokter extends javax.swing.JDialog {
         for (i = 0; i < 13; i++) {
             TableColumn column = tbObat.getColumnModel().getColumn(i);
             if(i==0){
-                column.setPreferredWidth(105);
+                column.setPreferredWidth(120);
             }else if(i==1){
-                column.setPreferredWidth(70);
+                column.setPreferredWidth(90);
             }else if(i==2){
                 column.setPreferredWidth(150);
             }else if(i==3){
@@ -96,15 +96,17 @@ public final class RMKonsultasiDokter extends javax.swing.JDialog {
             }else if(i==5){
                 column.setPreferredWidth(150);
             }else if(i==6){
-                column.setPreferredWidth(60);
-            }else if(i==7){
                 column.setPreferredWidth(100);
+            }else if(i==7){
+                 column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==8){
-                column.setPreferredWidth(90);
+                column.setPreferredWidth(150);
             }else if(i==9){
-                column.setPreferredWidth(90);
+                 column.setMinWidth(0);
+                column.setMaxWidth(0);
             }else if(i==10){
-                column.setPreferredWidth(90);
+                column.setPreferredWidth(150);
             }else if(i==11){
                 column.setPreferredWidth(300);
             }else if(i==12){

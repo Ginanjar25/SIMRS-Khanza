@@ -15081,9 +15081,6 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
             boolean penjab = CrPtg.getText().trim().equals("");
             boolean status = cmbStatus.getSelectedItem().toString().equals("Semua");
             boolean kasir = antrianKasir.equals("");
-//            System.out.println(batal);
-            System.out.println(penjab);
-            System.out.println(order);
             pskasir=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg, " +
                 "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,poliklinik.nm_poli, " +
                 "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts,penjab.png_jawab,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur, " +
@@ -15131,7 +15128,6 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 }
                 
                 rskasir=pskasir.executeQuery();
-                System.out.println(pskasir);
                 while(rskasir.next()){
                     tabModekasir.addRow(new String[] {
                         rskasir.getString(5),rskasir.getString(6),rskasir.getString(7),rskasir.getString(8)+" ("+rskasir.getString("umur")+")",

@@ -2509,5 +2509,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                 emptTeks();
                 Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Sudah'");
         }
+        
+        Sequel.mengedit("antripoli","no_rawat = ?", "status=?, updated_at = now() ", 2, new String[]{"1", TNoRw.getText()});
     }
 }
