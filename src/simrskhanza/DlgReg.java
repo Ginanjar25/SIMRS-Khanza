@@ -12206,6 +12206,15 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             Valid.MyReport("rptBarcodeRawat3.jasper",param,"::[ Barcode No.RM ]::");
             this.setCursor(Cursor.getDefaultCursor());
             simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
+            if ("WEB".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
+                if (Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()}) == true) {
+                    Valid.editTable(tabMode, "reg_periksa", "no_rawat", TNoRw, "stts='Belum',biaya_reg='"+TBiaya.getText()+"'");
+                    Sequel.mengedittf("side_db.reg_periksa_website", "no_rawat=?", "status='Checkin'", 1, new String[]{TNoRw.getText()});
+                    JOptionPane.showMessageDialog(rootPane, "Berhasil Chekin Website");
+                }else{
+                    JOptionPane.showMessageDialog(rootPane, "Gagal Chekin Website");
+                }
+            }
         }
     }//GEN-LAST:event_MnBarcode2ActionPerformed
 

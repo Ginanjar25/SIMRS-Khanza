@@ -83,7 +83,9 @@
      ( SELECT nama FROM petugas WHERE petugas.nip = operasi.omloop4 ) as omloop4,
      ( SELECT nama FROM petugas WHERE petugas.nip = operasi.omloop5 ) as omloop5,
      ( SELECT nm_dokter FROM dokter WHERE dokter.kd_dokter = operasi.dokter_pjanak ) as pjanak,
-     ( SELECT nm_dokter FROM dokter WHERE dokter.kd_dokter = operasi.dokter_umum ) as dokumum
+     ( SELECT nm_dokter FROM dokter WHERE dokter.kd_dokter = operasi.dokter_umum ) as dokumum,
+     laporan_operasi.komplikasi, laporan_operasi.perdarahan, laporan_operasi.jumlah_perdarahan, laporan_operasi.no_implan,
+     laporan_operasi.kd_petugas, ( SELECT nama FROM petugas WHERE petugas.nip = laporan_operasi.kd_petugas ) as asisten_operasi
      from operasi inner join reg_periksa on operasi.no_rawat=reg_periksa.no_rawat
      inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis inner join laporan_operasi
      on operasi.no_rawat=laporan_operasi.no_rawat and operasi.tgl_operasi=laporan_operasi.tanggal
@@ -221,6 +223,25 @@
 	</field>
 	<field name="dokumum" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="dokumum"/>
+	</field>
+	<field name="komplikasi" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="komplikasi"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="laporan_operasi"/>
+	</field>
+	<field name="perdarahan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="perdarahan"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="laporan_operasi"/>
+	</field>
+	<field name="jumlah_perdarahan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="jumlah_perdarahan"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="laporan_operasi"/>
+	</field>
+	<field name="no_implan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="no_implan"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="laporan_operasi"/>
+	</field>
+	<field name="asisten_operasi" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="asisten_operasi"/>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -1319,7 +1340,7 @@
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement x="397" y="332" width="137" height="10" uuid="0a5934bf-9f3e-4df3-a438-ddac96b7085e">
+				<reportElement x="397" y="308" width="137" height="10" uuid="0a5934bf-9f3e-4df3-a438-ddac96b7085e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -1329,7 +1350,7 @@
 				<text><![CDATA[Tipe/Jenis Anastesi]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="397" y="343" width="137" height="32" uuid="a1b5a4a5-cda1-4cdc-9881-9934e2a30679">
+				<reportElement x="397" y="319" width="137" height="32" uuid="a1b5a4a5-cda1-4cdc-9881-9934e2a30679">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1339,7 +1360,7 @@
 				<textFieldExpression><![CDATA[$F{jenis_anasthesi}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="397" y="402" width="137" height="10" uuid="05f7e115-4530-43fa-8274-99e7c5d377ba">
+				<reportElement x="397" y="353" width="137" height="10" uuid="05f7e115-4530-43fa-8274-99e7c5d377ba">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1376,7 +1397,7 @@
 				<text><![CDATA[REPORT ( PROCEDURES, SPECIFIC FINDINGS AND COMPLICATIONS )]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="397" y="458" width="137" height="10" uuid="643c0d2b-d73e-442d-af67-522a5daf96f0">
+				<reportElement x="397" y="479" width="137" height="10" uuid="643c0d2b-d73e-442d-af67-522a5daf96f0">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1386,7 +1407,7 @@
 				<textFieldExpression><![CDATA[$F{kategori}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="397" y="445" width="137" height="10" uuid="6f349127-511d-44b5-9abc-a4cdf90c52d3">
+				<reportElement x="397" y="466" width="137" height="10" uuid="6f349127-511d-44b5-9abc-a4cdf90c52d3">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1444,7 +1465,7 @@
 				<text><![CDATA[Dokter Bedah]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="397" y="414" width="137" height="10" uuid="208f576d-93a2-4e6b-9f6e-47993ac096da">
+				<reportElement x="397" y="365" width="137" height="10" uuid="208f576d-93a2-4e6b-9f6e-47993ac096da">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1454,7 +1475,7 @@
 				<textFieldExpression><![CDATA[$F{permintaan_pa}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH:mm:ss" isBlankWhenNull="true">
-				<reportElement x="397" y="508" width="137" height="10" uuid="67df98b8-b7e1-47b2-b772-9ba6dce7b5e0">
+				<reportElement x="397" y="515" width="137" height="10" uuid="67df98b8-b7e1-47b2-b772-9ba6dce7b5e0">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1464,7 +1485,7 @@
 				<textFieldExpression><![CDATA[$F{selesaioperasi}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="397" y="495" width="137" height="10" uuid="c27134ca-d0a8-4861-b307-49b50eb66417">
+				<reportElement x="397" y="502" width="137" height="10" uuid="c27134ca-d0a8-4861-b307-49b50eb66417">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1510,6 +1531,66 @@
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA["(No.SIP " + $P{sip_dokter} +")"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="397" y="380" width="137" height="10" uuid="7180c401-5b18-4efc-8866-42c99353d91e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Komplikasi]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="397" y="392" width="137" height="10" uuid="5252a57f-812b-45b2-b908-e2cdbc8fa6eb">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="false" isItalic="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{komplikasi}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="398" y="407" width="137" height="10" uuid="c183b34a-786f-4b37-800b-31677dfb4591">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Perdarahan]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="398" y="419" width="137" height="10" uuid="4183b23e-12fd-43fa-9c35-2c5c9f23dec6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="false" isItalic="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{perdarahan} + ($F{jumlah_perdarahan}.equals("") ? " " : " / " + $F{jumlah_perdarahan})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="397" y="435" width="137" height="10" uuid="f9fdcaf2-1a20-458a-8f9c-c5b31f141504">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[No Implan]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="397" y="447" width="137" height="10" uuid="2029e1c1-db74-4a91-b5b2-33ccc7d25b3b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="false" isItalic="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{no_implan}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

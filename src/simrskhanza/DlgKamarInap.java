@@ -181,6 +181,7 @@ import org.springframework.http.MediaType;
 import permintaan.DlgPermintaanFotoBayi;
 import rekammedis.RMDataResumePerawatPasienRanap;
 import bridging.BPJSRujukanKeluar;
+import rekammedis.RMKonsultasiDokter;
 
 /**
  *
@@ -18060,6 +18061,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private javax.swing.JMenuItem ppPermintaanFotoBayi;
     private javax.swing.JMenuItem MnPasienMeninggal;
     private javax.swing.JMenuItem ppRujukKeluar;
+    private javax.swing.JMenuItem MnRMLembarKonsultasi;
     
     private void tampil() {
         int kamar_row = 0;
@@ -18623,6 +18625,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         ppResumePerawat.setEnabled(akses.getsoap_perawatan());
         ppKelahiranBayi.setEnabled(akses.getkelahiran_bayi());
         ppPermintaanFotoBayi.setEnabled(akses.getkelahiran_bayi());
+        MnRMLembarKonsultasi.setEnabled(akses.getdata_resume_pasien());
         
         if(akses.getkode().equals("Admin Utama")){
             MnFilterDPJP.setEnabled(true);
@@ -19031,6 +19034,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         MnPenilaianAwal.add(MnPenilaianFisioterapi);
         
         ppRujukKeluar = new javax.swing.JMenuItem();
+        MnRMLembarKonsultasi = new javax.swing.JMenuItem();
         
         ppRujukKeluar.setBackground(new java.awt.Color(255, 255, 254));
         ppRujukKeluar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -19046,6 +19050,23 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 ppRujukKeluarActionPerformed(evt);
             }
         });
+        
+        MnRMLembarKonsultasi.setBackground(new java.awt.Color(255, 255, 254));
+        MnRMLembarKonsultasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnRMLembarKonsultasi.setForeground(new java.awt.Color(50, 50, 50));
+        MnRMLembarKonsultasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnRMLembarKonsultasi.setText("Lembar Konsultasi");
+        MnRMLembarKonsultasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnRMLembarKonsultasi.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnRMLembarKonsultasi.setName("MnRMLembarKonsultasi"); // NOI18N
+        MnRMLembarKonsultasi.setPreferredSize(new java.awt.Dimension(210, 26));
+        MnRMLembarKonsultasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnRMLembarKonsultasiActionPerformed(evt);
+            }
+        });
+        
+        MnDataRM.add(MnRMLembarKonsultasi);
         
         MenuBPJS.add(MnCekKepesertaan);
         MenuBPJS.add(MnCekNIK);
@@ -19079,4 +19100,27 @@ public class DlgKamarInap extends javax.swing.JDialog {
         
         MnPermintaan.add(MnPermintaanKonsultasiMedik);
     } 
+    
+    private void MnRMLembarKonsultasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnRMLembarKonsultasiActionPerformed
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, data registrasi sudah habis...!!!!");
+            TNoRM.requestFocus();
+        }else if(TPasien.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu data pasien dengan menklik data pada table...!!!");
+            tbKamIn.requestFocus();
+        }else{
+            if(tbKamIn.getSelectedRow()!= -1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                RMKonsultasiDokter form=new RMKonsultasiDokter(null,false);
+                form.isCek();
+                form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                form.setLocationRelativeTo(internalFrame1);
+                form.setVisible(true);
+                form.emptTeks();
+                form.setNoRm(tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString(),tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 7).toString(), tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 19).toString());
+                form.tampil();
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+    }//GEN-LAST:event_MnRMLembarKonsultasiActionPerformed
 }

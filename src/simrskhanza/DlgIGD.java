@@ -188,6 +188,7 @@ import surat.SuratSakit;
 import surat.SuratSakitPihak2;
 import surat.SuratTidakHamil;
 import bridging.BPJSRujukanKeluar;
+import rekammedis.RMKonsultasiDokter;
 
 /**
  *
@@ -1077,6 +1078,8 @@ public final class DlgIGD extends javax.swing.JDialog {
         KdPetugas3 = new widget.TextBox();
         NmPetugas3 = new widget.TextBox();
         btnPetugas3 = new widget.Button();
+        
+        MnRMLembarKonsultasi = new javax.swing.JMenuItem();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
         
@@ -1924,7 +1927,7 @@ public final class DlgIGD extends javax.swing.JDialog {
                 MnCatatanPersalinanActionPerformed(evt);
             }
         });
-
+        
         MnDataRM.add(MnRMCatatanMonitoring);
 
         MnGizi.setBackground(new java.awt.Color(255, 255, 254));
@@ -11826,6 +11829,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Label jLabelNoKaBayar2;
     
     private javax.swing.JMenuItem ppRujukKeluar;
+    private javax.swing.JMenuItem MnRMLembarKonsultasi;
+    
     private void tampil() {
         Valid.tabelKosong(tabMode);   
          if(R1.isSelected()==false){
@@ -12264,6 +12269,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         MnCatatanKeseimbanganCairan.setEnabled(akses.getbalance_cairan());
         MnCatatanObservasiInduksiPersalinan.setEnabled(akses.getcatatan_observasi_induksi_persalinan());
         ppResumePerawat.setEnabled(akses.getsoap_perawatan());
+        MnRMLembarKonsultasi.setEnabled(akses.getdata_resume_pasien());
         
         if(!akses.getkode().equals("Admin Utama")){
             BtnHapus.setEnabled(false);
@@ -12640,6 +12646,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         MnRMCatatanMonitoring.add(MnCatatanObservasiCHBP);
         MnRMCatatanMonitoring.add(MnCatatanObservasiInduksiPersalinan);
         
+        
         labelFinger1.setText("Ket. Verifikasi Biometric :");
         labelFinger1.setName("labelFinger1"); // NOI18N
         FormInput.add(labelFinger1);
@@ -12685,6 +12692,24 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         jPanelFinger3.setName("jPanelFinger3"); // NOI18N
         FormInput.add(jPanelFinger3);
         jPanelFinger3.setBounds(1080, 30, 30, 20);
+        
+                
+        MnRMLembarKonsultasi.setBackground(new java.awt.Color(255, 255, 254));
+        MnRMLembarKonsultasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnRMLembarKonsultasi.setForeground(new java.awt.Color(50, 50, 50));
+        MnRMLembarKonsultasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnRMLembarKonsultasi.setText("Lembar Konsultasi");
+        MnRMLembarKonsultasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnRMLembarKonsultasi.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnRMLembarKonsultasi.setName("MnRMLembarKonsultasi"); // NOI18N
+        MnRMLembarKonsultasi.setPreferredSize(new java.awt.Dimension(210, 26));
+        MnRMLembarKonsultasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnRMLembarKonsultasiActionPerformed(evt);
+            }
+        });
+        
+          MnDataRM.add(MnRMLembarKonsultasi);
     }
     
     private void ganti(){
@@ -12940,5 +12965,28 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             }
         }
     }
+    
+    private void MnRMLembarKonsultasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnRMLembarKonsultasiActionPerformed
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, data registrasi sudah habis...!!!!");
+            TNoRM.requestFocus();
+        }else if(TPasien.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu data pasien dengan menklik data pada table...!!!");
+            tbPetugas.requestFocus();
+        }else{
+            if(tbPetugas.getSelectedRow()!= -1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                RMKonsultasiDokter form=new RMKonsultasiDokter(null,false);
+                form.isCek();
+                form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                form.setLocationRelativeTo(internalFrame1);
+                form.setVisible(true);
+                form.emptTeks();
+                form.setNoRm(TNoRw.getText(),"UNIT IGD", "");
+                form.tampil();
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+    }//GEN-LAST:event_MnRMLembarKonsultasiActionPerformed
     
 }

@@ -1403,6 +1403,7 @@ public final class BPJSRujukanKeluar extends javax.swing.JDialog {
         TNama.setText(nama);
         NoRM.setText(norm);
         TCari.setText(norwt);
+        Valid.SetTgl(TanggalRujukKeluar,Sequel.cariIsi("select bse.tglsep FROM bridging_sep bse WHERE bse.no_sep =?", nosep));        
         if(Sequel.cariIsi("SELECT bse.jnspelayanan FROM bridging_sep bse WHERE bse.no_sep =?", nosep).equals("1")){
             JenisPelayanan1.setSelectedIndex(0);
             btnPoli1.setEnabled(false);
