@@ -163,6 +163,7 @@ import rekammedis.RMTriaseIGD;
 import rekammedis.RMUjiFungsiKFR;
 import bridging.SatuSehatCariAllergy;
 import bridging.SatuSehatCariAllergyReaction;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -197,6 +198,8 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
     private double ttljmdokter=0,ttljmperawat=0,ttlkso=0,ttljasasarana=0,ttlbhp=0,ttlmenejemen=0,ttlpendapatan=0;
     private Jurnal jur=new Jurnal();
     private String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
+    private Date date = new Date();
+    private SimpleDateFormat tanggalFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     /** Creates new form DlgPerawatan
      * @param parent
@@ -10636,6 +10639,8 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         SetPj(Sequel.cariIsi("select kd_pj from reg_periksa where no_rawat = ?", norwt));
         SetPoli(Sequel.cariIsi("select kd_poli from reg_periksa where no_rawat = ?", norwt));
         setCaraBayar(norwt);
+        date = new Date();
+        DTPTgl.setSelectedItem(tanggalFormat.format(date));
     }
     
     private void isForm(){

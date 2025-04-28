@@ -930,6 +930,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
                 nameNode = root.path("metaData");
                 System.out.println("code : "+nameNode.path("code").asText());
                 System.out.println("message : "+nameNode.path("message").asText());
+                Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),user});
                 if(nameNode.path("code").asText().equals("200")){
                     response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc)).path("noSuratKontrol");
                     if(Sequel.menyimpantf("bridging_surat_kontrol_bpjs","?,?,?,?,?,?,?,?,?,now(),'0000-00-00 00:00:00'","No.Surat",9,new String[]{
@@ -1177,6 +1178,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     nameNode = root.path("metaData");
                     System.out.println("code : "+nameNode.path("code").asText());
                     System.out.println("message : "+nameNode.path("message").asText());
+                    Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),user});
                     if(nameNode.path("code").asText().equals("200")){
                         if(Sequel.mengedittf("bridging_surat_kontrol_bpjs","no_surat=?","tgl_surat=?,tgl_rencana=?,kd_dokter_bpjs=?,nm_dokter_bpjs=?,kd_poli_bpjs=?,nm_poli_bpjs=?,user=?, updated_at=now() ",8,new String[]{
                                 Valid.SetTgl(TanggalSurat.getSelectedItem()+""),Valid.SetTgl(TanggalKontrol.getSelectedItem()+""),KdDokter.getText(),NmDokter.getText(),KdPoli.getText(),NmPoli.getText(), user=akses.getkode(), NoSurat.getText(),
