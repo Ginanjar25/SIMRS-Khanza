@@ -68,6 +68,18 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
             }
         }
         
+        // Kondisi khusus untuk kolom 41, (ada resep atau tidak)
+        if (column == 41) {
+            Object status = table.getValueAt(row, 31);
+            Object resep = table.getValueAt(row, 41);            
+            String statusString = status.toString();
+            String resepString = resep.toString();
+            if ("Sudah".equals(statusString) && "Resep".equals(resepString)) {
+                component.setBackground(new Color(255, 255, 0)); // Warna lain untuk kondisi lainnya
+                component.setForeground(Color.BLACK);
+            }            
+        }
+        
 //        if (column == 40) {
 //            Object jenis_bayar = table.getValueAt(row, 24); // Nilai di kolom ke-24
 //            Object status = table.getValueAt(row, 31);

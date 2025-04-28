@@ -143,6 +143,7 @@ import rekammedis.RMTimeOutSebelumInsisi;
 import rekammedis.RMTransferPasienAntarRuang;
 import bridging.SatuSehatCariAllergy;
 import bridging.SatuSehatCariAllergyReaction;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -171,6 +172,8 @@ public final class DlgRawatInap extends javax.swing.JDialog {
             Beban_Jasa_Medik_Paramedis_Tindakan_Ranap="",Utang_Jasa_Medik_Paramedis_Tindakan_Ranap="",Beban_KSO_Tindakan_Ranap="",Utang_KSO_Tindakan_Ranap="",
             Beban_Jasa_Sarana_Tindakan_Ranap="",Utang_Jasa_Sarana_Tindakan_Ranap="",Beban_Jasa_Menejemen_Tindakan_Ranap="",Utang_Jasa_Menejemen_Tindakan_Ranap="",
             HPP_BHP_Tindakan_Ranap="",Persediaan_BHP_Tindakan_Ranap="",kode_poli="",kamar="",jenisbayar="",TANGGALMUNDUR="yes";
+    private Date date = new Date();
+    private SimpleDateFormat tanggalFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     /** Creates new form DlgRawatInap
      * @param parent
@@ -9687,6 +9690,8 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         TKdPrwDokterPetugas.setText("");
         TNmPrwDokterPetugas.setText("");
         setCaraBayar(norwt);
+        date = new Date();
+        DTPTgl.setSelectedItem(tanggalFormat.format(date));
     }
     
     public void setKamar(String kamar) {

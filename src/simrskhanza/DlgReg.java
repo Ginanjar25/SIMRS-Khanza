@@ -7390,6 +7390,11 @@ public final class DlgReg extends javax.swing.JDialog {
                 "inner join kamar_inap on reg_periksa.no_rawat=kamar_inap.no_rawat where kamar_inap.stts_pulang='-' and pasien.no_rkm_medis=?",TNoRM.getText())>0){
             JOptionPane.showMessageDialog(null,"Pasien sedang dalam masa perawatan di kamar inap..!!");
             TNoRM.requestFocus();
+        }else if(Sequel.cariInteger("SELECT COUNT(ps.no_rkm_medis) FROM pasien ps JOIN reg_periksa rp ON rp.no_rkm_medis = ps.no_rkm_medis " +
+                "JOIN ranap_gabung rg ON rg.no_rawat2 = rp.no_rawat JOIN kamar_inap ki ON ki.no_rawat = rg.no_rawat " +
+                "WHERE ki.stts_pulang = '-' and ps.no_rkm_medis =?",TNoRM.getText())>0){
+            JOptionPane.showMessageDialog(null,"Pasien sedang dalam masa perawatan ranap gabung di kamar inap..!!");
+            TNoRM.requestFocus();
         }else{
             if (akses.getkode().equals("Admin Utama")) {
                 if (Sequel.cariInteger("select count(reg_periksa.no_rkm_medis) from pasien inner join reg_periksa on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "

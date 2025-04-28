@@ -2136,9 +2136,9 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                             KeteranganKedatangan.getText(),KdKasus.getText(),PrimerTensi.getText(),PrimerNadi.getText(),PrimerRespirasi.getText(),PrimerSuhu.getText(),
                             PrimerSaturasi.getText(),PrimerNyeri.getText()
                         })==true){
-                        if(PrimerResusitasi.isSelected()==true){
+                        if(TabSkala1dan2.getSelectedIndex()==0){
                             keputusan="Ruang Resusitasi";
-                        }else if(PrimerKritis.isSelected()==true){
+                        }else if(TabSkala1dan2.getSelectedIndex()==1){
                             keputusan="Ruang Kritis";
                         }
                         if(Sequel.menyimpantf2("data_triase_igdprimer","?,?,?,?,?,?,?", 7,new String[]{
@@ -2232,9 +2232,11 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                             KeteranganKedatangan.getText(),KdKasus.getText(),SekunderTensi.getText(),SekunderNadi.getText(),SekunderRespirasi.getText(),SekunderSuhu.getText(),
                             SekunderSaturasi.getText(),SekunderNyeri.getText()
                         })==true){
-                        if(SekunderZonaKuning.isSelected()==true){
+                        if(TabSkala3dan4dan5.getSelectedIndex()==0){
                             keputusan="Zona Kuning";
-                        }else if(SekunderZonaHijau.isSelected()==true){
+                        }else if(TabSkala3dan4dan5.getSelectedIndex()==1){
+                            keputusan="Zona Hijau";
+                        }else if(TabSkala3dan4dan5.getSelectedIndex()==2){
                             keputusan="Zona Hijau";
                         }
                         if(Sequel.menyimpantf2("data_triase_igdsekunder","?,?,?,?,?,?", 6,new String[]{

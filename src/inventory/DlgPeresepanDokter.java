@@ -760,7 +760,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         jLabel8.setBounds(0, 42, 72, 23);
 
         DTPBeri.setForeground(new java.awt.Color(50, 70, 50));
-        DTPBeri.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "13-03-2025" }));
+        DTPBeri.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "14-03-2025" }));
         DTPBeri.setDisplayFormat("dd-MM-yyyy");
         DTPBeri.setName("DTPBeri"); // NOI18N
         DTPBeri.setOpaque(false);
@@ -1129,9 +1129,10 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnAllKeyPressed
 
     private void tbResepMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbResepMouseClicked
-        if(tbResep.getRowCount()!=0){
+        if (tbResep.getRowCount() != 0) {
             try {
                 getCekStok();
+                getCekPemeriksaanHBA1C();
             } catch (java.lang.NullPointerException e) {
             }
         }
@@ -4202,7 +4203,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             }  
         }               
     }
-    
+        
     private void getCekStokRacikan() {
         if(tbDetailResepObatRacikan.getSelectedRow()!= -1){
             if(STOKKOSONGRESEP.equals("no")){
@@ -4242,6 +4243,33 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             default:
                 rbTidakIter.setSelected(true);
                 break;
+        }
+    }
+    
+    private void getCekPemeriksaanHBA1C() {
+        if (tbResep.getSelectedRow() != -1) {
+            if (KdPj.getText().equals("BPJ")) {
+                if (tbResep.getValueAt(tbResep.getSelectedRow(), 6).toString().contains("Insulin") || tbResep.getValueAt(tbResep.getSelectedRow(), 6).toString().contains("insulin")) {
+                    String hasil_hba1c = Sequel.cariIsi("SELECT  CONCAT('Tanggal ',DATE_FORMAT(dpl.tgl_periksa,'%d-%m-%Y' ), ' Jam ', dpl.jam, '\\nDengan Hasil : ', dpl.nilai, ' \\nValid sampai tanggal : ',DATE_FORMAT(DATE_ADD(dpl.tgl_periksa, INTERVAL 180 DAY),'%d-%m-%Y' ), ' (',DATEDIFF(DATE_ADD(dpl.tgl_periksa, INTERVAL 180 DAY),CURDATE()),') Hari') AS hasil "
+                                + "FROM reg_periksa aa "
+                                + "JOIN detail_periksa_lab dpl ON dpl.no_rawat = aa.no_rawat AND dpl.kd_jenis_prw LIKE '%J000034%' "
+                                + "WHERE aa.no_rkm_medis = '" + TPasien.getText().substring(0, 6) + "' and aa.tgl_registrasi > DATE_SUB(CURDATE(), INTERVAL 180 DAY) "
+                                + "AND ( "
+                                + "    CASE "
+                                + "        WHEN dpl.nilai LIKE '>%' THEN CONVERT(SUBSTRING(dpl.nilai, 2), DECIMAL(5,2)) "
+                                + "        ELSE CONVERT(REPLACE(dpl.nilai, ',', '.'), DECIMAL(5,2)) "
+                                + "    END "
+                                + ") > 9");
+                    if(hasil_hba1c.isBlank()){
+                        JOptionPane.showMessageDialog(rootPane, "Maaf, Pasien belum ada pemeriksaan HBA1C dalam 6 bulan terakir dengan hasil >9 ");
+                        tbResep.changeSelection(tbResep.getSelectedRow(), 4, false, false);
+                    }else{
+                        JOptionPane.showMessageDialog(rootPane, "Hasil Pemeriksaan HBA1C \n"+hasil_hba1c);
+                        tbResep.changeSelection(tbResep.getSelectedRow(), 1, false, false);
+                        tbResep.editCellAt(tbResep.getSelectedRow(), 1);
+                    }
+                }
+            }
         }
     }
 }
