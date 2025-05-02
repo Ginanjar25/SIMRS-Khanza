@@ -283,18 +283,20 @@ public void kirimAntrianIGD(String kd_poli, String kd_dokter) {
         }
 
         ps = koneksi.prepareStatement(
-                "SELECT \n"
-                + " SUM(CASE WHEN data_triase_igdsekunder.plan = 'Zona Hijau' THEN 1 ELSE 0 END) AS hijau,\n"
-                + " SUM(CASE WHEN data_triase_igdsekunder.plan = 'Zona Kuning' THEN 1 ELSE 0 END) AS kuning,\n"
-                + " SUM(CASE WHEN data_triase_igdprimer.plan IN ('Ruang Kritis', 'Ruang Resusitasi') THEN 1 ELSE 0 END) AS merah\n"
-                + "FROM reg_periksa\n"
-                + "LEFT JOIN data_triase_igdsekunder \n"
-                + "ON data_triase_igdsekunder.no_rawat = reg_periksa.no_rawat\n"
-                + "LEFT JOIN data_triase_igdprimer \n"
-                + "ON data_triase_igdprimer.no_rawat = reg_periksa.no_rawat\n"
-                + "WHERE reg_periksa.kd_poli = 'IGDK' \n"
-                + "AND reg_periksa.stts = 'Belum' \n"
-                + "AND reg_periksa.tgl_registrasi BETWEEN CURDATE() - INTERVAL 1 DAY AND CURDATE();"
+                "SELECT\n" +
+                "    SUM(CASE WHEN igdsek.plan = 'Zona Hijau' THEN 1 ELSE 0 END) AS hijau,\n" +
+                "    SUM(CASE WHEN igdsek.plan = 'Zona Kuning' THEN 1 ELSE 0 END) AS kuning,\n" +
+                "    SUM(CASE WHEN igdpri.plan IN ('Ruang Kritis', 'Ruang Resusitasi') THEN 1 ELSE 0 END) AS merah,\n" +
+                "    reg.no_rawat\n" +
+                "FROM (\n" +
+                "    SELECT * FROM reg_periksa\n" +
+                "    WHERE kd_poli = 'IGDK'\n" +
+                "    AND status_lanjut = 'ralan'\n" +
+                "    AND status_bayar = 'Belum Bayar'\n" +
+                "    AND tgl_registrasi BETWEEN CURDATE() - INTERVAL 1 DAY AND CURDATE()\n" +
+                ") AS reg\n" +
+                "LEFT JOIN data_triase_igdsekunder igdsek ON igdsek.no_rawat = reg.no_rawat\n" +
+                "LEFT JOIN data_triase_igdprimer igdpri ON igdpri.no_rawat = reg.no_rawat"
         );
         rs = ps.executeQuery();
         if (rs.next()) {
@@ -347,18 +349,20 @@ public void kirimAntrianPerawatIGD(String nik1, String nama1, String nik2, Strin
         
         JSONObject jsonBody = new JSONObject();
         ps = koneksi.prepareStatement(
-                "SELECT \n"
-                + " SUM(CASE WHEN data_triase_igdsekunder.plan = 'Zona Hijau' THEN 1 ELSE 0 END) AS hijau,\n"
-                + " SUM(CASE WHEN data_triase_igdsekunder.plan = 'Zona Kuning' THEN 1 ELSE 0 END) AS kuning,\n"
-                + " SUM(CASE WHEN data_triase_igdprimer.plan IN ('Ruang Kritis', 'Ruang Resusitasi') THEN 1 ELSE 0 END) AS merah\n"
-                + "FROM reg_periksa\n"
-                + "LEFT JOIN data_triase_igdsekunder \n"
-                + "ON data_triase_igdsekunder.no_rawat = reg_periksa.no_rawat\n"
-                + "LEFT JOIN data_triase_igdprimer \n"
-                + "ON data_triase_igdprimer.no_rawat = reg_periksa.no_rawat\n"
-                + "WHERE reg_periksa.kd_poli = 'IGDK' \n"
-                + "AND reg_periksa.stts = 'Belum' \n"
-                + "AND reg_periksa.tgl_registrasi BETWEEN CURDATE() - INTERVAL 1 DAY AND CURDATE();"
+                "SELECT\n" +
+                "    SUM(CASE WHEN igdsek.plan = 'Zona Hijau' THEN 1 ELSE 0 END) AS hijau,\n" +
+                "    SUM(CASE WHEN igdsek.plan = 'Zona Kuning' THEN 1 ELSE 0 END) AS kuning,\n" +
+                "    SUM(CASE WHEN igdpri.plan IN ('Ruang Kritis', 'Ruang Resusitasi') THEN 1 ELSE 0 END) AS merah,\n" +
+                "    reg.no_rawat\n" +
+                "FROM (\n" +
+                "    SELECT * FROM reg_periksa\n" +
+                "    WHERE kd_poli = 'IGDK'\n" +
+                "    AND status_lanjut = 'ralan'\n" +
+                "    AND status_bayar = 'Belum Bayar'\n" +
+                "    AND tgl_registrasi BETWEEN CURDATE() - INTERVAL 1 DAY AND CURDATE()\n" +
+                ") AS reg\n" +
+                "LEFT JOIN data_triase_igdsekunder igdsek ON igdsek.no_rawat = reg.no_rawat\n" +
+                "LEFT JOIN data_triase_igdprimer igdpri ON igdpri.no_rawat = reg.no_rawat"
         );
         rs = ps.executeQuery();
         if (rs.next()) {
