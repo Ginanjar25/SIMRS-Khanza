@@ -1461,8 +1461,8 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
                     "FROM laporan_operasi lo\n" +
                     "JOIN reg_periksa rp ON rp.no_rawat = lo.no_rawat\n" +
                     "JOIN pasien ps ON ps.no_rkm_medis = rp.no_rkm_medis\n" +
-                    "JOIN dokter dr ON dr.kd_dokter = lo.kd_dokter\n" +
-                    "JOIN petugas p ON p.nip = lo.kd_petugas\n" +
+                    "LEFT JOIN dokter dr ON dr.kd_dokter = lo.kd_dokter\n" +
+                    "LEFT JOIN petugas p ON p.nip = lo.kd_petugas\n" +
                     "WHERE lo.no_rawat = ?");
             try{
                 psobat.setString(1,TNoRw.getText());
