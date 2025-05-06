@@ -1005,7 +1005,7 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
                 sukses=true; 
                 if(sukses==true){
                     if(!Laporan.getText().equals("")){
-                        if(Sequel.menyimpantf2("laporan_operasi","?,?,?,?,?,?,?,?,?,?,?,?,?,?","laporan operasi",14,new String[]{
+                        if(Sequel.menyimpantf2("laporan_operasi","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","laporan operasi",15,new String[]{
                                 TNoRw.getText(),
                                 Valid.SetTgl(tgl.getSelectedItem()+"")+" "+tgl.getSelectedItem().toString().substring(11,19),
                                 NamaOperasi.getText(),
@@ -1357,8 +1357,10 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
     private void PerdarahanItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_PerdarahanItemStateChanged
         if(Perdarahan.getSelectedIndex()==0){
             Jumlah.setEnabled(true);
+            Jumlah.setEditable(true);
         }else{
            Jumlah.setEnabled(false);
+           Jumlah.setEditable(false);
            Jumlah.setText("");
         }
     }//GEN-LAST:event_PerdarahanItemStateChanged
