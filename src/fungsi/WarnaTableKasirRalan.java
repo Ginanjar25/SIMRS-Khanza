@@ -69,7 +69,7 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
         }
         
         // Kondisi khusus untuk kolom 41, (ada resep atau tidak)
-        if (column == 41) {
+        if (column == 26) {
             Object status = table.getValueAt(row, 31);
             Object resep = table.getValueAt(row, 41);            
             String statusString = status.toString();
