@@ -64,7 +64,7 @@ public class DlgBookingKuota extends javax.swing.JFrame {
     public DlgBookingKuota() {
         initComponents();
         tabMode=new DefaultTableModel(null,new Object[]{
-                "P","Tgl Periksa","Nama Dokter","Nama Pasien","Alamat","No. Telp","Catatan","Kd Dok"
+                "P","Tgl Periksa","Nama Dokter","Nama Pasien","Alamat","No. Telp","Cara Bayar","Catatan","Kd Dok"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -75,7 +75,7 @@ public class DlgBookingKuota extends javax.swing.JFrame {
              }
              Class[] types = new Class[] {
                 java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, 
-                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -88,7 +88,7 @@ public class DlgBookingKuota extends javax.swing.JFrame {
         tbObat.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 8; i++) {
+        for (i = 0; i < 9; i++) {
             TableColumn column = tbObat.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(20);
@@ -104,7 +104,7 @@ public class DlgBookingKuota extends javax.swing.JFrame {
                 column.setPreferredWidth(100);
             }else if(i==6){
                 column.setPreferredWidth(150);
-            }else if(i==7){
+            }else if(i==8){
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
             }
@@ -419,6 +419,12 @@ public class DlgBookingKuota extends javax.swing.JFrame {
         TNotelp = new widget.TextBox();
         TCatatan = new widget.TextBox();
         jLabel14 = new widget.Label();
+        jLabel5 = new widget.Label();
+        labelBpjs = new widget.Label();
+        jLabel16 = new widget.Label();
+        labelUmum = new widget.Label();
+        cmbStts = new widget.ComboBox();
+        jLabel15 = new widget.Label();
 
         jLabelKdDok.setText("Filter Dokter : ");
         jLabelKdDok.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -624,7 +630,7 @@ public class DlgBookingKuota extends javax.swing.JFrame {
         jLabel13.setPreferredSize(new java.awt.Dimension(90, 23));
         panelCari.add(jLabel13);
 
-        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-03-2025" }));
+        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-05-2025" }));
         DTPCari3.setDisplayFormat("dd-MM-yyyy");
         DTPCari3.setOpaque(false);
         DTPCari3.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -694,25 +700,25 @@ public class DlgBookingKuota extends javax.swing.JFrame {
         FormInput.setPreferredSize(new java.awt.Dimension(190, 107));
         FormInput.setLayout(null);
 
-        jLabel4.setText("Nama :");
+        jLabel4.setText("BPJS :");
         FormInput.add(jLabel4);
-        jLabel4.setBounds(170, 10, 50, 23);
+        jLabel4.setBounds(700, 70, 70, 23);
 
         jLabel9.setText("Dokter :");
         FormInput.add(jLabel9);
-        jLabel9.setBounds(0, 100, 60, 23);
+        jLabel9.setBounds(170, 10, 60, 23);
 
         NmDokter.setEditable(false);
         NmDokter.setHighlighter(null);
         FormInput.add(NmDokter);
-        NmDokter.setBounds(170, 100, 280, 23);
+        NmDokter.setBounds(320, 10, 210, 23);
 
         TPasien.setHighlighter(null);
         FormInput.add(TPasien);
-        TPasien.setBounds(230, 10, 220, 23);
+        TPasien.setBounds(70, 40, 490, 23);
 
         TanggalPeriksa.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalPeriksa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2025-03-06" }));
+        TanggalPeriksa.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2025-05-09" }));
         TanggalPeriksa.setDisplayFormat("yyyy-MM-dd");
         TanggalPeriksa.setOpaque(false);
         TanggalPeriksa.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -730,7 +736,7 @@ public class DlgBookingKuota extends javax.swing.JFrame {
         KdDokter.setEditable(false);
         KdDokter.setHighlighter(null);
         FormInput.add(KdDokter);
-        KdDokter.setBounds(70, 100, 90, 23);
+        KdDokter.setBounds(240, 10, 70, 23);
 
         BtnDokter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         BtnDokter.setMnemonic('X');
@@ -746,31 +752,64 @@ public class DlgBookingKuota extends javax.swing.JFrame {
             }
         });
         FormInput.add(BtnDokter);
-        BtnDokter.setBounds(450, 100, 28, 23);
+        BtnDokter.setBounds(540, 10, 28, 23);
 
-        jLabel11.setText("Catatan :");
+        jLabel11.setText("Cara Bayar :");
         FormInput.add(jLabel11);
-        jLabel11.setBounds(470, 10, 60, 23);
+        jLabel11.setBounds(570, 40, 70, 23);
 
         TAlamat.setHighlighter(null);
+        TAlamat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TAlamatActionPerformed(evt);
+            }
+        });
         FormInput.add(TAlamat);
-        TAlamat.setBounds(70, 40, 380, 23);
+        TAlamat.setBounds(70, 70, 490, 23);
 
         jLabel12.setText("No. Telp :");
         FormInput.add(jLabel12);
-        jLabel12.setBounds(0, 70, 60, 23);
+        jLabel12.setBounds(0, 100, 60, 23);
 
         TNotelp.setHighlighter(null);
         FormInput.add(TNotelp);
-        TNotelp.setBounds(70, 70, 380, 23);
+        TNotelp.setBounds(70, 100, 490, 23);
 
         TCatatan.setHighlighter(null);
         FormInput.add(TCatatan);
-        TCatatan.setBounds(540, 10, 240, 23);
+        TCatatan.setBounds(660, 10, 270, 23);
 
         jLabel14.setText("Alamat :");
         FormInput.add(jLabel14);
-        jLabel14.setBounds(0, 40, 60, 23);
+        jLabel14.setBounds(0, 70, 60, 23);
+
+        jLabel5.setText("Nama :");
+        FormInput.add(jLabel5);
+        jLabel5.setBounds(10, 40, 50, 23);
+
+        labelBpjs.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelBpjs.setText("0");
+        labelBpjs.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        FormInput.add(labelBpjs);
+        labelBpjs.setBounds(720, 90, 70, 30);
+
+        jLabel16.setText("UMUM/ASURANSI :");
+        FormInput.add(jLabel16);
+        jLabel16.setBounds(590, 70, 100, 23);
+
+        labelUmum.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelUmum.setText("0");
+        labelUmum.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        FormInput.add(labelUmum);
+        labelUmum.setBounds(610, 90, 70, 30);
+
+        cmbStts.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-- Cara Bayar --", "BPJS", "UMUM/ASURANSI" }));
+        FormInput.add(cmbStts);
+        cmbStts.setBounds(660, 40, 150, 23);
+
+        jLabel15.setText("Catatan :");
+        FormInput.add(jLabel15);
+        jLabel15.setBounds(580, 10, 60, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -1010,6 +1049,10 @@ public class DlgBookingKuota extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tbObatKeyReleased
 
+    private void TAlamatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TAlamatActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TAlamatActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1072,19 +1115,25 @@ public class DlgBookingKuota extends javax.swing.JFrame {
     private widget.TextBox TNotelp;
     private widget.TextBox TPasien;
     private widget.Tanggal TanggalPeriksa;
+    private widget.ComboBox cmbStts;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel10;
     private widget.Label jLabel11;
     private widget.Label jLabel12;
     private widget.Label jLabel13;
     private widget.Label jLabel14;
+    private widget.Label jLabel15;
+    private widget.Label jLabel16;
     private widget.Label jLabel4;
+    private widget.Label jLabel5;
     private widget.Label jLabel6;
     private widget.Label jLabel7;
     private widget.Label jLabel8;
     private widget.Label jLabel9;
     private widget.Label jLabelKdDok;
     private javax.swing.JPanel jPanel3;
+    private widget.Label labelBpjs;
+    private widget.Label labelUmum;
     private widget.panelisi panelCari;
     private widget.panelisi panelGlass10;
     private widget.panelisi panelGlass8;
@@ -1099,7 +1148,7 @@ private void tampil() {
         Valid.tabelKosong(tabMode);
         try {
             ps=koneksi.prepareStatement(
-                    "SELECT bk.tgl_periksa, dr.nm_dokter, bk.nama, bk.alamat, bk.no_telp, SUBSTRING(bk.cretaed_at,1,10) AS tgl_booking, dr.kd_dokter, bk.catatan " +
+                    "SELECT bk.tgl_periksa, dr.nm_dokter, bk.nama, bk.alamat, bk.no_telp, SUBSTRING(bk.cretaed_at,1,10) AS tgl_booking, dr.kd_dokter, bk.catatan, bk.penjab " +
                     "FROM booking_kuota bk " +
                     "JOIN dokter dr ON dr.kd_dokter = bk.kd_dok " +
                     "WHERE "+status+" AND bk.nama LIKE ? or "+status+" and bk.alamat LIKE  ? or "+status+" and dr.nm_dokter LIKE ? order by dr.kd_dokter asc");
@@ -1111,7 +1160,7 @@ private void tampil() {
                 while(rs.next()){                    
                     tabMode.addRow(new Object[]{
                         false,rs.getString("tgl_periksa"),rs.getString("nm_dokter"),rs.getString("nama"),rs.getString("alamat"),
-                        rs.getString("no_telp"),rs.getString("catatan"),rs.getString("kd_dokter"),
+                        rs.getString("no_telp"),rs.getString("penjab"),rs.getString("catatan"),rs.getString("kd_dokter"),
                     });                    
                 }
             } catch (Exception e) {
@@ -1152,7 +1201,14 @@ private void tampil() {
             TAlamat.setText(tbObat.getValueAt(tbObat.getSelectedRow(),4).toString());
             TNotelp.setText(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString());  
             TCatatan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());  
+            String jmlBpjs = Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '"+tbObat.getValueAt(tbObat.getSelectedRow(),1).toString()+"' AND bk.kd_dok = '"+tbObat.getValueAt(tbObat.getSelectedRow(),7).toString()+"' AND bk.penjab = 'BPJS'");
+            String jmlUmum = Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '"+tbObat.getValueAt(tbObat.getSelectedRow(),1).toString()+"' AND bk.kd_dok = '"+tbObat.getValueAt(tbObat.getSelectedRow(),7).toString()+"' AND bk.penjab = 'UMUM'");
+            System.out.println(jmlBpjs);
+            System.out.println(jmlUmum);
+            labelBpjs.setText(jmlBpjs);
+            labelUmum.setText(jmlUmum);
         }
+        
     }
     
     public void setNoRm(String norm,String nama) {
@@ -1205,7 +1261,7 @@ private void tampil() {
 
 
     private void isBooking() {
-        if(Sequel.menyimpantf("booking_kuota","?,?,?,?,?,?,?,CURRENT_TIMESTAMP(),?","Pasien dan Tanggal",8,new String[]{
+        if(Sequel.menyimpantf("booking_kuota","?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP(),?","Pasien dan Tanggal",9,new String[]{
             TanggalPeriksa.getSelectedItem()+"",
             KdDokter.getText(),
             TPasien.getText(),
@@ -1213,6 +1269,7 @@ private void tampil() {
             TNotelp.getText(),            
             akses.getkode(),
             TCatatan.getText(),
+            cmbStts.getSelectedItem().toString(),
             "0000-00-00 00:00:00"
            })==true){
             emptTeks();
