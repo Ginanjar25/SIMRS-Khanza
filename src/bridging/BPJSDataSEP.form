@@ -2700,6 +2700,7 @@
                             </Property>
                             <Property name="mnemonic" type="int" value="88"/>
                             <Property name="toolTipText" type="java.lang.String" value="Alt+X"/>
+                            <Property name="enabled" type="boolean" value="false"/>
                             <Property name="name" type="java.lang.String" value="btnDPJP" noResource="true"/>
                           </Properties>
                           <Events>

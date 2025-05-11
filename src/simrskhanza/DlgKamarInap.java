@@ -6303,7 +6303,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                  this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                                 Valid.MyReportqry("rptKamarInap.jasper", "report", "::[ Data Kamar Inap Pasien ]::", 
                                       "select reg_periksa.no_rkm_medis,pasien.nm_pasien, pasien.jk,reg_periksa.umurdaftar,kamar_inap.tgl_masuk,dokter.nm_dokter,\n"
-                                    + "kamar_inap.diagnosa_awal ,kecamatan.nm_kec,SUBSTRING(bangsal.nm_bangsal,5) AS kamar,\n"
+                                    + "kamar_inap.diagnosa_awal ,kecamatan.nm_kec,concat(SUBSTRING(bangsal.nm_bangsal,5),' - ',SUBSTRING_INDEX(kamar.kd_kamar,'-',-1)) AS kamar,\n"
                                     + "CASE WHEN bridging_sep.peserta LIKE \"%PBI%\" THEN \"PBI\"  WHEN bridging_sep.peserta = '' \n"
                                     + "OR bridging_sep.peserta IS NULL THEN '' ELSE \"NON-PBI\" END AS peserta, \n"
                                     + "COALESCE(CONCAT('KELAS ',bridging_sep.klsrawat), '') AS kelas\n"

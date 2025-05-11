@@ -854,6 +854,8 @@ public class DlgBookingKuota extends javax.swing.JFrame {
             Valid.textKosong(KdDokter,"Alamat");
         }else if(TNotelp.getText().trim().equals("")){
             Valid.textKosong(KdDokter,"No. Telp");
+        }else if(cmbStts.getSelectedIndex()==0){
+            Valid.textKosong(cmbStts,"Cara Bayar");
         }else{
             if(akses.getkode().equals("Admin Utama")){
                 isBooking();
@@ -1188,6 +1190,7 @@ private void tampil() {
         KdDokter.setText("");
         NmDokter.setText("");
         TCatatan.setText("");
+        cmbStts.setSelectedIndex(0);
     }
     
 
@@ -1195,20 +1198,20 @@ private void tampil() {
     private void getData() {
         if(tbObat.getSelectedRow()!= -1){
             Valid.SetTgl(TanggalPeriksa,tbObat.getValueAt(tbObat.getSelectedRow(),1).toString());
-            KdDokter.setText(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString());
+            KdDokter.setText(tbObat.getValueAt(tbObat.getSelectedRow(),8).toString());
             NmDokter.setText(tbObat.getValueAt(tbObat.getSelectedRow(),2).toString());
             TPasien.setText(tbObat.getValueAt(tbObat.getSelectedRow(),3).toString());
             TAlamat.setText(tbObat.getValueAt(tbObat.getSelectedRow(),4).toString());
             TNotelp.setText(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString());  
-            TCatatan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());  
-            String jmlBpjs = Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '"+tbObat.getValueAt(tbObat.getSelectedRow(),1).toString()+"' AND bk.kd_dok = '"+tbObat.getValueAt(tbObat.getSelectedRow(),7).toString()+"' AND bk.penjab = 'BPJS'");
-            String jmlUmum = Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '"+tbObat.getValueAt(tbObat.getSelectedRow(),1).toString()+"' AND bk.kd_dok = '"+tbObat.getValueAt(tbObat.getSelectedRow(),7).toString()+"' AND bk.penjab = 'UMUM'");
-            System.out.println(jmlBpjs);
-            System.out.println(jmlUmum);
-            labelBpjs.setText(jmlBpjs);
-            labelUmum.setText(jmlUmum);
-        }
-        
+            TCatatan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString());
+            cmbStts.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());
+            try {
+                labelBpjs.setText(Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '" + tbObat.getValueAt(tbObat.getSelectedRow(), 1).toString() + "' AND bk.kd_dok = '" + tbObat.getValueAt(tbObat.getSelectedRow(), 8).toString() + "' AND bk.penjab = 'BPJS'"));
+                labelUmum.setText(Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '" + tbObat.getValueAt(tbObat.getSelectedRow(), 1).toString() + "' AND bk.kd_dok = '" + tbObat.getValueAt(tbObat.getSelectedRow(), 8).toString() + "' AND bk.penjab = 'UMUM/ASURANSI'"));
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }        
     }
     
     public void setNoRm(String norm,String nama) {
