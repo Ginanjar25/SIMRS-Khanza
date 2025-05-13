@@ -1132,7 +1132,10 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         if (tbResep.getRowCount() != 0) {
             try {
                 getCekStok();
-                getCekPemeriksaanHBA1C();
+                String poli = Sequel.cariIsi("select reg_periksa.kd_poli from reg_periksa where reg_periksa.no_rawat = ?", TNoRw.getText());
+                if(!poli.equals("IGDK") && KdPj.getText().equals("BPJ")){
+                    getCekPemeriksaanHBA1C();
+                }
             } catch (java.lang.NullPointerException e) {
             }
         }

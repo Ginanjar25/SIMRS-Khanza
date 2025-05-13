@@ -1512,8 +1512,8 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
             Valid.SetTgl2(tgl,tbObat.getValueAt(tbObat.getSelectedRow(),3).toString());
             Valid.SetTgl2(tgl2,tbObat.getValueAt(tbObat.getSelectedRow(),4).toString());
             NamaOperasi.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 5).toString());
-            PostOp.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 6).toString());
-            PreOp.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString());
+            PreOp.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 6).toString());
+            PostOp.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString());
             Jaringan.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 8).toString());
             DikirimPA.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(), 9).toString());
             Laporan.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 10).toString());

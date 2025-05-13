@@ -875,8 +875,8 @@ public class DlgBookingKuota extends javax.swing.JFrame {
     private void BtnEdit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEdit1ActionPerformed
         if (!TPasien.getText().equals("")) {
             try {
-                Sequel.mengedit("booking_kuota", "nama=? and tgl_periksa=? and alamat=? and no_telp=?", "tgl_periksa=?,nama=?,alamat=?,no_telp=?,kd_dok=?, catatan=?,updated_at=CURRENT_TIMESTAMP()", 10, new String[]{
-                    TanggalPeriksa.getSelectedItem() + "", TPasien.getText(), TAlamat.getText(), TNotelp.getText(), KdDokter.getText(), TCatatan.getText(),
+                Sequel.mengedit("booking_kuota", "nama=? and tgl_periksa=? and alamat=? and no_telp=?", "tgl_periksa=?,nama=?,alamat=?,no_telp=?,kd_dok=?, catatan=?, penjab =? ,updated_at=CURRENT_TIMESTAMP()", 11, new String[]{
+                    TanggalPeriksa.getSelectedItem() + "", TPasien.getText(), TAlamat.getText(), TNotelp.getText(), KdDokter.getText(), TCatatan.getText(),cmbStts.getSelectedItem().toString(),
                     tbObat.getValueAt(tbObat.getSelectedRow(),3).toString(), tbObat.getValueAt(tbObat.getSelectedRow(),1).toString(),
                     tbObat.getValueAt(tbObat.getSelectedRow(),4).toString(), tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()
                 });
