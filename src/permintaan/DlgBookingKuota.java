@@ -149,7 +149,12 @@ public class DlgBookingKuota extends javax.swing.JFrame {
                 if(dokter.getTable().getSelectedRow()!= -1){                    
                     KdDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),0).toString());
                     NmDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),1).toString());
-                    
+                    try {
+                        labelBpjs.setText(Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '" + TanggalPeriksa.getSelectedItem().toString() + "' AND bk.kd_dok = '" + KdDokter.getText() + "' AND bk.penjab = 'BPJS'"));
+                        labelUmum.setText(Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '" + TanggalPeriksa.getSelectedItem().toString() + "' AND bk.kd_dok = '" + KdDokter.getText() + "' AND bk.penjab = 'UMUM/ASURANSI'"));
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                    }
                 }
             }
             @Override
@@ -172,6 +177,12 @@ public class DlgBookingKuota extends javax.swing.JFrame {
                 if(dokter2.getTable().getSelectedRow()!= -1){                    
                     jLabelKdDok.setText(dokter2.getTable().getValueAt(dokter2.getTable().getSelectedRow(),0).toString());
                     NmDokter1.setText(dokter2.getTable().getValueAt(dokter2.getTable().getSelectedRow(),1).toString());
+                    try {
+                        labelBpjs.setText(Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '" + Valid.SetTgl(DTPCari3.getSelectedItem()+"")+ "' AND bk.kd_dok = '" + jLabelKdDok.getText() + "' AND bk.penjab = 'BPJS'"));
+                        labelUmum.setText(Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '" + Valid.SetTgl(DTPCari3.getSelectedItem()+"")+ "' AND bk.kd_dok = '" + jLabelKdDok.getText() + "' AND bk.penjab = 'UMUM/ASURANSI'"));
+                    } catch (Exception ex) {
+                        System.out.println(ex);
+                    }
                     tampil();
                 }      
             }
