@@ -64,7 +64,7 @@ public class DlgBookingKuota extends javax.swing.JFrame {
     public DlgBookingKuota() {
         initComponents();
         tabMode=new DefaultTableModel(null,new Object[]{
-                "P","Tgl Periksa","Nama Dokter","Nama Pasien","Alamat","No. Telp","Cara Bayar","Catatan","Kd Dok"
+                "P","No Urut","Tgl Periksa","Nama Dokter","Nama Pasien","Alamat","No. Telp","Cara Bayar","Catatan","Kd Dok","Kd Petugas", "Petugas", "Tgl Daftar"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -74,8 +74,8 @@ public class DlgBookingKuota extends javax.swing.JFrame {
                 return a;
              }
              Class[] types = new Class[] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, 
-                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,java.lang.Object.class,java.lang.Object.class,
+                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -88,25 +88,37 @@ public class DlgBookingKuota extends javax.swing.JFrame {
         tbObat.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < 13; i++) {
             TableColumn column = tbObat.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(20);
             }else if(i==1){
-                column.setPreferredWidth(80);
+                column.setPreferredWidth(50);
             }else if(i==2){
-                column.setPreferredWidth(190);
+                column.setPreferredWidth(80);
             }else if(i==3){
                 column.setPreferredWidth(190);
             }else if(i==4){
-                column.setPreferredWidth(250);
+                column.setPreferredWidth(190);
             }else if(i==5){
-                column.setPreferredWidth(100);
+                column.setPreferredWidth(250);
             }else if(i==6){
-                column.setPreferredWidth(150);
+                column.setPreferredWidth(100);
+            }else if(i==7){
+                column.setPreferredWidth(100);
             }else if(i==8){
+                column.setPreferredWidth(150);
+            }else if(i==9){
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
+            }else if(i==10){
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+            }else if(i==11){
+                column.setPreferredWidth(190);
+            }
+            else if(i==12){
+                column.setPreferredWidth(150);
             }
         }
         tbObat.setDefaultRenderer(Object.class, new WarnaTable());
@@ -888,8 +900,8 @@ public class DlgBookingKuota extends javax.swing.JFrame {
             try {
                 Sequel.mengedit("booking_kuota", "nama=? and tgl_periksa=? and alamat=? and no_telp=?", "tgl_periksa=?,nama=?,alamat=?,no_telp=?,kd_dok=?, catatan=?, penjab =? ,updated_at=CURRENT_TIMESTAMP()", 11, new String[]{
                     TanggalPeriksa.getSelectedItem() + "", TPasien.getText(), TAlamat.getText(), TNotelp.getText(), KdDokter.getText(), TCatatan.getText(),cmbStts.getSelectedItem().toString(),
-                    tbObat.getValueAt(tbObat.getSelectedRow(),3).toString(), tbObat.getValueAt(tbObat.getSelectedRow(),1).toString(),
-                    tbObat.getValueAt(tbObat.getSelectedRow(),4).toString(), tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()
+                    tbObat.getValueAt(tbObat.getSelectedRow(),4).toString(), tbObat.getValueAt(tbObat.getSelectedRow(),2).toString(),
+                    tbObat.getValueAt(tbObat.getSelectedRow(),5).toString(), tbObat.getValueAt(tbObat.getSelectedRow(),6).toString()
                 });
                 tampil();
                 emptTeks();
@@ -922,7 +934,7 @@ public class DlgBookingKuota extends javax.swing.JFrame {
         for(i=0;i<tbObat.getRowCount();i++){
             if(tbObat.getValueAt(i,0).toString().equals("true")){
                 Sequel.queryu2("delete from booking_kuota where tgl_periksa=? and nama=? and alamat=?",3,new String[]{
-                    tbObat.getValueAt(i,1).toString(),tbObat.getValueAt(i,3).toString(),tbObat.getValueAt(i,4).toString()
+                    tbObat.getValueAt(i,2).toString(),tbObat.getValueAt(i,4).toString(),tbObat.getValueAt(i,5).toString()
                 });
             }
         }
@@ -1161,10 +1173,12 @@ private void tampil() {
         Valid.tabelKosong(tabMode);
         try {
             ps=koneksi.prepareStatement(
-                    "SELECT bk.tgl_periksa, dr.nm_dokter, bk.nama, bk.alamat, bk.no_telp, SUBSTRING(bk.cretaed_at,1,10) AS tgl_booking, dr.kd_dokter, bk.catatan, bk.penjab " +
-                    "FROM booking_kuota bk " +
-                    "JOIN dokter dr ON dr.kd_dokter = bk.kd_dok " +
-                    "WHERE "+status+" AND bk.nama LIKE ? or "+status+" and bk.alamat LIKE  ? or "+status+" and dr.nm_dokter LIKE ? order by dr.kd_dokter asc");
+                    "SELECT bk.tgl_periksa, dr.nm_dokter, bk.nama, bk.alamat, bk.no_telp, SUBSTRING(bk.cretaed_at,1,10) AS tgl_booking, dr.kd_dokter, bk.catatan, bk.penjab,\n"
+                    + "p.nama AS pegawai, bk.cretaed_at AS tgl_daftar, ROW_NUMBER() OVER (PARTITION BY dr.kd_dokter ORDER BY bk.cretaed_at ASC) AS nourut, bk.nip \n"
+                    + "FROM booking_kuota bk \n"
+                    + "JOIN dokter dr ON dr.kd_dokter = bk.kd_dok\n"
+                    + "JOIN pegawai p ON p.nik = bk.nip \n"
+                    + "WHERE "+status+" AND bk.nama LIKE ? or "+status+" and bk.alamat LIKE  ? or "+status+" and dr.nm_dokter LIKE ? order by dr.kd_dokter asc, bk.cretaed_at ASC");
             try {
                 ps.setString(1,"%"+TCari.getText().trim()+"%");
                 ps.setString(2,"%"+TCari.getText().trim()+"%");
@@ -1172,8 +1186,8 @@ private void tampil() {
                 rs=ps.executeQuery();
                 while(rs.next()){                    
                     tabMode.addRow(new Object[]{
-                        false,rs.getString("tgl_periksa"),rs.getString("nm_dokter"),rs.getString("nama"),rs.getString("alamat"),
-                        rs.getString("no_telp"),rs.getString("penjab"),rs.getString("catatan"),rs.getString("kd_dokter"),
+                        false,rs.getString("nourut"),rs.getString("tgl_periksa"),rs.getString("nm_dokter"),rs.getString("nama"),rs.getString("alamat"),
+                        rs.getString("no_telp"),rs.getString("penjab"),rs.getString("catatan"),rs.getString("kd_dokter"),rs.getString("nip"),rs.getString("pegawai"), rs.getString("tgl_daftar")
                     });                    
                 }
             } catch (Exception e) {
@@ -1208,17 +1222,17 @@ private void tampil() {
 
     private void getData() {
         if(tbObat.getSelectedRow()!= -1){
-            Valid.SetTgl(TanggalPeriksa,tbObat.getValueAt(tbObat.getSelectedRow(),1).toString());
-            KdDokter.setText(tbObat.getValueAt(tbObat.getSelectedRow(),8).toString());
-            NmDokter.setText(tbObat.getValueAt(tbObat.getSelectedRow(),2).toString());
-            TPasien.setText(tbObat.getValueAt(tbObat.getSelectedRow(),3).toString());
-            TAlamat.setText(tbObat.getValueAt(tbObat.getSelectedRow(),4).toString());
-            TNotelp.setText(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString());  
-            TCatatan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString());
-            cmbStts.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());
+            Valid.SetTgl(TanggalPeriksa,tbObat.getValueAt(tbObat.getSelectedRow(),2).toString());
+            KdDokter.setText(tbObat.getValueAt(tbObat.getSelectedRow(),9).toString());
+            NmDokter.setText(tbObat.getValueAt(tbObat.getSelectedRow(),3).toString());
+            TPasien.setText(tbObat.getValueAt(tbObat.getSelectedRow(),4).toString());
+            TAlamat.setText(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString());
+            TNotelp.setText(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());  
+            TCatatan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),8).toString());
+            cmbStts.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString());
             try {
-                labelBpjs.setText(Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '" + tbObat.getValueAt(tbObat.getSelectedRow(), 1).toString() + "' AND bk.kd_dok = '" + tbObat.getValueAt(tbObat.getSelectedRow(), 8).toString() + "' AND bk.penjab = 'BPJS'"));
-                labelUmum.setText(Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '" + tbObat.getValueAt(tbObat.getSelectedRow(), 1).toString() + "' AND bk.kd_dok = '" + tbObat.getValueAt(tbObat.getSelectedRow(), 8).toString() + "' AND bk.penjab = 'UMUM/ASURANSI'"));
+                labelBpjs.setText(Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '" + tbObat.getValueAt(tbObat.getSelectedRow(), 2).toString() + "' AND bk.kd_dok = '" + tbObat.getValueAt(tbObat.getSelectedRow(), 9).toString() + "' AND bk.penjab = 'BPJS'"));
+                labelUmum.setText(Sequel.cariIsi("SELECT COUNT(bk.kd_dok) as jml FROM booking_kuota bk WHERE bk.tgl_periksa = '" + tbObat.getValueAt(tbObat.getSelectedRow(), 2).toString() + "' AND bk.kd_dok = '" + tbObat.getValueAt(tbObat.getSelectedRow(), 9).toString() + "' AND bk.penjab = 'UMUM/ASURANSI'"));
             } catch (Exception e) {
                 System.out.println(e);
             }

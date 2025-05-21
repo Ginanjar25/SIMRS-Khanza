@@ -1585,12 +1585,14 @@ private void BtnSeekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             sisapiutang=Sequel.cariIsiAngka("SELECT ifnull(SUM(piutang.sisapiutang),0) FROM piutang where piutang.nota_piutang=?",NoRawat.getText())
                         -Sequel.cariIsiAngka("SELECT ifnull(SUM(bayar_piutang.besar_cicilan)+SUM(bayar_piutang.diskon_piutang)+SUM(bayar_piutang.tidak_terbayar),0) FROM bayar_piutang where bayar_piutang.no_rawat=?",NoRawat.getText());
             Sisa.setText(Valid.SetAngka(sisapiutang));
+            Cicilan.setText(Valid.SetAngka(sisapiutang));
             status="obat";
         }else{
             Valid.loadCombo(AkunPiutang,"select detail_piutang_pasien.nama_bayar from detail_piutang_pasien where detail_piutang_pasien.no_rawat='"+NoRawat.getText()+"'");
             kontraakun=Sequel.cariIsi("select akun_piutang.kd_rek from akun_piutang where akun_piutang.nama_bayar=?",AkunPiutang.getSelectedItem().toString());
             sisapiutang=Sequel.cariIsiAngka("select detail_piutang_pasien.sisapiutang from detail_piutang_pasien where detail_piutang_pasien.no_rawat='"+NoRawat.getText()+"' and nama_bayar='"+AkunPiutang.getSelectedItem().toString()+"'");
             Sisa.setText(Valid.SetAngka(sisapiutang));
+            Cicilan.setText(Valid.SetAngka(sisapiutang));
             status="pasien";
         }
         if(norawat.contains("HK")){
