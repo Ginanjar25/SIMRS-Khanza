@@ -220,6 +220,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private String utc="",requestJson="",URL="",link="";
     private DlgCariPenyakit penyakit=new DlgCariPenyakit(null,false);
     private DlgCariDokter dokter = new DlgCariDokter(null, false);
+    private DlgRanapGabung ranapgabung = new DlgRanapGabung(null, false);
+    String norawatbayikembar ="";
     
     /** Creates new form DlgKamarInap
      * @param parent
@@ -887,6 +889,37 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         });
         
+        ranapgabung.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                    tampil();
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+            }
+        });
+        
         try {
             pssetjam=koneksi.prepareStatement("select * from set_jam_minimal");
             try {
@@ -1354,7 +1387,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         });
         internalFrame2.add(norawat);
         norawat.setBounds(75, 25, 150, 23);
-
+        
         TPasien.setEditable(false);
         TPasien.setHighlighter(null);
         TPasien.setName("TPasien"); // NOI18N
@@ -6687,7 +6720,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                         }else if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                             try {
                                 psanak=koneksi.prepareStatement(
-                                    "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");  
+                                    "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");  
                                 try {
                                     psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                                     rs2=psanak.executeQuery();
@@ -6788,7 +6821,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                         }else if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                             try {
                                 psanak=koneksi.prepareStatement(
-                                    "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");  
+                                    "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");  
                                 try {
                                     psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                                     rs2=psanak.executeQuery();
@@ -6899,63 +6932,63 @@ public class DlgKamarInap extends javax.swing.JDialog {
       if(tabMode.getRowCount()==0){
             JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
             TCari.requestFocus();
-      }else{
+      }else{          
           if(tbKamIn.getSelectedRow()>-1){
-                if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
+              if (tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString().equals("")) {
                   try {
                       if(Sequel.cariRegistrasi(tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString())>0){
-                            JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi.\nSilahkan hubungi bagian kasir/keuangan ..!!");
-                            TCari.requestFocus();
-                      }else{
-                           psanak=koneksi.prepareStatement(
-                                "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                          JOptionPane.showMessageDialog(rootPane, "Data billing sudah terverifikasi.\nSilahkan hubungi bagian kasir/keuangan ..!!");
+                          TCari.requestFocus();
+                      } else {
+                          psanak = koneksi.prepareStatement(
+                                  "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");
                           try {
-                                psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
-                                rs2=psanak.executeQuery();
-                                if(rs2.next()){
-                                      akses.setform("DlgKamarInap");
-                                      bangsal=Sequel.cariIsi("select set_depo_ranap.kd_depo from set_depo_ranap where set_depo_ranap.kd_bangsal=?",Sequel.cariIsi("select kamar.kd_bangsal from kamar where kamar.kd_kamar=?",kdkamar.getText()));
-                                        if(bangsal.equals("")){
-                                            if(Sequel.cariIsi("select set_lokasi.asal_stok from set_lokasi").equals("Gunakan Stok Bangsal")){
-                                                akses.setkdbangsal(Sequel.cariIsi("select kamar.kd_bangsal from kamar where kamar.kd_kamar=?",kdkamar.getText()));
-                                            }else{
-                                                akses.setkdbangsal(Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi"));
-                                            }
-                                        }else{
-                                            akses.setkdbangsal(bangsal);
-                                        }
-                                      billing.rawatinap.isCek();
-                                      billing.rawatinap.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-                                      billing.rawatinap.setLocationRelativeTo(internalFrame1);  
-                                      if(R1.isSelected()==true){
-                                          billing.rawatinap.setNoRm(rs2.getString("no_rawat2"),new Date(),new Date());  
-                                      }else if(R2.isSelected()==true){
-                                          billing.rawatinap.setNoRm(rs2.getString("no_rawat2"),DTPCari1.getDate(),DTPCari2.getDate());  
-                                      }else if(R3.isSelected()==true){
-                                          billing.rawatinap.setNoRm(rs2.getString("no_rawat2"),DTPCari3.getDate(),DTPCari4.getDate());  
-                                      } 
-                                      billing.rawatinap.setKamar(tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,7).toString());  
-                                      billing.rawatinap.setJenisBayar(tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,6).toString());
-                                      billing.rawatinap.setVisible(true);
-                                }else{
-                                      JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
-                                      tbKamIn.requestFocus();
-                                }
-                          } catch(Exception ex){
-                                System.out.println("Notifikasi : "+ex);
-                          }finally{
-                                if(rs2 != null){
-                                    rs2.close();
-                                }
-                                if(psanak != null){
-                                    psanak.close();
-                                }
-                          }  
-                      } 
+                              psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
+                              rs2 = psanak.executeQuery();
+                              if (rs2.next()) {
+                                  akses.setform("DlgKamarInap");
+                                  bangsal = Sequel.cariIsi("select set_depo_ranap.kd_depo from set_depo_ranap where set_depo_ranap.kd_bangsal=?", Sequel.cariIsi("select kamar.kd_bangsal from kamar where kamar.kd_kamar=?", kdkamar.getText()));
+                                  if (bangsal.equals("")) {
+                                      if (Sequel.cariIsi("select set_lokasi.asal_stok from set_lokasi").equals("Gunakan Stok Bangsal")) {
+                                          akses.setkdbangsal(Sequel.cariIsi("select kamar.kd_bangsal from kamar where kamar.kd_kamar=?", kdkamar.getText()));
+                                      } else {
+                                          akses.setkdbangsal(Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi"));
+                                      }
+                                  } else {
+                                      akses.setkdbangsal(bangsal);
+                                  }
+                                  billing.rawatinap.isCek();
+                                  billing.rawatinap.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                                  billing.rawatinap.setLocationRelativeTo(internalFrame1);
+                                  if (R1.isSelected() == true) {
+                                      billing.rawatinap.setNoRm(rs2.getString("no_rawat2"), new Date(), new Date());
+                                  } else if (R2.isSelected() == true) {
+                                      billing.rawatinap.setNoRm(rs2.getString("no_rawat2"), DTPCari1.getDate(), DTPCari2.getDate());
+                                  } else if (R3.isSelected() == true) {
+                                      billing.rawatinap.setNoRm(rs2.getString("no_rawat2"), DTPCari3.getDate(), DTPCari4.getDate());
+                                  }
+                                  billing.rawatinap.setKamar(tbKamIn.getValueAt(tbKamIn.getSelectedRow() - 1, 7).toString());
+                                  billing.rawatinap.setJenisBayar(tbKamIn.getValueAt(tbKamIn.getSelectedRow() - 1, 6).toString());
+                                  billing.rawatinap.setVisible(true);
+                              } else {
+                                  JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu pasien...!!!");
+                                  tbKamIn.requestFocus();
+                              }
+                          } catch (Exception ex) {
+                              System.out.println("Notifikasi : " + ex);
+                          } finally {
+                              if (rs2 != null) {
+                                  rs2.close();
+                              }
+                              if (psanak != null) {
+                                  psanak.close();
+                              }
+                          }
+                      }
                   } catch (Exception e) {
                       System.out.println(e);
-                  }                
-                }else{
+                  }
+              } else {
                     akses.setform("DlgKamarInap");
                     bangsal=Sequel.cariIsi("select set_depo_ranap.kd_depo from set_depo_ranap where set_depo_ranap.kd_bangsal=?",Sequel.cariIsi("select kamar.kd_bangsal from kamar where kamar.kd_kamar=?",kdkamar.getText()));
                     if(bangsal.equals("")){
@@ -7080,7 +7113,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -7145,7 +7178,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
               if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                       try {
                           psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");  
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");  
                           try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -7450,7 +7483,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                             TCari.requestFocus();
                         }else{
                             psanak=koneksi.prepareStatement(
-                                "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                                "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                             try {
                                 psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                                 rs2=psanak.executeQuery();
@@ -7557,7 +7590,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
              if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                   try {
                       psanak=koneksi.prepareStatement(
-                          "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");
+                          "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");
                       try {
                           psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                           rs2=psanak.executeQuery();
@@ -7610,7 +7643,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
              if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                   try {
                       psanak=koneksi.prepareStatement(
-                          "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");  
+                          "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");  
                       try {
                           psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                           rs2=psanak.executeQuery();
@@ -7661,7 +7694,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");     
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");     
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -8523,7 +8556,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -8582,7 +8615,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -8746,7 +8779,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                             TCari.requestFocus();
                         }else{
                             psanak=koneksi.prepareStatement(
-                                "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                                "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                             try {
                                 psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                                 rs2=psanak.executeQuery();
@@ -8846,7 +8879,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         WindowRanapGabung.dispose();
     }//GEN-LAST:event_BtnCloseGabungActionPerformed
 
-    private void BtnSimpanGabungActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanGabungActionPerformed
+    private void BtnSimpanGabungActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanGabungActionPerformed        
         if (norawat.getText().trim().equals("")) {
             Valid.textKosong(NoRmBayi, "Pasien");
         } else if (Diagnosa.getText().trim().equals("")) {
@@ -9007,16 +9040,22 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi.\nSilahkan hubungi bagian kasir/keuangan ..!!");
                     TCari.requestFocus();
                 }else{
-                    NoRawatGabung.setText("");
-                    Sequel.cariIsi("select no_rawat2 from ranap_gabung where no_rawat=?",NoRawatGabung,norawat.getText());
-                    Sequel.cariIsi("select reg_periksa.no_rkm_medis from reg_periksa where reg_periksa.no_rawat=?",NoRmBayi,NoRawatGabung.getText());
-                    Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=?",NmBayi,NoRmBayi.getText());
-                    WindowRanapGabung.setLocationRelativeTo(internalFrame1);
-                    WindowRanapGabung.setVisible(true);
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                    String currentDate = sdf.format(new Date());
-                    DTPRawatGabung.setSelectedItem(currentDate);
-                    Catatan.setText(now.substring(11, 13) + ":" + now.substring(14, 16) + ":" + now.substring(17, 19));
+//                    NoRawatGabung.setText("");
+//                    Sequel.cariIsi("select no_rawat2 from ranap_gabung where no_rawat=?",NoRawatGabung,norawat.getText());
+//                    Sequel.cariIsi("select reg_periksa.no_rkm_medis from reg_periksa where reg_periksa.no_rawat=?",NoRmBayi,NoRawatGabung.getText());
+//                    Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=?",NmBayi,NoRmBayi.getText());
+//                    WindowRanapGabung.setLocationRelativeTo(internalFrame1);
+//                    WindowRanapGabung.setVisible(true);
+//                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+//                    String currentDate = sdf.format(new Date());
+//                    DTPRawatGabung.setSelectedItem(currentDate);
+//                    Catatan.setText(now.substring(11, 13) + ":" + now.substring(14, 16) + ":" + now.substring(17, 19));
+
+                    ranapgabung.setSize(950,500);
+                    ranapgabung.setLocationRelativeTo(internalFrame1);
+                    ranapgabung.setNoRm(norawat.getText(),TNoRM.getText()+" "+TPasien.getText(), new Date(), new Date(),tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 19).toString());
+                    ranapgabung.tampil();
+                    ranapgabung.setVisible(true);
                 }
             }
         }        
@@ -9059,7 +9098,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -9141,7 +9180,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");     
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");     
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -9230,7 +9269,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     }else{
                         try {
                             psanak=koneksi.prepareStatement(
-                                "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                                "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                             try {
                                 psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                                 rs2=psanak.executeQuery();
@@ -9510,7 +9549,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -9601,7 +9640,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -9776,7 +9815,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -9852,7 +9891,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                               TCari.requestFocus();
                         }else{
                               psanak=koneksi.prepareStatement(
-                                    "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                                    "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                               try {
                                     psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                                     rs2=psanak.executeQuery();
@@ -10101,7 +10140,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -10218,7 +10257,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -10279,7 +10318,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -10340,7 +10379,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -10411,7 +10450,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -10930,7 +10969,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -10985,7 +11024,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -11042,7 +11081,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }else{
                 try {
                     psanak=koneksi.prepareStatement(
-                          "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                          "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                     try {
                           psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                           rs2=psanak.executeQuery();
@@ -11123,7 +11162,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -11319,7 +11358,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -11467,7 +11506,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -11534,7 +11573,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -11603,7 +11642,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             if (tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString().equals("")) {
                 try {
                     psanak = koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");
                     try {
                         psanak.setString(1, tbKamIn.getValueAt(tbKamIn.getSelectedRow() - 1, 0).toString());
                         rs2 = psanak.executeQuery();
@@ -11654,7 +11693,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -11721,7 +11760,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -12018,7 +12057,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }else{
                 try {
                     psanak=koneksi.prepareStatement(
-                          "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                          "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                     try {
                           psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                           rs2=psanak.executeQuery();
@@ -12099,7 +12138,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -12164,7 +12203,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -12237,7 +12276,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                             TCari.requestFocus();
                         }else{
                             psanak=koneksi.prepareStatement(
-                                "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                                "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                             try {
                                 psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                                 rs2=psanak.executeQuery();
@@ -12376,7 +12415,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -12469,7 +12508,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -12936,7 +12975,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }else{
                 try {
                     psanak=koneksi.prepareStatement(
-                          "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                          "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                     try {
                           psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                           rs2=psanak.executeQuery();
@@ -13017,7 +13056,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -13192,7 +13231,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -13259,7 +13298,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -13312,7 +13351,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -13382,7 +13421,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -13455,7 +13494,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                             TCari.requestFocus();
                         }else{
                             psanak=koneksi.prepareStatement(
-                                "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                                "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                             try {
                                 psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                                 rs2=psanak.executeQuery();
@@ -13509,7 +13548,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -13576,7 +13615,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -13643,7 +13682,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -13700,7 +13739,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -13819,7 +13858,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -13991,7 +14030,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -14058,7 +14097,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -14115,7 +14154,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -14240,7 +14279,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -14297,7 +14336,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -14364,7 +14403,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -14431,7 +14470,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -14498,7 +14537,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -14565,7 +14604,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -14632,7 +14671,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -14699,7 +14738,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -14766,7 +14805,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -14821,7 +14860,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -14888,7 +14927,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -14955,7 +14994,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -15046,7 +15085,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -15113,7 +15152,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -15285,7 +15324,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -15371,7 +15410,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -15438,7 +15477,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -15505,7 +15544,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -15572,7 +15611,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -15637,7 +15676,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -15706,7 +15745,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                              "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                              "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                               psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                               rs2=psanak.executeQuery();
@@ -15775,7 +15814,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -15842,7 +15881,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -15909,7 +15948,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -16028,7 +16067,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -16122,7 +16161,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -16241,7 +16280,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -16308,7 +16347,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -16401,7 +16440,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -16470,7 +16509,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -16539,7 +16578,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -16608,7 +16647,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -16698,7 +16737,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -16767,7 +16806,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -16836,7 +16875,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -16915,7 +16954,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -16984,7 +17023,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -17053,7 +17092,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -17122,7 +17161,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -17191,7 +17230,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -17267,7 +17306,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -17332,7 +17371,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -17439,7 +17478,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")){
                     try {
                         psanak=koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");            
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");            
                         try {
                             psanak.setString(1,tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
                             rs2=psanak.executeQuery();
@@ -17498,7 +17537,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             if (tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString().equals("")) {
                 try {
                     psanak = koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");
                     try {
                         psanak.setString(1, tbKamIn.getValueAt(tbKamIn.getSelectedRow() - 1, 0).toString());
                         rs2 = psanak.executeQuery();
@@ -17550,7 +17589,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             if (tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString().equals("")) {
                 try {
                     psanak = koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");
                     try {
                         psanak.setString(1, tbKamIn.getValueAt(tbKamIn.getSelectedRow() - 1, 0).toString());
                         rs2 = psanak.executeQuery();
@@ -18146,7 +18185,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     try {
                         psanak.setString(1,rs.getString(1));
                         rs2=psanak.executeQuery();
-                        if(rs2.next()){
+                        while(rs2.next()){
                             tabMode.addRow(new String[]{
                                 "",rs2.getString("no_rkm_medis"),rs2.getString("nm_pasien")+" ("+rs2.getString("umur")+")",
                                 rs.getString("alamat"),rs.getString("p_jawab"),rs.getString("hubunganpj"),rs.getString("png_jawab"),
@@ -18238,6 +18277,27 @@ public class DlgKamarInap extends javax.swing.JDialog {
             TOut.setText(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),13).toString());
             ttlbiaya.setText(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),15).toString());
             cmbStatus.setSelectedItem(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),16).toString());
+            
+            if (tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString().trim().equals("")) {
+                String noRawatIbu = tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString().trim();
+                int rowPointer = tbKamIn.getSelectedRow();
+                while (rowPointer >= 0) {
+                    noRawatIbu = tbKamIn.getValueAt(rowPointer, 0).toString().trim();
+                    if (!noRawatIbu.equals("")) {
+                        break;
+                    }
+                    rowPointer--;
+                }
+
+                String rm_bayi = tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 23).toString().substring(0, 6);
+                System.out.println(noRawatIbu);
+                System.out.println(rm_bayi);
+
+                String norawat_bayi_kembar = Sequel.cariIsi("select no_rawat2 from ranap_gabung where ranap_gabung.no_rm_bayi = '" + rm_bayi + "' and ranap_gabung.no_rawat=?", noRawatIbu);
+                System.out.println(norawat_bayi_kembar);
+                norawatbayikembar = norawat_bayi_kembar;
+                //tbKamIn.setValueAt(norawat_bayi_kembar,tbKamIn.getSelectedRow(),0);
+            }
         }
     }
 
@@ -18733,7 +18793,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             billing.beriobat.dlgobt.tampil();
             billing.beriobat.dlgobt.setVisible(true);
         } 
-    }
+    }  
     
     private void initKamarInap(){
         MnLaporanOperasi = new javax.swing.JMenuItem();
@@ -19112,7 +19172,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             if (tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 0).toString().equals("")) {
                 try {
                     psanak = koneksi.prepareStatement(
-                            "select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?");
+                            "select '"+norawatbayikembar+"' as no_rawat2 from ranap_gabung where '"+tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString()+"'=? limit 1");
                     try {
                         psanak.setString(1, tbKamIn.getValueAt(tbKamIn.getSelectedRow() - 1, 0).toString());
                         rs2 = psanak.executeQuery();
