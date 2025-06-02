@@ -1214,7 +1214,6 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     + "No Rawat: " + TNorawatPindah.getText() + "/ Nama: " + TPasienBayi2.getText() + "\nKamar :" + KdKamar.getText() + " " + NmBangsal.getText(), "Konfirmasi", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 Sequel.meghapus("ranap_gabung", "no_rawat2", TNorawatPindah.getText());
-                Sequel.meghapus("bayi_kembar", "no_rawat_bayi", TNorawatPindah.getText());
                 Sequel.mengedit("reg_periksa", "no_rawat='" + TNorawatPindah.getText() + "'", "status_lanjut='Ralan', status_bayar='Belum Bayar'");
                 Sequel.mengedit("permintaan_ranap", "no_rawat='" + TNorawatPindah.getText() + "'", "kd_kamar='" + KdKamar.getText() + "'");
                 WindowPindahranapGabung.dispose();
@@ -1350,21 +1349,10 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 "JOIN permintaan_ranap pr ON pr.no_rawat = rg.no_rawat2\n" +
                 "JOIN pasien ps ON ps.no_rkm_medis= rp.no_rkm_medis\n" +
                 "JOIN dokter dr ON dr.kd_dokter = dpjp.kd_dokter\n" +
-                "WHERE rg.no_rawat =?" +
-                "\n" +
-                "UNION\n" +
-                "\n" +
-                "SELECT bk.no_rawat_ibu, bk.no_rawat_bayi, rp.no_rkm_medis, ps.nm_pasien, dpjp.kd_dokter, dr.nm_dokter, pr.diagnosa FROM bayi_kembar bk \n" +
-                "JOIN reg_periksa rp ON rp.no_rawat = bk.no_rawat_bayi\n" +
-                "JOIN dpjp_ranap dpjp ON dpjp.no_rawat = bk.no_rawat_bayi\n" +
-                "JOIN permintaan_ranap pr ON pr.no_rawat = bk.no_rawat_bayi\n" +
-                "JOIN pasien ps ON ps.no_rkm_medis= rp.no_rkm_medis\n" +
-                "JOIN dokter dr ON dr.kd_dokter = dpjp.kd_dokter\n" +
-                "WHERE bk.no_rawat_ibu =?");
+                "WHERE rg.no_rawat =? ");
             try {
 
-                ps.setString(1, TCari.getText().trim() );
-                ps.setString(2, TCari.getText().trim() );                   
+                ps.setString(1, TCari.getText().trim() );                  
                 rs=ps.executeQuery();  
                 while(rs.next()){                    
                     tabMode.addRow(new String[]{
