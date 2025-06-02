@@ -179,12 +179,18 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
             public void windowClosing(WindowEvent e) {}
             @Override
             public void windowClosed(WindowEvent e) {
-                if(kamar.getTable().getSelectedRow()!= -1){   
-                    KdKamar.setText(kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(),1).toString());
-                    KdBangsal.setText(kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(),2).toString());
-                    NmBangsal.setText(kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(),3).toString()+" ( "+kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(),4).toString()+")");
-                    HargaKamar.setText(Valid.SetAngka(Valid.SetAngka(kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(),5).toString())));
-                }  
+                if (kamar.getTable().getSelectedRow() != -1) {
+                    if (kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(), 6).toString().equals("KOSONG")) {
+                        KdKamar.setText(kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(), 1).toString());
+                        KdBangsal.setText(kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(), 2).toString());
+                        NmBangsal.setText(kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(), 3).toString() + " ( " + kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(), 4).toString() + ")");
+                        HargaKamar.setText(Valid.SetAngka(Valid.SetAngka(kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(), 5).toString())));
+                    }else if(kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(), 6).toString().equals("ISI")){
+                        JOptionPane.showMessageDialog(null, "Maaf, Kamar Yang dipilih berstatus ISI");
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Maaf, Kamar Yang dipilih berstatus DIBOOKING");
+                    }
+                }
             }
             @Override
             public void windowIconified(WindowEvent e) {}
@@ -1707,7 +1713,10 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 if (Sequel.mengedittf("permintaan_ranap", "no_rawat=?", "no_rawat=?,tanggal=?,kd_kamar=?,diagnosa=?,catatan=?", 6, new String[]{
                     NoRw.getText(), Valid.SetTgl(DTPTgl.getSelectedItem() + ""), KdKamar.getText(), Diagnosa.getText(), Catatan.getText() + "#" + titip_kamar, tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString()
                 }) == true) {
-                    Sequel.mengedit("kamar", "kd_kamar=?", "status='DIBOOKING'", 1, new String[]{KdKamar.getText()});
+                    if(!tbObat.getValueAt(tbObat.getSelectedRow(),10).toString().equals(KdKamar.getText())){
+                        Sequel.mengedit("kamar", "kd_kamar=?", "status='KOSONG'", 1, new String[]{tbObat.getValueAt(tbObat.getSelectedRow(),10).toString()});
+                        Sequel.mengedit("kamar", "kd_kamar=?", "status='DIBOOKING'", 1, new String[]{KdKamar.getText()});
+                    }                   
                     Sequel.mengedittf("dpjp_ranap", "no_rawat=?", "kd_dokter=?", 2, new String[]{KdDokter1.getText(), NoRw.getText()});
                     tampil();
                     emptTeks();
