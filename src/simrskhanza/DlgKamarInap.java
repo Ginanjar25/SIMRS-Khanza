@@ -18133,32 +18133,53 @@ public class DlgKamarInap extends javax.swing.JDialog {
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement(
-               "select kamar_inap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat,reg_periksa.p_jawab,reg_periksa.hubunganpj,\n" +
-                "penjab.png_jawab,CONCAT(bangsal.nm_bangsal, ' ', SUBSTRING_INDEX(kamar.kd_kamar, '-', -1)) AS kamar,kamar_inap.trf_kamar,kamar_inap.diagnosa_awal,kamar_inap.diagnosa_akhir,\n" +
-                "kamar_inap.tgl_masuk,kamar_inap.jam_masuk,if(kamar_inap.tgl_keluar='0000-00-00','',kamar_inap.tgl_keluar) as tgl_keluar,if(kamar_inap.jam_keluar='00:00:00','',kamar_inap.jam_keluar) as jam_keluar,\n" +
-                "kamar_inap.ttl_biaya,kamar_inap.stts_pulang,kamar_inap.lama,dokter.nm_dokter,kamar_inap.kd_kamar,reg_periksa.kd_pj,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,reg_periksa.status_bayar,\n" +
-                "pasien.agama, kamar.kelas, tarif_berjalan.tarif, pasien.no_tlp,\n" +
-                "IFNULL(inacbg_grouping_stage1.asli, 0) AS tarif_inacbg,IFNULL(inacbg_grouping_stage1.tambahan, 0) AS tarif_naik, \n" +
-                "(IFNULL(inacbg_grouping_stage1.asli, 0) + IFNULL(inacbg_grouping_stage1.tambahan, 0)) AS selisih_tarif, \n" +
-                "IF(\n" +
-                    "  (IFNULL(inacbg_grouping_stage1.asli, 0) + IFNULL(inacbg_grouping_stage1.tambahan, 0)) > 0 AND \n" +
-                    "  (IFNULL(inacbg_grouping_stage1.asli, 0) + IFNULL(inacbg_grouping_stage1.tambahan, 0)) <= tarif_berjalan.tarif, \n" +
-                    "  'Sudah', \n" +
-                    "  'Belum'\n" +
-                ") AS limit_tarif,(SELECT COALESCE(SUM(deposit.besar_deposit),0) FROM deposit WHERE deposit.no_rawat = kamar_inap.no_rawat) AS deposit, " +
-                "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 \n" +
-                "from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis\n" +
-                "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = reg_periksa.no_rawat inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar \n" +
-                "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel\n" +
-                "inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab \n" +
-                "inner join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter \n" +
-                "LEFT JOIN side_db.temp_tarif_berjalan tarif_berjalan ON tarif_berjalan.no_rawat = kamar_inap.no_rawat\n" +
-                "LEFT JOIN bridging_sep ON bridging_sep.no_rawat = reg_periksa.no_rawat\n" +
-                "LEFT JOIN inacbg_grouping_stage1 ON inacbg_grouping_stage1.no_sep = bridging_sep.no_sep\n"+
-                "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj\n" +
-                "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
-                "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj " +
-               (namadokter.equals("")?"where "+key+" "+order:"inner join dpjp_ranap on dpjp_ranap.no_rawat=reg_periksa.no_rawat where dpjp_ranap.kd_dokter='"+namadokter+"' and "+key+" "+order));
+                    "select kamar_inap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat,reg_periksa.p_jawab,reg_periksa.hubunganpj,\n"
+                    + "CONCAT(penjab.png_jawab,CASE WHEN penjab.png_jawab = 'BPJS' THEN\n"
+                    + "      CONCAT(\n"
+                    + "        CASE \n"
+                    + "          WHEN bridging_sep.klsrawat IS NULL OR bridging_sep.klsrawat = '' THEN ' (SEP -)' ELSE CONCAT(' ', bridging_sep.klsrawat)\n"
+                    + "        END,\n"
+                    + "        CASE bridging_sep.klsnaik\n"
+                    + "          WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE ''\n"
+                    + "        END\n"
+                    + "      )\n"
+                    + "    ELSE '' END ) AS png_jawab,\n"
+                    + "CONCAT(bangsal.nm_bangsal, ' ', SUBSTRING_INDEX(kamar.kd_kamar, '-', -1)) AS kamar,kamar_inap.trf_kamar,kamar_inap.diagnosa_awal,kamar_inap.diagnosa_akhir,\n"
+                    + "kamar_inap.tgl_masuk,kamar_inap.jam_masuk,if(kamar_inap.tgl_keluar='0000-00-00','',kamar_inap.tgl_keluar) as tgl_keluar,if(kamar_inap.jam_keluar='00:00:00','',kamar_inap.jam_keluar) as jam_keluar,\n"
+                    + "kamar_inap.ttl_biaya,kamar_inap.stts_pulang,kamar_inap.lama,dokter.nm_dokter,kamar_inap.kd_kamar,reg_periksa.kd_pj,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,reg_periksa.status_bayar,\n"
+                    + "pasien.agama, kamar.kelas, tarif_berjalan.tarif, pasien.no_tlp,\n"
+                    + "IFNULL(inacbg_grouping_stage1.asli, 0) AS tarif_inacbg,IFNULL(inacbg_grouping_stage1.tambahan, 0) AS tarif_naik, \n"
+                    + "(IFNULL(inacbg_grouping_stage1.asli, 0) + IFNULL(inacbg_grouping_stage1.tambahan, 0)) AS selisih_tarif, \n"
+                    + "IF(\n"
+                    + "(IFNULL(inacbg_grouping_stage1.asli, 0) + IFNULL(inacbg_grouping_stage1.tambahan, 0)) > 0 AND \n"
+                    + "(IFNULL(inacbg_grouping_stage1.asli, 0) + IFNULL(inacbg_grouping_stage1.tambahan, 0)) <= tarif_berjalan.tarif,\n"
+                    + "'Sudah', \n"
+                    + "'Belum'\n"
+                    + ") AS limit_tarif,(SELECT COALESCE(SUM(deposit.besar_deposit),0) FROM deposit WHERE deposit.no_rawat = kamar_inap.no_rawat) AS deposit, \n"
+                    + "CASE \n"
+                    + "  WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' \n"
+                    + "  ELSE CONCAT( ' - ', penjab_cara_bayar2.png_jawab,\n"
+                    + "      CASE WHEN penjab_cara_bayar2.png_jawab = 'BPJS' THEN\n"
+                    + "          CONCAT( \n"
+                    + "			   CASE WHEN bridging_sep.klsrawat IS NULL OR bridging_sep.klsrawat = '' THEN ' (SEP -)' ELSE CONCAT(' ', bridging_sep.klsrawat)\n"
+                    + "            END,\n"
+                    + "            CASE bridging_sep.klsnaik WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE ''\n"
+                    + "            END\n"
+                    + "          )\n"
+                    + "      ELSE '' END)\n"
+                    + "END AS cara_bayar2\n"
+                    + "from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis\n"
+                    + "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = reg_periksa.no_rawat inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar\n"
+                    + "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel\n"
+                    + "inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab \n"
+                    + "inner join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter \n"
+                    + "LEFT JOIN side_db.temp_tarif_berjalan tarif_berjalan ON tarif_berjalan.no_rawat = kamar_inap.no_rawat\n"
+                    + "LEFT JOIN bridging_sep ON bridging_sep.no_rawat = reg_periksa.no_rawat\n"
+                    + "LEFT JOIN inacbg_grouping_stage1 ON inacbg_grouping_stage1.no_sep = bridging_sep.no_sep\n"
+                    + "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj\n"
+                    + "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n"
+                    + "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj \n"
+                    + (namadokter.equals("")?"where "+key+" "+order:"inner join dpjp_ranap on dpjp_ranap.no_rawat=reg_periksa.no_rawat where dpjp_ranap.kd_dokter='"+namadokter+"' and "+key+" "+order));
             try {
                 rs=ps.executeQuery();
                 while(rs.next()){
