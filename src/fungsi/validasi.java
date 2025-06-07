@@ -51,6 +51,9 @@ import widget.ComboBox;
 import widget.Tanggal;
 import widget.TextArea;
 import java.io.File;
+import java.util.List;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
 import widget.TextBox;
 /**
  *
@@ -1467,4 +1470,48 @@ public final class validasi {
             return "Invalid month"; // Menangani kasus di luar rentang bulan
         }
     }
+   
+    @SuppressWarnings("unchecked")
+    public void CombinedReports(List<String> reportNames, String dirName, String title, Map<String, Object> parameters) {
+        try {
+            JasperPrint combinedPrint = null;
+
+            for (String reportName : reportNames) {
+                String fullPath = System.getProperty("user.dir") + File.separator + dirName + File.separator + reportName;
+
+                File reportFile = new File(fullPath);
+                if (!reportFile.exists()) {
+                    System.out.println("File not found: " + fullPath);
+                    continue; // Skip ke file berikutnya
+                }
+
+                System.out.println("Found Report File at : " + fullPath);
+                JasperReport report = (JasperReport) JRLoader.loadObject(reportFile);
+                JasperPrint print = JasperFillManager.fillReport(report, parameters, connect);
+
+                if (combinedPrint == null) {
+                    combinedPrint = print;
+                } else {
+                    combinedPrint.getPages().addAll(print.getPages());
+                }
+            }
+
+            if (combinedPrint != null) {
+                JasperViewer jasperViewer = new JasperViewer(combinedPrint, false);
+                jasperViewer.setTitle(title);
+                Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+                jasperViewer.setSize(screen.width - 50, screen.height - 50);
+                jasperViewer.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
+                jasperViewer.setLocationRelativeTo(null);
+                jasperViewer.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Tidak ada laporan yang berhasil diproses.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Report can't be viewed because: " + e);
+            JOptionPane.showMessageDialog(null, "Report can't be viewed because: " + e.getMessage());
+        }
+    }
+
 }

@@ -64,7 +64,7 @@ public class DlgBookingKuota extends javax.swing.JFrame {
     public DlgBookingKuota() {
         initComponents();
         tabMode=new DefaultTableModel(null,new Object[]{
-                "P","No Urut","Tgl Periksa","Nama Dokter","Nama Pasien","Alamat","No. Telp","Cara Bayar","Catatan","Kd Dok","Kd Petugas", "Petugas", "Tgl Daftar"
+                "P","No Urut","Tgl Periksa","Nama Dokter","Nama Pasien","Alamat","No. Telp","Cara Bayar","Catatan","Kd Dok","Kd Petugas", "Petugas", "Tgl Booking"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -1273,7 +1273,8 @@ private void tampil() {
     }
     
     public void isCek(){
-        if(akses.getkode().equals("Admin Utama") || akses.getkode().equals("087")){
+        String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
+        if(akses.getkode().equals("Admin Utama") || akses.getkode().equals("087") || jabatan.equals("J005")){
             BtnSimpan.setEnabled(true);
             BtnHapus.setEnabled(true);
             BtnCekData.setEnabled(true);

@@ -22,11 +22,11 @@ public class WarnaTableKamarInap extends DefaultTableCellRenderer {
         }else{
             component.setBackground(new Color(255,255,255));
         } 
-        if(table.getValueAt(row,6).toString().equals("UMUM") && table.getValueAt(row,7).toString().contains("Kelas 3")){
+        if(table.getValueAt(row,6).toString().contains("UMUM") && table.getValueAt(row,7).toString().contains("Kelas 3")){
             component.setBackground(new Color(255/255f, 51/255f, 51/255f, 0.76f));
 //            component.setBackground(new Color(51/255f, 133/255f, 255/255f, 0.61f));
         }
-        if(table.getValueAt(row,6).toString().equals("BPJS") && table.getValueAt(row,45).toString().equals("Sudah")){
+        if(table.getValueAt(row,6).toString().contains("BPJS") && table.getValueAt(row,45).toString().equals("Sudah")){
             component.setBackground(new Color(255, 184, 77));
         }
         return component;

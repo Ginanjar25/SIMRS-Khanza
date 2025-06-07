@@ -121,6 +121,8 @@ public void kirimAntrean(String kd_poli, String kd_dokter) {
         String getIP = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", akses.getalamatip());
         URL url = new URL(link + "/poli/" + getIP);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(3000); // Timeout koneksi 2 detik
+        connection.setReadTimeout(3000);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setDoOutput(true);
@@ -221,6 +223,8 @@ public void kirimAntrianAwal(String kd_poli, String kd_dokter) {
         String getIP = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", akses.getalamatip());
         URL url = new URL(link + "/poli/" + getIP);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(3000); // Timeout koneksi 2 detik
+        connection.setReadTimeout(3000);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setDoOutput(true);
@@ -316,6 +320,8 @@ public void kirimAntrianIGD(String kd_poli, String kd_dokter) {
         jsonBody.put("perawat", perawat);
         URL url = new URL(link + "/igd");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(3000); // Timeout koneksi 2 detik
+        connection.setReadTimeout(3000);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setDoOutput(true);
@@ -388,6 +394,8 @@ public void kirimAntrianPerawatIGD(String nik1, String nama1, String nik2, Strin
 
         URL url = new URL(link + "/igd");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(3000); // Timeout koneksi 2 detik
+        connection.setReadTimeout(3000);
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setDoOutput(true);

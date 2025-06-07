@@ -626,7 +626,7 @@ from temporary_lab order by no ASC]]>
 		<band height="1">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<line>
-				<reportElement style="Style1" stretchType="RelativeToBandHeight" x="-18" y="-12" width="522" height="1" uuid="2030db04-d045-418d-adc3-aedddab835ed"/>
+				<reportElement style="Style1" stretchType="RelativeToBandHeight" x="-18" y="-11" width="522" height="1" uuid="2030db04-d045-418d-adc3-aedddab835ed"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
@@ -723,22 +723,22 @@ from temporary_lab order by no ASC]]>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<line>
-				<reportElement x="-11" y="20" width="522" height="1" uuid="90f6e3b3-5cf8-47f6-9404-d98caf6d1195"/>
+				<reportElement positionType="Float" x="-11" y="20" width="522" height="1" uuid="90f6e3b3-5cf8-47f6-9404-d98caf6d1195"/>
 				<graphicElement>
 					<pen lineWidth="0.25"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="-12" y="41" width="522" height="1" uuid="528a9a21-8911-4c2e-aae8-b0d025d7d1a8"/>
+				<reportElement positionType="Float" x="-12" y="41" width="522" height="1" uuid="528a9a21-8911-4c2e-aae8-b0d025d7d1a8"/>
 				<graphicElement>
 					<pen lineWidth="0.25"/>
 				</graphicElement>
 			</line>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="-7" y="27" width="519" height="15" uuid="92574a17-b062-467f-bc75-8798a9ab9eb2"/>
 				<textFieldExpression><![CDATA["Saran : " + $F{saran}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement x="-7" y="5" width="520" height="15" uuid="bcee1eff-a3a0-48bd-8e0a-8eecde0f2f20"/>
 				<textFieldExpression><![CDATA["Kesan : " + $F{kesan}]]></textFieldExpression>
 			</textField>
@@ -759,7 +759,7 @@ from temporary_lab order by no ASC]]>
 				</jr:QRCode>
 			</componentElement>
 			<line>
-				<reportElement style="Style1" stretchType="RelativeToBandHeight" x="-18" y="-4" width="522" height="1" uuid="7f21e645-ffe5-48a2-b650-d3b7672b7fd9"/>
+				<reportElement style="Style1" x="-18" y="-4" width="522" height="1" uuid="7f21e645-ffe5-48a2-b650-d3b7672b7fd9"/>
 				<graphicElement>
 					<pen lineWidth="0.5"/>
 				</graphicElement>

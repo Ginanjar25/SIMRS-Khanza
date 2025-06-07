@@ -1,4 +1,4 @@
-/*
+ /*
   Dilarang keras memperjualbelikan/mengambil keuntungan dari Software 
   ini dalam bentuk apapun tanpa seijin pembuat software
   (Khanza.Soft Media). Bagi yang sengaja membajak softaware ini ta
