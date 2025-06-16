@@ -188,6 +188,7 @@ import surat.SuratSakit;
 import surat.SuratSakitPihak2;
 import surat.SuratTidakHamil;
 import bridging.BPJSRujukanKeluar;
+import modif.DlgBatalPeriksa;
 import rekammedis.RMKonsultasiDokter;
 
 /**
@@ -8075,10 +8076,13 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             if(Sequel.cariInteger("select count(kamar_inap.no_rawat) from kamar_inap where kamar_inap.no_rawat=?",TNoRw.getText())>0){
                 JOptionPane.showMessageDialog(null,"Maaf, Pasien sudah masuk Kamar Inap. Gunakan billing Ranap..!!!");
             }else {
-                Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Batal',biaya_reg='0'");
-                if(tbPetugas.getSelectedRow()>-1){
-                    tabMode.setValueAt("Batal",tbPetugas.getSelectedRow(),18);
-                }
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                DlgBatalPeriksa batal=new DlgBatalPeriksa(null,true);
+                batal.setNoRm(TNoRM.getText(),TNoRw.getText());
+                batal.setSize(720,230);
+                batal.setLocationRelativeTo(internalFrame1);
+                batal.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
             }
         }
     }//GEN-LAST:event_MnBatalActionPerformed
@@ -12282,6 +12286,13 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         
         if(!akses.getkode().equals("Admin Utama")){
            if(!Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode()).equals("J005")){
+       
+                String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
+                if(jabatan.equals("J014") || jabatan.equals("J022")){
+                     MnStatus.setEnabled(true);
+                }else{
+                     MnStatus.setEnabled(false);
+                }
                BtnHapus.setEnabled(false);
                DTPReg.setEditable(false);
                DTPReg.setEnabled(false);
@@ -12297,6 +12308,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                CmbJam.setEnabled(true);
                CmbMenit.setEnabled(true);
                CmbDetik.setEnabled(true);
+               MnStatus.setEnabled(true);
            }
         }
         String isDokter = Sequel.cariIsi("select 1 from dokter where kd_dokter = ?", akses.getkode());

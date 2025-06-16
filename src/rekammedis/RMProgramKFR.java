@@ -56,7 +56,7 @@ public final class RMProgramKFR extends javax.swing.JDialog {
     private ResultSet rs;
     private int i = 0;
     private DlgCariDokter dokter = new DlgCariDokter(null, false);
-    private String finger = "";
+    private String finger = "", stts="";
     private RMCariUjiFungsiKFR carikfr = new RMCariUjiFungsiKFR(null, false);
     public DlgCariDiagnosaICD10 diagnosa = new DlgCariDiagnosaICD10(null, false);
 
@@ -200,8 +200,14 @@ public final class RMProgramKFR extends javax.swing.JDialog {
             @Override
             public void windowClosed(WindowEvent e) {
                 if (carikfr.getTable().getSelectedRow() != -1) {
-                     refLayananKFR.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 0).toString());
-                     Diagnosa.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 6).toString());
+                    String status = carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 22).toString();
+                    if(status.equals("Aktif")){
+                         refLayananKFR.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 0).toString());
+                         Diagnosa.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 6).toString());
+                    }else{
+                         JOptionPane.showMessageDialog(null, "Status Layanan KFR tersebut tidak aktif !");
+                         btnRefLayananKFRActionPerformed(null);
+                    }
                 }
 //                refLayananKFR.requestFocus();
             }
@@ -355,7 +361,7 @@ public final class RMProgramKFR extends javax.swing.JDialog {
         MnCetakProgramKFR.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         MnCetakProgramKFR.setForeground(new java.awt.Color(50, 50, 50));
         MnCetakProgramKFR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-        MnCetakProgramKFR.setText("Cetak Lembar Layanan, Uji Fungsi, Program KFR");
+        MnCetakProgramKFR.setText("Cetak Lembar Program KFR");
         MnCetakProgramKFR.setName("MnCetakProgramKFR"); // NOI18N
         MnCetakProgramKFR.setPreferredSize(new java.awt.Dimension(270, 26));
         MnCetakProgramKFR.addActionListener(new java.awt.event.ActionListener() {
@@ -1079,6 +1085,7 @@ public final class RMProgramKFR extends javax.swing.JDialog {
             param.put("emailrs", akses.getemailrs());
             param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
             param.put("no_rm", TNoRM.getText());
+            param.put("ref_layanan_kfr", refLayananKFR.getText());
             Valid.MyReport("rptProgramKFR.jasper", "report", "::[ Program KFR ]::", param);
         }
         this.setCursor(Cursor.getDefaultCursor());
@@ -1252,6 +1259,7 @@ public final class RMProgramKFR extends javax.swing.JDialog {
             param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
             param.put("no_rawat", tbObat.getValueAt(tbObat.getSelectedRow(), 13).toString());
             param.put("no_rm", tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString());
+            param.put("ref_layanan_kfr", tbObat.getValueAt(tbObat.getSelectedRow(), 13).toString());
             param.put("alamatpasien", Sequel.cariIsi("SELECT CONCAT(ps.alamat, ', DS. ',kl.nm_kel, ', KEC. ',kc.nm_kec, ',',kb.nm_kab) FROM pasien ps " +
                 "INNER JOIN kelurahan kl ON kl.kd_kel = ps.kd_kel " +
                 "INNER JOIN kecamatan kc ON kc.kd_kec = ps.kd_kec " +
@@ -1281,6 +1289,7 @@ public final class RMProgramKFR extends javax.swing.JDialog {
             param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
             param.put("no_rm", tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString());
             param.put("no_rawat", tbObat.getValueAt(tbObat.getSelectedRow(), 13).toString());
+            param.put("ref_layanan_kfr", tbObat.getValueAt(tbObat.getSelectedRow(), 13).toString());
             Valid.MyReport("rptProgramKFR.jasper", "report", "::[ Lembar Program KFR ]::", param);
         }
         this.setCursor(Cursor.getDefaultCursor());
@@ -1366,6 +1375,11 @@ public final class RMProgramKFR extends javax.swing.JDialog {
 
     public void tampil() {
         Valid.tabelKosong(tabMode);
+        if(refLayananKFR.getText().trim().equals("")){
+            stts="";
+        }else {
+            stts = " and program_kfr.ref_layanan_kfr ='"+refLayananKFR.getText()+"' ";
+        }
         try {
             if (TCari.getText().trim().equals("")) {
                 ps = koneksi.prepareStatement(
@@ -1387,7 +1401,7 @@ public final class RMProgramKFR extends javax.swing.JDialog {
                         "LEFT JOIN dokter ON program_kfr.kd_dokter = dokter.kd_dokter\n" +
                         "where program_kfr.tanggal BETWEEN ? and ? AND \n" +
                         "(pasien.no_rkm_medis LIKE ? or pasien.nm_pasien like ? OR program_kfr.ref_layanan_kfr like ? OR dokter.kd_dokter LIKE ? \n" +
-                        "OR dokter.nm_dokter LIKE ? or petugas.nip like ? or petugas.nama like ? )\n" +
+                        "OR dokter.nm_dokter LIKE ? or petugas.nip like ? or petugas.nama like ? ) "+stts+"\n" +
                         "order by program_kfr.tanggal");
             }
 
@@ -1490,7 +1504,10 @@ public final class RMProgramKFR extends javax.swing.JDialog {
         TCari.setText(TNoRM.getText());
         Sequel.cariIsi("select kd_dokter from reg_periksa where no_rawat = ?", KdDok, TNoRw.getText());
         Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?", TDokter, KdDok.getText());
-        tampil();
+        Sequel.cariIsi("SELECT layanan_kfr.no_rawat FROM layanan_kfr \n" +
+                "INNER JOIN reg_periksa ON reg_periksa.no_rawat = layanan_kfr.no_rawat\n" +
+                "WHERE reg_periksa.no_rkm_medis = ? AND layanan_kfr.`status`= '1'", refLayananKFR, TNoRM.getText());
+         tampil();
     }
 
     private void isForm() {

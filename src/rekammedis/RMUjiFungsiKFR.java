@@ -1093,7 +1093,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         jLabel22.setText("Pem Fisik & Uji Fungsi : ");
         jLabel22.setName("jLabel22"); // NOI18N
         FormInput.add(jLabel22);
-        jLabel22.setBounds(480, 120, 112, 23);
+        jLabel22.setBounds(20, 150, 112, 23);
 
         PemFisikUji.setFocusTraversalPolicyProvider(true);
         PemFisikUji.setName("PemFisikUji"); // NOI18N
@@ -1103,7 +1103,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             }
         });
         FormInput.add(PemFisikUji);
-        PemFisikUji.setBounds(590, 120, 210, 23);
+        PemFisikUji.setBounds(130, 150, 670, 23);
 
         jLabel23.setText("TataLaksana KFR :");
         jLabel23.setName("jLabel23"); // NOI18N
@@ -1186,7 +1186,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         jLabel28.setText("Pemeriksaan Penunjang :");
         jLabel28.setName("jLabel28"); // NOI18N
         FormInput.add(jLabel28);
-        jLabel28.setBounds(0, 150, 130, 23);
+        jLabel28.setBounds(460, 120, 130, 23);
 
         PemPenunjang.setFocusTraversalPolicyProvider(true);
         PemPenunjang.setName("PemPenunjang"); // NOI18N
@@ -1196,7 +1196,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             }
         });
         FormInput.add(PemPenunjang);
-        PemPenunjang.setBounds(130, 150, 670, 23);
+        PemPenunjang.setBounds(590, 120, 210, 23);
 
         SuspPeny.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ya", "Tidak" }));
         SuspPeny.setSelectedIndex(1);
@@ -1398,14 +1398,15 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         } else if (PemFisikUji.getText().trim().equals("")) {
             Valid.textKosong(PemFisikUji, "PemFisikUji");
         } else {
+            Sequel.mengedit("layanan_kfr", "no_rawat='"+Sequel.cariIsi("select no_rawat from layanan_kfr where status = '1'")+"'", "status='0'");
             if (Sequel.menyimpantf("uji_fungsi_kfr", "?,?,?,?,?,?,?,?", "Data", 8, new String[]{
                 TNoRw.getText(), Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":" + Menit.getSelectedItem() + ":" + Detik.getSelectedItem(),
                 DiagnosisFungsional.getText(), DiagnosisMedis.getText(), hasilDidapat.getText(), kesimpulan.getText(), rekomendasi.getText(), KdDokter.getText()
             }) == true) {
-                if(Sequel.menyimpantf("layanan_kfr", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Data", 15, new String[]{
+                if(Sequel.menyimpantf("layanan_kfr", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Data", 16, new String[]{
                     TNoRw.getText(), Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":" + Menit.getSelectedItem() + ":" + Detik.getSelectedItem(),
                     Anamesa.getText(), PemFisikUji.getText(), DiagnosisMedis.getText(), DiagnosisFungsional.getText(), PemPenunjang.getText(), TataLaksana.getText(),
-                    goalTreatment.getText(), Anjuran.getText(), Edukasi.getText(), Evaluasi.getText(), SuspPeny.getSelectedItem().toString(), SuspKet.getText(), KdDokter.getText()
+                    goalTreatment.getText(), Anjuran.getText(), Edukasi.getText(), Evaluasi.getText(), SuspPeny.getSelectedItem().toString(), SuspKet.getText(), KdDokter.getText(), "1"
                 }) == true){
                      tampil();
                 emptTeks();
@@ -1626,6 +1627,13 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         if (tabMode.getRowCount() != 0) {
             if ((evt.getKeyCode() == KeyEvent.VK_ENTER) || (evt.getKeyCode() == KeyEvent.VK_UP) || (evt.getKeyCode() == KeyEvent.VK_DOWN)) {
                 try {
+                    getData();
+                } catch (java.lang.NullPointerException e) {
+                }
+            }else if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+                try {
+                    ChkInput.setSelected(true);
+                    isForm(); 
                     getData();
                 } catch (java.lang.NullPointerException e) {
                 }
@@ -2108,7 +2116,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
     public void tampil() {
         Valid.tabelKosong(tabMode);
         try {
-            if (TCari.getText().toString().trim().equals("")) {
+            if (TCari.getText().trim().equals("")) {
                 ps = koneksi.prepareStatement(
                         "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur, " +
                         "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat, " +
@@ -2139,7 +2147,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             }
 
             try {
-                if (TCari.getText().toString().trim().equals("")) {
+                if (TCari.getText().trim().equals("")) {
                     ps.setString(1, Valid.SetTgl(DTPCari1.getSelectedItem() + "") + " 00:00:00");
                     ps.setString(2, Valid.SetTgl(DTPCari2.getSelectedItem() + "") + " 23:59:59");
                 } else {
@@ -2256,6 +2264,62 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         isPsien();
         ChkInput.setSelected(false);
         isForm();
+        if (!NmDokter.getText().equals("")) {
+           isGetInitialData(norwt);
+        }
+        tampil();
+    }
+    
+    public void isGetInitialData(String norwt){
+        try {
+              ps=koneksi.prepareStatement(
+                    "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur, " +
+                    "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat, " +
+                    "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir, " +
+                    "layanan_kfr.anamnesa, layanan_kfr.pemeriksaan_fisik_fungsi, layanan_kfr.diagnosa_medis, layanan_kfr.diagnosa_fungsi,layanan_kfr.pemeriksaan_penunjang, " +
+                    "layanan_kfr.tata_laksana_kfr, layanan_kfr.goal_treatment, layanan_kfr.edukasi, layanan_kfr.anjuran, layanan_kfr.evaluasi,layanan_kfr.suspek_penyakit, " +
+                    "layanan_kfr.ket_suspek_penyakit " +
+                    "from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat " +
+                    "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
+                    "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter " +
+                    "INNER JOIN layanan_kfr ON layanan_kfr.no_rawat = uji_fungsi_kfr.no_rawat " +
+                    "WHERE layanan_kfr.no_rawat = ? AND layanan_kfr.kd_dokter = ?");
+              try {
+                ps.setString(1,norwt);
+                ps.setString(2,KdDokter.getText());
+                rs=ps.executeQuery();
+                  while (rs.next()) {
+
+                      DiagnosisFungsional.setText(rs.getString("diagnosis_fungsional"));
+                      DiagnosisMedis.setText(rs.getString("diagnosis_medis"));
+                      hasilDidapat.setText(rs.getString("hasil_didapat"));
+                      kesimpulan.setText(rs.getString("kesimpulan"));
+                      rekomendasi.setText(rs.getString("rekomedasi"));
+
+                      Anamesa.setText(rs.getString("anamnesa"));
+                      PemFisikUji.setText(rs.getString("pemeriksaan_fisik_fungsi"));
+                      PemPenunjang.setText(rs.getString("pemeriksaan_penunjang"));
+                      TataLaksana.setText(rs.getString("tata_laksana_kfr"));
+                      goalTreatment.setText(rs.getString("goal_treatment"));
+                      Edukasi.setText(rs.getString("edukasi"));
+                      Anjuran.setText(rs.getString("anjuran"));
+                      Evaluasi.setText(rs.getString("evaluasi"));
+                      SuspPeny.setSelectedItem(rs.getString("suspek_penyakit"));
+                      SuspKet.setText(rs.getString("ket_suspek_penyakit"));
+                  }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+             System.out.println("Notif : "+e);
+        }
     }
 
     private void isForm() {
@@ -2346,9 +2410,9 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
 
     private void ganti() {
         Sequel.mengedit("uji_fungsi_kfr", "no_rawat=?", "tanggal=?,diagnosis_fungsional=?,diagnosis_medis=?,hasil_didapat=?,kesimpulan=?,rekomedasi=?,kd_dokter=?", 8, new String[]{
-            TNoRw.getText(), Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":" + Menit.getSelectedItem() + ":" + Detik.getSelectedItem(),
+            Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":" + Menit.getSelectedItem() + ":" + Detik.getSelectedItem(),
             DiagnosisFungsional.getText(), DiagnosisMedis.getText(), hasilDidapat.getText(), kesimpulan.getText(), rekomendasi.getText(), KdDokter.getText(),
-            tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString()
+            TNoRw.getText()
         });
         
         Sequel.mengedit("layanan_kfr", "no_rawat=?", "tanggal=?,anamnesa=?,pemeriksaan_fisik_fungsi=?,diagnosa_medis=?,"
@@ -2368,7 +2432,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             SuspPeny.getSelectedItem().toString(),
             SuspKet.getText(),
             KdDokter.getText(),
-            tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString()
+            TNoRw.getText()
         });
         
         if (tabMode.getRowCount() != 0) {

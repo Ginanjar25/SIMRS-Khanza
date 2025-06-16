@@ -224,6 +224,7 @@ import surat.SuratTidakHamil;
 import permintaan.DlgBookingRegistrasi;
 import permintaan.DlgBookingKuota;
 import bridging.BPJSRujukanKeluar;
+import modif.DlgBatalPeriksa;
 /**
  *
  * @author dosen
@@ -10494,27 +10495,36 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 }else if(!Sequel.cariIsi("select concat(no_rawat, tgl_perawatan) from pemeriksaan_ralan where no_rawat = ?", TNoRw.getText()).isBlank()){
                     JOptionPane.showMessageDialog(rootPane,"Maaf, Pasien "+TNoRw.getText()+" sudah terisi SOAPIE, silahkan konfirmasi ke Rawat Jalan !! ");
                 }else{
-                    Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Batal',biaya_reg='0'");
-                     Sequel.queryu2("update booking_registrasi set status='Batal' where no_rkm_medis=? and tanggal_periksa=?",2,new String[]{
-                            TNoRM.getText(), Valid.SetTgl(DTPReg.getSelectedItem()+"")
-                     });
-                     if ("JKN".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
-                           if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "nobooking=?", "status='Batal',validasi=now()", 1, new String[]{
-                                Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
-                            }) == true) {
-                                Sequel.menyimpan2("referensi_mobilejkn_bpjs_batal", "?,?,?,now(),?,?,?", 6, new String[]{
-                                    tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 7).toString(),
-                                    tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 2).toString(),
-                                    Sequel.cariIsi("SELECT rmb.nomorreferensi FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText()),
-                                    "Dibatalkan Oleh " + akses.getkode() + "",
-                                    "Belum",
-                                    Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
-                                });
+//                    Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Batal',biaya_reg='0'");
+//                     if ("JKN".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
+//                           if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "nobooking=?", "status='Batal',validasi=now()", 1, new String[]{
+//                                Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
+//                            }) == true) {
+//                                Sequel.menyimpan2("referensi_mobilejkn_bpjs_batal", "?,?,?,now(),?,?,?", 6, new String[]{
+//                                    tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 7).toString(),
+//                                    tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 2).toString(),
+//                                    Sequel.cariIsi("SELECT rmb.nomorreferensi FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText()),
+//                                    "Dibatalkan Oleh " + akses.getkode() + "",
+//                                    "Belum",
+//                                    Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
+//                                });
+//                            }
+//                        }
+                        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                        DlgBatalPeriksa batal=new DlgBatalPeriksa(null,true);
+                        batal.setNoRm(TNoRM.getText(),TNoRw.getText());
+                        batal.setSize(720,230);
+                        batal.setLocationRelativeTo(internalFrame1);
+                        batal.setVisible(true);
+                        if(!batal.isVisible()){
+                            Sequel.queryu2("update booking_registrasi set status='Batal' where no_rkm_medis=? and tanggal_periksa=?",2,new String[]{
+                                TNoRM.getText(), Valid.SetTgl(DTPReg.getSelectedItem()+"")
+                           });
+                            if(tbPetugas.getSelectedRow()>-1){
+                                tabMode.setValueAt("Batal",tbPetugas.getSelectedRow(),19);
                             }
                         }
-                    if(tbPetugas.getSelectedRow()>-1){
-                        tabMode.setValueAt("Batal",tbPetugas.getSelectedRow(),19);
-                    }
+                        this.setCursor(Cursor.getDefaultCursor());
                 }
             }
         }
@@ -16662,6 +16672,14 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         if(!akses.getkode().equals("Admin Utama")){
 //           String jabatan = Sequel.cariIsi("select jbtn from pegawai where nik =?", akses.getkode());
            String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
+           
+            if(jabatan.equals("J014") || jabatan.equals("J022")){
+                 MnStatus.setEnabled(true);
+             }else{
+                 MnStatus.setEnabled(false);
+             }
+            
+            
            if(jabatan.equals("J005")){
                BtnHapus.setEnabled(true);
                DTPReg.setEditable(true);
@@ -16670,9 +16688,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                CmbJam.setEnabled(true);
                CmbMenit.setEnabled(true);
                CmbDetik.setEnabled(true);
-//               if((jabatan.equals("Koordinator Unit FO"))){
-//                   BtnHapus.setEnabled(true);
-//               }
+               MnStatus.setEnabled(true);
            }else{
                BtnHapus.setEnabled(false);
                DTPReg.setEditable(false);
@@ -16681,6 +16697,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                CmbJam.setEnabled(false);
                CmbMenit.setEnabled(false);
                CmbDetik.setEnabled(false);
+               MnStatus.setEnabled(false);
            }
         }
     }

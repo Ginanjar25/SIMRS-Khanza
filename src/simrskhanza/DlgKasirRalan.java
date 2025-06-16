@@ -202,6 +202,7 @@ import surat.SuratSakitPihak2;
 import surat.SuratTidakHamil;
 import fungsi.AntrianPoli;
 import bridging.BPJSRujukanKeluar;
+import modif.DlgBatalPeriksa;
 import permintaan.DlgBookingKuota;
 import rekammedis.RMProgramKFR;
 
@@ -8548,25 +8549,18 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         }else{
             if(Sequel.cariInteger("select count(kamar_inap.no_rawat) from kamar_inap where kamar_inap.no_rawat=?",TNoRw.getText())>0){
                 JOptionPane.showMessageDialog(null,"Maaf, Pasien sudah masuk Kamar Inap. Gunakan billing Ranap..!!!");
-            }else {
-                Valid.editTable(tabModekasir,"reg_periksa","no_rawat",TNoRw,"stts='Batal',biaya_reg='0'");
-                if(tbKasirRalan.getSelectedRow()>-1){
-                    tabModekasir.setValueAt("Batal",tbKasirRalan.getSelectedRow(),10);
-                }
-                if (!Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText()).isBlank()) {
-                    if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "nobooking=?", "status='Batal',validasi=now()", 1, new String[]{
-                        Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
-                    }) == true) {
-                        Sequel.menyimpan2("referensi_mobilejkn_bpjs_batal", "?,?,?,now(),?,?,?", 6, new String[]{
-                            TNoRMCari.getText(),
-                            TNoRw.getText(),
-                            Sequel.cariIsi("SELECT rmb.nomorreferensi FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText()),
-                            "Dibatalkan Oleh " + akses.getkode() + "",
-                            "Belum",
-                            Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
-                        });
-                    }
-                }
+            }else{
+//                Valid.editTable(tabModekasir,"reg_periksa","no_rawat",TNoRw,"stts='Batal',biaya_reg='0'");
+//                if(tbKasirRalan.getSelectedRow()>-1){ 
+//                    tabModekasir.setValueAt("Batal",tbKasirRalan.getSelectedRow(),10);
+//                }
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                DlgBatalPeriksa batal=new DlgBatalPeriksa(null,true);
+                batal.setNoRm(TNoRMCari.getText(),TNoRw.getText());
+                batal.setSize(720,230);
+                batal.setLocationRelativeTo(internalFrame1);
+                batal.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
             }
         }
     }//GEN-LAST:event_MnBatalActionPerformed
@@ -12123,7 +12117,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 form.setVisible(true);
                 this.setCursor(Cursor.getDefaultCursor());
             }
-        }
+        } 
     }//GEN-LAST:event_MnProgramKFRActionPerformed
 
     private void ppMasukPoliBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppMasukPoliBtnPrintActionPerformed
@@ -15489,11 +15483,19 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         MnPermintaanKonsultasiMedik.setEnabled(akses.getkonsultasi_medik());
         ppResumePerawat.setEnabled(akses.getsoap_perawatan());
         
+        
         if(akses.getkode().equals("Admin Utama")){
             MnHapusData.setEnabled(true);
+            MnStatus.setEnabled(true);
         }else{
+            String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
             MnHapusData.setEnabled(false);
-        } 
+             if(jabatan.equals("J014") || jabatan.equals("J005")||jabatan.equals("J022")){
+                 MnStatus.setEnabled(true);
+             }else{
+                 MnStatus.setEnabled(false);
+             }
+        }         
         
         if(akses.getkode().equals("Admin Utama")){
             MnKamarInap.setEnabled(true);

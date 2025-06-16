@@ -56,7 +56,7 @@ public final class RMCariUjiFungsiKFR extends javax.swing.JDialog {
         tabModePemeriksaan = new DefaultTableModel(null, new Object[]{
             "NO RAWAT","NO RM", "NAMA PASIEN","TANGGAL","DOKTER","DX FUNGSIONAL", "DX MEDIS","|","ANAMNESA", "PEM FISIK & FUNGSI","PEM PENUNJANG", "TATA LAKSANA",
             "GOAL TREATMENT", "EDUKASI", "ANJURAN", "EVALUASI", "SUSP PENYAKIT", "KET SUSP PENYAKIT",
-            "|","HASIL", "REKOMENDASI", "KESIMPULAN"}) {
+            "|","HASIL", "REKOMENDASI", "KESIMPULAN", "STATUS"}) {
             @Override
             public boolean isCellEditable(int rowIndex, int colIndex) {
                 boolean a = false;
@@ -69,7 +69,7 @@ public final class RMCariUjiFungsiKFR extends javax.swing.JDialog {
                 java.lang.Object.class,java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,
                 java.lang.Object.class,java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,
                 java.lang.Object.class,java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,java.lang.Object.class,
-                java.lang.Object.class,java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class,java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
 
             @Override
@@ -81,7 +81,7 @@ public final class RMCariUjiFungsiKFR extends javax.swing.JDialog {
         tbPemeriksaan.setPreferredScrollableViewportSize(new Dimension(500, 500));
         tbPemeriksaan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 22; i++) {
+        for (i = 0; i < 23; i++) {
             TableColumn column = tbPemeriksaan.getColumnModel().getColumn(i);
             if(i == 0){
                 column.setPreferredWidth(150);
@@ -126,6 +126,8 @@ public final class RMCariUjiFungsiKFR extends javax.swing.JDialog {
             }else if (i == 20) {
                 column.setPreferredWidth(250);
             }else if (i == 21) {
+                column.setPreferredWidth(250);
+            }else if (i == 22) {
                 column.setPreferredWidth(250);
             }
         }
@@ -401,7 +403,7 @@ public final class RMCariUjiFungsiKFR extends javax.swing.JDialog {
                     "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir,\n" +
                     "layanan_kfr.anamnesa, layanan_kfr.pemeriksaan_fisik_fungsi, layanan_kfr.diagnosa_medis, layanan_kfr.diagnosa_fungsi,layanan_kfr.pemeriksaan_penunjang,\n" +
                     "layanan_kfr.tata_laksana_kfr, layanan_kfr.goal_treatment, layanan_kfr.edukasi, layanan_kfr.anjuran, layanan_kfr.evaluasi,layanan_kfr.suspek_penyakit,\n" +
-                    "layanan_kfr.ket_suspek_penyakit\n" +
+                    "layanan_kfr.ket_suspek_penyakit, if(layanan_kfr.status = '1', 'Aktif', 'Tidak Aktif') as status \n" +
                     "from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat\n" +
                     "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis\n" +
                     "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter\n" +
@@ -426,7 +428,7 @@ public final class RMCariUjiFungsiKFR extends javax.swing.JDialog {
                         " |",rs.getString("anamnesa"), rs.getString("pemeriksaan_fisik_fungsi"), rs.getString("pemeriksaan_penunjang"),
                         rs.getString("tata_laksana_kfr"),rs.getString("goal_treatment"), rs.getString("edukasi"), 
                         rs.getString("anjuran"),rs.getString("evaluasi"), rs.getString("suspek_penyakit"), rs.getString("ket_suspek_penyakit"),
-                        " |",rs.getString("hasil_didapat"),rs.getString("rekomedasi"), rs.getString("kesimpulan")
+                        " |",rs.getString("hasil_didapat"),rs.getString("rekomedasi"), rs.getString("kesimpulan"), rs.getString("status")
                     });
                 }
             } catch (Exception e) {

@@ -25,6 +25,7 @@
 	<parameter name="emailrs" class="java.lang.String"/>
 	<parameter name="logo" class="java.io.InputStream"/>
 	<parameter name="no_rm" class="java.lang.String"/>
+	<parameter name="ref_layanan_kfr" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[SELECT pasien.no_rkm_medis, pasien.nm_pasien,pasien.umur,pasien.jk, pasien.tgl_lahir, program_kfr.tanggal, program_kfr.diagnosa,
 program_kfr.perm_terapi,program_kfr.program, petugas.nip, petugas.nama, dokter.kd_dokter, dokter.nm_dokter, pasien.no_peserta
@@ -32,7 +33,7 @@ FROM pasien
 INNER JOIN program_kfr ON pasien.no_rkm_medis = program_kfr.no_rkm_medis
 INNER JOIN petugas ON program_kfr.nik = petugas.nip
 INNER JOIN dokter ON program_kfr.kd_dokter = dokter.kd_dokter
-where pasien.no_rkm_medis =  $P{no_rm} order by program_kfr.tanggal]]>
+where pasien.no_rkm_medis =  $P{no_rm} and program_kfr.ref_layanan_kfr = $P{ref_layanan_kfr} order by program_kfr.tanggal]]>
 	</queryString>
 	<field name="no_rkm_medis" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="no_rkm_medis"/>
@@ -419,8 +420,7 @@ where pasien.no_rkm_medis =  $P{no_rm} order by program_kfr.tanggal]]>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" margin="0">
-					<jr:codeExpression><![CDATA["Dikeluarkan di " + $P{namars} + ", " + $P{kotars} + ". Ditandatangani secara elektronik oleh " + $F{nama} + " ID " + $F{nip} + " " + $F{tanggal}
-]]></jr:codeExpression>
+					<jr:codeExpression><![CDATA["Dikeluarkan di " + $P{namars} + ", " + $P{kotars} + ". Ditandatangani secara elektronik oleh " + $F{nama} + " ID " + $F{nip} + " " + $F{tanggal}]]></jr:codeExpression>
 				</jr:QRCode>
 			</componentElement>
 			<textField>
@@ -443,8 +443,7 @@ where pasien.no_rkm_medis =  $P{no_rm} order by program_kfr.tanggal]]>
 					<property name="com.jaspersoft.studio.unit.margin" value="px"/>
 				</reportElement>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" margin="0">
-					<jr:codeExpression><![CDATA["Dikeluarkan di " + $P{namars} + ", " + $P{kotars} + ". Ditandatangani secara elektronik oleh " +$F{nm_dokter} + " ID " + $F{kd_dokter} + " " + $F{tanggal}
-]]></jr:codeExpression>
+					<jr:codeExpression><![CDATA["Dikeluarkan di " + $P{namars} + ", " + $P{kotars} + ". Ditandatangani secara elektronik oleh " +$F{nm_dokter} + " ID " + $F{kd_dokter} + " " + $F{tanggal}]]></jr:codeExpression>
 				</jr:QRCode>
 			</componentElement>
 			<line>
@@ -497,8 +496,7 @@ where pasien.no_rkm_medis =  $P{no_rm} order by program_kfr.tanggal]]>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" margin="0">
-					<jr:codeExpression><![CDATA["Dikeluarkan di " + $P{namars} + ", " + $P{kotars} + ". Ditandatangani secara elektronik oleh " + $F{nm_pasien} + " ID " + $F{no_peserta} + " " + $F{tanggal}
-]]></jr:codeExpression>
+					<jr:codeExpression><![CDATA["Dikeluarkan di " + $P{namars} + ", " + $P{kotars} + ". Ditandatangani secara elektronik oleh " + $F{nm_pasien} + " ID " + $F{no_peserta} + " " + $F{tanggal}]]></jr:codeExpression>
 				</jr:QRCode>
 			</componentElement>
 			<line>

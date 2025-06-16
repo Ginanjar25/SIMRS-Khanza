@@ -164,6 +164,7 @@ import rekammedis.RMUjiFungsiKFR;
 import bridging.SatuSehatCariAllergy;
 import bridging.SatuSehatCariAllergyReaction;
 import java.text.SimpleDateFormat;
+import rekammedis.RMProgramKFR;
 
 /**
  *
@@ -1772,6 +1773,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         BtnPemantauanEWSNeonatus = new widget.Button();
         BtnMonitoringReaksiTranfusi = new widget.Button();
         BtnUjiFungsiKFR = new widget.Button();
+        BtnProgramKFR = new widget.Button();
         BtnChecklistKriteriaMasukHCU = new widget.Button();
         BtnChecklistKriteriaMasukICU = new widget.Button();
         BtnChecklistPreOperasi = new widget.Button();
@@ -4939,6 +4941,22 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         BtnUjiFungsiKFR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnUjiFungsiKFRActionPerformed(evt);
+            }
+        });
+        
+        BtnProgramKFR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); 
+        BtnProgramKFR.setText("Program KFR");
+        BtnProgramKFR.setFocusPainted(false);
+        BtnProgramKFR.setFont(new java.awt.Font("Tahoma", 0, 11)); 
+        BtnProgramKFR.setGlassColor(new java.awt.Color(255, 255, 255));
+        BtnProgramKFR.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        BtnProgramKFR.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        BtnProgramKFR.setName("BtnProgramKFR"); 
+        BtnProgramKFR.setPreferredSize(new java.awt.Dimension(190, 23));
+        BtnProgramKFR.setRoundRect(false);
+        BtnProgramKFR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnProgramKFRActionPerformed(evt);
             }
         });
 
@@ -8415,6 +8433,23 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             this.setCursor(Cursor.getDefaultCursor());
         }
     }//GEN-LAST:event_BtnUjiFungsiKFRActionPerformed
+    
+     private void BtnProgramKFRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnProgramKFRActionPerformed
+         if (TPasien.getText().trim().equals("") || TNoRw.getText().trim().equals("")) {
+             JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+             TCari.requestFocus();
+         } else {
+             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+             RMProgramKFR form = new RMProgramKFR(null, false);
+             form.isCek();
+             form.emptTeks();
+             form.setNoRm(TNoRw.getText(), DTPCari2.getDate());
+             form.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+             form.setLocationRelativeTo(internalFrame1);
+             form.setVisible(true);
+             this.setCursor(Cursor.getDefaultCursor());
+         }
+    }//GEN-LAST:event_BtnProgramKFRActionPerformed
 
     private void SpO2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SpO2KeyPressed
         Valid.pindah(evt,TNadi,TGCS);
@@ -10122,6 +10157,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button BtnTransferAntarRuang;
     private widget.Button BtnTriaseIGD;
     private widget.Button BtnUjiFungsiKFR;
+    private widget.Button BtnProgramKFR;
     private widget.TextArea Catatan;
     private widget.CekBox ChkAccor;
     private widget.CekBox ChkInput;
@@ -10823,6 +10859,10 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             tinggi=tinggi+24;
         }
         BtnUjiFungsiKFR.setVisible(akses.getuji_fungsi_kfr()); 
+        if(akses.getuji_fungsi_kfr()==true){
+            tinggi=tinggi+24;
+        }
+        BtnProgramKFR.setVisible(akses.getuji_fungsi_kfr()); 
         if(akses.getuji_fungsi_kfr()==true){
             tinggi=tinggi+24;
         }
@@ -12765,6 +12805,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         FormMenu.add(BtnPemantauanEWSNeonatus);
         FormMenu.add(BtnMonitoringReaksiTranfusi);
         FormMenu.add(BtnUjiFungsiKFR);
+        FormMenu.add(BtnProgramKFR);
         FormMenu.add(BtnChecklistKriteriaMasukHCU);
         FormMenu.add(BtnChecklistKriteriaMasukICU);
         FormMenu.add(BtnPenilaianPreInduksi);
@@ -12935,6 +12976,9 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                                             TKeluhan.getText(),TPemeriksaan.getText(),TAlergi.getText(),LingkarPerut.getText(),TindakLanjut.getText(),TPenilaian.getText(),TInstruksi.getText(),TEvaluasi.getText(),
                                             KdPeg.getText(),TPegawai.getText(),Jabatan.getText()
                                         });
+                                        if(Sequel.cariIsi("select kd_sps from dokter where kd_dokter = ?", KdPeg.getText()).equals("S0017")){
+                                            simpanLayananUjiFungsiKFR();
+                                        }
                                         TSuhu.setText("");TTensi.setText("");TNadi.setText("");TRespirasi.setText("");
                                         TTinggi.setText("");TBerat.setText("");TGCS.setText("");TKeluhan.setText("");
                                         TPemeriksaan.setText("");TAlergi.setText("");LingkarPerut.setText("");
@@ -13076,5 +13120,22 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             default:
                 break;
         } 
+    }
+    
+    public void simpanLayananUjiFungsiKFR(){
+        String pemeriksaan_fungsi = TPemeriksaan.getText() + " Suhu:" + TSuhu.getText()+",Tensi:" + TTensi.getText()+",Nadi:" + TNadi.getText()
+                                     + ",RR:" + TRespirasi.getText()+",TB:"+TTinggi.getText()+",BB:"+TBerat.getText()+",SpO2:"+SpO2.getText() +",GCS:" + TGCS.getText() + ",Kesadaran:" + cmbKesadaran.getSelectedItem().toString();
+        if(Sequel.cariInteger("select count(no_rawat) from layanan_kfr where layanan_kfr.no_rawat = ?", TNoRw.getText()) == 0){
+            Sequel.mengedit("layanan_kfr", "no_rawat='"+Sequel.cariIsi("select no_rawat from layanan_kfr where status = '1'")+"'", "status='0'"); 
+            Sequel.menyimpan("uji_fungsi_kfr", "?,?,?,?,?,?,?,?", "Data", 8, new String[]{
+                TNoRw.getText(), Valid.SetTgl(DTPTgl.getSelectedItem()+"")+" "+cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),
+                "-",TPenilaian.getText(), "-", "-", "-", KdPeg.getText()
+            });
+            Sequel.menyimpan("layanan_kfr", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Data", 16, new String[]{
+                TNoRw.getText(), Valid.SetTgl(DTPTgl.getSelectedItem()+"")+" "+cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),
+                TKeluhan.getText(), pemeriksaan_fungsi,TPenilaian.getText(), "-", "-", TindakLanjut.getText(),
+                "-", TInstruksi.getText(), "-", TEvaluasi.getText(), "Tidak", "", KdPeg.getText(), "1"
+            });
+         }
     }
 }
