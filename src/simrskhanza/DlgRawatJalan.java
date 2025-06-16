@@ -13126,7 +13126,10 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         String pemeriksaan_fungsi = TPemeriksaan.getText() + " Suhu:" + TSuhu.getText()+",Tensi:" + TTensi.getText()+",Nadi:" + TNadi.getText()
                                      + ",RR:" + TRespirasi.getText()+",TB:"+TTinggi.getText()+",BB:"+TBerat.getText()+",SpO2:"+SpO2.getText() +",GCS:" + TGCS.getText() + ",Kesadaran:" + cmbKesadaran.getSelectedItem().toString();
         if(Sequel.cariInteger("select count(no_rawat) from layanan_kfr where layanan_kfr.no_rawat = ?", TNoRw.getText()) == 0){
-            Sequel.mengedit("layanan_kfr", "no_rawat='"+Sequel.cariIsi("select no_rawat from layanan_kfr where status = '1'")+"'", "status='0'"); 
+          //Sequel.mengedit("layanan_kfr", "no_rawat='"+Sequel.cariIsi("select no_rawat from layanan_kfr where status = '1'")+"'", "status='0'");
+            Sequel.mengedit("layanan_kfr", "no_rawat='" + Sequel.cariIsi("SELECT layanan_kfr.no_rawat FROM layanan_kfr \n"
+                    + "INNER JOIN reg_periksa ON reg_periksa.no_rawat = layanan_kfr.no_rawat\n"
+                    + "WHERE reg_periksa.no_rkm_medis = ? AND layanan_kfr.`status`= '1'", TNoRM.getText()) + "'", "status='0'");
             Sequel.menyimpan("uji_fungsi_kfr", "?,?,?,?,?,?,?,?", "Data", 8, new String[]{
                 TNoRw.getText(), Valid.SetTgl(DTPTgl.getSelectedItem()+"")+" "+cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),
                 "-",TPenilaian.getText(), "-", "-", "-", KdPeg.getText()

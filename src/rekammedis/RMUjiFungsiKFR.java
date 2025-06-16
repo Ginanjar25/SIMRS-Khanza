@@ -1398,7 +1398,10 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         } else if (PemFisikUji.getText().trim().equals("")) {
             Valid.textKosong(PemFisikUji, "PemFisikUji");
         } else {
-            Sequel.mengedit("layanan_kfr", "no_rawat='"+Sequel.cariIsi("select no_rawat from layanan_kfr where status = '1'")+"'", "status='0'");
+//            Sequel.mengedit("layanan_kfr", "no_rawat='"+Sequel.cariIsi("select no_rawat from layanan_kfr where status = '1'")+"'", "status='0'");
+            Sequel.mengedit("layanan_kfr", "no_rawat='" + Sequel.cariIsi("SELECT layanan_kfr.no_rawat FROM layanan_kfr \n"
+                    + "INNER JOIN reg_periksa ON reg_periksa.no_rawat = layanan_kfr.no_rawat\n"
+                    + "WHERE reg_periksa.no_rkm_medis = ? AND layanan_kfr.`status`= '1'", TNoRM.getText()) + "'", "status='0'");
             if (Sequel.menyimpantf("uji_fungsi_kfr", "?,?,?,?,?,?,?,?", "Data", 8, new String[]{
                 TNoRw.getText(), Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":" + Menit.getSelectedItem() + ":" + Detik.getSelectedItem(),
                 DiagnosisFungsional.getText(), DiagnosisMedis.getText(), hasilDidapat.getText(), kesimpulan.getText(), rekomendasi.getText(), KdDokter.getText()
