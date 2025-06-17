@@ -925,107 +925,109 @@ public class DlgRanapGabung extends javax.swing.JDialog {
 }//GEN-LAST:event_DTPTglKeyPressed
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
-        try {
-            psibu = koneksi.prepareStatement("select no_reg,tgl_registrasi,jam_reg,kd_dokter,no_rkm_medis,kd_poli,p_jawab,"
-                    + "almt_pj,hubunganpj,biaya_reg,stts,stts_daftar,status_lanjut,kd_pj from reg_periksa where no_rawat=?");
+        if (Sequel.cariInteger("select count(no_rm_bayi) from ranap_gabung where ranap_gabung.no_rm_bayi=? ", TNoRMBayi.getText()) > 0) {
+            JOptionPane.showMessageDialog(null,"Maaf, No. RM Bayi sudah di Ranap Gabung...!!!");
+        }else{
             try {
-                psibu.setString(1, TNoRWIbu.getText());
-                rs = psibu.executeQuery();
-                if (rs.next()) {
-                    pscariumur = koneksi.prepareStatement(
-                            "select TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) as tahun, "
-                            + "(TIMESTAMPDIFF(MONTH, tgl_lahir, CURDATE()) - ((TIMESTAMPDIFF(MONTH, tgl_lahir, CURDATE()) div 12) * 12)) as bulan, "
-                            + "TIMESTAMPDIFF(DAY, DATE_ADD(DATE_ADD(tgl_lahir,INTERVAL TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) YEAR), INTERVAL TIMESTAMPDIFF(MONTH, tgl_lahir, CURDATE()) - ((TIMESTAMPDIFF(MONTH, tgl_lahir, CURDATE()) div 12) * 12) MONTH), CURDATE()) as hari "
-                            + "from pasien where no_rkm_medis=?");
-                    try {
-                        pscariumur.setString(1, TNoRMBayi.getText());
-                        rs2 = pscariumur.executeQuery();
-                        if (rs2.next()) {
-                            umur = "0";
-                            sttsumur = "Th";
-                            if (rs2.getInt("tahun") > 0) {
-                                umur = rs2.getString("tahun");
+                psibu = koneksi.prepareStatement("select no_reg,tgl_registrasi,jam_reg,kd_dokter,no_rkm_medis,kd_poli,p_jawab,"
+                        + "almt_pj,hubunganpj,biaya_reg,stts,stts_daftar,status_lanjut,kd_pj from reg_periksa where no_rawat=?");
+                try {
+                    psibu.setString(1, TNoRWIbu.getText());
+                    rs = psibu.executeQuery();
+                    if (rs.next()) {
+                        pscariumur = koneksi.prepareStatement(
+                                "select TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) as tahun, "
+                                + "(TIMESTAMPDIFF(MONTH, tgl_lahir, CURDATE()) - ((TIMESTAMPDIFF(MONTH, tgl_lahir, CURDATE()) div 12) * 12)) as bulan, "
+                                + "TIMESTAMPDIFF(DAY, DATE_ADD(DATE_ADD(tgl_lahir,INTERVAL TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) YEAR), INTERVAL TIMESTAMPDIFF(MONTH, tgl_lahir, CURDATE()) - ((TIMESTAMPDIFF(MONTH, tgl_lahir, CURDATE()) div 12) * 12) MONTH), CURDATE()) as hari "
+                                + "from pasien where no_rkm_medis=?");
+                        try {
+                            pscariumur.setString(1, TNoRMBayi.getText());
+                            rs2 = pscariumur.executeQuery();
+                            if (rs2.next()) {
+                                umur = "0";
                                 sttsumur = "Th";
-                            } else if (rs2.getInt("tahun") == 0) {
-                                if (rs2.getInt("bulan") > 0) {
-                                    umur = rs2.getString("bulan");
-                                    sttsumur = "Bl";
-                                } else if (rs2.getInt("bulan") == 0) {
-                                    umur = rs2.getString("hari");
-                                    sttsumur = "Hr";
+                                if (rs2.getInt("tahun") > 0) {
+                                    umur = rs2.getString("tahun");
+                                    sttsumur = "Th";
+                                } else if (rs2.getInt("tahun") == 0) {
+                                    if (rs2.getInt("bulan") > 0) {
+                                        umur = rs2.getString("bulan");
+                                        sttsumur = "Bl";
+                                    } else if (rs2.getInt("bulan") == 0) {
+                                        umur = rs2.getString("hari");
+                                        sttsumur = "Hr";
+                                    }
                                 }
                             }
+                        } catch (Exception e) {
+                            System.out.println("Notifikasi Umur : " + e);
+                        } finally {
+                            if (rs2 != null) {
+                                rs2.close();
+                            }
+                            if (pscariumur != null) {
+                                pscariumur.close();
+                            }
                         }
-                    } catch (Exception e) {
-                        System.out.println("Notifikasi Umur : " + e);
-                    } finally {
-                        if (rs2 != null) {
-                            rs2.close();
-                        }
-                        if (pscariumur != null) {
-                            pscariumur.close();
-                        }
-                    }
-                    String titip_kamar = "-";
-                    Valid.autoNomer3("select (ifnull(MAX(CONVERT(RIGHT(no_rawat,6),signed)),0)+1) from reg_periksa where tgl_registrasi='" + Valid.SetTgl(DTPTgl.getSelectedItem() + "") + "' ", dateformat.format(DTPTgl.getDate()) + "/", 6, NoRawatGabung);
-                    if (Sequel.menyimpantf2("reg_periksa", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Reg Periksa", 19,
-                            new String[]{rs.getString("no_reg"), NoRawatGabung.getText(), Valid.SetTgl(DTPTgl.getSelectedItem() + ""), cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),
-                                "-", TNoRMBayi.getText(), rs.getString("kd_poli"), rs.getString("p_jawab"),
-                                rs.getString("almt_pj"), rs.getString("hubunganpj"), rs.getString("biaya_reg"), "Belum", "Baru", "Ranap", rs.getString("kd_pj"), umur, sttsumur, "Sudah Bayar", "Baru"}) == true) {
-                        
-                       
-                        Sequel.menyimpan("ranap_gabung", "?,?,?", "Data Ranap Gabung", 3, new String[]{
-                                TNoRWIbu.getText(), NoRawatGabung.getText(),TNoRMBayi.getText()
-                            });
-                        
-                        
-                        String penjab2 = Sequel.cariIsi("SELECT CONCAT(penjab_reg.kd_pj, '-', penjab.png_jawab,'-', penjab_reg.no_kartu) AS penjab2 FROM reg_periksa\n"
-                                + "LEFT JOIN penjab_reg on penjab_reg.no_rawat = reg_periksa.no_rawat\n"
-                                + "LEFT JOIN penjab on penjab.kd_pj = penjab_reg.kd_pj\n"
-                                + "WHERE reg_periksa.no_rawat=? "
-                                + "AND penjab_reg.`order` != '1' ", TNoRWIbu.getText());
+                        String titip_kamar = "-";
+                        Valid.autoNomer3("select (ifnull(MAX(CONVERT(RIGHT(no_rawat,6),signed)),0)+1) from reg_periksa where tgl_registrasi='" + Valid.SetTgl(DTPTgl.getSelectedItem() + "") + "' ", dateformat.format(DTPTgl.getDate()) + "/", 6, NoRawatGabung);
+                        if (Sequel.menyimpantf2("reg_periksa", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Reg Periksa", 19,
+                                new String[]{rs.getString("no_reg"), NoRawatGabung.getText(), Valid.SetTgl(DTPTgl.getSelectedItem() + ""), cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem(),
+                                    "-", TNoRMBayi.getText(), rs.getString("kd_poli"), rs.getString("p_jawab"),
+                                    rs.getString("almt_pj"), rs.getString("hubunganpj"), rs.getString("biaya_reg"), "Belum", "Baru", "Ranap", rs.getString("kd_pj"), umur, sttsumur, "Sudah Bayar", "Baru"}) == true) {
 
-                        if (penjab2 != null && !penjab2.trim().isEmpty()) {
-                            String[] parts = penjab2.split("-", 3);
-                            String kode = parts.length > 0 ? parts[0] : "";
+                            Sequel.menyimpan("ranap_gabung", "?,?,?", "Data Ranap Gabung", 3, new String[]{
+                                TNoRWIbu.getText(), NoRawatGabung.getText(), TNoRMBayi.getText()
+                            });
+
+                            String penjab2 = Sequel.cariIsi("SELECT CONCAT(penjab_reg.kd_pj, '-', penjab.png_jawab,'-', penjab_reg.no_kartu) AS penjab2 FROM reg_periksa\n"
+                                    + "LEFT JOIN penjab_reg on penjab_reg.no_rawat = reg_periksa.no_rawat\n"
+                                    + "LEFT JOIN penjab on penjab.kd_pj = penjab_reg.kd_pj\n"
+                                    + "WHERE reg_periksa.no_rawat=? "
+                                    + "AND penjab_reg.`order` != '1' ", TNoRWIbu.getText());
+
+                            if (penjab2 != null && !penjab2.trim().isEmpty()) {
+                                String[] parts = penjab2.split("-", 3);
+                                String kode = parts.length > 0 ? parts[0] : "";
 //                          String nama_penjab = parts.length > 1 ? parts[1] : "";
-                            String no_kartu = parts.length > 2 ? parts[2] : "";
-                            Sequel.menyimpan("penjab_reg", "?,?,?,?", "Data Penjab Registrasi", 4, new String[]{
-                                NoRawatGabung.getText(), kode, no_kartu, "2"
+                                String no_kartu = parts.length > 2 ? parts[2] : "";
+                                Sequel.menyimpan("penjab_reg", "?,?,?,?", "Data Penjab Registrasi", 4, new String[]{
+                                    NoRawatGabung.getText(), kode, no_kartu, "2"
+                                });
+                            }
+
+                            Sequel.menyimpantf("permintaan_ranap", "?,?,?,?,?", "Pasien", 5, new String[]{
+                                NoRawatGabung.getText(),
+                                Valid.SetTgl(DTPTgl.getSelectedItem() + ""),
+                                TKdKamar.getText(),
+                                TDiagnosa.getText(),
+                                cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem() + "#" + titip_kamar
                             });
+
+                            if (Sequel.menyimpantf("dpjp_ranap", "?,?", "Dokter", 2, new String[]{
+                                NoRawatGabung.getText(),
+                                KodeDPJP.getText()
+                            }) == true) {
+                                tampil();
+                                BtnBatalActionPerformed(null);
+                            }
                         }
-
-                        Sequel.menyimpantf("permintaan_ranap", "?,?,?,?,?", "Pasien", 5, new String[]{
-                            NoRawatGabung.getText(),
-                            Valid.SetTgl(DTPTgl.getSelectedItem() + ""),
-                            TKdKamar.getText(),
-                            TDiagnosa.getText(),
-                            cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem()+ "#" + titip_kamar
-                        });
-
-                        if (Sequel.menyimpantf("dpjp_ranap", "?,?", "Dokter", 2, new String[]{
-                            NoRawatGabung.getText(),
-                            KodeDPJP.getText()
-                        }) == true) {
-                            tampil();
-                            BtnBatalActionPerformed(null);
-                        }                        
+                    }
+                } catch (Exception ex) {
+                    System.out.println("Notifikasi : " + ex);
+                } finally {
+                    if (rs != null) {
+                        rs.close();
+                    }
+                    if (psibu != null) {
+                        psibu.close();
                     }
                 }
-            } catch (Exception ex) {
-                System.out.println("Notifikasi : " + ex);
-            } finally {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (psibu != null) {
-                    psibu.close();
-                }
-            }
 
-            tampil();
-        } catch (Exception e) {
-            System.out.println(e);
+                tampil();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
         }
 }//GEN-LAST:event_BtnSimpanActionPerformed
 
