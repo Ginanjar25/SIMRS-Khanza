@@ -1389,7 +1389,8 @@ public final class RMProgramKFR extends javax.swing.JDialog {
                         "FROM pasien \n" +
                         "INNER JOIN program_kfr ON pasien.no_rkm_medis = program_kfr.no_rkm_medis\n" +
                         "LEFT JOIN petugas ON program_kfr.nik = petugas.nip\n" +
-                        "LEFT JOIN dokter ON program_kfr.kd_dokter = dokter.kd_dokter");
+                        "LEFT JOIN dokter ON program_kfr.kd_dokter = dokter.kd_dokter \n" +
+                        "where program_kfr.tanggal BETWEEN ? and ?");
             } else {
                 ps = koneksi.prepareStatement(
                         "SELECT pasien.no_rkm_medis, pasien.nm_pasien, pasien.umur, pasien.jk,pasien.tgl_lahir, \n" +
