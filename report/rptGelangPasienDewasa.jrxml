@@ -23,8 +23,6 @@
 	<parameter name="tanggal" class="java.lang.String"/>
 	<parameter name="kamar" class="java.lang.String"/>
 	<parameter name="dpjp" class="java.lang.String"/>
-	<parameter name="kls_bpjs" class="java.lang.String"/>
-	<parameter name="kamar2" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select pasien.no_rkm_medis, pasien.nm_pasien, pasien.no_ktp, pasien.jk,
 pasien.tmp_lahir, pasien.tgl_lahir,pasien.nm_ibu, concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat, pasien.gol_darah, pasien.pekerjaan,
@@ -104,7 +102,7 @@ and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab]]>
 	<title>
 		<band height="702">
 			<textField pattern="">
-				<reportElement mode="Opaque" x="26" y="240" width="12" height="63" uuid="e369b051-e906-489c-8ad8-8b65a267f84f"/>
+				<reportElement mode="Opaque" x="23" y="207" width="12" height="96" uuid="e369b051-e906-489c-8ad8-8b65a267f84f"/>
 				<textElement verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -112,7 +110,7 @@ and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab]]>
 				<textFieldExpression><![CDATA["No. RM : "+$F{no_rkm_medis}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement mode="Opaque" x="12" y="158" width="15" height="145" uuid="c67a1c3a-d986-4f35-9ff2-dfb6917e98ae"/>
+				<reportElement mode="Opaque" x="9" y="168" width="15" height="135" uuid="c67a1c3a-d986-4f35-9ff2-dfb6917e98ae"/>
 				<textElement verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
@@ -120,7 +118,7 @@ and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab]]>
 				<textFieldExpression><![CDATA[$F{nm_pasien}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement mode="Opaque" x="38" y="207" width="13" height="96" uuid="4ccb836a-37c3-44a0-a17c-96622659fe41"/>
+				<reportElement mode="Opaque" x="36" y="207" width="13" height="96" uuid="4ccb836a-37c3-44a0-a17c-96622659fe41"/>
 				<textElement verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -144,7 +142,7 @@ and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab]]>
 				<textFieldExpression><![CDATA["Alamat : "+$F{alamat}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement mode="Opaque" x="12" y="40" width="15" height="117" uuid="1b54132d-9625-4888-b520-b5d2a6386fcb"/>
+				<reportElement mode="Opaque" x="9" y="50" width="15" height="117" uuid="1b54132d-9625-4888-b520-b5d2a6386fcb"/>
 				<textElement verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
@@ -152,28 +150,20 @@ and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab]]>
 				<textFieldExpression><![CDATA[$F{no_ktp}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement mode="Opaque" x="26" y="70" width="15" height="88" uuid="94882a31-8c9b-4e28-ac11-5ef95cc7813a"/>
+				<reportElement mode="Opaque" x="23" y="50" width="15" height="117" uuid="94882a31-8c9b-4e28-ac11-5ef95cc7813a"/>
 				<textElement verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{png_jawab}+" "+$P{kls_bpjs}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{png_jawab}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement mode="Opaque" x="39" y="40" width="15" height="118" uuid="dc5df5b7-3914-4a54-98ef-d1c44893f0db"/>
+				<reportElement mode="Opaque" x="37" y="50" width="15" height="116" uuid="dc5df5b7-3914-4a54-98ef-d1c44893f0db"/>
 				<textElement verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{kamar2}.substring(8)]]></textFieldExpression>
-			</textField>
-			<textField pattern="">
-				<reportElement mode="Opaque" x="26" y="170" width="15" height="40" uuid="f16bfded-bff5-4745-8114-2b0bb8e2d8ce"/>
-				<textElement verticalAlignment="Middle" rotation="Left">
-					<font fontName="Tahoma" size="8" isBold="true"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA["("+$F{jk}+")"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{kamar}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

@@ -287,6 +287,7 @@ public class DlgRanapGabung extends javax.swing.JDialog {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
         MnKwitansiDeposit = new javax.swing.JMenuItem();
+        MnCetakGelangPasien = new javax.swing.JMenuItem();
         NoRawatGabung = new widget.TextBox();
         WindowPindahranapGabung = new javax.swing.JDialog();
         internalFrame2 = new widget.InternalFrame();
@@ -365,6 +366,20 @@ public class DlgRanapGabung extends javax.swing.JDialog {
             }
         });
         jPopupMenu1.add(MnKwitansiDeposit);
+
+        MnCetakGelangPasien.setBackground(new java.awt.Color(255, 255, 254));
+        MnCetakGelangPasien.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakGelangPasien.setForeground(java.awt.Color.darkGray);
+        MnCetakGelangPasien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnCetakGelangPasien.setText("Cetak Gelang Pasien");
+        MnCetakGelangPasien.setName("MnCetakGelangPasien"); // NOI18N
+        MnCetakGelangPasien.setPreferredSize(new java.awt.Dimension(250, 28));
+        MnCetakGelangPasien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnCetakGelangPasienActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(MnCetakGelangPasien);
 
         NoRawatGabung.setEditable(false);
         NoRawatGabung.setHighlighter(null);
@@ -597,7 +612,6 @@ public class DlgRanapGabung extends javax.swing.JDialog {
         BtnPindahKamar.setMnemonic('H');
         BtnPindahKamar.setText("Pindah Kamar");
         BtnPindahKamar.setToolTipText("Alt+H");
-        BtnPindahKamar.setActionCommand("Pindah Kamar");
         BtnPindahKamar.setName("BtnPindahKamar"); // NOI18N
         BtnPindahKamar.setPreferredSize(new java.awt.Dimension(160, 30));
         BtnPindahKamar.addActionListener(new java.awt.event.ActionListener() {
@@ -1257,6 +1271,38 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         kamar.setVisible(true);
     }//GEN-LAST:event_btnKamarActionPerformed
 
+    private void MnCetakGelangPasienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnCetakGelangPasienActionPerformed
+        if (tabMode.getRowCount() == 0 || TNoRMBayi.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, data kamar inap pasien sudah habis...!!!!");
+            //BtnIn.requestFocus();
+        } else {
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                Map<String, Object> param = new HashMap<>();
+                param.put("namars", akses.getnamars());
+                param.put("alamatrs", akses.getalamatrs());
+                param.put("kotars", akses.getkabupatenrs());
+                param.put("propinsirs", akses.getpropinsirs());
+                param.put("kontakrs", akses.getkontakrs());
+                param.put("emailrs", akses.getemailrs());
+                param.put("tanggal", DTPTgl.getDate().toString());
+                param.put("kamar", TKdKamar.getText() + " " + Sequel.cariIsi("select bangsal.nm_bangsal from kamar inner join bangsal on bangsal.kd_bangsal = kamar.kd_bangsal where kamar.kd_kamar = ?", TKdKamar.getText()));
+                param.put("kamar2", Sequel.cariIsi("select bangsal.nm_bangsal from kamar inner join bangsal on bangsal.kd_bangsal = kamar.kd_bangsal where kamar.kd_kamar = ?", TKdKamar.getText()));
+                param.put("kls_bpjs", Sequel.cariIsi("select bsep.klsrawat FROM bridging_sep bsep WHERE bsep.no_rawat =? ", TNoRWIbu.getText()));
+                param.put("penjab", Sequel.cariIsi("select penjab.png_jawab from reg_periksa inner join penjab on penjab.kd_pj = reg_periksa.kd_pj where reg_periksa.no_rawat = ?", tbObat.getValueAt(tbObat.getSelectedRow(),1).toString()));
+                param.put("dpjp", Sequel.cariIsi("select dokter.nm_dokter from dpjp_ranap inner join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter where dpjp_ranap.no_rawat=? ", tbObat.getValueAt(tbObat.getSelectedRow(),1).toString()));
+                param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
+                Valid.MyReportqry("rptGelangPasienDewasa.jasper", "report", "::[ Gelang Pasien ]::", "select pasien.no_rkm_medis, pasien.nm_pasien, pasien.no_ktp, pasien.jk, "
+                    + "pasien.tmp_lahir, pasien.tgl_lahir,pasien.nm_ibu, concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat, pasien.gol_darah, pasien.pekerjaan,"
+                    + "pasien.stts_nikah,pasien.agama,pasien.tgl_daftar,pasien.no_tlp,pasien.umur,"
+                    + "pasien.pnd, pasien.keluarga, pasien.namakeluarga,penjab.png_jawab,pasien.pekerjaanpj,"
+                    + "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamatpj from pasien "
+                    + "inner join kelurahan inner join kecamatan inner join kabupaten "
+                    + "inner join penjab on pasien.kd_pj=penjab.kd_pj and pasien.kd_kel=kelurahan.kd_kel "
+                    + "and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab  where pasien.no_rkm_medis='" + tbObat.getValueAt(tbObat.getSelectedRow(),2).toString() + "' ", param);
+                this.setCursor(Cursor.getDefaultCursor());
+        }
+    }//GEN-LAST:event_MnCetakGelangPasienActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1297,6 +1343,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox KdKamar;
     private widget.TextBox KodeDPJP;
     private widget.Label LCount;
+    private javax.swing.JMenuItem MnCetakGelangPasien;
     private javax.swing.JMenuItem MnKwitansiDeposit;
     private widget.TextBox NamaDPJP;
     private widget.TextBox NmBangsal;
