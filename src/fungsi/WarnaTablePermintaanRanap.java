@@ -25,7 +25,7 @@ public class WarnaTablePermintaanRanap extends DefaultTableCellRenderer {
         }
         
         if (column == 0) {
-            Object cellValue = table.getValueAt(row, 20); // Get the value of the cell in column 25
+            Object cellValue = table.getValueAt(row, 19); // Get the value of the cell in column 25
             Object kdpj = table.getValueAt(row, 6);
             if (cellValue != null) {
                 String cellString = cellValue.toString(); // Convert the value to a string
