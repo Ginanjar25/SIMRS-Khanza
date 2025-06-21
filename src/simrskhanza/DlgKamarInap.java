@@ -18309,13 +18309,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     }
                     rowPointer--;
                 }
-
                 String rm_bayi = tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 23).toString().substring(0, 6);
-                System.out.println(noRawatIbu);
-                System.out.println(rm_bayi);
-
                 String norawat_bayi_kembar = Sequel.cariIsi("select no_rawat2 from ranap_gabung where ranap_gabung.no_rm_bayi = '" + rm_bayi + "' and ranap_gabung.no_rawat=?", noRawatIbu);
-                System.out.println(norawat_bayi_kembar);
                 norawatbayikembar = norawat_bayi_kembar;
                 //tbKamIn.setValueAt(norawat_bayi_kembar,tbKamIn.getSelectedRow(),0);
             }

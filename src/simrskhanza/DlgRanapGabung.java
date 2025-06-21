@@ -318,6 +318,7 @@ public class DlgRanapGabung extends javax.swing.JDialog {
         jPopupMenu1 = new javax.swing.JPopupMenu();
         MnKwitansiDeposit = new javax.swing.JMenuItem();
         MnCetakGelangPasien = new javax.swing.JMenuItem();
+        MnCetakBarcodeRM = new javax.swing.JMenuItem();
         NoRawatGabung = new widget.TextBox();
         WindowPindahranapGabung = new javax.swing.JDialog();
         internalFrame2 = new widget.InternalFrame();
@@ -421,6 +422,20 @@ public class DlgRanapGabung extends javax.swing.JDialog {
             }
         });
         jPopupMenu1.add(MnCetakGelangPasien);
+
+        MnCetakBarcodeRM.setBackground(new java.awt.Color(255, 255, 254));
+        MnCetakBarcodeRM.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakBarcodeRM.setForeground(java.awt.Color.darkGray);
+        MnCetakBarcodeRM.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnCetakBarcodeRM.setText("Cetak Label Pasien");
+        MnCetakBarcodeRM.setName("MnCetakBarcodeRM"); // NOI18N
+        MnCetakBarcodeRM.setPreferredSize(new java.awt.Dimension(250, 28));
+        MnCetakBarcodeRM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnCetakBarcodeRMActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(MnCetakBarcodeRM);
 
         NoRawatGabung.setEditable(false);
         NoRawatGabung.setHighlighter(null);
@@ -794,7 +809,7 @@ public class DlgRanapGabung extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-06-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-06-2025" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -808,7 +823,7 @@ public class DlgRanapGabung extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-06-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-06-2025" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -891,7 +906,7 @@ public class DlgRanapGabung extends javax.swing.JDialog {
 
         DTPTgl.setEditable(false);
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-06-2025" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-06-2025" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -1465,6 +1480,25 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         // TODO add your handling code here:
     }//GEN-LAST:event_TNmDokterPindahKamarActionPerformed
 
+    private void MnCetakBarcodeRMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnCetakBarcodeRMActionPerformed
+        if (TNoRMBayi.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu pasien...!!!");
+        } else {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            Map<String, Object> param = new HashMap<>();
+            param.put("namars", akses.getnamars());
+            param.put("alamatrs", akses.getalamatrs());
+            param.put("kotars", akses.getkabupatenrs());
+            param.put("propinsirs", akses.getpropinsirs());
+            param.put("kontakrs", akses.getkontakrs());
+            param.put("emailrs", akses.getemailrs());
+            param.put("no_rawat", tbObat.getValueAt(tbObat.getSelectedRow(),1).toString());
+            param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
+            Valid.MyReport("rptBarcodeRawat4_2.jasper", param, "::[ Label ]::");
+            this.setCursor(Cursor.getDefaultCursor());           
+        }
+    }//GEN-LAST:event_MnCetakBarcodeRMActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1505,6 +1539,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox KdKamar;
     private widget.TextBox KodeDPJP;
     private widget.Label LCount;
+    private javax.swing.JMenuItem MnCetakBarcodeRM;
     private javax.swing.JMenuItem MnCetakGelangPasien;
     private javax.swing.JMenuItem MnKwitansiDeposit;
     private widget.TextBox NamaDPJP;

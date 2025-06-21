@@ -12736,7 +12736,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             TStatus.getText(),kdpnj.getText(),umur,sttsumur,TNoRw.getText()
             })==true){
             
-                Sequel.meghapus("readmisi_igd", "no_rawat", TNoRw.getText());
+                Sequel.meghapus("side_db.readmisi_igd", "no_rawat", TNoRw.getText());
                 if (kdpnj.getText().equals("BPJ")) {
                     if (Sequel.cariInteger("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.tgl_registrasi BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) "
                             + "AND CURDATE() AND rp.kd_poli = 'IGDK' AND rp.tgl_registrasi !=CURDATE() AND rp.kd_pj = 'BPJ' AND rp.no_rkm_medis =? and rp.stts !='Batal' ", TNoRM.getText()) > 0) {
