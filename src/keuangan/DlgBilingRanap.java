@@ -78,12 +78,12 @@ public class DlgBilingRanap extends javax.swing.JDialog {
             pskamarin,psbiayasekali,psbiayaharian,psreseppulang,pstambahanbiaya,pspotonganbiaya,pstemporary,
             psralandokter,psralandrpr,psranapdrpr,psranapdokter,
             psoperasi,psralanperawat,psranapperawat,psbayikembar,
-            psperiksalab,pssudahmasuk,pskategori,psperiksarad,psanak,psnota,psservice;
+            psperiksalab,pssudahmasuk,pskategori,psperiksarad,psanak,psnota,psservice,psrincianbilling;
     private ResultSet rscekbilling,rscarirm,rscaripasien,rsreg,rskamar,rscarialamat,rsdetaillab,
             rsdokterranap,rsranapdrpr,rsdokterralan,rscariobat,rsobatlangsung,rsobatoperasi,rsreturobat,
             rskamarin,rsbiayasekali,rsbiayaharian,rsreseppulang,rstambahanbiaya,rspotonganbiaya,
             rsralandokter,rsralandrpr,rsranapdokter,rsoperasi,rsralanperawat,rsranapperawat,rsperiksalab,rskategori,
-            rsperiksarad,rsanak,rstamkur,rsrekening,rsservice,rsakunbayar,rsakunpiutang,rsbayikembar;
+            rsperiksarad,rsanak,rstamkur,rsrekening,rsservice,rsakunbayar,rsakunpiutang,rsbayikembar,rsrincianbilling;
     private String biaya="",tambahan="",totals="",norawatbayi="",centangdokterranap="",kd_pj="",
             rinciandokterranap="",rincianoperasi="",notaranap="",tampilkan_administrasi_di_billingranap="",
             Tindakan_Ranap="",Laborat_Ranap="",Radiologi_Ranap="",Obat_Ranap="",Registrasi_Ranap="",Persediaan_Obat_Rawat_Inap="",
@@ -133,10 +133,11 @@ public class DlgBilingRanap extends javax.swing.JDialog {
                     "sum(rawat_jl_dr.bhp) as totalbhp,"+
                     "(sum(rawat_jl_dr.material)+sum(rawat_jl_dr.menejemen)+sum(rawat_jl_dr.kso)) as totalmaterial,"+
                     "rawat_jl_dr.tarif_tindakandr,"+
-                    "sum(rawat_jl_dr.tarif_tindakandr) as totaltarif_tindakandr  "+
+                    "sum(rawat_jl_dr.tarif_tindakandr) as totaltarif_tindakandr, GROUP_CONCAT(dokter.nm_dokter SEPARATOR '; ') AS nama_dokter  "+
                     "from rawat_jl_dr inner join jns_perawatan inner join kategori_perawatan "+
                     "on rawat_jl_dr.kd_jenis_prw=jns_perawatan.kd_jenis_prw and "+
-                    "jns_perawatan.kd_kategori=kategori_perawatan.kd_kategori where "+
+                    "jns_perawatan.kd_kategori=kategori_perawatan.kd_kategori " +
+                    "INNER JOIN dokter ON rawat_jl_dr.kd_dokter = dokter.kd_dokter where " +
                     "rawat_jl_dr.no_rawat=? and kategori_perawatan.kd_kategori=? group by rawat_jl_dr.kd_jenis_prw",
             sqlpsralandrpr="select jns_perawatan.nm_perawatan,rawat_jl_drpr.biaya_rawat as total_byrdr,count(rawat_jl_drpr.kd_jenis_prw) as jml, "+
                     "sum(rawat_jl_drpr.biaya_rawat) as biaya,"+
@@ -154,10 +155,11 @@ public class DlgBilingRanap extends javax.swing.JDialog {
                     "sum(rawat_inap_dr.bhp) as totalbhp,"+
                     "(sum(rawat_inap_dr.material)+sum(rawat_inap_dr.menejemen)+sum(rawat_inap_dr.kso)) as totalmaterial,"+
                     "rawat_inap_dr.tarif_tindakandr,"+
-                    "sum(rawat_inap_dr.tarif_tindakandr) as totaltarif_tindakandr "+
+                    "sum(rawat_inap_dr.tarif_tindakandr) as totaltarif_tindakandr,GROUP_CONCAT(dokter.nm_dokter SEPARATOR '; ') AS nama_dokter "+
                     "from rawat_inap_dr inner join jns_perawatan_inap inner join kategori_perawatan "+
                     "on rawat_inap_dr.kd_jenis_prw=jns_perawatan_inap.kd_jenis_prw and "+
-                    "jns_perawatan_inap.kd_kategori=kategori_perawatan.kd_kategori where "+
+                    "jns_perawatan_inap.kd_kategori=kategori_perawatan.kd_kategori " +
+                    "INNER JOIN dokter ON rawat_inap_dr.kd_dokter = dokter.kd_dokter where "+
                     "rawat_inap_dr.no_rawat=? and kategori_perawatan.kd_kategori=? group by rawat_inap_dr.kd_jenis_prw",
             sqlpsranapdrpr="select jns_perawatan_inap.nm_perawatan,rawat_inap_drpr.biaya_rawat as total_byrdr,count(rawat_inap_drpr.kd_jenis_prw) as jml, "+
                     "sum(rawat_inap_drpr.biaya_rawat) as biaya,"+
@@ -202,13 +204,14 @@ public class DlgBilingRanap extends javax.swing.JDialog {
             sqlpsnota="insert into nota_inap values(?,?,?,?,?)",
             sqlpsbiling="insert into billing values(?,?,?,?,?,?,?,?,?,?,?)",
             sqlpssudahmasuk="select billing.no,billing.nm_perawatan, if(billing.biaya<>0,billing.biaya,null) as satu, if(billing.jumlah<>0,billing.jumlah,null) as dua,"+
-                            "if(billing.tambahan<>0,billing.tambahan,null) as tiga, if(billing.totalbiaya<>0,billing.totalbiaya,null) as empat,billing.pemisah,billing.status "+
-                            "from billing where billing.no_rawat=?  order by billing.noindex",
+                            "if(billing.tambahan<>0,billing.tambahan,null) as tiga, if(billing.totalbiaya<>0,billing.totalbiaya,null) as empat,billing.pemisah,billing.status,detail_billing.rincian "+
+                            "from billing LEFT JOIN detail_billing ON detail_billing.no_rawat = billing.no_rawat AND detail_billing.noindex = billing.noindex where billing.no_rawat=?  order by billing.noindex",
             sqlpskategori="SELECT kategori_perawatan.kd_kategori, kategori_perawatan.nm_kategori FROM kategori_perawatan",
             sqlpstamkur="select temporary_tambahan_potongan.biaya from temporary_tambahan_potongan where temporary_tambahan_potongan.no_rawat=? and temporary_tambahan_potongan.nama_tambahan=? and temporary_tambahan_potongan.status=?",
             sqlpsanak="select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2 from reg_periksa inner join pasien inner join ranap_gabung on "+
                     "pasien.no_rkm_medis=reg_periksa.no_rkm_medis and ranap_gabung.no_rawat2=reg_periksa.no_rawat where ranap_gabung.no_rawat=?",
             sqlpstemporary="insert into temporary_bayar_ranap values(?,?,?,?,?,?,?,?,?,'','','','','','','','','')",
+            sqlpsrincianbiling="insert into detail_billing values (?,?,?)",
             Host_to_Host_Bank_Jateng="",Akun_BRI_API="",Host_to_Host_Bank_Papua="",Host_to_Host_Bank_Jabar="",KodeBankJabar="",PPN_Keluaran="",Host_to_Host_Bank_Mandiri="";    
     private double ttl=0,y=0,subttl=0,lab,ttlobat,ttlretur,ppnobat,piutang=0,kekurangan=0,itembayar=0,itempiutang=0, 
             tamkur=0,detailjs=0,detailbhp=0,besarppn=0,tagihanppn=0,bayar=0,total=0,uangdeposit=0,sisadeposit=0,
@@ -242,7 +245,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         //this.setLocation(8,1);
         //setSize(891,640);
 
-        Object[] rowRwJlDr={"Pilih","Keterangan","Tagihan/Tindakan/Terapi","","Biaya","Jumlah","Tambahan","Total Biaya",""};
+        Object[] rowRwJlDr={"Pilih","Keterangan","Tagihan/Tindakan/Terapi","","Biaya","Jumlah","Tambahan","Total Biaya","", "Rincian"};
         tabModeRwJlDr=new DefaultTableModel(null,rowRwJlDr){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){
                     boolean a = false;
@@ -255,7 +258,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
               Class[] types = new Class[] {
                 java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                 java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, 
-                java.lang.Object.class
+                java.lang.Object.class, java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -268,7 +271,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         tbBilling.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbBilling.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < 10; i++) {
             TableColumn column = tbBilling.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(40);
@@ -289,6 +292,9 @@ public class DlgBilingRanap extends javax.swing.JDialog {
             }else if(i==8){           
                 column.setMinWidth(0);     
                 column.setMaxWidth(0);
+                
+            }else if(i==9){
+                column.setPreferredWidth(160);
             }
         }
 
@@ -6054,11 +6060,11 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                                     detailbhp=detailbhp+rsralandokter.getDouble("totalbhp");
                                     detailjs=detailjs+rsralandokter.getDouble("totalmaterial");
                                     tabModeRwJlDr.addRow(new Object[]{true,"",rsralandokter.getString("nm_perawatan"),":",
-                                                rsralandokter.getDouble("tarif_tindakandr"),rsralandokter.getDouble("jml"),tamkur,(rsralandokter.getDouble("totaltarif_tindakandr")+tamkur),"Ralan Dokter"});
+                                                rsralandokter.getDouble("tarif_tindakandr"),rsralandokter.getDouble("jml"),tamkur,(rsralandokter.getDouble("totaltarif_tindakandr")+tamkur),"Ralan Dokter", rsralandokter.getString("nama_dokter")});
                                     subttl=subttl+rsralandokter.getDouble("totaltarif_tindakandr")+tamkur; 
                                 }else{
                                     tabModeRwJlDr.addRow(new Object[]{true,"                           ",rsralandokter.getString("nm_perawatan"),":",
-                                                rsralandokter.getDouble("total_byrdr"),rsralandokter.getDouble("jml"),tamkur,(tamkur+rsralandokter.getDouble("biaya")),"Ralan Dokter"});
+                                                rsralandokter.getDouble("total_byrdr"),rsralandokter.getDouble("jml"),tamkur,(tamkur+rsralandokter.getDouble("biaya")),"Ralan Dokter", rsralandokter.getString("nama_dokter")});
                                     subttl=subttl+rsralandokter.getDouble("biaya")+tamkur;
                                 }                        
                             }
@@ -6161,11 +6167,11 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                                     detailbhp=detailbhp+rsranapdokter.getDouble("totalbhp");
                                     detailjs=detailjs+rsranapdokter.getDouble("totalmaterial");
                                     tabModeRwJlDr.addRow(new Object[]{true,"",rsranapdokter.getString("nm_perawatan"),":",
-                                                rsranapdokter.getDouble("tarif_tindakandr"),rsranapdokter.getDouble("jml"),tamkur,(rsranapdokter.getDouble("totaltarif_tindakandr")+tamkur),"Ranap Dokter"});
+                                                rsranapdokter.getDouble("tarif_tindakandr"),rsranapdokter.getDouble("jml"),tamkur,(rsranapdokter.getDouble("totaltarif_tindakandr")+tamkur),"Ranap Dokter", rsranapdokter.getString("nama_dokter")});
                                     subttl=subttl+rsranapdokter.getDouble("totaltarif_tindakandr")+tamkur; 
                                 }else{
                                     tabModeRwJlDr.addRow(new Object[]{true,"                           ",rsranapdokter.getString("nm_perawatan"),":",
-                                                       rsranapdokter.getDouble("total_byrdr"),rsranapdokter.getDouble("jml"),tamkur,(tamkur+rsranapdokter.getDouble("biaya")),"Ranap Dokter"});
+                                                       rsranapdokter.getDouble("total_byrdr"),rsranapdokter.getDouble("jml"),tamkur,(tamkur+rsranapdokter.getDouble("biaya")),"Ranap Dokter", rsranapdokter.getString("nama_dokter")});
                                     subttl=subttl+rsranapdokter.getDouble("biaya")+tamkur;
                                 }                        
                             }
@@ -7403,6 +7409,22 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     }   
                     psbiling.setString(11,tbBilling.getValueAt(i,8).toString());
                     psbiling.executeUpdate();
+                    
+                    // ADD DETAIL RINCIAN BILLING
+                    psrincianbilling = koneksi.prepareStatement(sqlpsrincianbiling);
+                    try {
+                        psrincianbilling.setInt(1, i);
+                        psrincianbilling.setString(2, TNoRw.getText());
+                        psrincianbilling.setString(3, tbBilling.getValueAt(i, 9) != null ? tbBilling.getValueAt(i, 9).toString() : "");
+                        psrincianbilling.executeUpdate();
+                    } catch (Exception e) {
+                        System.out.println("Notifikasi : " + e);
+                    } finally {
+                        if (psrincianbilling != null) {
+                            psrincianbilling.close();
+                        }
+                    }
+                    //END DETAIL RINCIAN BILLING
                 } catch (Exception e) {
                     sukses=false;
                     System.out.println("Notifikasi : "+e);

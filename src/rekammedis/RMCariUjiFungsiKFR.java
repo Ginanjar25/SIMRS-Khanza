@@ -10,7 +10,7 @@
  */
 package rekammedis;
 
-import fungsi.WarnaTable;
+import fungsi.WarnaTableHistory;
 import fungsi.batasInput;
 import fungsi.koneksiDB;
 import fungsi.sekuel;
@@ -131,7 +131,7 @@ public final class RMCariUjiFungsiKFR extends javax.swing.JDialog {
                 column.setPreferredWidth(250);
             }
         }
-        tbPemeriksaan.setDefaultRenderer(Object.class, new WarnaTable());
+        tbPemeriksaan.setDefaultRenderer(Object.class, new WarnaTableHistory());
 
         TCari.setDocument(new batasInput((byte) 100).getKata(TCari));
         if (koneksiDB.CARICEPAT().equals("aktif")) {

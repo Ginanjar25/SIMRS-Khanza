@@ -89,16 +89,14 @@ public class DlgBilingRalan extends javax.swing.JDialog {
             sqlpscaripoli2="select poliklinik.nm_poli from rujukan_internal_poli "+
                             "inner join poliklinik on rujukan_internal_poli.kd_poli=poliklinik.kd_poli "+
                             "where rujukan_internal_poli.no_rawat=?",
-            sqlpscariralandokter="select jns_perawatan.nm_perawatan,rawat_jl_dr.biaya_rawat as total_byrdr,"+
-                    "count(rawat_jl_dr.kd_jenis_prw) as jml, "+
-                    "sum(rawat_jl_dr.biaya_rawat) as biaya,"+
-                    "sum(rawat_jl_dr.bhp) as totalbhp,"+
-                    "(sum(rawat_jl_dr.material)+sum(rawat_jl_dr.menejemen)+sum(rawat_jl_dr.kso)) as totalmaterial,"+
-                    "rawat_jl_dr.tarif_tindakandr,"+
-                    "sum(rawat_jl_dr.tarif_tindakandr) as totaltarif_tindakandr "+
-                    "from rawat_jl_dr inner join jns_perawatan "+
-                    "on rawat_jl_dr.kd_jenis_prw=jns_perawatan.kd_jenis_prw where "+
-                    "rawat_jl_dr.no_rawat=? group by jns_perawatan.nm_perawatan",
+            sqlpscariralandokter="SELECT jns_perawatan.nm_perawatan,rawat_jl_dr.biaya_rawat AS total_byrdr, COUNT(rawat_jl_dr.kd_jenis_prw) AS jml, " +
+                            "SUM(rawat_jl_dr.biaya_rawat) AS biaya, SUM(rawat_jl_dr.bhp) AS totalbhp,(SUM(rawat_jl_dr.material) + SUM(rawat_jl_dr.menejemen) + SUM(rawat_jl_dr.kso)) AS totalmaterial, " +
+                            "rawat_jl_dr.tarif_tindakandr,SUM(rawat_jl_dr.tarif_tindakandr) AS totaltarif_tindakandr,GROUP_CONCAT(dokter.nm_dokter SEPARATOR '; ') AS nama_dokter " +
+                            "FROM rawat_jl_dr " +
+                            "INNER JOIN jns_perawatan ON rawat_jl_dr.kd_jenis_prw = jns_perawatan.kd_jenis_prw " +
+                            "INNER JOIN dokter ON rawat_jl_dr.kd_dokter = dokter.kd_dokter " +
+                            "WHERE rawat_jl_dr.no_rawat = ?" +
+                            "GROUP BY jns_perawatan.nm_perawatan",
             sqlpscariralanperawat="select jns_perawatan.nm_perawatan,rawat_jl_pr.biaya_rawat as total_byrpr,"+
                     "count(rawat_jl_pr.kd_jenis_prw) as jml, "+
                     "sum(rawat_jl_pr.biaya_rawat) as biaya, "+
@@ -140,9 +138,10 @@ public class DlgBilingRalan extends javax.swing.JDialog {
             sqlpsbiling="insert into billing values(?,?,?,?,?,?,?,?,?,?,?)",
             sqlpstemporary="insert into temporary_bayar_ralan values(?,?,?,?,?,?,?,?,?,?,'','','','','','','','')",
             sqlpspotongan="select pengurangan_biaya.nama_pengurangan,pengurangan_biaya.besar_pengurangan from pengurangan_biaya where pengurangan_biaya.no_rawat=?",
-            sqlpsbilling="select billing.no,billing.nm_perawatan, if(billing.biaya<>0,billing.biaya,null) as satu, if(billing.jumlah<>0,billing.jumlah,null) as dua,"+
-                        "if(billing.tambahan<>0,billing.tambahan,null) as tiga, if(billing.totalbiaya<>0,billing.totalbiaya,null) as empat,billing.pemisah,billing.status "+
-                        "from billing where billing.no_rawat=? order by billing.noindex",
+            sqlpsbilling="select billing.no,billing.nm_perawatan, if(billing.biaya<>0,billing.biaya,null) as satu, if(billing.jumlah<>0,billing.jumlah,null) as dua," +
+                         "if(billing.tambahan<>0,billing.tambahan,null) as tiga, if(billing.totalbiaya<>0,billing.totalbiaya,null) as empat,billing.pemisah,billing.status, detail_billing.rincian " +
+                         "from billing LEFT JOIN detail_billing ON detail_billing.no_rawat = billing.no_rawat AND detail_billing.noindex = billing.noindex " +
+                         "where billing.no_rawat=? order by billing.noindex",
             sqlpscariradiologi="select jns_perawatan_radiologi.nm_perawatan, count(periksa_radiologi.kd_jenis_prw) as jml,periksa_radiologi.biaya as biaya, "+
                     "sum(periksa_radiologi.biaya) as total,jns_perawatan_radiologi.kd_jenis_prw,sum(periksa_radiologi.tarif_perujuk+periksa_radiologi.tarif_tindakan_dokter) as totaldokter, "+
                     "sum(periksa_radiologi.tarif_tindakan_petugas) as totalpetugas,sum(periksa_radiologi.kso) as totalkso,sum(periksa_radiologi.bhp) as totalbhp "+
@@ -170,6 +169,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
                     "from obatbhp_ok inner join beri_obat_operasi "+
                     "on beri_obat_operasi.kd_obat=obatbhp_ok.kd_obat where "+
                     "beri_obat_operasi.no_rawat=? group by obatbhp_ok.nm_obat",
+            sqlpsrincianbiling="insert into detail_billing values (?,?,?)",
             sqlpstamkur="select temporary_tambahan_potongan.biaya from temporary_tambahan_potongan where temporary_tambahan_potongan.no_rawat=? and temporary_tambahan_potongan.nama_tambahan=? and temporary_tambahan_potongan.status=?",
             Host_to_Host_Bank_Jateng="",Akun_BRI_API="",Host_to_Host_Bank_Papua="",Host_to_Host_Bank_Jabar="",Host_to_Host_Bank_Mandiri="",KodeBankJabar="",PPN_Keluaran="";
     private String[] Nama_Akun_Piutang,Kode_Rek_Piutang,Kd_PJ,Besar_Piutang,Jatuh_Tempo,
@@ -178,11 +178,11 @@ public class DlgBilingRalan extends javax.swing.JDialog {
     private PreparedStatement pscaripoli2,pscekbilling,pscarirm,pscaripasien,psreg,pscaripoli,pscarialamat,psrekening,
             psdokterralan,psdokterralan2,pscariralandokter,pscariralanperawat,pscariralandrpr,pscarilab,pscariobat,psdetaillab,
             psobatlangsung,pstambahan,psbiling,pstemporary,pspotongan,psbilling,pscariradiologi,
-            pstamkur,psnota,psoperasi,psobatoperasi,psakunbayar,psakunpiutang;
+            pstamkur,psnota,psoperasi,psobatoperasi,psakunbayar,psakunpiutang, psrincianbilling;
     private ResultSet rscekbilling,rscarirm,rscaripasien,rsreg,rscaripoli,rscarialamat,rsrekening,rsobatoperasi,
             rsdokterralan,rsdokterralan2,rscariralandokter,rscariralanperawat,rscariralandrpr,rscarilab,rscariobat,rsdetaillab,
             rsobatlangsung,rstambahan,rspotongan,rsbilling,rscariradiologi,rstamkur,rsoperasi,
-            rsakunbayar,rsakunpiutang,rscaripoli2;
+            rsakunbayar,rsakunpiutang,rscaripoli2, rsrincianbilling;
     private WarnaTable2 warna=new WarnaTable2();
     private WarnaTable2 warna2=new WarnaTable2();
     private File file;
@@ -201,7 +201,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         initComponents();
         
         tabModeRwJlDr=new DefaultTableModel(null,new Object[]{
-            "Pilih","Keterangan","Tagihan/Tindakan/Terapi","","Biaya","Jml","Tambahan","Total Biaya",""}){
+            "Pilih","Keterangan","Tagihan/Tindakan/Terapi","","Biaya","Jml","Tambahan","Total Biaya","", "Rincian"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){
                     boolean a = false;
                     if ((colIndex==6)||(colIndex==0)) {
@@ -213,7 +213,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
               Class[] types = new Class[] {
                 java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                 java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, 
-                java.lang.Object.class
+                java.lang.Object.class, java.lang.Object.class, 
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -226,7 +226,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         tbBilling.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbBilling.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         
-        for (i = 0; i < 9; i++) {
+        for (i = 0; i < 10; i++) {
             TableColumn column = tbBilling.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(30);
@@ -247,6 +247,8 @@ public class DlgBilingRalan extends javax.swing.JDialog {
             }else if(i==8){
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
+            }else if(i==9){
+                column.setPreferredWidth(160);
             }
         }
 
@@ -4383,7 +4385,9 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                                         rsbilling.getObject("dua"),
                                         rsbilling.getObject("tiga"),
                                         rsbilling.getObject("empat"),
-                                        rsbilling.getString("status")});  
+                                        rsbilling.getString("status"),
+                                        rsbilling.getString("rincian")
+                            });  
                         }
                     } 
                 } catch (Exception e) {
@@ -4696,11 +4700,11 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                         detailbhp=detailbhp+rscariralandokter.getDouble("totalbhp");
                         detailjs=detailjs+rscariralandokter.getDouble("totalmaterial");
                         tabModeRwJlDr.addRow(new Object[]{true,"",rscariralandokter.getString("nm_perawatan"),":",
-                                       rscariralandokter.getDouble("tarif_tindakandr"),rscariralandokter.getDouble("jml"),tamkur,(rscariralandokter.getDouble("totaltarif_tindakandr")+tamkur),"Ralan Dokter"});
+                                       rscariralandokter.getDouble("tarif_tindakandr"),rscariralandokter.getDouble("jml"),tamkur,(rscariralandokter.getDouble("totaltarif_tindakandr")+tamkur),"Ralan Dokter", rscariralandokter.getString("nama_dokter")});
                         subttl=subttl+rscariralandokter.getDouble("totaltarif_tindakandr")+tamkur; 
                     }else{
                         tabModeRwJlDr.addRow(new Object[]{true,"",rscariralandokter.getString("nm_perawatan"),":",
-                                       rscariralandokter.getDouble("total_byrdr"),rscariralandokter.getDouble("jml"),tamkur,(rscariralandokter.getDouble("biaya")+tamkur),"Ralan Dokter"});
+                                       rscariralandokter.getDouble("total_byrdr"),rscariralandokter.getDouble("jml"),tamkur,(rscariralandokter.getDouble("biaya")+tamkur),"Ralan Dokter",rscariralandokter.getString("nama_dokter")});
                         subttl=subttl+rscariralandokter.getDouble("biaya")+tamkur;
                     }                    
                 }
@@ -5902,6 +5906,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 sukses=true; 
                 for(i=0;i<tbBilling.getRowCount();i++){  
                     psbiling=koneksi.prepareStatement(sqlpsbiling);
+                    psrincianbilling=koneksi.prepareStatement(sqlpsrincianbiling);
                     try {
                         psbiling.setInt(1,i);
                         psbiling.setString(2,TNoRw.getText());
@@ -5950,6 +5955,21 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                         }                    
                         psbiling.setString(11,tbBilling.getValueAt(i,8).toString());
                         psbiling.executeUpdate();
+                        // ADD DETAIL RINCIAN BILLING
+                        psrincianbilling=koneksi.prepareStatement(sqlpsrincianbiling);
+                        try {
+                             psrincianbilling.setInt(1,i);
+                             psrincianbilling.setString(2,TNoRw.getText());
+                             psrincianbilling.setString(3, tbBilling.getValueAt(i, 9) != null ? tbBilling.getValueAt(i, 9).toString() : "");                             
+                             psrincianbilling.executeUpdate();
+                        } catch (Exception e) {
+                            System.out.println("Notifikasi : "+e);
+                        }finally{
+                            if(psrincianbilling != null){
+                               psrincianbilling.close();
+                            } 
+                        }
+                        //END DETAIL RINCIAN BILLING
                     } catch (Exception e) {
                         sukses=false;
                         System.out.println("Notifikasi : "+e);
