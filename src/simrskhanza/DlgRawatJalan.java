@@ -11307,21 +11307,19 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     "catatan_perawatan.catatan from pasien inner join reg_periksa on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join catatan_perawatan on catatan_perawatan.no_rawat=reg_periksa.no_rawat "+
                     "inner join dokter on catatan_perawatan.kd_dokter=dokter.kd_dokter "+
-                    "where catatan_perawatan.tanggal between ? and ? and reg_periksa.no_rkm_medis like ? "+
+                    "where reg_periksa.no_rkm_medis like ? "+
                     (TCari.getText().trim().equals("")?"":"and (catatan_perawatan.no_rawat like ? or reg_periksa.no_rkm_medis like ? or pasien.nm_pasien like ? or  "+
                     "catatan_perawatan.catatan like ? or catatan_perawatan.kd_dokter like ? or dokter.nm_dokter like ?) ")+
                     "order by catatan_perawatan.no_rawat,catatan_perawatan.tanggal,catatan_perawatan.jam desc"); 
             try{
-                ps4.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
-                ps4.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
-                ps4.setString(3,"%"+TCariPasien.getText()+"%");
+                ps4.setString(1,"%"+TCariPasien.getText()+"%");
                 if(!TCari.getText().trim().equals("")){
+                    ps4.setString(2,"%"+TCari.getText().trim()+"%");
+                    ps4.setString(3,"%"+TCari.getText().trim()+"%");
                     ps4.setString(4,"%"+TCari.getText().trim()+"%");
                     ps4.setString(5,"%"+TCari.getText().trim()+"%");
                     ps4.setString(6,"%"+TCari.getText().trim()+"%");
                     ps4.setString(7,"%"+TCari.getText().trim()+"%");
-                    ps4.setString(8,"%"+TCari.getText().trim()+"%");
-                    ps4.setString(9,"%"+TCari.getText().trim()+"%");
                 }
                 rs=ps4.executeQuery();
                 while(rs.next()){
