@@ -5956,7 +5956,6 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                         psbiling.setString(11,tbBilling.getValueAt(i,8).toString());
                         psbiling.executeUpdate();
                         // ADD DETAIL RINCIAN BILLING
-                        psrincianbilling=koneksi.prepareStatement(sqlpsrincianbiling);
                         try {
                              psrincianbilling.setInt(1,i);
                              psrincianbilling.setString(2,TNoRw.getText());

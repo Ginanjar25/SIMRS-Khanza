@@ -5027,7 +5027,9 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                                            rsreg.getObject("dua"),
                                            rsreg.getObject("tiga"),
                                            rsreg.getObject("empat"),
-                                           rsreg.getString("status")});  
+                                           rsreg.getString("status"),
+                                           rsreg.getString("rincian")
+                            });  
                         }
                     }
                 } catch (Exception e) {
@@ -7361,6 +7363,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             sukses=true;              
             for(i=0;i<tbBilling.getRowCount();i++){  
                 psbiling=koneksi.prepareStatement(sqlpsbiling);
+                psrincianbilling=koneksi.prepareStatement(sqlpsrincianbiling);
                 try {
                     psbiling.setInt(1,i);
                     psbiling.setString(2,TNoRw.getText());
@@ -7410,8 +7413,6 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     psbiling.setString(11,tbBilling.getValueAt(i,8).toString());
                     psbiling.executeUpdate();
                     
-                    // ADD DETAIL RINCIAN BILLING
-                    psrincianbilling = koneksi.prepareStatement(sqlpsrincianbiling);
                     try {
                         psrincianbilling.setInt(1, i);
                         psrincianbilling.setString(2, TNoRw.getText());
