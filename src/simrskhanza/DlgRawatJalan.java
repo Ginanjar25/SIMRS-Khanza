@@ -6575,15 +6575,18 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         dokter.dispose();
         pasien.dispose();
         try {
-            i=JOptionPane.showConfirmDialog(null, "Mau skalian update status pasien sudah diperiksa ????","Konfirmasi",JOptionPane.YES_NO_OPTION);
-            if(i==JOptionPane.YES_OPTION){
-                if(!Sequel.cariIsi("select stts from reg_periksa where no_rawat = ?", TNoRw.getText()).equals("Sudah")){
-                    Sequel.mengedit("antripoli","no_rawat = ?", "status=?, updated_at = now() ", 2, new String[]{"1", TNoRw.getText()});
-                }
-                if(Sequel.mengedittf("reg_periksa","no_rawat=?","stts=?",2,new String[]{"Sudah",TNoRw.getText()})==true){
-                    Sequel.menyimpan("mutasi_berkas","'"+TNoRw.getText()+"','Sudah Kembali',now(),'0000-00-00 00:00:00',now(),'0000-00-00 00:00:00','0000-00-00 00:00:00'","status='Sudah Kembali',kembali=now()","no_rawat='"+TNoRw.getText()+"'");
+            if (Sequel.cariIsi("select stts from reg_periksa where no_rawat = ?", TNoRw.getText()).equals("Belum")) {
+                i = JOptionPane.showConfirmDialog(null, "Mau skalian update status pasien sudah diperiksa ????", "Konfirmasi", JOptionPane.YES_NO_OPTION);
+                if (i == JOptionPane.YES_OPTION) {
+                    if (!Sequel.cariIsi("select stts from reg_periksa where no_rawat = ?", TNoRw.getText()).equals("Sudah")) {
+                        Sequel.mengedit("antripoli", "no_rawat = ?", "status=?, updated_at = now() ", 2, new String[]{"1", TNoRw.getText()});
+                    }
+                    if (Sequel.mengedittf("reg_periksa", "no_rawat=?", "stts=?", 2, new String[]{"Sudah", TNoRw.getText()}) == true) {
+                        Sequel.menyimpan("mutasi_berkas", "'" + TNoRw.getText() + "','Sudah Kembali',now(),'0000-00-00 00:00:00',now(),'0000-00-00 00:00:00','0000-00-00 00:00:00'", "status='Sudah Kembali',kembali=now()", "no_rawat='" + TNoRw.getText() + "'");
+                    }
                 }
             }
+
         } catch (Exception e) {
         }
         dispose();
@@ -6881,6 +6884,10 @@ private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                                         tbPemeriksaan.setValueAt(KdPeg.getText(),tbPemeriksaan.getSelectedRow(), 23);
                                         tbPemeriksaan.setValueAt(TPegawai.getText(),tbPemeriksaan.getSelectedRow(), 24);
                                         tbPemeriksaan.setValueAt(Jabatan.getText(),tbPemeriksaan.getSelectedRow(), 25);
+                                        
+                                        if(Sequel.cariIsi("select kd_sps from dokter where kd_dokter = ?", KdPeg.getText()).equals("S0017")){
+                                            editLayananUjiFungsiKFR();
+                                        }
                                         TSuhu.setText("");TTensi.setText("");TNadi.setText("");TRespirasi.setText("");
                                         TTinggi.setText("");TBerat.setText("");TGCS.setText("");TKeluhan.setText("");
                                         TPemeriksaan.setText("");TAlergi.setText("");LingkarPerut.setText("");
@@ -6932,6 +6939,9 @@ private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                                                     tbPemeriksaan.setValueAt(KdPeg.getText(),tbPemeriksaan.getSelectedRow(), 23);
                                                     tbPemeriksaan.setValueAt(TPegawai.getText(),tbPemeriksaan.getSelectedRow(), 24);
                                                     tbPemeriksaan.setValueAt(Jabatan.getText(),tbPemeriksaan.getSelectedRow(), 25);
+                                                    if(Sequel.cariIsi("select kd_sps from dokter where kd_dokter = ?", KdPeg.getText()).equals("S0017")){
+                                                        editLayananUjiFungsiKFR();
+                                                    }
                                                     TSuhu.setText("");TTensi.setText("");TNadi.setText("");TRespirasi.setText("");
                                                     TTinggi.setText("");TBerat.setText("");TGCS.setText("");TKeluhan.setText("");
                                                     TPemeriksaan.setText("");TAlergi.setText("");LingkarPerut.setText("");
@@ -13121,23 +13131,37 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         } 
     }
     
-    public void simpanLayananUjiFungsiKFR(){
-        String pemeriksaan_fungsi = TPemeriksaan.getText() + " Suhu:" + TSuhu.getText()+",Tensi:" + TTensi.getText()+",Nadi:" + TNadi.getText()
-                                     + ",RR:" + TRespirasi.getText()+",TB:"+TTinggi.getText()+",BB:"+TBerat.getText()+",SpO2:"+SpO2.getText() +",GCS:" + TGCS.getText() + ",Kesadaran:" + cmbKesadaran.getSelectedItem().toString();
-        if(Sequel.cariInteger("select count(no_rawat) from layanan_kfr where layanan_kfr.no_rawat = ?", TNoRw.getText()) == 0){
-          //Sequel.mengedit("layanan_kfr", "no_rawat='"+Sequel.cariIsi("select no_rawat from layanan_kfr where status = '1'")+"'", "status='0'");
-            Sequel.mengedit("layanan_kfr", "no_rawat='" + Sequel.cariIsi("SELECT layanan_kfr.no_rawat FROM layanan_kfr \n"
-                    + "INNER JOIN reg_periksa ON reg_periksa.no_rawat = layanan_kfr.no_rawat\n"
-                    + "WHERE reg_periksa.no_rkm_medis = ? AND layanan_kfr.`status`= '1'", TNoRM.getText()) + "'", "status='0'");
+    public void editLayananUjiFungsiKFR(){
+        String pemeriksaan_fungsi = TPemeriksaan.getText() + " Suhu:" + TSuhu.getText() + ",Tensi:" + TTensi.getText() + ",Nadi:" + TNadi.getText()
+                + ",RR:" + TRespirasi.getText() + ",TB:" + TTinggi.getText() + ",BB:" + TBerat.getText() + ",SpO2:" + SpO2.getText() + ",GCS:" + TGCS.getText() + ",Kesadaran:" + cmbKesadaran.getSelectedItem().toString();
+        
+        Sequel.mengedit("uji_fungsi_kfr", "no_rawat = '"+TNoRw.getText()+"'", "diagnosis_fungsional = '"+TPenilaian.getText()+"'");
+        Sequel.mengedit("layanan_kfr", "no_rawat = '"+TNoRw.getText()+"'", "anamnesa = '"+TKeluhan.getText()+"', pemeriksaan_fisik_fungsi='"+pemeriksaan_fungsi+"', diagnosa_medis='"+TPenilaian.getText()+"', "
+                            + "tata_laksana_kfr= '"+TindakLanjut.getText()+"', anjuran='"+TInstruksi.getText()+"', evaluasi='"+TEvaluasi.getText()+"'");
+    }
+    
+    public void simpanLayananUjiFungsiKFR() {
+        String pemeriksaan_fungsi = TPemeriksaan.getText() + " Suhu:" + TSuhu.getText() + ",Tensi:" + TTensi.getText() + ",Nadi:" + TNadi.getText()
+                + ",RR:" + TRespirasi.getText() + ",TB:" + TTinggi.getText() + ",BB:" + TBerat.getText() + ",SpO2:" + SpO2.getText() + ",GCS:" + TGCS.getText() + ",Kesadaran:" + cmbKesadaran.getSelectedItem().toString();
+
+        String last_kfr = Sequel.cariIsi("SELECT layanan_kfr.no_rawat FROM layanan_kfr \n"
+                + "INNER JOIN reg_periksa ON reg_periksa.no_rawat = layanan_kfr.no_rawat\n"
+                + "WHERE reg_periksa.no_rkm_medis = ? AND layanan_kfr.`status`= '1'", TNoRM.getText());
+        if (Sequel.cariInteger("select count(no_rawat) from layanan_kfr where layanan_kfr.no_rawat = ?", TNoRw.getText()) == 0) {
+            if (!last_kfr.equals(TNoRw.getText())) {
+                Sequel.mengedit("layanan_kfr", "no_rawat='" + Sequel.cariIsi("SELECT layanan_kfr.no_rawat FROM layanan_kfr \n"
+                        + "INNER JOIN reg_periksa ON reg_periksa.no_rawat = layanan_kfr.no_rawat\n"
+                        + "WHERE reg_periksa.no_rkm_medis = ? AND layanan_kfr.`status`= '1' and layanan_kfr.no_rawat = '" + last_kfr + "'", TNoRM.getText()) + "'", "status='0'");
+            }
             Sequel.menyimpan("uji_fungsi_kfr", "?,?,?,?,?,?,?,?", "Data", 8, new String[]{
-                TNoRw.getText(), Valid.SetTgl(DTPTgl.getSelectedItem()+"")+" "+cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),
-                "-",TPenilaian.getText(), "-", "-", "-", KdPeg.getText()
+                TNoRw.getText(), Valid.SetTgl(DTPTgl.getSelectedItem() + "") + " " + cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem(),
+                "-", TPenilaian.getText(), "-", "-", "-", KdPeg.getText()
             });
             Sequel.menyimpan("layanan_kfr", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Data", 16, new String[]{
-                TNoRw.getText(), Valid.SetTgl(DTPTgl.getSelectedItem()+"")+" "+cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),
-                TKeluhan.getText(), pemeriksaan_fungsi,TPenilaian.getText(), "-", "-", TindakLanjut.getText(),
+                TNoRw.getText(), Valid.SetTgl(DTPTgl.getSelectedItem() + "") + " " + cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem(),
+                TKeluhan.getText(), pemeriksaan_fungsi, TPenilaian.getText(), "-", "-", TindakLanjut.getText(),
                 "-", TInstruksi.getText(), "-", TEvaluasi.getText(), "Tidak", "", KdPeg.getText(), "1"
             });
-         }
+        }
     }
 }

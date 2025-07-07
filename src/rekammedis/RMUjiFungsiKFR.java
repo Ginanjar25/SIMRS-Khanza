@@ -2451,6 +2451,9 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             if (Sequel.queryu2tf("delete from layanan_kfr where no_rawat=?", 1, new String[]{
                 tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString()
             }) == true) {
+                Sequel.mengedit("layanan_kfr", "no_rawat='" + Sequel.cariIsi("SELECT layanan_kfr.no_rawat FROM layanan_kfr \n"
+                        + "INNER JOIN reg_periksa ON reg_periksa.no_rawat = layanan_kfr.no_rawat\n"
+                        + "WHERE reg_periksa.no_rkm_medis = ? AND layanan_kfr.`status`= '0' order by layanan_kfr.tanggal desc limit 1", TNoRM.getText()) + "'", "status='1'");
                 tampil();
                 emptTeks();
             } else {

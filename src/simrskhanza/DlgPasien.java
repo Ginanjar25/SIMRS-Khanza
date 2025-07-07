@@ -60,6 +60,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import modif.DlgPendaftaranBayi;
 
 
 /**
@@ -1822,6 +1823,7 @@ public class DlgPasien extends javax.swing.JDialog {
         ppCatatanPasien = new javax.swing.JMenuItem();
         ppGabungRM = new javax.swing.JMenuItem();
         ppPasienCorona = new javax.swing.JMenuItem();
+        ppPendaftaranBayi = new javax.swing.JMenuItem();
         buttonGroup1 = new javax.swing.ButtonGroup();
         Kd2 = new widget.TextBox();
         DlgDemografi = new javax.swing.JDialog();
@@ -2898,6 +2900,21 @@ public class DlgPasien extends javax.swing.JDialog {
         });
         jPopupMenu1.add(ppPasienCorona);
 
+        ppPendaftaranBayi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppPendaftaranBayi.setForeground(new java.awt.Color(50, 50, 50));
+        ppPendaftaranBayi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppPendaftaranBayi.setText("Pendaftaran Bayi Baru Lahir");
+        ppPendaftaranBayi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppPendaftaranBayi.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppPendaftaranBayi.setName("ppPendaftaranBayi"); // NOI18N
+        ppPendaftaranBayi.setPreferredSize(new java.awt.Dimension(220, 26));
+        ppPendaftaranBayi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppPendaftaranBayiBtnPrintActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(ppPendaftaranBayi);
+
         Kd2.setName("Kd2"); // NOI18N
         Kd2.setPreferredSize(new java.awt.Dimension(207, 23));
 
@@ -3595,7 +3612,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(jLabel13);
         jLabel13.setBounds(4, 102, 95, 23);
 
-        DTPLahir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "14-02-2025" }));
+        DTPLahir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-03-2025" }));
         DTPLahir.setDisplayFormat("dd-MM-yyyy");
         DTPLahir.setName("DTPLahir"); // NOI18N
         DTPLahir.setOpaque(false);
@@ -3732,7 +3749,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(TKtp);
         TKtp.setBounds(730, 170, 130, 23);
 
-        DTPDaftar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "14-02-2025" }));
+        DTPDaftar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-03-2025" }));
         DTPDaftar.setDisplayFormat("dd-MM-yyyy");
         DTPDaftar.setName("DTPDaftar"); // NOI18N
         DTPDaftar.setOpaque(false);
@@ -5215,6 +5232,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                     });
                 }
+                cekBayiBaruLahir();
                 emptTeks(); 
             }else{
                 autoNomor();
@@ -5251,6 +5269,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                             TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                         });
                     }
+                    cekBayiBaruLahir();
                     emptTeks(); 
                 }else{
                     autoNomor();
@@ -5287,6 +5306,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                 TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                             });
                         }
+                        cekBayiBaruLahir();
                         emptTeks(); 
                     }else{
                         autoNomor();
@@ -5323,6 +5343,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                     TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                                 });
                             }
+                            cekBayiBaruLahir();
                             emptTeks(); 
                         }else{
                             autoNomor();
@@ -5359,6 +5380,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                         TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                                     });
                                 }
+                                cekBayiBaruLahir();
                                 emptTeks(); 
                             }else{
                                 TNm.requestFocus();
@@ -9172,6 +9194,21 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     private void nmpnjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nmpnjActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nmpnjActionPerformed
+
+    private void ppPendaftaranBayiBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppPendaftaranBayiBtnPrintActionPerformed
+        if(!TUmurTh.getText().trim().equals("0") || !TUmurBl.getText().trim().equals("0") || Valid.SetAngka(TUmurHr.getText().trim()) >= 7){
+             JOptionPane.showMessageDialog(null,"Umur pasien lebih dari 7 hari...!!!!");
+        } else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+              DlgPendaftaranBayi daftar_bayi = new DlgPendaftaranBayi(null, false);
+              daftar_bayi.setSize(950, 500);
+              daftar_bayi.setLocationRelativeTo(internalFrame1);
+              daftar_bayi.setNoRm(TNo.getText(), TNm.getText(), DTPLahir.getDate(), DTPDaftar.getDate());
+              daftar_bayi.tampil();
+              daftar_bayi.setVisible(true);
+              this.setCursor(Cursor.getDefaultCursor());
+        }
+    }//GEN-LAST:event_ppPendaftaranBayiBtnPrintActionPerformed
     
     
     /**
@@ -9501,6 +9538,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     private javax.swing.JMenuItem ppGrafikjkbayi;
     private javax.swing.JMenuItem ppKelahiranBayi;
     private javax.swing.JMenuItem ppPasienCorona;
+    private javax.swing.JMenuItem ppPendaftaranBayi;
     private javax.swing.JMenuItem ppRegistrasi;
     private javax.swing.JMenuItem ppRegistrasi1;
     private javax.swing.JMenuItem ppRegistrasi2;
@@ -11191,6 +11229,19 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
             } catch (Exception e) {
                 System.out.println("Notif : "+e);
             } 
+        }
+    }
+    
+    private void cekBayiBaruLahir(){
+        if(TUmurTh.getText().trim().equals("0") && TUmurBl.getText().trim().equals("0") && TUmurHr.getText().trim().equals("0")){
+              this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+              DlgPendaftaranBayi daftar_bayi = new DlgPendaftaranBayi(null, false);
+              daftar_bayi.setSize(950, 500);
+              daftar_bayi.setLocationRelativeTo(internalFrame1);
+              daftar_bayi.setNoRm(TNo.getText(), TNm.getText(), DTPLahir.getDate(), DTPDaftar.getDate());
+              daftar_bayi.tampil();
+              daftar_bayi.setVisible(true);
+              this.setCursor(Cursor.getDefaultCursor());
         }
     }
 }

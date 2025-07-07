@@ -42,6 +42,7 @@ import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 import kepegawaian.DlgCariDokter;
+import keuangan.Jurnal;
 
 
 /**
@@ -53,8 +54,9 @@ public final class DlgResepObat extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
-    private PreparedStatement ps,ps2,psracikan, psUrut;
-    private ResultSet rs,rs2,rsracikan, rsUrut;
+    private PreparedStatement ps,ps2,psracikan, psUrut, psdetailberiobat, psrekening;
+    private ResultSet rs,rs2,rsracikan, rsUrut, rsdetailberiobat, rsrekening;
+    private riwayatobat Trackobat=new riwayatobat();
     public DlgCariDokter dokter=new DlgCariDokter(null,false);
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private Date date = new Date();
@@ -64,6 +66,14 @@ public final class DlgResepObat extends javax.swing.JDialog {
     private DlgCariAturanPakai aturanpakai=new DlgCariAturanPakai(null,false);
     private int i=0,pilihan=0,getno=0;
     private DateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+    private String aktifkanbatch="no",aktifkanparsial="no",kodedokter="",namadokter="",statusberi="",
+            Suspen_Piutang_Obat_Ranap="",Obat_Ranap="",HPP_Obat_Rawat_Inap="",Persediaan_Obat_Rawat_Inap="",
+            Suspen_Piutang_Obat_Ralan="",Obat_Ralan="",HPP_Obat_Rawat_Jalan="",Persediaan_Obat_Rawat_Jalan="";
+    private String bangsal="",lokasi="",tgl="",pas="",sql="";
+    private Jurnal jur=new Jurnal();
+    private int jmlparsial=0;
+    private boolean sukses=true,hapusdata=true;
+    private double ttljual,ttlhpp,jumlahtotaldetail=0;
 
     /** Creates new form DlgResepObat 
      *@param parent
@@ -286,6 +296,63 @@ public final class DlgResepObat extends javax.swing.JDialog {
         Document doc = kit.createDefaultDocument();
         LoadHTML.setDocument(doc);
         LoadHTML2.setDocument(doc);
+        
+        try {
+            psrekening = koneksi.prepareStatement(
+                    "select set_akun_ralan.Suspen_Piutang_Obat_Ralan,set_akun_ralan.Obat_Ralan,"
+                    + "set_akun_ralan.HPP_Obat_Rawat_Jalan,set_akun_ralan.Persediaan_Obat_Rawat_Jalan from set_akun_ralan");
+            try {
+                rsrekening = psrekening.executeQuery();
+                while (rsrekening.next()) {
+                    Suspen_Piutang_Obat_Ralan = rsrekening.getString("Suspen_Piutang_Obat_Ralan");
+                    Obat_Ralan = rsrekening.getString("Obat_Ralan");
+                    HPP_Obat_Rawat_Jalan = rsrekening.getString("HPP_Obat_Rawat_Jalan");
+                    Persediaan_Obat_Rawat_Jalan = rsrekening.getString("Persediaan_Obat_Rawat_Jalan");
+                }
+            } catch (Exception e) {
+                System.out.println("Notif Rekening : " + e);
+            } finally {
+                if (rsrekening != null) {
+                    rsrekening.close();
+                }
+                if (psrekening != null) {
+                    psrekening.close();
+                }
+            }
+
+            psrekening = koneksi.prepareStatement(
+                    "select set_akun_ranap.Suspen_Piutang_Obat_Ranap,set_akun_ranap.Obat_Ranap,"
+                    + "set_akun_ranap.HPP_Obat_Rawat_Inap,set_akun_ranap.Persediaan_Obat_Rawat_Inap from set_akun_ranap");
+            try {
+                rsrekening = psrekening.executeQuery();
+                while (rsrekening.next()) {
+                    Suspen_Piutang_Obat_Ranap = rsrekening.getString("Suspen_Piutang_Obat_Ranap");
+                    Obat_Ranap = rsrekening.getString("Obat_Ranap");
+                    HPP_Obat_Rawat_Inap = rsrekening.getString("HPP_Obat_Rawat_Inap");
+                    Persediaan_Obat_Rawat_Inap = rsrekening.getString("Persediaan_Obat_Rawat_Inap");
+                }
+            } catch (Exception e) {
+                System.out.println("Notif Rekening : " + e);
+            } finally {
+                if (rsrekening != null) {
+                    rsrekening.close();
+                }
+                if (psrekening != null) {
+                    psrekening.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            aktifkanparsial = prop.getProperty("AKTIFKANBILLINGPARSIAL");
+            aktifkanbatch = prop.getProperty("AKTIFKANBATCHOBAT");
+        } catch (Exception ex) {
+            aktifkanparsial = "no";
+            aktifkanbatch = "no";
+        }
     }
 
     /** This method is called from within the constructor to
@@ -1303,9 +1370,10 @@ public final class DlgResepObat extends javax.swing.JDialog {
         }else if(TPasien.getText().trim().equals("")){
              JOptionPane.showMessageDialog(null,"Maaf, Gagal menghapus. Pilih dulu data yang mau dihapus.Klik data pada table untuk memilih...!!!!");
         }else if(!(TPasien.getText().trim().equals(""))){
-           Sequel.meghapus("resep_obat","no_resep",NoResep.getText());
-           Sequel.meghapus("resep_dokter","no_resep",NoResep.getText());
-           Sequel.meghapus("side_db.resep_obat_info", "no_resep", NoResep.getText());
+           hapusDetailPemberianObat();
+//           Sequel.meghapus("resep_obat","no_resep",NoResep.getText());
+//           Sequel.meghapus("resep_dokter","no_resep",NoResep.getText());
+//           Sequel.meghapus("side_db.resep_obat_info", "no_resep", NoResep.getText());
            tampil();
         }
 }//GEN-LAST:event_BtnHapusActionPerformed
@@ -3171,6 +3239,123 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             } catch (Exception e) {
                 System.out.println("Notif : "+e);
             } 
+        }
+    }
+    
+    private void hapusDetailPemberianObat() {
+        String tgl_perawatan = Sequel.cariIsi("select tgl_perawatan from resep_obat where no_resep = ?", NoResep.getText());
+        String jam = Sequel.cariIsi("select jam from resep_obat where no_resep = ?", NoResep.getText());
+        sql = "select detail_pemberian_obat.tgl_perawatan,detail_pemberian_obat.jam,"
+                + "detail_pemberian_obat.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,"
+                + "detail_pemberian_obat.kode_brng,databarang.nama_brng,detail_pemberian_obat.embalase,detail_pemberian_obat.tuslah,"
+                + "detail_pemberian_obat.jml,detail_pemberian_obat.biaya_obat,detail_pemberian_obat.total,detail_pemberian_obat.h_beli,"
+                + "detail_pemberian_obat.kd_bangsal,detail_pemberian_obat.no_batch,detail_pemberian_obat.no_faktur "
+                + "from detail_pemberian_obat inner join reg_periksa on detail_pemberian_obat.no_rawat=reg_periksa.no_rawat "
+                + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+                + "inner join databarang on detail_pemberian_obat.kode_brng=databarang.kode_brng "
+                + "where detail_pemberian_obat.tgl_perawatan = ? and detail_pemberian_obat.jam = ? and detail_pemberian_obat.no_rawat = ?";
+        try {
+            psdetailberiobat = koneksi.prepareStatement(sql);
+            try {
+                psdetailberiobat.setString(1, tgl_perawatan);
+                psdetailberiobat.setString(2, jam);
+                psdetailberiobat.setString(3, TNoRw.getText());
+
+                rsdetailberiobat = psdetailberiobat.executeQuery();
+                while (rsdetailberiobat.next()) {
+                    bangsal=rsdetailberiobat.getString("kd_bangsal");
+                    statusberi = Sequel.cariIsi("select detail_pemberian_obat.status from detail_pemberian_obat where detail_pemberian_obat.no_rawat='" + rsdetailberiobat.getString("no_rawat") + "' "
+                            + "and detail_pemberian_obat.kode_brng='" + rsdetailberiobat.getString("kode_brng") + "' "
+                            + "and detail_pemberian_obat.tgl_perawatan='" + rsdetailberiobat.getString("tgl_perawatan") + "' "
+                            + "and detail_pemberian_obat.jam='" + rsdetailberiobat.getString("jam") + "' "
+                            + "and detail_pemberian_obat.no_batch='" + rsdetailberiobat.getString("no_batch") + "' "
+                            + "and detail_pemberian_obat.no_faktur='" + rsdetailberiobat.getString("no_faktur") + "' ");
+                    ttlhpp = Sequel.cariIsiAngka("select sum(detail_pemberian_obat.h_beli*detail_pemberian_obat.jml) from detail_pemberian_obat where detail_pemberian_obat.no_rawat='" + rsdetailberiobat.getString("no_rawat") + "' "
+                            + "and detail_pemberian_obat.kode_brng='" + rsdetailberiobat.getString("kode_brng") + "' "
+                            + "and detail_pemberian_obat.tgl_perawatan='" + rsdetailberiobat.getString("tgl_perawatan") + "' "
+                            + "and detail_pemberian_obat.jam='" + rsdetailberiobat.getString("jam") + "' "
+                            + "and detail_pemberian_obat.no_batch='" + rsdetailberiobat.getString("no_batch") + "' "
+                            + "and detail_pemberian_obat.no_faktur='" + rsdetailberiobat.getString("no_faktur") + "' ");
+                    ttljual = Sequel.cariIsiAngka("select sum(detail_pemberian_obat.total) from detail_pemberian_obat where detail_pemberian_obat.no_rawat='" + rsdetailberiobat.getString("no_rawat") + "' "
+                            + "and detail_pemberian_obat.kode_brng='" + rsdetailberiobat.getString("kode_brng") + "' "
+                            + "and detail_pemberian_obat.tgl_perawatan='" + rsdetailberiobat.getString("tgl_perawatan") + "' "
+                            + "and detail_pemberian_obat.jam='" + rsdetailberiobat.getString("jam") + "' "
+                            + "and detail_pemberian_obat.no_batch='" + rsdetailberiobat.getString("no_batch") + "' "
+                            + "and detail_pemberian_obat.no_faktur='" + rsdetailberiobat.getString("no_faktur") + "' ");
+                    if (Sequel.queryutf("delete from detail_pemberian_obat where no_rawat='" + rsdetailberiobat.getString("no_rawat") + "' "
+                            + "and kode_brng='" + rsdetailberiobat.getString("kode_brng") + "' "
+                            + "and tgl_perawatan='" + rsdetailberiobat.getString("tgl_perawatan") + "' "
+                            + "and jam='" + rsdetailberiobat.getString("jam") + "' "
+                            + "and no_batch='" + rsdetailberiobat.getString("no_batch") + "' "
+                            + "and no_faktur='" + rsdetailberiobat.getString("no_faktur") + "' ") == true) {
+
+                        if (statusberi.equals("Ranap")) {
+                            Sequel.queryu("delete from tampjurnal");
+                            if (ttljual > 0) {
+                                Sequel.menyimpan("tampjurnal", "'" + Suspen_Piutang_Obat_Ranap + "','Suspen Piutang Obat Ranap','0','" + ttljual + "'", "Rekening");
+                                Sequel.menyimpan("tampjurnal", "'" + Obat_Ranap + "','Pendapatan Obat Rawat Inap','" + ttljual + "','0'", "Rekening");
+                            }
+                            if (ttlhpp > 0) {
+                                Sequel.menyimpan("tampjurnal", "'" + HPP_Obat_Rawat_Inap + "','HPP Persediaan Obat Rawat Inap','0','" + ttlhpp + "'", "Rekening");
+                                Sequel.menyimpan("tampjurnal", "'" + Persediaan_Obat_Rawat_Inap + "','Persediaan Obat Rawat Inap','" + ttlhpp + "','0'", "Rekening");
+                            }
+                            sukses = jur.simpanJurnal(rsdetailberiobat.getString("no_rawat"), "U", "PEMBATALAN PEMBERIAN OBAT RAWAT INAP PASIEN " + TNoRm.getText() + " " + TPasien.getText() + " OLEH " + akses.getkode());
+                        } else if (statusberi.equals("Ralan")) {
+                            Sequel.queryu("delete from tampjurnal");
+                            if (ttljual > 0) {
+                                Sequel.menyimpan("tampjurnal", "'" + Suspen_Piutang_Obat_Ralan + "','Suspen Piutang Obat Ralan','0','" + ttljual + "'", "Rekening");
+                                Sequel.menyimpan("tampjurnal", "'" + Obat_Ralan + "','Pendapatan Obat Rawat Jalan','" + ttljual + "','0'", "Rekening");
+                            }
+                            if (ttlhpp > 0) {
+                                Sequel.menyimpan("tampjurnal", "'" + HPP_Obat_Rawat_Jalan + "','HPP Persediaan Obat Rawat Jalan','0','" + ttlhpp + "'", "Rekening");
+                                Sequel.menyimpan("tampjurnal", "'" + Persediaan_Obat_Rawat_Jalan + "','Persediaan Obat Rawat Jalan','" + ttlhpp + "','0'", "Rekening");
+                            }
+                            sukses = jur.simpanJurnal(rsdetailberiobat.getString("no_rawat"), "U", "PEMBATALAN PEMBERIAN OBAT RAWAT JALAN PASIEN " + TNoRm.getText() + " " + TPasien.getText() + " OLEH " + akses.getkode());
+                        }
+
+                        Sequel.queryu("delete from aturan_pakai where no_rawat='" + rsdetailberiobat.getString("no_rawat") + "' "
+                                + "and kode_brng='" + rsdetailberiobat.getString("kode_brng") + "' "
+                                + "and tgl_perawatan='" + rsdetailberiobat.getString("tgl_perawatan")+ "' "
+                                + "and jam='" + rsdetailberiobat.getString("jam") + "'");
+                        if (Sequel.cariInteger("select count(stok_obat_pasien.no_rawat) from stok_obat_pasien where stok_obat_pasien.no_rawat=? ",rsdetailberiobat.getString("no_rawat"))==0) {
+                            if (aktifkanbatch.equals("yes")) {
+                                Sequel.mengedit("data_batch", "no_batch=? and kode_brng=? and no_faktur=?", "sisa=sisa+?", 4, new String[]{
+                                    rsdetailberiobat.getString("jml"),
+                                    rsdetailberiobat.getString("no_batch"),
+                                    rsdetailberiobat.getString("kode_brng"),
+                                    rsdetailberiobat.getString("no_faktur")
+                                });
+                                Trackobat.catatRiwayat(rsdetailberiobat.getString("kode_brng"), Valid.SetAngka(rsdetailberiobat.getString("jml")),
+                                        0, "Pemberian Obat", akses.getkode(), bangsal, "Hapus", rsdetailberiobat.getString("no_batch"), rsdetailberiobat.getString("no_faktur"),
+                                        rsdetailberiobat.getString("no_rawat") + " " + rsdetailberiobat.getString("no_rkm_medis") + " " + rsdetailberiobat.getString("nm_pasien")
+                                );
+                                Sequel.menyimpan("gudangbarang", "'" + rsdetailberiobat.getString("kode_brng") + "','" + bangsal + "',"
+                                        + "'" + rsdetailberiobat.getString("jml") + "',"
+                                        + "'" + rsdetailberiobat.getString("no_batch") + "',"
+                                        + "'" + rsdetailberiobat.getString("no_faktur") + "'",
+                                        "stok=stok+'" + rsdetailberiobat.getString("jml") + "'",
+                                        "kode_brng='" + rsdetailberiobat.getString("kode_brng") + "' and kd_bangsal='" + bangsal + "'  "
+                                        + "and no_batch='" + rsdetailberiobat.getString("no_batch") + "' "
+                                        + "and no_faktur='" + rsdetailberiobat.getString("no_faktur") + "'");
+                            } else {
+                                Trackobat.catatRiwayat(rsdetailberiobat.getString("kode_brng"), Valid.SetAngka(rsdetailberiobat.getString("jml")), 0, "Pemberian Obat", akses.getkode(), bangsal, "Hapus", "", "",
+                                        rsdetailberiobat.getString("no_rawat") + " " + rsdetailberiobat.getString("no_rkm_medis") + " " + rsdetailberiobat.getString("nm_pasien")
+                                );
+                                Sequel.menyimpan("gudangbarang", "'" + rsdetailberiobat.getString("kode_brng") + "','" + bangsal + "',"
+                                        + "'" + rsdetailberiobat.getString("jml") + "','',''",
+                                        "stok=stok+'" + rsdetailberiobat.getString("jml") + "'",
+                                        "kode_brng='" + rsdetailberiobat.getString("kode_brng") + "' and kd_bangsal='" + bangsal + "'  "
+                                        + "and no_batch='' and no_faktur=''");
+                            }
+                        }
+                        Valid.editTable(tabMode,"resep_obat","no_resep",NoResep,"tgl_perawatan='0000-00-00', jam='00:00:00'");
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            }
+        } catch (Exception e) {
+            System.out.println("Notif : "+e);
         }
     }
 }

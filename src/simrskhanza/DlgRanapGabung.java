@@ -1198,8 +1198,6 @@ public class DlgRanapGabung extends javax.swing.JDialog {
     private void BtnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBatalActionPerformed
         ChkInput.setSelected(true);
         isForm(); 
-        TNoRMBayi.setText("");
-        TPasienBayi.setText("");
         KodeDPJP.setText("");
         NamaDPJP.setText("");
         TDiagnosa.setText("");
@@ -1653,10 +1651,19 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         TNoRWIbu.setText(norwt);
         TPasienIbu.setText(nmibu);
         TCari.setText(norwt);
-        isRawat();
+//        isRawat();
         DTPCari1.setDate(tgl1);
         DTPCari2.setDate(tgl2);
         ChkInput.setSelected(true);
+        Sequel.cariIsi("SELECT pendaftaran_bayi.no_rkm_medis\n" +
+                        "FROM pendaftaran_bayi\n" +
+                        "INNER JOIN reg_periksa ON reg_periksa.no_rkm_medis = pendaftaran_bayi.no_rkm_medis_ibu\n" +
+                        "LEFT JOIN ranap_gabung ON ranap_gabung.no_rm_bayi = pendaftaran_bayi.no_rkm_medis AND ranap_gabung.no_rawat = reg_periksa.no_rawat\n" +
+                        "WHERE reg_periksa.no_rawat = ?\n" +
+                        "AND ranap_gabung.no_rm_bayi IS NULL LIMIT 1", TNoRMBayi, TNoRWIbu.getText());
+        if(!TNoRMBayi.getText().equals("")){
+            Sequel.cariIsi("select nm_pasien from pasien where no_rkm_medis = ?", TPasienBayi, TNoRMBayi.getText());
+        }
         isForm();
     }
     
@@ -1755,10 +1762,4 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         TDiagnosaPindahKamar.setText("");
         WindowPindahranapGabung.dispose();
     }
-    
- 
-    
-   
-
- 
 }

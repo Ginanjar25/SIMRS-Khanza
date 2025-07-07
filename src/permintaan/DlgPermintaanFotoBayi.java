@@ -1822,7 +1822,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         try {
             ps = koneksi.prepareStatement("SELECT pasien.nm_pasien, pasien.nm_ibu, if(pasien.jk = 'L', 'Laki-Laki', 'Perempuan') AS jk, pasien.tgl_lahir,\n"
                     + "concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,COALESCE(pasien_bayi.nama_ayah,'') AS nama_ayah, COALESCE(pasien_bayi.berat_badan,'0') AS berat_badan,\n"
-                    + "COALESCE(pasien_bayi.panjang_badan, '0') AS panjang_badan, COALESCE(pasien_bayi.lingkar_dada,'') as lingkar_dada, "
+                    + "COALESCE(pasien_bayi.panjang_badan, '0') AS panjang_badan, COALESCE(pasien_bayi.lingkar_perut,'') as golda, "
                     + "pasien.tgl_lahir, COALESCE(pasien_bayi.jam_lahir, '00:00:00') as jam_lahir, dpjp_ranap.kd_dokter, dokter.nm_dokter\n"
                     + "FROM reg_periksa INNER JOIN pasien ON pasien.no_rkm_medis = reg_periksa.no_rkm_medis\n"
                     + "INNER JOIN ranap_gabung ON ranap_gabung.no_rawat2 = reg_periksa.no_rawat\n"
@@ -1835,6 +1835,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 rs=ps.executeQuery();
                 if(rs.next()){
                     NmIbu.setText(rs.getString("nm_ibu"));
+                    NmAyah.setText(rs.getString("nama_ayah"));
                     JKel.setSelectedItem(rs.getString("jk"));
                     Valid.SetTgl(Lahir,rs.getString("tgl_lahir"));
                     jam.setSelectedItem(rs.getString("jam_lahir").substring(0,2));
@@ -1842,7 +1843,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     detik.setSelectedItem(rs.getString("jam_lahir").substring(6,8));
                     Panjang.setText(rs.getString("panjang_badan"));
                     Berat.setText(rs.getString("panjang_badan"));
-                    Golda.setText(rs.getString("lingkar_dada"));
+                    Golda.setText(rs.getString("golda"));
                     KdDokter1.setText(rs.getString("kd_dokter"));
                     TDokter.setText(rs.getString("nm_dokter"));
                 }
