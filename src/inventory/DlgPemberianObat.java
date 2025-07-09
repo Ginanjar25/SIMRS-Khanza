@@ -1636,11 +1636,26 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }
     
-    public void isCek(){
-        BtnHapus.setEnabled(akses.getberi_obat());
+    public void isCek() {
+
+        if (akses.getkode().equals("Admin Utama")) {
+            BtnHapus.setVisible(true);
+            BtnHapus.setEnabled(true);
+        } else {
+            String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
+            if (jabatan.equals("J005")) {
+                BtnHapus.setVisible(true);
+                BtnHapus.setEnabled(true);
+            } else {
+                BtnHapus.setVisible(false);
+                BtnHapus.setEnabled(false);
+            }
+
+        }
+//        BtnHapus.setEnabled(akses.getberi_obat());
         BtnPrint.setEnabled(akses.getberi_obat());
         ppResepObat.setEnabled(akses.getresep_obat());
-        
+
     }
     
 
@@ -1753,6 +1768,10 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
               "and jam='"+tbPemberianObat.getValueAt(tbPemberianObat.getSelectedRow(),1).toString()+"' "+
               "and no_batch='"+tbPemberianObat.getValueAt(tbPemberianObat.getSelectedRow(),14).toString()+"' "+
               "and no_faktur='"+tbPemberianObat.getValueAt(tbPemberianObat.getSelectedRow(),15).toString()+"' ")==true){
+            String no_resep = Sequel.cariIsi("select no_resep from resep_obat where no_rawat='"+tbPemberianObat.getValueAt(tbPemberianObat.getSelectedRow(),2).toString()+"'" +
+                              "and tgl_perawatan='"+tbPemberianObat.getValueAt(tbPemberianObat.getSelectedRow(),0).toString()+"' "+
+                              "and jam='"+tbPemberianObat.getValueAt(tbPemberianObat.getSelectedRow(),1).toString()+"' ");
+            Sequel.queryu("delete from resep_dokter where no_resep='"+no_resep+"' and kode_brng='"+tbPemberianObat.getValueAt(tbPemberianObat.getSelectedRow(),5).toString()+"' " );
             if(statusberi.equals("Ranap")){
                 Sequel.queryu("delete from tampjurnal");    
                 if(ttljual>0){
