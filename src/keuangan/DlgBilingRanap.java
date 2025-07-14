@@ -3614,9 +3614,9 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
 }//GEN-LAST:event_BtnCariKeyPressed
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
-        if (!checkMismatch()) {
-            return; // Keluar dari method jika ada mismatch
-        }
+//        if (!checkMismatch()) {
+//            return; // Keluar dari method jika ada mismatch
+//        }
         
         try {
             pscekbilling=koneksi.prepareStatement(sqlpscekbilling);

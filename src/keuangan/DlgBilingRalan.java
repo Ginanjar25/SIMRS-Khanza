@@ -3434,9 +3434,9 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         
-        if (!checkMismatch()) {
-            return; // Keluar dari method jika ada mismatch
-        }
+//        if (!checkMismatch()) {
+//            return; // Keluar dari method jika ada mismatch
+//        }
         
         try {
             pscekbilling = koneksi.prepareStatement(sqlpscekbilling);
