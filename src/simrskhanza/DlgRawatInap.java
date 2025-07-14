@@ -143,7 +143,9 @@ import rekammedis.RMTimeOutSebelumInsisi;
 import rekammedis.RMTransferPasienAntarRuang;
 import bridging.SatuSehatCariAllergy;
 import bridging.SatuSehatCariAllergyReaction;
+import fungsi.CheckPenjabMissmatch;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  *
@@ -6002,12 +6004,21 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         switch (TabRawat.getSelectedIndex()) {
             case 0:
                 tampilDr();
+                if(Sequel.cariIsi("select 1 from dokter where kd_dokter = ?", akses.getkode()).length() == 0 ){
+                    checkMismatch();
+                }
                 break;
             case 1:
                 tampilPr();
+                if(Sequel.cariIsi("select 1 from dokter where kd_dokter = ?", akses.getkode()).length() == 0 ){
+                    checkMismatch();
+                }
                 break;
             case 2:
                 tampilDrPr();
+                if(Sequel.cariIsi("select 1 from dokter where kd_dokter = ?", akses.getkode()).length() == 0 ){
+                    checkMismatch();
+                }
                 break;
             case 3:
                 tampilPemeriksaan();
@@ -11595,5 +11606,32 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             }
             Sequel.AutoComitTrue();                                    
         }
+    }
+    
+    public boolean checkMismatch() {
+        String noRawat = TNoRw.getText().trim();
+        CheckPenjabMissmatch penjabChecker = new CheckPenjabMissmatch();
+        List<CheckPenjabMissmatch.PenjabMismatch> mismatches = penjabChecker.checkMismatchByNoRawatRanap(noRawat);
+        
+        if (mismatches.size() >= 1) {
+            StringBuilder pesan = new StringBuilder();
+            pesan.append("PERINGATAN: Ditemukan ").append(mismatches.size()).append(" Tindakan yg tidak sesuai dengan Cara Bayar!\n\n");
+            pesan.append("No Rawat: ").append(noRawat).append("\n");
+            pesan.append("Detail Mismatch:\n");
+            pesan.append("=".repeat(50)).append("\n");
+            
+            int counter = 1;
+            for (CheckPenjabMissmatch.PenjabMismatch mismatch : mismatches) {
+                pesan.append(counter).append(". ").append(mismatch.getJenisTindakan()).append("-").append(mismatch.getNmPerawatan()).append(" (").append(mismatch.getKdJenisPrw()).append(")").append("\n");
+                counter++;
+            }
+            pesan.append("Silahkan ganti tindakan tersebut terlebih dahulu !!!");
+            
+            JOptionPane.showMessageDialog(null, pesan.toString(), "Konfirmasi Mismatch Penjab", JOptionPane.WARNING_MESSAGE);
+            
+            return false; // Ada mismatch, return false
+        }
+        
+        return true; // Tidak ada mismatch, return true
     }
 }

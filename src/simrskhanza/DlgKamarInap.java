@@ -1363,6 +1363,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
         NamaIbu = new widget.TextBox();
         NoRwIbu = new widget.TextBox();
         DTPRawatGabung = new widget.Tanggal();
+        
+        MnSuratKeteranganLahir = new javax.swing.JMenuItem();
 
         WindowInputKamar.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         WindowInputKamar.setName("WindowInputKamar"); // NOI18N
@@ -3759,6 +3761,22 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         });
         MnLaporan.add(MnRingkasanMasukKeluar);
+        
+        MnSuratKeteranganLahir.setBackground(new java.awt.Color(255, 255, 254));
+        MnSuratKeteranganLahir.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSuratKeteranganLahir.setForeground(new java.awt.Color(50, 50, 50));
+        MnSuratKeteranganLahir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnSuratKeteranganLahir.setText("Surat Keterangan Lahir");
+        MnSuratKeteranganLahir.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnSuratKeteranganLahir.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnSuratKeteranganLahir.setName("MnSuratKeteranganLahir"); // NOI18N
+        MnSuratKeteranganLahir.setPreferredSize(new java.awt.Dimension(230, 26));
+        MnSuratKeteranganLahir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                 MnSuratKeteranganLahirActionPerformed(evt);
+            }
+        });
+        MnLaporan.add(MnSuratKeteranganLahir);
 
         jPopupMenu1.add(MnLaporan);
 
@@ -7362,6 +7380,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                     billing.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                                     billing.setLocationRelativeTo(internalFrame1);
                                     billing.setVisible(true);
+                                    billing.checkMismatch();
                                 }
                             }else{
                                 bangsal=Sequel.cariIsi("select set_depo_ranap.kd_depo from set_depo_ranap where set_depo_ranap.kd_bangsal=?",Sequel.cariIsi("select kamar.kd_bangsal from kamar where kamar.kd_kamar=?",kdkamar.getText()));
@@ -7383,6 +7402,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 billing.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                                 billing.setLocationRelativeTo(internalFrame1);
                                 billing.setVisible(true);
+                                billing.checkMismatch();
                             }
                         } catch (Exception e) {
                             System.out.println("Notifikasi : "+e);
@@ -12877,6 +12897,32 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         } 
     }//GEN-LAST:event_MnRingkasanMasukKeluarActionPerformed
+    
+    
+    private void MnSuratKeteranganLahirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnSuratKeteranganLahirActionPerformed
+        if (tabMode.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Maaf, table masih kosong...!!!!");
+            TCari.requestFocus();
+        } else {
+            if (tbKamIn.getSelectedRow() > -1) {
+                Map<String, Object> param = new HashMap<>();
+                param.put("namars", akses.getnamars());
+                param.put("alamatrs", akses.getalamatrs());
+                param.put("kotars", akses.getkabupatenrs());
+                param.put("nomor", Sequel.cariIsi("select no_skl from pasien_bayi where no_rkm_medis = ?", TNoRMCari.getText()));
+                param.put("propinsirs", akses.getpropinsirs());
+                param.put("kontakrs", akses.getkontakrs());
+                param.put("emailrs", akses.getemailrs());
+                param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
+                param.put("logo2", Sequel.cariGambar("select setting.logo from setting"));
+                param.put("no_rm", TNoRMCari.getText());
+                String penolong = Sequel.cariIsi("select penolong from pasien_bayi where no_rkm_medis = ?", TNoRMCari.getText());
+                String finger = Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?", penolong);
+                param.put("finger", "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs() + "\nDitandatangani secara elektronik oleh " + Sequel.cariIsi("select nama from pegawai where nik = ?", penolong) + "\nID " + (finger.equals("") ? penolong : finger) + "\n" + Sequel.cariIsi("SELECT tgl_lahir from pasien where no_rkm_medis = ?", TNoRMCari.getText()));
+                Valid.MyReport("rptSKL.jasper", "report", "::[ Surat Kelahiran Bayi ]::", param);
+            }
+        }
+    }//GEN-LAST:event_MnRingkasanMasukKeluarActionPerformed
 
     private void ppSuplesiJasaRaharjaBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppSuplesiJasaRaharjaBtnPrintActionPerformed
         if(tabMode.getRowCount()==0){
@@ -18101,6 +18147,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private javax.swing.JMenuItem MnPasienMeninggal;
     private javax.swing.JMenuItem ppRujukKeluar;
     private javax.swing.JMenuItem MnRMLembarKonsultasi;
+    private javax.swing.JMenuItem MnSuratKeteranganLahir;
     
     private void tampil() {
         int kamar_row = 0;

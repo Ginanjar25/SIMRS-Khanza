@@ -163,7 +163,9 @@ import rekammedis.RMTriaseIGD;
 import rekammedis.RMUjiFungsiKFR;
 import bridging.SatuSehatCariAllergy;
 import bridging.SatuSehatCariAllergyReaction;
+import fungsi.CheckPenjabMissmatch;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import rekammedis.RMProgramKFR;
 
 /**
@@ -617,7 +619,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
              @Override public boolean isCellEditable(int rowIndex, int colIndex) {
                 boolean a = false;
                 if (colIndex==0) {
-                    a=true;
+                  a=true;
                 }
                 return a;
              }
@@ -5817,7 +5819,10 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         TReaksiSystem.setText("");
         TReaksiDisplay.setText("");
         cmbKategory.setSelectedIndex(0);
-        cmbSeverity.setSelectedIndex(0);        
+        cmbSeverity.setSelectedIndex(0);   
+        Valid.tabelKosong(TabModeTindakan);
+        Valid.tabelKosong(TabModeTindakan2);
+        Valid.tabelKosong(TabModeTindakan3);
 }//GEN-LAST:event_BtnBatalActionPerformed
 
     private void BtnBatalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnBatalKeyPressed
@@ -6170,6 +6175,9 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
                                         Sequel.queryu("delete from pemeriksaan_ralan where no_rawat='"+tbPemeriksaan.getValueAt(i,1).toString()+
                                                 "' and tgl_perawatan='"+tbPemeriksaan.getValueAt(i,4).toString()+
                                                 "' and jam_rawat='"+tbPemeriksaan.getValueAt(i,5).toString()+"' ");
+                                        if(Sequel.cariIsi("select kd_sps from dokter where kd_dokter = ?", akses.getkode()).equals("S0017")){
+                                            hapusKFR();
+                                        }
                                         tabModePemeriksaan.removeRow(i);
                                         i--;
                                     }else{
@@ -6679,6 +6687,9 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
                 BtnTambahTindakan.setVisible(true);
                 TCari.setPreferredSize(new Dimension(207,23));            
                 TabRawatTindakanDokterMouseClicked(null);
+                if(Sequel.cariIsi("select 1 from dokter where kd_dokter = ?", akses.getkode()).length() == 0 ){
+                    checkMismatch();
+                }
                 break;
             case 1:
                 BtnSimpan.setEnabled(akses.gettindakan_ralan());
@@ -6688,6 +6699,9 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
                 BtnTambahTindakan.setVisible(true); 
                 TCari.setPreferredSize(new Dimension(207,23));
                 TabRawatTindakanPetugasMouseClicked(null);
+                if(Sequel.cariIsi("select 1 from dokter where kd_dokter = ?", akses.getkode()).length() == 0 ){
+                    checkMismatch();
+                }
                 break;
             case 2:
                 BtnSimpan.setEnabled(akses.gettindakan_ralan());
@@ -6696,6 +6710,9 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
                 BtnPrint.setEnabled(akses.gettindakan_ralan());
                 BtnTambahTindakan.setVisible(true); 
                 TCari.setPreferredSize(new Dimension(207,23));
+                if(Sequel.cariIsi("select 1 from dokter where kd_dokter = ?", akses.getkode()).length() == 0 ){
+                    checkMismatch();
+                }
                 TabRawatTindakanDokterPetugasMouseClicked(null);
                 break;
             case 3:
@@ -6885,7 +6902,7 @@ private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                                         tbPemeriksaan.setValueAt(TPegawai.getText(),tbPemeriksaan.getSelectedRow(), 24);
                                         tbPemeriksaan.setValueAt(Jabatan.getText(),tbPemeriksaan.getSelectedRow(), 25);
                                         
-                                        if(Sequel.cariIsi("select kd_sps from dokter where kd_dokter = ?", KdPeg.getText()).equals("S0017")){
+                                        if(Sequel.cariIsi("select kd_sps from dokter where kd_dokter = ?", akses.getkode()).equals("S0017")){
                                             editLayananUjiFungsiKFR();
                                         }
                                         TSuhu.setText("");TTensi.setText("");TNadi.setText("");TRespirasi.setText("");
@@ -12985,7 +13002,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                                             TKeluhan.getText(),TPemeriksaan.getText(),TAlergi.getText(),LingkarPerut.getText(),TindakLanjut.getText(),TPenilaian.getText(),TInstruksi.getText(),TEvaluasi.getText(),
                                             KdPeg.getText(),TPegawai.getText(),Jabatan.getText()
                                         });
-                                        if(Sequel.cariIsi("select kd_sps from dokter where kd_dokter = ?", KdPeg.getText()).equals("S0017")){
+                                        if(Sequel.cariIsi("select kd_sps from dokter where kd_dokter = ?", akses.getkode()).equals("S0017")){
                                             simpanLayananUjiFungsiKFR();
                                         }
                                         TSuhu.setText("");TTensi.setText("");TNadi.setText("");TRespirasi.setText("");
@@ -13164,4 +13181,52 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             });
         }
     }
+
+    private void hapusKFR() {
+        if (Sequel.queryu2tf("delete from uji_fungsi_kfr where no_rawat=?", 1, new String[]{
+            tbPemeriksaan.getValueAt(i, 1).toString()
+        }) == true) {
+            if (Sequel.queryu2tf("delete from layanan_kfr where no_rawat=?", 1, new String[]{
+                tbPemeriksaan.getValueAt(i, 1).toString()
+            }) == true) {
+                Sequel.mengedit("layanan_kfr", "no_rawat='" + Sequel.cariIsi("SELECT layanan_kfr.no_rawat FROM layanan_kfr \n"
+                        + "INNER JOIN reg_periksa ON reg_periksa.no_rawat = layanan_kfr.no_rawat\n"
+                        + "WHERE reg_periksa.no_rkm_medis = ? AND layanan_kfr.`status`= '0' order by layanan_kfr.tanggal desc limit 1", TNoRM.getText()) + "'", "status='1'");
+                emptTeks();
+            } else {
+                JOptionPane.showMessageDialog(rootPane, "Gagal menghapus..!!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Gagal menghapus..!!");
+        }
+    }
+    
+    
+    private boolean checkMismatch() {
+        String noRawat = TNoRw.getText().trim();
+        CheckPenjabMissmatch penjabChecker = new CheckPenjabMissmatch();
+        List<CheckPenjabMissmatch.PenjabMismatch> mismatches = penjabChecker.checkMismatchByNoRawatRalan(noRawat);
+        
+        if (mismatches.size() >= 1) {
+            StringBuilder pesan = new StringBuilder();
+            pesan.append("PERINGATAN: Ditemukan ").append(mismatches.size()).append(" Tindakan yg tidak sesuai dengan Cara Bayar!\n\n");
+            pesan.append("No Rawat: ").append(noRawat).append("\n");
+            pesan.append("Detail Mismatch:\n");
+            pesan.append("=".repeat(50)).append("\n");
+            
+            int counter = 1;
+            for (CheckPenjabMissmatch.PenjabMismatch mismatch : mismatches) {
+                pesan.append(counter).append(". ").append(mismatch.getJenisTindakan()).append("-").append(mismatch.getNmPerawatan()).append(" (").append(mismatch.getKdJenisPrw()).append(")").append("\n");
+                counter++;
+            }
+            pesan.append("Silahkan ganti tindakan tersebut terlebih dahulu !!!");
+            
+            JOptionPane.showMessageDialog(null, pesan.toString(), "Konfirmasi Mismatch Penjab", JOptionPane.WARNING_MESSAGE);
+            
+            return false; // Ada mismatch, return false
+        }
+        
+        return true; // Tidak ada mismatch, return true
+    }
+     
 }

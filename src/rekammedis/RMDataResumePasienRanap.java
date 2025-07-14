@@ -997,6 +997,14 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         BtnProsedur1 = new widget.Button();
         BtnProsedur2 = new widget.Button();
         BtnProsedur3 = new widget.Button();
+        BtnRefreshDiagnosa = new widget.Button();
+        BtnRefreshDiagnosa1 = new widget.Button();
+        BtnRefreshDiagnosa2 = new widget.Button();
+        BtnRefreshDiagnosa3 = new widget.Button();
+        BtnRefreshProsedur = new widget.Button();
+        BtnRefreshProsedur1 = new widget.Button();
+        BtnRefreshProsedur2 = new widget.Button();
+        BtnRefreshProsedur3 = new widget.Button();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
@@ -2384,6 +2392,110 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         FormInput.add(BtnProsedur3);
         BtnProsedur3.setBounds(750, 820, 30, 20);
 
+        BtnRefreshDiagnosa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cross.png"))); // NOI18N
+        BtnRefreshDiagnosa.setMnemonic('2');
+        BtnRefreshDiagnosa.setToolTipText("Alt+2");
+        BtnRefreshDiagnosa.setName("BtnRefreshDiagnosa"); // NOI18N
+        BtnRefreshDiagnosa.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnRefreshDiagnosa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRefreshDiagnosaActionPerformed(evt);
+            }
+        });
+        FormInput.add(BtnRefreshDiagnosa);
+        BtnRefreshDiagnosa.setBounds(780, 610, 30, 20);
+
+        BtnRefreshDiagnosa1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cross.png"))); // NOI18N
+        BtnRefreshDiagnosa1.setMnemonic('2');
+        BtnRefreshDiagnosa1.setToolTipText("Alt+2");
+        BtnRefreshDiagnosa1.setName("BtnRefreshDiagnosa1"); // NOI18N
+        BtnRefreshDiagnosa1.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnRefreshDiagnosa1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRefreshDiagnosa1ActionPerformed(evt);
+            }
+        });
+        FormInput.add(BtnRefreshDiagnosa1);
+        BtnRefreshDiagnosa1.setBounds(780, 640, 30, 20);
+
+        BtnRefreshDiagnosa2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cross.png"))); // NOI18N
+        BtnRefreshDiagnosa2.setMnemonic('2');
+        BtnRefreshDiagnosa2.setToolTipText("Alt+2");
+        BtnRefreshDiagnosa2.setName("BtnRefreshDiagnosa2"); // NOI18N
+        BtnRefreshDiagnosa2.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnRefreshDiagnosa2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRefreshDiagnosa2ActionPerformed(evt);
+            }
+        });
+        FormInput.add(BtnRefreshDiagnosa2);
+        BtnRefreshDiagnosa2.setBounds(780, 670, 30, 20);
+
+        BtnRefreshDiagnosa3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cross.png"))); // NOI18N
+        BtnRefreshDiagnosa3.setMnemonic('2');
+        BtnRefreshDiagnosa3.setToolTipText("Alt+2");
+        BtnRefreshDiagnosa3.setName("BtnRefreshDiagnosa3"); // NOI18N
+        BtnRefreshDiagnosa3.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnRefreshDiagnosa3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRefreshDiagnosa3ActionPerformed(evt);
+            }
+        });
+        FormInput.add(BtnRefreshDiagnosa3);
+        BtnRefreshDiagnosa3.setBounds(780, 700, 30, 20);
+
+        BtnRefreshProsedur.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cross.png"))); // NOI18N
+        BtnRefreshProsedur.setMnemonic('2');
+        BtnRefreshProsedur.setToolTipText("Alt+2");
+        BtnRefreshProsedur.setName("BtnRefreshProsedur"); // NOI18N
+        BtnRefreshProsedur.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnRefreshProsedur.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRefreshProsedurActionPerformed(evt);
+            }
+        });
+        FormInput.add(BtnRefreshProsedur);
+        BtnRefreshProsedur.setBounds(780, 730, 30, 20);
+
+        BtnRefreshProsedur1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cross.png"))); // NOI18N
+        BtnRefreshProsedur1.setMnemonic('2');
+        BtnRefreshProsedur1.setToolTipText("Alt+2");
+        BtnRefreshProsedur1.setName("BtnRefreshProsedur1"); // NOI18N
+        BtnRefreshProsedur1.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnRefreshProsedur1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRefreshProsedur1ActionPerformed(evt);
+            }
+        });
+        FormInput.add(BtnRefreshProsedur1);
+        BtnRefreshProsedur1.setBounds(780, 760, 30, 20);
+
+        BtnRefreshProsedur2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cross.png"))); // NOI18N
+        BtnRefreshProsedur2.setMnemonic('2');
+        BtnRefreshProsedur2.setToolTipText("Alt+2");
+        BtnRefreshProsedur2.setName("BtnRefreshProsedur2"); // NOI18N
+        BtnRefreshProsedur2.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnRefreshProsedur2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRefreshProsedur2ActionPerformed(evt);
+            }
+        });
+        FormInput.add(BtnRefreshProsedur2);
+        BtnRefreshProsedur2.setBounds(780, 790, 30, 20);
+
+        BtnRefreshProsedur3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cross.png"))); // NOI18N
+        BtnRefreshProsedur3.setMnemonic('2');
+        BtnRefreshProsedur3.setToolTipText("Alt+2");
+        BtnRefreshProsedur3.setName("BtnRefreshProsedur3"); // NOI18N
+        BtnRefreshProsedur3.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnRefreshProsedur3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRefreshProsedur3ActionPerformed(evt);
+            }
+        });
+        FormInput.add(BtnRefreshProsedur3);
+        BtnRefreshProsedur3.setBounds(780, 820, 30, 20);
+
         scrollInput.setViewportView(FormInput);
 
         PanelInput.add(scrollInput, java.awt.BorderLayout.CENTER);
@@ -3160,6 +3272,46 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_BtnProsedur3ActionPerformed
 
+    private void BtnRefreshDiagnosaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRefreshDiagnosaActionPerformed
+        DiagnosaSekunder1.setText("");
+        KodeDiagnosaSekunder1.setText("");
+    }//GEN-LAST:event_BtnRefreshDiagnosaActionPerformed
+
+    private void BtnRefreshDiagnosa1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRefreshDiagnosa1ActionPerformed
+        DiagnosaSekunder2.setText("");
+        KodeDiagnosaSekunder2.setText("");
+    }//GEN-LAST:event_BtnRefreshDiagnosa1ActionPerformed
+
+    private void BtnRefreshDiagnosa2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRefreshDiagnosa2ActionPerformed
+        DiagnosaSekunder3.setText("");
+        KodeDiagnosaSekunder3.setText("");
+    }//GEN-LAST:event_BtnRefreshDiagnosa2ActionPerformed
+
+    private void BtnRefreshDiagnosa3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRefreshDiagnosa3ActionPerformed
+        DiagnosaSekunder4.setText("");
+        KodeDiagnosaSekunder4.setText("");
+    }//GEN-LAST:event_BtnRefreshDiagnosa3ActionPerformed
+
+    private void BtnRefreshProsedurActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRefreshProsedurActionPerformed
+        ProsedurUtama.setText("");
+        KodeProsedurUtama.setText("");
+    }//GEN-LAST:event_BtnRefreshProsedurActionPerformed
+
+    private void BtnRefreshProsedur1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRefreshProsedur1ActionPerformed
+        ProsedurSekunder1.setText("");
+        KodeProsedurSekunder1.setText("");
+    }//GEN-LAST:event_BtnRefreshProsedur1ActionPerformed
+
+    private void BtnRefreshProsedur2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRefreshProsedur2ActionPerformed
+        ProsedurSekunder2.setText("");
+        KodeProsedurSekunder2.setText("");
+    }//GEN-LAST:event_BtnRefreshProsedur2ActionPerformed
+
+    private void BtnRefreshProsedur3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRefreshProsedur3ActionPerformed
+        ProsedurSekunder3.setText("");
+        KodeProsedurSekunder3.setText("");
+    }//GEN-LAST:event_BtnRefreshProsedur3ActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -3206,6 +3358,14 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
     private widget.Button BtnProsedur1;
     private widget.Button BtnProsedur2;
     private widget.Button BtnProsedur3;
+    private widget.Button BtnRefreshDiagnosa;
+    private widget.Button BtnRefreshDiagnosa1;
+    private widget.Button BtnRefreshDiagnosa2;
+    private widget.Button BtnRefreshDiagnosa3;
+    private widget.Button BtnRefreshProsedur;
+    private widget.Button BtnRefreshProsedur1;
+    private widget.Button BtnRefreshProsedur2;
+    private widget.Button BtnRefreshProsedur3;
     private widget.Button BtnSimpan;
     private widget.TextBox CaraBayar;
     private widget.ComboBox CaraKeluar;

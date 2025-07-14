@@ -3,6 +3,7 @@ package keuangan;
 import bridging.ApiBRI;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fungsi.CheckPenjabMissmatch;
 import fungsi.WarnaTable;
 import fungsi.WarnaTable2;
 import fungsi.batasInput;
@@ -35,6 +36,7 @@ import inventory.DlgPemberianObat;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.List;
 import javax.swing.event.DocumentEvent;
 import simrskhanza.DlgCariPeriksaLabPA;
 import simrskhanza.DlgCariCaraBayar;
@@ -192,6 +194,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
     private JsonNode root;
     private JsonNode response;
     private FileReader myObj;
+    
 
     /** Creates new form DlgBiling
      * @param parent
@@ -3430,60 +3433,64 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 }//GEN-LAST:event_MnPeriksaLabActionPerformed
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        
+        if (!checkMismatch()) {
+            return; // Keluar dari method jika ada mismatch
+        }
+        
         try {
-            pscekbilling=koneksi.prepareStatement(sqlpscekbilling);
+            pscekbilling = koneksi.prepareStatement(sqlpscekbilling);
             try {
-                pscekbilling.setString(1,TNoRw.getText());
-                rscekbilling=pscekbilling.executeQuery();
-                if(rscekbilling.next()){
-                    cek=rscekbilling.getInt(1);
+                pscekbilling.setString(1, TNoRw.getText());
+                rscekbilling = pscekbilling.executeQuery();
+                if (rscekbilling.next()) {
+                    cek = rscekbilling.getInt(1);
                 }
             } catch (Exception e) {
-                cek=0;
-                System.out.println("Notifikasi : "+e);
-            } finally{
-                if(rscekbilling != null){
+                cek = 0;
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rscekbilling != null) {
                     rscekbilling.close();
                 }
-                if(pscekbilling != null){
+                if (pscekbilling != null) {
                     pscekbilling.close();
                 }
             }
         } catch (Exception e) {
             System.out.println(e);
-        }    
-        
-        if(TNoRw.getText().trim().equals("")||TNoRM.getText().trim().equals("")||TPasien.getText().trim().equals("")){
-            Valid.textKosong(TNoRw,"Pasien");
-        }else if((chkObat.isSelected()==false)||(chkPotongan.isSelected()==false)||
-                (chkTambahan.isSelected()==false)||(chkTarifDokter.isSelected()==false)||(chkTarifPrm.isSelected()==false)){
-            JOptionPane.showMessageDialog(null,"Maaf, Silahkan tampilkan semua pilihan tagihan...!!!");
-        }else if(cek>0){
-            JOptionPane.showMessageDialog(null,"Maaf, data tagihan pasien dengan No.Rawat tersebut sudah pernah disimpan...!!!");
-        }else if(cek==0){
-            if(piutang<=0){
-                if(kekurangan<0){
-                    JOptionPane.showMessageDialog(null,"Maaf, pembayaran pasien masih kurang ...!!!");
-                }else if(kekurangan>0){
-                    if(countbayar>1){
-                        JOptionPane.showMessageDialog(null,"Maaf, kembali harus bernilai 0 untuk cara bayar lebih dari 1...!!!");
-                    }else{
+        }
+
+        if (TNoRw.getText().trim().equals("") || TNoRM.getText().trim().equals("") || TPasien.getText().trim().equals("")) {
+            Valid.textKosong(TNoRw, "Pasien");
+        } else if ((chkObat.isSelected() == false) || (chkPotongan.isSelected() == false)
+                || (chkTambahan.isSelected() == false) || (chkTarifDokter.isSelected() == false) || (chkTarifPrm.isSelected() == false)) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan tampilkan semua pilihan tagihan...!!!");
+        } else if (cek > 0) {
+            JOptionPane.showMessageDialog(null, "Maaf, data tagihan pasien dengan No.Rawat tersebut sudah pernah disimpan...!!!");
+        } else if (cek == 0) {
+            if (piutang <= 0) {
+                if (kekurangan < 0) {
+                    JOptionPane.showMessageDialog(null, "Maaf, pembayaran pasien masih kurang ...!!!");
+                } else if (kekurangan > 0) {
+                    if (countbayar > 1) {
+                        JOptionPane.showMessageDialog(null, "Maaf, kembali harus bernilai 0 untuk cara bayar lebih dari 1...!!!");
+                    } else {
                         isSimpan();
-                    }                        
-                }else if(kekurangan==0){
+                    }
+                } else if (kekurangan == 0) {
                     isSimpan();
-                }                
-            }else if(piutang>=1){
-                if(kekurangan<0){
-                    JOptionPane.showMessageDialog(null,"Maaf, piutang belum genap. Silahkan isi di jumlah piutang ...!!!");
-                }else if(kekurangan>0){
-                    JOptionPane.showMessageDialog(null,"Maaf, terjadi kelebihan piutang ...!!!");
-                }else{
+                }
+            } else if (piutang >= 1) {
+                if (kekurangan < 0) {
+                    JOptionPane.showMessageDialog(null, "Maaf, piutang belum genap. Silahkan isi di jumlah piutang ...!!!");
+                } else if (kekurangan > 0) {
+                    JOptionPane.showMessageDialog(null, "Maaf, terjadi kelebihan piutang ...!!!");
+                } else {
                     isSimpan();
-                }                    
+                }
             }
         }
-        
     }//GEN-LAST:event_BtnSimpanActionPerformed
 
     private void BtnSimpanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSimpanKeyPressed
@@ -6281,6 +6288,33 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 THakKelas.setText("-");
                 break;
         }
+    }
+    
+     public boolean checkMismatch() {
+        String noRawat = TNoRw.getText().trim();
+        CheckPenjabMissmatch penjabChecker = new CheckPenjabMissmatch();
+        List<CheckPenjabMissmatch.PenjabMismatch> mismatches = penjabChecker.checkMismatchByNoRawatRalan(noRawat);
+        
+        if (mismatches.size() >= 1) {
+            StringBuilder pesan = new StringBuilder();
+            pesan.append("PERINGATAN: Ditemukan ").append(mismatches.size()).append(" Tindakan yg tidak sesuai dengan Cara Bayar!\n\n");
+            pesan.append("No Rawat: ").append(noRawat).append("\n");
+            pesan.append("Detail Mismatch:\n");
+            pesan.append("=".repeat(50)).append("\n");
+            
+            int counter = 1;
+            for (CheckPenjabMissmatch.PenjabMismatch mismatch : mismatches) {
+                pesan.append(counter).append(". ").append(mismatch.getJenisTindakan()).append("-").append(mismatch.getNmPerawatan()).append(" (").append(mismatch.getKdJenisPrw()).append(")").append("\n");
+                counter++;
+            }
+            pesan.append("Silahkan ganti tindakan tersebut terlebih dahulu !!!");
+            
+            JOptionPane.showMessageDialog(null, pesan.toString(), "Konfirmasi Mismatch Penjab", JOptionPane.WARNING_MESSAGE);
+            
+            return false; // Ada mismatch, return false
+        }
+        
+        return true; // Tidak ada mismatch, return true
     }
     
 }

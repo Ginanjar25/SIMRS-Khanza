@@ -44,6 +44,7 @@ import javax.swing.table.TableColumn;
 import kepegawaian.DlgCariDokter;
 import keuangan.DlgKamar;
 import laporan.DlgCariPenyakit;
+import modif.DlgPendaftaranBayi;
 
 /**
  *
@@ -319,6 +320,7 @@ public class DlgRanapGabung extends javax.swing.JDialog {
         MnKwitansiDeposit = new javax.swing.JMenuItem();
         MnCetakGelangPasien = new javax.swing.JMenuItem();
         MnCetakBarcodeRM = new javax.swing.JMenuItem();
+        MnPendaftaranBBL = new javax.swing.JMenuItem();
         NoRawatGabung = new widget.TextBox();
         WindowPindahranapGabung = new javax.swing.JDialog();
         internalFrame2 = new widget.InternalFrame();
@@ -436,6 +438,20 @@ public class DlgRanapGabung extends javax.swing.JDialog {
             }
         });
         jPopupMenu1.add(MnCetakBarcodeRM);
+
+        MnPendaftaranBBL.setBackground(new java.awt.Color(255, 255, 254));
+        MnPendaftaranBBL.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnPendaftaranBBL.setForeground(java.awt.Color.darkGray);
+        MnPendaftaranBBL.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnPendaftaranBBL.setText("Pendaftaran Bayi Baru Lahir");
+        MnPendaftaranBBL.setName("MnPendaftaranBBL"); // NOI18N
+        MnPendaftaranBBL.setPreferredSize(new java.awt.Dimension(250, 28));
+        MnPendaftaranBBL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnPendaftaranBBLActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(MnPendaftaranBBL);
 
         NoRawatGabung.setEditable(false);
         NoRawatGabung.setHighlighter(null);
@@ -809,7 +825,7 @@ public class DlgRanapGabung extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-06-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-07-2025" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -823,7 +839,7 @@ public class DlgRanapGabung extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-06-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-07-2025" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -906,7 +922,7 @@ public class DlgRanapGabung extends javax.swing.JDialog {
 
         DTPTgl.setEditable(false);
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-06-2025" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-07-2025" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -1497,6 +1513,21 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }//GEN-LAST:event_MnCetakBarcodeRMActionPerformed
 
+    private void MnPendaftaranBBLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnPendaftaranBBLActionPerformed
+        if (TNoRMBayi.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu pasien...!!!");
+        } else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+              DlgPendaftaranBayi daftar_bayi = new DlgPendaftaranBayi(null, false);
+              daftar_bayi.setSize(950, 500);
+              daftar_bayi.setLocationRelativeTo(internalFrame1);
+              daftar_bayi.setNoRm(tbObat.getValueAt(tbObat.getSelectedRow(),2).toString(), tbObat.getValueAt(tbObat.getSelectedRow(),3).toString(), DTPTgl.getDate(), DTPTgl.getDate());
+              daftar_bayi.tampil();
+              daftar_bayi.setVisible(true);
+              this.setCursor(Cursor.getDefaultCursor());
+        }
+    }//GEN-LAST:event_MnPendaftaranBBLActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1540,6 +1571,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JMenuItem MnCetakBarcodeRM;
     private javax.swing.JMenuItem MnCetakGelangPasien;
     private javax.swing.JMenuItem MnKwitansiDeposit;
+    private javax.swing.JMenuItem MnPendaftaranBBL;
     private widget.TextBox NamaDPJP;
     private widget.TextBox NmBangsal;
     private widget.TextBox NoRawatGabung;

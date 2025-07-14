@@ -637,6 +637,8 @@ public class DlgPendaftaranBayi extends javax.swing.JDialog {
             Valid.textKosong(TAyah,"Data Ayah");
         }else if(NoKK.getText().trim().equals("") || KdPos.getText().trim().equals("")){
             Valid.textKosong(TNoRMIbu,"No KK atau Kode Pos");
+        }else if(TNoRMIbu.getText().trim().equals(TNoRMBayi.getText().trim())){
+            Valid.textKosong(TNoRMIbu,"No.Rekam Medis Ibu dan No.Rekam Medis Bayi Tidak Boleh Sama");
         }else {
             if(Sequel.menyimpantf("pendaftaran_bayi", "?,?,?,?,?,?,?", "Pendaftaran Bayi", 7, new String[]{
                 TNoRMBayi.getText(),
@@ -781,6 +783,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             Valid.textKosong(TAyah,"Data Ayah");
         }else if(NoKK.getText().trim().equals("") || KdPos.getText().trim().equals("")){
             Valid.textKosong(TNoRMIbu,"No KK atau Kode Pos");
+        }else if(TNoRMIbu.getText().trim().equals(TNoRMBayi.getText().trim())){
+            Valid.textKosong(TNoRMIbu,"No.Rekam Medis Ibu dan No.Rekam Medis Bayi Tidak Boleh Sama");
         }else {
             Valid.editTable(tabMode,"pendaftaran_bayi","no_rkm_medis",TNoRMBayi,
             "no_rkm_medis_ibu='"+TNoRMIbu.getText()+"',nama_ayah='"+TAyah.getText()+"', pekerjaan_ayah='"+PekerjaanAyah.getText()+"', umur_ayah='"+UmurAyah.getText()+"', no_kk='"+NoKK.getText()+"', kode_pos='"+KdPos.getText()+"'");

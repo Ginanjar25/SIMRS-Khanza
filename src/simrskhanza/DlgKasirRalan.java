@@ -8019,6 +8019,7 @@ private void MnBillingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                 billing.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                                 billing.setLocationRelativeTo(internalFrame1);
                                 billing.setVisible(true);
+                                billing.checkMismatch();
                             }
                         }else{
                             if(akses.getbilling_ralan()==true){
@@ -8031,6 +8032,7 @@ private void MnBillingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                             billing.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                             billing.setLocationRelativeTo(internalFrame1);
                             billing.setVisible(true);
+                            billing.checkMismatch();
                         }
                     }catch(Exception ex){
                         System.out.println("Notifikasi : "+ex);
