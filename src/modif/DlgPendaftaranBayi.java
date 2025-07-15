@@ -640,7 +640,7 @@ public class DlgPendaftaranBayi extends javax.swing.JDialog {
         }else if(TNoRMIbu.getText().trim().equals(TNoRMBayi.getText().trim())){
             Valid.textKosong(TNoRMIbu,"No.Rekam Medis Ibu dan No.Rekam Medis Bayi Tidak Boleh Sama");
         }else {
-            if(Sequel.menyimpantf("pendaftaran_bayi", "?,?,?,?,?,?,?", "Pendaftaran Bayi", 7, new String[]{
+            if(Sequel.menyimpantf("pendaftaran_bayi", "?,?,?,?,?,?,?,?", "Pendaftaran Bayi", 8, new String[]{
                 TNoRMBayi.getText(),
                 TNoRMIbu.getText(),
                 TAyah.getText(),
@@ -648,6 +648,7 @@ public class DlgPendaftaranBayi extends javax.swing.JDialog {
                 UmurAyah.getText(),
                 NoKK.getText(),
                 KdPos.getText(),
+                "0"
              }) == true){
                     tampil();
             }
@@ -679,6 +680,7 @@ public class DlgPendaftaranBayi extends javax.swing.JDialog {
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
         if (tbObat.getSelectedRow() != -1) {
            Sequel.meghapus("pendaftaran_bayi", "no_rkm_medis", tbObat.getValueAt(tbObat.getSelectedRow(),0).toString());
+           tampil();
         } else {
             JOptionPane.showMessageDialog(null, "Belum ada data yang dipilih!!!");
         }
