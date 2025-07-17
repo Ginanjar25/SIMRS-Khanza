@@ -22,6 +22,18 @@ public class WarnaTableKasirRalan1 extends DefaultTableCellRenderer {
         }else{
             component.setBackground(new Color(255,255,255));
         } 
+        
+        if (column == 1) {
+            Object cellValue = table.getValueAt(row, 30); // Get the value of the cell in column 25
+            if (cellValue != null) {
+                String cellString = cellValue.toString(); // Convert the value to a string
+                if ("Belum".equals(cellString)) {
+                    component.setBackground(new Color(255, 255, 0)); // Warna lain untuk kondisi lainnya
+                    component.setForeground(Color.BLACK);
+                } 
+            }
+        }
+        
         if (column == 2) {
             Object cellValue = table.getValueAt(row, 25); // Get the value of the cell in column 25
             if (cellValue != null) {

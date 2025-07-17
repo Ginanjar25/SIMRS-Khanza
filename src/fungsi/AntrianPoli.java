@@ -85,7 +85,7 @@ public void kirimAntrean(String kd_poli, String kd_dokter) {
             "ap.created_at, ap.updated_at, rp.stts " +
             "FROM antripoli ap INNER JOIN reg_periksa rp ON rp.no_rawat = ap.no_rawat " +
             "WHERE ap.kd_dokter = ? " +
-            "AND ap.kd_poli = ? AND ap.status = '0' " +
+            "AND ap.kd_poli = ? AND ap.status != '2' " +
             "AND DATE(ap.created_at) = DATE(NOW()) " +
             "AND rp.stts != 'Sudah' " +
             "ORDER BY ap.no_antrian ASC LIMIT 4;"
@@ -187,7 +187,7 @@ public void kirimAntrianAwal(String kd_poli, String kd_dokter) {
             "ap.created_at, ap.updated_at, rp.stts " +
             "FROM antripoli ap INNER JOIN reg_periksa rp ON rp.no_rawat = ap.no_rawat " +
             "WHERE ap.kd_dokter = ? " +
-            "AND ap.kd_poli = ? AND ap.status = '0' " +
+            "AND ap.kd_poli = ? AND ap.status != '2' " +
             "AND DATE(ap.created_at) = DATE(NOW()) " +
             "AND rp.stts != 'Sudah' " +
             "ORDER BY ap.no_antrian ASC LIMIT 4;"

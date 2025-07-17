@@ -50,6 +50,19 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
             component.setForeground(new Color(255, 255, 255));
         }
         
+        if (column == 20) {
+            Object cellValue = table.getValueAt(row, 42); // Get the value of the cell in column 42
+            Object cellValue1 = table.getValueAt(row, 18); // Get the value of the cell in column 42
+            if (cellValue != null) {
+                String cellString = cellValue.toString(); // Convert the value to a string
+                String cellString1 = cellValue1.toString(); 
+                if ("Belum".equals(cellString) && !"IGDK".equals(cellString1)) {
+                    component.setBackground(new Color(255, 255, 0)); // Warna lain untuk kondisi lainnya
+                    component.setForeground(Color.BLACK);
+                } 
+            }
+        }
+        
         // Kondisi khusus untuk kolom 23, logika ini menimpa pengaturan warna sebelumnya
         if (column == 32) {
             Object jenis_bayar = table.getValueAt(row, 24); // Nilai di kolom ke-24
