@@ -15460,12 +15460,13 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 }) == true) {
                     Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()});
                     Sequel.meghapus("referensi_mobilejkn_bpjs_batal", "no_rawat_batal", TNoRw.getText());
-                    tampil();
+                    
                 }
             }
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
             apiRSPW.cetakBarcodeRajal(TNoRw.getText());
+            tampil();
             this.setCursor(Cursor.getDefaultCursor());
         }
     }

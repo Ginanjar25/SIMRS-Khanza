@@ -236,7 +236,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             "Ttl.Biaya","Stts.Pulang","Lama","Dokter P.J.","Kamar","Status Bayar","Agama",
             "Nomer RM","Nama Pasien","Alamat Pasien","No HP","Jenis Bayar","Kamar","Tarif Kamar",
             "Diagnosa Awal","Diagnosa Akhir","Tgl.Masuk","Jam Masuk","Tgl.Keluar","Jam Keluar",
-            "Tarif RS","Tarif INACBG","INACBG Total","Selisih Pasien","Deposit","Stts.Pulang","Lama","DPJP","Kamar","Status Bayar", "Limit Tarif"
+            "Tarif RS","Tarif INACBG","Selisih Pasien","INACBG Total","Deposit","Stts.Pulang","Lama","DPJP","Kamar","Status Bayar", "Limit Tarif"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -18240,8 +18240,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
                         rs.getString("alamat"),rs.getString("no_tlp"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),
                         rs.getString("kamar") + " (" + rs.getString("kelas") + ")",Valid.SetAngka(rs.getDouble("trf_kamar")),rs.getString("diagnosa_awal"),
                         rs.getString("diagnosa_akhir"),rs.getString("tgl_masuk"),rs.getString("jam_masuk"),rs.getString("tgl_keluar"),
-                        rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")),Valid.SetAngka(rs.getDouble("tarif_inacbg")),Valid.SetAngka(rs.getDouble("selisih_tarif")),
-                         Valid.SetAngka(rs.getDouble("tarif_naik")),Valid.SetAngka(rs.getDouble("deposit")), rs.getString("stts_pulang"),
+                        rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")),Valid.SetAngka(rs.getDouble("tarif_inacbg")),Valid.SetAngka(rs.getDouble("tarif_naik")),
+                         Valid.SetAngka(rs.getDouble("selisih_tarif")),Valid.SetAngka(rs.getDouble("deposit")), rs.getString("stts_pulang"),
                         rs.getString("lama"),rs.getString("nm_dokter"),rs.getString("kd_kamar"),rs.getString("status_bayar"),rs.getString("limit_tarif")
                     });
                     psanak=koneksi.prepareStatement(

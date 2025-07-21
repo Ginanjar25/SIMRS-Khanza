@@ -202,6 +202,7 @@ import surat.SuratSakitPihak2;
 import surat.SuratTidakHamil;
 import fungsi.AntrianPoli;
 import bridging.BPJSRujukanKeluar;
+import fungsi.APIInternalRSPW;
 import modif.DlgBatalPeriksa;
 import permintaan.DlgBookingKuota;
 import rekammedis.RMProgramKFR;
@@ -253,6 +254,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
     private boolean sukses=false;
     private Jurnal jur=new Jurnal();
     private double ttljmdokter=0,ttljmperawat=0,ttlkso=0,ttljasasarana=0,ttlbhp=0,ttlmenejemen=0,ttlpendapatan=0;
+    private APIInternalRSPW apiRSPW = new APIInternalRSPW();
 
     /** Creates new form DlgReg
      * @param parent
@@ -6755,6 +6757,20 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         });
         panelGlass7.add(btnAntrianKasir);
         btnAntrianKasir.setBounds(910, 300, 150, 22);
+        
+        btnCetakLabelRajal = new widget.Button();
+
+        btnCetakLabelRajal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
+        btnCetakLabelRajal.setText("Cetak Barcode RM Rajal");
+        btnCetakLabelRajal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnCetakLabelRajal.setName("btnCetakLabelRajal"); // NOI18N
+        btnCetakLabelRajal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCetakLabelRajalActionPerformed(evt);
+            }
+        });
+        panelGlass7.add(btnCetakLabelRajal);
+        btnCetakLabelRajal.setBounds(1070, 300, 150, 22);
 
         jPanel2.add(panelGlass7, java.awt.BorderLayout.CENTER);
 
@@ -14663,6 +14679,16 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         tampilkasir();
     }
     
+    private void btnCetakLabelRajalActionPerformed(java.awt.event.ActionEvent evt) {
+        if(TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));            
+            apiRSPW.cetakBarcodeRajal(TNoRw.getText());
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }
+    
     /**
     * @param args the command line arguments
     */
@@ -15112,6 +15138,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private javax.swing.JPanel JLabelSKDP;
     private widget.Button btnBookingKuota;
     private widget.Button btnAntrianKasir;
+    private widget.Button btnCetakLabelRajal;
     
     private void tampilkasir() {     
         Valid.tabelKosong(tabModekasir);
