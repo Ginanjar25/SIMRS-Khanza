@@ -5820,9 +5820,9 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         TReaksiDisplay.setText("");
         cmbKategory.setSelectedIndex(0);
         cmbSeverity.setSelectedIndex(0);   
-        Valid.tabelKosong(TabModeTindakan);
-        Valid.tabelKosong(TabModeTindakan2);
-        Valid.tabelKosong(TabModeTindakan3);
+//        Valid.tabelKosong(TabModeTindakan);
+//        Valid.tabelKosong(TabModeTindakan2);
+//        Valid.tabelKosong(TabModeTindakan3);
 }//GEN-LAST:event_BtnBatalActionPerformed
 
     private void BtnBatalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnBatalKeyPressed
@@ -11828,22 +11828,52 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             menejemen=new double[jml];
 
             index=0;        
-            for(i=0;i<TabModeTindakan.getRowCount();i++){
-                if(TabModeTindakan.getValueAt(i,0).toString().equals("true")){
-                    pilih[index]=true;
-                    kode[index]=TabModeTindakan.getValueAt(i,1).toString();
-                    nama[index]=TabModeTindakan.getValueAt(i,2).toString();
-                    kategori[index]=TabModeTindakan.getValueAt(i,3).toString();
-                    totaltnd[index]=Double.parseDouble(TabModeTindakan.getValueAt(i,4).toString());
-                    bagianrs[index]=Double.parseDouble(TabModeTindakan.getValueAt(i,5).toString());
-                    bhp[index]=Double.parseDouble(TabModeTindakan.getValueAt(i,6).toString());
-                    jmdokter[index]=Double.parseDouble(TabModeTindakan.getValueAt(i,7).toString());
-                    jmperawat[index]=Double.parseDouble(TabModeTindakan.getValueAt(i,8).toString());  
-                    kso[index]=Double.parseDouble(TabModeTindakan.getValueAt(i,9).toString());
-                    menejemen[index]=Double.parseDouble(TabModeTindakan.getValueAt(i,10).toString());  
-                    index++;
+            for (i = 0; i < TabModeTindakan.getRowCount(); i++) {
+                if (TabModeTindakan.getValueAt(i, 0).toString().equals("true")) {
+                    //cari tindakan terpilih berdasrkan cara bayar
+                    pstindakan = koneksi.prepareStatement("select jns_perawatan.kd_jenis_prw,jns_perawatan.nm_perawatan,kategori_perawatan.nm_kategori,"
+                            + "jns_perawatan.total_byrdr,jns_perawatan.total_byrpr,jns_perawatan.total_byrdrpr,jns_perawatan.bhp,jns_perawatan.material,"
+                            + "jns_perawatan.tarif_tindakandr,jns_perawatan.tarif_tindakanpr,jns_perawatan.kso,jns_perawatan.menejemen from jns_perawatan inner join kategori_perawatan "
+                            + "on jns_perawatan.kd_kategori=kategori_perawatan.kd_kategori  "
+                            + "where jns_perawatan.total_byrdr>0 and jns_perawatan.status='1' and jns_perawatan.kd_pj=? and jns_perawatan.kd_jenis_prw like ?");
+                    try {
+                        String kd_jenis_prw = TabModeTindakan.getValueAt(i, 1).toString();
+                        String hasil = kd_jenis_prw.contains("-") ? kd_jenis_prw.split("-")[0] : kd_jenis_prw;
+                        pstindakan.setString(1, kd_pj.trim());
+                        pstindakan.setString(2, "%" + hasil + "%");
+                        rstindakan=pstindakan.executeQuery();
+                        while (rstindakan.next()) {
+                            pilih[index] = true;
+                            kode[index] = rstindakan.getString("kd_jenis_prw");
+                            nama[index] = rstindakan.getString("nm_perawatan");
+                            kategori[index] = rstindakan.getString("nm_kategori");
+                            totaltnd[index] =  rstindakan.getDouble("total_byrdr");
+                            bagianrs[index] = rstindakan.getDouble("material");
+                            bhp[index] = rstindakan.getDouble("bhp");
+                            jmdokter[index] = rstindakan.getDouble("tarif_tindakandr");
+                            jmperawat[index] = rstindakan.getDouble("tarif_tindakanpr");
+                            kso[index] = rstindakan.getDouble("kso");
+                            menejemen[index] = rstindakan.getDouble("menejemen");
+                            index++;
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("Notifikasi : " + e);
+                    }
+//                    pilih[index] = true;
+//                    kode[index] = TabModeTindakan.getValueAt(i, 1).toString();
+//                    nama[index] = TabModeTindakan.getValueAt(i, 2).toString();
+//                    kategori[index] = TabModeTindakan.getValueAt(i, 3).toString();
+//                    totaltnd[index] = Double.parseDouble(TabModeTindakan.getValueAt(i, 4).toString());
+//                    bagianrs[index] = Double.parseDouble(TabModeTindakan.getValueAt(i, 5).toString());
+//                    bhp[index] = Double.parseDouble(TabModeTindakan.getValueAt(i, 6).toString());
+//                    jmdokter[index] = Double.parseDouble(TabModeTindakan.getValueAt(i, 7).toString());
+//                    jmperawat[index] = Double.parseDouble(TabModeTindakan.getValueAt(i, 8).toString());
+//                    kso[index] = Double.parseDouble(TabModeTindakan.getValueAt(i, 9).toString());
+//                    menejemen[index] = Double.parseDouble(TabModeTindakan.getValueAt(i, 10).toString());
+//                    index++;
                 }
-            }       
+            }
 
             Valid.tabelKosong(TabModeTindakan);
 
@@ -11970,18 +12000,48 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             index=0;        
             for(i=0;i<TabModeTindakan2.getRowCount();i++){
                 if(TabModeTindakan2.getValueAt(i,0).toString().equals("true")){
-                    pilih[index]=true;
-                    kode[index]=TabModeTindakan2.getValueAt(i,1).toString();
-                    nama[index]=TabModeTindakan2.getValueAt(i,2).toString();
-                    kategori[index]=TabModeTindakan2.getValueAt(i,3).toString();
-                    totaltnd[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,4).toString());
-                    bagianrs[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,5).toString());
-                    bhp[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,6).toString());
-                    jmdokter[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,7).toString());
-                    jmperawat[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,8).toString());  
-                    kso[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,9).toString());
-                    menejemen[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,10).toString());  
-                    index++;
+                    
+                    pstindakan = koneksi.prepareStatement("select jns_perawatan.kd_jenis_prw,jns_perawatan.nm_perawatan,kategori_perawatan.nm_kategori,"+
+                        "jns_perawatan.total_byrdr,jns_perawatan.total_byrpr,jns_perawatan.total_byrdrpr,jns_perawatan.bhp,jns_perawatan.material,"+
+                        "jns_perawatan.tarif_tindakandr,jns_perawatan.tarif_tindakanpr,jns_perawatan.kso,jns_perawatan.menejemen from jns_perawatan inner join kategori_perawatan "+
+                        "on jns_perawatan.kd_kategori=kategori_perawatan.kd_kategori  "+
+                        "where jns_perawatan.total_byrpr>0 and jns_perawatan.status='1' and jns_perawatan.kd_pj=? and jns_perawatan.kd_jenis_prw like ?");
+                    try {
+                        String kd_jenis_prw = TabModeTindakan2.getValueAt(i, 1).toString();
+                        String hasil = kd_jenis_prw.contains("-") ? kd_jenis_prw.split("-")[0] : kd_jenis_prw;
+                        pstindakan.setString(1, kd_pj.trim());
+                        pstindakan.setString(2, "%" + hasil + "%");
+                        rstindakan=pstindakan.executeQuery();
+                        while (rstindakan.next()) {
+                            pilih[index] = true;
+                            kode[index] = rstindakan.getString("kd_jenis_prw");
+                            nama[index] = rstindakan.getString("nm_perawatan");
+                            kategori[index] = rstindakan.getString("nm_kategori");
+                            totaltnd[index] =  rstindakan.getDouble("total_byrpr");
+                            bagianrs[index] = rstindakan.getDouble("material");
+                            bhp[index] = rstindakan.getDouble("bhp");
+                            jmdokter[index] = rstindakan.getDouble("tarif_tindakandr");
+                            jmperawat[index] = rstindakan.getDouble("tarif_tindakanpr");
+                            kso[index] = rstindakan.getDouble("kso");
+                            menejemen[index] = rstindakan.getDouble("menejemen");
+                            index++;
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("Notifikasi : " + e);
+                    }
+//                    pilih[index]=true;
+//                    kode[index]=TabModeTindakan2.getValueAt(i,1).toString();
+//                    nama[index]=TabModeTindakan2.getValueAt(i,2).toString();
+//                    kategori[index]=TabModeTindakan2.getValueAt(i,3).toString();
+//                    totaltnd[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,4).toString());
+//                    bagianrs[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,5).toString());
+//                    bhp[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,6).toString());
+//                    jmdokter[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,7).toString());
+//                    jmperawat[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,8).toString());  
+//                    kso[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,9).toString());
+//                    menejemen[index]=Double.parseDouble(TabModeTindakan2.getValueAt(i,10).toString());  
+//                    index++;
                 }
             }       
 
@@ -12110,18 +12170,48 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             index=0;        
             for(i=0;i<TabModeTindakan3.getRowCount();i++){
                 if(TabModeTindakan3.getValueAt(i,0).toString().equals("true")){
-                    pilih[index]=true;
-                    kode[index]=TabModeTindakan3.getValueAt(i,1).toString();
-                    nama[index]=TabModeTindakan3.getValueAt(i,2).toString();
-                    kategori[index]=TabModeTindakan3.getValueAt(i,3).toString();
-                    totaltnd[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,4).toString());
-                    bagianrs[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,5).toString());
-                    bhp[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,6).toString());
-                    jmdokter[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,7).toString());
-                    jmperawat[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,8).toString());  
-                    kso[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,9).toString());
-                    menejemen[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,10).toString());  
-                    index++;
+                    
+                     pstindakan = koneksi.prepareStatement("select jns_perawatan.kd_jenis_prw,jns_perawatan.nm_perawatan,kategori_perawatan.nm_kategori,"+
+                        "jns_perawatan.total_byrdr,jns_perawatan.total_byrpr,jns_perawatan.total_byrdrpr,jns_perawatan.bhp,jns_perawatan.material,"+
+                        "jns_perawatan.tarif_tindakandr,jns_perawatan.tarif_tindakanpr,jns_perawatan.kso,jns_perawatan.menejemen from jns_perawatan inner join kategori_perawatan "+
+                        "on jns_perawatan.kd_kategori=kategori_perawatan.kd_kategori  "+
+                        "where jns_perawatan.total_byrdrpr>0 and jns_perawatan.status='1' and jns_perawatan.kd_pj=? and jns_perawatan.kd_jenis_prw like ?");
+                    try {
+                        String kd_jenis_prw = TabModeTindakan3.getValueAt(i, 1).toString();
+                        String hasil = kd_jenis_prw.contains("-") ? kd_jenis_prw.split("-")[0] : kd_jenis_prw;
+                        pstindakan.setString(1, kd_pj.trim());
+                        pstindakan.setString(2, "%" + hasil + "%");
+                        rstindakan=pstindakan.executeQuery();
+                        while (rstindakan.next()) {
+                            pilih[index] = true;
+                            kode[index] = rstindakan.getString("kd_jenis_prw");
+                            nama[index] = rstindakan.getString("nm_perawatan");
+                            kategori[index] = rstindakan.getString("nm_kategori");
+                            totaltnd[index] =  rstindakan.getDouble("total_byrdrpr");
+                            bagianrs[index] = rstindakan.getDouble("material");
+                            bhp[index] = rstindakan.getDouble("bhp");
+                            jmdokter[index] = rstindakan.getDouble("tarif_tindakandr");
+                            jmperawat[index] = rstindakan.getDouble("tarif_tindakanpr");
+                            kso[index] = rstindakan.getDouble("kso");
+                            menejemen[index] = rstindakan.getDouble("menejemen");
+                            index++;
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("Notifikasi : " + e);
+                    }
+//                    pilih[index]=true;
+//                    kode[index]=TabModeTindakan3.getValueAt(i,1).toString();
+//                    nama[index]=TabModeTindakan3.getValueAt(i,2).toString();
+//                    kategori[index]=TabModeTindakan3.getValueAt(i,3).toString();
+//                    totaltnd[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,4).toString());
+//                    bagianrs[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,5).toString());
+//                    bhp[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,6).toString());
+//                    jmdokter[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,7).toString());
+//                    jmperawat[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,8).toString());  
+//                    kso[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,9).toString());
+//                    menejemen[index]=Double.parseDouble(TabModeTindakan3.getValueAt(i,10).toString());  
+//                    index++;
                 }
             }       
 

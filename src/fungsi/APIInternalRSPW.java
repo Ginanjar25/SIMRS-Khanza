@@ -81,6 +81,7 @@ public class APIInternalRSPW {
                     jsonBody.put("dokter", rs.getString("nm_dokter"));
                     jsonBody.put("cara_bayar", rs.getString("png_jawab") + " " + rs.getString("kls"));
                     jsonBody.put("no_sep", rs.getString("sep"));
+                    jsonBody.put("no_reg", rs.getString("no_reg"));
                     jsonBody.put("copies", copies);
                 }
                 URL url = new URL(link);
