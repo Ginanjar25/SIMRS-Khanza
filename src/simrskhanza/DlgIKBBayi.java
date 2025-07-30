@@ -3218,6 +3218,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                             Valid.SetInteger(tbAPGAR.getValueAt(3,6).toString())+"','"+Valid.SetInteger(tbAPGAR.getValueAt(4,6).toString())+"','"+N10.getText()+"','"+Resusitas.getText()+"','"+ObatDiberikan.getText()+"','"+
                             Mikasi.getText()+"','"+Mikonium.getText()+"','" + PekerjaanIbu.getText()+"','" + PekerjaanAyah.getText()+"','" +(LahirTunggal.isSelected() ? "Tunggal" : "Kembar")+"','"+ (LahirHidup.isSelected() ? "Hidup" : "Mati") +"','" +
                             kembar.getText() +"'","No.RM/No.SKL")==true){
+                            Sequel.mengedit("pasien", "no_rkm_medis='"+NoRm.getText()+"'", "tgl_lahir='"+Valid.SetTgl(Lahir.getSelectedItem()+"")+"'");
                             emptTeks();
                     }
                 } catch (Exception e) {
