@@ -7364,10 +7364,6 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 }
             }
             
-            if(notaranap.equals("Yes")){
-                BtnNotaActionPerformed(null);
-            }
-            
             Sequel.AutoComitFalse();
             sukses=true;              
             for(i=0;i<tbBilling.getRowCount();i++){  
@@ -7737,14 +7733,17 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 }
             }
                 
-            if(sukses==true){
-                Valid.editTable(tabModeRwJlDr,"reg_periksa","no_rawat",TNoRw,"status_bayar='Sudah Bayar'");
-                if(!norawatbayi.equals("")){
-                    Sequel.mengedit("reg_periksa","no_rawat='"+norawatbayi+"'","status_bayar='Sudah Bayar'");
-                }  
-                Sequel.meghapus("temporary_tambahan_potongan","no_rawat",TNoRw.getText());
+            if (sukses == true) {
+                Valid.editTable(tabModeRwJlDr, "reg_periksa", "no_rawat", TNoRw, "status_bayar='Sudah Bayar'");
+                if (!norawatbayi.equals("")) {
+                    Sequel.mengedit("reg_periksa", "no_rawat='" + norawatbayi + "'", "status_bayar='Sudah Bayar'");
+                }
+                Sequel.meghapus("temporary_tambahan_potongan", "no_rawat", TNoRw.getText());
                 Sequel.Commit();
-                JOptionPane.showMessageDialog(null,"Proses simpan selesai...!"); 
+                JOptionPane.showMessageDialog(null, "Proses simpan selesai...!");
+                if (notaranap.equals("Yes")) {
+                    BtnNotaActionPerformed(null);
+                }
             }else{
                 JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
                 Sequel.RollBack();
