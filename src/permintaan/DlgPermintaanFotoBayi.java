@@ -1842,7 +1842,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     menit.setSelectedItem(rs.getString("jam_lahir").substring(3,5));
                     detik.setSelectedItem(rs.getString("jam_lahir").substring(6,8));
                     Panjang.setText(rs.getString("panjang_badan"));
-                    Berat.setText(rs.getString("panjang_badan"));
+                    Berat.setText(rs.getString("berat_badan"));
                     Golda.setText(rs.getString("golda"));
                     KdDokter1.setText(rs.getString("kd_dokter"));
                     TDokter.setText(rs.getString("nm_dokter"));
