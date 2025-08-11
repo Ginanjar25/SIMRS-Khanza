@@ -1605,19 +1605,25 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 Valid.MyReportqry("rptItemResep2.jasper","report","::[ Aturan Pakai Obat ]::",
                     "select resep_obat.no_resep,resep_obat.tgl_perawatan,resep_obat.jam,pasien.tgl_lahir," +
                     "resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,obat_racikan.nama_racik," +
-                    "obat_racikan.aturan_pakai,obat_racikan.jml_dr,metode_racik.nm_racik,pasien.jk,reg_periksa.umurdaftar,reg_periksa.sttsumur " +
-                    ", (SELECT ab.kadaluarsa FROM pemesanan aa " +
-                    "JOIN detailpesan ab ON ab.no_faktur = aa.no_faktur " +
-                    "WHERE ab.kode_brng = dpo.kode_brng ORDER BY aa.tgl_pesan DESC  LIMIT 1) AS exp "+
-                    "from resep_obat inner join reg_periksa inner join pasien inner join " +
-                    "obat_racikan inner join metode_racik on resep_obat.no_rawat=reg_periksa.no_rawat " +
-                    "and reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
-                    "and obat_racikan.kd_racik=metode_racik.kd_racik " +
-                    "and resep_obat.no_rawat=obat_racikan.no_rawat and " +
-                    "resep_obat.tgl_perawatan=obat_racikan.tgl_perawatan and " +
-                    "resep_obat.jam=obat_racikan.jam and resep_obat.no_rawat=obat_racikan.no_rawat "+
-                    " INNER JOIN detail_pemberian_obat dpo ON dpo.no_rawat = resep_obat.no_rawat AND dpo.tgl_perawatan = resep_obat.tgl_perawatan AND dpo.jam = resep_obat.jam "+
-                    "where resep_obat.no_resep='"+NoResep.getText()+"' AND (SELECT ab.kadaluarsa FROM pemesanan aa JOIN detailpesan ab ON ab.no_faktur = aa.no_faktur WHERE ab.kode_brng = dpo.kode_brng  ORDER BY aa.tgl_pesan DESC  LIMIT 1) != '0000-00-00' order by exp desc limit 1",param);
+                    "obat_racikan.aturan_pakai,obat_racikan.jml_dr,metode_racik.nm_racik,pasien.jk,reg_periksa.umurdaftar,reg_periksa.sttsumur, obat_racikan.exp " +
+                    "from resep_obat inner join reg_periksa inner join pasien inner JOIN  " +
+                    "(" +
+                    "	SELECT rc.no_rawat, rc.tgl_perawatan, rc.jam, rc.nama_racik,rc.jml_dr, rc.aturan_pakai, rc.kd_racik,rc.no_racik ,(SELECT ab.kadaluarsa FROM pemesanan aa  " +
+                    "	JOIN detailpesan ab ON ab.no_faktur = aa.no_faktur  " +
+                    "	WHERE ab.kode_brng = dor.kode_brng ORDER BY aa.tgl_pesan DESC  LIMIT 1) AS EXP " +
+                    "		FROM obat_racikan rc " +
+                    "		JOIN detail_obat_racikan dor ON dor.no_rawat = rc.no_rawat AND dor.tgl_perawatan = rc.tgl_perawatan AND dor.jam = rc.jam AND dor.no_racik = rc.no_racik" +
+                    "	WHERE (SELECT ab.kadaluarsa FROM pemesanan aa  " +
+                    "	JOIN detailpesan ab ON ab.no_faktur = aa.no_faktur  " +
+                    "	WHERE ab.kode_brng = dor.kode_brng ORDER BY aa.tgl_pesan DESC  LIMIT 1) != \"0000-00-00\"" +
+                    ")obat_racikan " +
+                    "inner join metode_racik on resep_obat.no_rawat=reg_periksa.no_rawat  " +
+                    "and reg_periksa.no_rkm_medis=pasien.no_rkm_medis  " +
+                    "and obat_racikan.kd_racik=metode_racik.kd_racik  " +
+                    "and resep_obat.no_rawat=obat_racikan.no_rawat and  " +
+                    "resep_obat.tgl_perawatan=obat_racikan.tgl_perawatan and  " +
+                    "resep_obat.jam=obat_racikan.jam and resep_obat.no_rawat=obat_racikan.no_rawat " +
+                    "where resep_obat.no_resep='"+NoResep.getText()+"' GROUP BY obat_racikan.no_racik",param);
             }                
             this.setCursor(Cursor.getDefaultCursor());
         }
