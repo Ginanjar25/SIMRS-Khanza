@@ -1480,7 +1480,7 @@ public class DlgTagihanOperasi extends javax.swing.JDialog {
         FormInput.add(jLabel5);
         jLabel5.setBounds(0, 40, 81, 23);
 
-        Kategori.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-", "Khusus", "Besar", "Sedang", "Kecil", "Elektive", "Emergency" }));
+        Kategori.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-", "Besar Khusus", "Besar", "Sedang", "Kecil", "Elektive", "Emergency" }));
         Kategori.setName("Kategori"); // NOI18N
         Kategori.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -3415,7 +3415,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     y=0;                
                 }
                 biayaobat=biayaobat+y;
-            }
+            }            
         }
     }
     
@@ -3454,9 +3454,10 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                                      Double.parseDouble(tbtindakan.getValueAt(row,31).toString()), row,32);
                 } catch (Exception e) {
                     tbtindakan.setValueAt(0, row,32);
-                }                    
+                }
+                SetKategoriOperasi(tbtindakan.getValueAt(row,2).toString(),tbtindakan.getValueAt(row,1).toString());
             }
-           
+            
             biayatindakan=0;
             y=0;
             int row2=tbtindakan.getRowCount();
@@ -3464,7 +3465,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 switch (tbtindakan.getValueAt(r,0).toString()) {
                     case "true":
                         try {
-                            y=Double.parseDouble(tbtindakan.getValueAt(r,32).toString());
+                            y=Double.parseDouble(tbtindakan.getValueAt(r,32).toString());                            
                         } catch (Exception e) {
                             y=0;
                         }                        
@@ -3566,6 +3567,31 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         TCariPaket.setText(Operasi);
         kdoperator1.setText(kodedokter);
         nmoperator1.setText(namadokter);
+    }
+    
+    public void SetKategoriOperasi(String nama_paket, String kd_paket ) {
+        String KodePaket = "";
+        if (nama_paket.contains("CITO") || nama_paket.contains("2 Tindakan")) {
+            KodePaket = Sequel.cariIsi("SELECT SUBSTRING(po.kode_paket,2,3) FROM paket_operasi po WHERE po.kode_paket = ?", kd_paket);
+        } else {
+            KodePaket = Sequel.cariIsi("SELECT SUBSTRING(po.kode_paket,1,3) FROM paket_operasi po WHERE po.kode_paket = ?", kd_paket);
+        }
+        switch (KodePaket) {
+            case "OBK":
+                Kategori.setSelectedIndex(1);
+                break;
+            case "OBS":
+                Kategori.setSelectedIndex(2);
+                break;
+            case "OSD":
+                Kategori.setSelectedIndex(3);
+                break;
+            case "OKC":
+                Kategori.setSelectedIndex(4);
+                break;
+            default:
+                Kategori.setSelectedIndex(0);
+        }
     }
  
 }
