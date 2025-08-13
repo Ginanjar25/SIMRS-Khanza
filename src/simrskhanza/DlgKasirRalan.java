@@ -203,6 +203,7 @@ import surat.SuratTidakHamil;
 import fungsi.AntrianPoli;
 import bridging.BPJSRujukanKeluar;
 import fungsi.APIInternalRSPW;
+import keuangan.DlgDeposit;
 import modif.DlgBatalPeriksa;
 import permintaan.DlgBookingKuota;
 import rekammedis.RMProgramKFR;
@@ -1191,6 +1192,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         jLabel8 = new widget.Label();
         TPasienCari = new widget.TextBox();
         ppResumePerawat = new javax.swing.JMenuItem();
+        MnDeposit = new javax.swing.JMenuItem();
 
         jPopupMenu1.setForeground(new java.awt.Color(50, 50, 50));
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
@@ -3064,7 +3066,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         MnObatRalan.add(MnReturJual);
 
         jPopupMenu1.add(MnObatRalan);
-
+        
         MnPilihBilling.setBackground(new java.awt.Color(255, 255, 254));
         MnPilihBilling.setForeground(new java.awt.Color(50, 50, 50));
         MnPilihBilling.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
@@ -3108,6 +3110,23 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         MnPilihBilling.add(MnBilling);
 
         jPopupMenu1.add(MnPilihBilling);
+        
+        MnDeposit.setBackground(new java.awt.Color(255, 255, 254));
+        MnDeposit.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnDeposit.setForeground(new java.awt.Color(50, 50, 50));
+        MnDeposit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnDeposit.setText("Deposit/Titipan Pasien");
+        MnDeposit.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnDeposit.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnDeposit.setName("MnDeposit"); // NOI18N
+        MnDeposit.setPreferredSize(new java.awt.Dimension(200, 26));
+        MnDeposit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnDepositActionPerformed(evt);
+            }
+        });
+        
+        jPopupMenu1.add(MnDeposit);
 
         jSeparator12.setBackground(new java.awt.Color(190, 220, 180));
         jSeparator12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 220, 180)));
@@ -14689,6 +14708,26 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         }
     }
     
+    private void MnDepositActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnDepositActionPerformed
+        if(tabModekasir.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+            TCari.requestFocus();
+        }else if(TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+            tbKasirRalan.requestFocus();
+        }else {
+            if (tbKasirRalan.getSelectedRow() > -1) {
+                DlgDeposit deposit = new DlgDeposit(null, false);
+                BPJSRujukanKeluar rujuk = new BPJSRujukanKeluar(null, false);
+                deposit.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                deposit.setLocationRelativeTo(internalFrame1);
+                deposit.setNoRm(TNoRw.getText(), DTPCari1.getDate(), DTPCari2.getDate());
+                deposit.tampil();
+                deposit.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_MnDepositActionPerformed
+    
     /**
     * @param args the command line arguments
     */
@@ -15139,6 +15178,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private widget.Button btnBookingKuota;
     private widget.Button btnAntrianKasir;
     private widget.Button btnCetakLabelRajal;
+    private javax.swing.JMenuItem MnDeposit;
     
     private void tampilkasir() {     
         Valid.tabelKosong(tabModekasir);
@@ -15515,6 +15555,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         MnCatatanObservasiInduksiPersalinan.setEnabled(akses.getcatatan_observasi_induksi_persalinan());
         MnPermintaanKonsultasiMedik.setEnabled(akses.getkonsultasi_medik());
         ppResumePerawat.setEnabled(akses.getsoap_perawatan());
+        MnDeposit.setEnabled(akses.getdeposit_pasien());
         
         
         if(akses.getkode().equals("Admin Utama")){

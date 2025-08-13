@@ -188,6 +188,7 @@ import surat.SuratSakit;
 import surat.SuratSakitPihak2;
 import surat.SuratTidakHamil;
 import bridging.BPJSRujukanKeluar;
+import keuangan.DlgDeposit;
 import modif.DlgBatalPeriksa;
 import rekammedis.RMKonsultasiDokter;
 
@@ -1081,6 +1082,7 @@ public final class DlgIGD extends javax.swing.JDialog {
         btnPetugas3 = new widget.Button();
         
         MnRMLembarKonsultasi = new javax.swing.JMenuItem();
+        MnDeposit = new javax.swing.JMenuItem();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
         
@@ -2492,6 +2494,23 @@ public final class DlgIGD extends javax.swing.JDialog {
         MnPilihBilling.add(MnBilling);
 
         jPopupMenu1.add(MnPilihBilling);
+        
+        MnDeposit.setBackground(new java.awt.Color(255, 255, 254));
+        MnDeposit.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnDeposit.setForeground(new java.awt.Color(50, 50, 50));
+        MnDeposit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnDeposit.setText("Deposit/Titipan Pasien");
+        MnDeposit.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnDeposit.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnDeposit.setName("MnDeposit"); // NOI18N
+        MnDeposit.setPreferredSize(new java.awt.Dimension(200, 26));
+        MnDeposit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnDepositActionPerformed(evt);
+            }
+        });
+        
+        jPopupMenu1.add(MnDeposit);
 
         jSeparator12.setBackground(new java.awt.Color(190, 220, 180));
         jSeparator12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 220, 180)));
@@ -11467,6 +11486,26 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }
     }
     
+    private void MnDepositActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnDepositActionPerformed
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+            TCari.requestFocus();
+        }else if(TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+            tbPetugas.requestFocus();
+        }else {
+            if (tbPetugas.getSelectedRow() > -1) {
+                DlgDeposit deposit = new DlgDeposit(null, false);
+                BPJSRujukanKeluar rujuk = new BPJSRujukanKeluar(null, false);
+                deposit.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                deposit.setLocationRelativeTo(internalFrame1);
+                deposit.setNoRm(TNoRw.getText(), DTPCari1.getDate(), DTPCari2.getDate());
+                deposit.tampil();
+                deposit.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_MnDepositActionPerformed
+    
     /**
     * @data args the command line arguments
     */
@@ -11839,6 +11878,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     
     private javax.swing.JMenuItem ppRujukKeluar;
     private javax.swing.JMenuItem MnRMLembarKonsultasi;
+    private javax.swing.JMenuItem MnDeposit;
     
     private void tampil() {
         Valid.tabelKosong(tabMode);   
@@ -12279,6 +12319,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         MnCatatanObservasiInduksiPersalinan.setEnabled(akses.getcatatan_observasi_induksi_persalinan());
         ppResumePerawat.setEnabled(akses.getsoap_perawatan());
         MnRMLembarKonsultasi.setEnabled(akses.getdata_resume_pasien());
+        MnDeposit.setEnabled(akses.getdeposit_pasien());
         
         if(!akses.getkode().equals("Admin Utama")){
             BtnHapus.setEnabled(false);

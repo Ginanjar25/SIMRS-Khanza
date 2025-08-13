@@ -631,6 +631,7 @@ public class DlgReturJual extends javax.swing.JDialog {
         panelisi4.add(label17);
         label17.setBounds(0, 10, 63, 23);
 
+        Kdbar.setEditable(false);
         Kdbar.setName("Kdbar"); // NOI18N
         Kdbar.setPreferredSize(new java.awt.Dimension(80, 23));
         Kdbar.addKeyListener(new java.awt.event.KeyAdapter() {

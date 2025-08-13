@@ -418,6 +418,7 @@ public class DlgCariTagihanOperasi extends javax.swing.JDialog {
 
         Kd2 = new widget.TextBox();
         jPopupMenu1 = new javax.swing.JPopupMenu();
+        MnUbahTagihanOperasi = new javax.swing.JMenuItem();
         MnHapusObatOperasi = new javax.swing.JMenuItem();
         MnHapusTagihanOperasi = new javax.swing.JMenuItem();
         MnUbahOperatorPetugas = new javax.swing.JMenuItem();
@@ -570,6 +571,20 @@ public class DlgCariTagihanOperasi extends javax.swing.JDialog {
         Kd2.setPreferredSize(new java.awt.Dimension(207, 23));
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
+
+        MnUbahTagihanOperasi.setBackground(new java.awt.Color(255, 255, 254));
+        MnUbahTagihanOperasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnUbahTagihanOperasi.setForeground(new java.awt.Color(50, 50, 50));
+        MnUbahTagihanOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnUbahTagihanOperasi.setText("Ubah Tagihan Operasi");
+        MnUbahTagihanOperasi.setName("MnUbahTagihanOperasi"); // NOI18N
+        MnUbahTagihanOperasi.setPreferredSize(new java.awt.Dimension(220, 26));
+        MnUbahTagihanOperasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnUbahTagihanOperasiActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(MnUbahTagihanOperasi);
 
         MnHapusObatOperasi.setBackground(new java.awt.Color(255, 255, 254));
         MnHapusObatOperasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -3124,6 +3139,15 @@ private void MnHapusObatOperasiActionPerformed(java.awt.event.ActionEvent evt) {
         template.setVisible(true);
     }//GEN-LAST:event_btnAmbilPhoto1ActionPerformed
 
+    private void MnUbahTagihanOperasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnUbahTagihanOperasiActionPerformed
+        DlgTagihanOperasi dlgro=new DlgTagihanOperasi(null,false);
+        dlgro.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        dlgro.setLocationRelativeTo(internalFrame1);
+        dlgro.setNoRmEdit(tbDokter.getValueAt(tbDokter.getSelectedRow(),1).toString(),tbDokter.getValueAt(tbDokter.getSelectedRow(),2).toString(),"Ranap",tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString() );  
+        dlgro.setVisible(true);
+//        dispose();   
+    }//GEN-LAST:event_MnUbahTagihanOperasiActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -3167,6 +3191,7 @@ private void MnHapusObatOperasiActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JMenuItem MnLaporanOperasi;
     private javax.swing.JMenuItem MnUbahLaporan;
     private javax.swing.JMenuItem MnUbahOperatorPetugas;
+    private javax.swing.JMenuItem MnUbahTagihanOperasi;
     private widget.TextBox NoRawat;
     private widget.TextBox PostOp;
     private widget.TextBox PreOp;
