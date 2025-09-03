@@ -2428,9 +2428,10 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         if(Sequel.queryu2tf("delete from penilaian_medis_igd where no_rawat=?",1,new String[]{
             tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
         })==true){
-            tabMode.removeRow(tbObat.getSelectedRow());
-            LCount.setText(""+tabMode.getRowCount());
-            TabRawat.setSelectedIndex(1);
+//            tabMode.removeRow(tbObat.getSelectedRow());
+//            LCount.setText(""+tabMode.getRowCount());
+//            TabRawat.setSelectedIndex(1);
+              hapusSOAP();
         }else{
             JOptionPane.showMessageDialog(null,"Gagal menghapus..!!");
         }
@@ -2444,6 +2445,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                     Thoraks.getSelectedItem().toString(),Abdomen.getSelectedItem().toString(),Genital.getSelectedItem().toString(),Ekstremitas.getSelectedItem().toString(),KetFisik.getText(),KetLokalis.getText(),EKG.getText(),
                     Radiologi.getText(),Laborat.getText(),Diagnosis.getText(),Tatalaksana.getText(),tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
             })==true){
+               editSOAP();
                tbObat.setValueAt(TNoRw.getText(),tbObat.getSelectedRow(),0);
                tbObat.setValueAt(TNoRM.getText(),tbObat.getSelectedRow(),1);
                tbObat.setValueAt(TPasien.getText(),tbObat.getSelectedRow(),2);
@@ -2485,7 +2487,6 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                tbObat.setValueAt(Laborat.getText(),tbObat.getSelectedRow(),38);
                tbObat.setValueAt(Diagnosis.getText(),tbObat.getSelectedRow(),39);
                tbObat.setValueAt(Tatalaksana.getText(),tbObat.getSelectedRow(),40);
-               emptTeks();
                TabRawat.setSelectedIndex(1);
         }
     }
@@ -2506,10 +2507,47 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                     Diagnosis.getText(),Tatalaksana.getText()
                 });
                 LCount.setText(""+tabMode.getRowCount());
-                emptTeks();
                 Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Sudah'");
+                simpanSOAP();
         }
-        
         Sequel.mengedit("antripoli","no_rawat = ?", "status=?, updated_at = now() ", 2, new String[]{"1", TNoRw.getText()});
+    }
+    
+    private void simpanSOAP() {
+        String keluhan = "IGD : " + RPS.getText();
+        String pemeriksaan = "IGD : " + "Ket Fisik : " + KetFisik.getText() + ", Ket Lokalis : " + KetLokalis.getText() + ", TENSI : " + TD.getText() + ", SUHU : " + Suhu.getText() + ", NADI : " + Nadi.getText() + ", GCS : " + GCS.getText() + ", TB : " + TB.getText() + ", BB : " + BB.getText() + ", spo : " + SPO.getText() + ", RESPIRASI : " + RR.getText();
+        if (Sequel.menyimpantf("pemeriksaan_ralan", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Pemeriksaan Ralan", 21, new String[]{
+            TNoRw.getText(), Valid.SetTgl(TglAsuhan.getSelectedItem() + ""), TglAsuhan.getSelectedItem().toString().substring(11, 19), Suhu.getText(), TD.getText(), Nadi.getText(),
+            RR.getText(), TB.getText(), BB.getText(), SPO.getText(), GCS.getText(), Kesadaran.getSelectedItem().toString().equals("Koma") ? "Coma" : Kesadaran.getSelectedItem().toString(),
+            KeluhanUtama.getText(), pemeriksaan, Alergi.getText(), "-", "-", "-", "-", "-", KdDokter.getText()
+        }) == true) {
+            emptTeks();
+        }
+    }
+    
+    private void editSOAP() {
+        System.out.println(tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString().substring(0, 10));
+        System.out.println(tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString().substring(11, 19));
+        String keluhan = "IGD : " + RPS.getText();
+        String pemeriksaan = "IGD : " + "Ket Fisik : " + KetFisik.getText() + ", Ket Lokalis : " + KetLokalis.getText() + ", TENSI : " + TD.getText() + ", SUHU : " + Suhu.getText() + ", NADI : " + Nadi.getText() + ", GCS : " + GCS.getText() + ", TB : " + TB.getText() + ", BB : " + BB.getText() + ", spo : " + SPO.getText() + ", RESPIRASI : " + RR.getText();
+        if (Sequel.mengedittf("pemeriksaan_ralan", "no_rawat=? and tgl_perawatan = ? and jam_rawat = ? and nip = ?", "tgl_perawatan = ?,jam_rawat = ?, suhu_tubuh=?,tensi=?,nadi=?,respirasi=?,tinggi=?,berat=?,spo2=?,gcs=?,kesadaran=?,keluhan=?,pemeriksaan=?,alergi=?,lingkar_perut=?,rtl=?,penilaian=?,instruksi=?,evaluasi=?", 23, new String[]{
+            Valid.SetTgl(TglAsuhan.getSelectedItem()+""), TglAsuhan.getSelectedItem().toString().substring(11,19), Suhu.getText(), TD.getText(), Nadi.getText(), RR.getText(), TB.getText(), BB.getText(), SPO.getText(), GCS.getText(), Kesadaran.getSelectedItem().toString().equals("Koma") ? "Coma" : Kesadaran.getSelectedItem().toString(),
+            keluhan, pemeriksaan, Alergi.getText(), "-", "-", "-", "-", "-", 
+            tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString(), tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString().substring(0, 10),
+            tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString().substring(11, 19), tbObat.getValueAt(tbObat.getSelectedRow(), 5).toString()
+        }) == true) {
+            emptTeks();
+        }
+    }
+    
+    private void hapusSOAP(){
+        if(Sequel.queryu2tf("delete from pemeriksaan_ralan where no_rawat=? and tgl_perawatan = ? and jam_rawat = ? and nip = ?",4,new String[]{
+                tbObat.getValueAt(tbObat.getSelectedRow(),0).toString(),tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString().substring(0, 10), 
+                    tbObat.getValueAt(tbObat.getSelectedRow(),7).toString().substring(11,19), tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()  
+            })==true){
+                tabMode.removeRow(tbObat.getSelectedRow());
+                LCount.setText(""+tabMode.getRowCount());
+                TabRawat.setSelectedIndex(1);
+            }
     }
 }

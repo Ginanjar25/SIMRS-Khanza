@@ -1080,6 +1080,7 @@ import ziscsr.ZISPenghasilanPenerimaDankes;
 import ziscsr.ZISTernakPenerimaDankes;
 import ziscsr.ZISUkuranRumahPenerimaDankes;
 import fungsi.AntrianPoli;
+import permintaan.DlgBookingKuota;
 
 
 /**
@@ -8319,6 +8320,7 @@ public class frmUtama extends javax.swing.JFrame {
                 lblUser.setText("Log Out");
                 BtnMenu.setEnabled(false);
                 akses.setLogOut();
+                isTutupBookingKuota();
                 isTutup();
                 break;
             case "Log In":
@@ -8372,7 +8374,8 @@ public class frmUtama extends javax.swing.JFrame {
                     BtnLog.setText("Log Out");
                     MnLogin.setText("Log Out");
                     lblStts.setText("Admin : ");
-                    lblUser.setText(akses.getkode());
+//                    lblUser.setText(akses.getkode());
+                    lblUser.setText(Sequel.cariIsi("select concat(nik, ' - ', nama) from pegawai where nik = ?", akses.getkode()));
                     MnGantiPassword.setEnabled(true);
                     MnPengajuanCutiPegawai.setEnabled(true);
                     BtnToolReg.setEnabled(akses.getregistrasi());
@@ -22367,6 +22370,17 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         for (Window win : wins) {
             if (win instanceof JDialog) {
                 win.dispose();
+            }
+        }
+    }
+    
+    private void isTutupBookingKuota() {
+        FlayMenu.setVisible(false);
+        akses.setform("frmUtama");
+        Window[] wins = Window.getWindows();
+        for (Window win : wins) {
+            if (win instanceof DlgBookingKuota) {
+                win.dispose();  // hanya menutup DlgBookingKuota
             }
         }
     }

@@ -4592,6 +4592,9 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             Sequel.cariIsi("select pasien.namakeluarga from pasien where pasien.no_rkm_medis=?",NmAyah,norm);
         }
         autoSKL();
+        TCari.setText(norm);
+        DTPCari1.setSelectedItem(tgllhir);
+        DTPCari1.setSelectedItem(tgllhir);
     }
     
     public void setNoRM2(String norm, String no_rawat, String Alamat) {
@@ -4642,6 +4645,9 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             Sequel.cariIsi("select pasien.namakeluarga from pasien where pasien.no_rkm_medis=?", NmAyah, norm);
         }
         autoSKL();
+        TCari.setText(norm);
+        DTPCari1.setSelectedItem(Lahir.getSelectedItem());
+        DTPCari2.setSelectedItem(Lahir.getSelectedItem());
     }
 
     public void isCek(){

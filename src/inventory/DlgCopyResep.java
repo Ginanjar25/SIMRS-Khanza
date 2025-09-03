@@ -26,6 +26,7 @@ public class DlgCopyResep extends javax.swing.JDialog {
     private String aktifkanparsial="no",norm="",kddokter="",kode_pj="",norawat="",status="";
     private final Properties prop = new Properties();
     private int jmlparsial=0;
+    private double ttl=0;
     
     /** Creates new form 
      * @param parent
@@ -34,7 +35,7 @@ public class DlgCopyResep extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         
-        Object[] row={"No.Resep","Tgl.Resep","Jam Resep","No.Rawat","No.RM","Pasien","Dokter Peresep","Kode Dokter","Status"};
+        Object[] row={"No.Resep","Tgl.Resep","Jam Resep","No.Rawat","No.RM","Pasien","Dokter Peresep","Kode Dokter","Status","",""};
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -44,7 +45,7 @@ public class DlgCopyResep extends javax.swing.JDialog {
         tbPemisahan.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbPemisahan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 10; i++) {
             TableColumn column = tbPemisahan.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(75);
@@ -65,6 +66,8 @@ public class DlgCopyResep extends javax.swing.JDialog {
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
             }else if(i==8){
+                column.setPreferredWidth(85);
+            }else if(i==9){
                 column.setPreferredWidth(85);
             }
         }
@@ -465,6 +468,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
 
     public void tampil() {
         Valid.tabelKosong(tabMode);
+        
         try{  
             if(ChkTanggal.isSelected()==true){
                 ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,"+
@@ -498,18 +502,22 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("kd_dokter"),
                         rs.getString("status")
                     });  
-                    tabMode.addRow(new String[]{"","Jumlah","Satuan","Aturan Pakai","Kode/No","Nama Obat/Racikan","","",rs.getString("status_asal").replaceAll("ralan","Rawat Jalan").replaceAll("ranap","Rawat Inap")});                
+                    tabMode.addRow(new String[]{"","Jumlah","Satuan","Aturan Pakai","Kode/No","Nama Obat/Racikan","","",rs.getString("status_asal").replaceAll("ralan","Rawat Jalan").replaceAll("ranap","Rawat Inap"),"Harga","Sub-Total"});                
                     ps2=koneksi.prepareStatement("select databarang.kode_brng,databarang.nama_brng,resep_dokter.jml,"+
-                        "databarang.kode_sat,resep_dokter.aturan_pakai from resep_dokter inner join databarang on "+
+                        "databarang.kode_sat,resep_dokter.aturan_pakai, (resep_dokter.jml*databarang.ralan) as sub_total, databarang.ralan from resep_dokter inner join databarang on "+
                         "resep_dokter.kode_brng=databarang.kode_brng where resep_dokter.no_resep=? order by databarang.kode_brng");
                     try {
                         ps2.setString(1,rs.getString("no_resep"));
                         rs2=ps2.executeQuery();
                         while(rs2.next()){
                             tabMode.addRow(new String[]{
-                                "",rs2.getString("jml"),rs2.getString("kode_sat"),rs2.getString("aturan_pakai"),rs2.getString("kode_brng"),rs2.getString("nama_brng"),"","",""
+                                "",rs2.getString("jml"),rs2.getString("kode_sat"),rs2.getString("aturan_pakai"),rs2.getString("kode_brng"),rs2.getString("nama_brng"),"","","",Valid.SetAngka(rs2.getDouble("ralan")),Valid.SetAngka(rs2.getDouble("sub_total"))
                             });
+                            ttl=ttl+rs2.getDouble("sub_total");
                         }
+                         tabMode.addRow(new String[]{
+                                "","","","","","","","","","Total Harga :", Valid.SetAngka(ttl)
+                            });
                     } catch (Exception e) {
                         System.out.println("Notifikasi 2 : "+e);
                     } finally{

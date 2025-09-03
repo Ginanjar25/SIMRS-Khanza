@@ -1571,6 +1571,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         TCari.setText(nokartu);
         NoSEP.setText(nosep);
         ChkInput.setSelected(true);
+        Sequel.cariIsi("select diagnosa from permintaan_ranap where no_rawat = ?",Diagnosa, norawat);
         isForm();
         tampil();
     }
@@ -1586,6 +1587,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         ChkInput.setSelected(true);
         Diagnosa.setText(diagnosa);
         NoSEP.setText(nosep);
+        Sequel.cariIsi("select diagnosa from permintaan_ranap where no_rawat = ?",Diagnosa, norawat);
         isForm();
         tampil();
     }

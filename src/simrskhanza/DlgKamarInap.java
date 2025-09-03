@@ -219,9 +219,11 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private JsonNode response;
     private String utc="",requestJson="",URL="",link="";
     private DlgCariPenyakit penyakit=new DlgCariPenyakit(null,false);
+    private DlgCariPenyakit penyakit1=new DlgCariPenyakit(null,false);
     private DlgCariDokter dokter = new DlgCariDokter(null, false);
     private DlgRanapGabung ranapgabung = new DlgRanapGabung(null, false);
     String norawatbayikembar ="";
+    String diagnosaRanap = "";
     
     /** Creates new form DlgKamarInap
      * @param parent
@@ -919,6 +921,53 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         });
         
+        penyakit1.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (penyakit1.getTable().getSelectedRow() != -1) {
+                    if (diagnosaRanap.equals("awal")) {
+                        if ((penyakit1.getTable().getValueAt(penyakit1.getTable().getSelectedRow(), 0).toString() + " - " + penyakit1.getTable().getValueAt(penyakit1.getTable().getSelectedRow(), 1).toString()).length() < 50) {
+                            DiagnosaAwalSementara.setText(penyakit1.getTable().getValueAt(penyakit1.getTable().getSelectedRow(), 0).toString() + " - " + penyakit1.getTable().getValueAt(penyakit1.getTable().getSelectedRow(), 1).toString());
+                        } else {
+                            DiagnosaAwalSementara.setText((penyakit1.getTable().getValueAt(penyakit1.getTable().getSelectedRow(), 0).toString() + " - " + penyakit1.getTable().getValueAt(penyakit1.getTable().getSelectedRow(), 1).toString()).substring(0, 50));
+                        }
+                         DiagnosaAwalSementara.requestFocus();
+                    } else if (diagnosaRanap.equals("akhir")) {
+                        if ((penyakit1.getTable().getValueAt(penyakit1.getTable().getSelectedRow(), 0).toString() + " - " + penyakit1.getTable().getValueAt(penyakit1.getTable().getSelectedRow(), 1).toString()).length() < 50) {
+                            DiagnosaAkhirSementara.setText(penyakit1.getTable().getValueAt(penyakit1.getTable().getSelectedRow(), 0).toString() + " - " + penyakit1.getTable().getValueAt(penyakit1.getTable().getSelectedRow(), 1).toString());
+                        } else {
+                            DiagnosaAkhirSementara.setText((penyakit1.getTable().getValueAt(penyakit1.getTable().getSelectedRow(), 0).toString() + " - " + penyakit1.getTable().getValueAt(penyakit1.getTable().getSelectedRow(), 1).toString()).substring(0, 50));
+                        }
+                         DiagnosaAkhirSementara.requestFocus();
+                    }
+                }
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+            }
+        });
+        
         try {
             pssetjam=koneksi.prepareStatement("select * from set_jam_minimal");
             try {
@@ -1362,8 +1411,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
         NamaIbu = new widget.TextBox();
         NoRwIbu = new widget.TextBox();
         DTPRawatGabung = new widget.Tanggal();
-        
         MnSuratKeteranganLahir = new javax.swing.JMenuItem();
+        btnDiagnosaAwal = new widget.Button();
+        btnDiagnosaAkhir = new widget.Button();
 
         WindowInputKamar.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         WindowInputKamar.setName("WindowInputKamar"); // NOI18N
@@ -5675,7 +5725,19 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         });
         internalFrame8.add(DiagnosaAwalSementara);
-        DiagnosaAwalSementara.setBounds(99, 32, 290, 23);
+        DiagnosaAwalSementara.setBounds(99, 32, 280, 23);
+        
+        btnDiagnosaAwal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        btnDiagnosaAwal.setMnemonic('3');
+        btnDiagnosaAwal.setToolTipText("Alt+3");
+        btnDiagnosaAwal.setName("btnDiagnosaAwal"); // NOI18N
+        btnDiagnosaAwal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDiagnosaAwalActionPerformed(evt);
+            }
+        });
+        internalFrame8.add(btnDiagnosaAwal);
+        btnDiagnosaAwal.setBounds(380, 32, 28, 23);
 
         WindowDiagnosaMasuk.getContentPane().add(internalFrame8, java.awt.BorderLayout.CENTER);
 
@@ -5727,7 +5789,19 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         });
         internalFrame9.add(DiagnosaAkhirSementara);
-        DiagnosaAkhirSementara.setBounds(99, 32, 290, 23);
+        DiagnosaAkhirSementara.setBounds(99, 32, 280, 23);
+        
+        btnDiagnosaAkhir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        btnDiagnosaAkhir.setMnemonic('3');
+        btnDiagnosaAkhir.setToolTipText("Alt+3");
+        btnDiagnosaAkhir.setName("btnDiagnosaAkhir"); // NOI18N
+        btnDiagnosaAkhir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDiagnosaAkhirActionPerformed(evt);
+            }
+        });
+        internalFrame9.add(btnDiagnosaAkhir);
+        btnDiagnosaAkhir.setBounds(380, 32, 28, 23);
 
         WindowDiagnosaAkhir.getContentPane().add(internalFrame9, java.awt.BorderLayout.CENTER);
 
@@ -17730,6 +17804,24 @@ public class DlgKamarInap extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null, "Maaf, silahkan pilih pasien yang mau dibuatkan rujukan...!!!!");
         }
     }
+    
+    private void btnDiagnosaAwalActionPerformed(java.awt.event.ActionEvent evt) {                                            
+        diagnosaRanap = "awal";
+        penyakit1.isCek();
+        penyakit1.emptTeks();
+        penyakit1.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        penyakit1.setLocationRelativeTo(internalFrame1);
+        penyakit1.setVisible(true);
+    } 
+    
+    private void btnDiagnosaAkhirActionPerformed(java.awt.event.ActionEvent evt) {                                            
+        diagnosaRanap = "akhir";
+        penyakit1.isCek();
+        penyakit1.emptTeks();
+        penyakit1.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        penyakit1.setLocationRelativeTo(internalFrame1);
+        penyakit1.setVisible(true);
+    } 
     /**
     * @param args the command line arguments
     */
@@ -18147,6 +18239,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private javax.swing.JMenuItem ppRujukKeluar;
     private javax.swing.JMenuItem MnRMLembarKonsultasi;
     private javax.swing.JMenuItem MnSuratKeteranganLahir;
+    private widget.Button btnDiagnosaAwal;
+    private widget.Button btnDiagnosaAkhir;
     
     private void tampil() {
         int kamar_row = 0;

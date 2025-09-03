@@ -63,12 +63,13 @@ public final class DlgCariPenyakit extends javax.swing.JDialog {
         //tbPenyakit.setDefaultRenderer(Object.class, new WarnaTable(panelJudul.getBackground(),tbPenyakit.getBackground()));
         tbKamar.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbKamar.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tbKamar.getTableHeader().setReorderingAllowed(false);
         for (z= 0; z < 6; z++) {
             TableColumn column = tbKamar.getColumnModel().getColumn(z);
             if(z==0){
                 column.setPreferredWidth(100);
             }else if(z==1){
-                column.setPreferredWidth(200);
+                column.setPreferredWidth(500);
             }else if(z==2){
                 column.setPreferredWidth(200);
             }else if(z==3){

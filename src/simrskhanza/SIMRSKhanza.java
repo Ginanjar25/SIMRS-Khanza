@@ -13,6 +13,7 @@ package simrskhanza;
 
 import usu.widget.util.WidgetUtilities;
 import fungsi.RedirectSystemOutToDatabase;
+import modif.AutoClose;
 
 /**
  *
@@ -29,6 +30,8 @@ public class SIMRSKhanza {
            frmUtama utama=frmUtama.getInstance();
            utama.isWall();
            utama.setVisible(true);
+           
+           AutoClose.startAutoClose();
         }); 
     }
     

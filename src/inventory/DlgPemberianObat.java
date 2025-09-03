@@ -82,14 +82,14 @@ public class DlgPemberianObat extends javax.swing.JDialog {
 
         tabModePO=new DefaultTableModel(null,new Object[]{
                 "Tgl.Beri","Jam Beri","No.Rawat","No.R.M.","Nama Pasien","Kode Obat","Nama Obat/Alkes","Embalase",
-                "Tuslah","Jml","Biaya Obat","Total","Harga Beli","Gudang","No.Batch","No.Faktur"
+                "Tuslah","Jml","Biaya Obat","Total","Harga Beli","Gudang","No.Batch","No.Faktur", "No.Resep"
             }){
             @Override 
             public boolean isCellEditable(int rowIndex, int colIndex){return false;}
             Class[] types = new Class[]{
                 java.lang.Object.class, java.lang.Object.class,java.lang.Object.class,java.lang.Object.class,java.lang.Object.class,java.lang.Object.class,java.lang.Object.class,
                 java.lang.Double.class,java.lang.Double.class,java.lang.Double.class,java.lang.Double.class,java.lang.Double.class,java.lang.Double.class,java.lang.Object.class,
-                java.lang.Object.class,java.lang.Object.class
+                java.lang.Object.class,java.lang.Object.class,java.lang.Object.class
             };
             @Override
             public Class getColumnClass(int columnIndex) {
@@ -102,7 +102,7 @@ public class DlgPemberianObat extends javax.swing.JDialog {
         tbPemberianObat.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbPemberianObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 17; i++) {
             TableColumn column = tbPemberianObat.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(65);
@@ -137,6 +137,8 @@ public class DlgPemberianObat extends javax.swing.JDialog {
                 column.setPreferredWidth(70);
             }else if(i==15){
                 column.setPreferredWidth(100);
+            }else if(i==16){
+                column.setPreferredWidth(120);
             }
         }
         tbPemberianObat.setDefaultRenderer(Object.class, new WarnaTable());
@@ -1405,14 +1407,15 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
            "detail_pemberian_obat.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,"+
            "detail_pemberian_obat.kode_brng,databarang.nama_brng,detail_pemberian_obat.embalase,detail_pemberian_obat.tuslah,"+
            "detail_pemberian_obat.jml,detail_pemberian_obat.biaya_obat,detail_pemberian_obat.total,detail_pemberian_obat.h_beli,"+
-           "detail_pemberian_obat.kd_bangsal,detail_pemberian_obat.no_batch,detail_pemberian_obat.no_faktur "+
+           "detail_pemberian_obat.kd_bangsal,detail_pemberian_obat.no_batch,detail_pemberian_obat.no_faktur,resep_obat.no_resep  "+
            "from detail_pemberian_obat inner join reg_periksa on detail_pemberian_obat.no_rawat=reg_periksa.no_rawat "+
            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
            "inner join databarang on detail_pemberian_obat.kode_brng=databarang.kode_brng "+
-           "where "+tgl+(TCari.getText().trim().equals("")?"":" and (tgl_perawatan like ? or "+
+           "inner join resep_obat on resep_obat.no_rawat=detail_pemberian_obat.no_rawat AND CONCAT(resep_obat.tgl_perawatan, ' ', resep_obat.jam)  = CONCAT(detail_pemberian_obat.tgl_perawatan, ' ', detail_pemberian_obat.jam) "+
+           "where "+tgl+(TCari.getText().trim().equals("")?"":" and (detail_pemberian_obat.tgl_perawatan like ? or "+
            "detail_pemberian_obat.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
            "pasien.nm_pasien like ? or detail_pemberian_obat.kode_brng like ? or databarang.nama_brng like ? or "+
-           "detail_pemberian_obat.no_faktur like ? or detail_pemberian_obat.no_batch like ?) ")+
+           "detail_pemberian_obat.no_faktur like ? or detail_pemberian_obat.no_batch like ? or resep_obat.no_resep like ?) ")+
            "order by detail_pemberian_obat.tgl_perawatan";
         
         Valid.tabelKosong(tabModePO);
@@ -1428,6 +1431,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     ps.setString(6,"%"+TCari.getText().trim()+"%");
                     ps.setString(7,"%"+TCari.getText().trim()+"%");
                     ps.setString(8,"%"+TCari.getText().trim()+"%");
+                    ps.setString(9,"%"+TCari.getText().trim()+"%");
                 }
                     
                 rs=ps.executeQuery();
@@ -1440,7 +1444,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         rs.getString(7),rs.getDouble(8),rs.getDouble(9),
                         rs.getDouble(10),rs.getDouble(11),rs.getDouble(12),
                         rs.getDouble(13),rs.getString(14),rs.getString(15),
-                        rs.getString(16)
+                        rs.getString(16),rs.getString(17)
                     });
                 }
             } catch (Exception e) {
@@ -1470,14 +1474,15 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
            "detail_pemberian_obat.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,"+
            "detail_pemberian_obat.kode_brng,databarang.nama_brng,detail_pemberian_obat.embalase,detail_pemberian_obat.tuslah,"+
            "detail_pemberian_obat.jml,detail_pemberian_obat.biaya_obat,detail_pemberian_obat.total,detail_pemberian_obat.h_beli,"+
-           "detail_pemberian_obat.kd_bangsal,detail_pemberian_obat.no_batch,detail_pemberian_obat.no_faktur "+
+           "detail_pemberian_obat.kd_bangsal,detail_pemberian_obat.no_batch,detail_pemberian_obat.no_faktur, resep_obat.no_resep "+
            "from detail_pemberian_obat inner join reg_periksa on detail_pemberian_obat.no_rawat=reg_periksa.no_rawat "+
            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
            "inner join databarang on detail_pemberian_obat.kode_brng=databarang.kode_brng "+
-           "where "+tgl+(TCari.getText().trim().equals("")?"":" and (tgl_perawatan like ? or "+
+           "inner join resep_obat on resep_obat.no_rawat=detail_pemberian_obat.no_rawat AND CONCAT(resep_obat.tgl_perawatan, ' ', resep_obat.jam)  = CONCAT(detail_pemberian_obat.tgl_perawatan, ' ', detail_pemberian_obat.jam) "+
+           "where "+tgl+(TCari.getText().trim().equals("")?"":" and (detail_pemberian_obat.tgl_perawatan like ? or "+
            "detail_pemberian_obat.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
            "pasien.nm_pasien like ? or detail_pemberian_obat.kode_brng like ? or databarang.nama_brng like ? or "+
-           "detail_pemberian_obat.no_faktur like ? or detail_pemberian_obat.no_batch like ?) ")+
+           "detail_pemberian_obat.no_faktur like ? or detail_pemberian_obat.no_batch like ? or resep_obat.no_resep like ?) ")+
            "order by detail_pemberian_obat.tgl_perawatan";
         
         Valid.tabelKosong(tabModePO);
@@ -1493,6 +1498,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     ps.setString(6,"%"+TCari.getText().trim()+"%");
                     ps.setString(7,"%"+TCari.getText().trim()+"%");
                     ps.setString(8,"%"+TCari.getText().trim()+"%");
+                    ps.setString(9,"%"+TCari.getText().trim()+"%");
                 }
                 rs=ps.executeQuery();
                 jumlahtotal=0;
@@ -1504,7 +1510,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         rs.getString(7),rs.getDouble(8),rs.getDouble(9),
                         rs.getDouble(10),rs.getDouble(11),rs.getDouble(12),
                         rs.getDouble(13),rs.getString(14),rs.getString(15),
-                        rs.getString(16)
+                        rs.getString(16),rs.getString(17)
                     });
                 }
             } catch (Exception e) {

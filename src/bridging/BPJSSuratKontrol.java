@@ -223,9 +223,9 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         });  
         
         try {
-            user=akses.getkode().replace(" ","").substring(0,9);
+            user="RSPW"+akses.getkode().replace(" ","").substring(0,9);
         } catch (Exception e) {
-            user=akses.getkode();
+            user="RSPW"+akses.getkode();
         }
         
         try {
@@ -914,7 +914,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
                 headers.add("X-Signature",api.getHmac(utc));
                 headers.add("user_key",koneksiDB.USERKEYAPIBPJS());
                 URL = link+"/RencanaKontrol/insert";
-                user = "RSPW"+user;
+//                user = "RSPW"+user;
                 requestJson ="{" +
                                 "\"request\": {" +
                                     "\"noSEP\":\""+NoSEP.getText()+"\"," +
@@ -1161,7 +1161,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     headers.add("X-Signature",api.getHmac(utc));
                     headers.add("user_key",koneksiDB.USERKEYAPIBPJS());
                     URL = link+"/RencanaKontrol/Update";
-                    user = "RSPW"+user;
+//                    user = "RSPW"+user;
                     requestJson ="{" +
                                     "\"request\": {" +
                                         "\"noSuratKontrol\":\""+NoSurat.getText()+"\"," +
@@ -1602,7 +1602,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 	    headers.add("X-Signature",api.getHmac(utc));
             headers.add("user_key",koneksiDB.USERKEYAPIBPJS());
             URL = link+"/RencanaKontrol/Delete";
-            user = "RSPW"+user;
+//            user = "RSPW"+user;
             requestJson ="{\"request\":{\"t_suratkontrol\":{\"noSuratKontrol\":\""+NoSurat.getText()+"\",\"user\":\""+user+"\"}}}";            
             requestEntity = new HttpEntity(requestJson,headers);
             root = mapper.readTree(restTemplate.exchange(URL, HttpMethod.DELETE,requestEntity, String.class).getBody());

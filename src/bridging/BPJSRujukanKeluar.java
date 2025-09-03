@@ -281,9 +281,9 @@ public final class BPJSRujukanKeluar extends javax.swing.JDialog {
         }
         
         try {
-            user=akses.getkode().replace(" ","").substring(0,9);
+            user="RSPW"+akses.getkode().replace(" ","").substring(0,9);
         } catch (Exception e) {
-            user=akses.getkode();
+            user="RSPW"+akses.getkode();
         }
     }
 
@@ -890,7 +890,7 @@ public final class BPJSRujukanKeluar extends javax.swing.JDialog {
                     headers.add("X-Timestamp",utc);
                     headers.add("X-Signature",api.getHmac(utc));
                     headers.add("user_key",koneksiDB.USERKEYAPIBPJS());
-                    user="RSPW"+user;
+//                    user="RSPW"+user;
                     requestJson ="{" +
                                     "\"request\": {" +
                                         "\"t_rujukan\": {" +
@@ -1150,7 +1150,7 @@ public final class BPJSRujukanKeluar extends javax.swing.JDialog {
                 headers.add("X-Signature", api.getHmac(utc));
                 headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
                 URL = link + "/Rujukan/2.0/insert";
-                user = "RSPW" + user;
+//                user = "RSPW" + user;
                 requestJson = "{"
                         + "\"request\": {"
                         + "\"t_rujukan\": {"
@@ -1459,7 +1459,7 @@ public final class BPJSRujukanKeluar extends javax.swing.JDialog {
 	    headers.add("X-Timestamp",utc);
 	    headers.add("X-Signature",api.getHmac(utc));
             headers.add("user_key",koneksiDB.USERKEYAPIBPJS());
-            user="RSPW"+user;
+//            user="RSPW"+user;
             requestJson ="{" +
                             "\"request\": {" +
                                 "\"t_rujukan\": {" +

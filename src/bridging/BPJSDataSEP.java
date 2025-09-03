@@ -4233,6 +4233,8 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                                 //response = root.path("response").path("histori");
                                 if (response.isArray()) {
                                     i = 1;
+                                    String skdpTerbaru = null;
+                                    JsonNode dataSepTerbaru = null;
                                     for (JsonNode list : response) {
                                         tabModeRiwayat.addRow(new Object[]{
                                             i + ".",
@@ -4251,6 +4253,23 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                                             ,Sequel.cariIsi("SELECT bse.nmdpdjp FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?",list.path("noSep").asText())
                                         });
                                         i++;
+                                         // Cari SEP terbaru
+                                        if (dataSepTerbaru == null) {
+                                            dataSepTerbaru = list;
+                                        } else {
+                                            String tglSepCurrent = list.path("tglSep").asText();
+                                            String tglSepLatest = dataSepTerbaru.path("tglSep").asText();
+
+                                            if (tglSepCurrent.compareTo(tglSepLatest) > 0) {
+                                                dataSepTerbaru = list;
+                                            }
+                                        }
+                                    }
+                                    if (dataSepTerbaru != null) {
+                                        skdpTerbaru = Sequel.cariIsi("SELECT srk.no_surat FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =? AND bse.jnspelayanan = '1'", dataSepTerbaru.path("noSep").asText());
+                                        if(Sequel.cariInteger("select count(no_sep) from bridging_sep where noskdp = ?", skdpTerbaru) == 0){
+                                            JOptionPane.showMessageDialog(rootPane, "Ada Surat Kontrol POST RI yg belum Terbit SEP !!!", "Warning", JOptionPane.WARNING_MESSAGE);
+                                        }
                                     }
                                 }
                             } else {
@@ -4272,6 +4291,8 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                                 //response = root.path("response").path("histori");
                                 if (response.isArray()) {
                                     i = 1;
+                                    String skdpTerbaru = null;
+                                    JsonNode dataSepTerbaru = null;
                                     for (JsonNode list : response) {
                                         tabModeRiwayat.addRow(new Object[]{
                                             i + ".",
@@ -4290,6 +4311,23 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                                             ,Sequel.cariIsi("SELECT bse.nmdpdjp FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?",list.path("noSep").asText())
                                         });
                                         i++;
+                                        if (dataSepTerbaru == null) {
+                                            dataSepTerbaru = list;
+                                        } else {
+                                            String tglSepCurrent = list.path("tglSep").asText();
+                                            String tglSepLatest = dataSepTerbaru.path("tglSep").asText();
+
+                                            // bandingkan string "YYYY-MM-DD"
+                                            if (tglSepCurrent.compareTo(tglSepLatest) > 0) {
+                                                dataSepTerbaru = list;
+                                            }
+                                        }
+                                    }
+                                    if (dataSepTerbaru != null) {
+                                        skdpTerbaru = Sequel.cariIsi("SELECT srk.no_surat FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =? AND bse.jnspelayanan = '1'", dataSepTerbaru.path("noSep").asText());
+                                        if(Sequel.cariInteger("select count(no_sep) from bridging_sep where noskdp = ?", skdpTerbaru) == 0){
+                                            JOptionPane.showMessageDialog(rootPane, "Ada Surat Kontrol POST RI yg belum Terbit SEP !!!", "Warning", JOptionPane.WARNING_MESSAGE);
+                                        }
                                     }
                                 }
                             } else {
