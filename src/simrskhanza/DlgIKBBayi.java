@@ -4547,8 +4547,8 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             ObatDiberikan.setText(tbDokter.getValueAt(tbDokter.getSelectedRow(),47).toString());
             Mikasi.setText(tbDokter.getValueAt(tbDokter.getSelectedRow(),48).toString());
             Mikonium.setText(tbDokter.getValueAt(tbDokter.getSelectedRow(),49).toString());
-            PekerjaanAyah.setText(tbDokter.getValueAt(tbDokter.getSelectedRow(),50).toString());
-            PekerjaanIbu.setText(tbDokter.getValueAt(tbDokter.getSelectedRow(),51).toString());
+            PekerjaanIbu.setText(tbDokter.getValueAt(tbDokter.getSelectedRow(),50).toString());
+            PekerjaanAyah.setText(tbDokter.getValueAt(tbDokter.getSelectedRow(),51).toString());
             
             String bayi_lahir = tbDokter.getValueAt(tbDokter.getSelectedRow(),52).toString();
             if (bayi_lahir.equals("Tunggal")) {
