@@ -353,7 +353,7 @@ public final class BPJSCekReferensiPenyakit extends javax.swing.JDialog {
                     i=1;
                     for(JsonNode list:response.path("diagnosa")){
                         tabMode.addRow(new Object[]{
-                            i+".",list.path("kode").asText(),list.path("nama").asText()
+                            i+".",list.path("kode").asText(),list.path("nama").asText().contains("-") ? list.path("nama").asText().split("-", 2)[1].trim() : list.path("nama").asText()
                         });
                         i++;
                     }

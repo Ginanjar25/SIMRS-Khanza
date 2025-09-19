@@ -647,7 +647,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         });
         panelCari.add(R2);
 
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "29-08-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "18-09-2025" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -670,7 +670,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         jLabel25.setPreferredSize(new java.awt.Dimension(30, 23));
         panelCari.add(jLabel25);
 
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "29-08-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "18-09-2025" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -738,7 +738,7 @@ public class DlgPermintaanRanap extends javax.swing.JDialog {
         NmPasien.setBounds(288, 10, 330, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "29-08-2025" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "18-09-2025" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -1447,8 +1447,12 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 } else {
                     titip_kamar = "-";
                 }
+                String tanggal=Valid.SetTgl(DTPTgl.getSelectedItem() + "");
+                if (R3.isSelected()) {
+                    tanggal = dateFormat2.format(new Date());
+                }
                 if (Sequel.mengedittf("permintaan_ranap", "no_rawat=?", "no_rawat=?,tanggal=?,kd_kamar=?,diagnosa=?,catatan=?", 6, new String[]{
-                    NoRw.getText(), Valid.SetTgl(DTPTgl.getSelectedItem() + ""), KdKamar.getText(), Diagnosa.getText(), "IGD~"+CatatanIGD.getText()+"~FO~"+Catatan.getText()+"#"+titip_kamar, tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString()
+                    NoRw.getText(), tanggal, KdKamar.getText(), Diagnosa.getText(), "IGD~"+CatatanIGD.getText()+"~FO~"+Catatan.getText()+"#"+titip_kamar, tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString()
                 }) == true) {
                     if(!tbObat.getValueAt(tbObat.getSelectedRow(),10).toString().equals(KdKamar.getText())){
                         Sequel.mengedit("kamar", "kd_kamar=?", "status='KOSONG'", 1, new String[]{tbObat.getValueAt(tbObat.getSelectedRow(),10).toString()});

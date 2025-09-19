@@ -27,6 +27,7 @@ import keuangan.DlgBayarPiutang;
 import keuangan.Jurnal;
 import kepegawaian.DlgCariPetugas;
 import simrskhanza.DlgCariPasien;
+import modif.DlgBatalPiutangkaryawan;
 
 public class DlgCariPiutang extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
@@ -1052,80 +1053,90 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         if(tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString().trim().equals("")){
           Valid.textKosong(TCari,"No.Faktur");
         }else{
-          try {
-              ps=koneksi.prepareStatement(
-                      "select nota_piutang, kd_bangsal from piutang where nota_piutang=?");
-              try {
-                 ps.setString(1,tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString());
-                 rs=ps.executeQuery();
-                 if(rs.next()){
-                     Sequel.AutoComitFalse();
-                     sukses=true;
-                     ps2=koneksi.prepareStatement(
-                          "select kode_brng,jumlah,no_batch,no_faktur from detailpiutang where nota_piutang=? ");
-                     try {
-                         ps2.setString(1,rs.getString(1));
-                         rs2=ps2.executeQuery();
-                         while(rs2.next()){
-                             if(aktifkanbatch.equals("yes")){
-                                Sequel.mengedit("data_batch","no_batch=? and kode_brng=? and no_faktur=?","sisa=sisa+?",4,new String[]{
-                                    rs2.getString("jumlah"),rs2.getString("no_batch"),rs2.getString("kode_brng"),rs2.getString("no_faktur")
-                                });
-                                Trackobat.catatRiwayat(rs2.getString("kode_brng"),rs2.getDouble("jumlah"),0,"Piutang",akses.getkode(),rs.getString("kd_bangsal"),"Hapus",rs2.getString("no_batch"),rs2.getString("no_faktur"),rs.getString("nota_piutang"));
-                                Sequel.menyimpan("gudangbarang","'"+rs2.getString("kode_brng") +"','"+rs.getString("kd_bangsal") +"','"+rs2.getString("jumlah") +"','"+rs2.getString("no_batch")+"','"+rs2.getString("no_faktur")+"'", 
-                                              "stok=stok+'"+rs2.getString("jumlah") +"'","kode_brng='"+rs2.getString("kode_brng")+"' and kd_bangsal='"+rs.getString("kd_bangsal") +"' and no_batch='"+rs2.getString("no_batch")+"' and no_faktur='"+rs2.getString("no_faktur")+"'");
-                             }else{
-                                 Trackobat.catatRiwayat(rs2.getString("kode_brng"),rs2.getDouble("jumlah"),0,"Piutang",akses.getkode(),rs.getString("kd_bangsal"),"Hapus","","",rs.getString("nota_piutang"));
-                                Sequel.menyimpan("gudangbarang","'"+rs2.getString("kode_brng") +"','"+rs.getString("kd_bangsal") +"','"+rs2.getString("jumlah") +"','',''", 
-                                              "stok=stok+'"+rs2.getString("jumlah") +"'","kode_brng='"+rs2.getString("kode_brng")+"' and kd_bangsal='"+rs.getString("kd_bangsal") +"' and no_batch='' and no_faktur=''");
-                             } 
-                         }
-                     } catch (Exception e) {
-                         sukses=false;
-                         System.out.println("Notif : "+e);
-                     } finally{
-                         if(rs2!=null){
-                             rs2.close();
-                         }
-                         if(ps2!=null){
-                             ps2.close();
-                         }
-                     }
-
-                     if(sukses==true){
-                         Sequel.queryu("delete from tampjurnal");
-                         Sequel.menyimpan("tampjurnal","'"+Sequel.cariIsi("select Piutang_Obat from set_akun")+"','PIUTANG PASIEN','0','"+Sequel.cariIsi("select sisapiutang from piutang where nota_piutang='"+rs.getString("nota_piutang")+"'")+"'","Rekening");    
-                         Sequel.menyimpan("tampjurnal","'"+Sequel.cariIsi("select Kontra_Piutang_Obat from set_akun")+"','KAS DI TANGAN','"+Sequel.cariIsi("select sisapiutang  from piutang where nota_piutang='"+rs.getString("nota_piutang")+"'")+"','0'","Rekening"); 
-                         sukses=jur.simpanJurnal(rs.getString("nota_piutang"),"U","BATAL PIUTANG OBAT DI "+Sequel.cariIsi("select bangsal.nm_bangsal from bangsal where bangsal.kd_bangsal='"+rs.getString("kd_bangsal")+"'").toUpperCase()+", OLEH "+akses.getkode());
-                     }
-
-                     if(sukses==true){
-                         Sequel.queryu("delete from piutang where nota_piutang='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()+"'");
-                         Sequel.Commit();
-                     }else{
-                         sukses=false;
-                         JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
-                         Sequel.RollBack();
-                     }
-
-                     Sequel.AutoComitTrue();
-                     if(sukses==true){
-                         tampil();
-                     }   
-                 } 
-              } catch (Exception e) {
-                  System.out.println("Notif : "+e);
-              } finally{
-                  if(rs!=null){
-                      rs.close();
-                  }
-                  if(ps!=null){
-                      ps.close();
-                  }
-              }
-           } catch (Exception ex) {
-              System.out.println(ex);
-           }      
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            DlgBatalPiutangkaryawan batal = new DlgBatalPiutangkaryawan(null, true);
+            batal.setNoRm2(tbDokter.getValueAt(tbDokter.getSelectedRow(),3).toString().substring(0, 6), tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString());
+            batal.setSize(720, 230);
+            batal.setLocationRelativeTo(internalFrame1);
+            batal.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());
+            if(!batal.isVisible()){
+                tampil();
+            }
+//          try {
+//              ps=koneksi.prepareStatement(
+//                      "select nota_piutang, kd_bangsal from piutang where nota_piutang=?");
+//              try {
+//                 ps.setString(1,tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString());
+//                 rs=ps.executeQuery();
+//                 if(rs.next()){
+//                     Sequel.AutoComitFalse();
+//                     sukses=true;
+//                     ps2=koneksi.prepareStatement(
+//                          "select kode_brng,jumlah,no_batch,no_faktur from detailpiutang where nota_piutang=? ");
+//                     try {
+//                         ps2.setString(1,rs.getString(1));
+//                         rs2=ps2.executeQuery();
+//                         while(rs2.next()){
+//                             if(aktifkanbatch.equals("yes")){
+//                                Sequel.mengedit("data_batch","no_batch=? and kode_brng=? and no_faktur=?","sisa=sisa+?",4,new String[]{
+//                                    rs2.getString("jumlah"),rs2.getString("no_batch"),rs2.getString("kode_brng"),rs2.getString("no_faktur")
+//                                });
+//                                Trackobat.catatRiwayat(rs2.getString("kode_brng"),rs2.getDouble("jumlah"),0,"Piutang",akses.getkode(),rs.getString("kd_bangsal"),"Hapus",rs2.getString("no_batch"),rs2.getString("no_faktur"),rs.getString("nota_piutang"));
+//                                Sequel.menyimpan("gudangbarang","'"+rs2.getString("kode_brng") +"','"+rs.getString("kd_bangsal") +"','"+rs2.getString("jumlah") +"','"+rs2.getString("no_batch")+"','"+rs2.getString("no_faktur")+"'", 
+//                                              "stok=stok+'"+rs2.getString("jumlah") +"'","kode_brng='"+rs2.getString("kode_brng")+"' and kd_bangsal='"+rs.getString("kd_bangsal") +"' and no_batch='"+rs2.getString("no_batch")+"' and no_faktur='"+rs2.getString("no_faktur")+"'");
+//                             }else{
+//                                 Trackobat.catatRiwayat(rs2.getString("kode_brng"),rs2.getDouble("jumlah"),0,"Piutang",akses.getkode(),rs.getString("kd_bangsal"),"Hapus","","",rs.getString("nota_piutang"));
+//                                Sequel.menyimpan("gudangbarang","'"+rs2.getString("kode_brng") +"','"+rs.getString("kd_bangsal") +"','"+rs2.getString("jumlah") +"','',''", 
+//                                              "stok=stok+'"+rs2.getString("jumlah") +"'","kode_brng='"+rs2.getString("kode_brng")+"' and kd_bangsal='"+rs.getString("kd_bangsal") +"' and no_batch='' and no_faktur=''");
+//                             } 
+//                         }
+//                     } catch (Exception e) {
+//                         sukses=false;
+//                         System.out.println("Notif : "+e);
+//                     } finally{
+//                         if(rs2!=null){
+//                             rs2.close();
+//                         }
+//                         if(ps2!=null){
+//                             ps2.close();
+//                         }
+//                     }
+//
+//                     if(sukses==true){
+//                         Sequel.queryu("delete from tampjurnal");
+//                         Sequel.menyimpan("tampjurnal","'"+Sequel.cariIsi("select Piutang_Obat from set_akun")+"','PIUTANG PASIEN','0','"+Sequel.cariIsi("select sisapiutang from piutang where nota_piutang='"+rs.getString("nota_piutang")+"'")+"'","Rekening");    
+//                         Sequel.menyimpan("tampjurnal","'"+Sequel.cariIsi("select Kontra_Piutang_Obat from set_akun")+"','KAS DI TANGAN','"+Sequel.cariIsi("select sisapiutang  from piutang where nota_piutang='"+rs.getString("nota_piutang")+"'")+"','0'","Rekening"); 
+//                         sukses=jur.simpanJurnal(rs.getString("nota_piutang"),"U","BATAL PIUTANG OBAT DI "+Sequel.cariIsi("select bangsal.nm_bangsal from bangsal where bangsal.kd_bangsal='"+rs.getString("kd_bangsal")+"'").toUpperCase()+", OLEH "+akses.getkode());
+//                     }
+//
+//                     if(sukses==true){
+//                         Sequel.queryu("delete from piutang where nota_piutang='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()+"'");
+//                         Sequel.Commit();
+//                     }else{
+//                         sukses=false;
+//                         JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
+//                         Sequel.RollBack();
+//                     }
+//
+//                     Sequel.AutoComitTrue();
+//                     if(sukses==true){
+//                         tampil();
+//                     }   
+//                 } 
+//              } catch (Exception e) {
+//                  System.out.println("Notif : "+e);
+//              } finally{
+//                  if(rs!=null){
+//                      rs.close();
+//                  }
+//                  if(ps!=null){
+//                      ps.close();
+//                  }
+//              }
+//           } catch (Exception ex) {
+//              System.out.println(ex);
+//           }      
         }
     }
 }//GEN-LAST:event_ppHapusActionPerformed
