@@ -60,7 +60,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
     private boolean ubah=false,copy=false,sukses=true;
     private boolean[] pilih; 
     private double[] jumlah,harga,beli,stok,kapasitas,p1,p2;
-    private String[] no,kodebarang,namabarang,kodesatuan,kandungan,letakbarang,namajenis,aturan,industri,komposisi;
+    private String[] no,kodebarang,namabarang,kodesatuan,kandungan,letakbarang,namajenis,aturan,industri,komposisi,subTotal;
     public DlgCariAturanPakai aturanpakai=new DlgCariAturanPakai(null,false);
     private WarnaTable2 warna=new WarnaTable2();
     private WarnaTable2 warna2=new WarnaTable2();
@@ -1858,7 +1858,9 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         beli=new double[z];
         stok=null;
         stok=new double[z]; 
-        z=0;        
+        subTotal=null;
+        subTotal=new String[z];
+        z=0;    
         for(i=0;i<tbResep.getRowCount();i++){
             if(!tbResep.getValueAt(i,1).toString().equals("")){
                 pilih[z]=Boolean.parseBoolean(tbResep.getValueAt(i,0).toString());                
@@ -1895,6 +1897,12 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                 } catch (Exception e) {
                     stok[z]=0;
                 } 
+                
+                try {
+                    subTotal[z]=tbResep.getValueAt(i,12).toString();
+                } catch (Exception e) {
+                    subTotal[z]="0";
+                }  
                 z++;
             }
         }
@@ -1903,7 +1911,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         
         for(i=0;i<z;i++){
             tabModeResep.addRow(new Object[] {
-                pilih[i],jumlah[i],aturan[i],kodebarang[i],namabarang[i],kodesatuan[i],letakbarang[i],harga[i],namajenis[i],industri[i],beli[i],stok[i]
+                pilih[i],jumlah[i],aturan[i],kodebarang[i],namabarang[i],kodesatuan[i],letakbarang[i],harga[i],namajenis[i],industri[i],beli[i],stok[i],subTotal[i]
             });
         }
         

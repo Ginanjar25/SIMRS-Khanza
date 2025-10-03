@@ -25,6 +25,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import kepegawaian.DlgCariDokter;
 import keuangan.DlgCariDaftarOperasi;
+import modif.RMCariRiwayatBookingOperasi;
 import rekammedis.RMChecklistPostOperasi;
 import rekammedis.RMChecklistPreOperasi;
 import rekammedis.RMMonitoringAldrettePascaAnestesi;
@@ -58,6 +59,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
     private DlgCariDokter dokter=new DlgCariDokter(null,false);
     private DlgCariRuangOperasi ruangok=new DlgCariRuangOperasi(null,false);
     private DlgCariDaftarOperasi operasi=new DlgCariDaftarOperasi(null,false);
+    private RMCariRiwayatBookingOperasi caribooking = new RMCariRiwayatBookingOperasi(null, false);
     
     
 
@@ -153,7 +155,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
             });
         } 
         
-        ChkInput.setSelected(false);
+        ChkInput.setSelected(true);
         isForm();
         
         dokter.addWindowListener(new WindowListener() {
@@ -220,6 +222,48 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
             public void windowActivated(WindowEvent e) {}
             @Override
             public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        
+        caribooking.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (caribooking.getTable().getSelectedRow() != -1) {
+                    Valid.SetTgl(DTPTgl, caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(), 2).toString());
+                    JamMulai.setSelectedItem(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(),3).toString().substring(0,2));
+                    MenitMulai.setSelectedItem(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(),3).toString().substring(3,5));
+                    DetikMulai.setSelectedItem(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(),3).toString().substring(6,8));
+                    JamSelesai.setSelectedItem(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(),4).toString().substring(0,2));
+                    MenitSelesai.setSelectedItem(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(),4).toString().substring(3,5));
+                    DetikSelesai.setSelectedItem(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(),4).toString().substring(6,8));
+                    KdDokter.setText(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(), 7).toString());
+                    NmDokter.setText(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(), 8).toString());
+                }
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+            }
         });
         
         ChkAccor.setSelected(false);
@@ -303,6 +347,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         KdRuangOperasi = new widget.TextBox();
         NmRuangOperasi = new widget.TextBox();
         BtnRuangOperasi = new widget.Button();
+        BtnRiwayatBookingOperasi = new widget.Button();
         PanelAccor = new widget.PanelBiasa();
         ChkAccor = new widget.CekBox();
         ScrollMenu = new widget.ScrollPane();
@@ -562,7 +607,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         R2.setPreferredSize(new java.awt.Dimension(90, 23));
         panelCari.add(R2);
 
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-12-2023" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-12-2023" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -585,7 +630,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         jLabel22.setPreferredSize(new java.awt.Dimension(30, 23));
         panelCari.add(jLabel22);
 
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-12-2023" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-12-2023" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -613,7 +658,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         R3.setPreferredSize(new java.awt.Dimension(75, 23));
         panelCari.add(R3);
 
-        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-12-2023" }));
+        DTPCari3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-12-2023" }));
         DTPCari3.setDisplayFormat("dd-MM-yyyy");
         DTPCari3.setName("DTPCari3"); // NOI18N
         DTPCari3.setOpaque(false);
@@ -636,7 +681,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         jLabel25.setPreferredSize(new java.awt.Dimension(30, 23));
         panelCari.add(jLabel25);
 
-        DTPCari4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-12-2023" }));
+        DTPCari4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-12-2023" }));
         DTPCari4.setDisplayFormat("dd-MM-yyyy");
         DTPCari4.setName("DTPCari4"); // NOI18N
         DTPCari4.setOpaque(false);
@@ -699,7 +744,7 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(TNoRw);
-        TNoRw.setBounds(73, 10, 120, 23);
+        TNoRw.setBounds(73, 10, 90, 23);
 
         jLabel9.setText("Operator :");
         jLabel9.setName("jLabel9"); // NOI18N
@@ -715,11 +760,16 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         TPasien.setEditable(false);
         TPasien.setHighlighter(null);
         TPasien.setName("TPasien"); // NOI18N
+        TPasien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TPasienActionPerformed(evt);
+            }
+        });
         FormInput.add(TPasien);
-        TPasien.setBounds(195, 10, 208, 23);
+        TPasien.setBounds(170, 10, 208, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-12-2023" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-12-2023" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -772,8 +822,13 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         Kamar.setEditable(false);
         Kamar.setHighlighter(null);
         Kamar.setName("Kamar"); // NOI18N
+        Kamar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                KamarActionPerformed(evt);
+            }
+        });
         FormInput.add(Kamar);
-        Kamar.setBounds(405, 10, 160, 23);
+        Kamar.setBounds(380, 10, 160, 23);
 
         jLabel35.setText("Mulai :");
         jLabel35.setName("jLabel35"); // NOI18N
@@ -894,13 +949,13 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
         KdRuangOperasi.setHighlighter(null);
         KdRuangOperasi.setName("KdRuangOperasi"); // NOI18N
         FormInput.add(KdRuangOperasi);
-        KdRuangOperasi.setBounds(633, 10, 40, 23);
+        KdRuangOperasi.setBounds(640, 10, 40, 23);
 
         NmRuangOperasi.setEditable(false);
         NmRuangOperasi.setHighlighter(null);
         NmRuangOperasi.setName("NmRuangOperasi"); // NOI18N
         FormInput.add(NmRuangOperasi);
-        NmRuangOperasi.setBounds(675, 10, 138, 23);
+        NmRuangOperasi.setBounds(680, 10, 138, 23);
 
         BtnRuangOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         BtnRuangOperasi.setMnemonic('X');
@@ -917,7 +972,24 @@ public class DlgBookingOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(BtnRuangOperasi);
-        BtnRuangOperasi.setBounds(815, 10, 28, 23);
+        BtnRuangOperasi.setBounds(820, 10, 28, 23);
+
+        BtnRiwayatBookingOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        BtnRiwayatBookingOperasi.setMnemonic('X');
+        BtnRiwayatBookingOperasi.setToolTipText("Alt+X");
+        BtnRiwayatBookingOperasi.setName("BtnRiwayatBookingOperasi"); // NOI18N
+        BtnRiwayatBookingOperasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRiwayatBookingOperasiActionPerformed(evt);
+            }
+        });
+        BtnRiwayatBookingOperasi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnRiwayatBookingOperasiKeyPressed(evt);
+            }
+        });
+        FormInput.add(BtnRiwayatBookingOperasi);
+        BtnRiwayatBookingOperasi.setBounds(540, 10, 28, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -2032,6 +2104,29 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }//GEN-LAST:event_BtnPenilaianPreInduksiActionPerformed
 
+    private void BtnRiwayatBookingOperasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRiwayatBookingOperasiActionPerformed
+       if (TNoRw.getText().equals("") && TPasien.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Pasien masih kosong...!!!");
+        } else {
+            caribooking.setNoRawat(TNoRw.getText());
+            caribooking.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+            caribooking.setLocationRelativeTo(internalFrame1);
+            caribooking.setVisible(true);
+        }
+    }//GEN-LAST:event_BtnRiwayatBookingOperasiActionPerformed
+
+    private void BtnRiwayatBookingOperasiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnRiwayatBookingOperasiKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnRiwayatBookingOperasiKeyPressed
+
+    private void KamarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_KamarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_KamarActionPerformed
+
+    private void TPasienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TPasienActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TPasienActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -2066,6 +2161,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Button BtnPreAnastesi;
     private widget.Button BtnPreOperasi;
     private widget.Button BtnPrint;
+    private widget.Button BtnRiwayatBookingOperasi;
     private widget.Button BtnRiwayatPasien;
     private widget.Button BtnRuangOperasi;
     private widget.Button BtnSignInSebelumAnestesi;

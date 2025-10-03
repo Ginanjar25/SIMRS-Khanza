@@ -1080,6 +1080,7 @@ import ziscsr.ZISPenghasilanPenerimaDankes;
 import ziscsr.ZISTernakPenerimaDankes;
 import ziscsr.ZISUkuranRumahPenerimaDankes;
 import fungsi.AntrianPoli;
+import modif.DlgJadwalOperasi;
 import permintaan.DlgBookingKuota;
 
 
@@ -1704,6 +1705,7 @@ public class frmUtama extends javax.swing.JFrame {
         btnLaboratoriumMB = new widget.ButtonBig();
         btnPiutangObatKary = new widget.ButtonBig();
         btnCariPiutangObatKary = new widget.ButtonBig();
+        btnBookingOperasi = new widget.ButtonBig();
         internalFrame1 = new widget.InternalFrame();
         BtnMenu = new widget.ButtonBig();
         jSeparator4 = new javax.swing.JSeparator();
@@ -1713,9 +1715,10 @@ public class frmUtama extends javax.swing.JFrame {
         btnToolLab = new widget.ButtonBig();
         btnToolRad = new widget.ButtonBig();
         BtnToolJualObat = new widget.ButtonBig();
+        BtnToolOperasi = new widget.ButtonBig();
         jSeparator9 = new javax.swing.JSeparator();
-        BtnToolKamnap = new widget.ButtonBig();
         BtnToolKasir = new widget.ButtonBig();
+        BtnToolKamnap = new widget.ButtonBig();
         jSeparator7 = new javax.swing.JSeparator();
         BtnLog = new widget.ButtonBig();
         BtnClose = new widget.ButtonBig();
@@ -2000,7 +2003,7 @@ public class frmUtama extends javax.swing.JFrame {
 
         tanggal.setEditable(false);
         tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11/06/2024" }));
+        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01/10/2025" }));
         tanggal.setDisplayFormat("dd/MM/yyyy");
         tanggal.setName("tanggal"); // NOI18N
         tanggal.setOpaque(false);
@@ -7076,6 +7079,17 @@ public class frmUtama extends javax.swing.JFrame {
             }
         });
 
+        btnBookingOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/booking-surgery.png"))); // NOI18N
+        btnBookingOperasi.setText("Booking Operasi");
+        btnBookingOperasi.setIconTextGap(0);
+        btnBookingOperasi.setName("btnBookingOperasi"); // NOI18N
+        btnBookingOperasi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnBookingOperasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBookingOperasiActionPerformed(evt);
+            }
+        });
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("::[ Khanza SIMKES 2022 ]::");
         setBackground(new java.awt.Color(255, 254, 254));
@@ -7178,7 +7192,7 @@ public class frmUtama extends javax.swing.JFrame {
         jSeparator5.setPreferredSize(new java.awt.Dimension(1, 36));
         internalFrame1.add(jSeparator5);
 
-        btnToolLab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/addressbook-search24.png"))); // NOI18N
+        btnToolLab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/lab.png"))); // NOI18N
         btnToolLab.setMnemonic('O');
         btnToolLab.setText("Laborat");
         btnToolLab.setToolTipText("Alt+O");
@@ -7195,7 +7209,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         internalFrame1.add(btnToolLab);
 
-        btnToolRad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Surgeon.png"))); // NOI18N
+        btnToolRad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Radioactive.png"))); // NOI18N
         btnToolRad.setMnemonic('A');
         btnToolRad.setText("Radiologi");
         btnToolRad.setToolTipText("Alt+A");
@@ -7212,7 +7226,7 @@ public class frmUtama extends javax.swing.JFrame {
         });
         internalFrame1.add(btnToolRad);
 
-        BtnToolJualObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/shopping-cart-insert24.png"))); // NOI18N
+        BtnToolJualObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/medicine.png"))); // NOI18N
         BtnToolJualObat.setMnemonic('j');
         BtnToolJualObat.setText("Farmasi");
         BtnToolJualObat.setToolTipText("Alt+J");
@@ -7229,6 +7243,23 @@ public class frmUtama extends javax.swing.JFrame {
         });
         internalFrame1.add(BtnToolJualObat);
 
+        BtnToolOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/table-surgeon.png"))); // NOI18N
+        BtnToolOperasi.setMnemonic('j');
+        BtnToolOperasi.setText("OK/Operasi");
+        BtnToolOperasi.setToolTipText("Alt+J");
+        BtnToolOperasi.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        BtnToolOperasi.setIconTextGap(2);
+        BtnToolOperasi.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        BtnToolOperasi.setName("BtnToolOperasi"); // NOI18N
+        BtnToolOperasi.setPreferredSize(new java.awt.Dimension(90, 38));
+        BtnToolOperasi.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
+        BtnToolOperasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnToolOperasiActionPerformed(evt);
+            }
+        });
+        internalFrame1.add(BtnToolOperasi);
+
         jSeparator9.setBackground(new java.awt.Color(225, 61, 142));
         jSeparator9.setForeground(new java.awt.Color(225, 61, 142));
         jSeparator9.setOrientation(javax.swing.SwingConstants.VERTICAL);
@@ -7237,24 +7268,6 @@ public class frmUtama extends javax.swing.JFrame {
         jSeparator9.setOpaque(true);
         jSeparator9.setPreferredSize(new java.awt.Dimension(1, 36));
         internalFrame1.add(jSeparator9);
-
-        BtnToolKamnap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/home24.png"))); // NOI18N
-        BtnToolKamnap.setMnemonic('K');
-        BtnToolKamnap.setText("Rawat Inap");
-        BtnToolKamnap.setToolTipText("Alt+K");
-        BtnToolKamnap.setEnabled(false);
-        BtnToolKamnap.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        BtnToolKamnap.setIconTextGap(2);
-        BtnToolKamnap.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        BtnToolKamnap.setName("BtnToolKamnap"); // NOI18N
-        BtnToolKamnap.setPreferredSize(new java.awt.Dimension(107, 38));
-        BtnToolKamnap.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
-        BtnToolKamnap.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnToolKamnapActionPerformed(evt);
-            }
-        });
-        internalFrame1.add(BtnToolKamnap);
 
         BtnToolKasir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/addressbook-edit24.png"))); // NOI18N
         BtnToolKasir.setMnemonic('S');
@@ -7273,6 +7286,24 @@ public class frmUtama extends javax.swing.JFrame {
             }
         });
         internalFrame1.add(BtnToolKasir);
+
+        BtnToolKamnap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/home24.png"))); // NOI18N
+        BtnToolKamnap.setMnemonic('K');
+        BtnToolKamnap.setText("Rawat Inap");
+        BtnToolKamnap.setToolTipText("Alt+K");
+        BtnToolKamnap.setEnabled(false);
+        BtnToolKamnap.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        BtnToolKamnap.setIconTextGap(2);
+        BtnToolKamnap.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        BtnToolKamnap.setName("BtnToolKamnap"); // NOI18N
+        BtnToolKamnap.setPreferredSize(new java.awt.Dimension(107, 38));
+        BtnToolKamnap.setVerticalTextPosition(javax.swing.SwingConstants.CENTER);
+        BtnToolKamnap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnToolKamnapActionPerformed(evt);
+            }
+        });
+        internalFrame1.add(BtnToolKamnap);
 
         jSeparator7.setBackground(new java.awt.Color(225, 61, 142));
         jSeparator7.setForeground(new java.awt.Color(225, 61, 142));
@@ -14636,6 +14667,17 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_btnCariPiutangObatKaryActionPerformed
 
+    private void btnBookingOperasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBookingOperasiActionPerformed
+        isTutup();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        DlgJadwalOperasi form=new DlgJadwalOperasi(this,false);
+        form.setSize(PanelUtama.getWidth(),PanelUtama.getHeight());
+        form.setLocationRelativeTo(PanelUtama);
+        form.setVisible(true);
+        DlgHome.dispose();
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_btnBookingOperasiActionPerformed
+
     private void btnKategoriPerpustakaanActionPerformed(java.awt.event.ActionEvent evt) {
         isTutup();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -21630,6 +21672,16 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         DlgHome.dispose();
         this.setCursor(Cursor.getDefaultCursor());
     } 
+    
+    private void BtnToolOperasiActionPerformed(java.awt.event.ActionEvent evt) {                                                
+        isTutup();
+        FlayMenu.removeAll();
+        FlayMenu.add(btnBookingOperasi);
+        FlayMenu.add(btnJadwalOperasi);
+        btnBookingOperasi.setEnabled(akses.getbooking_operasi());
+        btnJadwalOperasi.setEnabled(akses.getbooking_operasi());
+        FlayMenu.setVisible(true);       
+    }       
             
     /**
     * @param args the command line arguments
@@ -21651,6 +21703,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private widget.ButtonBig BtnToolJualObat;
     private widget.ButtonBig BtnToolKamnap;
     private widget.ButtonBig BtnToolKasir;
+    private widget.ButtonBig BtnToolOperasi;
     private widget.ButtonBig BtnToolReg;
     private widget.CekBox ChkInput;
     private javax.swing.JDialog DlgHome;
@@ -21730,6 +21783,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private widget.ButtonBig btnBeriObat;
     private widget.ButtonBig btnBerkasDigitalPerawatan;
     private widget.ButtonBig btnBerkasPegawai;
+    private widget.ButtonBig btnBookingOperasi;
     private widget.ButtonBig btnBookingRegistrasi;
     private widget.ButtonBig btnBubes;
     private widget.ButtonBig btnBulananHAIs;
