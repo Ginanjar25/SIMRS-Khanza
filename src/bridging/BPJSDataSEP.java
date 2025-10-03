@@ -7493,7 +7493,8 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
     
     public boolean SimpanAntrianOnSite(){
         statusantrean=true;
-        if(Sequel.cariInteger("select count(referensi_mobilejkn_bpjs.no_rawat) from referensi_mobilejkn_bpjs where referensi_mobilejkn_bpjs.no_rawat=?", TNoRw.getText())==0){
+        if(Sequel.cariInteger("select count(referensi_mobilejkn_bpjs.no_rawat) from referensi_mobilejkn_bpjs where referensi_mobilejkn_bpjs.no_rawat=?", TNoRw.getText())==0 
+                || Sequel.cariInteger("select count(referensi_mobilejkn_bpjs.no_rawat) from referensi_mobilejkn_bpjs where referensi_mobilejkn_bpjs.status ='Batal' and referensi_mobilejkn_bpjs.no_rawat=?", TNoRw.getText())>0 ){
             if((!NoRujukan.getText().equals(""))||(!NoSKDP.getText().equals(""))){
                 if(TujuanKunjungan.getSelectedItem().toString().trim().equals("0. Normal")&&FlagProsedur.getSelectedItem().toString().trim().equals("")&&Penunjang.getSelectedItem().toString().trim().equals("")&&AsesmenPoli.getSelectedItem().toString().trim().equals("")){
                     if(AsalRujukan.getSelectedIndex()==0){
