@@ -827,8 +827,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
-            BtnBatalActionPerformed(null);
+//            BtnBatalActionPerformed(null);
         } catch (Exception e) {
+            
         }
         
     }//GEN-LAST:event_formWindowOpened
@@ -1054,9 +1055,12 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=? ",TPasien,TNoRM.getText());
     }
     
-    public void setNoRm(String norwt, String nmibu,Date tgl1,Date tgl2,String kdkamar) {
-        TCari.setText(norwt);
-//        isRawat();
+    public void setNoRm(String norm,String nama) {
+        TNoRM.setText(norm);
+        TPasien.setText(nama);
+        TCari.setText(norm);
+        ChkInput.setSelected(true);
+        isForm();
     }
     
     private void isForm(){

@@ -2160,8 +2160,9 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau dihapus..!!");
                     }else{
-                        if(Status.equals("Sudah Terlayani")){
+                        if(Sequel.cariIsi("select if(resep_obat.tgl_perawatan='0000-00-00','Belum','Sudah') as status from resep_obat where resep_obat.no_resep = ?", NoResep).equals("Sudah") || Status.equals("Sudah Terlayani")) {
                             JOptionPane.showMessageDialog(rootPane,"Resep sudah tervalidasi ..!!");
+                            tampil();
                         }else {
                             Sequel.meghapus("resep_obat","no_resep",NoResep);
                             Sequel.meghapus("resep_dokter","no_resep",NoResep);
@@ -2184,10 +2185,13 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau dihapus..!!");
                     }else{
-                        if(Status.equals("Sudah Terlayani")){
+                         if(Sequel.cariIsi("select if(resep_obat.tgl_perawatan='0000-00-00','Belum','Sudah') as status from resep_obat where resep_obat.no_resep = ?", NoResep).equals("Sudah") || Status.equals("Sudah Terlayani")) {
                             JOptionPane.showMessageDialog(rootPane,"Resep sudah tervalidasi ..!!");
+                            tampil3();
                         }else {
                             Sequel.meghapus("resep_obat","no_resep",NoResep); 
+                            Sequel.meghapus("resep_dokter","no_resep",NoResep);
+                            Sequel.meghapus("side_db.resep_obat_info", "no_resep", NoResep);
                             TeksKosong();
                             tampil3();
                         }                    

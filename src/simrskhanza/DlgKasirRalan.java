@@ -205,6 +205,7 @@ import bridging.BPJSRujukanKeluar;
 import fungsi.APIInternalRSPW;
 import keuangan.DlgDeposit;
 import modif.DlgBatalPeriksa;
+import modif.DlgJadwalOperasi;
 import permintaan.DlgBookingKuota;
 import rekammedis.RMProgramKFR;
 
@@ -1193,6 +1194,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         TPasienCari = new widget.TextBox();
         ppResumePerawat = new javax.swing.JMenuItem();
         MnDeposit = new javax.swing.JMenuItem();
+        MnBookingOperasi = new javax.swing.JMenuItem();
 
         jPopupMenu1.setForeground(new java.awt.Color(50, 50, 50));
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
@@ -2704,6 +2706,23 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             }
         });
         MnPermintaan.add(MnJadwalOperasi);
+        
+        
+        MnBookingOperasi.setBackground(new java.awt.Color(255, 255, 254));
+        MnBookingOperasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnBookingOperasi.setForeground(new java.awt.Color(50, 50, 50));
+        MnBookingOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnBookingOperasi.setText("Booking Operasi");
+        MnBookingOperasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnBookingOperasi.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnBookingOperasi.setName("MnBookingOperasi"); // NOI18N
+        MnBookingOperasi.setPreferredSize(new java.awt.Dimension(170, 26));
+        MnBookingOperasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnBookingOperasiActionPerformed(evt);
+            }
+        });
+        MnPermintaan.add(MnBookingOperasi);
 
         MnPermintaanLab.setBackground(new java.awt.Color(255, 255, 254));
         MnPermintaanLab.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -14728,6 +14747,25 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         }
     }//GEN-LAST:event_MnDepositActionPerformed
     
+    private void MnBookingOperasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnJadwalOperasiActionPerformed
+        if(tabModekasir.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+            TCari.requestFocus();
+        }else if(TPasienCari.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+            tbKasirRalan.requestFocus();
+        }else{
+            if(tbKasirRalan.getSelectedRow()!= -1){
+                DlgJadwalOperasi form=new DlgJadwalOperasi(null,false);
+                form.isCek();
+                form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                form.setLocationRelativeTo(internalFrame1);            
+                form.setNoRm(TNoRMCari.getText(),TPasienCari.getText()); 
+                form.setVisible(true);
+            }               
+        }
+    }//GEN-LAST:event_MnJadwalOperasiActionPerformed
+    
     /**
     * @param args the command line arguments
     */
@@ -15179,6 +15217,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private widget.Button btnAntrianKasir;
     private widget.Button btnCetakLabelRajal;
     private javax.swing.JMenuItem MnDeposit;
+    private javax.swing.JMenuItem MnBookingOperasi;
     
     private void tampilkasir() {     
         Valid.tabelKosong(tabModekasir);
@@ -15192,7 +15231,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,poliklinik.nm_poli, " +
                 "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts,penjab.png_jawab,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur, " +
                 "reg_periksa.status_bayar,reg_periksa.status_poli,reg_periksa.kd_pj,reg_periksa.kd_poli,pasien.no_tlp, CONCAT(penjab.png_jawab, ' ',COALESCE(bridging_sep.klsrawat, '')) AS cara_bayar, " +
-                "if(ISNULL(skdp.no_surat),'Belum','Sudah') AS skdp, CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2, CASE WHEN antripoli1.`status` IS NULL OR antripoli1.`status` = '0' THEN 'Belum' ELSE 'Sudah' END AS cetak_barcode " +(kasir?"":", if(ISNULL(resep_obat.no_resep),'-','Resep') AS resep_obat ")+
+                "CASE WHEN skdp_exp.no_sep IS NOT NULL THEN 'Rujukan Expired' WHEN skdp.no_surat IS NULL THEN 'Belum' ELSE 'Sudah' END AS skdp, CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2, CASE WHEN antripoli1.`status` IS NULL OR antripoli1.`status` = '0' THEN 'Belum' ELSE 'Sudah' END AS cetak_barcode " +(kasir?"":", if(ISNULL(resep_obat.no_resep),'-','Resep') AS resep_obat ")+
                 "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
                 "LEFT JOIN bridging_sep ON bridging_sep.no_rawat = reg_periksa.no_rawat " +
                 "LEFT JOIN bridging_surat_kontrol_bpjs skdp on skdp.no_sep = bridging_sep.no_sep " +
@@ -15201,6 +15240,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
                 "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj " +
                 "LEFT JOIN antripoli as antripoli1 ON antripoli1.no_rawat = reg_periksa.no_rawat " +
+                "LEFT JOIN bridging_surat_kontrol_exp skdp_exp ON skdp_exp.no_sep = bridging_sep.no_sep " +
                 (kasir?"":"LEFT JOIN antripoli on antripoli.no_rawat = reg_periksa.no_rawat LEFT JOIN ( SELECT resep_obat.no_rawat, resep_obat.jam_peresepan, resep_obat.no_resep FROM resep_obat GROUP BY resep_obat.no_rawat ) resep_obat ON resep_obat.no_rawat = reg_periksa.no_rawat ")+                
                 "where reg_periksa.tgl_registrasi BETWEEN ? and ? and reg_periksa.status_lanjut='Ralan'"+tampildiagnosa +
                 (semua?"and reg_periksa.stts != 'Batal'":"and reg_periksa.kd_pj like ? and poliklinik.nm_poli like ? and dokter.nm_dokter like ? " +(batal ? "and reg_periksa.stts = ? ": "and reg_periksa.stts like ? and reg_periksa.stts != 'Batal' ") +" and reg_periksa.status_bayar like ? and "+
@@ -15556,7 +15596,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         MnPermintaanKonsultasiMedik.setEnabled(akses.getkonsultasi_medik());
         ppResumePerawat.setEnabled(akses.getsoap_perawatan());
         MnDeposit.setEnabled(akses.getdeposit_pasien());
-        
+        MnBookingOperasi.setEnabled(akses.getbooking_operasi());   
         
         if(akses.getkode().equals("Admin Utama")){
             MnHapusData.setEnabled(true);

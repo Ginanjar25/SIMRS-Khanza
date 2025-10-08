@@ -15,8 +15,10 @@ package bridging;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fungsi.WarnaTable;
+import fungsi.akses;
 import fungsi.batasInput;
 import fungsi.koneksiDB;
+import fungsi.sekuel;
 import java.awt.Dimension;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -44,6 +46,7 @@ public final class BPJSCekReferensiSpesialistikKontrol extends javax.swing.JDial
     private HttpHeaders headers ;
     private HttpEntity requestEntity;
     private ObjectMapper mapper = new ObjectMapper();
+    private sekuel Sequel=new sekuel();
     private JsonNode root;
     private JsonNode nameNode;
     private JsonNode response;
@@ -335,9 +338,17 @@ public final class BPJSCekReferensiSpesialistikKontrol extends javax.swing.JDial
                         }
                     }
                 }
+                Sequel.meghapus("bridging_surat_kontrol_exp", "no_sep", Nomor.getText());
             }else {
-                JOptionPane.showMessageDialog(null,nameNode.path("message").asText());                
-            }   
+                if (nameNode.path("message").asText().contains("Surat Rujukan ini Masa Berlaku Habis")) {
+                    String keterangan = nameNode.path("message").asText();
+//                        response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc)).path("noSuratKontrol");
+                    Sequel.menyimpan("bridging_surat_kontrol_exp", "?,?,?,?,?,?,?,?,now(),'0000-00-00 00:00:00'", 8, new String[]{
+                        Nomor.getText(), TanggalKontrol.getText(), "-", "-", "-", "-", keterangan, akses.getkode()
+                    });
+                }
+                JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
+            }
         } catch (Exception ex) {
             System.out.println("Notifikasi : "+ex);
             if(ex.toString().contains("UnknownHostException")){

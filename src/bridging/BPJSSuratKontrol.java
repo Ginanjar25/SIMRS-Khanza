@@ -943,8 +943,16 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
                                 JOptionPane.showMessageDialog(null,"Gagal menyimpan booking, silahkan hubungi administrator...!!!!");
                             }
                         }
+                         Sequel.meghapus("bridging_surat_kontrol_exp", "no_sep", NoSEP.getText());
                     }
                 }else{
+                    if(nameNode.path("message").asText().contains("Surat Rujukan ini Masa Berlaku Habis")){
+                        String keterangan = nameNode.path("message").asText();
+//                        response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc)).path("noSuratKontrol");
+                        Sequel.menyimpan("bridging_surat_kontrol_exp", "?,?,?,?,?,?,?,?,now(),'0000-00-00 00:00:00'", 8, new String[]{
+                            NoSEP.getText(),Valid.SetTgl(TanggalKontrol.getSelectedItem()+""),KdDokter.getText(),NmDokter.getText(),KdPoli.getText(),NmPoli.getText(),keterangan,user=akses.getkode()
+                        });
+                    }
                     JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
                 }   
             }catch (Exception ex) {
@@ -1185,8 +1193,16 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             })==true){
                             emptTeks();
                             tampil();
+                            Sequel.meghapus("bridging_surat_kontrol_exp", "no_sep", NoSEP.getText());
                         }
                     }else{
+                        if (nameNode.path("message").asText().contains("Surat Rujukan ini Masa Berlaku Habis")) {
+                            String keterangan = nameNode.path("message").asText();
+//                        response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc)).path("noSuratKontrol");
+                            Sequel.menyimpan("bridging_surat_kontrol_exp", "?,?,?,?,?,?,?,?,now(),'0000-00-00 00:00:00'", 8, new String[]{
+                                NoSEP.getText(), Valid.SetTgl(TanggalKontrol.getSelectedItem() + ""), KdDokter.getText(), NmDokter.getText(), KdPoli.getText(), NmPoli.getText(), keterangan, user = akses.getkode()
+                            });
+                        }
                         JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
                     }   
                 }catch (Exception ex) {
@@ -1611,6 +1627,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             System.out.println("message : "+nameNode.path("message").asText());
             if(nameNode.path("code").asText().equals("200")){
                 Sequel.meghapus("bridging_surat_kontrol_bpjs","no_surat",NoSurat.getText());
+                Sequel.meghapus("bridging_surat_kontrol_exp", "no_sep", NoSEP.getText());
                 tabMode.removeRow(tbObat.getSelectedRow());
                 emptTeks();
             }else{
