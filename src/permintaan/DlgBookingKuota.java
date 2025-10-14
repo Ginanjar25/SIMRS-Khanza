@@ -879,6 +879,8 @@ public class DlgBookingKuota extends javax.swing.JFrame {
             Valid.textKosong(KdDokter,"No. Telp");
         }else if(cmbStts.getSelectedIndex()==0){
             Valid.textKosong(cmbStts,"Cara Bayar");
+        }else if (Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode()).equals("J006") && !Sequel.cariIsi("select kd_sps from dokter where kd_dokter= ?", KdDokter.getText()).equals("S0017")){
+             JOptionPane.showMessageDialog(null,"Hanya bisa mendaftarkan ke rehabilitasi medik saja");
         }else{
             if(akses.getkode().equals("Admin Utama")){
                 isBooking();
@@ -896,7 +898,9 @@ public class DlgBookingKuota extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnSimpanKeyPressed
 
     private void BtnEdit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEdit1ActionPerformed
-        if (!TPasien.getText().equals("")) {
+        if (Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode()).equals("J006") && !Sequel.cariIsi("select kd_sps from dokter where kd_dokter= ?", KdDokter.getText()).equals("S0017")){
+             JOptionPane.showMessageDialog(null,"Hanya bisa mendaftarkan ke rehabilitasi medik saja");
+        }else if (!TPasien.getText().equals("")) {
             try {
                 Sequel.mengedit("booking_kuota", "nama=? and tgl_periksa=? and alamat=? and no_telp=?", "tgl_periksa=?,nama=?,alamat=?,no_telp=?,kd_dok=?, catatan=?, penjab =? ,updated_at=CURRENT_TIMESTAMP()", 11, new String[]{
                     TanggalPeriksa.getSelectedItem() + "", TPasien.getText(), TAlamat.getText(), TNotelp.getText(), KdDokter.getText(), TCatatan.getText(),cmbStts.getSelectedItem().toString(),
@@ -931,14 +935,18 @@ public class DlgBookingKuota extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnBatalKeyPressed
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
-        for(i=0;i<tbObat.getRowCount();i++){
-            if(tbObat.getValueAt(i,0).toString().equals("true")){
-                Sequel.queryu2("delete from booking_kuota where tgl_periksa=? and nama=? and alamat=?",3,new String[]{
-                    tbObat.getValueAt(i,2).toString(),tbObat.getValueAt(i,4).toString(),tbObat.getValueAt(i,5).toString()
-                });
+        if (Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode()).equals("J006") && !Sequel.cariIsi("select kd_sps from dokter where kd_dokter= ?", KdDokter.getText()).equals("S0017")) {
+            JOptionPane.showMessageDialog(null, "Hanya bisa menghapus booking kuota rehabilitasi medik saja");
+        } else {
+            for (i = 0; i < tbObat.getRowCount(); i++) {
+                if (tbObat.getValueAt(i, 0).toString().equals("true")) {
+                    Sequel.queryu2("delete from booking_kuota where tgl_periksa=? and nama=? and alamat=?", 3, new String[]{
+                        tbObat.getValueAt(i, 2).toString(), tbObat.getValueAt(i, 4).toString(), tbObat.getValueAt(i, 5).toString()
+                    });
+                }
             }
+            tampil();
         }
-        tampil();
     }//GEN-LAST:event_BtnHapusActionPerformed
 
     private void BtnHapusKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnHapusKeyPressed
@@ -1216,6 +1224,17 @@ private void tampil() {
         NmDokter.setText("");
         TCatatan.setText("");
         cmbStts.setSelectedIndex(0);
+        String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
+        if (jabatan.equals("J006")) {
+            Sequel.cariIsi("select kd_dokter from dokter where kd_sps = ?", KdDokter, "S0017");
+            Sequel.cariIsi("select nm_dokter from dokter where kd_dokter = ?", NmDokter, KdDokter.getText());
+            NmDokter1.setText(NmDokter.getText());
+            BtnHapus.setEnabled(true);
+        } else {
+            KdDokter.setText("");
+            NmDokter.setText("");
+            NmDokter1.setText("");
+        }
     }
     
 
@@ -1272,20 +1291,30 @@ private void tampil() {
         }
     }
     
-    public void isCek(){
+    public void isCek() {
         String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
-        if(akses.getkode().equals("Admin Utama") || akses.getkode().equals("087") || jabatan.equals("J005")){
+        if (akses.getkode().equals("Admin Utama") || akses.getkode().equals("087") || jabatan.equals("J005")) {
             BtnSimpan.setEnabled(true);
             BtnHapus.setEnabled(true);
             BtnCekData.setEnabled(true);
             BtnEdit1.setEnabled(true);
-        }else{
+        } else {
             BtnSimpan.setEnabled(akses.getbooking_registrasi());
             BtnHapus.setEnabled(false);
             BtnCekData.setEnabled(akses.getbooking_registrasi());
             BtnEdit1.setEnabled(akses.getbooking_registrasi());
+
+            if (jabatan.equals("J006")) {
+                Sequel.cariIsi("select kd_dokter from dokter where kd_sps = ?", KdDokter, "S0017");
+                Sequel.cariIsi("select nm_dokter from dokter where kd_dokter = ?", NmDokter, KdDokter.getText());
+                NmDokter1.setText(NmDokter.getText());
+                BtnHapus.setEnabled(true);
+            } else {
+                KdDokter.setText("");
+                NmDokter.setText("");
+                NmDokter1.setText("");
+            }
         }
-        
     }
 
 

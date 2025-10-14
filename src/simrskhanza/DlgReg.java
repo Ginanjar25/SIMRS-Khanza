@@ -7378,6 +7378,8 @@ public final class DlgReg extends javax.swing.JDialog {
                 "WHERE ki.stts_pulang = '-' and ps.no_rkm_medis =?",TNoRM.getText())>0){
             JOptionPane.showMessageDialog(null,"Pasien sedang dalam masa perawatan ranap gabung di kamar inap..!!");
             TNoRM.requestFocus();
+        }else if (Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode()).equals("J026") && !kdpoli.getText().trim().equals("U0035")){
+             JOptionPane.showMessageDialog(null,"Hanya bisa mendaftarkan ke Poli Vaksin ICV saja");
         }else{
             if (akses.getkode().equals("Admin Utama")) {
                 if (Sequel.cariInteger("select count(reg_periksa.no_rkm_medis) from pasien inner join reg_periksa on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
@@ -7612,6 +7614,8 @@ public final class DlgReg extends javax.swing.JDialog {
             Valid.textKosong(kdpoli,"poliklinik");
         }else if(TBiaya.getText().trim().equals("")){
             Valid.textKosong(TBiaya,"biaya regristrasi");
+        }else if (Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode()).equals("J026") && !kdpoli.getText().trim().equals("U0035")){
+             JOptionPane.showMessageDialog(null,"Hanya bisa mendaftarkan ke Poli Vaksin ICV saja");
         }else{
             if(tbPetugas.getSelectedRow()>-1){
                 if(Sequel.cariRegistrasi(TNoRw.getText())>0){
@@ -16271,6 +16275,14 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         nmpnj2.setText("");
         NoKa2.setText("");
         R2.setSelected(false);
+        
+        String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
+
+        if (jabatan.equals("J026")) {
+            kdpoli.setText("U0035");
+            Sequel.cariIsi("select nm_poli from poliklinik where kd_poli = ?", TPoli, kdpoli.getText());
+            TBiaya.setText(Valid.SetAngka(Sequel.cariInteger("select registrasi from poliklinik where kd_poli = ?", kdpoli.getText())));
+        }
     }
 
     private void getData() {
@@ -16715,6 +16727,19 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                  MnStatus.setEnabled(false);
              }
             
+            if(jabatan.equals("J026")){
+                BtnUnit.setEnabled(false);
+                kdpoli.setText("U0035");
+                Sequel.cariIsi("select nm_poli from poliklinik where kd_poli = ?", TPoli,kdpoli.getText());
+                TBiaya.setText( Valid.SetAngka(Sequel.cariInteger("select registrasi from poliklinik where kd_poli = ?", kdpoli.getText())));
+                CrPoli.setText(TPoli.getText());
+            }else {
+                BtnUnit.setEnabled(true);
+                kdpoli.setText("");
+                TPoli.setText("");
+                TBiaya.setText("");
+                CrPoli.setText("");
+            }
             
            if(jabatan.equals("J005")){
                BtnHapus.setEnabled(true);
