@@ -1158,6 +1158,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             Valid.textKosong(KdPoli,"Poli");
         }else if(TanggalSurat.getSelectedItem().toString().trim().equals(TanggalKontrol.getSelectedItem().toString().substring(0, 10))){
             JOptionPane.showMessageDialog(null,"Tanggal terbit surat kontrol tidak boleh sama dengan tanggal rencana kontrol");
+        }else if(Sequel.cariInteger("select count(referensi_mobilejkn_bpjs.nomorreferensi) from referensi_mobilejkn_bpjs where  referensi_mobilejkn_bpjs.status != 'Batal' and referensi_mobilejkn_bpjs.nomorreferensi=?", NoSurat.getText())>0){
+            JOptionPane.showMessageDialog(null,"No. SKDP Sudah di gunakan untuk antrian Mobile JKN, Silhakan Batalkan dulu");
         }else{
             if(tbObat.getSelectedRow()!= -1){
                 try {

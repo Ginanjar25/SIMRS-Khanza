@@ -7556,18 +7556,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                             jammulai=rs.getString("jam_mulai");
                             jamselesai=rs.getString("jam_selesai");
                             kuota=rs.getInt("kuota");
-                            if (kodedokterreg.equals("D27")) {
-                                try {
-                                    prop.loadFromXML(new FileInputStream("setting/database.xml"));
-                                    interval = Integer.parseInt(prop.getProperty("INTERVALDRJENAR"));
-                                } catch (NumberFormatException e) {
-                                    // Jika terjadi kesalahan konversi, gunakan nilai default
-                                    interval = 150;
-                                } catch (Exception e) {
-                                    // Jika terjadi kesalahan saat membaca file atau properti
-                                    interval = 150;
-                                }
-                            }
+                            
                             datajam=Sequel.cariIsi("select DATE_ADD(concat('"+Valid.SetTgl(TanggalSEP.getSelectedItem()+"")+"',' ','"+jammulai+"'),INTERVAL "+(Integer.parseInt(nomorreg)*interval)+" SECOND) ");
                             parsedDate = dateFormat.parse(datajam);
                         }else{
@@ -7630,6 +7619,9 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                             nameNode = root.path("metadata");  
                             respon=nameNode.path("code").asText();
                             System.out.println("respon WS BPJS Kirim Pakai NoRujukan : "+nameNode.path("code").asText()+" "+nameNode.path("message").asText()+"\n");
+                            if (nameNode.path("code").asText().equals("201")) {
+                                statusantrean = false;
+                            }
                         } catch (Exception e) {
                             statusantrean=false;
                             System.out.println("Notif No.Rujuk : "+e);
