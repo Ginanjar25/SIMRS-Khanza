@@ -1730,7 +1730,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         NmPasien.setText(namapasien);
         Alamat.setText(alamat);
         
-        if (email.equals("") || email.equals("-")) {
+        if (email.equals("") || email.equals("-")||!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
             setEmailIncrement();
         } else {
             Email.setText(email);

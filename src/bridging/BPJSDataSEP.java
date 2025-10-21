@@ -7621,6 +7621,8 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                             System.out.println("respon WS BPJS Kirim Pakai NoRujukan : "+nameNode.path("code").asText()+" "+nameNode.path("message").asText()+"\n");
                             if (nameNode.path("code").asText().equals("201")) {
                                 statusantrean = false;
+                            }else if (nameNode.path("code").asText().equals("208") || nameNode.path("code").asText().equals("200")) { 
+                                statusantrean = true;
                             }
                         } catch (Exception e) {
                             statusantrean=false;
@@ -7673,6 +7675,8 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                                 System.out.println("respon WS BPJS Kirim Pakai SKDP : "+nameNode.path("code").asText()+" "+nameNode.path("message").asText()+"\n");
                                 if(nameNode.path("code").asText().equals("201")){
                                     statusantrean=false;
+                                }else if(nameNode.path("code").asText().equals("208") || nameNode.path("code").asText().equals("200")){
+                                    statusantrean=true;
                                 }
                             } catch (Exception e) {
                                 statusantrean=false;

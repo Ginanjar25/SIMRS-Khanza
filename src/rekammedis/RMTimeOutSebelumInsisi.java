@@ -566,7 +566,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-10-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-10-2025" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -580,7 +580,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-10-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-10-2025" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -729,7 +729,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         TglLahir.setBounds(689, 10, 100, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-10-2025 09:21:44" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-10-2025 14:17:19" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -1146,7 +1146,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         jLabel17.setBounds(0, 340, 115, 23);
 
         TanggalSeteril.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalSeteril.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-10-2025" }));
+        TanggalSeteril.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-10-2025" }));
         TanggalSeteril.setDisplayFormat("dd-MM-yyyy");
         TanggalSeteril.setName("TanggalSeteril"); // NOI18N
         TanggalSeteril.setOpaque(false);
@@ -1235,7 +1235,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         FormInput.add(jLabel27);
         jLabel27.setBounds(0, 380, 143, 23);
 
-        KetersediaanImplant.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ya", "Tidak" }));
+        KetersediaanImplant.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Tidak", "Ya" }));
         KetersediaanImplant.setName("KetersediaanImplant"); // NOI18N
         KetersediaanImplant.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -1332,7 +1332,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
             if(akses.getkode().equals("Admin Utama")){
                 hapus();
             }else {
-                if(akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),10).toString())||akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),29).toString())){
+                if(akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),10).toString())||akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),30).toString())){
                     hapus();
                 }else{
                     JOptionPane.showMessageDialog(null,"User Login harus Petugas OK/Dokter Anestesi..!!");
@@ -1367,7 +1367,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
                 if(akses.getkode().equals("Admin Utama")){
                     ganti();
                 }else {
-                    if(akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),10).toString())||akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),29).toString())){
+                    if(akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),10).toString())||akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),30).toString())){
                         ganti();
                     }else{
                         JOptionPane.showMessageDialog(null,"User Login harus Petugas OK/Dokter Anestesi..!!");
