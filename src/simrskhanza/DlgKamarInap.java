@@ -182,6 +182,9 @@ import permintaan.DlgPermintaanFotoBayi;
 import rekammedis.RMDataResumePerawatPasienRanap;
 import bridging.BPJSRujukanKeluar;
 import rekammedis.RMKonsultasiDokter;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 
 /**
  *
@@ -1169,6 +1172,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         MnPenjualan1 = new javax.swing.JMenuItem();
         MnDeposit = new javax.swing.JMenuItem();
         MnBilling = new javax.swing.JMenuItem();
+        MnReqHapusBilling = new javax.swing.JMenuItem();
         jSeparator12 = new javax.swing.JPopupMenu.Separator();
         MnLaporan = new javax.swing.JMenu();
         MnPersetujuanUmum = new javax.swing.JMenuItem();
@@ -3489,6 +3493,22 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         });
         jPopupMenu1.add(MnBilling);
+        
+        MnReqHapusBilling.setBackground(new java.awt.Color(255, 255, 254));
+        MnReqHapusBilling.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnReqHapusBilling.setForeground(new java.awt.Color(50, 50, 50));
+        MnReqHapusBilling.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnReqHapusBilling.setText("Req Buka Billing");
+        MnReqHapusBilling.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnReqHapusBilling.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnReqHapusBilling.setName("MnReqHapusBilling"); // NOI18N
+        MnReqHapusBilling.setPreferredSize(new java.awt.Dimension(200, 26));
+        MnReqHapusBilling.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reqHapusBilling();
+            }
+        });
+        jPopupMenu1.add(MnReqHapusBilling);
 
         jSeparator12.setBackground(new java.awt.Color(190, 220, 180));
         jSeparator12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(190, 220, 180)));
@@ -17892,6 +17912,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private javax.swing.JMenuItem MnBarcode2;
     private javax.swing.JMenuItem MnBarcodeRM9;
     private javax.swing.JMenuItem MnBilling;
+    private javax.swing.JMenuItem MnReqHapusBilling;
     private javax.swing.JMenuItem MnCatatanCekGDS;
     private javax.swing.JMenuItem MnCatatanKeperawatan;
     private javax.swing.JMenuItem MnCatatanObservasiRanap;
@@ -19374,4 +19395,17 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_MnRMLembarKonsultasiActionPerformed
+    
+    private void reqHapusBilling(){
+         String text = "📌 BUKA BILLING:\n" +
+        "No. Rawat : "+TNoRwCari.getText()+"\n" +
+        "Nama Pasien : "+TNoRMCari.getText()+"-"+TPasienCari.getText()+"\n" +
+        "Alasan : ";
+
+        // Copy ke clipboard
+        StringSelection selection = new StringSelection(text);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, null);
+        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan Buka Billing berhasil disalin ke clipboard!");
+    }
 }

@@ -19,6 +19,9 @@ import fungsi.akses;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -375,6 +378,8 @@ public final class DlgResepObat extends javax.swing.JDialog {
         ppLembarObat2 = new javax.swing.JMenuItem();
         ppUbahAturanPakai = new javax.swing.JMenuItem();
         ppUbahAturanPakai1 = new javax.swing.JMenuItem();
+        ppReqHapusResep = new javax.swing.JMenuItem();
+        ppReqHapusRacikan = new javax.swing.JMenuItem();
         WindowInput3 = new javax.swing.JDialog();
         internalFrame4 = new widget.InternalFrame();
         scrollPane1 = new widget.ScrollPane();
@@ -609,6 +614,38 @@ public final class DlgResepObat extends javax.swing.JDialog {
             }
         });
         Popup2.add(ppUbahAturanPakai1);
+
+        ppReqHapusResep.setBackground(new java.awt.Color(255, 255, 254));
+        ppReqHapusResep.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppReqHapusResep.setForeground(new java.awt.Color(50, 50, 50));
+        ppReqHapusResep.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppReqHapusResep.setText("Req Hapus Resep");
+        ppReqHapusResep.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppReqHapusResep.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppReqHapusResep.setName("ppReqHapusResep"); // NOI18N
+        ppReqHapusResep.setPreferredSize(new java.awt.Dimension(225, 25));
+        ppReqHapusResep.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppReqHapusResepActionPerformed(evt);
+            }
+        });
+        Popup2.add(ppReqHapusResep);
+
+        ppReqHapusRacikan.setBackground(new java.awt.Color(255, 255, 254));
+        ppReqHapusRacikan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppReqHapusRacikan.setForeground(new java.awt.Color(50, 50, 50));
+        ppReqHapusRacikan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppReqHapusRacikan.setText("Req Hapus Racikan");
+        ppReqHapusRacikan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppReqHapusRacikan.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppReqHapusRacikan.setName("ppReqHapusRacikan"); // NOI18N
+        ppReqHapusRacikan.setPreferredSize(new java.awt.Dimension(225, 25));
+        ppReqHapusRacikan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppReqHapusRacikanActionPerformed(evt);
+            }
+        });
+        Popup2.add(ppReqHapusRacikan);
 
         WindowInput3.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         WindowInput3.setName("WindowInput3"); // NOI18N
@@ -947,7 +984,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "16-05-2024 14:12:52" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "21-10-2025 11:58:52" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -961,7 +998,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "16-05-2024 14:12:52" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "21-10-2025 11:58:52" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -1091,7 +1128,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         jLabel8.setBounds(0, 42, 95, 23);
 
         DTPBeri.setForeground(new java.awt.Color(50, 70, 50));
-        DTPBeri.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "16-05-2024" }));
+        DTPBeri.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "21-10-2025" }));
         DTPBeri.setDisplayFormat("dd-MM-yyyy");
         DTPBeri.setName("DTPBeri"); // NOI18N
         DTPBeri.setOpaque(false);
@@ -2510,6 +2547,32 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }//GEN-LAST:event_ppLembarObatDanTelaahActionPerformed
 
+    private void ppReqHapusResepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppReqHapusResepActionPerformed
+        String text = "💊 HAPUS RESEP\n"
+                + "No. Resep : "+tbResep.getValueAt(tbResep.getSelectedRow(),0).toString()+"\n"
+                + "Nama Pasien : "+tbResep.getValueAt(tbResep.getSelectedRow(),2).toString()+"\n"
+                + "Alasan : ";
+
+        // Copy ke clipboard
+        StringSelection selection = new StringSelection(text);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, null);
+        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus resep berhasil disalin ke clipboard!");
+    }//GEN-LAST:event_ppReqHapusResepActionPerformed
+
+    private void ppReqHapusRacikanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppReqHapusRacikanActionPerformed
+        String text = "💊 HAPUS RACIKAN\n"
+                + "No. Resep : "+tbResep.getValueAt(tbResep.getSelectedRow(),0).toString()+"\n"
+                + "Nama Pasien : "+tbResep.getValueAt(tbResep.getSelectedRow(),2).toString()+"\n"
+                + "Alasan : ";
+
+        // Copy ke clipboard
+        StringSelection selection = new StringSelection(text);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, null);
+        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus resep berhasil disalin ke clipboard!");
+    }//GEN-LAST:event_ppReqHapusRacikanActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -2600,6 +2663,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JMenuItem ppLembarObat1;
     private javax.swing.JMenuItem ppLembarObat2;
     private javax.swing.JMenuItem ppLembarObatDanTelaah;
+    private javax.swing.JMenuItem ppReqHapusRacikan;
+    private javax.swing.JMenuItem ppReqHapusResep;
     private javax.swing.JMenuItem ppResepObat;
     private javax.swing.JMenuItem ppResepObat1;
     private javax.swing.JMenuItem ppResepObat2;

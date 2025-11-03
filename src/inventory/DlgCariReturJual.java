@@ -7,6 +7,9 @@ import fungsi.validasi;
 import fungsi.akses;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
@@ -225,6 +228,7 @@ public class DlgCariReturJual extends javax.swing.JDialog {
         jPopupMenu1 = new javax.swing.JPopupMenu();
         ppHapus = new javax.swing.JMenuItem();
         ppCetak = new javax.swing.JMenuItem();
+        ppReqHapusRetur = new javax.swing.JMenuItem();
         internalFrame1 = new widget.InternalFrame();
         scrollPane1 = new widget.ScrollPane();
         tbRetur = new widget.Table();
@@ -294,6 +298,24 @@ public class DlgCariReturJual extends javax.swing.JDialog {
             }
         });
         jPopupMenu1.add(ppCetak);
+
+        ppReqHapusRetur.setBackground(new java.awt.Color(255, 255, 254));
+        ppReqHapusRetur.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppReqHapusRetur.setForeground(new java.awt.Color(50, 50, 50));
+        ppReqHapusRetur.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppReqHapusRetur.setText("Req Hapus Retur");
+        ppReqHapusRetur.setToolTipText("");
+        ppReqHapusRetur.setAutoscrolls(true);
+        ppReqHapusRetur.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppReqHapusRetur.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppReqHapusRetur.setName("ppReqHapusRetur"); // NOI18N
+        ppReqHapusRetur.setPreferredSize(new java.awt.Dimension(150, 25));
+        ppReqHapusRetur.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppReqHapusReturActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(ppReqHapusRetur);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -984,6 +1006,19 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         }
     }//GEN-LAST:event_tbReturMouseClicked
 
+    private void ppReqHapusReturActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppReqHapusReturActionPerformed
+        String text = "💊 HAPUS RETUR\n"
+        + "No. Retur : "+tbRetur.getValueAt(tbRetur.getSelectedRow(),0).toString()+"\n"
+        + "Nama Pasien : "+tbRetur.getValueAt(tbRetur.getSelectedRow(),3).toString()+"\n"
+        + "Alasan : ";
+
+        // Copy ke clipboard
+        StringSelection selection = new StringSelection(text);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, null);
+        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus resep berhasil disalin ke clipboard!");
+    }//GEN-LAST:event_ppReqHapusReturActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1037,6 +1072,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private widget.panelisi panelisijual;
     private javax.swing.JMenuItem ppCetak;
     private javax.swing.JMenuItem ppHapus;
+    private javax.swing.JMenuItem ppReqHapusRetur;
     private widget.ScrollPane scrollPane1;
     private widget.Table tbRetur;
     // End of variables declaration//GEN-END:variables

@@ -45,6 +45,9 @@ import keuangan.Jurnal;
 import simrskhanza.DlgCariBangsal;
 import simrskhanza.DlgCariObatPenyakit;
 import simrskhanza.DlgCariPasien;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Clipboard;
 
 /**
  *
@@ -378,6 +381,7 @@ public class DlgPemberianObat extends javax.swing.JDialog {
         ppResepObat = new javax.swing.JMenuItem();
         ppNoRawat = new javax.swing.JMenuItem();
         ppLokasi = new javax.swing.JMenuItem();
+        ppReqHapusObat = new javax.swing.JMenuItem();
         THBeli = new widget.TextBox();
         Tanggal = new widget.Tanggal();
         internalFrame1 = new widget.InternalFrame();
@@ -479,13 +483,29 @@ public class DlgPemberianObat extends javax.swing.JDialog {
         });
         Popup2.add(ppLokasi);
 
+        ppReqHapusObat.setBackground(new java.awt.Color(255, 255, 254));
+        ppReqHapusObat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppReqHapusObat.setForeground(new java.awt.Color(50, 50, 50));
+        ppReqHapusObat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppReqHapusObat.setText("Req Hapus Obat");
+        ppReqHapusObat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppReqHapusObat.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppReqHapusObat.setName("ppReqHapusObat"); // NOI18N
+        ppReqHapusObat.setPreferredSize(new java.awt.Dimension(180, 25));
+        ppReqHapusObat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppReqHapusObatBtnPrintActionPerformed(evt);
+            }
+        });
+        Popup2.add(ppReqHapusObat);
+
         THBeli.setText("0");
         THBeli.setHighlighter(null);
         THBeli.setName("THBeli"); // NOI18N
 
         Tanggal.setEditable(false);
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "18-04-2024" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "25-08-2025" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -645,7 +665,7 @@ public class DlgPemberianObat extends javax.swing.JDialog {
         panelGlass9.add(jLabel14);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "18-04-2024" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "25-08-2025" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -658,7 +678,7 @@ public class DlgPemberianObat extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "18-04-2024" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "25-08-2025" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -782,7 +802,7 @@ public class DlgPemberianObat extends javax.swing.JDialog {
         jLabel7.setBounds(-2, 42, 80, 23);
 
         DTPBeri.setForeground(new java.awt.Color(50, 70, 50));
-        DTPBeri.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "18-04-2024" }));
+        DTPBeri.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "25-08-2025" }));
         DTPBeri.setDisplayFormat("dd-MM-yyyy");
         DTPBeri.setName("DTPBeri"); // NOI18N
         DTPBeri.setOpaque(false);
@@ -1324,6 +1344,40 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         // TODO add your handling code here:
     }//GEN-LAST:event_TanggalKeyPressed
 
+    private void ppReqHapusObatBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppReqHapusObatBtnPrintActionPerformed
+        String namaObat="", kdBrg="";
+        if (tbPemberianObat.getSelectedRow() != -1) {
+            int[] selectedRows = tbPemberianObat.getSelectedRows();
+            StringBuilder sb = new StringBuilder();
+            StringBuilder sb2 = new StringBuilder();
+            for (int i = 0; i < selectedRows.length; i++) {
+                int rowIndex = selectedRows[i];                 
+                Object cellValue = tbPemberianObat.getValueAt(rowIndex, 4);
+                if (cellValue != null && !cellValue.toString().trim().isEmpty()) {
+                    if (sb.length() > 0) {
+                        sb.append(", ");
+                    }
+                    sb.append(cellValue.toString().trim());
+                }
+            }
+            namaObat = sb.toString();
+        }
+        
+        String text = "💊 HAPUS OBAT\n"
+                + "No. Resep : "+tbPemberianObat.getValueAt(tbPemberianObat.getSelectedRow(),16).toString()+"\n"
+                + "Obat : "+namaObat+"\n"
+                + "Kd Brg : "+kdBrg+"\n"
+                + "Nama Pasien : "+TNoRM.getText()+"-"+TPasien.getText()+"\n"
+                + "Alasan : ";
+
+        // Copy ke clipboard
+        StringSelection selection = new StringSelection(text);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, null);
+        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus obat berhasil disalin ke clipboard!");
+        
+    }//GEN-LAST:event_ppReqHapusObatBtnPrintActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1393,6 +1447,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.panelisi panelGlass9;
     private javax.swing.JMenuItem ppLokasi;
     private javax.swing.JMenuItem ppNoRawat;
+    private javax.swing.JMenuItem ppReqHapusObat;
     private javax.swing.JMenuItem ppResepObat;
     private widget.Table tbPemberianObat;
     // End of variables declaration//GEN-END:variables
