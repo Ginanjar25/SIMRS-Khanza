@@ -1853,6 +1853,7 @@ public class DlgIKBBayi extends javax.swing.JDialog {
         FormInput.add(label12);
         label12.setBounds(0, 12, 85, 23);
 
+        NoRm.setEditable(false);
         NoRm.setName("NoRm"); // NOI18N
         NoRm.setPreferredSize(new java.awt.Dimension(207, 23));
         NoRm.addKeyListener(new java.awt.event.KeyAdapter() {

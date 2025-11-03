@@ -2104,4 +2104,37 @@ public final class sekuel {
         }
     }
 
+   
+    public void menyimpanJSON(String url, String request_json, String response, String user) {
+        PreparedStatement ps = null;
+        try {
+            // Query untuk insert ke trackerjson
+            String sql = "INSERT INTO trackerjson (date, url, request_json, response, user) VALUES (NOW(), ?, ?, ?, ?)";
+            ps = connect.prepareStatement(sql);
+
+            // Set nilai parameter
+            ps.setString(1, url);
+            ps.setString(2, request_json);
+            ps.setString(3, response);
+            ps.setString(4, user);
+
+            // Eksekusi query
+            ps.executeUpdate();
+
+            System.out.println("Log JSON berhasil disimpan untuk URL: " + url);
+
+        } catch (Exception e) {
+            System.out.println("Notifikasi (menyimpanJSON): " + e);
+        } finally {
+            // Tutup statement agar tidak ada memory leak
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (Exception ex) {
+                System.out.println("Notifikasi close ps: " + ex);
+            }
+        }
+    }
+
 }
