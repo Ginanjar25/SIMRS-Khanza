@@ -1407,11 +1407,15 @@ public final class DlgResepObat extends javax.swing.JDialog {
         }else if(TPasien.getText().trim().equals("")){
              JOptionPane.showMessageDialog(null,"Maaf, Gagal menghapus. Pilih dulu data yang mau dihapus.Klik data pada table untuk memilih...!!!!");
         }else if(!(TPasien.getText().trim().equals(""))){
-           hapusDetailPemberianObat();
+          if (Sequel.cariRegistrasi(TNoRw.getText()) > 0) {
+                JOptionPane.showMessageDialog(rootPane, "Data billing sudah terverifikasi ..!!");
+            } else {
+                hapusDetailPemberianObat();
 //           Sequel.meghapus("resep_obat","no_resep",NoResep.getText());
 //           Sequel.meghapus("resep_dokter","no_resep",NoResep.getText());
 //           Sequel.meghapus("side_db.resep_obat_info", "no_resep", NoResep.getText());
-           tampil();
+                tampil();
+            }
         }
 }//GEN-LAST:event_BtnHapusActionPerformed
 
