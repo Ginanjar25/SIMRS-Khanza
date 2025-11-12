@@ -920,7 +920,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         StringSelection selection = new StringSelection(text);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(selection, null);
-        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus obat berhasil disalin ke clipboard!");
+        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus resep pulang berhasil disalin ke clipboard!");
         
     }//GEN-LAST:event_ppReqHapusResepPulangActionPerformed
 

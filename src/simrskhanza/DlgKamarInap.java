@@ -19400,6 +19400,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
          String text = "📌 BUKA BILLING:\n" +
         "No. Rawat : "+TNoRwCari.getText()+"\n" +
         "Nama Pasien : "+TNoRMCari.getText()+"-"+TPasienCari.getText()+"\n" +
+        "Cara Bayar : " + tbKamIn.getValueAt(tbKamIn.getSelectedRow(),6).toString()+"\n" +
         "Alasan : ";
 
         // Copy ke clipboard

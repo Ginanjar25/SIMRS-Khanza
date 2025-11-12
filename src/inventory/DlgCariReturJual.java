@@ -1016,7 +1016,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         StringSelection selection = new StringSelection(text);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(selection, null);
-        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus resep berhasil disalin ke clipboard!");
+        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus retur berhasil disalin ke clipboard!");
     }//GEN-LAST:event_ppReqHapusReturActionPerformed
 
     /**

@@ -16205,6 +16205,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         String text = "📌 BUKA BILLING:\n" +
         "No. Rawat : "+TNoRw.getText()+"\n" +
         "Nama Pasien : "+TNoRMCari.getText()+"-"+TPasienCari.getText()+"\n" +
+        "Cara Bayar : " + tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),9).toString()+"\n" +
         "Alasan : ";
 
         // Copy ke clipboard

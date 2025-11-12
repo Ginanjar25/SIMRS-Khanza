@@ -57,6 +57,7 @@ public final class KeuanganPenagihanPiutangPasien extends javax.swing.JDialog {
         initComponents();
         this.setLocation(8,1);
         setSize(885,674);
+        WindowSetNoSurat.setSize(483,115);
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "P","No.Rawat/No.Tagihan","Tgl.Piutang","No.RM","Nama Pasien","Status","Piutang","Penjamin","No.Peserta","Asal Perusahaan","NIP/NRP","No.Nota"
@@ -329,6 +330,12 @@ public final class KeuanganPenagihanPiutangPasien extends javax.swing.JDialog {
         Perusahaan = new widget.TextBox();
         AlamatAsuransi = new widget.TextBox();
         Ditujukan = new widget.TextBox();
+        NoSurat = new widget.TextBox();
+        WindowSetNoSurat = new javax.swing.JDialog();
+        internalFrame7 = new widget.InternalFrame();
+        BtnSimpan6 = new widget.Button();
+        jLabel35 = new widget.Label();
+        NoSuratTu = new widget.TextBox();
         internalFrame1 = new widget.InternalFrame();
         panelisi4 = new widget.panelisi();
         label32 = new widget.Label();
@@ -457,6 +464,43 @@ public final class KeuanganPenagihanPiutangPasien extends javax.swing.JDialog {
 
         Ditujukan.setName("Ditujukan"); // NOI18N
         Ditujukan.setPreferredSize(new java.awt.Dimension(300, 23));
+
+        NoSurat.setName("NoSurat"); // NOI18N
+        NoSurat.setPreferredSize(new java.awt.Dimension(300, 23));
+
+        WindowSetNoSurat.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        WindowSetNoSurat.setName("WindowSetNoSurat"); // NOI18N
+        WindowSetNoSurat.setUndecorated(true);
+        WindowSetNoSurat.setResizable(false);
+
+        internalFrame7.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Set Nomor Surat TU ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame7.setName("internalFrame7"); // NOI18N
+        internalFrame7.setLayout(null);
+
+        BtnSimpan6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
+        BtnSimpan6.setMnemonic('S');
+        BtnSimpan6.setText("Cetak");
+        BtnSimpan6.setToolTipText("Alt+S");
+        BtnSimpan6.setName("BtnSimpan6"); // NOI18N
+        BtnSimpan6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSimpan6ActionPerformed(evt);
+            }
+        });
+        internalFrame7.add(BtnSimpan6);
+        BtnSimpan6.setBounds(360, 20, 100, 30);
+
+        jLabel35.setText("No.Surat Tu :");
+        jLabel35.setName("jLabel35"); // NOI18N
+        internalFrame7.add(jLabel35);
+        jLabel35.setBounds(0, 25, 102, 23);
+
+        NoSuratTu.setHighlighter(null);
+        NoSuratTu.setName("NoSuratTu"); // NOI18N
+        internalFrame7.add(NoSuratTu);
+        NoSuratTu.setBounds(106, 25, 240, 23);
+
+        WindowSetNoSurat.getContentPane().add(internalFrame7, java.awt.BorderLayout.CENTER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -1206,132 +1250,8 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
     }//GEN-LAST:event_BtnSimpanKeyPressed
 
     private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
-        if(NoPenagihan.getText().trim().equals("")){
-            Valid.textKosong(NoPenagihan,"No.Penagihan");
-        }else if(kdpenjab.getText().trim().equals("")||nmpenjab.getText().trim().equals("")){
-            Valid.textKosong(BtnPenjamin,"Penjamin");
-        }else if(kdptg.getText().trim().equals("")||nmptg.getText().trim().equals("")){
-            Valid.textKosong(btnPetugas,"Petugas");
-        }else if(kdmenyetujui.getText().trim().equals("")||nmmenyetujui.getText().trim().equals("")){
-            Valid.textKosong(btnMenyetujui,"Menyetujui");
-        }else if(Catatan.getText().trim().equals("")){
-            Valid.textKosong(Catatan,"Catatan");
-        }else if(Ditujukan.getText().trim().equals("")){
-            Valid.textKosong(Ditujukan,"Ditujukan");
-        }else if(jml<=0){
-            JOptionPane.showMessageDialog(null,"Maaf, Silahkan masukkan penagihan...!!!!");
-            TCari.requestFocus();
-        }else{
-            if(TabRawat.getSelectedIndex()==0){
-                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                Sequel.queryu("delete from temporary where temp37='"+akses.getalamatip()+"'");
-                for(i=0;i<tabMode.getRowCount();i++){  
-                    if(tbBelumLunas.getValueAt(i,0).toString().equals("true")){
-                        if(Sequel.menyimpantf2("temporary","'"+i+"','"+
-                                    tabMode.getValueAt(i,1).toString()+"','"+
-                                    tabMode.getValueAt(i,2).toString()+"','"+
-                                    tabMode.getValueAt(i,3).toString()+"','"+
-                                    tabMode.getValueAt(i,4).toString()+"','"+
-                                    tabMode.getValueAt(i,5).toString()+"','"+
-                                    Valid.SetAngka(Double.parseDouble(tabMode.getValueAt(i,6).toString()))+"','"+
-                                    tabMode.getValueAt(i,7).toString()+"','"+
-                                    tabMode.getValueAt(i,8).toString()+"','"+
-                                    tabMode.getValueAt(i,9).toString()+"','"+
-                                    tabMode.getValueAt(i,10).toString()+"','"+
-                                    tabMode.getValueAt(i,11).toString()+"','','','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Transaksi")==false){
-                            System.out.println("Notif : Gagal menyimpan karena ada data yang bermasalah..!! ");
-                        }
-                    }                    
-                }
-
-                getdata();
-                Map<String, Object> param = new HashMap<>();    
-                param.put("namars",akses.getnamars());
-                param.put("alamatrs",akses.getalamatrs());
-                param.put("kotars",akses.getkabupatenrs());
-                param.put("propinsirs",akses.getpropinsirs());
-                param.put("kontakrs",akses.getkontakrs());
-                param.put("emailrs",akses.getemailrs());  
-                param.put("perusahaanasuransi",Perusahaan.getText());  
-                param.put("alamatasuransi",AlamatAsuransi.getText());  
-                param.put("telpasuransi",NoTelp.getText()); 
-                param.put("tanggal",Tanggal.getSelectedItem()); 
-                param.put("tanggaltempo",TanggalTempo.getSelectedItem()); 
-                param.put("tempo",Tempo.getText()); 
-                param.put("noinvoice",NoPenagihan.getText()); 
-                param.put("penanggungjawabasuransi",Ditujukan.getText()); 
-                param.put("namabank",NamaBank.getText()); 
-                param.put("atasnama",AtasNama.getText()); 
-                param.put("norek",NoRek.getText()); 
-                param.put("tagihan",LCountDipilih2.getText()); 
-                param.put("terbilang",Valid.terbilang(total)+" rupiah"); 
-                param.put("bagianpenagihan",nmptg.getText()); 
-                param.put("catatan",Catatan.getText()); 
-                param.put("menyetujui",nmmenyetujui.getText()); 
-                status=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kdptg.getText());
-                param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+nmptg.getText()+"\nID "+(status.equals("")?kdptg.getText():status)+"\n"+Tanggal.getSelectedItem());  
-                status=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kdmenyetujui.getText());
-                param.put("finger2","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+nmmenyetujui.getText()+"\nID "+(status.equals("")?kdmenyetujui.getText():status)+"\n"+Tanggal.getSelectedItem());  
-                param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
-                Valid.MyReportqry("rptSuratPenagihanPiutang.jasper","report","::[ Surat Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
-                Valid.MyReportqry("rptKwitansiPenagihanPiutang.jasper","report","::[ Kwitansi Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
-                this.setCursor(Cursor.getDefaultCursor());
-            }else if(TabRawat.getSelectedIndex()==1){
-                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                Sequel.queryu("delete from temporary where temp37='"+akses.getalamatip()+"'");
-                for(i=0;i<tabMode2.getRowCount();i++){  
-                    if(tbBelumDitagihkan.getValueAt(i,0).toString().equals("true")){
-                        if(Sequel.menyimpantf2("temporary","'"+i+"','"+
-                                    tabMode2.getValueAt(i,1).toString()+"','"+
-                                    tabMode2.getValueAt(i,2).toString()+"','"+
-                                    tabMode2.getValueAt(i,3).toString()+"','"+
-                                    tabMode2.getValueAt(i,4).toString()+"','"+
-                                    tabMode2.getValueAt(i,5).toString()+"','"+
-                                    Valid.SetAngka(Double.parseDouble(tabMode2.getValueAt(i,6).toString()))+"','"+
-                                    tabMode2.getValueAt(i,7).toString()+"','"+
-                                    tabMode2.getValueAt(i,8).toString()+"','"+
-                                    tabMode2.getValueAt(i,9).toString()+"','"+
-                                    tabMode2.getValueAt(i,10).toString()+"','"+
-                                    tabMode2.getValueAt(i,11).toString()+"','','','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Transaksi")==false){
-                            System.out.println("Notif : Gagal menyimpan karena ada data yang bermasalah..!! ");
-                        }
-                    }                    
-                }
-
-                getdata2();
-                Map<String, Object> param = new HashMap<>();    
-                param.put("namars",akses.getnamars());
-                param.put("alamatrs",akses.getalamatrs());
-                param.put("kotars",akses.getkabupatenrs());
-                param.put("propinsirs",akses.getpropinsirs());
-                param.put("kontakrs",akses.getkontakrs());
-                param.put("emailrs",akses.getemailrs());  
-                param.put("perusahaanasuransi",Perusahaan.getText());  
-                param.put("alamatasuransi",AlamatAsuransi.getText());  
-                param.put("telpasuransi",NoTelp.getText()); 
-                param.put("tanggal",Tanggal.getSelectedItem()); 
-                param.put("tanggaltempo",TanggalTempo.getSelectedItem()); 
-                param.put("tempo",Tempo.getText()); 
-                param.put("noinvoice",NoPenagihan.getText()); 
-                param.put("penanggungjawabasuransi",Ditujukan.getText()); 
-                param.put("namabank",NamaBank.getText()); 
-                param.put("atasnama",AtasNama.getText()); 
-                param.put("norek",NoRek.getText()); 
-                param.put("tagihan",LCountDipilih2.getText()); 
-                param.put("terbilang",Valid.terbilang(total)+" rupiah"); 
-                param.put("bagianpenagihan",nmptg.getText()); 
-                param.put("menyetujui",nmmenyetujui.getText()); 
-                param.put("catatan",Catatan.getText()); 
-                status=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kdptg.getText());
-                param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+nmptg.getText()+"\nID "+(status.equals("")?kdptg.getText():status)+"\n"+Tanggal.getSelectedItem());  
-                status=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kdmenyetujui.getText());
-                param.put("finger2","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+nmmenyetujui.getText()+"\nID "+(status.equals("")?kdmenyetujui.getText():status)+"\n"+Tanggal.getSelectedItem());  
-                param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
-                Valid.MyReportqry("rptSuratPenagihanPiutang.jasper","report","::[ Surat Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
-                Valid.MyReportqry("rptKwitansiPenagihanPiutang.jasper","report","::[ Kwitansi Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
-                this.setCursor(Cursor.getDefaultCursor());
-            }
-        }
+        WindowSetNoSurat.setLocationRelativeTo(internalFrame1);
+        WindowSetNoSurat.setVisible(true);
     }//GEN-LAST:event_BtnPrintActionPerformed
 
     private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnPrintKeyPressed
@@ -1550,6 +1470,139 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_ppBersihkanActionPerformed
 
+    private void BtnSimpan6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpan6ActionPerformed
+        if(NoPenagihan.getText().trim().equals("")){
+            Valid.textKosong(NoPenagihan,"No.Penagihan");
+        }else if(kdpenjab.getText().trim().equals("")||nmpenjab.getText().trim().equals("")){
+            Valid.textKosong(BtnPenjamin,"Penjamin");
+        }else if(kdptg.getText().trim().equals("")||nmptg.getText().trim().equals("")){
+            Valid.textKosong(btnPetugas,"Petugas");
+        }else if(kdmenyetujui.getText().trim().equals("")||nmmenyetujui.getText().trim().equals("")){
+            Valid.textKosong(btnMenyetujui,"Menyetujui");
+        }else if(Catatan.getText().trim().equals("")){
+            Valid.textKosong(Catatan,"Catatan");
+        }else if(Ditujukan.getText().trim().equals("")){
+            Valid.textKosong(Ditujukan,"Ditujukan");
+        }else if(jml<=0){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan masukkan penagihan...!!!!");
+            TCari.requestFocus();
+        }else{
+            if(TabRawat.getSelectedIndex()==0){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                Sequel.queryu("delete from temporary where temp37='"+akses.getalamatip()+"'");
+                for(i=0;i<tabMode.getRowCount();i++){  
+                    if(tbBelumLunas.getValueAt(i,0).toString().equals("true")){
+                        String exses = Sequel.cariIsi("SELECT dnj.besar_bayar FROM detail_nota_jalan dnj WHERE dnj.no_rawat=?",tabMode.getValueAt(i,1).toString());
+                        if(Sequel.menyimpantf2("temporary","'"+i+"','"+
+                                    tabMode.getValueAt(i,1).toString()+"','"+
+                                    tabMode.getValueAt(i,2).toString()+"','"+
+                                    tabMode.getValueAt(i,3).toString()+"','"+
+                                    tabMode.getValueAt(i,4).toString()+"','"+
+                                    tabMode.getValueAt(i,5).toString()+"','"+
+                                    Valid.SetAngka(Double.parseDouble(tabMode.getValueAt(i,6).toString()))+"','"+
+                                    tabMode.getValueAt(i,7).toString()+"','"+
+                                    tabMode.getValueAt(i,8).toString()+"','"+
+                                    tabMode.getValueAt(i,9).toString()+"','"+
+                                    tabMode.getValueAt(i,10).toString()+"','"+
+                                    tabMode.getValueAt(i,11).toString()+"','"+exses+"','','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Transaksi")==false){
+                            System.out.println("Notif : Gagal menyimpan karena ada data yang bermasalah..!! ");
+                        }
+                    }                    
+                }
+
+                getdata();
+                Map<String, Object> param = new HashMap<>();    
+                param.put("namars",akses.getnamars());
+                param.put("alamatrs",akses.getalamatrs());
+                param.put("kotars",akses.getkabupatenrs());
+                param.put("propinsirs",akses.getpropinsirs());
+                param.put("kontakrs",akses.getkontakrs());
+                param.put("emailrs",akses.getemailrs());  
+                param.put("perusahaanasuransi",Perusahaan.getText());  
+                param.put("alamatasuransi",AlamatAsuransi.getText());  
+                param.put("telpasuransi",NoTelp.getText()); 
+                param.put("tanggal",Tanggal.getSelectedItem()); 
+                param.put("tanggaltempo",TanggalTempo.getSelectedItem()); 
+                param.put("tempo",Tempo.getText()); 
+                param.put("noinvoice",NoSuratTu.getText()); 
+                param.put("penanggungjawabasuransi",Ditujukan.getText()); 
+                param.put("namabank",NamaBank.getText()); 
+                param.put("atasnama",AtasNama.getText()); 
+                param.put("norek",NoRek.getText()); 
+                param.put("tagihan",LCountDipilih2.getText()); 
+                param.put("terbilang",Valid.terbilang(total)+" rupiah"); 
+                param.put("bagianpenagihan",nmptg.getText()); 
+                param.put("catatan",Catatan.getText()); 
+                param.put("menyetujui",nmmenyetujui.getText()); 
+                status=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kdptg.getText());
+                param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+nmptg.getText()+"\nID "+(status.equals("")?kdptg.getText():status)+"\n"+Tanggal.getSelectedItem());  
+                status=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kdmenyetujui.getText());
+                param.put("finger2","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+nmmenyetujui.getText()+"\nID "+(status.equals("")?kdmenyetujui.getText():status)+"\n"+Tanggal.getSelectedItem());  
+                param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
+                Valid.MyReportqry("rptSuratPenagihanPiutang.jasper","report","::[ Surat Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
+                //Valid.MyReportqry("rptKwitansiPenagihanPiutang.jasper","report","::[ Kwitansi Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
+                WindowSetNoSurat.dispose();
+                this.setCursor(Cursor.getDefaultCursor());
+            }else if(TabRawat.getSelectedIndex()==1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                Sequel.queryu("delete from temporary where temp37='"+akses.getalamatip()+"'");
+                for(i=0;i<tabMode2.getRowCount();i++){  
+                    if(tbBelumDitagihkan.getValueAt(i,0).toString().equals("true")){
+                        String exses = Sequel.cariIsi("SELECT dnj.besar_bayar FROM detail_nota_jalan dnj WHERE dnj.no_rawat=?",tabMode.getValueAt(i,1).toString());
+                        if(Sequel.menyimpantf2("temporary","'"+i+"','"+
+                                    tabMode2.getValueAt(i,1).toString()+"','"+
+                                    tabMode2.getValueAt(i,2).toString()+"','"+
+                                    tabMode2.getValueAt(i,3).toString()+"','"+
+                                    tabMode2.getValueAt(i,4).toString()+"','"+
+                                    tabMode2.getValueAt(i,5).toString()+"','"+
+                                    Valid.SetAngka(Double.parseDouble(tabMode2.getValueAt(i,6).toString()))+"','"+
+                                    tabMode2.getValueAt(i,7).toString()+"','"+
+                                    tabMode2.getValueAt(i,8).toString()+"','"+
+                                    tabMode2.getValueAt(i,9).toString()+"','"+
+                                    tabMode2.getValueAt(i,10).toString()+"','"+
+                                    tabMode2.getValueAt(i,11).toString()+"','"+exses+"','','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Transaksi")==false){
+                            System.out.println("Notif : Gagal menyimpan karena ada data yang bermasalah..!! ");
+                        }
+                    }                    
+                }
+
+                getdata2();
+                Map<String, Object> param = new HashMap<>();    
+                param.put("namars",akses.getnamars());
+                param.put("alamatrs",akses.getalamatrs());
+                param.put("kotars",akses.getkabupatenrs());
+                param.put("propinsirs",akses.getpropinsirs());
+                param.put("kontakrs",akses.getkontakrs());
+                param.put("emailrs",akses.getemailrs());  
+                param.put("perusahaanasuransi",Perusahaan.getText());  
+                param.put("alamatasuransi",AlamatAsuransi.getText());  
+                param.put("telpasuransi",NoTelp.getText()); 
+                param.put("tanggal",Tanggal.getSelectedItem()); 
+                param.put("tanggaltempo",TanggalTempo.getSelectedItem()); 
+                param.put("tempo",Tempo.getText()); 
+                param.put("noinvoice",NoSuratTu.getText());  
+                param.put("penanggungjawabasuransi",Ditujukan.getText()); 
+                param.put("namabank",NamaBank.getText()); 
+                param.put("atasnama",AtasNama.getText()); 
+                param.put("norek",NoRek.getText()); 
+                param.put("tagihan",LCountDipilih2.getText()); 
+                param.put("terbilang",Valid.terbilang(total)+" rupiah"); 
+                param.put("bagianpenagihan",nmptg.getText()); 
+                param.put("menyetujui",nmmenyetujui.getText()); 
+                param.put("catatan",Catatan.getText()); 
+                status=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kdptg.getText());
+                param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+nmptg.getText()+"\nID "+(status.equals("")?kdptg.getText():status)+"\n"+Tanggal.getSelectedItem());  
+                status=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kdmenyetujui.getText());
+                param.put("finger2","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+nmmenyetujui.getText()+"\nID "+(status.equals("")?kdmenyetujui.getText():status)+"\n"+Tanggal.getSelectedItem());  
+                param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
+                Valid.MyReportqry("rptSuratPenagihanPiutang.jasper","report","::[ Surat Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
+                //Valid.MyReportqry("rptKwitansiPenagihanPiutang.jasper","report","::[ Kwitansi Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
+                WindowSetNoSurat.dispose();
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+    }//GEN-LAST:event_BtnSimpan6ActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1577,6 +1630,7 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
     private widget.Button BtnPenjamin;
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
+    private widget.Button BtnSimpan6;
     private widget.TextBox Catatan;
     private widget.TextBox Ditujukan;
     private widget.TextBox KdAkun;
@@ -1588,6 +1642,8 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
     private widget.TextBox NamaBank;
     private widget.TextBox NoPenagihan;
     private widget.TextBox NoRek;
+    private widget.TextBox NoSurat;
+    private widget.TextBox NoSuratTu;
     private widget.TextBox NoTelp;
     private widget.TextBox Perusahaan;
     private widget.ScrollPane Scroll;
@@ -1598,15 +1654,18 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
     private widget.Tanggal Tanggal;
     private widget.Tanggal TanggalTempo;
     private widget.TextBox Tempo;
+    private javax.swing.JDialog WindowSetNoSurat;
     private widget.Button btnMenyetujui;
     private widget.Button btnPetugas;
     private widget.ComboBox cmbStatus;
     private widget.InternalFrame internalFrame1;
+    private widget.InternalFrame internalFrame7;
     private javax.swing.JLabel jLabel10;
     private widget.Label jLabel11;
     private javax.swing.JLabel jLabel12;
     private widget.Label jLabel13;
     private widget.Label jLabel14;
+    private widget.Label jLabel35;
     private javax.swing.JPopupMenu jPopupMenu1;
     private widget.TextBox kdmenyetujui;
     private widget.TextBox kdpenjab;

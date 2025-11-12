@@ -1352,7 +1352,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             StringBuilder sb2 = new StringBuilder();
             for (int i = 0; i < selectedRows.length; i++) {
                 int rowIndex = selectedRows[i];                 
-                Object cellValue = tbPemberianObat.getValueAt(rowIndex, 4);
+                Object cellValue = tbPemberianObat.getValueAt(rowIndex, 6);
                 if (cellValue != null && !cellValue.toString().trim().isEmpty()) {
                     if (sb.length() > 0) {
                         sb.append(", ");
@@ -1360,7 +1360,18 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     sb.append(cellValue.toString().trim());
                 }
             }
+            for (int i = 0; i < selectedRows.length; i++) {
+                int rowIndex = selectedRows[i];                 
+                Object cellValue = tbPemberianObat.getValueAt(rowIndex, 5);
+                if (cellValue != null && !cellValue.toString().trim().isEmpty()) {
+                    if (sb2.length() > 0) {
+                        sb2.append(", ");
+                    }
+                    sb2.append(cellValue.toString().trim());
+                }
+            }
             namaObat = sb.toString();
+            kdBrg = sb2.toString();
         }
         
         String text = "💊 HAPUS OBAT\n"
