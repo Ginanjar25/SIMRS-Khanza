@@ -2572,116 +2572,148 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }//GEN-LAST:event_ppLembarObatDanTelaahActionPerformed
 
     private void ppReqHapusResepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppReqHapusResepActionPerformed
-        String text = "💊 HAPUS RESEP\n"
-                + "No. Resep : "+tbResep.getValueAt(tbResep.getSelectedRow(),0).toString()+"\n"
-                + "Nama Pasien : "+tbResep.getValueAt(tbResep.getSelectedRow(),2).toString()+"\n"
-                + "Alasan : ";
+        String caraBayar = Sequel.cariIsi("SELECT pj.png_jawab FROM resep_obat ro join reg_periksa rp ON rp.no_rawat = ro.no_rawat JOIN penjab pj ON pj.kd_pj = rp.kd_pj WHERE ro.no_resep = ?", tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString());
+        if (tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString().trim().equals("")) {
+            JOptionPane.showMessageDialog(null,"Maaf, Klik pada No Resep !","Error",JOptionPane.ERROR_MESSAGE);
+        }else if(Sequel.cariRegistrasi(TNoRw.getText()) > 0 && caraBayar.equals("UMUM")){
+            JOptionPane.showMessageDialog(null,"Cara Bayar UMUM & Billing Sudah terverifikasi, Silahkan Hubungi Kasir","Error",JOptionPane.ERROR_MESSAGE);
+        }else {
+            String text = "💊 HAPUS RESEP\n"
+                    + "No. Resep : " + tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString() + "\n"
+                    + "Nama Pasien : " +TNoRm.getText()+" "+TPasien.getText() + "\n"
+                    + "Cara bayar : " + caraBayar + "\n"
+                    + "Alasan : ";
 
-        // Copy ke clipboard
-        StringSelection selection = new StringSelection(text);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(selection, null);
-        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus resep berhasil disalin ke clipboard!");
+            // Copy ke clipboard
+            StringSelection selection = new StringSelection(text);
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(selection, null);
+            javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus resep berhasil disalin ke clipboard!");
+        }
     }//GEN-LAST:event_ppReqHapusResepActionPerformed
 
     private void ppReqHapusRacikanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppReqHapusRacikanActionPerformed
-        String text = "💊 HAPUS RACIKAN\n"
-                + "No. Resep : "+tbResep.getValueAt(tbResep.getSelectedRow(),0).toString()+"\n"
-                + "Nama Pasien : "+tbResep.getValueAt(tbResep.getSelectedRow(),2).toString()+"\n"
-                + "Alasan : ";
+        String caraBayar = Sequel.cariIsi("SELECT pj.png_jawab FROM resep_obat ro join reg_periksa rp ON rp.no_rawat = ro.no_rawat JOIN penjab pj ON pj.kd_pj = rp.kd_pj WHERE ro.no_resep = ?", tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString());
+        if (tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, Klik pada No Resep !","Error",JOptionPane.ERROR_MESSAGE);
+        }else if(Sequel.cariRegistrasi(TNoRw.getText()) > 0 && caraBayar.equals("UMUM")){
+            JOptionPane.showMessageDialog(null,"Cara Bayar UMUM & Billing Sudah terverifikasi, Silahkan Hubungi Kasir","Error",JOptionPane.ERROR_MESSAGE);
+        }else {
+            String text = "💊 HAPUS RACIKAN\n"
+                    + "No. Resep : " + tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString() + "\n"
+                    + "Nama Pasien : " + TNoRm.getText()+" "+TPasien.getText()  + "\n"
+                    + "Cara bayar : " + caraBayar + "\n"
+                    + "Alasan : ";
 
-        // Copy ke clipboard
-        StringSelection selection = new StringSelection(text);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(selection, null);
-        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus resep racikan berhasil disalin ke clipboard!");
+            // Copy ke clipboard
+            StringSelection selection = new StringSelection(text);
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(selection, null);
+            javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus resep racikan berhasil disalin ke clipboard!");
+        }
     }//GEN-LAST:event_ppReqHapusRacikanActionPerformed
 
     private void ppReqHapusObatBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppReqHapusObatBtnPrintActionPerformed
-        String namaObat="", kdBrg="";
-        if (tbResep.getSelectedRow() != -1) {
-            int[] selectedRows = tbResep.getSelectedRows();
-            StringBuilder sb = new StringBuilder();
-            StringBuilder sb2 = new StringBuilder();
-            for (int i = 0; i < selectedRows.length; i++) {
-                int rowIndex = selectedRows[i];                
-                Object cellValue = tbResep.getValueAt(rowIndex, 1);
-                if (cellValue != null && !cellValue.toString().trim().isEmpty()) {
-                    //jika racikan
-                    if (cellValue.toString().startsWith(" ")) {
-                        String text = cellValue.toString().substring(1);                        
-                        if (sb.length() > 0) {
-                            sb.append(", ");
-                        }
-                        String[] parts = text.trim().split("\\s+", 2); 
-                        if (parts.length > 1) {
-                            sb.append(parts[1].trim()); 
-                        }
-                    }else{
-                        if (sb.length() > 0) {
-                            sb.append(", ");
-                        }
-                        String[] parts = cellValue.toString().trim().split("\\s+", 2); 
-                        if (parts.length > 1) {
-                            sb.append(parts[1].trim()); 
-                        }
-                    }
-                }
-                
-                Object cellValue2 = tbResep.getValueAt(rowIndex, 1);
-                if (cellValue2 != null && !cellValue2.toString().trim().isEmpty()) {
-                    if (cellValue.toString().startsWith(" ")) {
+        if (!tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, Klik pada obat yang akan dihapus !","Error",JOptionPane.ERROR_MESSAGE);
+        }else if(tbResep.getValueAt(tbResep.getSelectedRow(), 1).toString().trim().equals("Nama Obat")){
+            JOptionPane.showMessageDialog(null, "Maaf, Klik pada obat yang akan dihapus !","Error",JOptionPane.ERROR_MESSAGE);
+        }else if(tbResep.getValueAt(tbResep.getSelectedRow(), 2).toString().trim().contains("Keterangan :")){
+            JOptionPane.showMessageDialog(null, "Maaf, Klik pada obat yang akan dihapus !","Error",JOptionPane.ERROR_MESSAGE);
+        }else if(tbResep.getValueAt(tbResep.getSelectedRow(), 2).toString().trim().contains("Total Biaya Resep")){
+            JOptionPane.showMessageDialog(null, "Maaf, Klik pada obat yang akan dihapus !","Error",JOptionPane.ERROR_MESSAGE);
+        }
+        else {
+            String namaObat = "", kdBrg = "";
+            if (tbResep.getSelectedRow() != -1) {
+                int[] selectedRows = tbResep.getSelectedRows();
+                StringBuilder sb = new StringBuilder();
+                StringBuilder sb2 = new StringBuilder();
+                for (int i = 0; i < selectedRows.length; i++) {
+                    int rowIndex = selectedRows[i];
+                    Object cellValue = tbResep.getValueAt(rowIndex, 1);
+                    if (cellValue != null && !cellValue.toString().trim().isEmpty()) {
                         //jika racikan
-                        if (sb2.length() > 0) {
-                            sb2.append(", ");
+                        if (cellValue.toString().startsWith(" ")) {
+                            String text = cellValue.toString().substring(1);
+                            if (sb.length() > 0) {
+                                sb.append(", ");
+                            }
+                            String[] parts = text.trim().split("\\s+", 2);
+                            if (parts.length > 1) {
+                                sb.append(parts[1].trim());
+                            }
+                        } else {
+                            if (sb.length() > 0) {
+                                sb.append(", ");
+                            }
+                            String[] parts = cellValue.toString().trim().split("\\s+", 2);
+                            if (parts.length > 1) {
+                                sb.append(parts[1].trim());
+                            }
                         }
-                        sb2.append(cellValue.toString().split("\\s+")[1].trim());
-                    } else {
-                        if (sb2.length() > 0) {
-                            sb2.append(", ");
-                        }
-                        sb2.append(cellValue2.toString().split("\\s+")[0].trim());
                     }
+
+                    Object cellValue2 = tbResep.getValueAt(rowIndex, 1);
+                    if (cellValue2 != null && !cellValue2.toString().trim().isEmpty()) {
+                        if (cellValue.toString().startsWith(" ")) {
+                            //jika racikan
+                            if (sb2.length() > 0) {
+                                sb2.append(", ");
+                            }
+                            sb2.append(cellValue.toString().split("\\s+")[1].trim());
+                        } else {
+                            if (sb2.length() > 0) {
+                                sb2.append(", ");
+                            }
+                            sb2.append(cellValue2.toString().split("\\s+")[0].trim());
+                        }
+                    }
+
                 }
-
+                namaObat = sb.toString();
+                kdBrg = sb2.toString();
             }
-            namaObat = sb.toString();
-            kdBrg = sb2.toString();
+
+            String noResep = "";
+            String rmNamaPasien = "";
+            int row = tbResep.getSelectedRow();
+            int colNoResep = 0;
+            int colNamaPasien = 2;
+
+            if (row >= 0) {
+                Object cellValue = tbResep.getValueAt(row, colNoResep);
+                noResep = (cellValue != null) ? cellValue.toString().trim() : "";
+                while (noResep.isEmpty() && row > 0) {
+                    row--;
+                    Object cellValueNoResep = tbResep.getValueAt(row, colNoResep);
+                    noResep = (cellValueNoResep != null) ? cellValueNoResep.toString().trim() : "";
+                }
+                if (!noResep.isEmpty()) {
+                    Object cellValueNama = tbResep.getValueAt(row, colNamaPasien);
+                    rmNamaPasien = (cellValueNama != null) ? cellValueNama.toString().trim() : "";
+                }
+            }
+            String caraBayar = Sequel.cariIsi("SELECT pj.png_jawab FROM resep_obat ro join reg_periksa rp ON rp.no_rawat = ro.no_rawat JOIN penjab pj ON pj.kd_pj = rp.kd_pj WHERE ro.no_resep = ?", noResep);
+            String noRawat = Sequel.cariIsi("SELECT ro.no_rawat FROM resep_obat ro WHERE ro.no_resep = ?", noResep);            
+            if (Sequel.cariRegistrasi(noRawat) > 0 && caraBayar.equals("UMUM")) {
+                JOptionPane.showMessageDialog(null,"Cara Bayar UMUM & Billing Sudah terverifikasi, Silahkan Hubungi Kasir","Error",JOptionPane.ERROR_MESSAGE);
+            } else {
+                String text = "💊 HAPUS OBAT\n"
+                        + "No. Resep : " + noResep + "\n"
+                        + "Obat : " + namaObat + "\n"
+                        + "Kd Brg : " + kdBrg + "\n"
+                        + "Nama Pasien : " + rmNamaPasien.split("\\s+", 2)[1].trim() + "\n"
+                        + "Cara bayar : " + caraBayar + "\n"
+                        + "Alasan : ";
+
+                // Copy ke clipboard
+                StringSelection selection = new StringSelection(text);
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(selection, null);
+                javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus obat berhasil disalin ke clipboard!");
+            }
         }
- 
-        String noResep = "";
-        String rmNamaPasien = "";
-        int row = tbResep.getSelectedRow();
-        int colNoResep = 0;
-        int colNamaPasien = 2;
-
-        if (row >= 0) {
-            Object cellValue = tbResep.getValueAt(row, colNoResep);
-            noResep = (cellValue != null) ? cellValue.toString().trim() : "";
-            while (noResep.isEmpty() && row > 0) {
-                row--;
-                Object cellValueNoResep = tbResep.getValueAt(row, colNoResep);
-                noResep = (cellValueNoResep != null) ? cellValueNoResep.toString().trim() : "";
-            }
-            if (!noResep.isEmpty()) {
-                Object cellValueNama = tbResep.getValueAt(row, colNamaPasien);
-                rmNamaPasien = (cellValueNama != null) ? cellValueNama.toString().trim() : "";
-            }
-        }
-        
-        String text = "💊 HAPUS OBAT\n"
-        + "No. Resep : "+noResep+"\n"
-        + "Obat : "+namaObat+"\n"
-        + "Kd Brg : "+kdBrg+"\n"
-        + "Nama Pasien : "+rmNamaPasien+"\n"
-        + "Alasan : ";
-
-        // Copy ke clipboard
-        StringSelection selection = new StringSelection(text);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(selection, null);
-        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus obat berhasil disalin ke clipboard!");
-
     }//GEN-LAST:event_ppReqHapusObatBtnPrintActionPerformed
 
     private void tbResepMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbResepMouseReleased

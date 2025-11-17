@@ -19396,17 +19396,23 @@ public class DlgKamarInap extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_MnRMLembarKonsultasiActionPerformed
     
-    private void reqHapusBilling(){
-         String text = "📌 BUKA BILLING:\n" +
-        "No. Rawat : "+TNoRwCari.getText()+"\n" +
-        "Nama Pasien : "+TNoRMCari.getText()+"-"+TPasienCari.getText()+"\n" +
-        "Cara Bayar : " + tbKamIn.getValueAt(tbKamIn.getSelectedRow(),6).toString()+"\n" +
-        "Alasan : ";
+    private void reqHapusBilling() {
+        if (tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 6).toString().equals("UMUM")) {
+            if (!Sequel.cariIsi("select petugas.kd_jbtn from petugas where petugas.nip=?", akses.getkode()).equals("J019")) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Cara bayar Umum hanya kasir yang bisa Permintaan Buka billing");
+                return;
+            }
+        }
+        String text = "📌 BUKA BILLING:\n"
+                + "No. Rawat : " + TNoRwCari.getText() + "\n"
+                + "Nama Pasien : " + TNoRMCari.getText() + "-" + TPasienCari.getText() + "\n"
+                + "Cara Bayar : " + tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 6).toString() + "\n"
+                + "Alasan : ";
 
         // Copy ke clipboard
         StringSelection selection = new StringSelection(text);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(selection, null);
-        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan Buka Billing berhasil disalin ke clipboard!");
+        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan Buka Billing berhasil disalin ke clipboard!");   
     }
 }

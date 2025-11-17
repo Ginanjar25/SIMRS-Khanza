@@ -16202,6 +16202,12 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     }
     
     private void reqHapusBilling(){
+        if (tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),9).toString().equals("UMUM")) {
+            if (!Sequel.cariIsi("select petugas.kd_jbtn from petugas where petugas.nip=?", akses.getkode()).equals("J019")) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Cara bayar Umum hanya kasir yang bisa Permintaan Buka billing");
+                return;
+            }
+        }
         String text = "📌 BUKA BILLING:\n" +
         "No. Rawat : "+TNoRw.getText()+"\n" +
         "Nama Pasien : "+TNoRMCari.getText()+"-"+TPasienCari.getText()+"\n" +
