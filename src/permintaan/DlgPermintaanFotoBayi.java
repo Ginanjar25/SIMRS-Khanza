@@ -1820,7 +1820,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         NoRM.setText(norm);
         Sequel.cariIsi("select pasien.nm_pasien from pasien where no_rkm_medis = ?", NmPasien,norm);
         try {
-            ps = koneksi.prepareStatement("SELECT pasien.nm_pasien, pasien.nm_ibu, if(pasien.jk = 'L', 'LAKI-LAKI', 'PEREMPUAN'), pasien.tgl_lahir,\n"
+            ps = koneksi.prepareStatement("SELECT pasien.nm_pasien, pasien.nm_ibu, if(pasien.jk = 'L', 'LAKI-LAKI', 'PEREMPUAN') as jenis_kelamin, pasien.tgl_lahir,\n"
                     + "concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,COALESCE(pasien_bayi.nama_ayah,'') AS nama_ayah, COALESCE(pasien_bayi.berat_badan,'0') AS berat_badan,\n"
                     + "COALESCE(pasien_bayi.panjang_badan, '0') AS panjang_badan, COALESCE(pasien_bayi.lingkar_perut,'') as golda, "
                     + "pasien.tgl_lahir, COALESCE(pasien_bayi.jam_lahir, '00:00:00') as jam_lahir, dpjp_ranap.kd_dokter, dokter.nm_dokter\n"

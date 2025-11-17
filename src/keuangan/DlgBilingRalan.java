@@ -38,6 +38,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.List;
 import javax.swing.event.DocumentEvent;
+import modif.DlgGabungNota;
 import simrskhanza.DlgCariPeriksaLabPA;
 import simrskhanza.DlgCariCaraBayar;
 import simrskhanza.DlgPeriksaLaboratorium;
@@ -718,6 +719,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         MnCariPeriksaLabMB = new javax.swing.JMenuItem();
         MnCariRadiologi = new javax.swing.JMenuItem();
         MnPenjualan = new javax.swing.JMenuItem();
+        MnGabungNota = new javax.swing.JMenuItem();
         MnHapusTagihan = new javax.swing.JMenuItem();
         WindowGantiDokterPoli = new javax.swing.JDialog();
         internalFrame3 = new widget.InternalFrame();
@@ -1157,6 +1159,22 @@ public class DlgBilingRalan extends javax.swing.JDialog {
             }
         });
         jPopupMenu1.add(MnPenjualan);
+
+        MnGabungNota.setBackground(new java.awt.Color(255, 255, 254));
+        MnGabungNota.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnGabungNota.setForeground(new java.awt.Color(50, 50, 50));
+        MnGabungNota.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnGabungNota.setText("Cetak Gabung Nota");
+        MnGabungNota.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnGabungNota.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnGabungNota.setName("MnGabungNota"); // NOI18N
+        MnGabungNota.setPreferredSize(new java.awt.Dimension(250, 25));
+        MnGabungNota.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnGabungNotaActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(MnGabungNota);
 
         MnHapusTagihan.setBackground(new java.awt.Color(255, 255, 254));
         MnHapusTagihan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -1792,7 +1810,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         panelGlass1.add(jLabel4);
         jLabel4.setBounds(693, 11, 65, 23);
 
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-12-2024 15:40:12" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-11-2025 07:32:41" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -4062,8 +4080,18 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         // TODO add your handling code here:
     }//GEN-LAST:event_TNoSEPKeyPressed
 
- 
+    private void MnGabungNotaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnGabungNotaActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        DlgGabungNota gabungnota = new DlgGabungNota(null, false);
+        gabungnota.setSize(980, 500);
+        gabungnota.setLocationRelativeTo(internalFrame1);
+        gabungnota.setNoRm(TNoRM.getText(), "Ralan");
+        gabungnota.tampilGabungNota();
+        gabungnota.setVisible(true);
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_MnGabungNotaActionPerformed
 
+ 
     /**
     * @param args the command line arguments
     */
@@ -4113,6 +4141,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private javax.swing.JMenuItem MnCariPeriksaLabPA;
     private javax.swing.JMenuItem MnCariRadiologi;
     private javax.swing.JMenuItem MnDokter;
+    private javax.swing.JMenuItem MnGabungNota;
     private javax.swing.JMenuItem MnHapusTagihan;
     private javax.swing.JMenuItem MnInputObat;
     private javax.swing.JMenuItem MnInputTindakan;

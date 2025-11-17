@@ -790,6 +790,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }else {
             Valid.editTable(tabMode,"pendaftaran_bayi","no_rkm_medis",TNoRMBayi,
             "no_rkm_medis_ibu='"+TNoRMIbu.getText()+"',nama_ayah='"+TAyah.getText()+"', pekerjaan_ayah='"+PekerjaanAyah.getText()+"', umur_ayah='"+UmurAyah.getText()+"', no_kk='"+NoKK.getText()+"', kode_pos='"+KdPos.getText()+"'");
+             Sequel.mengedit("pasien_bayi", "no_rkm_medis='"+TNoRMBayi+"'", "nama_ayah='"+TAyah.getText()+"', pekerjaan_ayah='"+PekerjaanAyah.getText()+"', umur_ayah='"+UmurAyah.getText()+"'");
             emptTeks();
             tampil();
         }

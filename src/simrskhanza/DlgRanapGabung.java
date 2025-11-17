@@ -1684,6 +1684,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         TPasienIbu.setText(nmibu);
         TCari.setText(norwt);
 //        isRawat();
+        DTPTgl.setDate(tgl1);
         DTPCari1.setDate(tgl1);
         DTPCari2.setDate(tgl2);
         ChkInput.setSelected(true);
@@ -1714,14 +1715,25 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
     
     public void isCek(){
-        BtnSimpan.setEnabled(akses.getdeposit_pasien());
-        BtnHapus.setEnabled(akses.getdeposit_pasien());
+//        BtnSimpan.setEnabled(akses.getdeposit_pasien());
+//        BtnHapus.setEnabled(akses.getdeposit_pasien());
+        BtnSimpan.setEnabled(akses.getpermintaan_ranap());
+        BtnHapus.setEnabled(akses.getpermintaan_ranap());
         
         if(akses.getjml2()>=1){
             BtnSeekPasien.setEnabled(false);
             KodeDPJP.setText(akses.getkode());
             NamaDPJP.setText(petugas.tampil3(KodeDPJP.getText()));
         } 
+        
+        if(!akses.getkode().equals("Admin Utama")){
+           String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
+            if(jabatan.equals("J005")){
+                 DTPTgl.setEnabled(true);
+             }else{
+                 DTPTgl.setEnabled(false);
+             }
+        }
     }
     
     private void jam(){

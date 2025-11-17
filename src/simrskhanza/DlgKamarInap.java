@@ -9166,6 +9166,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
 
                     ranapgabung.setSize(950,500);
                     ranapgabung.setLocationRelativeTo(internalFrame1);
+                    ranapgabung.isCek();
                     ranapgabung.setNoRm(norawat.getText(),TNoRM.getText()+" "+TPasien.getText(), new Date(), new Date(),tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 19).toString());
                     ranapgabung.tampil();
                     ranapgabung.setVisible(true);
