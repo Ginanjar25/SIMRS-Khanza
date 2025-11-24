@@ -167,6 +167,7 @@ import fungsi.CheckPenjabMissmatch;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import rekammedis.RMProgramKFR;
+import java.awt.Component;
 
 /**
  *
@@ -1048,6 +1049,29 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
                     if(TCari.getText().length()>2){
                         TampilkanData();
                     }
+                }
+            });
+            TCariMenu.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCariMenu.getText().length()>2){
+                        isTampilMenu();
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCariMenu.getText().length()>2){
+                        isTampilMenu();
+                    }
+                    if(TCariMenu.getText().length()==0){
+                        isCek();
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCariMenu.getText().length()>2){
+                        isTampilMenu();
+                    }                    
                 }
             });
         }  
@@ -10439,6 +10463,9 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     
     private widget.ComboBox cmbKategory;
     private widget.ComboBox cmbSeverity;
+    private widget.PanelBiasa FormMenuCari;
+    private widget.TextBox TCariMenu;
+    private widget.Label jLabelCariMenu;
     
     private void tampilDr() {
         Valid.tabelKosong(tabModeDr);
@@ -12647,6 +12674,37 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         TabRawat.setSelectedIndex(3);
     }
     
+    public void isTampilMenu(){    
+        isCek();
+        if (TCariMenu.getText().equals("")) {
+            isCek();
+        } else if (!TCariMenu.getText().equals("")) {
+            isCariIsi();
+        }
+        setLayout();              
+    }
+        
+    private void isCariIsi() {
+        tinggi=0;        
+        for (Component comp : FormMenu.getComponents()) {
+            widget.Button btn = (widget.Button) comp;
+            if (btn.isVisible()) {
+                if (btn.getText().toLowerCase().trim().contains(TCariMenu.getText().trim())) {
+                    btn.setVisible(true);
+                    tinggi = tinggi + 24;
+                } else {
+                    btn.setVisible(false);
+                }
+            }
+        }
+    }
+    
+    private void setLayout() {
+        FormMenu.setPreferredSize(new Dimension(195, (tinggi + 34)));
+        FormMenu.revalidate();
+        FormMenu.repaint();
+    }
+    
     private void initRawatJalan(){
         BtnSkorBromagePascaAnestesi = new widget.Button();
         BtnSkorBromagePascaAnestesi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); 
@@ -12859,6 +12917,35 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         TanggalRegistrasi = new widget.TextBox();
         TanggalRegistrasi.setHighlighter(null);
         TanggalRegistrasi.setName("TanggalRegistrasi");
+        
+        FormMenuCari = new widget.PanelBiasa();
+        FormMenuCari.setBackground(new java.awt.Color(255, 255, 255));        
+        FormMenuCari.setName("FormMenuCari"); // NOI18N
+        FormMenuCari.setPreferredSize(new java.awt.Dimension(140, 43));
+        FormMenuCari.setLayout(null);
+        
+        PanelAccor.add(FormMenuCari, java.awt.BorderLayout.NORTH);
+        
+        jLabelCariMenu = new widget.Label();
+        jLabelCariMenu.setText("Menu :");
+        jLabelCariMenu.setName("jLabelCariMenu"); // NOI18N
+        jLabelCariMenu.setPreferredSize(null);        
+        jLabelCariMenu.setBounds(5, 10, 35, 23);
+        FormMenuCari.add(jLabelCariMenu);
+        
+        TCariMenu = new widget.TextBox();
+        TCariMenu.setName("TCariMenu"); // NOI18N
+        TCariMenu.setPreferredSize(null);
+        TCariMenu.setBounds(50, 10, 130, 23);
+        TCariMenu.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                    isTampilMenu();
+                }
+            }
+        });
+        FormMenuCari.add(TCariMenu);
+        
         
         FormMenu.add(BtnRiwayat);
         FormMenu.add(BtnResepObat);

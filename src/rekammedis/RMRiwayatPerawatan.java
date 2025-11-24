@@ -65,7 +65,8 @@ import javax.swing.SwingWorker;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import org.apache.hc.core5.http.io.entity.StringEntity;
-
+import java.awt.Component;
+import javax.swing.event.DocumentEvent;
 
 
 /**
@@ -79,7 +80,7 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
     private PreparedStatement ps,ps2;
     private ResultSet rs,rs2,rs3,rs4;
     private Connection koneksi=koneksiDB.condb();
-    private int i=0,urut=0,w=0,s=0,urutdpjp=0;
+    private int i=0,urut=0,w=0,s=0,urutdpjp=0, tinggi=0;
     private double biayaperawatan=0;
     private String kddpjp="",dpjp="",json,dokterrujukan="",polirujukan="",keputusan="",ke1="",ke2="",ke3="",ke4="",ke5="",ke6="",file="";
     private StringBuilder htmlContent;
@@ -223,6 +224,29 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
         
         ChkAccor.setSelected(false);
         isMenu();
+        TCariMenu.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCariMenu.getText().length()>2){
+                        isTampilMenu();
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCariMenu.getText().length()>2){
+                        isTampilMenu();
+                    }
+                    if(TCariMenu.getText().length()==0){
+                        isTampilMenu();
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCariMenu.getText().length()>2){
+                        isTampilMenu();
+                    }                    
+                }
+            });
     }    
 
     /** This method is called from within the constructor to
@@ -466,6 +490,9 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
         chkResepPulang = new widget.CekBox();
         chkTambahanBiaya = new widget.CekBox();
         chkPotonganBiaya = new widget.CekBox();
+        FormMenuCari = new widget.PanelBiasa();
+        jLabelCariMenu = new widget.Label();
+        TCariMenu = new widget.TextBox();
         Scroll4 = new widget.ScrollPane();
         LoadHTMLPembelian = new widget.editorpane();
         Scroll5 = new widget.ScrollPane();
@@ -628,7 +655,7 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
         WindowPhrase.getContentPane().add(internalFrame8, java.awt.BorderLayout.CENTER);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "29-10-2025 15:31:10" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "18-11-2025 13:35:11" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -2394,6 +2421,30 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
 
         PanelAccor.add(ScrollMenu, java.awt.BorderLayout.CENTER);
 
+        FormMenuCari.setBackground(new java.awt.Color(255, 255, 255));
+        FormMenuCari.setBorder(null);
+        FormMenuCari.setName("FormMenuCari"); // NOI18N
+        FormMenuCari.setPreferredSize(new java.awt.Dimension(255, 43));
+        FormMenuCari.setLayout(null);
+
+        jLabelCariMenu.setText("Cari Berkas :");
+        jLabelCariMenu.setName("jLabelCariMenu"); // NOI18N
+        jLabelCariMenu.setPreferredSize(new java.awt.Dimension(55, 23));
+        FormMenuCari.add(jLabelCariMenu);
+        jLabelCariMenu.setBounds(0, 10, 70, 23);
+
+        TCariMenu.setName("TCariMenu"); // NOI18N
+        TCariMenu.setPreferredSize(new java.awt.Dimension(100, 23));
+        TCariMenu.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TCariMenuKeyPressed(evt);
+            }
+        });
+        FormMenuCari.add(TCariMenu);
+        TCariMenu.setBounds(80, 10, 170, 23);
+
+        PanelAccor.add(FormMenuCari, java.awt.BorderLayout.NORTH);
+
         internalFrame2.add(PanelAccor, java.awt.BorderLayout.WEST);
 
         TabRawat.addTab("Riwayat Perawatan", internalFrame2);
@@ -3824,6 +3875,12 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         // TODO add your handling code here:
     }//GEN-LAST:event_chkAsuhanKeperawatanRalanActionPerformed
 
+    private void TCariMenuKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCariMenuKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            isTampilMenu();
+        }
+    }//GEN-LAST:event_TCariMenuKeyPressed
+
     /**
     * @param args the command line arguments
     */
@@ -3860,6 +3917,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     private widget.CekBox ChkTampilPhrase;
     private widget.panelisi FormInput;
     private widget.PanelBiasa FormMenu;
+    private widget.PanelBiasa FormMenuCari;
     private widget.TextBox GD;
     private widget.TextBox IbuKandung;
     private widget.TextBox Jk;
@@ -3893,6 +3951,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     private widget.ScrollPane Scroll6;
     private widget.ScrollPane ScrollMenu;
     private widget.TextBox StatusNikah;
+    private widget.TextBox TCariMenu;
     private javax.swing.JTabbedPane TabRawat;
     private widget.Tanggal Tanggal;
     private widget.TextBox TanggalLahir;
@@ -4091,6 +4150,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     private widget.Label jLabel40;
     private widget.Label jLabel42;
     private widget.Label jLabel43;
+    private widget.Label jLabelCariMenu;
     private javax.swing.JPopupMenu jPopupMenu1;
     private widget.Label label17;
     private widget.Label label18;
@@ -33995,5 +34055,45 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         } catch (Exception e) {
             System.out.println("Notif SOAPI : "+e);
         } 
+    }
+     
+    public void isCek() {
+        tinggi = 0;
+        for (Component comp : FormMenu.getComponents()) {
+            widget.CekBox chk = (widget.CekBox) comp;
+            chk.setVisible(true);
+            tinggi = tinggi + 22;
+        }
+    }
+     
+    public void isTampilMenu() {
+        isCek();
+        if (TCariMenu.getText().equals("")) {
+            isCek();
+        } else if (!TCariMenu.getText().equals("")) {
+            isCariIsi();
+        }
+        setLayout();
+    }
+
+    private void isCariIsi() {
+        tinggi = 0;
+        for (Component comp : FormMenu.getComponents()) {
+            widget.CekBox chk = (widget.CekBox) comp;
+            if (chk.isVisible()) {
+                if (chk.getText().toLowerCase().trim().contains(TCariMenu.getText().trim())) {
+                    chk.setVisible(true);
+                    tinggi = tinggi + 22;
+                } else {
+                    chk.setVisible(false);
+                }
+            }
+        }
+    }
+    
+    private void setLayout() {
+        FormMenu.setPreferredSize(new Dimension(255, (tinggi+200)));
+        FormMenu.revalidate();
+        FormMenu.repaint();
     }
 }

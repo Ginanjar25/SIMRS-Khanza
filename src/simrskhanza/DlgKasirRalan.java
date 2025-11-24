@@ -413,6 +413,18 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             tbKasirRalan.setDefaultRenderer(Object.class, new WarnaTable());
         }
         
+        tbKasirRalan.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                showPopup(evt);
+            }
+
+            @Override
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                showPopup(evt);
+            }
+        });
+        
         tabModekasir2=new DefaultTableModel(null,new String[]{
             "Kd.Dokter","Dokter Rujukan","Nomer RM","Pasien",
             "Poliklinik Rujukan","Penanggung Jawab","Alamat P.J.","Hubungan P.J.",
@@ -6904,7 +6916,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         Scroll1.setOpaque(true);
 
         tbKasirRalan.setToolTipText("Klik 2X Kd.Dokter= Jendela Tindakan, Dokter Dituju=Jendela Obat, Nomer RM=Jendela Billing, Pasien=Jendela Total Obat, Poliklinik=Set Sudah Periksa, Penanggung Jawab=Masukan tindakan otomatis");
-        tbKasirRalan.setComponentPopupMenu(jPopupMenu1);
+        //tbKasirRalan.setComponentPopupMenu(jPopupMenu1);
         tbKasirRalan.setName("tbKasirRalan"); // NOI18N
         tbKasirRalan.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -6915,7 +6927,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 tbKasirRalanKeyPressed(evt);
             }
-        });
+        });        
         Scroll1.setViewportView(tbKasirRalan);
 
         TabRawat.addTab("Registrasi Awal", Scroll1);
@@ -16219,6 +16231,28 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(selection, null);
         javax.swing.JOptionPane.showMessageDialog(this, "Permintaan Buka Billing berhasil disalin ke clipboard!");
+    }
+
+    private void showPopup(java.awt.event.MouseEvent evt) {
+        if (evt.isPopupTrigger()) {
+            int row = tbKasirRalan.rowAtPoint(evt.getPoint());
+            if (row >= 0) {
+                tbKasirRalan.setRowSelectionInterval(row, row);
+            }
+            
+            String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
+            String value = tbKasirRalan.getValueAt(row, 4).toString();
+            System.out.println(value);
+            if ("LABORATORIUM".equalsIgnoreCase(value) && jabatan.equals("J011")) {
+                MnStatus.setEnabled(true);
+            } else if ("RADIOLOGI".equalsIgnoreCase(value) && jabatan.equals("J017")) {
+                MnStatus.setEnabled(true);
+            } else {
+                isCek();
+            }
+            
+            jPopupMenu1.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
     }
     
     private void initKasirRalan() {

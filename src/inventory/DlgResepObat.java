@@ -2572,7 +2572,15 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }//GEN-LAST:event_ppLembarObatDanTelaahActionPerformed
 
     private void ppReqHapusResepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppReqHapusResepActionPerformed
-        String caraBayar = Sequel.cariIsi("SELECT pj.png_jawab FROM resep_obat ro join reg_periksa rp ON rp.no_rawat = ro.no_rawat JOIN penjab pj ON pj.kd_pj = rp.kd_pj WHERE ro.no_resep = ?", tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString());
+        String noRawat = Sequel.cariIsi("SELECT rp.no_rawat FROM resep_obat ro join reg_periksa rp ON rp.no_rawat = ro.no_rawat WHERE ro.no_resep = ?", tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString());
+        String caraBayar = Sequel.cariIsi("SELECT pj.png_jawab FROM reg_periksa rp JOIN penjab pj ON pj.kd_pj = rp.kd_pj WHERE rp.no_rawat = ?", noRawat);
+        String sttsLanjut = Sequel.cariIsi("SELECT rp.status_lanjut FROM reg_periksa rp WHERE rp.no_rawat = ?", noRawat);
+        String poliKamar = Sequel.cariIsi("SELECT COALESCE(CONCAT(ki.kd_kamar,' ',bs.nm_bangsal),pl.nm_poli) AS ruang FROM reg_periksa rp \n"
+                + "JOIN poliklinik pl ON pl.kd_poli = rp.kd_poli "
+                + "LEFT JOIN kamar_inap ki on ki.no_rawat = rp.no_rawat AND ki.stts_pulang = '-' "
+                + "left join kamar km ON km.kd_kamar = ki.kd_kamar "
+                + "left JOIN bangsal bs ON bs.kd_bangsal = km.kd_bangsal WHERE rp.no_rawat = ?", noRawat
+        );
         if (tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString().trim().equals("")) {
             JOptionPane.showMessageDialog(null,"Maaf, Klik pada No Resep !","Error",JOptionPane.ERROR_MESSAGE);
         }else if(Sequel.cariRegistrasi(TNoRw.getText()) > 0 && caraBayar.equals("UMUM")){
@@ -2581,6 +2589,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             String text = "💊 HAPUS RESEP\n"
                     + "No. Resep : " + tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString() + "\n"
                     + "Nama Pasien : " +TNoRm.getText()+" "+TPasien.getText() + "\n"
+                    + "Asal Resep : " + sttsLanjut +" "+poliKamar+ "\n"
                     + "Cara bayar : " + caraBayar + "\n"
                     + "Alasan : ";
 
@@ -2593,7 +2602,15 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }//GEN-LAST:event_ppReqHapusResepActionPerformed
 
     private void ppReqHapusRacikanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppReqHapusRacikanActionPerformed
-        String caraBayar = Sequel.cariIsi("SELECT pj.png_jawab FROM resep_obat ro join reg_periksa rp ON rp.no_rawat = ro.no_rawat JOIN penjab pj ON pj.kd_pj = rp.kd_pj WHERE ro.no_resep = ?", tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString());
+        String noRawat = Sequel.cariIsi("SELECT rp.no_rawat FROM resep_obat ro join reg_periksa rp ON rp.no_rawat = ro.no_rawat WHERE ro.no_resep = ?", tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString());
+        String caraBayar = Sequel.cariIsi("SELECT pj.png_jawab FROM reg_periksa rp JOIN penjab pj ON pj.kd_pj = rp.kd_pj WHERE rp.no_rawat = ?", noRawat);
+        String sttsLanjut = Sequel.cariIsi("SELECT rp.status_lanjut FROM reg_periksa rp WHERE rp.no_rawat = ?", noRawat);
+        String poliKamar = Sequel.cariIsi("SELECT COALESCE(CONCAT(ki.kd_kamar,' ',bs.nm_bangsal),pl.nm_poli) AS ruang FROM reg_periksa rp \n"
+                + "JOIN poliklinik pl ON pl.kd_poli = rp.kd_poli "
+                + "LEFT JOIN kamar_inap ki on ki.no_rawat = rp.no_rawat AND ki.stts_pulang = '-' "
+                + "left join kamar km ON km.kd_kamar = ki.kd_kamar "
+                + "left JOIN bangsal bs ON bs.kd_bangsal = km.kd_bangsal WHERE rp.no_rawat = ?", noRawat
+        );
         if (tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString().trim().equals("")) {
             JOptionPane.showMessageDialog(null, "Maaf, Klik pada No Resep !","Error",JOptionPane.ERROR_MESSAGE);
         }else if(Sequel.cariRegistrasi(TNoRw.getText()) > 0 && caraBayar.equals("UMUM")){
@@ -2602,6 +2619,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             String text = "💊 HAPUS RACIKAN\n"
                     + "No. Resep : " + tbResep.getValueAt(tbResep.getSelectedRow(), 0).toString() + "\n"
                     + "Nama Pasien : " + TNoRm.getText()+" "+TPasien.getText()  + "\n"
+                    + "Asal Resep : " + sttsLanjut +" "+poliKamar+ "\n"
                     + "Cara bayar : " + caraBayar + "\n"
                     + "Alasan : ";
 
@@ -2693,9 +2711,16 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     Object cellValueNama = tbResep.getValueAt(row, colNamaPasien);
                     rmNamaPasien = (cellValueNama != null) ? cellValueNama.toString().trim() : "";
                 }
-            }
-            String caraBayar = Sequel.cariIsi("SELECT pj.png_jawab FROM resep_obat ro join reg_periksa rp ON rp.no_rawat = ro.no_rawat JOIN penjab pj ON pj.kd_pj = rp.kd_pj WHERE ro.no_resep = ?", noResep);
+            }            
             String noRawat = Sequel.cariIsi("SELECT ro.no_rawat FROM resep_obat ro WHERE ro.no_resep = ?", noResep);            
+            String caraBayar = Sequel.cariIsi("SELECT pj.png_jawab FROM reg_periksa rp JOIN penjab pj ON pj.kd_pj = rp.kd_pj WHERE rp.no_rawat = ?", noRawat);
+            String sttsLanjut = Sequel.cariIsi("SELECT rp.status_lanjut FROM reg_periksa rp WHERE rp.no_rawat = ?", noRawat);
+            String poliKamar = Sequel.cariIsi("SELECT COALESCE(CONCAT(ki.kd_kamar,' ',bs.nm_bangsal),pl.nm_poli) AS ruang FROM reg_periksa rp \n"
+                    + "JOIN poliklinik pl ON pl.kd_poli = rp.kd_poli "
+                    + "LEFT JOIN kamar_inap ki on ki.no_rawat = rp.no_rawat AND ki.stts_pulang = '-' "
+                    + "left join kamar km ON km.kd_kamar = ki.kd_kamar "
+                    + "left JOIN bangsal bs ON bs.kd_bangsal = km.kd_bangsal WHERE rp.no_rawat = ?", noRawat
+            );
             if (Sequel.cariRegistrasi(noRawat) > 0 && caraBayar.equals("UMUM")) {
                 JOptionPane.showMessageDialog(null,"Cara Bayar UMUM & Billing Sudah terverifikasi, Silahkan Hubungi Kasir","Error",JOptionPane.ERROR_MESSAGE);
             } else {
@@ -2704,6 +2729,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         + "Obat : " + namaObat + "\n"
                         + "Kd Brg : " + kdBrg + "\n"
                         + "Nama Pasien : " + rmNamaPasien.split("\\s+", 2)[1].trim() + "\n"
+                        + "Asal Resep : " + sttsLanjut +" "+poliKamar+ "\n"
                         + "Cara bayar : " + caraBayar + "\n"
                         + "Alasan : ";
 
