@@ -225,6 +225,8 @@ import permintaan.DlgBookingRegistrasi;
 import permintaan.DlgBookingKuota;
 import bridging.BPJSRujukanKeluar;
 import fungsi.APIInternalRSPW;
+import javax.swing.RowFilter;
+import javax.swing.table.TableRowSorter;
 import modif.DlgBatalPeriksa;
 /**
  *
@@ -345,6 +347,8 @@ public final class DlgReg extends javax.swing.JDialog {
              }
         };
         tbPetugas.setModel(tabMode);
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tabMode);
+        tbPetugas.setRowSorter(sorter);
 
         tbPetugas.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbPetugas.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -518,20 +522,23 @@ public final class DlgReg extends javax.swing.JDialog {
             TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
                 @Override
                 public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
+                    if (TCari.getText().length() > 2) {
+                        filterDataTabel(TCari.getText());
                     }
                 }
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
+                        filterDataTabel(TCari.getText());
+                    }
+                    if(TCari.getText().length()==0){
                         tampil();
                     }
                 }
                 @Override
                 public void changedUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
-                        tampil();
+                        filterDataTabel(TCari.getText());
                     }
                 }
             });
@@ -16079,6 +16086,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     
     private void tampil() {
         Valid.tabelKosong(tabMode);
+        resetFilter();
         if(R1.isSelected()==false){
             stts = " and reg_periksa.stts != 'Batal' ";
         }else{
@@ -16086,7 +16094,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }
         
         try {
-            if(CrPoli.getText().trim().equals("")&&CrDokter.getText().equals("")&&TCari.equals("")&&R1.isSelected()==false){
+            if(CrPoli.getText().trim().equals("")&&CrDokter.getText().equals("")&&TCari.getText().equals("")&&R1.isSelected()==false){
                 ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg, " +
                     "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli, " +
                     "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,reg_periksa.status_poli, " +
@@ -16133,7 +16141,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             }
                 
             try{  
-                if(CrPoli.getText().trim().equals("")&&CrDokter.getText().equals("")&&TCari.equals("")&&R1.isSelected()==false){
+                if(CrPoli.getText().trim().equals("")&&CrDokter.getText().equals("")&&TCari.getText().equals("")&&R1.isSelected()==false){
                     ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                     ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
                 }else{
@@ -17841,5 +17849,22 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 NoKa2.setText("");
             }
         }
+    }
+    
+    private void resetFilter(){
+        TableRowSorter sorter = (TableRowSorter) tbPetugas.getRowSorter();
+        if (sorter != null){
+            sorter.setRowFilter(null);
+        }
+    }
+    
+    private void filterDataTabel(String text) {
+        TableRowSorter<DefaultTableModel> sorter = (TableRowSorter<DefaultTableModel>) tbPetugas.getRowSorter();
+        if (text.trim().length() == 0) {
+            sorter.setRowFilter(null);
+        } else {
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+        }
+        LCount.setText(""+tbPetugas.getRowCount());
     }
 }
