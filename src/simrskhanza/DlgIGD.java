@@ -12,6 +12,7 @@
 
 package simrskhanza;
 import bridging.BPJSCekDataIndukKecelakaan;
+import bridging.BPJSCekReferensiPenyakit;
 import bridging.BPJSCekSuplesiJasaRaharja;
 import rekammedis.RMRiwayatPerawatan;
 import permintaan.DlgBookingOperasi;
@@ -207,6 +208,7 @@ public final class DlgIGD extends javax.swing.JDialog {
     private DlgCariDokter dokter=new DlgCariDokter(null,false);
     private DlgCariDokter dpjpRanap=new DlgCariDokter(null,false);
     private DlgCariPenyakit penyakit=new DlgCariPenyakit(null,false);
+    private BPJSCekReferensiPenyakit penyakitvclaim=new BPJSCekReferensiPenyakit(null,false);
     private DlgRujukMasuk rujukmasuk=new DlgRujukMasuk(null,false);
     private DlgCariPetugas petugas=new DlgCariPetugas(null,false);
     private AntrianPoli antriPoli = new AntrianPoli();
@@ -713,6 +715,32 @@ public final class DlgIGD extends javax.swing.JDialog {
                         DiagnosaAwalSementara.setText(penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),0).toString()+" - "+penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),1).toString());
                     }else{
                         DiagnosaAwalSementara.setText((penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),0).toString()+" - "+penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),1).toString()).substring(0,50));
+                    }   
+                }  
+                DiagnosaAwalSementara.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        penyakitvclaim.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if( penyakitvclaim.getTable().getSelectedRow()!= -1){ 
+                    if((penyakitvclaim.getTable().getValueAt(penyakitvclaim.getTable().getSelectedRow(),0).toString()+" - "+penyakitvclaim.getTable().getValueAt(penyakitvclaim.getTable().getSelectedRow(),1).toString()).length()<50){
+                        DiagnosaAwalSementara.setText(penyakitvclaim.getTable().getValueAt(penyakitvclaim.getTable().getSelectedRow(),0).toString()+" - "+penyakitvclaim.getTable().getValueAt(penyakitvclaim.getTable().getSelectedRow(),1).toString());
+                    }else{
+                        DiagnosaAwalSementara.setText((penyakitvclaim.getTable().getValueAt(penyakitvclaim.getTable().getSelectedRow(),0).toString()+" - "+penyakitvclaim.getTable().getValueAt(penyakitvclaim.getTable().getSelectedRow(),1).toString()).substring(0,50));
                     }   
                 }  
                 DiagnosaAwalSementara.requestFocus();
@@ -11807,11 +11835,17 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     }     
     
      private void btnDiagnosaActionPerformed(java.awt.event.ActionEvent evt) {                                            
-        penyakit.isCek();
-        penyakit.emptTeks();
-        penyakit.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        penyakit.setLocationRelativeTo(internalFrame1);
-        penyakit.setVisible(true);
+        if(Sequel.cariIsi("select kd_pj from reg_periksa where no_rawat = ?", TNoRw.getText()).equals("BPJ")){
+            penyakitvclaim.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            penyakitvclaim.setLocationRelativeTo(internalFrame1);
+            penyakitvclaim.setVisible(true);
+        }else{
+            penyakit.isCek();
+            penyakit.emptTeks();
+            penyakit.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            penyakit.setLocationRelativeTo(internalFrame1);
+            penyakit.setVisible(true);
+        }
     } 
      
     private void BtnDokterRanapActionPerformed(java.awt.event.ActionEvent evt){

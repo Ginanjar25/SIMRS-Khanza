@@ -15459,29 +15459,31 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }
     }
     
-     private void btnCetakLabelRajalActionPerformed(java.awt.event.ActionEvent evt) {                                        
-        if(TPasien.getText().trim().equals("")){
-            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
-        }else{
-            if ("WEB".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
-                if (Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()}) == true) {
-                    Valid.editTable(tabMode, "reg_periksa", "no_rawat", TNoRw, "stts='Belum',biaya_reg='"+TBiaya.getText()+"'");
-                    Sequel.mengedittf("side_db.reg_periksa_website", "no_rawat=?", "status='Checkin'", 1, new String[]{TNoRw.getText()});
-                }
-            } else if("JKN".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())){
-                if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "no_rawat=?", "status='Checkin',validasi=now()", 1, new String[]{TNoRw.getText()
-                }) == true) {
-                    Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()});
-                    Sequel.meghapus("referensi_mobilejkn_bpjs_batal", "no_rawat_batal", TNoRw.getText());
-                    
-                }
-            }else {
-                 if (Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()}) == true) {
-                    Valid.editTable(tabMode, "reg_periksa", "no_rawat", TNoRw, "stts='Belum',biaya_reg='"+TBiaya.getText()+"'");
-                }
-            }
+    private void btnCetakLabelRajalActionPerformed(java.awt.event.ActionEvent evt) {
+        if (TPasien.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu pasien...!!!");
+        } else {
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
+            if (Sequel.cariIsi("select stts from reg_periksa where no_rawat = ?", TNoRw.getText()).equals("Belum")) {
+                if ("WEB".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
+                    if (Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()}) == true) {
+                        Valid.editTable(tabMode, "reg_periksa", "no_rawat", TNoRw, "stts='Belum',biaya_reg='" + TBiaya.getText() + "'");
+                        Sequel.mengedittf("side_db.reg_periksa_website", "no_rawat=?", "status='Checkin'", 1, new String[]{TNoRw.getText()});
+                    }
+                } else if ("JKN".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
+                    if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "no_rawat=?", "status='Checkin',validasi=now()", 1, new String[]{TNoRw.getText()
+                    }) == true) {
+                        Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()});
+                        Sequel.meghapus("referensi_mobilejkn_bpjs_batal", "no_rawat_batal", TNoRw.getText());
+
+                    }
+                } else {
+                    if (Sequel.mengedittf("reg_periksa", "no_rawat=?", "jam_reg=now()", 1, new String[]{TNoRw.getText()}) == true) {
+                        Valid.editTable(tabMode, "reg_periksa", "no_rawat", TNoRw, "stts='Belum',biaya_reg='" + TBiaya.getText() + "'");
+                    }
+                }
+                simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "0", "now()", "0000-00-00 00:00:00", TNoReg.getText());
+            }
             apiRSPW.cetakBarcodeRajal(TNoRw.getText());
             tampil();
             this.setCursor(Cursor.getDefaultCursor());

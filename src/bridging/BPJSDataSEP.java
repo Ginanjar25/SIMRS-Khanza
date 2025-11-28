@@ -3794,7 +3794,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                         nameNode = root.path("metaData");
                         System.out.println("code : "+nameNode.path("code").asText());
                         System.out.println("message : "+nameNode.path("message").asText());
-                        Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),user});
+//                        Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),user});
                         JOptionPane.showMessageDialog(null,nameNode.path("message").asText());                        
                         if(nameNode.path("code").asText().equals("200")){
                             String KeteranganNoLp = "";
@@ -7243,6 +7243,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
             System.out.println("code : "+nameNode.path("code").asText());
             System.out.println("message : "+nameNode.path("message").asText());
             JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
+            Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),user});
             if(nameNode.path("code").asText().equals("200")){
                 Sequel.meghapus("bridging_sep","no_sep",tbDataSEP.getValueAt(tbDataSEP.getSelectedRow(),0).toString());
                 tabMode.removeRow(tbDataSEP.getSelectedRow());
@@ -7410,7 +7411,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
             root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.POST, requestEntity, String.class).getBody());
             nameNode = root.path("metaData");
             System.out.println("code : "+nameNode.path("code").asText());
-            Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),user});
+//            Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),user});
             JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
             if(nameNode.path("code").asText().equals("200")){
                 String KeteranganNoLp = "";

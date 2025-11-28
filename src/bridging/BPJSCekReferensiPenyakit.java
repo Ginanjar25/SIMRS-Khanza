@@ -143,7 +143,7 @@ public final class BPJSCekReferensiPenyakit extends javax.swing.JDialog {
         setUndecorated(true);
         setResizable(false);
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pencarian Data Referensi Diagnosa VClaim ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pencarian Data Referensi Diagnosa VClaim ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -152,6 +152,11 @@ public final class BPJSCekReferensiPenyakit extends javax.swing.JDialog {
 
         tbKamar.setAutoCreateRowSorter(true);
         tbKamar.setName("tbKamar"); // NOI18N
+        tbKamar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tbKamarKeyPressed(evt);
+            }
+        });
         Scroll.setViewportView(tbKamar);
 
         internalFrame1.add(Scroll, java.awt.BorderLayout.CENTER);
@@ -282,6 +287,8 @@ public final class BPJSCekReferensiPenyakit extends javax.swing.JDialog {
             BtnKeluar.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             BtnCariActionPerformed(null);
+        }else if(evt.getKeyCode() == KeyEvent.VK_SPACE) {
+            dispose();
         }
     }//GEN-LAST:event_diagnosaKeyPressed
 
@@ -302,6 +309,17 @@ public final class BPJSCekReferensiPenyakit extends javax.swing.JDialog {
             Valid.pindah(evt,diagnosa,BtnPrint);
         }
     }//GEN-LAST:event_BtnCariKeyPressed
+
+    private void tbKamarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbKamarKeyPressed
+        if(tabMode.getRowCount()!=0){
+            if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+                dispose();
+            }else if(evt.getKeyCode()==KeyEvent.VK_SHIFT){
+                diagnosa.setText("");
+                diagnosa.requestFocus();
+            }
+        }
+    }//GEN-LAST:event_tbKamarKeyPressed
 
     /**
     * @param args the command line arguments
