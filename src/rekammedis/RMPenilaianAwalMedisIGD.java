@@ -2526,8 +2526,6 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     }
     
     private void editSOAP() {
-        System.out.println(tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString().substring(0, 10));
-        System.out.println(tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString().substring(11, 19));
         String keluhan = "IGD : " + RPS.getText();
         String pemeriksaan = "IGD : " + "Ket Fisik : " + KetFisik.getText() + ", Ket Lokalis : " + KetLokalis.getText() + ", TENSI : " + TD.getText() + ", SUHU : " + Suhu.getText() + ", NADI : " + Nadi.getText() + ", GCS : " + GCS.getText() + ", TB : " + TB.getText() + ", BB : " + BB.getText() + ", spo : " + SPO.getText() + ", RESPIRASI : " + RR.getText();
         if (Sequel.mengedittf("pemeriksaan_ralan", "no_rawat=? and tgl_perawatan = ? and jam_rawat = ? and nip = ?", "tgl_perawatan = ?,jam_rawat = ?, suhu_tubuh=?,tensi=?,nadi=?,respirasi=?,tinggi=?,berat=?,spo2=?,gcs=?,kesadaran=?,keluhan=?,pemeriksaan=?,alergi=?,lingkar_perut=?,rtl=?,penilaian=?,instruksi=?,evaluasi=?", 23, new String[]{

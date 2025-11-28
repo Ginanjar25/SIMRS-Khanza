@@ -185,6 +185,7 @@ import rekammedis.RMKonsultasiDokter;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import modif.ApotekBPJSResepFKTL;
 
 /**
  *
@@ -239,9 +240,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
             "No.Rawat","Nomer RM","Nama Pasien","Alamat Pasien","Penanggung Jawab","Hubungan P.J.","Jenis Bayar","Kamar","Tarif Kamar",
             "Diagnosa Awal","Diagnosa Akhir","Tgl.Masuk","Jam Masuk","Tgl.Keluar","Jam Keluar",
             "Ttl.Biaya","Stts.Pulang","Lama","Dokter P.J.","Kamar","Status Bayar","Agama",
-            "Nomer RM","Nama Pasien","Alamat Pasien","No HP","Jenis Bayar","Kamar","Tarif Kamar",
+            "Nomer RM","Nama Pasien","DPJP","Alamat Pasien","No HP","Jenis Bayar","Kamar","Tarif Kamar",
             "Diagnosa Awal","Diagnosa Akhir","Tgl.Masuk","Jam Masuk","Tgl.Keluar","Jam Keluar",
-            "Tarif RS","Tarif INACBG","Selisih Pasien","INACBG Total","Deposit","Stts.Pulang","Lama","DPJP","Kamar","Status Bayar", "Limit Tarif"
+            "Tarif RS","Tarif INACBG","Selisih Pasien","INACBG Total","Deposit","Stts.Pulang","Lama","Kamar","Status Bayar", "Limit Tarif"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -324,44 +325,44 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 column.setPreferredWidth(60);
             }else if(i==23){//"Nama Pasien",
                 column.setPreferredWidth(170);
-            }else if(i==24){//"Alamat Pasien",
-                column.setPreferredWidth(180);
-            }else if(i==25){//"No HP",
-                column.setPreferredWidth(85);
-            }else if(i==26){//"Jenis Bayar",
-                column.setPreferredWidth(120);
-            }else if(i==27){//"Kamar",
-                column.setPreferredWidth(170);
-            }else if(i==28){//"Tarif Kamar",
-                column.setPreferredWidth(60);
-            }else if(i==29){//"Diagnosa Awal",
+            }else if(i==24){//"Dokter P.J.",
                 column.setPreferredWidth(150);
-            }else if(i==30){//"Diagnosa Akhir",
+            }else if(i==25){//"Alamat Pasien",
+                column.setPreferredWidth(180);
+            }else if(i==26){//"No HP",
+                column.setPreferredWidth(85);
+            }else if(i==27){//"Jenis Bayar",
+                column.setPreferredWidth(120);
+            }else if(i==28){//"Kamar",
+                column.setPreferredWidth(170);
+            }else if(i==29){//"Tarif Kamar",
+                column.setPreferredWidth(60);
+            }else if(i==30){//"Diagnosa Awal",
+                column.setPreferredWidth(150);
+            }else if(i==31){//"Diagnosa Akhir",
                 column.setPreferredWidth(90);
-            }else if(i==31){//"Tgl.Masuk",
+            }else if(i==32){//"Tgl.Masuk",
                 column.setPreferredWidth(70);
-            }else if(i==32){//"Jam Masuk",
+            }else if(i==33){//"Jam Masuk",
                 column.setPreferredWidth(70);
-            }else if(i==33){//"Tgl.Keluar",
+            }else if(i==34){//"Tgl.Keluar",
                 column.setPreferredWidth(70);
-            }else if(i==34){//"Jam Keluar",
+            }else if(i==35){//"Jam Keluar",
                 column.setPreferredWidth(70);
-            }else if(i==35){//"Tarif RS",
+            }else if(i==36){//"Tarif RS",
                 column.setPreferredWidth(70);
-            }else if(i==36){//"Tarif INACBG",
+            }else if(i==37){//"Tarif INACBG",
                 column.setPreferredWidth(70);
-            }else if(i==37){//"INACBG Naik Kelas",
+            }else if(i==38){//"INACBG Naik Kelas",
                  column.setPreferredWidth(90);
-            }else if(i==38){//"Tarif Selisih",
-                column.setPreferredWidth(70);
             }else if(i==39){//"Tarif Selisih",
                 column.setPreferredWidth(70);
-            }else if(i==40){//"Stts.Pulang",
+            }else if(i==40){//"Tarif Selisih",
+                column.setPreferredWidth(70);
+            }else if(i==41){//"Stts.Pulang",
                 column.setPreferredWidth(90);
-            }else if(i==41){//"Lama",
+            }else if(i==42){//"Lama",
                 column.setPreferredWidth(40);
-            }else if(i==42){//"Dokter P.J.",
-                column.setPreferredWidth(130);
             }else if(i==43){//"Kamar"
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
@@ -1418,6 +1419,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         MnSuratKeteranganLahir = new javax.swing.JMenuItem();
         btnDiagnosaAwal = new widget.Button();
         btnDiagnosaAkhir = new widget.Button();
+        MnBridgingApotekBPJS = new javax.swing.JMenuItem();
 
         WindowInputKamar.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         WindowInputKamar.setName("WindowInputKamar"); // NOI18N
@@ -4494,6 +4496,21 @@ public class DlgKamarInap extends javax.swing.JDialog {
         MnPCare.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 MnPCareActionPerformed(evt);
+            }
+        });
+        
+        MnBridgingApotekBPJS.setBackground(new java.awt.Color(255, 255, 254));
+        MnBridgingApotekBPJS.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnBridgingApotekBPJS.setForeground(new java.awt.Color(50, 50, 50));
+        MnBridgingApotekBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnBridgingApotekBPJS.setText("Apotek BPJS");
+        MnBridgingApotekBPJS.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnBridgingApotekBPJS.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnBridgingApotekBPJS.setName("MnBridgingApotekBPJS"); // NOI18N
+        MnBridgingApotekBPJS.setPreferredSize(new java.awt.Dimension(230, 26));
+        MnBridgingApotekBPJS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnBridgingApotekBPJSActionPerformed(evt);
             }
         });
 
@@ -17843,6 +17860,32 @@ public class DlgKamarInap extends javax.swing.JDialog {
         penyakit1.setLocationRelativeTo(internalFrame1);
         penyakit1.setVisible(true);
     } 
+    
+    
+     private void MnBridgingApotekBPJSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnPCareActionPerformed
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+            TCari.requestFocus();
+        }else if(TPasien.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+            tbKamIn.requestFocus();
+        }else{
+            if(tbKamIn.getSelectedRow()!= -1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                akses.setform("DlgKamarInap");
+                ApotekBPJSResepFKTL apotekbpjs=new ApotekBPJSResepFKTL(null,false);
+                apotekbpjs.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                apotekbpjs.setLocationRelativeTo(internalFrame1);
+                apotekbpjs.isCek();
+                apotekbpjs.setNoRm(TNoRwCari.getText());
+                apotekbpjs.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
+            }else{
+                JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+                tbKamIn.requestFocus();
+            }
+        }
+    }//GEN-LAST:event_MnPCareActionPerformed
     /**
     * @param args the command line arguments
     */
@@ -18263,6 +18306,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private javax.swing.JMenuItem MnSuratKeteranganLahir;
     private widget.Button btnDiagnosaAwal;
     private widget.Button btnDiagnosaAkhir;
+    private javax.swing.JMenuItem MnBridgingApotekBPJS;
     
     private void tampil() {
         int kamar_row = 0;
@@ -18352,13 +18396,13 @@ public class DlgKamarInap extends javax.swing.JDialog {
                         rs.getString("diagnosa_akhir"),rs.getString("tgl_masuk"),rs.getString("jam_masuk"),rs.getString("tgl_keluar"),
                         rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")),rs.getString("stts_pulang"),
                         rs.getString("lama"),rs.getString("nm_dokter"),rs.getString("kd_kamar"),rs.getString("status_bayar"),rs.getString("agama"),
-                        rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+" ("+rs.getString("umur")+")",
+                        rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+" ("+rs.getString("umur")+")",rs.getString("nm_dokter"),
                         rs.getString("alamat"),rs.getString("no_tlp"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),
                         rs.getString("kamar") + " (" + rs.getString("kelas") + ")",Valid.SetAngka(rs.getDouble("trf_kamar")),rs.getString("diagnosa_awal"),
                         rs.getString("diagnosa_akhir"),rs.getString("tgl_masuk"),rs.getString("jam_masuk"),rs.getString("tgl_keluar"),
                         rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")),Valid.SetAngka(rs.getDouble("tarif_inacbg")),Valid.SetAngka(rs.getDouble("tarif_naik")),
-                         Valid.SetAngka(rs.getDouble("selisih_tarif")),Valid.SetAngka(rs.getDouble("deposit")), rs.getString("stts_pulang"),
-                        rs.getString("lama"),rs.getString("nm_dokter"),rs.getString("kd_kamar"),rs.getString("status_bayar"),rs.getString("limit_tarif")
+                        Valid.SetAngka(rs.getDouble("selisih_tarif")),Valid.SetAngka(rs.getDouble("deposit")), rs.getString("stts_pulang"),
+                        rs.getString("lama"),rs.getString("kd_kamar"),rs.getString("status_bayar"),rs.getString("limit_tarif")
                     });
                     psanak=koneksi.prepareStatement(
                         "select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.no_peserta, "+
@@ -18377,8 +18421,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")*(persenbayi/100)),rs.getString("stts_pulang"),
                                 rs.getString("lama"),rs.getString("nm_dokter"),rs.getString("kd_kamar"),rs.getString("status_bayar")
                                 
-                                ,"","",rs2.getString("no_rkm_medis")+" - "+rs2.getString("nm_pasien")+" ("+rs2.getString("umur")+")",
-                                "","","","","","","",rs2.getString("tgl_registrasi"),rs2.getString("jam_reg"),"","","","","", "","", "","",rs2.getString("nm_dokter"),"","",""
+                                ,"","",rs2.getString("no_rkm_medis")+" - "+rs2.getString("nm_pasien")+" ("+rs2.getString("umur")+")",rs2.getString("nm_dokter"),
+                                "","","","","","","",rs2.getString("tgl_registrasi"),rs2.getString("jam_reg"),"","","","","", "","", "","","","",""
                             });
                         }
                     }catch(Exception ex){
@@ -19322,6 +19366,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         MenuBPJS.add(ppPerawatanCorona);
         MenuBPJS.add(MnTeridentifikasiTB);
         MenuBPJS.add(MnPCare);
+        MenuBPJS.add(MnBridgingApotekBPJS);
         
         MnPenilaianLain.add(MnPenilaianTambahanGeriatri);
         MnPenilaianLain.add(MnPenilaianTambahanBunuhDiri);

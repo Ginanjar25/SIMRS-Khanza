@@ -3277,7 +3277,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         String query = "";
         String poli = "";
         try {
-            String tgl = Valid.SetTgl(DTPCari1.getSelectedItem()+"");
+            String tgl = Sequel.cariIsi("select tgl_peresepan from resep_obat where no_resep = ?", no_resep);
 
             // Jalankan SET @RANK = 0
             try (PreparedStatement psSetRank = koneksi.prepareStatement("SET @RANK = 0;")) {

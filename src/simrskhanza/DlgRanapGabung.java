@@ -44,6 +44,7 @@ import javax.swing.table.TableColumn;
 import kepegawaian.DlgCariDokter;
 import keuangan.DlgKamar;
 import laporan.DlgCariPenyakit;
+import modif.DlgCariKamar;
 import modif.DlgPendaftaranBayi;
 
 /**
@@ -68,7 +69,8 @@ public class DlgRanapGabung extends javax.swing.JDialog {
     private PreparedStatement pssetjam,pscaripiutang,psdiagnosa,psibu,psanak,pstarif,psdpjp,pscariumur, psinsertkamar, psupdatekamar, psrekapkamar, pstitip;
     private String gabungkan="",norawatgabung="",kamaryangdigabung="",dokterranap="",bangsal="",diagnosa_akhir="",namakamar="",umur="0",sttsumur="Th",pilihan="";
     private SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd");
-    private DlgKamar kamar=new DlgKamar(null,false);
+//    private DlgKamar kamar=new DlgKamar(null,false);
+    private DlgCariKamar kamar=new DlgCariKamar(null,false);
     
     
 
@@ -1418,7 +1420,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private void btnKamarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKamarActionPerformed
         WindowPindahranapGabung.setVisible(false);        
         akses.setform("DlgKamarInap");
-        kamar.load();
+//        kamar.load();
         kamar.isCek();
         kamar.emptTeks();
         kamar.tampil();
@@ -1715,17 +1717,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
     
     public void isCek(){
-//        BtnSimpan.setEnabled(akses.getdeposit_pasien());
-//        BtnHapus.setEnabled(akses.getdeposit_pasien());
         BtnSimpan.setEnabled(akses.getpermintaan_ranap());
         BtnHapus.setEnabled(akses.getpermintaan_ranap());
-        
-        if(akses.getjml2()>=1){
-            BtnSeekPasien.setEnabled(false);
-            KodeDPJP.setText(akses.getkode());
-            NamaDPJP.setText(petugas.tampil3(KodeDPJP.getText()));
-        } 
-        
         if(!akses.getkode().equals("Admin Utama")){
            String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
             if(jabatan.equals("J005")){

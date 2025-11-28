@@ -255,7 +255,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
     private int i=0,pilihan=0,sudah=0,jmlparsial=0;
     public DlgKamarInap kamarinap=new DlgKamarInap(null,false);
     private DlgRawatJalan dlgrwjl2=new DlgRawatJalan(null,false);
-    private boolean semua;
+    private boolean semua, filtermcu = false;
     private boolean sukses=false;
     private Jurnal jur=new Jurnal();
     private double ttljmdokter=0,ttljmperawat=0,ttlkso=0,ttljasasarana=0,ttlbhp=0,ttlmenejemen=0,ttlpendapatan=0;
@@ -6893,6 +6893,20 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         cmbStatusBayar.setName("cmbStatusBayar"); // NOI18N
         cmbStatusBayar.setPreferredSize(new java.awt.Dimension(150, 23));
         panelGlass8.add(cmbStatusBayar);
+        
+        
+        btnPoliMCU = new widget.Button();
+
+        btnPoliMCU.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnPoliMCU.setText("Poli MCU");
+        btnPoliMCU.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnPoliMCU.setName("btnPoliMcu"); // NOI18N
+        btnPoliMCU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPoliMCUActionPerformed(evt);
+            }
+        });
+        panelGlass8.add(btnPoliMCU);
 
         jPanel2.add(panelGlass8, java.awt.BorderLayout.PAGE_START);
 
@@ -7039,11 +7053,12 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnKeluarKeyPressed
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
+        filtermcu=false;
         if(namadokter.equals("")){
             CrPtg.setText("");               
         }
         
-        if(namapoli.equals("")){
+        if(namapoli.equals("") || !filtermcu){
             CrPoli.setText("");
         }
         
@@ -14750,6 +14765,12 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         tampilkasir();
     }
     
+    private void btnPoliMCUActionPerformed(java.awt.event.ActionEvent evt) {
+        filtermcu = true;
+        CrPoli.setText("MCU");
+        tampilkasir();
+    }
+    
     private void btnCetakLabelRajalActionPerformed(java.awt.event.ActionEvent evt) {
         if(TNoRw.getText().trim().equals("")){
             JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
@@ -15252,6 +15273,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private widget.Button btnCetakLabelRajal;
     private javax.swing.JMenuItem MnDeposit;
     private javax.swing.JMenuItem MnBookingOperasi;
+    private widget.Button btnPoliMCU;
     
     private void tampilkasir() {     
         Valid.tabelKosong(tabModekasir);
@@ -15277,7 +15299,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 "LEFT JOIN bridging_surat_kontrol_exp skdp_exp ON skdp_exp.no_sep = bridging_sep.no_sep " +
                 (kasir?"":"LEFT JOIN antripoli on antripoli.no_rawat = reg_periksa.no_rawat LEFT JOIN ( SELECT resep_obat.no_rawat, resep_obat.jam_peresepan, resep_obat.no_resep FROM resep_obat GROUP BY resep_obat.no_rawat ) resep_obat ON resep_obat.no_rawat = reg_periksa.no_rawat ")+                
                 "where reg_periksa.tgl_registrasi BETWEEN ? and ? and reg_periksa.status_lanjut='Ralan'"+tampildiagnosa +
-                (semua?"and reg_periksa.stts != 'Batal'":"and reg_periksa.kd_pj like ? and poliklinik.nm_poli like ? and dokter.nm_dokter like ? " +(batal ? "and reg_periksa.stts = ? ": "and reg_periksa.stts like ? and reg_periksa.stts != 'Batal' ") +" and reg_periksa.status_bayar like ? and "+
+                (semua?"and reg_periksa.stts != 'Batal'":"and reg_periksa.kd_pj like ? and poliklinik.nm_poli like ? and dokter.nm_dokter like ? "+(batal ? "and reg_periksa.stts = ? ": "and reg_periksa.stts like ? and reg_periksa.stts != 'Batal' ") +" and reg_periksa.status_bayar like ? and "+
                 "(reg_periksa.no_reg like ? or reg_periksa.no_rawat like ? or reg_periksa.tgl_registrasi like ? or reg_periksa.kd_dokter like ? or dokter.nm_dokter like ? or reg_periksa.no_rkm_medis like ? or pasien.nm_pasien like ? or poliklinik.nm_poli like ? or "+
                 "reg_periksa.p_jawab like ? or penjab.png_jawab like ? or reg_periksa.almt_pj like ? or reg_periksa.status_bayar like ? or reg_periksa.hubunganpj like ?) ")+terbitsep+antrianKasir+
                 "order by "+(penjab ? order : (status ? "reg_periksa.no_reg desc" : order)));
@@ -15286,8 +15308,8 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 pskasir.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
                 if(!semua){
                     pskasir.setString(3,"%"+caripenjab+"%");
-                    pskasir.setString(4,"%"+CrPoli.getText()+"%");
-                    pskasir.setString(5,"%"+CrPtg.getText()+"%");
+//                    pskasir.setString(4,"%"+CrPoli.getText()+"%");
+//                    pskasir.setString(5,"%"+CrPtg.getText()+"%");
                     pskasir.setString(7,"%"+cmbStatusBayar.getSelectedItem().toString().replaceAll("Semua","")+"%");
                     pskasir.setString(8,"%"+TCari.getText().trim()+"%");
                     pskasir.setString(9,"%"+TCari.getText().trim()+"%");
@@ -15307,8 +15329,15 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                     } else {
                         pskasir.setString(6,"%"+cmbStatus.getSelectedItem().toString().replaceAll("Semua","")+"%");
                     }
+                    
+                    if(filtermcu){
+                        pskasir.setString(4,"%MCU%");
+                        pskasir.setString(5,"%%");
+                    }else{
+                        pskasir.setString(4,"%"+CrPoli.getText()+"%");
+                        pskasir.setString(5,"%"+CrPtg.getText()+"%");
+                    }
                 }
-                
                 rskasir=pskasir.executeQuery();
                 while(rskasir.next()){
                     tabModekasir.addRow(new String[] {
@@ -16242,7 +16271,6 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
             
             String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
             String value = tbKasirRalan.getValueAt(row, 4).toString();
-            System.out.println(value);
             if ("LABORATORIUM".equalsIgnoreCase(value) && jabatan.equals("J011")) {
                 MnStatus.setEnabled(true);
             } else if ("RADIOLOGI".equalsIgnoreCase(value) && jabatan.equals("J017")) {
