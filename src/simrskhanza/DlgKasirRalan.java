@@ -15645,6 +15645,8 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
              }
         }         
         
+        menuSetStatus(true);
+        
         if(akses.getkode().equals("Admin Utama")){
             MnKamarInap.setEnabled(true);
             MnKamarInap1.setEnabled(true); 
@@ -16242,11 +16244,12 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
             
             String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
             String value = tbKasirRalan.getValueAt(row, 4).toString();
-            System.out.println(value);
             if ("LABORATORIUM".equalsIgnoreCase(value) && jabatan.equals("J011")) {
                 MnStatus.setEnabled(true);
+                menuSetStatus(false);
             } else if ("RADIOLOGI".equalsIgnoreCase(value) && jabatan.equals("J017")) {
                 MnStatus.setEnabled(true);
+                menuSetStatus(false);
             } else {
                 isCek();
             }
@@ -16579,4 +16582,17 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         
         MnPermintaan.add(MnPermintaanKonsultasiMedik);
     }
+    
+    private void menuSetStatus(boolean status) {
+        ppBerkasRanap.setEnabled(status);
+        ppBerkasDIterima.setEnabled(status);
+        MnSudah.setEnabled(status);
+        MnBelum.setEnabled(status);
+        MnDirujuk.setEnabled(status);
+        MnDIrawat.setEnabled(status);
+        MnMeninggal.setEnabled(status);
+        MnPulangPaksa.setEnabled(status);
+        jMenu7.setEnabled(status);
+    }
+    
 }
