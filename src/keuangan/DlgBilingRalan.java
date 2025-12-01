@@ -3131,6 +3131,9 @@ private void MnHapusTagihanActionPerformed(java.awt.event.ActionEvent evt) {//GE
                     Sequel.queryu2("delete from tagihan_mandiri where no_rkm_medis='"+TNoRM.getText()+"' and no_rawat='"+TNoRw.getText()+"' and status_lanjut='Ralan' and status_bayar='Pending'");
                     Valid.hapusTable(tabModeRwJlDr,TNoRw,"billing","no_rawat");
                     Valid.hapusTable(tabModeRwJlDr,TNoRw,"tagihan_sadewa","no_nota");
+                    if(!TNoSEP.getText().isBlank() || !TNoSEP.getText().isEmpty()){
+                      Sequel.queryu2("delete from inacbg_data_terkirim where no_sep='"+TNoSEP.getText()+"'");
+                    }
                     Sequel.Commit();
                     JOptionPane.showMessageDialog(rootPane,"Proses hapus data Nota Salah selesai..!!");
                     Valid.tabelKosong(tabModeAkunBayar);

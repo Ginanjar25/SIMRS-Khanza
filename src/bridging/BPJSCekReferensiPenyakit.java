@@ -152,6 +152,11 @@ public final class BPJSCekReferensiPenyakit extends javax.swing.JDialog {
 
         tbKamar.setAutoCreateRowSorter(true);
         tbKamar.setName("tbKamar"); // NOI18N
+        tbKamar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbKamarMouseClicked(evt);
+            }
+        });
         tbKamar.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 tbKamarKeyPressed(evt);
@@ -320,6 +325,14 @@ public final class BPJSCekReferensiPenyakit extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_tbKamarKeyPressed
+
+    private void tbKamarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbKamarMouseClicked
+       if(tabMode.getRowCount()!=0){
+            if(evt.getClickCount()==2){
+                dispose();
+            }
+        }
+    }//GEN-LAST:event_tbKamarMouseClicked
 
     /**
     * @param args the command line arguments
