@@ -162,7 +162,7 @@ public class ApiMobileJKN {
             try {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode root = mapper.readTree(rawResponse);
-                String metadata = root.path("metaData").toString();
+                String metadata = root.path("metadata").toString();
 
                 String decryptedPart = "";
                 if (root.has("response")) {
