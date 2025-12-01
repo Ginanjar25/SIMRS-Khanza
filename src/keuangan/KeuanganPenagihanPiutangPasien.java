@@ -1493,6 +1493,7 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
                 for(i=0;i<tabMode.getRowCount();i++){  
                     if(tbBelumLunas.getValueAt(i,0).toString().equals("true")){
                         String exses = Sequel.cariIsi("SELECT dnj.besar_bayar FROM detail_nota_jalan dnj WHERE dnj.no_rawat=?",tabMode.getValueAt(i,1).toString());
+                        String disc = Sequel.cariIsi("SELECT pb.besar_pengurangan FROM pengurangan_biaya pb WHERE pb.no_rawat=?",tabMode.getValueAt(i,1).toString());
                         if(Sequel.menyimpantf2("temporary","'"+i+"','"+
                                     tabMode.getValueAt(i,1).toString()+"','"+
                                     tabMode.getValueAt(i,2).toString()+"','"+
@@ -1504,7 +1505,7 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
                                     tabMode.getValueAt(i,8).toString()+"','"+
                                     tabMode.getValueAt(i,9).toString()+"','"+
                                     tabMode.getValueAt(i,10).toString()+"','"+
-                                    tabMode.getValueAt(i,11).toString()+"','"+exses+"','','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Transaksi")==false){
+                                    tabMode.getValueAt(i,11).toString()+"','"+exses+"','"+disc+"','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Transaksi")==false){
                             System.out.println("Notif : Gagal menyimpan karena ada data yang bermasalah..!! ");
                         }
                     }                    
@@ -1539,8 +1540,9 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
                 status=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kdmenyetujui.getText());
                 param.put("finger2","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+nmmenyetujui.getText()+"\nID "+(status.equals("")?kdmenyetujui.getText():status)+"\n"+Tanggal.getSelectedItem());  
                 param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
+                param.put("logo2",Sequel.cariGambar("select setting.logo from setting")); 
                 Valid.MyReportqry("rptSuratPenagihanPiutang.jasper","report","::[ Surat Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
-                //Valid.MyReportqry("rptKwitansiPenagihanPiutang.jasper","report","::[ Kwitansi Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
+                Valid.MyReportqry("rptKwitansiPenagihanPiutang.jasper","report","::[ Kwitansi Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
                 WindowSetNoSurat.dispose();
                 this.setCursor(Cursor.getDefaultCursor());
             }else if(TabRawat.getSelectedIndex()==1){
@@ -1549,6 +1551,7 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
                 for(i=0;i<tabMode2.getRowCount();i++){  
                     if(tbBelumDitagihkan.getValueAt(i,0).toString().equals("true")){
                         String exses = Sequel.cariIsi("SELECT dnj.besar_bayar FROM detail_nota_jalan dnj WHERE dnj.no_rawat=?",tabMode.getValueAt(i,1).toString());
+                        String disc = Sequel.cariIsi("SELECT pb.besar_pengurangan FROM pengurangan_biaya pb WHERE pb.no_rawat=?",tabMode.getValueAt(i,1).toString());
                         if(Sequel.menyimpantf2("temporary","'"+i+"','"+
                                     tabMode2.getValueAt(i,1).toString()+"','"+
                                     tabMode2.getValueAt(i,2).toString()+"','"+
@@ -1560,7 +1563,7 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
                                     tabMode2.getValueAt(i,8).toString()+"','"+
                                     tabMode2.getValueAt(i,9).toString()+"','"+
                                     tabMode2.getValueAt(i,10).toString()+"','"+
-                                    tabMode2.getValueAt(i,11).toString()+"','"+exses+"','','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Transaksi")==false){
+                                    tabMode2.getValueAt(i,11).toString()+"','"+exses+"','"+disc+"','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Transaksi")==false){
                             System.out.println("Notif : Gagal menyimpan karena ada data yang bermasalah..!! ");
                         }
                     }                    
@@ -1595,8 +1598,9 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
                 status=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kdmenyetujui.getText());
                 param.put("finger2","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+nmmenyetujui.getText()+"\nID "+(status.equals("")?kdmenyetujui.getText():status)+"\n"+Tanggal.getSelectedItem());  
                 param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
+                param.put("logo2",Sequel.cariGambar("select setting.logo from setting")); 
                 Valid.MyReportqry("rptSuratPenagihanPiutang.jasper","report","::[ Surat Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
-                //Valid.MyReportqry("rptKwitansiPenagihanPiutang.jasper","report","::[ Kwitansi Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
+                Valid.MyReportqry("rptKwitansiPenagihanPiutang.jasper","report","::[ Kwitansi Penagihan Piutang ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
                 WindowSetNoSurat.dispose();
                 this.setCursor(Cursor.getDefaultCursor());
             }
