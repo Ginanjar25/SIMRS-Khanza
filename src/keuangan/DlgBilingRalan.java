@@ -3131,8 +3131,8 @@ private void MnHapusTagihanActionPerformed(java.awt.event.ActionEvent evt) {//GE
                     Sequel.queryu2("delete from tagihan_mandiri where no_rkm_medis='"+TNoRM.getText()+"' and no_rawat='"+TNoRw.getText()+"' and status_lanjut='Ralan' and status_bayar='Pending'");
                     Valid.hapusTable(tabModeRwJlDr,TNoRw,"billing","no_rawat");
                     Valid.hapusTable(tabModeRwJlDr,TNoRw,"tagihan_sadewa","no_nota");
-                    if(!TNoSEP.getText().isBlank() || !TNoSEP.getText().isEmpty()){
-                      Sequel.queryu2("delete from inacbg_data_terkirim where no_sep='"+TNoSEP.getText()+"'");
+                    if (!TNoSEP.getText().equals("")) {
+                        Sequel.mengedit("bridging_eklaim", " no_sep='" + TNoSEP.getText() + "'", " status='0'");
                     }
                     Sequel.Commit();
                     JOptionPane.showMessageDialog(rootPane,"Proses hapus data Nota Salah selesai..!!");
@@ -6270,6 +6270,9 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 if(sukses==true){
                     Valid.editTable(tabModeRwJlDr,"reg_periksa","no_rawat",TNoRw,"status_bayar='Sudah Bayar'");
                     Sequel.meghapus("temporary_tambahan_potongan","no_rawat",TNoRw.getText());
+                    if(!TNoSEP.getText().equals("")){
+                        Sequel.mengedit("bridging_eklaim", " no_sep='"+TNoSEP.getText()+"'", " status='1'");
+                    }
                     Sequel.Commit();
                     JOptionPane.showMessageDialog(null,"Proses simpan selesai...!");   
                      if(notaralan.equals("Yes")){
