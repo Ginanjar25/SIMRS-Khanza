@@ -16251,10 +16251,12 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 return;
             }
         }
+        String poli = Sequel.cariIsi("SELECT pl.nm_poli FROM reg_periksa rp JOIN poliklinik pl ON pl.kd_poli = rp.kd_poli WHERE rp.no_rawat = ?", TNoRw.getText());
         String text = "📌 BUKA BILLING:\n" +
         "No. Rawat : "+TNoRw.getText()+"\n" +
         "Nama Pasien : "+TNoRMCari.getText()+"-"+TPasienCari.getText()+"\n" +
         "Cara Bayar : " + tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),9).toString()+"\n" +
+        "Status  : Ralan "+poli+ "\n"+
         "Alasan : ";
 
         // Copy ke clipboard

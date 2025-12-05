@@ -4071,8 +4071,12 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                         TPasien.setText(cekViaBPJSKartu.nama);
                         TglLahir.setText(cekViaBPJSKartu.tglLahir);
                         NIK.setText(cekViaBPJSKartu.nik);
-                        if(NIK.getText().equals("")){
-                            NIK.setText(Sequel.cariIsi("select pasien.no_ktp from pasien where pasien.no_rkm_medis=?",TNoRM.getText()));
+                        if(NIK.getText().equals("null")){
+                            if(!Sequel.cariIsi("select pasien.no_ktp from pasien where pasien.no_rkm_medis=?",TNoRM.getText()).equals("")){
+                                NIK.setText(Sequel.cariIsi("select pasien.no_ktp from pasien where pasien.no_rkm_medis=?",TNoRM.getText()));//dariDataPasien
+                            }else{
+                                NIK.setText(""); //whiteSpace
+                            }
                         }
                         JK.setText(cekViaBPJSKartu.sex);
                         NoKartu.setText(no_peserta);

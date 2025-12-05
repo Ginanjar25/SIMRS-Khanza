@@ -19449,10 +19449,16 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 return;
             }
         }
+        String kamar = Sequel.cariIsi("SELECT CONCAT(ki.kd_kamar,' ',bs.nm_bangsal) AS ruang FROM reg_periksa rp \n"
+                + "LEFT JOIN kamar_inap ki on ki.no_rawat = rp.no_rawat AND ki.stts_pulang = '-' "
+                + "left join kamar km ON km.kd_kamar = ki.kd_kamar "
+                + "left JOIN bangsal bs ON bs.kd_bangsal = km.kd_bangsal WHERE rp.no_rawat = ?", TNoRwCari.getText()
+        );
         String text = "📌 BUKA BILLING:\n"
                 + "No. Rawat : " + TNoRwCari.getText() + "\n"
                 + "Nama Pasien : " + TNoRMCari.getText() + "-" + TPasienCari.getText() + "\n"
                 + "Cara Bayar : " + tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 6).toString() + "\n"
+                + "Status  : Ranap "+kamar+ "\n"
                 + "Alasan : ";
 
         // Copy ke clipboard
