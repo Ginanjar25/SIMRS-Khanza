@@ -1081,6 +1081,7 @@ import ziscsr.ZISTernakPenerimaDankes;
 import ziscsr.ZISUkuranRumahPenerimaDankes;
 import fungsi.AntrianPoli;
 import modif.DlgJadwalOperasi;
+import modif.EklaimBridgingTarif;
 import permintaan.DlgBookingKuota;
 
 
@@ -1706,6 +1707,7 @@ public class frmUtama extends javax.swing.JFrame {
         btnPiutangObatKary = new widget.ButtonBig();
         btnCariPiutangObatKary = new widget.ButtonBig();
         btnBookingOperasi = new widget.ButtonBig();
+        btnEklaim = new widget.ButtonBig();
         internalFrame1 = new widget.InternalFrame();
         BtnMenu = new widget.ButtonBig();
         jSeparator4 = new javax.swing.JSeparator();
@@ -7087,6 +7089,17 @@ public class frmUtama extends javax.swing.JFrame {
         btnBookingOperasi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBookingOperasiActionPerformed(evt);
+            }
+        });
+
+        btnEklaim.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/inacbg.png"))); // NOI18N
+        btnEklaim.setText("Data Bridging EKlaim");
+        btnEklaim.setIconTextGap(0);
+        btnEklaim.setName("btnEklaim"); // NOI18N
+        btnEklaim.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnEklaim.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEklaimActionPerformed(evt);
             }
         });
 
@@ -14678,6 +14691,18 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_btnBookingOperasiActionPerformed
 
+    private void btnEklaimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEklaimActionPerformed
+        isTutup();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        EklaimBridgingTarif eklaim=new EklaimBridgingTarif(this,false);
+        eklaim.setSize(PanelUtama.getWidth(),PanelUtama.getHeight());
+        eklaim.setLocationRelativeTo(PanelUtama);
+        eklaim.setAlwaysOnTop(false);
+        eklaim.setVisible(true);
+        DlgHome.dispose();
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_btnEklaimActionPerformed
+
     private void btnKategoriPerpustakaanActionPerformed(java.awt.event.ActionEvent evt) {
         isTutup();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -21842,6 +21867,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private widget.ButtonBig btnDisplay;
     private widget.ButtonBig btnDisplayApotek;
     private widget.ButtonBig btnDokter;
+    private widget.ButtonBig btnEklaim;
     private widget.ButtonBig btnFrekuensiRalan;
     private widget.ButtonBig btnFrekuensiRanap;
     private widget.ButtonBig btnGolonganBarang;
@@ -40118,6 +40144,12 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                 Panelmenu.add(btnRuangOperasi);
                 jmlmenu++;
             }                
+        }
+        
+        
+        if (btnEklaim.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())) {
+            Panelmenu.add(btnEklaim);
+            jmlmenu++;
         }
     }
 

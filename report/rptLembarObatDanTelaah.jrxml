@@ -199,7 +199,7 @@
 				<textFieldExpression><![CDATA[$P{norawat}+ " (" +  $P{norm} + ")"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="409" y="38" width="142" height="12" uuid="dae4002f-edd7-409b-94fb-f48a11113692"/>
+				<reportElement x="408" y="15" width="142" height="12" uuid="dae4002f-edd7-409b-94fb-f48a11113692"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="9" isBold="true"/>
 				</textElement>
@@ -337,7 +337,7 @@
 				<textElement>
 					<font fontName="Arial" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{tgllahir} + " (" + $P{umur}  + " Thn)"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{tgllahir} + " (" + $P{umur}  + ")"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement mode="Transparent" x="91" y="105" width="5" height="10" uuid="7cbd2856-9aff-4813-895d-71e2c5c3afe7"/>
@@ -486,6 +486,15 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{prb}.equals("Ya") ? "PRB" : ""]]></textFieldExpression>
 			</textField>
+			<componentElement>
+				<reportElement x="433" y="27" width="127" height="23" uuid="f1b8f255-b408-4b6d-98a2-35cd14b9ca31">
+					<property name="com.jaspersoft.studio.unit.barHeight" value="px"/>
+					<property name="com.jaspersoft.studio.unit.barWidth" value="px"/>
+				</reportElement>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code128" drawText="false" checksumRequired="false" barWidth="0" barHeight="0" rotation="None">
+					<jr:codeExpression><![CDATA[$P{noresep}]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
 		</band>
 	</title>
 	<pageHeader>
@@ -692,7 +701,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="77" y="93" width="123" height="12" backcolor="#FFFFFF" uuid="a2246721-8790-4b53-8b81-283d09422aae"/>
+				<reportElement positionType="Float" mode="Opaque" x="77" y="94" width="123" height="10" backcolor="#FFFFFF" uuid="a2246721-8790-4b53-8b81-283d09422aae"/>
 				<box>
 					<pen lineWidth="1.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -707,7 +716,7 @@
 				<text><![CDATA[Kriteria Pemeriksaan]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="230" y="93" width="52" height="12" backcolor="#FFFFFF" uuid="02dca72e-3970-47e4-aa05-2981410e1698"/>
+				<reportElement positionType="Float" mode="Opaque" x="230" y="94" width="52" height="10" backcolor="#FFFFFF" uuid="02dca72e-3970-47e4-aa05-2981410e1698"/>
 				<box>
 					<pen lineWidth="1.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -722,7 +731,7 @@
 				<text><![CDATA[DRP]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="15" y="105" width="32" height="139" backcolor="#FFFFFF" uuid="6481fb13-08b8-4916-97e1-558e726c4d0d">
+				<reportElement positionType="Float" mode="Opaque" x="15" y="105" width="32" height="161" backcolor="#FFFFFF" uuid="6481fb13-08b8-4916-97e1-558e726c4d0d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -755,7 +764,7 @@
 Administratif]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="47" y="196" width="30" height="48" backcolor="#FFFFFF" uuid="0dc3a6a9-bad9-460e-8af8-4e77b3abe953">
+				<reportElement positionType="Float" mode="Opaque" x="47" y="204" width="30" height="56" backcolor="#FFFFFF" uuid="0dc3a6a9-bad9-460e-8af8-4e77b3abe953">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -863,7 +872,7 @@ Administratif]]></text>
  dan Jenis Kelamin]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="77" y="184" width="123" height="12" backcolor="#FFFFFF" uuid="e8cd7db9-6053-4f03-9883-fa5ef531184a"/>
+				<reportElement positionType="Float" mode="Opaque" x="77" y="185" width="123" height="11" backcolor="#FFFFFF" uuid="e8cd7db9-6053-4f03-9883-fa5ef531184a"/>
 				<box>
 					<pen lineWidth="1.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -1118,7 +1127,7 @@ Administratif]]></text>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="230" y="196" width="52" height="48" backcolor="#FFFFFF" uuid="2855a3a8-dfa1-4f24-b0a8-eb992eb4f988"/>
+				<reportElement positionType="Float" mode="Opaque" x="230" y="196" width="52" height="70" backcolor="#FFFFFF" uuid="2855a3a8-dfa1-4f24-b0a8-eb992eb4f988"/>
 				<box>
 					<pen lineWidth="1.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -1167,7 +1176,7 @@ Administratif]]></text>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="314" y="129" width="32" height="67" backcolor="#FFFFFF" uuid="6423244e-69fd-4e6a-b644-4ec616ce091b">
+				<reportElement positionType="Float" mode="Opaque" x="314" y="126" width="32" height="67" backcolor="#FFFFFF" uuid="6423244e-69fd-4e6a-b644-4ec616ce091b">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -1197,7 +1206,7 @@ Klinis]]></text>
 					<font fontName="Arial" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[ 6. Stabilitas]]></text>
+				<text><![CDATA[ 7. Aturan Cara Pakai]]></text>
 			</staticText>
 			<staticText>
 				<reportElement positionType="Float" mode="Opaque" x="346" y="109" width="123" height="12" backcolor="#FFFFFF" uuid="3133aed2-3aa9-4919-adeb-21b96514b0e2"/>
@@ -1212,7 +1221,7 @@ Klinis]]></text>
 					<font fontName="Arial" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[ 7. Aturan Cara Pakai]]></text>
+				<text><![CDATA[ 8. Dobel cek obat High Alert]]></text>
 			</staticText>
 			<staticText>
 				<reportElement positionType="Float" mode="Opaque" x="346" y="124" width="123" height="12" backcolor="#FFFFFF" uuid="fbc27968-6775-4327-87d6-ed47b2c1472d"/>
@@ -1440,7 +1449,7 @@ Klinis]]></text>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="282" y="196" width="269" height="48" backcolor="#FFFFFF" uuid="d6573abe-f1b9-4e59-9739-8fd45305cf0a"/>
+				<reportElement positionType="Float" mode="Opaque" x="282" y="196" width="269" height="70" backcolor="#FFFFFF" uuid="d6573abe-f1b9-4e59-9739-8fd45305cf0a"/>
 				<box>
 					<pen lineWidth="1.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -1477,13 +1486,13 @@ Klinis]]></text>
 				<text><![CDATA[Benar Pasien]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement mode="Opaque" x="284" y="219" width="8" height="8" backcolor="#FFFFFF" uuid="ffb191ea-fa4f-473a-8e99-1038796309e4">
+				<reportElement mode="Opaque" x="284" y="221" width="8" height="8" backcolor="#FFFFFF" uuid="ffb191ea-fa4f-473a-8e99-1038796309e4">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</rectangle>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="294" y="218" width="56" height="10" backcolor="#FFFFFF" uuid="0c656ebc-2d40-4715-a940-a0d42a7060c6">
+				<reportElement positionType="Float" mode="Opaque" x="294" y="220" width="56" height="10" backcolor="#FFFFFF" uuid="0c656ebc-2d40-4715-a940-a0d42a7060c6">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -1499,13 +1508,13 @@ Klinis]]></text>
 				<text><![CDATA[Benar Obat]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement mode="Opaque" x="284" y="231" width="8" height="8" backcolor="#FFFFFF" uuid="41b88256-ce77-4a8c-8c37-17ddcb9ada2f">
+				<reportElement mode="Opaque" x="284" y="235" width="8" height="8" backcolor="#FFFFFF" uuid="41b88256-ce77-4a8c-8c37-17ddcb9ada2f">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</rectangle>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="294" y="230" width="56" height="10" backcolor="#FFFFFF" uuid="032f9459-955c-4802-befe-77dadb9b7cec">
+				<reportElement positionType="Float" mode="Opaque" x="294" y="234" width="56" height="10" backcolor="#FFFFFF" uuid="032f9459-955c-4802-befe-77dadb9b7cec">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -1521,7 +1530,7 @@ Klinis]]></text>
 				<text><![CDATA[Benar Dosis]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="294" y="243" width="56" height="10" backcolor="#FFFFFF" uuid="4aa5cb53-6ec4-4919-adbb-c84abbcf43b3">
+				<reportElement positionType="Float" mode="Opaque" x="294" y="248" width="56" height="10" backcolor="#FFFFFF" uuid="4aa5cb53-6ec4-4919-adbb-c84abbcf43b3">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -1537,7 +1546,7 @@ Klinis]]></text>
 				<text><![CDATA[Benar Waktu]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement mode="Opaque" x="284" y="244" width="8" height="8" backcolor="#FFFFFF" uuid="c1938b2a-774d-4cb4-8005-17039da0ac29">
+				<reportElement mode="Opaque" x="284" y="249" width="8" height="8" backcolor="#FFFFFF" uuid="c1938b2a-774d-4cb4-8005-17039da0ac29">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -1565,7 +1574,7 @@ Klinis]]></text>
 				<text><![CDATA[Benar Rute]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="468" y="198" width="81" height="10" backcolor="#FFFFFF" uuid="692c101f-76d2-4663-ae9c-aeedb32bea6c">
+				<reportElement positionType="Float" mode="Opaque" x="468" y="199" width="81" height="10" backcolor="#FFFFFF" uuid="692c101f-76d2-4663-ae9c-aeedb32bea6c">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -1581,7 +1590,7 @@ Klinis]]></text>
 				<text><![CDATA[Ttd Pasien/Perawat]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="469" y="222" width="81" height="10" backcolor="#FFFFFF" uuid="cbc71706-1010-4e09-9c56-092130814b42">
+				<reportElement positionType="Float" mode="Opaque" x="468" y="231" width="80" height="10" backcolor="#FFFFFF" uuid="cbc71706-1010-4e09-9c56-092130814b42">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -1594,7 +1603,7 @@ Klinis]]></text>
 					<font fontName="Arial" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Ttd Apoteker]]></text>
+				<text><![CDATA[Ttd Apoteker / AA]]></text>
 			</staticText>
 			<textField>
 				<reportElement mode="Opaque" x="200" y="93" width="30" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="be792b06-f623-4f1a-aab1-9f627b1ded2e"/>
@@ -1617,16 +1626,16 @@ Klinis]]></text>
 				<reportElement mode="Opaque" x="15" y="73" width="536" height="1" backcolor="#FFFFFF" uuid="f31685b5-3aba-4826-b224-dc3b7d0fba3a"/>
 			</line>
 			<line>
-				<reportElement mode="Opaque" x="15" y="63" width="1" height="192" backcolor="#FFFFFF" uuid="2283e835-87bb-41e3-8fab-261e58c672be"/>
+				<reportElement mode="Opaque" x="15" y="63" width="1" height="205" backcolor="#FFFFFF" uuid="2283e835-87bb-41e3-8fab-261e58c672be"/>
 			</line>
 			<line>
-				<reportElement mode="Opaque" x="15" y="256" width="537" height="1" backcolor="#FFFFFF" uuid="c8181e1a-cc0c-478c-9dac-a356822fb222"/>
+				<reportElement mode="Opaque" x="15" y="267" width="537" height="1" backcolor="#FFFFFF" uuid="c8181e1a-cc0c-478c-9dac-a356822fb222"/>
 			</line>
 			<line>
 				<reportElement mode="Opaque" x="15" y="93" width="536" height="1" backcolor="#FFFFFF" uuid="afd2ecba-4ac9-4176-b343-9d3685639e4e"/>
 			</line>
 			<line>
-				<reportElement mode="Opaque" x="47" y="109" width="1" height="146" backcolor="#FFFFFF" uuid="2b13dd6a-954f-4638-bbaa-a74f37e6beb5"/>
+				<reportElement mode="Opaque" x="47" y="105" width="1" height="163" backcolor="#FFFFFF" uuid="2b13dd6a-954f-4638-bbaa-a74f37e6beb5"/>
 			</line>
 			<line>
 				<reportElement mode="Opaque" x="15" y="104" width="267" height="1" backcolor="#FFFFFF" uuid="c90efe76-dbac-4316-94c8-1ed9ed4b8729"/>
@@ -1638,19 +1647,19 @@ Klinis]]></text>
 				<reportElement mode="Opaque" x="77" y="94" width="1" height="10" backcolor="#FFFFFF" uuid="04dfcd9d-bc28-4467-8faf-e4bd3ba1ede7"/>
 			</line>
 			<line>
-				<reportElement mode="Opaque" x="78" y="107" width="1" height="150" backcolor="#FFFFFF" uuid="c81d08b5-af95-4047-8b20-379827c9a4e3"/>
+				<reportElement mode="Opaque" x="77" y="105" width="1" height="163" backcolor="#FFFFFF" uuid="c81d08b5-af95-4047-8b20-379827c9a4e3"/>
 			</line>
 			<line>
 				<reportElement mode="Opaque" x="48" y="196" width="503" height="1" backcolor="#FFFFFF" uuid="74b3d55f-8815-4a3e-a6c1-aac80f5b54d1"/>
 			</line>
 			<line>
-				<reportElement mode="Opaque" x="200" y="94" width="1" height="163" backcolor="#FFFFFF" uuid="cd26ba5f-a37a-4927-bca2-fad8f604ad26"/>
+				<reportElement mode="Opaque" x="200" y="94" width="1" height="174" backcolor="#FFFFFF" uuid="cd26ba5f-a37a-4927-bca2-fad8f604ad26"/>
 			</line>
 			<line>
-				<reportElement mode="Opaque" x="229" y="94" width="1" height="163" backcolor="#FFFFFF" uuid="29a199d0-4de0-4d63-ab70-b0462a874c1c"/>
+				<reportElement mode="Opaque" x="229" y="94" width="1" height="174" backcolor="#FFFFFF" uuid="29a199d0-4de0-4d63-ab70-b0462a874c1c"/>
 			</line>
 			<line>
-				<reportElement mode="Opaque" x="281" y="94" width="1" height="162" backcolor="#FFFFFF" uuid="bec93cf5-1416-41ba-b15e-310c698a3137"/>
+				<reportElement mode="Opaque" x="281" y="94" width="1" height="173" backcolor="#FFFFFF" uuid="bec93cf5-1416-41ba-b15e-310c698a3137"/>
 			</line>
 			<line>
 				<reportElement mode="Opaque" x="314" y="94" width="1" height="103" backcolor="#FFFFFF" uuid="59068b85-3be9-40e5-801c-f5b9acd2e9a4"/>
@@ -1704,7 +1713,7 @@ Klinis]]></text>
 				<reportElement mode="Opaque" x="314" y="122" width="238" height="1" backcolor="#FFFFFF" uuid="0ccb9f51-c319-49b6-981a-24b9061de825"/>
 			</line>
 			<line>
-				<reportElement mode="Opaque" x="551" y="61" width="1" height="194" backcolor="#FFFFFF" uuid="6449d5fb-e7cd-4b4f-ada3-ab56a133dabb"/>
+				<reportElement mode="Opaque" x="551" y="61" width="1" height="206" backcolor="#FFFFFF" uuid="6449d5fb-e7cd-4b4f-ada3-ab56a133dabb"/>
 			</line>
 			<line>
 				<reportElement mode="Opaque" x="347" y="107" width="152" height="1" backcolor="#FFFFFF" uuid="46b17763-2484-4933-89d5-ed2110344e76"/>
@@ -1731,7 +1740,7 @@ Klinis]]></text>
 				<textFieldExpression><![CDATA[$P{peresep}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="79" y="245" width="121" height="10" backcolor="#FFFFFF" uuid="b24a463d-dd49-475d-bd7f-f1bf06f52d00"/>
+				<reportElement positionType="Float" mode="Opaque" x="78" y="245" width="122" height="10" backcolor="#FFFFFF" uuid="b24a463d-dd49-475d-bd7f-f1bf06f52d00"/>
 				<box>
 					<pen lineWidth="1.5" lineStyle="Solid"/>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -1749,7 +1758,7 @@ Klinis]]></text>
 				<reportElement mode="Opaque" x="78" y="244" width="152" height="1" backcolor="#FFFFFF" uuid="67a8f1a1-5c84-46ce-9bc1-e0111c29349a"/>
 			</line>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="365" y="218" width="65" height="10" backcolor="#FFFFFF" uuid="6b8237d7-95d2-4c38-bb12-07f64c14b9f6">
+				<reportElement positionType="Float" mode="Opaque" x="365" y="220" width="65" height="10" backcolor="#FFFFFF" uuid="6b8237d7-95d2-4c38-bb12-07f64c14b9f6">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -1765,13 +1774,13 @@ Klinis]]></text>
 				<text><![CDATA[Benar Indikasi]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement mode="Opaque" x="355" y="219" width="8" height="8" backcolor="#FFFFFF" uuid="be61e5ba-29dd-4000-876a-b4ddc435b703">
+				<reportElement mode="Opaque" x="355" y="221" width="8" height="8" backcolor="#FFFFFF" uuid="be61e5ba-29dd-4000-876a-b4ddc435b703">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</rectangle>
 			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="365" y="230" width="75" height="10" backcolor="#FFFFFF" uuid="a68b11d9-f087-4ae7-b9c1-72fa9e211fa1">
+				<reportElement positionType="Float" mode="Opaque" x="365" y="234" width="75" height="10" backcolor="#FFFFFF" uuid="a68b11d9-f087-4ae7-b9c1-72fa9e211fa1">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -1787,11 +1796,29 @@ Klinis]]></text>
 				<text><![CDATA[Benar Dokumentasi]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement mode="Opaque" x="355" y="231" width="8" height="8" backcolor="#FFFFFF" uuid="33a7bd05-030d-4f0a-bac9-38ff5663dc9e">
+				<reportElement mode="Opaque" x="355" y="235" width="8" height="8" backcolor="#FFFFFF" uuid="33a7bd05-030d-4f0a-bac9-38ff5663dc9e">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</rectangle>
+			<line>
+				<reportElement mode="Opaque" x="78" y="256" width="152" height="1" backcolor="#FFFFFF" uuid="72e9eb89-f9f4-473c-9203-a53fe0148a56"/>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="78" y="257" width="122" height="10" backcolor="#FFFFFF" uuid="646a6ffc-01f9-4261-8132-e3590266acf2"/>
+				<box>
+					<pen lineWidth="1.5" lineStyle="Solid"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" markup="none">
+					<font fontName="Arial" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[ 6. Stabilitas]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>
