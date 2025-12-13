@@ -923,8 +923,8 @@ public final class EklaimBridgingTarif extends javax.swing.JDialog {
                     + "INNER JOIN pasien p ON p.no_rkm_medis = rp.no_rkm_medis\n"
                     + "INNER JOIN poliklinik pl ON pl.kd_poli = rp.kd_poli\n"
                     + "WHERE be.tgl_masuk between ? and ? "
-                    + (TCari.getText().equals("") ? "" : "and (reg_periksa.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "
-                    + "pasien.nm_pasien like ? or  be.no_kartu like ? or be.no_sep like ? or be.nama_dokter like ?) "));
+                    + (TCari.getText().equals("") ? "" : "and (rp.no_rawat like ? or rp.no_rkm_medis like ? or "
+                    + "p.nm_pasien like ? or  be.no_kartu like ? or be.no_sep like ? or be.nama_dokter like ?) "));
             try {
                 ps.setString(1, Valid.SetTgl(DTPCari1.getSelectedItem() + ""));
                 ps.setString(2, Valid.SetTgl(DTPCari2.getSelectedItem() + ""));
