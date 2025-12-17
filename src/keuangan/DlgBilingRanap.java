@@ -175,14 +175,14 @@ public class DlgBilingRanap extends javax.swing.JDialog {
                     "on rawat_inap_drpr.kd_jenis_prw=jns_perawatan_inap.kd_jenis_prw and "+
                     "jns_perawatan_inap.kd_kategori=kategori_perawatan.kd_kategori where "+
                     "rawat_inap_drpr.no_rawat=? and kategori_perawatan.kd_kategori=? group by rawat_inap_drpr.kd_jenis_prw",
-            sqlpsralanperawat="select jns_perawatan.nm_perawatan,jns_perawatan.total_byrpr,count(jns_perawatan.nm_perawatan) as jml, "+
-                                           "jns_perawatan.total_byrpr*count(jns_perawatan.nm_perawatan) as biaya "+
+            sqlpsralanperawat="select jns_perawatan.nm_perawatan,rawat_jl_pr.biaya_rawat as total_byrpr,count(jns_perawatan.nm_perawatan) as jml, "+
+                                           "rawat_jl_pr.biaya_rawat*count(jns_perawatan.nm_perawatan) as biaya "+
                                            "from rawat_jl_pr inner join jns_perawatan inner join kategori_perawatan  "+
                                            "on rawat_jl_pr.kd_jenis_prw=jns_perawatan.kd_jenis_prw  and "+
                                            "jns_perawatan.kd_kategori=kategori_perawatan.kd_kategori where "+
                                            "rawat_jl_pr.no_rawat=? and kategori_perawatan.kd_kategori=? group by rawat_jl_pr.kd_jenis_prw ",
-            sqlpsranapperawat="select jns_perawatan_inap.nm_perawatan,jns_perawatan_inap.total_byrpr,count(jns_perawatan_inap.nm_perawatan) as jml, "+
-                                           "jns_perawatan_inap.total_byrpr*count(jns_perawatan_inap.nm_perawatan) as biaya "+
+            sqlpsranapperawat="select jns_perawatan_inap.nm_perawatan,rawat_inap_pr.biaya_rawat as total_byrpr,count(jns_perawatan_inap.nm_perawatan) as jml, "+
+                                           "rawat_inap_pr.biaya_rawat*count(jns_perawatan_inap.nm_perawatan) as biaya "+
                                            "from rawat_inap_pr inner join jns_perawatan_inap  inner join kategori_perawatan "+
                                            "on rawat_inap_pr.kd_jenis_prw=jns_perawatan_inap.kd_jenis_prw  and "+
                                            "jns_perawatan_inap.kd_kategori=kategori_perawatan.kd_kategori where "+
