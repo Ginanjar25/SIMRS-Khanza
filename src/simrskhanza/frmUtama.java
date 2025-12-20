@@ -8605,7 +8605,11 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));        
     isTutup();
     WindowInputPassword barcode=new WindowInputPassword(this,true);
-    barcode.SetUserPass(lblUser.getText(),edPwd.getText());
+    String user = "";
+    if (lblUser.getText().contains("-")) {
+        user = lblUser.getText().split("-")[0].trim();
+    }
+    barcode.SetUserPass(user,edPwd.getText());
     barcode.setLocationRelativeTo(PanelUtama);
     barcode.setVisible(true);
     DlgHome.dispose();
