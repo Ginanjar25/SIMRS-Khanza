@@ -4064,7 +4064,17 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
             if(no_peserta.trim().equals("")){
                 JOptionPane.showMessageDialog(null,"Pasien tidak mempunyai kepesertaan BPJS");
                 dispose();
-            }else{
+            }
+            else{
+                String cara_bayar = Sequel.cariIsi("SELECT rp.kd_pj FROM reg_periksa rp WHERE rp.no_rawat =?",TNoRw.getText());
+                if (!"BPJ".equals(cara_bayar)) {
+                    int reply = JOptionPane.showConfirmDialog(rootPane, "Ganti/Update Cara Bayar Menjdai BPJS?", "Maaf, Cara bayar pasien Bukan BPJS !!!", JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        Sequel.mengedittf("reg_periksa", "no_rawat=?", "kd_pj='BPJ'", 1, new String[]{TNoRw.getText()});
+                    } else {
+                        dispose();
+                    }
+                }
                 cekViaBPJSKartu.tampil(no_peserta);
                 if(cekViaBPJSKartu.informasi.equals("OK")){
                     if(!cekViaBPJSKartu.statusPesertaketerangan.equals("TIDAK AKTIF")){
@@ -7549,6 +7559,10 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                             break;
                         default:
                             break;
+                    }
+                    String tanggal = LocalDate.now().toString();
+                    if(Sequel.cariInteger("SELECT COUNT(ln.tanggal) FROM libur_nasional ln WHERE ln.tanggal =?", tanggal)>0){
+                        hari="LIBNAS";
                     }
 
                     ps=koneksi.prepareStatement("select jadwal.jam_mulai,jadwal.jam_selesai,jadwal.kuota from jadwal where jadwal.hari_kerja=? and jadwal.kd_poli=? and jadwal.kd_dokter=?");
