@@ -902,13 +902,15 @@ public final class DlgReg extends javax.swing.JDialog {
             public void windowClosed(WindowEvent e) {
                 if(akses.getform().equals("DlgReg")){
                     if(pasien.penjab.getTable().getSelectedRow()!= -1){
-                        if(pasien.penjab.getPilihan().getText().equals("1")){
-                            kdpnj.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),1).toString());
-                            nmpnj.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),2).toString());
-                        }else{
-                            kdpnj2.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),1).toString());
-                            nmpnj2.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),2).toString());
-                        }                        
+                        if (pasien.penjab.getPilihan().getText().equals("1")) {
+                            kdpnj.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(), 1).toString());
+                            nmpnj.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(), 2).toString());
+                            isNumber();
+                        } else {
+                            kdpnj2.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(), 1).toString());
+                            nmpnj2.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(), 2).toString());
+                            isNumber();
+                        }               
                     }    
                     kdpnj.requestFocus();
                 }
@@ -16795,6 +16797,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 case "dokter + poli":  
                     setNoRegDokterAndPoli();
                     break;
+                case "dokter + poli + penjab":  
+                    setNoRegDokterAndPoliAndPenjab();
+                    break;
                 default:
                     if(Sequel.cariInteger("select ifnull(MAX(CONVERT(booking_registrasi.no_reg,signed)),0) from booking_registrasi where booking_registrasi.kd_poli='"+kdpoli.getText()+"' and booking_registrasi.tanggal_periksa='"+Valid.SetTgl(DTPReg.getSelectedItem()+"")+"'")>=
                             Sequel.cariInteger("select ifnull(MAX(CONVERT(reg_periksa.no_reg,signed)),0) from reg_periksa where reg_periksa.kd_poli='"+kdpoli.getText()+"' and reg_periksa.tgl_registrasi='"+Valid.SetTgl(DTPReg.getSelectedItem()+"")+"'")){
@@ -17807,8 +17812,105 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }
 
         Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(reg_periksa.no_rawat,6),signed)),0) from reg_periksa where reg_periksa.tgl_registrasi='" + tanggalPeriksa + "' ", tanggalPeriksa.replaceAll("-", "/") + "/", 6, TNoRw);
-    }
+    }    
     
+    private void setNoRegDokterAndPoliAndPenjab() {
+
+        int kuotaUmum = 0;
+        String kdDokter = KdDokter.getText();
+        String kdPoli = kdpoli.getText();
+        String penjab = kdpnj.getText(); // UMUM / BPJS
+        String tanggal = Valid.SetTgl(DTPReg.getSelectedItem() + "");
+        /* =====================================================
+     * 1. Ambil kuota UMUM per poli
+     * ===================================================== */
+        kuotaUmum = Sequel.cariInteger(
+                "SELECT IFNULL(kuota,0) FROM kuota_poli WHERE kd_poli='" + kdPoli + "' and kd_dokter = '"+ kdDokter + "' and kd_pj='A09'"
+        );
+        /* =====================================================
+     * 2. Ambil MAX UMUM & BPJS lintas 3 tabel
+     * ===================================================== */
+        int maxUmum = getMaxNoRegAllTable(
+                kdDokter, kdPoli, tanggal, 1, kuotaUmum
+        );
+
+        int maxBpjs = getMaxNoRegAllTable(
+                kdDokter, kdPoli, tanggal, kuotaUmum + 1, 9999
+        );
+
+        /* =====================================================
+     * 3. Tentukan no_reg baru
+     * ===================================================== */
+        int noRegBaru;
+
+        if (penjab.equalsIgnoreCase("A09")) {
+
+            if (maxUmum < kuotaUmum) {
+                noRegBaru = maxUmum + 1;
+            } else {
+                noRegBaru = Math.max(maxBpjs, kuotaUmum) + 1;
+            }
+
+        } else { // BPJS
+
+            if (maxBpjs < (kuotaUmum + 1)) {
+                noRegBaru = kuotaUmum + 1;
+            } else {
+                noRegBaru = maxBpjs + 1;
+            }
+        }
+
+        /* =====================================================
+     * 4. Set ke field No Reg
+     * ===================================================== */
+        TNoReg.setText(String.format("%03d", noRegBaru));
+
+        /* =====================================================
+     * 5. No Rawat (tetap)
+     * ===================================================== */
+        Valid.autoNomer3(
+                "SELECT IFNULL(MAX(CONVERT(RIGHT(reg_periksa.no_rawat,6),SIGNED)),0) "
+                + "FROM reg_periksa WHERE tgl_registrasi='" + tanggal + "'",
+                tanggal.replaceAll("-", "/") + "/",
+                6,
+                TNoRw
+        );
+    }
+
+    
+    private int getMaxNoRegAllTable(
+            String kdDokter,
+            String kdPoli,
+            String tanggal,
+            int min,
+            int max
+    ) {
+
+        String sql
+                = "SELECT IFNULL(MAX(no_reg),0) FROM ("
+                + // booking
+                " SELECT CONVERT(no_reg,SIGNED) AS no_reg FROM booking_registrasi "
+                + " WHERE kd_dokter='" + kdDokter + "' "
+                + " AND kd_poli='" + kdPoli + "' "
+                + " AND tanggal_periksa='" + tanggal + "' "
+                + " UNION ALL "
+                + // reg_periksa
+                " SELECT CONVERT(no_reg,SIGNED) FROM reg_periksa "
+                + " WHERE kd_dokter='" + kdDokter + "' "
+                + " AND kd_poli='" + kdPoli + "' "
+                + " AND tgl_registrasi='" + tanggal + "' "
+                + " UNION ALL "
+                + // loket
+                " SELECT CONVERT(nomor,SIGNED) FROM antriloketcetak "
+                + " WHERE kd_dokter='" + kdDokter + "' "
+                + " AND kd_poli='" + kdPoli + "' "
+                + " AND asal='Baru' "
+                + " AND tanggal='" + tanggal + "' "
+                + ") x WHERE no_reg BETWEEN " + min + " AND " + max;
+
+        return Sequel.cariInteger(sql);
+    }
+
     private void R2MouseClicked(java.awt.event.MouseEvent evt) {
         getPenjab2();
     }
