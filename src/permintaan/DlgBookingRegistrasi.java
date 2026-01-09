@@ -2091,45 +2091,50 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }
     
-     private void setNoRegDokterAndPoliAndPenjab() {
+    private void setNoRegDokterAndPoliAndPenjab() {
 
-        int kuotaUmum = 0;
         String kdDokter = KdDokter.getText();
         String kdPoli = KdPoli.getText();
-        String penjab = kdpnj.getText(); // UMUM / BPJS
+        String penjab = kdpnj.getText(); // A09 = UMUM
         String tanggal = Valid.SetTgl(TanggalPeriksa.getSelectedItem() + "");
-        kuotaUmum = Sequel.cariInteger(
-                "SELECT IFNULL(kuota,0) FROM kuota_poli WHERE kd_poli='" + kdPoli + "' and kd_dokter = '"+ kdDokter + "' and kd_pj='A09'"
+        int kuotaUmum = Sequel.cariInteger(
+                "SELECT IFNULL(kuota,0) FROM kuota_poli "
+                + "WHERE kd_poli='" + kdPoli + "' "
+                + "AND kd_dokter='" + kdDokter + "' "
+                + "AND kd_pj='A09'"
         );
-        int maxUmum = getMaxNoRegAllTable(
-                kdDokter, kdPoli, tanggal, 1, kuotaUmum
+        int maxGlobal = getMaxNoRegAllTable(
+                kdDokter, kdPoli, tanggal, 0, 9999
         );
 
-        int maxBpjs = getMaxNoRegAllTable(
-                kdDokter, kdPoli, tanggal, kuotaUmum + 1, 9999
-        );
+        int maxUmum = (kuotaUmum > 0)
+                ? getMaxNoRegAllTable(kdDokter, kdPoli, tanggal, 1, kuotaUmum)
+                : 0;
+
+        int maxBpjs = (kuotaUmum > 0)
+                ? getMaxNoRegAllTable(kdDokter, kdPoli, tanggal, kuotaUmum + 1, 9999)
+                : maxGlobal;
         int noRegBaru;
-
-        if (penjab.equalsIgnoreCase("A09")) {
-
+        if (kuotaUmum == 0) {
+            noRegBaru = maxGlobal + 1;
+        } else if (penjab.equalsIgnoreCase("A09")) {
+            // UMUM
             if (maxUmum < kuotaUmum) {
                 noRegBaru = maxUmum + 1;
             } else {
-                noRegBaru = Math.max(maxBpjs, kuotaUmum) + 1;
+                noRegBaru = maxGlobal + 1;
             }
-
-        } else { // BPJS
-
-            if (maxBpjs < (kuotaUmum + 1)) {
-                noRegBaru = kuotaUmum + 1;
+        } else {
+            // BPJS
+            if (maxBpjs == 0) {
+                noRegBaru = Math.max(maxGlobal + 1, kuotaUmum + 1);
             } else {
-                noRegBaru = maxBpjs + 1;
+                noRegBaru = maxGlobal + 1;
             }
         }
         NoReg.setText(String.format("%03d", noRegBaru));
     }
 
-    
     private int getMaxNoRegAllTable(
             String kdDokter,
             String kdPoli,
@@ -2140,20 +2145,17 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
         String sql
                 = "SELECT IFNULL(MAX(no_reg),0) FROM ("
-                + // booking
-                " SELECT CONVERT(no_reg,SIGNED) AS no_reg FROM booking_registrasi "
+                + " SELECT CONVERT(no_reg,SIGNED) AS no_reg FROM booking_registrasi "
                 + " WHERE kd_dokter='" + kdDokter + "' "
                 + " AND kd_poli='" + kdPoli + "' "
                 + " AND tanggal_periksa='" + tanggal + "' "
                 + " UNION ALL "
-                + // reg_periksa
-                " SELECT CONVERT(no_reg,SIGNED) FROM reg_periksa "
+                + " SELECT CONVERT(no_reg,SIGNED) FROM reg_periksa "
                 + " WHERE kd_dokter='" + kdDokter + "' "
                 + " AND kd_poli='" + kdPoli + "' "
                 + " AND tgl_registrasi='" + tanggal + "' "
                 + " UNION ALL "
-                + // loket
-                " SELECT CONVERT(nomor,SIGNED) FROM antriloketcetak "
+                + " SELECT CONVERT(nomor,SIGNED) FROM antriloketcetak "
                 + " WHERE kd_dokter='" + kdDokter + "' "
                 + " AND kd_poli='" + kdPoli + "' "
                 + " AND asal='Baru' "
@@ -2162,4 +2164,5 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
         return Sequel.cariInteger(sql);
     }
+
 }
