@@ -4715,10 +4715,50 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     }
 
     private void autoSKL() {
-        Valid.autoNomer6("select ifnull(MAX(CONVERT(LEFT(pasien_bayi.no_skl,4),signed)),0) from pasien inner join pasien_bayi on pasien.no_rkm_medis=pasien_bayi.no_rkm_medis where "+
-                       "pasien.tgl_lahir like '%"+Valid.SetTgl(Lahir.getSelectedItem()+"").substring(0,7)+"%' ","/RM-SKL/"+Valid.SetTgl(Lahir.getSelectedItem()+"").substring(5,7)+
-                        "/"+Valid.SetTgl(Lahir.getSelectedItem()+"").substring(0,4),4,NoSKL);         
+
+        final int TAHUN_MULAI_RESET = 2026; // <-- ganti jika perlu
+
+        String[] romanNumerals = {
+            "I", "II", "III", "IV", "V", "VI",
+            "VII", "VIII", "IX", "X", "XI", "XII"
+        };
+
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        int currentMonth = calendar.get(java.util.Calendar.MONTH) + 1;
+        int currentYear = calendar.get(java.util.Calendar.YEAR);
+
+        String romanMonth = romanNumerals[currentMonth - 1];
+
+        int number = 1; // default reset
+
+        /* =====================================================
+     * HANYA cek nomor jika tahun > tahun mulai reset
+     * ===================================================== */
+        if (currentYear > TAHUN_MULAI_RESET) {
+
+            String no_surat = Sequel.cariIsi(
+                    "SELECT pasien_bayi.no_skl "
+                    + "FROM pasien_bayi "
+                    + "WHERE pasien_bayi.no_skl LIKE '%/" + currentYear + "' "
+                    + "ORDER BY CAST(SUBSTRING_INDEX(pasien_bayi.no_skl,'/',1) AS UNSIGNED) DESC "
+                    + "LIMIT 1"
+            );
+
+            if (no_surat != null && !no_surat.isEmpty()) {
+                java.util.regex.Matcher matcher
+                        = java.util.regex.Pattern.compile("^(\\d+)/").matcher(no_surat);
+
+                if (matcher.find()) {
+                    number = Integer.parseInt(matcher.group(1)) + 1;
+                }
+            }
+        }
+
+        NoSKL.setText(
+                String.format("%04d/RM-SKL/%s/%d", number, romanMonth, currentYear)
+        );
     }
+
 
     private void getDataApgar() {
         try {

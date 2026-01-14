@@ -39,6 +39,7 @@ import java.io.FileWriter;
 import java.util.List;
 import javax.swing.event.DocumentEvent;
 import modif.DlgGabungNota;
+import modif.Eklaim.EklaimBridgingAPI;
 import simrskhanza.DlgCariPeriksaLabPA;
 import simrskhanza.DlgCariCaraBayar;
 import simrskhanza.DlgPeriksaLaboratorium;
@@ -64,6 +65,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
     public DlgCariDokter dokter=new DlgCariDokter(null,false);
     public DlgCariPoli poli=new DlgCariPoli(null,false);   
     public DlgCariCaraBayar penjab=new DlgCariCaraBayar(null,false);
+    private EklaimBridgingAPI eklaimApi = new EklaimBridgingAPI();
     private double ttl=0,y=0,subttl=0,ralanparamedis=0,piutang=0,itembayar=0,itempiutang=0, 
                    bayar=0,total=0,tamkur=0,detailjs=0,detailbhp=0,besarppn=0,tagihanppn=0,
                    ttlLaborat=0,ttlRadiologi=0,ttlObat=0,ttlRalan_Dokter=0,ttlRalan_Paramedis=0,
@@ -6279,6 +6281,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                      if(notaralan.equals("Yes")){
                         BtnNotaActionPerformed(null);
                     }
+                    eklaimApi.bridgingInit(TNoSEP.getText());
                 }else{
                     JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
                     Sequel.RollBack();

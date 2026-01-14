@@ -2,7 +2,7 @@
   By Mas Elkhanza
  */
 
-package modif;
+package modif.Eklaim;
 
 import bridging.*;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -55,6 +55,7 @@ public final class EklaimBridgingTarif extends javax.swing.JDialog {
     private JsonNode root;
     private JsonNode response;
     private SatuSehatCekNIK cekViaSatuSehat=new SatuSehatCekNIK();  
+    private EklaimBridgingAPI eklaimApi = new EklaimBridgingAPI();
     private StringBuilder htmlContent;    
     
     /** Creates new form DlgKamar
@@ -69,8 +70,8 @@ public final class EklaimBridgingTarif extends javax.swing.JDialog {
 
         tabMode=new DefaultTableModel(null,new String[]{
                 "P","No Rawat","No SEP","No.RM","Nama Pasien","No.Kartu","Tgl Masuk","Tgl Pulang", "Cara Masuk", "Jenis Rawat",
-                "Kelas Rawat", "ADL Sub Acute", "ADL Chronic", "ICU Indikator", "ICU LOS", "Ventilator Hour", "Naik Kelas", "LOS Naik Kelas", "Payor Naik Kelas", "Tambahan Naik Kelas",
-                "Berat Lahir", "Sistole", "diastole", "Discharge Status", "Prosedur Non Bedah", "Prosedur Bedah", "Konsultasi", "Tenaga Ahli", "Keperawatan", "Penunjang",
+                "Kelas Rawat", "ADL Sub Acute", "ADL Chronic", "ICU Indikator", "ICU LOS", "Ventilator Hour", "Index Naik Kelas", "Naik Kelas", "LOS Naik Kelas", "Payor Naik Kelas", "Tambahan Naik Kelas",
+                "Berat Lahir", "Sistole", "Diastole", "Discharge Status", "Prosedur Non Bedah", "Prosedur Bedah", "Konsultasi", "Tenaga Ahli", "Keperawatan", "Penunjang",
                 "Radiologi", "Laboratorium", "Pelayanan Darah", "Rehabilitasi", "Kamar",  "Rawat Intensif", "Obat", "Obat Kronis", "Obat Kemo", "Alkes", 
                 "BMHP", "Sewa Alat", "Tarif Poli Eks", "Nama Dokter", "Kode Tarif", "Payor ID", "Payor CD", "COB CD", "Coder NIK", "Status", "Created At", "Updated At"
             }){
@@ -92,7 +93,7 @@ public final class EklaimBridgingTarif extends javax.swing.JDialog {
                  java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
                  java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
                  java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class,
-                 java.lang.String.class, java.lang.String.class
+                 java.lang.String.class, java.lang.String.class,java.lang.String.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -105,113 +106,113 @@ public final class EklaimBridgingTarif extends javax.swing.JDialog {
         tbObat.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 52; i++) {
+        for (i = 0; i < 53; i++) {
             TableColumn column = tbObat.getColumnModel().getColumn(i);
-            if(i==0){
+            if(i==0){ //P
                 column.setPreferredWidth(20);
-            }else if(i==1){
-                column.setPreferredWidth(110);
-            }else if(i==2){
-                column.setPreferredWidth(105);
-            }else if(i==3){
-                column.setPreferredWidth(70);
-            }else if(i==4){
-                column.setPreferredWidth(150);
-            }else if(i==5){
-                column.setPreferredWidth(110);
-            }else if(i==6){
-                column.setPreferredWidth(215);
-            }else if(i==7){
+            }else if(i==1){ //No Rawat
+                column.setPreferredWidth(130);
+            }else if(i==2){ // No SEP
+                column.setPreferredWidth(170);
+            }else if(i==3){ //NO RM
+                column.setPreferredWidth(100);
+            }else if(i==4){//Nama Pasien
                 column.setPreferredWidth(250);
-            }else if(i==8){
+            }else if(i==5){//No.Kartu
                 column.setPreferredWidth(150);
-            }else if(i==9){
-                column.setPreferredWidth(120);
-            }else if(i==10){
-                column.setPreferredWidth(110);
-            }else if(i==11){
-                column.setPreferredWidth(220);
-            }else if(i==12){
-                column.setPreferredWidth(105);
-            }else if(i==13){
+            }else if(i==6){//Tgl Masuk
+                column.setPreferredWidth(150);
+            }else if(i==7){//Tgl Pulang
+                column.setPreferredWidth(150);
+            }else if(i==8){//Cara Masuk
+                column.setPreferredWidth(160);
+            }else if(i==9){//Jenis Rawat
+                column.setPreferredWidth(100);
+            }else if(i==10){//Kelas Rawat
+                column.setPreferredWidth(100);
+            }else if(i==11){//ADL Sub Acute
+                column.setPreferredWidth(100);
+            }else if(i==12){//ADL Chronic
+                column.setPreferredWidth(100);
+            }else if(i==13){//ICU Indikator
+                column.setPreferredWidth(100);
+            }else if(i==14){//ICU LOS
+                column.setPreferredWidth(100);
+            }else if(i==15){//Ventilator Hour
+                column.setPreferredWidth(100);
+            }else if(i==16){//Index Naik Kelas
+                column.setPreferredWidth(100);
+            }else if(i==17){//Naik Kelas 
+                column.setPreferredWidth(100);
+            }else if(i==18){//LOS Naik Kelas
+                column.setPreferredWidth(100);
+            }else if(i==19){//Payor Naik Kelas
+                column.setPreferredWidth(100);
+            }else if(i==20){//Tambahan Naik Kelas
+                column.setPreferredWidth(100);
+            }else if(i==21){//Berat Lahir
+                column.setPreferredWidth(100);
+            }else if(i==22){//Sistole
+                column.setPreferredWidth(100);
+            }else if(i==23){//diastole
+                column.setPreferredWidth(100);
+            }else if(i==24){//Discharge Status
+                column.setPreferredWidth(100);
+            }else if(i==25){//Prosedur Non Bedah
+                column.setPreferredWidth(100);
+            }else if(i==26){//Prosedur Bedah
+                column.setPreferredWidth(100);
+            }else if(i==27){//Konsultasi  
+                column.setPreferredWidth(100);
+            }else if(i==28){//Tenaga Ahli
+                column.setPreferredWidth(100);
+            }else if(i==29){//Keperawatan
+                column.setPreferredWidth(100);
+            }else if(i==30){//Penunjang 
+                column.setPreferredWidth(100);
+            }else if(i==31){//Radiologi  
+                column.setPreferredWidth(100);
+            }else if(i==32){//Laboratorium  
+                column.setPreferredWidth(100);
+            }else if(i==33){//Pelayanan Darah
+                column.setPreferredWidth(100);
+            }else if(i==34){//Rehabilitasi
+                column.setPreferredWidth(100);
+            }else if(i==35){//Kamar
+                column.setPreferredWidth(100);
+            }else if(i==36){// Rawat Intensif
+                column.setPreferredWidth(100);
+            }else if(i==37){//Obat
+                column.setPreferredWidth(100);
+            }else if(i==38){//Obat Kronis
+                column.setPreferredWidth(100);
+            }else if(i==39){//Obat Kemo
+                column.setPreferredWidth(100);
+            }else if(i==40){//Alkes
+                column.setPreferredWidth(100);
+            }else if(i==41){//BMHP
+                column.setPreferredWidth(100);
+            }else if(i==42){//Sewa Alat
+                column.setPreferredWidth(100);
+            }else if(i==43){//Tarif Poli Eks
                 column.setPreferredWidth(70);
-            }else if(i==14){
+            }else if(i==44){//Nama Dokter 
                 column.setPreferredWidth(150);
-            }else if(i==15){
-                column.setPreferredWidth(110);
-            }else if(i==16){
-                column.setPreferredWidth(215);
-            }else if(i==17){
-                column.setPreferredWidth(250);
-            }else if(i==18){
-                column.setPreferredWidth(150);
-            }else if(i==19){
+            }else if(i==45){//Nama Dokter 
+                column.setPreferredWidth(200);
+            }else if(i==46){//Payor ID
+                column.setPreferredWidth(100);
+            }else if(i==47){//Payor CD 
+                column.setPreferredWidth(100);
+            }else if(i==48){//COB CD
+                column.setPreferredWidth(100);
+            }else if(i==49){//Coder NIK 
                 column.setPreferredWidth(120);
-            }else if(i==20){
-                column.setPreferredWidth(110);
-            }else if(i==21){
+            }else if(i==50){//Status 
+                column.setPreferredWidth(60);
+            }else if(i==51){//Created At
                 column.setPreferredWidth(220);
-            }else if(i==22){
-                column.setPreferredWidth(105);
-            }else if(i==23){
-                column.setPreferredWidth(70);
-            }else if(i==24){
-                column.setPreferredWidth(150);
-            }else if(i==25){
-                column.setPreferredWidth(110);
-            }else if(i==26){
-                column.setPreferredWidth(215);
-            }else if(i==27){
-                column.setPreferredWidth(250);
-            }else if(i==28){
-                column.setPreferredWidth(150);
-            }else if(i==29){
-                column.setPreferredWidth(120);
-            }else if(i==30){
-                column.setPreferredWidth(110);
-            }else if(i==31){
-                column.setPreferredWidth(220);
-            }else if(i==32){
-                column.setPreferredWidth(105);
-            }else if(i==33){
-                column.setPreferredWidth(70);
-            }else if(i==34){
-                column.setPreferredWidth(150);
-            }else if(i==35){
-                column.setPreferredWidth(110);
-            }else if(i==36){
-                column.setPreferredWidth(215);
-            }else if(i==37){
-                column.setPreferredWidth(250);
-            }else if(i==38){
-                column.setPreferredWidth(150);
-            }else if(i==39){
-                column.setPreferredWidth(120);
-            }else if(i==40){
-                column.setPreferredWidth(110);
-            }else if(i==41){
-                column.setPreferredWidth(220);
-            }else if(i==42){
-                column.setPreferredWidth(105);
-            }else if(i==43){
-                column.setPreferredWidth(70);
-            }else if(i==44){
-                column.setPreferredWidth(150);
-            }else if(i==45){
-                column.setPreferredWidth(110);
-            }else if(i==46){
-                column.setPreferredWidth(215);
-            }else if(i==47){
-                column.setPreferredWidth(250);
-            }else if(i==48){
-                column.setPreferredWidth(150);
-            }else if(i==49){
-                column.setPreferredWidth(120);
-            }else if(i==50){
-                column.setPreferredWidth(110);
-            }else if(i==51){
-                column.setPreferredWidth(220);
-            }else if(i==52){
+            }else if(i==52){//Updated At
                 column.setPreferredWidth(220);
             }
         }
@@ -291,7 +292,6 @@ public final class EklaimBridgingTarif extends javax.swing.JDialog {
         LCount = new widget.Label();
         BtnAll = new widget.Button();
         BtnKirim = new widget.Button();
-        BtnUpdate = new widget.Button();
         BtnPrint = new widget.Button();
         BtnKeluar = new widget.Button();
         panelGlass9 = new widget.panelisi();
@@ -412,19 +412,6 @@ public final class EklaimBridgingTarif extends javax.swing.JDialog {
         });
         panelGlass8.add(BtnKirim);
 
-        BtnUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/edit_f2.png"))); // NOI18N
-        BtnUpdate.setMnemonic('U');
-        BtnUpdate.setText("Update");
-        BtnUpdate.setToolTipText("Alt+U");
-        BtnUpdate.setName("BtnUpdate"); // NOI18N
-        BtnUpdate.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnUpdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnUpdateActionPerformed(evt);
-            }
-        });
-        panelGlass8.add(BtnUpdate);
-
         BtnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
         BtnPrint.setMnemonic('T');
         BtnPrint.setText("Cetak");
@@ -467,7 +454,7 @@ public final class EklaimBridgingTarif extends javax.swing.JDialog {
         jLabel15.setPreferredSize(new java.awt.Dimension(85, 23));
         panelGlass9.add(jLabel15);
 
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-12-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-01-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -480,7 +467,7 @@ public final class EklaimBridgingTarif extends javax.swing.JDialog {
         jLabel17.setPreferredSize(new java.awt.Dimension(24, 23));
         panelGlass9.add(jLabel17);
 
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-12-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "08-01-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -648,94 +635,7 @@ public final class EklaimBridgingTarif extends javax.swing.JDialog {
         for(i=0;i<tbObat.getRowCount();i++){
             if(tbObat.getValueAt(i,0).toString().equals("true")&&(!tbObat.getValueAt(i,5).toString().equals(""))&&(!tbObat.getValueAt(i,6).toString().equals(""))&&(!tbObat.getValueAt(i,9).toString().equals(""))&&tbObat.getValueAt(i,11).toString().equals("")){
                 try {
-                    idpraktisi=cekViaSatuSehat.tampilIDParktisi(tbObat.getValueAt(i,9).toString());
-                    idpasien=cekViaSatuSehat.tampilIDPasien(tbObat.getValueAt(i,5).toString());
-                    try{
-                        headers = new HttpHeaders();
-                        headers.setContentType(MediaType.APPLICATION_JSON);
-                        headers.add("Authorization", "Bearer "+api.TokenSatuSehat());
-                        json = "{" +
-                                    "\"resourceType\" : \"Composition\"," +
-                                    "\"identifier\" : {" +
-                                        "\"system\" : \"http://sys-ids.kemkes.go.id/composition/"+koneksiDB.IDSATUSEHAT()+"\"," +
-                                        "\"value\" : \""+tbObat.getValueAt(i,2).toString()+"\"" +
-                                    "}," +
-                                    "\"status\" : \"final\"," +
-                                    "\"type\" : {" +
-                                        "\"coding\" : [" +
-                                            "{" +
-                                                "\"system\" : \"http://loinc.org\"," +
-                                                "\"code\" : \"18842-5\"," +
-                                                "\"display\" : \"Discharge summary\"" +
-                                            "}" +
-                                        "]" +
-                                    "}," +
-                                    "\"category\" : [" +
-                                        "{" +
-                                            "\"coding\" : [" +
-                                                "{" +
-                                                    "\"system\" : \"http://loinc.org\"," +
-                                                    "\"code\" : \"LP173421-1\"," +
-                                                    "\"display\" : \"Report\"" +
-                                                "}" +
-                                            "]" +
-                                        "}" +
-                                    "]," +
-                                    "\"subject\" : {" +
-                                        "\"reference\" : \"Patient/"+idpasien+"\"," +
-                                        "\"display\" : \""+tbObat.getValueAt(i,4).toString()+"\"" +
-                                    "}," +
-                                    "\"encounter\" : {" +
-                                        "\"reference\" : \"Encounter/"+tbObat.getValueAt(i,6).toString()+"\","+
-                                        "\"display\" : \"Kunjungan "+tbObat.getValueAt(i,4).toString()+" pada tanggal "+tbObat.getValueAt(i,1).toString()+" dengan nomor kunjungan "+tbObat.getValueAt(i,2).toString()+"\""+
-                                    "}," +
-                                    "\"date\" : \""+tbObat.getValueAt(i,10).toString().replaceAll(" ","T")+"01+07:00\" ," +
-                                    "\"author\" : [" +
-                                        "{" +
-                                            "\"reference\" : \"Practitioner/"+idpraktisi+"\"," +
-                                            "\"display\" : \""+tbObat.getValueAt(i,8).toString()+"\"" +
-                                        "}" +
-                                    "]," +
-                                    "\"title\" : \"Modul Gizi\"," +
-                                    "\"custodian\" : {" +
-                                        "\"reference\" : \"Organization/"+koneksiDB.IDSATUSEHAT()+"\"" +
-                                    "}," +
-                                    "\"section\" : [" +
-                                        "{" +
-                                            "\"code\" : {" +
-                                                "\"coding\" : [" +
-                                                    "{" +
-                                                        "\"system\" : \"http://loinc.org\"," +
-                                                        "\"code\" : \"42344-2\"," +
-                                                        "\"display\" : \"Discharge diet (narrative)\"" +
-                                                    "}" +
-                                                "]" +
-                                            "}," +
-                                            "\"text\" : {" +
-                                                "\"status\" : \"additional\"," +
-                                                "\"div\" : \""+tbObat.getValueAt(i,7).toString()+"\"" +
-                                            "}" +
-                                        "}" +
-                                    "]" +
-                                "}";
-                        System.out.println("URL : "+link+"/Composition");
-                        System.out.println("Request JSON : "+json);
-                        requestEntity = new HttpEntity(json,headers);
-                        json=api.getRest().exchange(link+"/Composition", HttpMethod.POST, requestEntity, String.class).getBody();
-                        System.out.println("Result JSON : "+json);
-                        root = mapper.readTree(json);
-                        response = root.path("id");
-                        if(!response.asText().equals("")){
-                            if(Sequel.menyimpantf2("satu_sehat_diet","?,?,?","Diet/Gizi",3,new String[]{
-                                tbObat.getValueAt(i,2).toString(),tbObat.getValueAt(i,10).toString().substring(0,19),response.asText()
-                            })==true){
-                                tbObat.setValueAt(response.asText(),i,11);
-                                tbObat.setValueAt(false,i,0);
-                            }
-                        }
-                    }catch(Exception e){
-                        System.out.println("Notifikasi Bridging : "+e);
-                    }
+                     eklaimApi.bridgingInit(tbObat.getValueAt(i,2).toString());
                 } catch (Exception e) {
                     System.out.println("Notifikasi : "+e);
                 }
@@ -754,97 +654,6 @@ public final class EklaimBridgingTarif extends javax.swing.JDialog {
             tbObat.setValueAt(false,i,0);
         }
     }//GEN-LAST:event_ppBersihkanActionPerformed
-
-    private void BtnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUpdateActionPerformed
-        for(i=0;i<tbObat.getRowCount();i++){
-            if(tbObat.getValueAt(i,0).toString().equals("true")&&(!tbObat.getValueAt(i,5).toString().equals(""))&&(!tbObat.getValueAt(i,6).toString().equals(""))&&(!tbObat.getValueAt(i,9).toString().equals(""))&&(!tbObat.getValueAt(i,11).toString().equals(""))){
-                try {
-                    idpraktisi=cekViaSatuSehat.tampilIDParktisi(tbObat.getValueAt(i,9).toString());
-                    idpasien=cekViaSatuSehat.tampilIDPasien(tbObat.getValueAt(i,5).toString());
-                    try{
-                        headers = new HttpHeaders();
-                        headers.setContentType(MediaType.APPLICATION_JSON);
-                        headers.add("Authorization", "Bearer "+api.TokenSatuSehat());
-                        json = "{" +
-                                    "\"resourceType\" : \"Composition\"," +
-                                    "\"id\": \""+tbObat.getValueAt(i,11).toString()+"\"," +
-                                    "\"identifier\" : {" +
-                                        "\"system\" : \"http://sys-ids.kemkes.go.id/composition/"+koneksiDB.IDSATUSEHAT()+"\"," +
-                                        "\"value\" : \""+tbObat.getValueAt(i,2).toString()+"\"" +
-                                    "}," +
-                                    "\"status\" : \"final\"," +
-                                    "\"type\" : {" +
-                                        "\"coding\" : [" +
-                                            "{" +
-                                                "\"system\" : \"http://loinc.org\" ," +
-                                                "\"code\" : \"18842-5\" ," +
-                                                "\"display\" : \"Discharge summary\"" +
-                                            "}" +
-                                        "]" +
-                                    "}," +
-                                    "\"category\" : [" +
-                                        "{" +
-                                            "\"coding\" : [" +
-                                                "{" +
-                                                    "\"system\" : \"http://loinc.org\" ," +
-                                                    "\"code\" : \"LP173421-1\" ," +
-                                                    "\"display\" : \"Report\"" +
-                                                "}" +
-                                            "]" +
-                                        "}" +
-                                    "]," +
-                                    "\"subject\" : {" +
-                                        "\"reference\" : \"Patient/"+idpasien+"\" ," +
-                                        "\"display\" : \""+tbObat.getValueAt(i,4).toString()+"\"" +
-                                    "}," +
-                                    "\"encounter\" : {" +
-                                        "\"reference\" : \"Encounter/"+tbObat.getValueAt(i,6).toString()+"\","+
-                                        "\"display\" : \"Kunjungan "+tbObat.getValueAt(i,4).toString()+" pada tanggal "+tbObat.getValueAt(i,1).toString()+" dengan nomor kunjungan "+tbObat.getValueAt(i,2).toString()+"\""+
-                                    "}," +
-                                    "\"date\" : \""+tbObat.getValueAt(i,10).toString().replaceAll(" ","T")+"+07:00\" ," +
-                                    "\"author\" : [" +
-                                        "{" +
-                                            "\"reference\" : \"Practitioner/"+idpraktisi+"\" ," +
-                                            "\"display\" : \""+tbObat.getValueAt(i,8).toString()+"\"" +
-                                        "}" +
-                                    "]," +
-                                    "\"title\" : \"Modul Gizi\" ," +
-                                    "\"custodian\" : {" +
-                                        "\"reference\" : \"Organization/"+koneksiDB.IDSATUSEHAT()+"\"" +
-                                    "}," +
-                                    "\"section\" : [" +
-                                        "{" +
-                                            "\"code\" : {" +
-                                                "\"coding\" : [" +
-                                                    "{" +
-                                                        "\"system\" : \"http://loinc.org\" ," +
-                                                        "\"code\" : \"42344-2\" ," +
-                                                        "\"display\" : \"Discharge diet (narrative)\"" +
-                                                    "}" +
-                                                "]" +
-                                            "}," +
-                                            "\"text\" : {" +
-                                                "\"status\" : \"additional\" ," +
-                                                "\"div\" : \""+tbObat.getValueAt(i,7).toString().replaceAll("(\r\n|\r|\n|\n\r)","<br>").replaceAll("\t", " ")+"\"" +
-                                            "}" +
-                                        "}" +
-                                    "]" +
-                                "}";
-                        System.out.println("URL : "+link+"/Composition/"+tbObat.getValueAt(i,11).toString());
-                        System.out.println("Request JSON : "+json);
-                        requestEntity = new HttpEntity(json,headers);
-                        json=api.getRest().exchange(link+"/Composition/"+tbObat.getValueAt(i,11).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
-                        System.out.println("Result JSON : "+json);
-                        tbObat.setValueAt(false,i,0);
-                    }catch(Exception e){
-                        System.out.println("Notifikasi Bridging : "+e);
-                    }
-                } catch (Exception e) {
-                    System.out.println("Notifikasi : "+e);
-                }
-            }
-        }
-    }//GEN-LAST:event_BtnUpdateActionPerformed
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
@@ -882,7 +691,6 @@ public final class EklaimBridgingTarif extends javax.swing.JDialog {
     private widget.Button BtnKeluar;
     private widget.Button BtnKirim;
     private widget.Button BtnPrint;
-    private widget.Button BtnUpdate;
     private widget.Tanggal DTPCari1;
     private widget.Tanggal DTPCari2;
     private widget.Label LCount;
@@ -984,7 +792,6 @@ public final class EklaimBridgingTarif extends javax.swing.JDialog {
                         rs.getString("sewa_alat"),
                         rs.getString("tarif_poli_eks"),
                         rs.getString("nama_dokter"),
-                        rs.getString("nm_poli"),
                         rs.getString("kode_tarif"),
                         rs.getString("payor_id"),
                         rs.getString("payor_cd"),
