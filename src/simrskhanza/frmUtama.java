@@ -1081,7 +1081,7 @@ import ziscsr.ZISTernakPenerimaDankes;
 import ziscsr.ZISUkuranRumahPenerimaDankes;
 import fungsi.AntrianPoli;
 import modif.DlgJadwalOperasi;
-import modif.EklaimBridgingTarif;
+import modif.Eklaim.EklaimBridgingTarif;
 import permintaan.DlgBookingKuota;
 
 

@@ -53,6 +53,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.List;
 import modif.DlgGabungNota;
+import modif.Eklaim.EklaimBridgingAPI;
 import simrskhanza.DlgCariCaraBayar;
 import simrskhanza.DlgCariPeriksaLabPA;
 import simrskhanza.DlgInputResepPulang;
@@ -70,6 +71,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
     public DlgRawatInap rawatinap=new DlgRawatInap(null,false);
     public DlgDeposit deposit=new DlgDeposit(null,false);
     public DlgCariCaraBayar carabayar=new DlgCariCaraBayar(null,false);
+    private EklaimBridgingAPI eklaimApi = new EklaimBridgingAPI();
     private Connection koneksi=koneksiDB.condb();
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
@@ -7781,6 +7783,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 if (notaranap.equals("Yes")) {
                     BtnNotaActionPerformed(null);
                 }
+                eklaimApi.bridgingInit(TNoSEP.getText());
             }else{
                 JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
                 Sequel.RollBack();
