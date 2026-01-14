@@ -23,6 +23,9 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.client.RestTemplate;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
 
 public class ApiICareBPJS {        
     private String Key,Consid;
@@ -79,27 +82,55 @@ public class ApiICareBPJS {
     }
     
     public String Decrypt(String data,String utc)throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        System.out.println(data);
         mykey = ApiBPJSEnc.generateKey(Consid+Key+utc);
         data=ApiBPJSEnc.decrypt(data, mykey.getKey(), mykey.getIv());
         data=ApiBPJSLZString.decompressFromEncodedURIComponent(data);
         return data;
     }
     
+//    public RestTemplate getRest() throws NoSuchAlgorithmException, KeyManagementException {
+//        sslContext = SSLContext.getInstance("SSL");
+//        TrustManager[] trustManagers= {
+//            new X509TrustManager() {
+//                public X509Certificate[] getAcceptedIssuers() {return null;}
+//                public void checkServerTrusted(X509Certificate[] arg0, String arg1)throws CertificateException {}
+//                public void checkClientTrusted(X509Certificate[] arg0, String arg1)throws CertificateException {}
+//            }
+//        };
+//        sslContext.init(null,trustManagers , new SecureRandom());
+//        sslFactory=new SSLSocketFactory(sslContext,SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+//        scheme=new Scheme("https",443,sslFactory);
+//        factory=new HttpComponentsClientHttpRequestFactory();
+//        factory.getHttpClient().getConnectionManager().getSchemeRegistry().register(scheme);
+//        return new RestTemplate(factory);
+//    }
+    
+    
     public RestTemplate getRest() throws NoSuchAlgorithmException, KeyManagementException {
         sslContext = SSLContext.getInstance("SSL");
-        TrustManager[] trustManagers= {
+        TrustManager[] trustManagers = {
             new X509TrustManager() {
-                public X509Certificate[] getAcceptedIssuers() {return null;}
-                public void checkServerTrusted(X509Certificate[] arg0, String arg1)throws CertificateException {}
-                public void checkClientTrusted(X509Certificate[] arg0, String arg1)throws CertificateException {}
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+                public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                }
+                public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                }
             }
         };
-        sslContext.init(null,trustManagers , new SecureRandom());
-        sslFactory=new SSLSocketFactory(sslContext,SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-        scheme=new Scheme("https",443,sslFactory);
-        factory=new HttpComponentsClientHttpRequestFactory();
+        sslContext.init(null, trustManagers, new SecureRandom());
+        sslFactory = new SSLSocketFactory(sslContext,SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+        scheme = new Scheme("https", 443, sslFactory);
+        HttpParams params = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(params, 5000); // connect timeout
+        HttpConnectionParams.setSoTimeout(params, 5000);
+        factory = new HttpComponentsClientHttpRequestFactory();
+        factory.setHttpClient(
+                new org.apache.http.impl.client.DefaultHttpClient(params)
+        );
         factory.getHttpClient().getConnectionManager().getSchemeRegistry().register(scheme);
         return new RestTemplate(factory);
     }
+
 }

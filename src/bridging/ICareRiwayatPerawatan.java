@@ -46,6 +46,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
+
 /**
  *
  * @author dosen
@@ -62,6 +63,8 @@ public final class ICareRiwayatPerawatan extends javax.swing.JDialog {
     private JsonNode response;
     private final JFXPanel jfxPanel = new JFXPanel();
     private WebEngine engine;
+    private java.util.concurrent.ScheduledExecutorService timeoutScheduler;
+    private volatile boolean webLoaded = false;
  
     private final JLabel lblStatus = new JLabel();
 
@@ -284,49 +287,44 @@ public final class ICareRiwayatPerawatan extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     public void tampil() {
+        startApiTimeoutWatcher();
         try {
             headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.add("Content-Type","application/json");
-            headers.add("x-cons-id",koneksiDB.CONSIDAPIICARE());
-            utc=String.valueOf(api.GetUTCdatetimeAsString());
-            headers.add("x-timestamp",utc);
-            headers.add("x-signature",api.getHmac(utc));
-            headers.add("user_key",koneksiDB.USERKEYAPIICARE());
-            //System.out.println("x-signature:"+api.getHmac(utc));
-            //System.out.println("x-timestamp:"+utc);
-            //System.out.println("x-cons-id:"+koneksiDB.CONSIDAPIICARE());
-            //System.out.println("user_key:"+koneksiDB.USERKEYAPIICARE());
-            requestJson="{"+
-                            "\"param\": \""+NoKartu.getText().trim()+"\","+
-                            "\"kodedokter\": "+KdDPJPLayanan.getText().trim()+""+
-                        "}";
-            System.out.println("JSON : "+requestJson+"\n");
-	    requestEntity = new HttpEntity(requestJson,headers);
-            requestJson= mapper.writeValueAsString(api.getRest().exchange(link+"/validate", HttpMethod.POST, requestEntity,Object.class).getBody());
-            System.out.println("URL:"+link+"/validate");
-            System.out.println("JSON : "+requestJson);
+            headers.add("Content-Type", "application/json");
+            headers.add("x-cons-id", koneksiDB.CONSIDAPIICARE());
+            utc = String.valueOf(api.GetUTCdatetimeAsString());
+            headers.add("x-timestamp", utc);
+            headers.add("x-signature", api.getHmac(utc));
+            headers.add("user_key", koneksiDB.USERKEYAPIICARE());
+            requestJson = "{"
+                    + "\"param\": \"" + NoKartu.getText().trim() + "\","
+                    + "\"kodedokter\": " + KdDPJPLayanan.getText().trim()
+                    + "}";
+            requestEntity = new HttpEntity(requestJson, headers);
+            requestJson = mapper.writeValueAsString(
+                    api.getRest()
+                            .exchange(link + "/validate", HttpMethod.POST, requestEntity, Object.class)
+                            .getBody()
+            );
             root = mapper.readTree(requestJson);
             nameNode = root.path("metaData");
-            if(nameNode.path("code").asText().equals("200")){
-                response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc));
-                String url = response.path("url").asText();
-                System.out.println("Response : "+response.path("url"));
-                try {
-                    loadURL(response.path("url").asText());
-                } catch (Exception ex) {
-                    System.out.println("Notifikasi : "+ex);
-                }
-            }else {
-                JOptionPane.showMessageDialog(null,"Maaf, ICARE hanya bisa diakses di hari terbit SEP");                
-            }   
-        } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex.getMessage());
-            if(ex.toString().contains("UnknownHostException")){
-                JOptionPane.showMessageDialog(rootPane,"Koneksi ke server BPJS terputus...!");
+            if (nameNode.path("code").asText().equals("200")) {
+                stopApiTimeoutWatcher(); // API berhasil
+                response = mapper.readTree(
+                        api.Decrypt(root.path("response").asText(), utc)
+                );
+                loadURL(response.path("url").asText());
+            } else {
+                dispose();
             }
+
+        } catch (Exception ex) {
+            System.out.println("ERROR API ICARE : " + ex.getMessage());
+            dispose(); // 🔥 CLOSE LANGSUNG JIKA ERROR / TIMEOUT
         }
-    } 
+    }
+
     
     public void setPasien(String param,String kodedokter){
         NoKartu.setText(param);
@@ -364,7 +362,6 @@ public final class ICareRiwayatPerawatan extends javax.swing.JDialog {
                     });
                 });
                 
-                
                 engine.getLoadWorker().workDoneProperty().addListener((ObservableValue<? extends Number> observableValue, Number oldValue, final Number newValue) -> {
                     SwingUtilities.invokeLater(() -> {
                         progressBar.setValue(newValue.intValue());
@@ -392,41 +389,55 @@ public final class ICareRiwayatPerawatan extends javax.swing.JDialog {
                     });
                 });
                 
-                engine.getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
+                 engine.getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
                     @Override
                     public void changed(ObservableValue ov, State oldState, State newState) {
                         if (newState == State.SUCCEEDED) {
-                            try {
-                                System.out.println("URL : "+engine.getLocation());
-                            } catch (Exception ex) {
-                                System.out.println("Notifikasi : "+ex);
-                            }
-                        } 
+                            webLoaded = true;
+                        }
                     }
                 });
-                
+                 
                 jfxPanel.setScene(new Scene(view));
             }
         });
     }
  
-    public void loadURL(String url) {  
-        try {
-            createScene();
-        } catch (Exception e) {
-        }
-        
+    public void loadURL(String url) {
+        webLoaded = false;
+        createScene();
         Platform.runLater(() -> {
-            try {
-                engine.load(url);
-            }catch (Exception exception) {
-                engine.load(url);
-            }
-        });        
-    }    
+            engine.load(url);
+        });
+        java.util.concurrent.Executors.newSingleThreadScheduledExecutor()
+                .schedule(() -> {
+                    if (!webLoaded) {
+                        SwingUtilities.invokeLater(() -> {
+                            dispose();
+                        });
+                    }
+                }, 5, java.util.concurrent.TimeUnit.SECONDS);
+    }
     
     public void CloseScane(){
         Platform.setImplicitExit(false);
+    }
+    
+    private void startApiTimeoutWatcher() {
+        timeoutScheduler = java.util.concurrent.Executors.newSingleThreadScheduledExecutor();
+        timeoutScheduler.schedule(() -> {
+            SwingUtilities.invokeLater(() -> {
+                dispose();
+            });
+            timeoutScheduler.shutdown();
+
+        }, 5, java.util.concurrent.TimeUnit.SECONDS);
+    }
+
+    private void stopApiTimeoutWatcher() {
+        if (timeoutScheduler != null && !timeoutScheduler.isShutdown()) {
+            timeoutScheduler.shutdownNow();
+        }
     }
  
 }
