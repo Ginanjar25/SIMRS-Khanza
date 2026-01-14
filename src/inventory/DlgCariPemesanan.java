@@ -19,6 +19,9 @@ import fungsi.akses;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
@@ -355,6 +358,7 @@ public class DlgCariPemesanan extends javax.swing.JDialog {
         ppHapus = new javax.swing.JMenuItem();
         ppBayar = new javax.swing.JMenuItem();
         ppUbah = new javax.swing.JMenuItem();
+        ppReqHapus = new javax.swing.JMenuItem();
         buttonGroup1 = new javax.swing.ButtonGroup();
         internalFrame1 = new widget.InternalFrame();
         jPanel1 = new javax.swing.JPanel();
@@ -466,6 +470,22 @@ public class DlgCariPemesanan extends javax.swing.JDialog {
             }
         });
         jPopupMenu1.add(ppUbah);
+
+        ppReqHapus.setBackground(new java.awt.Color(255, 255, 254));
+        ppReqHapus.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppReqHapus.setForeground(new java.awt.Color(50, 50, 50));
+        ppReqHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppReqHapus.setText("Req Hapus Penerimaan Obat");
+        ppReqHapus.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppReqHapus.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppReqHapus.setName("ppReqHapus"); // NOI18N
+        ppReqHapus.setPreferredSize(new java.awt.Dimension(195, 26));
+        ppReqHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppReqHapusActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(ppReqHapus);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -1523,6 +1543,19 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         }
     }//GEN-LAST:event_TabRawatMouseClicked
 
+    private void ppReqHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppReqHapusActionPerformed
+       String text = "💊 HAPUS PENERIMAAN OBAT\n"
+        + "No. Faktur : "+tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()+"\n"
+        + "Suplier : "+tbDokter.getValueAt(tbDokter.getSelectedRow(),1).toString()+"\n"
+        + "Alasan : ";
+
+        // Copy ke clipboard
+        StringSelection selection = new StringSelection(text);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, null);
+        javax.swing.JOptionPane.showMessageDialog(this, "Permintaan hapus retur berhasil disalin ke clipboard!");
+    }//GEN-LAST:event_ppReqHapusActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1602,6 +1635,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private widget.panelisi panelisi4;
     private javax.swing.JMenuItem ppBayar;
     private javax.swing.JMenuItem ppHapus;
+    private javax.swing.JMenuItem ppReqHapus;
     private javax.swing.JMenuItem ppUbah;
     private widget.ScrollPane scrollPane1;
     private widget.Table tbDokter;
