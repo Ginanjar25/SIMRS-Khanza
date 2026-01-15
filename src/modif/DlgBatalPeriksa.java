@@ -743,7 +743,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                             if (Sequel.cariRegistrasi(rs.getString("no_rawat")) > 0) {
                                 JOptionPane.showMessageDialog(rootPane, "Data billing sudah terverifikasi, data tidak boleh dihapus.\nSilahkan hubungi bagian kasir/keuangan ..!!");
                             } else {
-                                if (Sequel.queryutf("delete from rawat_jl_dr where no_rawat='" + rs.getString("no_rawat")
+                                if (Sequel.queryutf("delete from rawat_jl_pr where no_rawat='" + rs.getString("no_rawat")
                                         + "' and kd_jenis_prw='" + rs.getString("kd_jenis_prw")
                                         + "' and nip='" + rs.getString("nip")
                                         + "' and tgl_perawatan='" + rs.getString("tgl_perawatan")
