@@ -7780,10 +7780,6 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 if (notaranap.equals("Yes")) {
                     BtnNotaActionPerformed(null);
                 }
-                if (!TNoSEP.getText().equals("")) {
-//                        Sequel.mengedit("bridging_eklaim", " no_sep='"+TNoSEP.getText()+"'", " status='1'");
-                    eklaimApi.bridgingInit(TNoSEP.getText());
-                }
             }else{
                 JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
                 Sequel.RollBack();
@@ -7794,6 +7790,10 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             if(sukses==true){
                 if(notaranap.equals("Yes")){
                     this.dispose();
+                }
+                if (!TNoSEP.getText().equals("")) {
+//                        Sequel.mengedit("bridging_eklaim", " no_sep='"+TNoSEP.getText()+"'", " status='1'");
+                    eklaimApi.bridgingInit(TNoSEP.getText());
                 }
             }
         }catch (Exception ex) {

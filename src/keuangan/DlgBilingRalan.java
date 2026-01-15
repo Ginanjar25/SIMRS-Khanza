@@ -6278,10 +6278,6 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                      if(notaralan.equals("Yes")){
                         BtnNotaActionPerformed(null);
                     }
-                    if (!TNoSEP.getText().equals("")) {
-//                        Sequel.mengedit("bridging_eklaim", " no_sep='"+TNoSEP.getText()+"'", " status='1'");
-                        eklaimApi.bridgingInit(TNoSEP.getText());
-                    }
                 }else{
                     JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
                     Sequel.RollBack();
@@ -6291,6 +6287,10 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 if(sukses==true){
                     if(notaralan.equals("Yes")){
                         this.dispose();
+                    }
+                    if (!TNoSEP.getText().equals("")) {
+//                        Sequel.mengedit("bridging_eklaim", " no_sep='"+TNoSEP.getText()+"'", " status='1'");
+                        eklaimApi.bridgingInit(TNoSEP.getText());
                     }
                 }
             }catch (Exception ex) {
