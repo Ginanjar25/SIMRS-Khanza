@@ -856,7 +856,7 @@ public class EklaimBridgingAPI {
                 );
             }
         } catch (Exception e) {
-            System.out.println("Gagal simpan IDRG ke DB: " + e.getMessage());
+            System.out.println("Gagal simpan Data Klaim ke DB: " + e.getMessage());
         }
     }
 
