@@ -74,9 +74,9 @@ public class EklaimBridgingAPI {
 
     public EklaimBridgingAPI() {
         try {
-            key = "8e96e280a56691be888656b7e945023c2f50ec5a09b38b0b96e7acf22d2f5582";
-            link = "http://192.168.106.100/E-Klaim/ws.php";
-            kelasRS = "CS";
+            key = SECRETKEYAPIECLAIM();
+            link = URLAPIEKLAIM();
+            kelasRS = KELASRSEKLAIM();
             coder_nik = CODERNIK();
             bridging_eklaim = BRIDGINGEKLAIM();
         } catch (Exception e) {
@@ -935,8 +935,38 @@ public class EklaimBridgingAPI {
         }
         return var;
     }
+    
+     private static String SECRETKEYAPIECLAIM() {
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = EnkripsiAES.decrypt(prop.getProperty("SECRETKEYAPIECLAIM"));
+        } catch (Exception e) {
+            var = "";
+        }
+        return var;
+    }
      
-     private static String BRIDGINGEKLAIM() {
+    private static String KELASRSEKLAIM() {
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = prop.getProperty("KELASRSEKLAIM");
+        } catch (Exception e) {
+            var = "CS";
+        }
+        return var;
+    }
+    
+    private static String URLAPIEKLAIM() {
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = prop.getProperty("URLAPIEKLAIM");
+        } catch (Exception e) {
+            var = "";
+        }
+        return var;
+    }
+     
+    private static String BRIDGINGEKLAIM() {
         try {
             prop.loadFromXML(new FileInputStream("setting/database.xml"));
             var = prop.getProperty("BRIDGINGEKLAIM");
