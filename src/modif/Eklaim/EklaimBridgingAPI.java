@@ -342,7 +342,6 @@ public class EklaimBridgingAPI {
 
 
             } catch (Exception e) {
-
                 System.err.println("Gagal update klaim SEP " + no_sep);
                 e.printStackTrace();
             }
@@ -745,115 +744,119 @@ public class EklaimBridgingAPI {
             String cob_cd,
             String coder_nik
     ) {
-        String now = new java.text.SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss", new java.util.Locale("id", "ID")
-        ).format(new java.util.Date());
+        try {
+            String now = new java.text.SimpleDateFormat(
+                    "yyyy-MM-dd HH:mm:ss", new java.util.Locale("id", "ID")
+            ).format(new java.util.Date());
 
-        boolean exists = Sequel.cariInteger(
-                "select count(*) from bridging_eklaim where no_sep=?",
-                nomor_sep
-        ) > 0;
+            boolean exists = Sequel.cariInteger(
+                    "select count(*) from bridging_eklaim where no_sep=?",
+                    nomor_sep
+            ) > 0;
 
-       boolean closed_billing = Sequel.cariInteger("select SUM(billing.totalbiaya) AS total_biaya from billing where billing.no_rawat=?", no_rawat) > 25000;
-                
-        if (!exists) {
-            // ================= INSERT =================
-            Sequel.menyimpantf(
-                    "bridging_eklaim",
-                    "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?",
-                    "INSERT BRIDGING EKLAIM",
-                    49,
-                    new String[]{
-                        nomor_sep, nomor_kartu, tgl_masuk, tgl_pulang,
-                        cara_masuk, jenis_rawat, kelas_rawat,
-                        adl_sub_acute, adl_chronic, icu_indikator, icu_los, ventilator_hour,
-                        upgrade_class_ind, upgrade_class_class, upgrade_class_los, upgrade_class_payor,
-                        add_payment_pct, birth_weight,
-                        sistole, diastole, discharge_status,
-                        // tarif
-                        String.valueOf(tarif.prosedurNonBedah),
-                        String.valueOf(tarif.prosedurBedah),
-                        String.valueOf(tarif.konsultasi),
-                        String.valueOf(tarif.tenagaAhli),
-                        String.valueOf(tarif.keperawatan),
-                        "0",
-                        String.valueOf(tarif.radiologi),
-                        String.valueOf(tarif.laboratorium),
-                        "0",
-                        String.valueOf(tarif.rehabilitasi),
-                        String.valueOf(tarif.kamar),
-                        "0",
-                        String.valueOf(tarif.obat),
-                        String.valueOf(tarif.obatKronis),
-                        String.valueOf(tarif.obatKemoterapi),
-                        "0",
-                        String.valueOf(tarif.bmhp),
-                        String.valueOf(tarif.sewaAlat),
-                        tarif_poli_eks,
-                        nama_dokter,
-                        kode_tarif,
-                        payor_id,
-                        payor_cd,
-                        cob_cd,
-                        coder_nik,
-                        "1", // status
-                        now, // created_at
-                        now // updated_at
-                    }
-            );
+            boolean closed_billing = Sequel.cariInteger("select SUM(billing.totalbiaya) AS total_biaya from billing where billing.no_rawat=?", no_rawat) > 25000;
 
-        } else {
+            if (!exists) {
+                // ================= INSERT =================
+                Sequel.menyimpantf(
+                        "bridging_eklaim",
+                        "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?",
+                        "INSERT BRIDGING EKLAIM",
+                        49,
+                        new String[]{
+                            nomor_sep, nomor_kartu, tgl_masuk, tgl_pulang,
+                            cara_masuk, jenis_rawat, kelas_rawat,
+                            adl_sub_acute, adl_chronic, icu_indikator, icu_los, ventilator_hour,
+                            upgrade_class_ind, upgrade_class_class, upgrade_class_los, upgrade_class_payor,
+                            add_payment_pct, birth_weight,
+                            sistole, diastole, discharge_status,
+                            // tarif
+                            String.valueOf(tarif.prosedurNonBedah),
+                            String.valueOf(tarif.prosedurBedah),
+                            String.valueOf(tarif.konsultasi),
+                            String.valueOf(tarif.tenagaAhli),
+                            String.valueOf(tarif.keperawatan),
+                            "0",
+                            String.valueOf(tarif.radiologi),
+                            String.valueOf(tarif.laboratorium),
+                            "0",
+                            String.valueOf(tarif.rehabilitasi),
+                            String.valueOf(tarif.kamar),
+                            "0",
+                            String.valueOf(tarif.obat),
+                            String.valueOf(tarif.obatKronis),
+                            String.valueOf(tarif.obatKemoterapi),
+                            "0",
+                            String.valueOf(tarif.bmhp),
+                            String.valueOf(tarif.sewaAlat),
+                            tarif_poli_eks,
+                            nama_dokter,
+                            kode_tarif,
+                            payor_id,
+                            payor_cd,
+                            cob_cd,
+                            coder_nik,
+                            "1", // status
+                            now, // created_at
+                            now // updated_at
+                        }
+                );
 
-            // ================= UPDATE =================
-            Sequel.mengedittf(
-                    "bridging_eklaim","no_sep=?",
-                    "no_kartu=?, tgl_masuk=?, tgl_pulang=?, cara_masuk=?, jenis_rawat=?, kelas_rawat=?, "
-                    + "adl_sub_acute=?, adl_chronic=?, icu_indikator=?, icu_los=?, ventilator_hour=?, "
-                    + "upgrade_class_ind=?, upgrade_class_class=?, upgrade_class_los=?, upgrade_class_payor=?, "
-                    + "add_payment_pct=?, birth_weight=?, sistole=?, diastole=?, discharge_status=?, "
-                    + "prosedur_non_bedah=?, prosedur_bedah=?, konsultasi=?, tenaga_ahli=?, keperawatan=?, "
-                    + "penunjang=?, radiologi=?, laboratorium=?, pelayanan_darah=?, rehabilitasi=?, "
-                    + "kamar=?, rawat_intensif=?, obat=?, obat_kronis=?, obat_kemoterapi=?, "
-                    + "alkes=?, bmhp=?, sewa_alat=?, tarif_poli_eks=?, nama_dokter=?, "
-                    + "kode_tarif=?, payor_id=?, payor_cd=?, cob_cd=?, coder_nik=?, status=?, updated_at=?",
-                    48,
-                    new String[]{
-                        nomor_kartu, tgl_masuk, tgl_pulang,
-                        cara_masuk, jenis_rawat, kelas_rawat,
-                        adl_sub_acute, adl_chronic, icu_indikator, icu_los, ventilator_hour,
-                        upgrade_class_ind, upgrade_class_class, upgrade_class_los, upgrade_class_payor,
-                        add_payment_pct, birth_weight,
-                        sistole, diastole, discharge_status,
-                        String.valueOf(tarif.prosedurNonBedah),
-                        String.valueOf(tarif.prosedurBedah),
-                        String.valueOf(tarif.konsultasi),
-                        String.valueOf(tarif.tenagaAhli),
-                        String.valueOf(tarif.keperawatan),
-                        "0",
-                        String.valueOf(tarif.radiologi),
-                        String.valueOf(tarif.laboratorium),
-                        "0",
-                        String.valueOf(tarif.rehabilitasi),
-                        String.valueOf(tarif.kamar),
-                        "0",
-                        String.valueOf(tarif.obat),
-                        String.valueOf(tarif.obatKronis),
-                        String.valueOf(tarif.obatKemoterapi),
-                        "0",
-                        String.valueOf(tarif.bmhp),
-                        String.valueOf(tarif.sewaAlat),
-                        tarif_poli_eks,
-                        nama_dokter,
-                        kode_tarif,
-                        payor_id,
-                        payor_cd,
-                        cob_cd,
-                        coder_nik,
-                        closed_billing ? "2" : "1",
-                        now,
-                        nomor_sep
-                    }
-            );
+            } else {
+
+                // ================= UPDATE =================
+                Sequel.mengedittf(
+                        "bridging_eklaim", "no_sep=?",
+                        "no_kartu=?, tgl_masuk=?, tgl_pulang=?, cara_masuk=?, jenis_rawat=?, kelas_rawat=?, "
+                        + "adl_sub_acute=?, adl_chronic=?, icu_indikator=?, icu_los=?, ventilator_hour=?, "
+                        + "upgrade_class_ind=?, upgrade_class_class=?, upgrade_class_los=?, upgrade_class_payor=?, "
+                        + "add_payment_pct=?, birth_weight=?, sistole=?, diastole=?, discharge_status=?, "
+                        + "prosedur_non_bedah=?, prosedur_bedah=?, konsultasi=?, tenaga_ahli=?, keperawatan=?, "
+                        + "penunjang=?, radiologi=?, laboratorium=?, pelayanan_darah=?, rehabilitasi=?, "
+                        + "kamar=?, rawat_intensif=?, obat=?, obat_kronis=?, obat_kemoterapi=?, "
+                        + "alkes=?, bmhp=?, sewa_alat=?, tarif_poli_eks=?, nama_dokter=?, "
+                        + "kode_tarif=?, payor_id=?, payor_cd=?, cob_cd=?, coder_nik=?, status=?, updated_at=?",
+                        48,
+                        new String[]{
+                            nomor_kartu, tgl_masuk, tgl_pulang,
+                            cara_masuk, jenis_rawat, kelas_rawat,
+                            adl_sub_acute, adl_chronic, icu_indikator, icu_los, ventilator_hour,
+                            upgrade_class_ind, upgrade_class_class, upgrade_class_los, upgrade_class_payor,
+                            add_payment_pct, birth_weight,
+                            sistole, diastole, discharge_status,
+                            String.valueOf(tarif.prosedurNonBedah),
+                            String.valueOf(tarif.prosedurBedah),
+                            String.valueOf(tarif.konsultasi),
+                            String.valueOf(tarif.tenagaAhli),
+                            String.valueOf(tarif.keperawatan),
+                            "0",
+                            String.valueOf(tarif.radiologi),
+                            String.valueOf(tarif.laboratorium),
+                            "0",
+                            String.valueOf(tarif.rehabilitasi),
+                            String.valueOf(tarif.kamar),
+                            "0",
+                            String.valueOf(tarif.obat),
+                            String.valueOf(tarif.obatKronis),
+                            String.valueOf(tarif.obatKemoterapi),
+                            "0",
+                            String.valueOf(tarif.bmhp),
+                            String.valueOf(tarif.sewaAlat),
+                            tarif_poli_eks,
+                            nama_dokter,
+                            kode_tarif,
+                            payor_id,
+                            payor_cd,
+                            cob_cd,
+                            coder_nik,
+                            closed_billing ? "2" : "1",
+                            now,
+                            nomor_sep
+                        }
+                );
+            }
+        } catch (Exception e) {
+            System.out.println("Gagal simpan IDRG ke DB: " + e.getMessage());
         }
     }
 
