@@ -7774,16 +7774,16 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 if (!norawatbayi.equals("")) {
                     Sequel.mengedit("reg_periksa", "no_rawat='" + norawatbayi + "'", "status_bayar='Sudah Bayar'");
                 }
-                if (!TNoSEP.getText().equals("")) {
-                    Sequel.mengedit("bridging_eklaim", " no_sep='" + TNoSEP.getText() + "'", " status='1'");
-                }
                 Sequel.meghapus("temporary_tambahan_potongan", "no_rawat", TNoRw.getText());
                 Sequel.Commit();
                 JOptionPane.showMessageDialog(null, "Proses simpan selesai...!");
                 if (notaranap.equals("Yes")) {
                     BtnNotaActionPerformed(null);
                 }
-                eklaimApi.bridgingInit(TNoSEP.getText());
+                if (!TNoSEP.getText().equals("")) {
+//                        Sequel.mengedit("bridging_eklaim", " no_sep='"+TNoSEP.getText()+"'", " status='1'");
+                    eklaimApi.bridgingInit(TNoSEP.getText());
+                }
             }else{
                 JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
                 Sequel.RollBack();

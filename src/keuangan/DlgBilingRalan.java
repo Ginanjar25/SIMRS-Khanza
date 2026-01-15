@@ -6273,15 +6273,15 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 if(sukses==true){
                     Valid.editTable(tabModeRwJlDr,"reg_periksa","no_rawat",TNoRw,"status_bayar='Sudah Bayar'");
                     Sequel.meghapus("temporary_tambahan_potongan","no_rawat",TNoRw.getText());
-                    if(!TNoSEP.getText().equals("")){
-                        Sequel.mengedit("bridging_eklaim", " no_sep='"+TNoSEP.getText()+"'", " status='1'");
-                    }
                     Sequel.Commit();
                     JOptionPane.showMessageDialog(null,"Proses simpan selesai...!");   
                      if(notaralan.equals("Yes")){
                         BtnNotaActionPerformed(null);
                     }
-                    eklaimApi.bridgingInit(TNoSEP.getText());
+                    if (!TNoSEP.getText().equals("")) {
+//                        Sequel.mengedit("bridging_eklaim", " no_sep='"+TNoSEP.getText()+"'", " status='1'");
+                        eklaimApi.bridgingInit(TNoSEP.getText());
+                    }
                 }else{
                     JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");
                     Sequel.RollBack();
