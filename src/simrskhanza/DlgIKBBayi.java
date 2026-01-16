@@ -4734,14 +4734,14 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         /* =====================================================
      * HANYA cek nomor jika tahun > tahun mulai reset
      * ===================================================== */
-        if (currentYear > TAHUN_MULAI_RESET) {
+        if (currentYear >= TAHUN_MULAI_RESET) {
 
             String no_surat = Sequel.cariIsi(
-                    "SELECT pasien_bayi.no_skl "
-                    + "FROM pasien_bayi "
-                    + "WHERE pasien_bayi.no_skl LIKE '%/" + currentYear + "' "
-                    + "ORDER BY CAST(SUBSTRING_INDEX(pasien_bayi.no_skl,'/',1) AS UNSIGNED) DESC "
-                    + "LIMIT 1"
+                "SELECT pasien_bayi.no_skl "
+              + "FROM pasien_bayi "
+              + "WHERE pasien_bayi.no_skl REGEXP '^[0-9]+/RM-SKL/[IVX]+/" + currentYear + "$' "
+              + "ORDER BY CAST(SUBSTRING_INDEX(pasien_bayi.no_skl,'/',1) AS UNSIGNED) DESC "
+              + "LIMIT 1"
             );
 
             if (no_surat != null && !no_surat.isEmpty()) {
