@@ -404,7 +404,9 @@ public class DlgBookingRegistrasi extends javax.swing.JDialog {
                     if(pasien.penjab.getTable().getSelectedRow()!= -1){
                         kdpnj.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),1).toString());
                         nmpnj.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),2).toString());
-                        isNomer();
+                        if (URUTNOREG.equals("dokter + poli + penjab")) {
+                            isNomer();
+                        }
                     }    
                     kdpnj.requestFocus();
                 }

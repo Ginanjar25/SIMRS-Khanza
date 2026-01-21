@@ -901,15 +901,20 @@ public final class DlgReg extends javax.swing.JDialog {
             @Override
             public void windowClosed(WindowEvent e) {
                 if(akses.getform().equals("DlgReg")){
+                    
                     if(pasien.penjab.getTable().getSelectedRow()!= -1){
                         if (pasien.penjab.getPilihan().getText().equals("1")) {
                             kdpnj.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(), 1).toString());
                             nmpnj.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(), 2).toString());
-                            isNumber();
+                            if(URUTNOREG.equals("dokter + poli + penjab")){
+                                 isNumber();
+                            }
                         } else {
                             kdpnj2.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(), 1).toString());
                             nmpnj2.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(), 2).toString());
-                            isNumber();
+                            if(URUTNOREG.equals("dokter + poli + penjab")){
+                                 isNumber();
+                            }
                         }               
                     }    
                     kdpnj.requestFocus();

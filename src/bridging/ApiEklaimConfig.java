@@ -146,7 +146,6 @@ public class ApiEklaimConfig {
         System.arraycopy(encrypted, 0, encryptedMessage, signature.length + iv.length, encrypted.length);
 
         String HasilEnk = Base64.getEncoder().encodeToString(encryptedMessage);
-        System.out.println(HasilEnk);
         return HasilEnk;
     }
 

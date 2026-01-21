@@ -240,7 +240,7 @@ public class EklaimBridgingAPI {
             }
 
             birth_weight = Sequel.cariIsi(
-                    "select berat_badan from pasien_bayi where no_rawat=?",
+                    "select pb.berat_badan from reg_periksa rp inner join pasien_bayi pb on pb.no_rkm_medis = rp.no_rkm_medis where rp.no_rawat=?",
                     no_rawat
             );
 
@@ -269,7 +269,7 @@ public class EklaimBridgingAPI {
                         + "\"tgl_pulang\":\"" + tgl_kirim + "\","
                         + "\"cara_masuk\":\"" + cara_masuk + "\","
                         + "\"jenis_rawat\":\"" + jenis_rawat + "\","
-                        + "\"kelas_rawat\":\"" + kelas_rawat + "\","
+                        + "\"kelas_rawat\":\"" + kls_rawat + "\","
                         + "\"adl_sub_acute\":\"" + adl_sub_acute + "\","
                         + "\"adl_chronic\":\"" + adl_chronic + "\","
                         + "\"icu_indikator\":\"" + icu_indikator + "\","
@@ -304,6 +304,7 @@ public class EklaimBridgingAPI {
                         + "\"sewa_alat\":\"" + tarif.sewaAlat + "\""
                         + "},"
                         + "\"payor_id\":\"0\","
+                        + "\"tarif_poli_eks\":\"0\","
                         + "\"nama_dokter\":\"" + dokter + "\","
                         + "\"kode_tarif\":\"" + kelasRS + "\","
                         + "\"payor_id\":\"3\","
