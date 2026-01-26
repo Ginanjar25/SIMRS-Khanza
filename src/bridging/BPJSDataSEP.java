@@ -3504,6 +3504,8 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
             Valid.textKosong(btnKecamatan,"Kecamatan");
         }else if (KdDPJP.getText().trim().equals("")||NmDPJP.getText().trim().equals("")) {
             Valid.textKosong(KdDPJP, "DPJP");
+        }else if(Sequel.cariInteger("select count(no_sep) from bridging_sep where no_rawat = ?", TNoRw.getText()) > 0){
+             JOptionPane.showMessageDialog(null, "No Rawat tersebut sudah diterbitkan SEP, silahkan cek kambali data");
         }else{
             //Mulai pengecakan tgl SKDP sama dengan tgl SEP
             if (JenisPelayanan.getSelectedIndex() == 1 && !NoSKDP.getText().equals("")) {
