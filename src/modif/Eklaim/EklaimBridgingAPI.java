@@ -9,9 +9,11 @@ import bridging.ApiEklaimConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import fungsi.akses;
 import fungsi.koneksiDB;
 import fungsi.sekuel;
 import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,7 +37,7 @@ import org.springframework.http.MediaType;
 public class EklaimBridgingAPI {
     private Connection koneksi = koneksiDB.condb();
     private sekuel Sequel = new sekuel();
-    private String json = "", reqjson = "", request = "", link = "", nol_jam = "", nol_menit = "", nol_detik = "", jam = "", menit = "", detik = "", iddokter = "", idpasien = "", signa1 = "1", signa2 = "1", evaluasi = "", key = "", kelasRS = "", coder_nik = "";
+    private String json = "", reqjson = "", request = "", link = "", nol_jam = "", nol_menit = "", nol_detik = "", jam = "", menit = "", detik = "", iddokter = "", idpasien = "", signa1 = "1", signa2 = "1", evaluasi = "", key = "", kelasRS = "", coder_nik = "",lastResponse = "";
     private ApiEklaimConfig api = new ApiEklaimConfig();
     private HttpHeaders headers;
     private HttpEntity requestEntity;
@@ -53,6 +55,7 @@ public class EklaimBridgingAPI {
     private Boolean result = false, initklaim=false;
     public static final ObjectMapper mapper = new ObjectMapper();
     private String bridging_eklaim = "";
+    private long startTime,endTime,duration;
     
     
     public static class TarifRs {
@@ -319,7 +322,10 @@ public class EklaimBridgingAPI {
                 // Enkripsi JSON sebelum mengirimkan
                 String encryptedJson = api.Encrypt(request, api.getKey());
                 requestEntity = new HttpEntity<>(encryptedJson, headers);
+                startTime = System.currentTimeMillis();
                 String responseJson = api.getRest().exchange(link, HttpMethod.POST, requestEntity, String.class).getBody();
+                endTime = System.currentTimeMillis();
+                duration = endTime - startTime;
                 String decryptedJson = api.Decrypt(responseJson, api.getKey());
 //                System.out.println(decryptedJson);
                 root = mapper.readTree(decryptedJson);
@@ -341,9 +347,13 @@ public class EklaimBridgingAPI {
                         upgrade_class_ind, upgrade_class_class, upgrade_class_los, "", add_payment_pct, birth_weight, sistole, diastole, discharge_status, tarif, "0", dokter,
                         kelasRS, "3", "JKN", "#", coder_nik);
 
+                 lastResponse = metadata + decryptedJson + ";{Response Time: " + duration + " ms}";
+                 Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{ link, request , lastResponse,"RSPW" + akses.getkode()});
 
             } catch (Exception e) {
                 System.err.println("Gagal update klaim SEP " + no_sep);
+                lastResponse = "{Request Timeout};{Response Time: " + duration + " ms}";
+                Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{ link,request,lastResponse,"RSPW" + akses.getkode()});
                 e.printStackTrace();
             }
 
@@ -406,8 +416,6 @@ public class EklaimBridgingAPI {
                 if (!metadata.path("code").asText().equals("200")) {
                     return false;
                 }
-            } else {
-                System.out.println("setIDRG diagnosa skip (kosong)");
             }
 
             // ================= SET PROSEDUR =================
@@ -444,8 +452,6 @@ public class EklaimBridgingAPI {
                 }
                 
                 saveIDRGToDB(nomor_sep, diagnosa, prosedur);
-            } else {
-                System.out.println("setIDRG prosedur skip (kosong)");
             }
 
             // ===== JIKA SAMPAI SINI, SEMUA AMAN =====
