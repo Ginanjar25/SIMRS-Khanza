@@ -42,7 +42,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 /**
  *
  * @author dosen
@@ -66,6 +67,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
     private String link="",requestJson="",URL="",user="",URUTNOREG="",utc="",JADIKANBOOKINGSURATKONTROLAPIBPJS="no",kodedokter="",kodepoli="",noreg="";
     private ApiBPJS api=new ApiBPJS();
     private boolean status=false;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     /** Creates new form DlgPemberianInfus
      * @param parent
@@ -568,7 +570,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         R1.setPreferredSize(new java.awt.Dimension(115, 23));
         panelCari.add(R1);
 
-        DTPTanggalSurat1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "13-06-2024" }));
+        DTPTanggalSurat1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-02-2026" }));
         DTPTanggalSurat1.setDisplayFormat("dd-MM-yyyy");
         DTPTanggalSurat1.setName("DTPTanggalSurat1"); // NOI18N
         DTPTanggalSurat1.setOpaque(false);
@@ -591,7 +593,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         jLabel22.setPreferredSize(new java.awt.Dimension(25, 23));
         panelCari.add(jLabel22);
 
-        DTPTanggalSurat2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "13-06-2024" }));
+        DTPTanggalSurat2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-02-2026" }));
         DTPTanggalSurat2.setDisplayFormat("dd-MM-yyyy");
         DTPTanggalSurat2.setName("DTPTanggalSurat2"); // NOI18N
         DTPTanggalSurat2.setOpaque(false);
@@ -617,7 +619,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         R2.setPreferredSize(new java.awt.Dimension(120, 23));
         panelCari.add(R2);
 
-        DTPTanggalKontrol1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "13-06-2024" }));
+        DTPTanggalKontrol1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-02-2026" }));
         DTPTanggalKontrol1.setDisplayFormat("dd-MM-yyyy");
         DTPTanggalKontrol1.setName("DTPTanggalKontrol1"); // NOI18N
         DTPTanggalKontrol1.setOpaque(false);
@@ -640,7 +642,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         jLabel25.setPreferredSize(new java.awt.Dimension(25, 23));
         panelCari.add(jLabel25);
 
-        DTPTanggalKontrol2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "13-06-2024" }));
+        DTPTanggalKontrol2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-02-2026" }));
         DTPTanggalKontrol2.setDisplayFormat("dd-MM-yyyy");
         DTPTanggalKontrol2.setName("DTPTanggalKontrol2"); // NOI18N
         DTPTanggalKontrol2.setOpaque(false);
@@ -719,7 +721,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         NoSEP.setBounds(286, 10, 150, 23);
 
         TanggalSurat.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "13-06-2024" }));
+        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-02-2026" }));
         TanggalSurat.setDisplayFormat("dd-MM-yyyy");
         TanggalSurat.setName("TanggalSurat"); // NOI18N
         TanggalSurat.setOpaque(false);
@@ -799,7 +801,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         jLabel14.setBounds(491, 70, 100, 23);
 
         TanggalKontrol.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalKontrol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "13-06-2024 12:37:51" }));
+        TanggalKontrol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-02-2026 09:21:38" }));
         TanggalKontrol.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TanggalKontrol.setName("TanggalKontrol"); // NOI18N
         TanggalKontrol.setOpaque(false);
@@ -904,6 +906,13 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
             Valid.textKosong(KdPoli,"Poli");
         }else if(TanggalSurat.getSelectedItem().toString().trim().equals(TanggalKontrol.getSelectedItem().toString().substring(0, 10))){
             JOptionPane.showMessageDialog(null,"Tanggal terbit surat kontrol tidak boleh sama dengan tanggal rencana kontrol");
+        }else if(!cekSkdpPoli(NoRM.getText(), NoSEP.getText(), TanggalKontrol.getSelectedItem().toString()).equals("")){  
+            String noSkdpPoli = cekSkdpPoli(NoRM.getText(), NoSEP.getText(), TanggalKontrol.getSelectedItem().toString());
+            String data = Sequel.cariIsi("SELECT CONCAT('Tanggal : ',skdp.tgl_rencana,'\nPoli : ', skdp.nm_poli_bpjs , '\nDokter : ', skdp.nm_dokter_bpjs) FROM bridging_surat_kontrol_bpjs skdp WHERE skdp.no_surat =?", noSkdpPoli);
+            JOptionPane.showMessageDialog(null,"Terdapat rencana kontrol poli\nNo SKDP : "
+                    + ""+noSkdpPoli+""
+                    + "\n"+data+" "
+                    + "\nRencana Kontrol POST Ranap tidak boleh lebih dari tanggal rencana kontrol Poli");
         }else{
             try {
                 headers = new HttpHeaders();
@@ -1681,4 +1690,35 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             
         return status;
     }
+    
+    private String cekSkdpPoli(String no_rm, String no_sep, String tgl) {
+        String skdpPoli = "";
+        String jnsSep = Sequel.cariIsi("SELECT bs.jnspelayanan FROM bridging_sep bs WHERE bs.no_sep = ?", no_sep);
+        if (!"1".equals(jnsSep)) {
+            return skdpPoli;
+        }
+        String noSkdp = Sequel.cariIsi(
+                "SELECT sk.no_surat FROM pasien ps "
+                + "JOIN bridging_sep bs ON bs.no_kartu = ps.no_peserta "
+                + "JOIN reg_periksa rp ON rp.no_rawat = bs.no_rawat "
+                + "LEFT JOIN bridging_surat_kontrol_bpjs sk ON sk.no_sep = bs.no_sep "
+                + "WHERE ps.no_rkm_medis = ? AND bs.jnspelayanan = '2' AND sk.tgl_rencana > CURDATE() "
+                + "ORDER BY rp.no_rawat DESC, bs.tglsep ASC LIMIT 1",
+                no_rm
+        );
+        if (noSkdp != null && !noSkdp.trim().isEmpty()) {
+            String tglSkdpStr = Sequel.cariIsi("SELECT skdp.tgl_rencana FROM bridging_surat_kontrol_bpjs skdp WHERE skdp.no_surat =?", noSkdp);
+            LocalDate tglSkdpPoli = LocalDate.parse(tglSkdpStr);
+            LocalDate tglSkdpPostRi = LocalDate.parse(tgl.substring(0, 10), formatter);
+            if (!tglSkdpPoli.isAfter(tglSkdpPostRi)){
+                skdpPoli = noSkdp;
+            }else{
+                skdpPoli = "";
+            }
+        } else {
+            skdpPoli = "";
+        }
+        return skdpPoli;
+    }
+
 }

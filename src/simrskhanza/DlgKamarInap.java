@@ -213,7 +213,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private ResultSet rs,rs2,rssetjam, rsrekapkamar, rstitip;;
     private int i,row=0;
     private double lama=0,persenbayi=0,hargakamar=0;
-    private String gabungkan="",norawatgabung="",kamaryangdigabung="",dokterranap="",bangsal="",diagnosa_akhir="",namakamar="",umur="0",sttsumur="Th",order="order by bangsal.nm_bangsal,kamar_inap.tgl_masuk,kamar_inap.jam_masuk";
+    private String gabungkan="",norawatgabung="",normgabung="",kamaryangdigabung="",dokterranap="",bangsal="",diagnosa_akhir="",namakamar="",umur="0",sttsumur="Th",order="order by bangsal.nm_bangsal,kamar_inap.tgl_masuk,kamar_inap.jam_masuk";
     private ApiBPJS api=new ApiBPJS();
     private HttpHeaders headers;
     private HttpEntity requestEntity;
@@ -6807,11 +6807,12 @@ public class DlgKamarInap extends javax.swing.JDialog {
                         JOptionPane.showMessageDialog(null,"Gabungkan ke ranap ibu gagal karena no perawatan ibu dan bayi yang dipilih sama..!!");
                         gabungkan="";
                         norawatgabung="";
+                        normgabung="";
                     }else{
                         int reply = JOptionPane.showConfirmDialog(rootPane,"Eeiiiiiits, udah bener belum data yang mau digabung..??","Konfirmasi",JOptionPane.YES_NO_OPTION);
                         if (reply == JOptionPane.YES_OPTION) {
-                            if(Sequel.menyimpantf("ranap_gabung","?,?","Data Ranap Gabung",2,new String[]{
-                                    norawat.getText(),norawatgabung
+                            if(Sequel.menyimpantf("ranap_gabung","?,?,?","Data Ranap Gabung",3,new String[]{
+                                    norawat.getText(),norawatgabung,normgabung
                                 })==true){
                                 Sequel.mengedit("kamar_inap","no_rawat='"+norawatgabung+"'","stts_pulang='Pindah Kamar'");
                                 Sequel.mengedit("kamar","kd_kamar='"+kamaryangdigabung+"'","status='KOSONG'");                
@@ -6819,11 +6820,13 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 Sequel.mengedit("reg_periksa","no_rawat='"+norawatgabung+"'","status_lanjut='Ranap'");                
                                 gabungkan="";
                                 norawatgabung="";
+                                normgabung="";
                                 tampil();
                             }
                         }else{
                             gabungkan="";
                             norawatgabung="";
+                            normgabung="";
                         }
                     }
                 }
@@ -7391,70 +7394,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                              JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
                              tbKamIn.requestFocus();
                 }else{
-                    //append kamar 
-//                    Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "'", "lama='0', ttl_biaya='0'");
-//                    try {
-//                    psrekapkamar = koneksi.prepareStatement("SELECT gr.*, COUNT(gr.tgl_masuk) AS lama, (COUNT(gr.tgl_masuk)*gr.tarif) AS total FROM (\n"
-//                            + "		SELECT ki.no_rawat, ki.kd_kamar, ki.tgl_masuk, max(ki.jam_masuk)jam_masuk, ki.tgl_billing, ki.tarif, ki.titip, ki.status_kamar\n"
-//                            + "			FROM side_db.detail_pindah_kamar ki\n"
-//                            + "			JOIN (\n"
-//                            + "				SELECT no_rawat, kd_kamar, tgl_masuk, jam_masuk, tgl_billing, MAX(tarif) AS tarif, titip, status_kamar\n"
-//                            + "				FROM side_db.detail_pindah_kamar\n"
-//                            + "				WHERE no_rawat =? "
-//                            + "				GROUP BY tgl_billing\n"
-//                            + "			) dpk ON dpk.tgl_billing = ki.tgl_billing AND dpk.tarif = ki.tarif \n"
-//                            + "			WHERE ki.no_rawat =? "
-//                            + "	GROUP BY tgl_billing\n"
-//                            + ") gr\n"
-//                            + "GROUP BY gr.tgl_masuk, gr.jam_masuk");
-//                    try {
-//                        psrekapkamar.setString(1, TNoRwCari.getText());
-//                        psrekapkamar.setString(2, TNoRwCari.getText());
-//                        rsrekapkamar = psrekapkamar.executeQuery();
-//                        while (rsrekapkamar.next()) {
-//                            System.out.println("Lama = " + rsrekapkamar.getString("lama"));
-//                            if (1==1){
-//                                System.out.println("bukan titip");
-//                                String cekTitipJam23 = Sequel.cariIsi("SELECT "
-//                                        + "if(SUBSTRING_INDEX(pr.catatan,'#',1) > '23:00:00','Yes','No') AS hasil_cek FROM permintaan_ranap pr WHERE pr.no_rawat = '" + TNoRwCari.getText() + "'");
-//                                if (cekTitipJam23.equals("Yes")) {
-//                                    if (rsrekapkamar.isFirst()) {
-//                                        int lamaMinSatu = Integer.parseInt(rsrekapkamar.getString("lama")) - 1;
-//                                        int tarifMinSatu = Integer.parseInt(rsrekapkamar.getString("total")) - Integer.parseInt(rsrekapkamar.getString("tarif")) ;                                        
-//                                        Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "' "
-//                                                + "and kd_kamar='" + rsrekapkamar.getString("kd_kamar") + "' "
-//                                                + "and tgl_masuk='" + rsrekapkamar.getString("tgl_masuk") + "' "
-//                                                + "and jam_masuk='" + rsrekapkamar.getString("jam_masuk") + "' ",
-//                                                "lama='" + lamaMinSatu + "', ttl_biaya='" + tarifMinSatu + "'");
-//                                    } else {
-//                                        Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "' "
-//                                                + "and kd_kamar='" + rsrekapkamar.getString("kd_kamar") + "' "
-//                                                + "and tgl_masuk='" + rsrekapkamar.getString("tgl_masuk") + "' "
-//                                                + "and jam_masuk='" + rsrekapkamar.getString("jam_masuk") + "' ",
-//                                                "lama='" + rsrekapkamar.getString("lama") + "', ttl_biaya='" + rsrekapkamar.getString("total") + "'");
-//                                    }
-//                                } else {
-//                                    Sequel.mengedit("kamar_inap", "no_rawat='" + TNoRwCari.getText() + "' "
-//                                            + "and kd_kamar='" + rsrekapkamar.getString("kd_kamar") + "' "
-//                                            + "and tgl_masuk='" + rsrekapkamar.getString("tgl_masuk") + "' "
-//                                            + "and jam_masuk='" + rsrekapkamar.getString("jam_masuk") + "' ",
-//                                            "lama='" + rsrekapkamar.getString("lama") + "', ttl_biaya='" + rsrekapkamar.getString("total") + "'");
-//                                }
-//                            }
-//                        }
-//                    } catch (Exception e) {
-//                        System.out.println("Notifikasi : " + e);
-//                    } finally {
-//                        if (rsrekapkamar != null) {
-//                            rsrekapkamar.close();
-//                        }
-//                        if (rsrekapkamar != null) {
-//                            rsrekapkamar.close();
-//                        }
-//                    }
-//                } catch (Exception e) {
-//                    System.out.println("");
-//                }
+                    updateLamaInap();
                     try {
                         pscaripiutang=koneksi.prepareStatement("select tgl_piutang from piutang_pasien where no_rkm_medis=? and status='Belum Lunas' order by tgl_piutang asc limit 1");
                         try {
@@ -9930,6 +9870,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     gabungkan="gabung";
                     norawatgabung=norawat.getText();
                     kamaryangdigabung=kdkamar.getText();
+                    normgabung=TNoRM.getText();
                     JOptionPane.showMessageDialog(null,"Silahkan pilih No.Rawat Ibu/No.Rawat Tujuan");   
                 }
             }         
@@ -19466,5 +19407,71 @@ public class DlgKamarInap extends javax.swing.JDialog {
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(selection, null);
         javax.swing.JOptionPane.showMessageDialog(this, "Permintaan Buka Billing berhasil disalin ke clipboard!");   
+    }
+    
+    private void updateLamaInap(){
+        String masukJam23 = Sequel.cariIsi("SELECT if(LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(pr.catatan, '~', 4), '~', -1),8 ) > '23:00:00','Yes','No') AS hasil_cek FROM permintaan_ranap pr WHERE pr.no_rawat=? ", norawat.getText());
+        try {
+            ps = koneksi.prepareStatement("SELECT tbl1.no_rawat ,SUBSTRING_INDEX(tbl1.kd_tgl_jam,' ',1) AS kd_fix, SUBSTRING_INDEX(SUBSTRING_INDEX(tbl1.kd_tgl_jam,' ',2),' ',-1) AS tgl_masuk, "
+                    + "SUBSTRING_INDEX(tbl1.kd_tgl_jam,' ',-1) AS jam_masuk, "
+                    + "tbl1.tarif_tertinggi AS tarif, COUNT(tbl1.tarif_tertinggi) AS lama, (COUNT(tbl1.tarif_tertinggi)*tbl1.tarif_tertinggi) AS total "
+                    + "FROM "
+                    + "( "
+                    + "SELECT b.no_rawat ,b.kd_kamar, b.tgl_masuk, b.jam_masuk, b.tgl_billing, MAX(b.tarif) AS tarif_tertinggi, "
+                    + "(SELECT CONCAT(sb.kd_kamar,' ',sb.tgl_masuk,' ',sb.jam_masuk) FROM side_db.detail_pindah_kamar sb "
+                    + "WHERE sb.no_rawat = b.no_rawat  AND MAX(b.tarif) = sb.tarif AND b.tgl_billing = sb.tgl_billing "
+                    + "ORDER BY CONCAT(sb.tgl_masuk,' ',sb.jam_masuk) desc LIMIT 1) AS kd_tgl_jam "
+                    + "FROM side_db.detail_pindah_kamar AS b WHERE b.no_rawat=?  "
+                    + "GROUP BY b.tgl_billing "
+                    + ") AS tbl1 "
+                    + "GROUP BY tbl1.kd_tgl_jam ORDER BY tgl_masuk, jam_masuk asc");
+            try {
+                ps.setString(1, norawat.getText());
+                rs = ps.executeQuery();
+                int index = 0;
+                while (rs.next()) {
+                    String noRawat = rs.getString("no_rawat");
+                    String kdFix = rs.getString("kd_fix");
+                    String tglMasuk = rs.getString("tgl_masuk");
+                    String jamMasuk = rs.getString("jam_masuk");
+
+                    double tarif = rs.getDouble("tarif");
+                    int lama = rs.getInt("lama");
+                    double total = rs.getDouble("total");
+
+                    int lamaFix;
+                    double totalFix;
+                    if (index == 0) {
+                        if ("Yes".equals(masukJam23)) {
+                            lamaFix = lama - 1;
+                            if (lamaFix < 0) {
+                                lamaFix = 0;
+                            }
+                        } else {
+                            lamaFix = lama;
+                        }
+                        totalFix = lamaFix * tarif;
+                        Sequel.mengedit("kamar_inap", "no_rawat='" + noRawat + "' and kd_kamar='" + kdFix + "' and tgl_masuk='" + tglMasuk + "' and jam_masuk='" + jamMasuk + "'",
+                                "lama='" + lamaFix + "',ttl_biaya='" + totalFix + "' ");
+                    } else {
+                        Sequel.mengedit("kamar_inap", "no_rawat='" + noRawat + "' and kd_kamar='" + kdFix + "' and tgl_masuk='" + tglMasuk + "' and jam_masuk='" + jamMasuk + "'",
+                                "lama='" + lama + "',ttl_biaya='" + total + "' ");
+                    }
+                    index++;
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 }

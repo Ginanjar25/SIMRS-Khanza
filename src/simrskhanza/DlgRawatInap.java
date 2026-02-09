@@ -3933,7 +3933,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         });
 
         BtnAwalMedisKandungan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
-        BtnAwalMedisKandungan.setText("Awal Medis Kandungan");
+        BtnAwalMedisKandungan.setText("Awal Medis Kebidanan & Kandungan");
         BtnAwalMedisKandungan.setFocusPainted(false);
         BtnAwalMedisKandungan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         BtnAwalMedisKandungan.setGlassColor(new java.awt.Color(255, 255, 255));
