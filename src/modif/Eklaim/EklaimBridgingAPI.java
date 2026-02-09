@@ -614,25 +614,81 @@ public class EklaimBridgingAPI {
         return hasil.toString();
     }
 
-    private String getICDCode(String param, String poliCheck, String poliIgnore1, String poliIgnore2, String code1, String code2) throws SQLException {
-        String poli = Sequel.cariIsi("SELECT kd_poli FROM reg_periksa WHERE no_rawat = ?", param);
+    private String getICDCode(String param,String poliCheck,String poliIgnore1,String poliIgnore2,String code1,String code2 ) throws SQLException {
+
+          String poli = Sequel.cariIsi(
+                "SELECT kd_poli FROM reg_periksa WHERE no_rawat = ?",
+                param
+        );
+        // 🔴 CHECK UTAMA: kunjungan ganda beda poli
+        if (checkKunjunganPoli(param, poli)) {
+            return "";
+        }
         if (poli.equals(poliCheck)) {
             return code1;
+
         } else if (poli.equals("IGDK")) {
             return "";
+
         } else if (poliIgnore2 != null && poli.equals(poliIgnore2)) {
             return "";
+
         } else if (poliIgnore1 != null && poli.equals(poliIgnore1)) {
-            String operasi = Sequel.cariIsi("SELECT b.nm_perawatan FROM billing b WHERE b.no_rawat =? AND b.`status` = 'Operasi' AND b.biaya <> 0", param);
-            if (operasi.isBlank() || operasi.isEmpty()) {
+            String operasi = Sequel.cariIsi(
+                    "SELECT b.nm_perawatan FROM billing b "
+                    + "WHERE b.no_rawat = ? AND b.status = 'Operasi' AND b.biaya <> 0",
+                    param
+            );
+
+            if (operasi == null || operasi.isBlank()) {
                 return code2;
             } else {
                 return "";
             }
+
         } else {
             return code2;
         }
     }
+
+    private boolean checkKunjunganPoli(String no_rawat, String poli) {
+
+        String no_kartu = Sequel.cariIsi(
+                "SELECT no_kartu FROM bridging_sep WHERE no_rawat = ?",
+                no_rawat
+        );
+
+        String tglsep = Sequel.cariIsi(
+                "SELECT tglsep FROM bridging_sep WHERE no_rawat = ?",
+                no_rawat
+        );
+
+        // 1️⃣ >1 SEP di hari sama & POLI BEDA
+        Integer bedaPoli = Sequel.cariInteger(
+                "SELECT COUNT(b.no_sep) "
+                + "FROM bridging_sep b "
+                + "INNER JOIN reg_periksa r ON r.no_rawat = b.no_rawat "
+                + "WHERE b.tglsep = ? AND b.no_kartu = ? "
+                + "GROUP BY b.no_kartu, b.tglsep "
+                + "HAVING COUNT(b.no_sep) > 1 AND COUNT(DISTINCT r.kd_poli) > 1",
+                tglsep, no_kartu
+        );
+
+        // pertama kali periksa ke POLI YANG SAMA
+        Integer poliSama = Sequel.cariInteger(
+                "SELECT COUNT(no_rawat) "
+                + "FROM reg_periksa "
+                + "WHERE kd_poli = ? "
+                + "AND no_mr = (SELECT nomr FROM bridging_sep WHERE no_rawat = ?)",
+                poli, no_rawat
+        );
+
+        return (bedaPoli != null && bedaPoli > 0)
+                || (poliSama != null && poliSama <= 1);
+    }
+
+
+
 
     private String getDischargeStatus(String param) throws SQLException {
         if (Sequel.cariInteger("SELECT COUNT(no_rawat) FROM kamar_inap WHERE stts_pulang IN ('Sembuh', 'Sehat', 'Atas Persetujuan Dokter') AND no_rawat = ?", param) > 0) {

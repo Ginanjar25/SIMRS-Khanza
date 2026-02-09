@@ -6743,7 +6743,7 @@ public final class DlgIGD extends javax.swing.JDialog {
                                         tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString(),norawatdipilih
                                     }
                                 );
-                                Sequel.queryu2("update ranap_gabung set no_rawat=? where no_rawat=?",2,
+                                Sequel.queryu2("update ranap_gabung set no_rawat=? where no_rawat2=?",2,
                                     new String[]{
                                         tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString(),norawatdipilih
                                     }

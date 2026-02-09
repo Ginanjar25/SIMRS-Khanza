@@ -7787,13 +7787,13 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
 
             Sequel.AutoComitTrue();
             
-            if(sukses==true){
-                if(notaranap.equals("Yes")){
-                    this.dispose();
-                }
+            if (sukses == true) {
                 if (!TNoSEP.getText().equals("")) {
 //                        Sequel.mengedit("bridging_eklaim", " no_sep='"+TNoSEP.getText()+"'", " status='1'");
                     eklaimApi.bridgingInit(TNoSEP.getText());
+                }
+                if (notaranap.equals("Yes")) {
+                    this.dispose();
                 }
             }
         }catch (Exception ex) {

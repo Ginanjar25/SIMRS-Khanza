@@ -6284,13 +6284,13 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 }
                 Sequel.AutoComitTrue();
                 
-                if(sukses==true){
-                    if(notaralan.equals("Yes")){
-                        this.dispose();
-                    }
+                if (sukses == true) {
                     if (!TNoSEP.getText().equals("")) {
 //                        Sequel.mengedit("bridging_eklaim", " no_sep='"+TNoSEP.getText()+"'", " status='1'");
                         eklaimApi.bridgingInit(TNoSEP.getText());
+                    }
+                    if (notaralan.equals("Yes")) {
+                        this.dispose();
                     }
                 }
             }catch (Exception ex) {
