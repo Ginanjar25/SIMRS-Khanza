@@ -523,6 +523,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     
     public void copyresepralan() {
         Valid.tabelKosong(tabMode);
+        String kodePoli = Sequel.cariIsi("SELECT rp.kd_poli from reg_periksa rp WHERE rp.no_rawat =?", norawat);
         try {
             if (ChkTanggal.isSelected() == true) {
                 ps = koneksi.prepareStatement("SELECT no_resep, tgl_peresepan, jam_peresepan, no_rawat, no_rkm_medis, nm_pasien, kd_dokter, nm_dokter, status, status_asal,kd_poli, nm_poli "
@@ -541,11 +542,11 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         + "    JOIN pasien ps ON rp.no_rkm_medis = ps.no_rkm_medis "
                         + "    JOIN dokter dk ON ro.kd_dokter = dk.kd_dokter "
                         + "    JOIN poliklinik pl ON pl.kd_poli = rp.kd_poli"
-                        + "    WHERE ro.tgl_peresepan <> '0000-00-00' and ro.status = 'ralan' AND rp.kd_poli != 'IGDK' "
+                        + "    WHERE ro.tgl_peresepan <> '0000-00-00' and ro.status = 'ralan' AND rp.kd_poli =? "
                         + "      AND ro.tgl_peresepan BETWEEN ? AND ? "
                         + "      AND ps.no_rkm_medis = ? "
                         + ") x "
-                        + "WHERE rn <= 3 "
+                        + "WHERE rn <= 10 "
                         + "ORDER BY kd_poli, tgl_peresepan DESC, jam_peresepan DESC ");
             } else {
                 ps = koneksi.prepareStatement("SELECT no_resep, tgl_peresepan, jam_peresepan, no_rawat, no_rkm_medis, nm_pasien, kd_dokter, nm_dokter, status, status_asal,kd_poli, nm_poli "
@@ -564,19 +565,21 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         + "    JOIN pasien ps ON rp.no_rkm_medis = ps.no_rkm_medis "
                         + "    JOIN dokter dk ON ro.kd_dokter = dk.kd_dokter "
                         + "    JOIN poliklinik pl ON pl.kd_poli = rp.kd_poli"
-                        + "    WHERE ro.tgl_peresepan <> '0000-00-00' and ro.status = 'ralan' AND rp.kd_poli != 'IGDK' "
+                        + "    WHERE ro.tgl_peresepan <> '0000-00-00' and ro.status = 'ralan' AND rp.kd_poli = ? "
                         + "      AND ps.no_rkm_medis = ? "
                         + ") x "
-                        + "WHERE rn <= 3 "
+                        + "WHERE rn <= 10 "
                         + "ORDER BY kd_poli, tgl_peresepan DESC, jam_peresepan DESC ");
             }
             try {
                 if (ChkTanggal.isSelected() == true) {
                     ps.setString(1, Valid.SetTgl(DTPCari1.getSelectedItem() + ""));
                     ps.setString(2, Valid.SetTgl(DTPCari2.getSelectedItem() + ""));
-                    ps.setString(3, norm);
+                    ps.setString(3, kodePoli);
+                    ps.setString(4, norm);
                 } else {
-                    ps.setString(1, norm);
+                    ps.setString(1, kodePoli);
+                    ps.setString(2, norm);
                 }
                 rs = ps.executeQuery();
                 while (rs.next()) {

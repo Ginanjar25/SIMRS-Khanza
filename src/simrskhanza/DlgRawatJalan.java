@@ -11296,6 +11296,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
 
     private void tampilPemeriksaan() {        
         TAlergi.setText(Sequel.cariIsi("SELECT GROUP_CONCAT(mal.display SEPARATOR ', ') AS alergi FROM alergi aa JOIN satu_sehat_ref_allergy mal ON mal.code = aa.alergi_code WHERE aa.no_rkm_medis=?",TNoRM.getText()));
+        String kodePoli = Sequel.cariIsi("SELECT rp.kd_poli from reg_periksa rp WHERE rp.no_rawat =?", TNoRw.getText());
         Valid.tabelKosong(tabModePemeriksaan);
         try{  
             ps4=koneksi.prepareStatement("select pemeriksaan_ralan.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,"+
@@ -11307,7 +11308,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     "from pasien inner join reg_periksa on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
                     "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik where  "+
-                    "pemeriksaan_ralan.tgl_perawatan between ? and ? and reg_periksa.no_rkm_medis like ? "+
+                    "pemeriksaan_ralan.tgl_perawatan between ? and ? and reg_periksa.no_rkm_medis like ? and reg_periksa.kd_poli =? "+
                     (TCari.getText().trim().equals("")?"":"and (pemeriksaan_ralan.no_rawat like ? or reg_periksa.no_rkm_medis like ? or pasien.nm_pasien like ? or "+
                     "pemeriksaan_ralan.alergi like ? or pemeriksaan_ralan.keluhan like ? or pemeriksaan_ralan.penilaian like ? or "+
                     "pemeriksaan_ralan.pemeriksaan like ? or pegawai.nama like ?) ")+"order by pemeriksaan_ralan.no_rawat,pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat desc"); 
@@ -11315,8 +11316,8 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 ps4.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps4.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
                 ps4.setString(3,"%"+TCariPasien.getText()+"%");
+                ps4.setString(4,kodePoli);
                 if(!TCari.getText().trim().equals("")){
-                    ps4.setString(4,"%"+TCari.getText().trim()+"%");
                     ps4.setString(5,"%"+TCari.getText().trim()+"%");
                     ps4.setString(6,"%"+TCari.getText().trim()+"%");
                     ps4.setString(7,"%"+TCari.getText().trim()+"%");
@@ -11324,6 +11325,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     ps4.setString(9,"%"+TCari.getText().trim()+"%");
                     ps4.setString(10,"%"+TCari.getText().trim()+"%");
                     ps4.setString(11,"%"+TCari.getText().trim()+"%");
+                    ps4.setString(12,"%"+TCari.getText().trim()+"%");
                 }
                 rs=ps4.executeQuery();
                 while(rs.next()){
