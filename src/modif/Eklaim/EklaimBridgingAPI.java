@@ -653,6 +653,12 @@ public class EklaimBridgingAPI {
 
     private boolean checkKunjunganPoli(String no_rawat, String poli) {
 
+        Boolean post_ri = Sequel.cariIsi("select catatan from bridging_sep where no_rawat = ?", no_rawat).contains("post");
+        
+        if(post_ri){
+            return false;
+        }
+        
         String no_kartu = Sequel.cariIsi(
                 "SELECT no_kartu FROM bridging_sep WHERE no_rawat = ?",
                 no_rawat
@@ -679,12 +685,15 @@ public class EklaimBridgingAPI {
                 "SELECT COUNT(no_rawat) "
                 + "FROM reg_periksa "
                 + "WHERE kd_poli = ? "
-                + "AND no_mr = (SELECT nomr FROM bridging_sep WHERE no_rawat = ?)",
-                poli, no_rawat
+                + "AND no_rkm_medis = '"+Sequel.cariIsi("SELECT nomr FROM bridging_sep WHERE no_rawat = ?", no_rawat)+"'",
+                poli
         );
 
-        return (bedaPoli != null && bedaPoli > 0)
-                || (poliSama != null && poliSama <= 1);
+        if (poliSama <= 1 || bedaPoli > 0){
+            return true;
+        }
+            
+        return false;
     }
 
 
