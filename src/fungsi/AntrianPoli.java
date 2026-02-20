@@ -87,7 +87,7 @@ public void kirimAntrean(String kd_poli, String kd_dokter) {
             "WHERE ap.kd_dokter = ? " +
             "AND ap.kd_poli = ? AND ap.status != '2' " +
             "AND DATE(ap.created_at) = DATE(NOW()) " +
-            "AND rp.stts != 'Sudah' " +
+            "AND rp.stts = 'Belum' " +
             "ORDER BY ap.no_antrian ASC LIMIT 4;"
         );
         ps.setString(1, kd_dokter);
@@ -189,7 +189,7 @@ public void kirimAntrianAwal(String kd_poli, String kd_dokter) {
             "WHERE ap.kd_dokter = ? " +
             "AND ap.kd_poli = ? AND ap.status != '2' " +
             "AND DATE(ap.created_at) = DATE(NOW()) " +
-            "AND rp.stts != 'Sudah' " +
+            "AND rp.stts = 'Belum' " +
             "ORDER BY ap.no_antrian ASC LIMIT 4;"
         );
         ps.setString(1, kd_dokter);
