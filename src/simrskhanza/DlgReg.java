@@ -15287,7 +15287,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         if (tbPetugas.getSelectedRow() != -1) {
              if("WEB".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
                 Sequel.mengedittf("side_db.reg_periksa_website", "no_rawat=?", "status='Checkin'", 1, new String[]{TNoRw.getText()});
-            } else if("JKN".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString()) && !tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 21).toString().equals("Batal")){
+            } else if("JKN".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString()) && !tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 26).toString().equals("Batal")){
                 if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "no_rawat=?", "status='Checkin',validasi=now()", 1, new String[]{TNoRw.getText()
                 }) == true) {
                     Sequel.meghapus("referensi_mobilejkn_bpjs_batal", "no_rawat_batal", TNoRw.getText());
@@ -15468,7 +15468,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 if (tbPetugas.getSelectedRow() != -1) {
                     if ("WEB".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString())) {
                         Sequel.mengedittf("side_db.reg_periksa_website", "no_rawat=?", "status='Checkin'", 1, new String[]{TNoRw.getText()});
-                    } else if ("JKN".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString()) && !tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 21).toString().equals("Batal")) {
+                    } else if ("JKN".equals(tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 25).toString()) && !tbPetugas.getValueAt(tbPetugas.getSelectedRow(), 26).toString().equals("Batal")) {
                         if (Sequel.mengedittf("referensi_mobilejkn_bpjs", "no_rawat=?", "status='Checkin',validasi=now()", 1, new String[]{TNoRw.getText()
                         }) == true) {
                             Sequel.meghapus("referensi_mobilejkn_bpjs_batal", "no_rawat_batal", TNoRw.getText());
