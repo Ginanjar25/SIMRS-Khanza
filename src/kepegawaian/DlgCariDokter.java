@@ -28,7 +28,11 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -45,12 +49,13 @@ public final class DlgCariDokter extends javax.swing.JDialog {
     private ResultSet rs;
     private File file;
     private FileWriter fileWriter;
-    private String iyem;
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
     private FileReader myObj;
     private sekuel Sequel=new sekuel();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     /** Creates new form DlgPenyakit
      * @param parent
      * @param modal */
@@ -101,29 +106,6 @@ public final class DlgCariDokter extends javax.swing.JDialog {
         }
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable());
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil2();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil2();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil2();
-                    }
-                }
-            });
-        }
     }
     
 
@@ -293,7 +275,7 @@ public final class DlgCariDokter extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil2();
+        runBackground(() ->tampil2());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -306,7 +288,7 @@ public final class DlgCariDokter extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -361,11 +343,34 @@ public final class DlgCariDokter extends javax.swing.JDialog {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
             if(Valid.daysOld("./cache/dokter.iyem")<30){
-                tampil2();
+                runBackground(() ->tampil2());
             }else{
-                tampil();
+                runBackground(() ->tampil());
             }
         } catch (Exception e) {
+        }
+        
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+            });
         }
     }//GEN-LAST:event_formWindowOpened
 
@@ -406,7 +411,7 @@ public final class DlgCariDokter extends javax.swing.JDialog {
             file=new File("./cache/dokter.iyem");
             file.createNewFile();
             fileWriter = new FileWriter(file);
-            iyem="";
+            StringBuilder iyembuilder = new StringBuilder();
             ps=koneksi.prepareStatement(
                 "select dokter.kd_dokter,dokter.nm_dokter,dokter.jk,dokter.tmp_lahir, "+
                 "dokter.tgl_lahir,dokter.gol_drh,dokter.agama,dokter.almt_tgl,dokter.no_telp, "+
@@ -416,14 +421,14 @@ public final class DlgCariDokter extends javax.swing.JDialog {
             try{
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         rs.getString(1),rs.getString(2),rs.getString(3),
                         rs.getString(4),rs.getString(5),rs.getString(6),
                         rs.getString(7),rs.getString(8),rs.getString(9),
                         rs.getString(10),rs.getString(11),rs.getString(12),
                         rs.getString(13)
                     });
-                    iyem=iyem+"{\"KodeDokter\":\""+rs.getString(1)+"\",\"NamaDokter\":\""+rs.getString(2).replaceAll("\"","")+"\",\"JK\":\""+rs.getString(3)+"\",\"TmpLahir\":\""+rs.getString(4).replaceAll("\"","")+"\",\"TglLahir\":\""+rs.getString(5)+"\",\"GD\":\""+rs.getString(6)+"\",\"Agama\":\""+rs.getString(7)+"\",\"AlamatTinggal\":\""+rs.getString(8).replaceAll("\"","")+"\",\"NoTelp\":\""+rs.getString(9)+"\",\"SttsNikah\":\""+rs.getString(10)+"\",\"Spesialis\":\""+rs.getString(11)+"\",\"Alumni\":\""+rs.getString(12).replaceAll("\"","")+"\",\"NoIjinPraktek\":\""+rs.getString(13)+"\"},";
+                    iyembuilder.append("{\"KodeDokter\":\"").append(rs.getString(1)).append("\",\"NamaDokter\":\"").append(rs.getString(2).replaceAll("\"","")).append("\",\"JK\":\"").append(rs.getString(3)).append("\",\"TmpLahir\":\"").append(rs.getString(4).replaceAll("\"","")).append("\",\"TglLahir\":\"").append(rs.getString(5)).append("\",\"GD\":\"").append(rs.getString(6)).append("\",\"Agama\":\"").append(rs.getString(7)).append("\",\"AlamatTinggal\":\"").append(rs.getString(8).replaceAll("\"","")).append("\",\"NoTelp\":\"").append(rs.getString(9)).append("\",\"SttsNikah\":\"").append(rs.getString(10)).append("\",\"Spesialis\":\"").append(rs.getString(11)).append("\",\"Alumni\":\"").append(rs.getString(12).replaceAll("\"","")).append("\",\"NoIjinPraktek\":\"").append(rs.getString(13)).append("\"},");
                 }
             }catch(Exception e){
                 System.out.println("Notifikasi : "+e);
@@ -436,10 +441,15 @@ public final class DlgCariDokter extends javax.swing.JDialog {
                     ps.close();
                 }
             }
-            fileWriter.write("{\"dokter\":["+iyem.substring(0,iyem.length()-1)+"]}");
-            fileWriter.flush();
+            
+            if (iyembuilder.length() > 0) {
+                iyembuilder.setLength(iyembuilder.length() - 1);
+                fileWriter.write("{\"dokter\":["+iyembuilder+"]}");
+                fileWriter.flush();
+            }
+            
             fileWriter.close();
-            iyem=null;
+            iyembuilder=null;
         } catch (Exception e) {
             System.out.println("Notifikasi : "+e);
         }
@@ -483,30 +493,33 @@ public final class DlgCariDokter extends javax.swing.JDialog {
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
+            if(ex.toString().contains("java.io.FileNotFoundException")){
+                tampil();
+            }else{
+                System.out.println("Notifikasi : "+ex);
+            }
         }
     } 
     
     public String tampil3(String kode) {
         try {
             if(Valid.daysOld("./cache/dokter.iyem")>7){
-                tampil();
+                runBackground(() ->tampil());
             }
         } catch (Exception e) {
             if(e.toString().contains("No such file or directory")){
-                tampil();
+                runBackground(() ->tampil());
             }
         }
         
-        iyem="";
+        String iyem="";
         try {
             myObj = new FileReader("./cache/dokter.iyem");
             root = mapper.readTree(myObj);
-            Valid.tabelKosong(tabMode);
             response = root.path("dokter");
             if(response.isArray()){
                 for(JsonNode list:response){
-                    if(list.path("KodeDokter").asText().toLowerCase().equals(kode)){
+                    if(list.path("KodeDokter").asText().equalsIgnoreCase(kode)){
                         iyem=list.path("NamaDokter").asText();
                     }
                 }
@@ -519,5 +532,37 @@ public final class DlgCariDokter extends javax.swing.JDialog {
             iyem=Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",kode);
         }
         return iyem;
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

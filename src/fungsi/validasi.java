@@ -284,6 +284,20 @@ public final class validasi {
         }
     }
     
+    public void autoNomer7(String nomorterakhir,String strAwal,Integer pnj,javax.swing.JTextField teks){
+        try {
+            s=Integer.toString(Integer.parseInt(nomorterakhir)+1);
+            j=s.length();
+            s1="";
+            for(i = 1;i<=pnj-j;i++){
+                s1=s1+"0";
+            }
+            teks.setText(strAwal+s1+s);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : "+e);
+        }
+    }
+    
     public String autoNomer(String tabel,String strAwal,Integer pnj){
         try {
             auto="";
@@ -679,6 +693,45 @@ public final class validasi {
     }
     
     @SuppressWarnings("empty-statement")
+    public void MyReportPDF2(String reportName,String reportDirName,String judul,Map parameters){
+        Properties systemProp = System.getProperties();
+
+        // Ambil current dir
+        String currentDir = systemProp.getProperty("user.dir");
+
+        File dir = new File(currentDir);
+
+        File fileRpt;
+        String fullPath = "";
+        if (dir.isDirectory()) {
+            String[] isiDir = dir.list();
+            for (String iDir : isiDir) {
+                fileRpt = new File(currentDir + File.separatorChar + iDir + File.separatorChar + reportDirName + File.separatorChar + reportName);
+                if (fileRpt.isFile()) { // Cek apakah file RptMaster.jasper ada
+                    fullPath = fileRpt.toString();
+                    System.out.println("Found Report File at : " + fullPath);
+                } // end if
+            } // end for i
+        } // end if
+
+        try {
+            try (Statement stm = connect.createStatement()) {
+                try {
+                    File f = new File("./"+reportDirName+"/"+reportName.replaceAll("jasper","pdf")); 
+                    String namafile="./"+reportDirName+"/"+reportName;
+                    JasperPrint jasperPrint = JasperFillManager.fillReport(namafile, parameters, connect);
+                    JasperExportManager.exportReportToPdfFile(jasperPrint,"./"+reportDirName+"/"+reportName.replaceAll("jasper","pdf"));
+                } catch (Exception rptexcpt) {
+                    System.out.println("Report Can't view because : " + rptexcpt);
+                    JOptionPane.showMessageDialog(null,"Report Can't view because : "+ rptexcpt);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    
+    @SuppressWarnings("empty-statement")
     public void MyReport2(String reportName,String reportDirName,String judul,Map parameters){
         Properties systemProp = System.getProperties();
 
@@ -865,6 +918,14 @@ public final class validasi {
     }
     
     public void pindah2(java.awt.event.KeyEvent evt,JTextField kiri,JTextField kanan){
+        if(evt.getKeyCode()==KeyEvent.VK_TAB){
+            kanan.requestFocus();
+        }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
+            kiri.requestFocus();
+        }
+    }
+    
+    public void pindah2(KeyEvent evt, Button kiri, Button kanan) {
         if(evt.getKeyCode()==KeyEvent.VK_TAB){
             kanan.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
@@ -1250,6 +1311,16 @@ public final class validasi {
         return s;
     }
     
+    public String SetTgl5(String original){
+        original=original.replaceAll("'","");
+        s = "";
+        try {
+            s=original.substring(8,10)+"-"+original.substring(5,7)+"-"+original.substring(0,4)+" "+original.substring(11,19);
+        }catch (Exception e) {
+        }   
+        return s;
+    }
+    
     public String MaxTeks(String original,int max){
         if(original.length()>=max){
             s=original.substring(0,(max-1));
@@ -1312,10 +1383,7 @@ public final class validasi {
     }
 
     public void tabelKosong(DefaultTableModel tabMode) {
-        j=tabMode.getRowCount();
-        for(i=0;i<j;i++){
-            tabMode.removeRow(0);
-        }
+        tabMode.setRowCount(0);
     }
 
     public void textKosong(JComboBox teks, String pesan) {

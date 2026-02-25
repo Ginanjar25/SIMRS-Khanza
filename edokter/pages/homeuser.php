@@ -1,8 +1,8 @@
 <?php 
-    if(isset($_SESSION["ses_admin"])){
+    if(isset($_SESSION["ses_dokter"])){
         $halaman = isset($_GET["act"])?$_GET["act"]:NULL;
         if(!isset($_SESSION["nm_dokter"])){
-            $queryuser                      = @bukaquery2("select dokter.nm_dokter from dokter where dokter.kd_dokter='".validTeks4(encrypt_decrypt($_SESSION["ses_admin"],"d"),20)."'");
+            $queryuser                      = @bukaquery2("select dokter.nm_dokter from dokter where dokter.kd_dokter='".validTeks4(encrypt_decrypt($_SESSION["ses_dokter"],"d"),20)."'");
             while($rsqueryuser = mysqli_fetch_array($queryuser)) {
                 $_SESSION["nm_dokter"]      = $rsqueryuser["nm_dokter"];
             }
@@ -15,6 +15,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="robots" content="noindex,nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>Selamat Datang di Aplikasi E-Dokter <?=$_SESSION["nama_instansi"];?></title>
@@ -75,7 +76,7 @@
                     <li <?=$halaman=="Admin"?"class='active'":""?>>
                         <a href="index.php?act=Pasien">
                             <i class="material-icons">assignment_ind</i>
-                            <span>Daftar Pasien</span>
+                            <span>Daftar Pasien/Pegawai</span>
                         </a>
                     </li>
                 </ul>

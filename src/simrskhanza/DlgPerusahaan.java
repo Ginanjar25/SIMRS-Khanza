@@ -13,11 +13,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import java.util.concurrent.RejectedExecutionException;
+import javax.swing.SwingUtilities;
 
 public class DlgPerusahaan extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
@@ -27,6 +31,8 @@ public class DlgPerusahaan extends javax.swing.JDialog {
     private PreparedStatement ps;
     private ResultSet rs;
     private int i;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /** Creates new form DlgProgramStudi
      * @param parent
@@ -35,7 +41,7 @@ public class DlgPerusahaan extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
-        Object[] row={"Kode","Nama Instansi/Perusahaan","Alamat Instansi/Perusahaan","Kota","No.Telp"};
+        Object[] row={"Kode","Nama Instansi/Perusahaan","Alamat Instansi/Perusahaan","Kota","No.Telp","Password"};
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -44,7 +50,7 @@ public class DlgPerusahaan extends javax.swing.JDialog {
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < 6; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(70);
@@ -56,6 +62,8 @@ public class DlgPerusahaan extends javax.swing.JDialog {
                 column.setPreferredWidth(150);
             }else if(i==4){
                 column.setPreferredWidth(100);
+            }else if(i==5){
+                column.setPreferredWidth(200);
             }
         }
         tbDokter.setDefaultRenderer(Object.class, new WarnaTable());
@@ -65,29 +73,9 @@ public class DlgPerusahaan extends javax.swing.JDialog {
         Alamat.setDocument(new batasInput((byte)100).getKata(Alamat));  
         Kota.setDocument(new batasInput((byte)40).getKata(Kota));    
         Telp.setDocument(new batasInput((byte)27).getOnlyAngka(Telp)); 
-        TCari.setDocument(new batasInput((byte)100).getKata(TCari));    
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }   
+        TCari.setDocument(new batasInput((byte)100).getKata(TCari));   
+        Password.setDocument(new batasInput((byte)100).getKata(Password));    
+         
         ChkInput.setSelected(false);
         isForm();           
     }
@@ -131,6 +119,8 @@ public class DlgPerusahaan extends javax.swing.JDialog {
         Alamat = new widget.TextBox();
         label29 = new widget.Label();
         Kota = new widget.TextBox();
+        label27 = new widget.Label();
+        Password = new widget.TextBox();
         ChkInput = new widget.CekBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -142,7 +132,7 @@ public class DlgPerusahaan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Instansi/Perusahaan Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Instansi/Perusahaan Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -413,14 +403,14 @@ public class DlgPerusahaan extends javax.swing.JDialog {
 
         Telp.setName("Telp"); // NOI18N
         Telp.setPreferredSize(new java.awt.Dimension(207, 23));
-        Telp.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                TelpMouseExited(evt);
-            }
-        });
         Telp.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
                 TelpMouseMoved(evt);
+            }
+        });
+        Telp.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                TelpMouseExited(evt);
             }
         });
         Telp.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -462,6 +452,22 @@ public class DlgPerusahaan extends javax.swing.JDialog {
         });
         FormInput.add(Kota);
         Kota.setBounds(587, 12, 140, 23);
+
+        label27.setText("Password :");
+        label27.setName("label27"); // NOI18N
+        label27.setPreferredSize(new java.awt.Dimension(65, 23));
+        FormInput.add(label27);
+        label27.setBounds(493, 72, 90, 23);
+
+        Password.setName("Password"); // NOI18N
+        Password.setPreferredSize(new java.awt.Dimension(207, 23));
+        Password.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                PasswordKeyPressed(evt);
+            }
+        });
+        FormInput.add(Password);
+        Password.setBounds(587, 72, 140, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -506,7 +512,7 @@ public class DlgPerusahaan extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -579,12 +585,21 @@ public class DlgPerusahaan extends javax.swing.JDialog {
             if(Valid.editTabletf(tabMode,"perusahaan_pasien","kode_perusahaan","?","kode_perusahaan=?,nama_perusahaan=?,alamat=?,kota=?,no_telp=?",6,new String[]{
                 Kd.getText(),Nm.getText(),Alamat.getText(),Kota.getText(),Telp.getText(),tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()
             })==true){
+                if(!Password.getText().trim().equals("")){
+                    Sequel.mengedit("password_perusahaan_pasien","kode_perusahaan=?","password=aes_encrypt(?,'windi')", 2,new String[]{
+                        Password.getText(),Kd.getText()
+                    });
+                }else{
+                    Sequel.meghapus("password_perusahaan_pasien","kode_perusahaan",Kd.getText());
+                }
+                
                 if(tbDokter.getSelectedRow()!= -1){
                     tbDokter.setValueAt(Kd.getText(),tbDokter.getSelectedRow(),0);
                     tbDokter.setValueAt(Nm.getText(),tbDokter.getSelectedRow(),1);
                     tbDokter.setValueAt(Alamat.getText(),tbDokter.getSelectedRow(),2);
                     tbDokter.setValueAt(Kota.getText(),tbDokter.getSelectedRow(),3);
                     tbDokter.setValueAt(Telp.getText(),tbDokter.getSelectedRow(),4);
+                    tbDokter.setValueAt(Password.getText(),tbDokter.getSelectedRow(),5);
                     emptTeks();
                 }
             }
@@ -642,7 +657,7 @@ public class DlgPerusahaan extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -678,8 +693,13 @@ public class DlgPerusahaan extends javax.swing.JDialog {
             if(Sequel.menyimpantf("perusahaan_pasien","?,?,?,?,?","Kode Instasi/Perusahaan",5,new String[]{
                 Kd.getText(),Nm.getText(),Alamat.getText(),Kota.getText(),Telp.getText()        
             })==true){
-                tabMode.addRow(new String[]{
-                    Kd.getText(),Nm.getText(),Alamat.getText(),Kota.getText(),Telp.getText() 
+                if(!Password.getText().trim().equals("")){
+                    Sequel.menyimpan("password_perusahaan_pasien","?,aes_encrypt(?,'windi')",2,new String[]{
+                        Kd.getText(),Password.getText()
+                    });
+                }
+                tabMode.addRow(new Object[]{
+                    Kd.getText(),Nm.getText(),Alamat.getText(),Kota.getText(),Telp.getText(),Password.getText()
                 });
                 LCount.setText(""+tabMode.getRowCount());
                 emptTeks();
@@ -745,8 +765,34 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_ChkInputActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
+        runBackground(() ->tampil());
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }  
     }//GEN-LAST:event_formWindowOpened
+
+    private void PasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PasswordKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PasswordKeyPressed
 
     /**
     * @param args the command line arguments
@@ -781,6 +827,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Label LCount;
     private widget.TextBox Nm;
     private javax.swing.JPanel PanelInput;
+    private widget.TextBox Password;
     private widget.TextBox TCari;
     private widget.TextBox Telp;
     private widget.InternalFrame internalFrame1;
@@ -789,6 +836,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Label label12;
     private widget.Label label18;
     private widget.Label label26;
+    private widget.Label label27;
     private widget.Label label29;
     private widget.Label label31;
     private widget.Label label9;
@@ -801,13 +849,15 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private void tampil() {
         Valid.tabelKosong(tabMode);
         try{
-            ps=koneksi.prepareStatement("select perusahaan_pasien.kode_perusahaan, perusahaan_pasien.nama_perusahaan, "+
-                    " perusahaan_pasien.alamat,perusahaan_pasien.kota, perusahaan_pasien.no_telp from perusahaan_pasien "+
-                    " where perusahaan_pasien.kode_perusahaan like ? or "+
-                    " perusahaan_pasien.nama_perusahaan like ? or "+
-                    " perusahaan_pasien.alamat like ? or "+
-                    " perusahaan_pasien.kota like ? or "+
-                    " perusahaan_pasien.no_telp like ? order by perusahaan_pasien.kode_perusahaan");
+            ps=koneksi.prepareStatement(
+                    "select perusahaan_pasien.kode_perusahaan, perusahaan_pasien.nama_perusahaan,perusahaan_pasien.alamat,perusahaan_pasien.kota,"+
+                    "perusahaan_pasien.no_telp,aes_decrypt(password_perusahaan_pasien.password,'windi') from perusahaan_pasien "+
+                    "left join password_perusahaan_pasien on perusahaan_pasien.kode_perusahaan=password_perusahaan_pasien.kode_perusahaan "+
+                    "where perusahaan_pasien.kode_perusahaan like ? or "+
+                    "perusahaan_pasien.nama_perusahaan like ? or "+
+                    "perusahaan_pasien.alamat like ? or "+
+                    "perusahaan_pasien.kota like ? or "+
+                    "perusahaan_pasien.no_telp like ? order by perusahaan_pasien.kode_perusahaan");
             try {
                 ps.setString(1,"%"+TCari.getText().trim()+"%");
                 ps.setString(2,"%"+TCari.getText().trim()+"%");
@@ -816,11 +866,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 ps.setString(5,"%"+TCari.getText().trim()+"%");
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new Object[]{rs.getString(1),
-                                   rs.getString(2),
-                                   rs.getString(3),
-                                   rs.getString(4),
-                                   rs.getString(5)});
+                    tabMode.addRow(new Object[]{
+                        rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6)
+                    });
                 }
             } catch (Exception e) {
                 System.out.println(e);
@@ -844,6 +892,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         Alamat.setText("");
         Kota.setText("");
         Telp.setText("0");
+        Password.setText("");
         
         Kd.requestFocus();
         Valid.autoNomer("perusahaan_pasien","I",4,Kd);
@@ -856,6 +905,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             Alamat.setText(tabMode.getValueAt(tbDokter.getSelectedRow(),2).toString());
             Kota.setText(tabMode.getValueAt(tbDokter.getSelectedRow(),3).toString());
             Telp.setText(tabMode.getValueAt(tbDokter.getSelectedRow(),4).toString());
+            Password.setText(tabMode.getValueAt(tbDokter.getSelectedRow(),5).toString());
         }
     }
 
@@ -884,4 +934,35 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }    
  
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

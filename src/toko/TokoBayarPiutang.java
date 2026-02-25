@@ -35,10 +35,14 @@ import java.sql.ResultSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -53,15 +57,15 @@ public final class TokoBayarPiutang extends javax.swing.JDialog {
     private validasi Valid=new validasi();    
     private Jurnal jur=new Jurnal();
     private Connection koneksi=koneksiDB.condb();
-    private TokoMember tokomember=new TokoMember(null,false);
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private double total=0,sisapiutang=0;
     private PreparedStatement ps;
     private ResultSet rs;
-    private String koderekening="",kontraakun=Sequel.cariIsi("select Piutang_Toko from set_akun");
+    private String koderekening="",kontraakun=Sequel.cariIsi("select set_akun.Piutang_Toko from set_akun");
     private boolean sukses=true;
     private File file;
     private FileWriter fileWriter;
-    private String iyem;
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
@@ -128,94 +132,29 @@ public final class TokoBayarPiutang extends javax.swing.JDialog {
         Kdmem.setDocument(new batasInput((byte)15).getKata(Kdmem));
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-            
-            Cicilan.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    Sisa.setText(Valid.SetAngka(sisapiutang));
-                    if(!Cicilan.getText().equals("")){                           
-                         Sisa.setText(Valid.SetAngka(sisapiutang-Double.parseDouble(Cicilan.getText())));                           
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    Sisa.setText(Valid.SetAngka(sisapiutang));
-                    if(!Cicilan.getText().equals("")){                           
-                         Sisa.setText(Valid.SetAngka(sisapiutang-Double.parseDouble(Cicilan.getText())));                           
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    Sisa.setText(Valid.SetAngka(sisapiutang));
-                    if(!Cicilan.getText().equals("")){                           
-                         Sisa.setText(Valid.SetAngka(sisapiutang-Double.parseDouble(Cicilan.getText())));                           
-                    }
-                }
-            });
-        }  
         
-        tokomember.addWindowListener(new WindowListener() {
+        Cicilan.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
             @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(tokomember.getTable().getSelectedRow()!= -1){                   
-                    Kdmem.setText(tokomember.getTable().getValueAt(tokomember.getTable().getSelectedRow(),1).toString());
-                    Nmmem.setText(tokomember.getTable().getValueAt(tokomember.getTable().getSelectedRow(),2).toString());
-                    sisapiutang=Sequel.cariIsiAngka("SELECT ifnull(SUM(tokopiutang.sisapiutang),0) FROM tokopiutang where tokopiutang.no_member=?",Kdmem.getText())
-                               - 
-                               Sequel.cariIsiAngka("SELECT ifnull(SUM(toko_bayar_piutang.besar_cicilan),0) FROM toko_bayar_piutang where toko_bayar_piutang.no_member=?",Kdmem.getText());
-                    Sisa.setText(Valid.SetAngka(sisapiutang));
-                    if(!Cicilan.getText().equals("")){                           
-                           Sisa.setText(Valid.SetAngka(sisapiutang-Double.parseDouble(Cicilan.getText())));                           
-                    }
-                    Sequel.cariIsi("select nota_piutang from tokopiutang where no_member=? order by tgl_piutang desc limit 1", NoNota,Kdmem.getText());
-                }  
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        tokomember.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    tokomember.dispose();
+            public void insertUpdate(DocumentEvent e) {
+                Sisa.setText(Valid.SetAngka(sisapiutang));
+                if(!Cicilan.getText().equals("")){                           
+                     Sisa.setText(Valid.SetAngka(sisapiutang-Double.parseDouble(Cicilan.getText())));                           
                 }
             }
             @Override
-            public void keyReleased(KeyEvent e) {}
+            public void removeUpdate(DocumentEvent e) {
+                Sisa.setText(Valid.SetAngka(sisapiutang));
+                if(!Cicilan.getText().equals("")){                           
+                     Sisa.setText(Valid.SetAngka(sisapiutang-Double.parseDouble(Cicilan.getText())));                           
+                }
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                Sisa.setText(Valid.SetAngka(sisapiutang));
+                if(!Cicilan.getText().equals("")){                           
+                     Sisa.setText(Valid.SetAngka(sisapiutang-Double.parseDouble(Cicilan.getText())));                           
+                }
+            }
         });
         
         ChkInput.setSelected(false);
@@ -746,9 +685,15 @@ public final class TokoBayarPiutang extends javax.swing.JDialog {
                         Keterangan.getText(),NoNota.getText(),koderekening,kontraakun
                     })==true){
                         Sequel.queryu("delete from tampjurnal");                    
-                        Sequel.menyimpan("tampjurnal","'"+kontraakun+"','BAYAR PIUTANG TOKO','0','"+Cicilan.getText()+"'","Rekening");    
-                        Sequel.menyimpan("tampjurnal","'"+koderekening+"','"+AkunBayar.getSelectedItem()+"','"+Cicilan.getText()+"','0'","Rekening"); 
-                        sukses=jur.simpanJurnal(NoNota.getText(),"U","BAYAR PIUTANG TOKO"+", OLEH "+akses.getkode());                   
+                        if(Sequel.menyimpantf2("tampjurnal","'"+kontraakun+"','BAYAR PIUTANG TOKO','0','"+Cicilan.getText()+"'","Rekening")==false){
+                            sukses=false;
+                        }    
+                        if(Sequel.menyimpantf2("tampjurnal","'"+koderekening+"','"+AkunBayar.getSelectedItem()+"','"+Cicilan.getText()+"','0'","Rekening")==false){
+                            sukses=false;
+                        } 
+                        if(sukses==true){
+                            sukses=jur.simpanJurnal(NoNota.getText(),"U","BAYAR PIUTANG TOKO"+", OLEH "+akses.getkode()); 
+                        }                     
                 }else{
                     sukses=false;
                 }  
@@ -797,9 +742,15 @@ public final class TokoBayarPiutang extends javax.swing.JDialog {
                     tbKamar.getValueAt(tbKamar.getSelectedRow(),6).toString(),tbKamar.getValueAt(tbKamar.getSelectedRow(),7).toString()
                 })==true){
                     Sequel.queryu("delete from tampjurnal");                    
-                    Sequel.menyimpan("tampjurnal","'"+tbKamar.getValueAt(tbKamar.getSelectedRow(),7).toString()+"','BAYAR PIUTANG TOKO','"+tbKamar.getValueAt(tbKamar.getSelectedRow(),3).toString()+"','0'","Rekening");    
-                    Sequel.menyimpan("tampjurnal","'"+tbKamar.getValueAt(tbKamar.getSelectedRow(),6).toString()+"','Kontra Akun','0','"+tbKamar.getValueAt(tbKamar.getSelectedRow(),3).toString()+"'","Rekening"); 
-                    sukses=jur.simpanJurnal(NoNota.getText(),"U","PEMBATALAN BAYAR PIUTANG TOKO"+", OLEH "+akses.getkode());     
+                    if(Sequel.menyimpantf2("tampjurnal","'"+tbKamar.getValueAt(tbKamar.getSelectedRow(),7).toString()+"','BAYAR PIUTANG TOKO','"+tbKamar.getValueAt(tbKamar.getSelectedRow(),3).toString()+"','0'","Rekening")==false){
+                        sukses=false;
+                    }    
+                    if(Sequel.menyimpantf2("tampjurnal","'"+tbKamar.getValueAt(tbKamar.getSelectedRow(),6).toString()+"','Kontra Akun','0','"+tbKamar.getValueAt(tbKamar.getSelectedRow(),3).toString()+"'","Rekening")==false){
+                        sukses=false;
+                    }
+                    if(sukses==true){
+                        sukses=jur.simpanJurnal(NoNota.getText(),"U","PEMBATALAN BAYAR PIUTANG TOKO"+", OLEH "+akses.getkode());
+                    }     
                 }else{
                     sukses=false;
                 }
@@ -888,7 +839,7 @@ public final class TokoBayarPiutang extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -998,7 +949,7 @@ private void KeteranganKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void SisaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SisaKeyPressed
@@ -1030,6 +981,49 @@ private void ppNotaPiutangBtnPrintActionPerformed(java.awt.event.ActionEvent evt
 }//GEN-LAST:event_ppNotaPiutangBtnPrintActionPerformed
 
 private void BtnSeekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeekActionPerformed
+        TokoMember tokomember=new TokoMember(null,false);
+        tokomember.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(tokomember.getTable().getSelectedRow()!= -1){                   
+                    Kdmem.setText(tokomember.getTable().getValueAt(tokomember.getTable().getSelectedRow(),1).toString());
+                    Nmmem.setText(tokomember.getTable().getValueAt(tokomember.getTable().getSelectedRow(),2).toString());
+                    sisapiutang=Sequel.cariIsiAngka("SELECT ifnull(SUM(tokopiutang.sisapiutang),0) FROM tokopiutang where tokopiutang.no_member=?",Kdmem.getText())
+                               - 
+                               Sequel.cariIsiAngka("SELECT ifnull(SUM(toko_bayar_piutang.besar_cicilan),0) FROM toko_bayar_piutang where toko_bayar_piutang.no_member=?",Kdmem.getText());
+                    Sisa.setText(Valid.SetAngka(sisapiutang));
+                    if(!Cicilan.getText().equals("")){                           
+                           Sisa.setText(Valid.SetAngka(sisapiutang-Double.parseDouble(Cicilan.getText())));                           
+                    }
+                    Sequel.cariIsi("select tokopiutang.nota_piutang from tokopiutang where tokopiutang.no_member=? order by tokopiutang.tgl_piutang desc limit 1", NoNota,Kdmem.getText());
+                }  
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        tokomember.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    tokomember.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         tokomember.emptTeks();
         tokomember.isCek();
         tokomember.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
@@ -1050,9 +1044,9 @@ private void BtnSeekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         if(NoNota.getText().trim().equals("")){
             Valid.textKosong(NoNota,"No.Tagihan/No.Rawat");
         }else{
-            if(Sequel.cariInteger("select count(nota_piutang) from tokopiutang where nota_piutang=?",NoNota.getText())>0){
-                Kdmem.setText(Sequel.cariIsi("select no_member from tokopiutang where nota_piutang=?",NoNota.getText()));
-                Nmmem.setText(Sequel.cariIsi("select nm_member from tokopiutang where nota_piutang=?",NoNota.getText()));
+            if(Sequel.cariInteger("select count(tokopiutang.nota_piutang) from tokopiutang where tokopiutang.nota_piutang=?",NoNota.getText())>0){
+                Kdmem.setText(Sequel.cariIsi("select tokopiutang.no_member from tokopiutang where tokopiutang.nota_piutang=?",NoNota.getText()));
+                Nmmem.setText(Sequel.cariIsi("select tokopiutang.nm_member from tokopiutang where tokopiutang.nota_piutang=?",NoNota.getText()));
                 sisapiutang=Sequel.cariIsiAngka("SELECT ifnull(SUM(tokopiutang.sisapiutang),0) FROM tokopiutang where tokopiutang.nota_piutang=?",NoNota.getText())
                         -Sequel.cariIsiAngka("SELECT ifnull(SUM(toko_bayar_piutang.besar_cicilan),0) FROM toko_bayar_piutang where toko_bayar_piutang.nota_piutang=?",NoNota.getText());
                 Sisa.setText(Valid.SetAngka(Valid.roundUp(sisapiutang,100)));
@@ -1064,6 +1058,28 @@ private void BtnSeekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         tampilAkunBayar();
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        } 
     }//GEN-LAST:event_formWindowOpened
 
     /**
@@ -1136,25 +1152,18 @@ private void BtnSeekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             ps=koneksi.prepareStatement(
                     "select toko_bayar_piutang.tgl_bayar, toko_bayar_piutang.no_member,tokomember.nama, toko_bayar_piutang.besar_cicilan,"+
                     "toko_bayar_piutang.catatan, toko_bayar_piutang.nota_piutang,toko_bayar_piutang.kd_rek,toko_bayar_piutang.kd_rek_kontra from toko_bayar_piutang "+
-                    "inner join tokomember on toko_bayar_piutang.no_member=tokomember.no_member where "+
-                    "toko_bayar_piutang.tgl_bayar between ? and ? and toko_bayar_piutang.nota_piutang like ? or "+
-                    "toko_bayar_piutang.tgl_bayar between ? and ? and toko_bayar_piutang.no_member like ? or "+
-                    "toko_bayar_piutang.tgl_bayar between ? and ? and tokomember.nama like ? or "+
-                    "toko_bayar_piutang.tgl_bayar between ? and ? and toko_bayar_piutang.tgl_bayar like ? "+
+                    "inner join tokomember on toko_bayar_piutang.no_member=tokomember.no_member where toko_bayar_piutang.tgl_bayar between ? and ? "+
+                    (TCari.getText().trim().equals("")?"":"and (toko_bayar_piutang.nota_piutang like ? or toko_bayar_piutang.no_member like ? or tokomember.nama like ?) ")+
                     "order by toko_bayar_piutang.tgl_bayar,toko_bayar_piutang.no_member");
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(3,"%"+TCari.getText()+"%");
-                ps.setString(4,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(5,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(6,"%"+TCari.getText()+"%");
-                ps.setString(7,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(8,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(9,"%"+TCari.getText()+"%");
-                ps.setString(10,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(11,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(12,"%"+TCari.getText()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(3,"%"+TCari.getText()+"%");
+                    ps.setString(4,"%"+TCari.getText()+"%");
+                    ps.setString(5,"%"+TCari.getText()+"%");
+                }
+                    
                 rs=ps.executeQuery();
                 total=0;
                 while(rs.next()){                
@@ -1249,14 +1258,14 @@ private void BtnSeekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
              file=new File("./cache/akunbayar.iyem");
              file.createNewFile();
              fileWriter = new FileWriter(file);
-             iyem="";
-             ps=koneksi.prepareStatement("select * from akun_bayar order by nama_bayar");
+             StringBuilder iyembuilder = new StringBuilder();
+             ps=koneksi.prepareStatement("select * from akun_bayar order by akun_bayar.nama_bayar");
              try{
                  rs=ps.executeQuery();
                  AkunBayar.removeAllItems();
                  while(rs.next()){    
                      AkunBayar.addItem(rs.getString(1).replaceAll("\"",""));
-                     iyem=iyem+"{\"NamaAkun\":\""+rs.getString(1).replaceAll("\"","")+"\",\"KodeRek\":\""+rs.getString(2)+"\",\"PPN\":\""+rs.getDouble(3)+"\"},";
+                     iyembuilder.append("{\"NamaAkun\":\"").append(rs.getString(1).replaceAll("\"","")).append("\",\"KodeRek\":\"").append(rs.getString(2)).append("\",\"PPN\":\"").append(rs.getDouble(3)).append("\"},");
                  }
              }catch (Exception e) {
                  System.out.println("Notifikasi : "+e);
@@ -1268,13 +1277,49 @@ private void BtnSeekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                      ps.close();
                  } 
              }
-
-             fileWriter.write("{\"akunbayar\":["+iyem.substring(0,iyem.length()-1)+"]}");
-             fileWriter.flush();
+             
+             if (iyembuilder.length() > 0) {
+                iyembuilder.setLength(iyembuilder.length() - 1);
+                fileWriter.write("{\"akunbayar\":["+iyembuilder+"]}");
+                fileWriter.flush();
+             }
+            
              fileWriter.close();
-             iyem=null;
+             iyembuilder=null;
         } catch (Exception e) {
             System.out.println("Notifikasi : "+e);
         }
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

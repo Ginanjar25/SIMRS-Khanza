@@ -23,8 +23,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -33,6 +37,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import simrskhanza.DlgCariBangsal;
 import simrskhanza.DlgCariPoli;
 
 /**
@@ -46,10 +51,7 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps;
     private ResultSet rs;    
-    private int i=0,pilih=0;
-    private SatuSehatCariOrganisasi organisasi=new SatuSehatCariOrganisasi(null,false);
-    private DlgCariPoli poli=new DlgCariPoli(null,false);
-    private DlgKamar kamar=new DlgKamar(null,false);
+    private int i=0;
     private String link="",json="";
     private ApiSatuSehat api=new ApiSatuSehat();
     private HttpHeaders headers ;
@@ -57,6 +59,8 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /** Creates new form DlgJnsPerawatanRalan
      * @param parent
@@ -329,178 +333,11 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
         Altitude.setDocument(new batasInput((byte)30).getKata(Altitude)); 
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));                  
         
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }  
-        
-        organisasi.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(organisasi.getTable().getSelectedRow()!= -1){                
-                    if(pilih==1){
-                        KodeDepartemen.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
-                        NamaDepartemen.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
-                        IDOrganisasi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
-                        KodeDepartemen.requestFocus();
-                    }else if(pilih==2){
-                        KodeDepartemenKamar.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
-                        NamaDepartemenKamar.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
-                        IDOrganisasiKamar.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
-                        KodeDepartemenKamar.requestFocus();
-                    }else if(pilih==3){
-                        KodeDepartemenRuangOK.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
-                        NamaDepartemenRuangOK.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
-                        IDOrganisasiRuangOK.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
-                        KodeDepartemenRuangOK.requestFocus();
-                    }else if(pilih==4){
-                        KodeDepartemenRuangLabPK.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
-                        NamaDepartemenRuangLabPK.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
-                        IDOrganisasiRuangLabPK.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
-                        KodeDepartemenRuangLabPK.requestFocus();
-                    }else if(pilih==5){
-                        KodeDepartemenRuangLabPA.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
-                        NamaDepartemenRuangLabPA.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
-                        IDOrganisasiRuangLabPA.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
-                        KodeDepartemenRuangLabPA.requestFocus();
-                    }else if(pilih==6){
-                        KodeDepartemenRuangLabMB.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
-                        NamaDepartemenRuangLabMB.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
-                        IDOrganisasiRuangLabMB.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
-                        KodeDepartemenRuangLabMB.requestFocus();
-                    }else if(pilih==7){
-                        KodeDepartemenRuangRadiologi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
-                        NamaDepartemenRuangRadiologi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
-                        IDOrganisasiRuangRadiologi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
-                        KodeDepartemenRuangRadiologi.requestFocus();
-                    }else if(pilih==8){
-                        KodeDepartemenFarmasi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
-                        NamaDepartemenFarmasi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
-                        IDOrganisasiFarmasi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
-                        KodeDepartemenFarmasi.requestFocus();
-                    }          
-                }
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        }); 
-        
-        poli.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(poli.getTable().getSelectedRow()!= -1){                    
-                    KodePoli.setText(poli.getTable().getValueAt(poli.getTable().getSelectedRow(),0).toString());
-                    NamaPoli.setText(poli.getTable().getValueAt(poli.getTable().getSelectedRow(),1).toString());
-                }
-                KodePoli.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        }); 
-        
-        kamar.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(kamar.getTable().getSelectedRow()!= -1){   
-                    KodeKamar.setText(kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(),1).toString());  
-                    NamaKamar.setText(kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(),3).toString()); 
-                }  
-                KodeKamar.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        kamar.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    kamar.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-        
-        kamar.bangsal.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(kamar.bangsal.getTable().getSelectedRow()!= -1){                    
-                    KodeFarmasi.setText(kamar.bangsal.getTable().getValueAt(kamar.bangsal.getTable().getSelectedRow(),0).toString());
-                    NamaFarmasi.setText(kamar.bangsal.getTable().getValueAt(kamar.bangsal.getTable().getSelectedRow(),1).toString());
-                }
-                KodeFarmasi.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        }); 
-        
         try {
             link=koneksiDB.URLFHIRSATUSEHAT();
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         }  
-    
     }
 
     /** This method is called from within the constructor to
@@ -1919,7 +1756,30 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDepartemenRSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartemenRSActionPerformed
-        pilih=1;
+        SatuSehatCariOrganisasi organisasi=new SatuSehatCariOrganisasi(null,false);
+        organisasi.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(organisasi.getTable().getSelectedRow()!= -1){   
+                    KodeDepartemen.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
+                    NamaDepartemen.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
+                    IDOrganisasi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
+                    KodeDepartemen.requestFocus();        
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
         organisasi.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         organisasi.setLocationRelativeTo(internalFrame1);
         organisasi.setVisible(true);
@@ -2036,7 +1896,7 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
                         if(Sequel.menyimpantf("satu_sehat_mapping_lokasi_ralan","?,?,?,?,?,?","Kode Poli/Kode Unit/ID Lokasi",6,new String[]{
                                 KodePoli.getText(),IDOrganisasi.getText(),response.asText(),Longitude.getText(),Latitude.getText(),Altitude.getText()
                             })==true){
-                            tabMode.addRow(new String[]{
+                            tabMode.addRow(new Object[]{
                                 KodePoli.getText(),NamaPoli.getText(),response.asText(),Longitude.getText(),Latitude.getText(),
                                 Altitude.getText(),KodeDepartemen.getText(),NamaDepartemen.getText(),IDOrganisasi.getText()
                             });
@@ -2156,7 +2016,7 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
                         if(Sequel.menyimpantf("satu_sehat_mapping_lokasi_ranap","?,?,?,?,?,?","Kode Kamar/Kode Ruang/ID Lokasi",6,new String[]{
                                 KodeKamar.getText(),IDOrganisasiKamar.getText(),response.asText(),LongitudeKamar.getText(),LatitudeKamar.getText(),AltitudeKamar.getText()
                             })==true){
-                            tabModeKamar.addRow(new String[]{
+                            tabModeKamar.addRow(new Object[]{
                                 KodeKamar.getText(),NamaKamar.getText(),response.asText(),LongitudeKamar.getText(),LatitudeKamar.getText(),
                                 AltitudeKamar.getText(),KodeDepartemenKamar.getText(),NamaDepartemenKamar.getText(),IDOrganisasiKamar.getText()
                             });
@@ -2275,7 +2135,7 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
                             if(Sequel.menyimpantf("satu_sehat_mapping_lokasi_ruangok","?,?,?,?,?","ID Lokasi",5,new String[]{
                                     IDOrganisasiRuangOK.getText(),response.asText(),LongitudeRuangOK.getText(),LatitudeRuangOK.getText(),AltitudeRuangOK.getText()
                                 })==true){
-                                tabModeRuangOK.addRow(new String[]{
+                                tabModeRuangOK.addRow(new Object[]{
                                     response.asText(),LongitudeRuangOK.getText(),LatitudeRuangOK.getText(),AltitudeRuangOK.getText(),KodeDepartemenRuangOK.getText(),NamaDepartemenRuangOK.getText(),IDOrganisasiRuangOK.getText()
                                 });
                                 emptTeks();
@@ -2396,7 +2256,7 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
                             if(Sequel.menyimpantf("satu_sehat_mapping_lokasi_ruanglab","?,?,?,?,?","ID Lokasi",5,new String[]{
                                     IDOrganisasiRuangLabPK.getText(),response.asText(),LongitudeRuangLabPK.getText(),LatitudeRuangLabPK.getText(),AltitudeRuangLabPK.getText()
                                 })==true){
-                                tabModeRuangLabPK.addRow(new String[]{
+                                tabModeRuangLabPK.addRow(new Object[]{
                                     response.asText(),LongitudeRuangLabPK.getText(),LatitudeRuangLabPK.getText(),AltitudeRuangLabPK.getText(),KodeDepartemenRuangLabPK.getText(),NamaDepartemenRuangLabPK.getText(),IDOrganisasiRuangLabPK.getText()
                                 });
                                 emptTeks();
@@ -2517,7 +2377,7 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
                             if(Sequel.menyimpantf("satu_sehat_mapping_lokasi_ruanglabpa","?,?,?,?,?","ID Lokasi",5,new String[]{
                                     IDOrganisasiRuangLabPA.getText(),response.asText(),LongitudeRuangLabPA.getText(),LatitudeRuangLabPA.getText(),AltitudeRuangLabPA.getText()
                                 })==true){
-                                tabModeRuangLabPA.addRow(new String[]{
+                                tabModeRuangLabPA.addRow(new Object[]{
                                     response.asText(),LongitudeRuangLabPA.getText(),LatitudeRuangLabPA.getText(),AltitudeRuangLabPA.getText(),KodeDepartemenRuangLabPA.getText(),NamaDepartemenRuangLabPA.getText(),IDOrganisasiRuangLabPA.getText()
                                 });
                                 emptTeks();
@@ -2638,7 +2498,7 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
                             if(Sequel.menyimpantf("satu_sehat_mapping_lokasi_ruanglabmb","?,?,?,?,?","ID Lokasi",5,new String[]{
                                     IDOrganisasiRuangLabMB.getText(),response.asText(),LongitudeRuangLabMB.getText(),LatitudeRuangLabMB.getText(),AltitudeRuangLabMB.getText()
                                 })==true){
-                                tabModeRuangLabMB.addRow(new String[]{
+                                tabModeRuangLabMB.addRow(new Object[]{
                                     response.asText(),LongitudeRuangLabMB.getText(),LatitudeRuangLabMB.getText(),AltitudeRuangLabMB.getText(),KodeDepartemenRuangLabMB.getText(),NamaDepartemenRuangLabMB.getText(),IDOrganisasiRuangLabMB.getText()
                                 });
                                 emptTeks();
@@ -2759,7 +2619,7 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
                             if(Sequel.menyimpantf("satu_sehat_mapping_lokasi_ruangrad","?,?,?,?,?","ID Lokasi",5,new String[]{
                                     IDOrganisasiRuangRadiologi.getText(),response.asText(),LongitudeRuangRadiologi.getText(),LatitudeRuangRadiologi.getText(),AltitudeRuangRadiologi.getText()
                                 })==true){
-                                tabModeRuangRadiologi.addRow(new String[]{
+                                tabModeRuangRadiologi.addRow(new Object[]{
                                     response.asText(),LongitudeRuangRadiologi.getText(),LatitudeRuangRadiologi.getText(),AltitudeRuangRadiologi.getText(),KodeDepartemenRuangRadiologi.getText(),NamaDepartemenRuangRadiologi.getText(),IDOrganisasiRuangRadiologi.getText()
                                 });
                                 emptTeks();
@@ -2882,7 +2742,7 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
                         if(Sequel.menyimpantf("satu_sehat_mapping_lokasi_depo_farmasi","?,?,?,?,?,?","Kode Depo/Kode Farmasi",6,new String[]{
                                 KodeFarmasi.getText(),IDOrganisasiFarmasi.getText(),response.asText(),LongitudeFarmasi.getText(),LatitudeFarmasi.getText(),AltitudeFarmasi.getText()
                             })==true){
-                            tabModeRuangFarmasi.addRow(new String[]{
+                            tabModeRuangFarmasi.addRow(new Object[]{
                                 KodeFarmasi.getText(),NamaFarmasi.getText(),response.asText(),LongitudeFarmasi.getText(),LatitudeFarmasi.getText(),
                                 AltitudeFarmasi.getText(),KodeDepartemenFarmasi.getText(),NamaDepartemenFarmasi.getText(),IDOrganisasiFarmasi.getText()
                             });
@@ -5053,7 +4913,7 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             TCari.setText("");
-            tampil();
+            runBackground(() ->tampil());
         }else{
             Valid.pindah(evt, BtnPrint, BtnKeluar);
         }
@@ -5069,8 +4929,30 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
 }//GEN-LAST:event_tbJnsPerawatanMouseClicked
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
+        runBackground(() ->tampil());
         emptTeks();
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        TabRawatMouseClicked(null);
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        TabRawatMouseClicked(null);
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        TabRawatMouseClicked(null);
+                    }
+                }
+            });
+        }
     }//GEN-LAST:event_formWindowOpened
 
     private void tbJnsPerawatanKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbJnsPerawatanKeyReleased
@@ -5085,6 +4967,29 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
     }//GEN-LAST:event_tbJnsPerawatanKeyReleased
 
     private void btnPoliRSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPoliRSActionPerformed
+        DlgCariPoli poli=new DlgCariPoli(null,false);
+        poli.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(poli.getTable().getSelectedRow()!= -1){                    
+                    KodePoli.setText(poli.getTable().getValueAt(poli.getTable().getSelectedRow(),0).toString());
+                    NamaPoli.setText(poli.getTable().getValueAt(poli.getTable().getSelectedRow(),1).toString());
+                }
+                KodePoli.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        }); 
         poli.isCek();
         poli.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         poli.setLocationRelativeTo(internalFrame1);
@@ -5097,26 +5002,49 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
 
     private void TabRawatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabRawatMouseClicked
         if(TabRawat.getSelectedIndex()==0){
-            tampil();
+            runBackground(() ->tampil());
         }else if(TabRawat.getSelectedIndex()==1){
-            tampilkamar();
+            runBackground(() ->tampilkamar());
         }else if(TabRawat.getSelectedIndex()==2){
-            tampilruangok();
+            runBackground(() ->tampilruangok());
         }else if(TabRawat.getSelectedIndex()==3){
-            tampilruanglabpk();
+            runBackground(() ->tampilruanglabpk());
         }else if(TabRawat.getSelectedIndex()==4){
-            tampilruanglabpa();
+            runBackground(() ->tampilruanglabpa());
         }else if(TabRawat.getSelectedIndex()==5){
-            tampilruanglabmb();
+            runBackground(() ->tampilruanglabmb());
         }else if(TabRawat.getSelectedIndex()==6){
-            tampilruangradiologi();
+            runBackground(() ->tampilruangradiologi());
         }else if(TabRawat.getSelectedIndex()==7){
-            tampilruangfarmasi();
+            runBackground(() ->tampilruangfarmasi());
         }
     }//GEN-LAST:event_TabRawatMouseClicked
 
     private void btnDepartemenKamarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartemenKamarActionPerformed
-        pilih=2;
+        SatuSehatCariOrganisasi organisasi=new SatuSehatCariOrganisasi(null,false);
+        organisasi.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(organisasi.getTable().getSelectedRow()!= -1){   
+                    KodeDepartemenKamar.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
+                    NamaDepartemenKamar.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
+                    IDOrganisasiKamar.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
+                    KodeDepartemenKamar.requestFocus();     
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
         organisasi.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         organisasi.setLocationRelativeTo(internalFrame1);
         organisasi.setVisible(true);
@@ -5127,10 +5055,46 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
     }//GEN-LAST:event_btnDepartemenKamarKeyPressed
 
     private void btnKamarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKamarActionPerformed
+        DlgKamar kamar=new DlgKamar(null,false);
+        kamar.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(kamar.getTable().getSelectedRow()!= -1){   
+                    KodeKamar.setText(kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(),1).toString());  
+                    NamaKamar.setText(kamar.getTable().getValueAt(kamar.getTable().getSelectedRow(),3).toString()); 
+                }  
+                KodeKamar.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        kamar.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    kamar.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         kamar.load();
         kamar.isCek();
         kamar.emptTeks();
-        kamar.tampil();
+        kamar.tampil2();
         kamar.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         kamar.setLocationRelativeTo(internalFrame1);
         kamar.setVisible(true);
@@ -5185,7 +5149,30 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
     }//GEN-LAST:event_AltitudeKamarKeyPressed
 
     private void btnDepartemenRuangOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartemenRuangOKActionPerformed
-        pilih=3;
+        SatuSehatCariOrganisasi organisasi=new SatuSehatCariOrganisasi(null,false);
+        organisasi.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(organisasi.getTable().getSelectedRow()!= -1){    
+                    KodeDepartemenRuangOK.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
+                    NamaDepartemenRuangOK.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
+                    IDOrganisasiRuangOK.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
+                    KodeDepartemenRuangOK.requestFocus();        
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
         organisasi.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         organisasi.setLocationRelativeTo(internalFrame1);
         organisasi.setVisible(true);
@@ -5228,7 +5215,30 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
     }//GEN-LAST:event_tbLokasiRuangOKKeyReleased
 
     private void btnDepartemenRuangLabPKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartemenRuangLabPKActionPerformed
-        pilih=4;
+        SatuSehatCariOrganisasi organisasi=new SatuSehatCariOrganisasi(null,false);
+        organisasi.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(organisasi.getTable().getSelectedRow()!= -1){ 
+                    KodeDepartemenRuangLabPK.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
+                    NamaDepartemenRuangLabPK.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
+                    IDOrganisasiRuangLabPK.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
+                    KodeDepartemenRuangLabPK.requestFocus();         
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
         organisasi.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         organisasi.setLocationRelativeTo(internalFrame1);
         organisasi.setVisible(true);
@@ -5271,7 +5281,30 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
     }//GEN-LAST:event_tbLokasiRuangLabPKKeyReleased
 
     private void btnDepartemenRuangLabPAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartemenRuangLabPAActionPerformed
-        pilih=5;
+        SatuSehatCariOrganisasi organisasi=new SatuSehatCariOrganisasi(null,false);
+        organisasi.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(organisasi.getTable().getSelectedRow()!= -1){ 
+                    KodeDepartemenRuangLabPA.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
+                    NamaDepartemenRuangLabPA.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
+                    IDOrganisasiRuangLabPA.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
+                    KodeDepartemenRuangLabPA.requestFocus();        
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
         organisasi.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         organisasi.setLocationRelativeTo(internalFrame1);
         organisasi.setVisible(true);
@@ -5314,7 +5347,30 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
     }//GEN-LAST:event_tbLokasiRuangLabPAKeyReleased
 
     private void btnDepartemenRuangLabMBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartemenRuangLabMBActionPerformed
-        pilih=6;
+        SatuSehatCariOrganisasi organisasi=new SatuSehatCariOrganisasi(null,false);
+        organisasi.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(organisasi.getTable().getSelectedRow()!= -1){   
+                    KodeDepartemenRuangLabMB.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
+                    NamaDepartemenRuangLabMB.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
+                    IDOrganisasiRuangLabMB.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
+                    KodeDepartemenRuangLabMB.requestFocus();        
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
         organisasi.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         organisasi.setLocationRelativeTo(internalFrame1);
         organisasi.setVisible(true);
@@ -5357,7 +5413,30 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
     }//GEN-LAST:event_tbLokasiRuangLabMBKeyReleased
 
     private void btnDepartemenRuangRadiologiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartemenRuangRadiologiActionPerformed
-        pilih=7;
+        SatuSehatCariOrganisasi organisasi=new SatuSehatCariOrganisasi(null,false);
+        organisasi.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(organisasi.getTable().getSelectedRow()!= -1){   
+                    KodeDepartemenRuangRadiologi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
+                    NamaDepartemenRuangRadiologi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
+                    IDOrganisasiRuangRadiologi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
+                    KodeDepartemenRuangRadiologi.requestFocus();    
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
         organisasi.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         organisasi.setLocationRelativeTo(internalFrame1);
         organisasi.setVisible(true);
@@ -5400,7 +5479,30 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
     }//GEN-LAST:event_tbLokasiRuangRadiologiKeyReleased
 
     private void btnDepartemenFarmasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDepartemenFarmasiActionPerformed
-        pilih=8;
+        SatuSehatCariOrganisasi organisasi=new SatuSehatCariOrganisasi(null,false);
+        organisasi.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(organisasi.getTable().getSelectedRow()!= -1){ 
+                    KodeDepartemenFarmasi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),0).toString());
+                    NamaDepartemenFarmasi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),1).toString());
+                    IDOrganisasiFarmasi.setText(organisasi.getTable().getValueAt(organisasi.getTable().getSelectedRow(),2).toString());
+                    KodeDepartemenFarmasi.requestFocus();
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
         organisasi.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         organisasi.setLocationRelativeTo(internalFrame1);
         organisasi.setVisible(true);
@@ -5411,10 +5513,33 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
     }//GEN-LAST:event_btnDepartemenFarmasiKeyPressed
 
     private void btnFarmasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFarmasiActionPerformed
-        kamar.bangsal.isCek();
-        kamar.bangsal.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        kamar.bangsal.setLocationRelativeTo(internalFrame1);
-        kamar.bangsal.setVisible(true);
+        DlgCariBangsal bangsal=new DlgCariBangsal(null,false);
+        bangsal.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(bangsal.getTable().getSelectedRow()!= -1){                    
+                    KodeFarmasi.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),0).toString());
+                    NamaFarmasi.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),1).toString());
+                }
+                KodeFarmasi.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        }); 
+        bangsal.isCek();
+        bangsal.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        bangsal.setLocationRelativeTo(internalFrame1);
+        bangsal.setVisible(true);
     }//GEN-LAST:event_btnFarmasiActionPerformed
 
     private void btnFarmasiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnFarmasiKeyPressed
@@ -6091,5 +6216,37 @@ public final class SatuSehatMapingLokasi extends javax.swing.JDialog {
            NamaDepartemenFarmasi.setText(tbLokasiFarmasi.getValueAt(tbLokasiFarmasi.getSelectedRow(),7).toString());
            IDOrganisasiFarmasi.setText(tbLokasiFarmasi.getValueAt(tbLokasiFarmasi.getSelectedRow(),8).toString());
         }
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

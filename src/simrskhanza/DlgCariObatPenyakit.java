@@ -32,10 +32,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -57,6 +62,8 @@ public final class DlgCariObatPenyakit extends javax.swing.JDialog {
     private int z=0,row;
     private String aktifkanbatch="no",hppfarmasi="";
     private boolean sukses=true;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     /** Creates new form DlgPenyakit
      * @param parent
      * @param modal */
@@ -128,43 +135,8 @@ public final class DlgCariObatPenyakit extends javax.swing.JDialog {
         }
         warna.kolom=4;
         tbKamar.setDefaultRenderer(Object.class,warna);
-        TNoRw.setDocument(new batasInput((byte)20).getKata(TNoRw));        
+        TNoRw.setDocument(new batasInput((byte)20).getKata(TNoRw)); 
         
-        penyakit.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(penyakit.getTable().getSelectedRow()!= -1){                   
-                    PenyakitCari.setText(penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),1).toString());
-                }    
-                PenyakitCari.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        penyakit.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    penyakit.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-         
         try {
             aktifkanbatch = koneksiDB.AKTIFKANBATCHOBAT();
         } catch (Exception e) {
@@ -180,7 +152,6 @@ public final class DlgCariObatPenyakit extends javax.swing.JDialog {
 
         jam();
     }
-    public DlgCariPenyakit penyakit=new DlgCariPenyakit(null,false);
     
     private String[] hlm;
 
@@ -496,7 +467,7 @@ public final class DlgCariObatPenyakit extends javax.swing.JDialog {
 
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -509,7 +480,7 @@ public final class DlgCariObatPenyakit extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         PenyakitCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -553,6 +524,41 @@ private void PenyakitCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:ev
 }//GEN-LAST:event_PenyakitCariKeyPressed
 
 private void BtnSeek3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeek3ActionPerformed
+        DlgCariPenyakit penyakit=new DlgCariPenyakit(null,false);
+        penyakit.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(penyakit.getTable().getSelectedRow()!= -1){                   
+                    PenyakitCari.setText(penyakit.getTable().getValueAt(penyakit.getTable().getSelectedRow(),1).toString());
+                }    
+                PenyakitCari.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        penyakit.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    penyakit.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         penyakit.emptTeks();
         penyakit.isCek();
         penyakit.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
@@ -682,7 +688,29 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_BtnSimpanActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
+        runBackground(() ->tampil());
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            PenyakitCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(PenyakitCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(PenyakitCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(PenyakitCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        } 
     }//GEN-LAST:event_formWindowOpened
 
     private void tbKamarPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tbKamarPropertyChange
@@ -779,7 +807,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         ps.setString(3,"%"+PenyakitCari.getText()+"%");
                         rs=ps.executeQuery();
                         while(rs.next()){
-                            tabMode.addRow(new String[]{
+                            tabMode.addRow(new Object[]{
                                 rs.getString("kode_brng"),rs.getString("nama_brng"),rs.getString("nama"),rs.getString("harga"),"","0","0","0",
                                 rs.getString("kd_penyakit"),rs.getString("nm_penyakit"),rs.getString("ciri_ciri"),rs.getString("keterangan"),rs.getString("nm_kategori"),
                                 rs.getString("ciri_umum"),rs.getString("referensi"),rs.getString("dasar"),rs.getString("stok"),rs.getString("no_batch"),rs.getString("no_faktur")
@@ -790,7 +818,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         ps.setString(2,"%"+PenyakitCari.getText()+"%");
                         rs=ps.executeQuery();
                         while(rs.next()){
-                            tabMode.addRow(new String[]{
+                            tabMode.addRow(new Object[]{
                                 rs.getString("kode_brng"),rs.getString("nama_brng"),rs.getString("nama"),rs.getString("ralan"),"","0","0","0",
                                 rs.getString("kd_penyakit"),rs.getString("nm_penyakit"),rs.getString("ciri_ciri"),rs.getString("keterangan"),rs.getString("nm_kategori"),
                                 rs.getString("ciri_umum"),rs.getString("referensi"),rs.getString("dasar"),rs.getString("stok"),rs.getString("no_batch"),rs.getString("no_faktur")
@@ -859,7 +887,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         ps.setString(3,"%"+PenyakitCari.getText()+"%");
                         rs=ps.executeQuery();
                         while(rs.next()){
-                            tabMode.addRow(new String[]{
+                            tabMode.addRow(new Object[]{
                                 rs.getString("kode_brng"),rs.getString("nama_brng"),rs.getString("nama"),rs.getString("harga"),"","0","0","0",
                                 rs.getString("kd_penyakit"),rs.getString("nm_penyakit"),rs.getString("ciri_ciri"),rs.getString("keterangan"),rs.getString("nm_kategori"),
                                 rs.getString("ciri_umum"),rs.getString("referensi"),rs.getString("dasar"),rs.getString("stok"),"",""
@@ -870,7 +898,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         ps.setString(2,"%"+PenyakitCari.getText()+"%");
                         rs=ps.executeQuery();
                         while(rs.next()){
-                            tabMode.addRow(new String[]{
+                            tabMode.addRow(new Object[]{
                                 rs.getString("kode_brng"),rs.getString("nama_brng"),rs.getString("nama"),rs.getString("ralan"),"","0","0","0",
                                 rs.getString("kd_penyakit"),rs.getString("nm_penyakit"),rs.getString("ciri_ciri"),rs.getString("keterangan"),rs.getString("nm_kategori"),
                                 rs.getString("ciri_umum"),rs.getString("referensi"),rs.getString("dasar"),rs.getString("stok"),"",""
@@ -1006,7 +1034,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     
     public void setNoRm(String norwt,String penyakit) {
         PenyakitCari.setText(penyakit);
-        tampil();
+        runBackground(() ->tampil());
         TNoRw.setText(norwt);
         Sequel.cariIsi("select reg_periksa.no_rkm_medis from reg_periksa where reg_periksa.no_rawat=? ",Kd2,TNoRw.getText());
         Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=? ",TPasien,Kd2.getText());
@@ -1073,5 +1101,36 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         new Timer(1000, taskPerformer).start();
     }
     
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 
 }

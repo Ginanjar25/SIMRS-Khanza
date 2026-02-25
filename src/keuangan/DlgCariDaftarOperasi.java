@@ -27,7 +27,11 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -42,15 +46,16 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement pstindakan,psset_tarif;
     private ResultSet rs,rsset_tarif;
-    private int i=0,jml=0;
+    private int i=0;
     private String kelas_operasi="Yes",kelas="",cara_bayar_operasi="Yes",kd_pj="";
     private File file;
     private FileWriter fileWriter;
-    private String iyem;
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
     private FileReader myObj;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     /** Creates new form DlgPenyakit
      * @param parent
      * @param modal */
@@ -60,24 +65,13 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
         this.setLocation(10,2);
         setSize(656,250);
         tabMode=new DefaultTableModel(null,new Object[]{
-                "Kode Paket","Nama Operasi","Kategori","Operator 1","Operator 2","Operator 3",
-                "Asisten Op 1","Asisten Op 2","Asisten Op 3","Instrumen","dr Anak","Perawat Resus","dr Anastesi",
-                "Asisten Anast 1","Asisten Anast 2","Bidan 1","Bidan 2","Bidan 3","Perawat Luar","Alat","Sewa OK/VK",
-                "Akomodasi","N.M.S.","Onloop 1","Onloop 2","Onloop 3","Onloop 4","Onloop 5",
-                "Sarpras","dr Pj Anak","dr Umum","Tarif"
+                "Kode Paket","Nama Operasi","Kategori","Tarif"
             }){
             @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 return false;
              }
              Class[] types = new Class[] {
-                 java.lang.Object.class,java.lang.Object.class,java.lang.Object.class, java.lang.Double.class, 
-                 java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, 
-                 java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, 
-                 java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, 
-                 java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, 
-                 java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, 
-                 java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, 
-                 java.lang.Double.class, java.lang.Double.class, java.lang.Double.class, java.lang.Double.class
+                 java.lang.Object.class,java.lang.Object.class,java.lang.Object.class, java.lang.Double.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -89,7 +83,7 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
         tbKamar.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbKamar.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 32; i++) {
+        for (i = 0; i < 4; i++) {
             TableColumn column = tbKamar.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(100);
@@ -97,64 +91,13 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
                 column.setPreferredWidth(350);
             }else if(i==2){
                 column.setPreferredWidth(100);
-            }else if(i==31){
+            }else if(i==3){
                 column.setPreferredWidth(85);
-            }else{
-                column.setMinWidth(0);
-                column.setMaxWidth(0);
             }
         }
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable());
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil2();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil2();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil2();
-                    }
-                }
-            });
-        } 
-        
-        try {
-            psset_tarif=koneksi.prepareStatement("select * from set_tarif");
-            try {
-                rsset_tarif=psset_tarif.executeQuery();
-                if(rsset_tarif.next()){
-                    cara_bayar_operasi=rsset_tarif.getString("cara_bayar_operasi");
-                    kelas_operasi=rsset_tarif.getString("kelas_operasi");
-                }else{
-                    cara_bayar_operasi="Yes";
-                    kelas_operasi="Yes";
-                }  
-            } catch (Exception e) {
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rsset_tarif != null){
-                    rsset_tarif.close();
-                }
-                if(psset_tarif != null){
-                    psset_tarif.close();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        } 
     }
 
 
@@ -323,7 +266,7 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil2();
+        runBackground(() ->tampil2());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -387,7 +330,53 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
     }//GEN-LAST:event_formWindowActivated
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        //tampil();
+        try {
+            psset_tarif=koneksi.prepareStatement("select * from set_tarif");
+            try {
+                rsset_tarif=psset_tarif.executeQuery();
+                if(rsset_tarif.next()){
+                    cara_bayar_operasi=rsset_tarif.getString("cara_bayar_operasi");
+                    kelas_operasi=rsset_tarif.getString("kelas_operasi");
+                }else{
+                    cara_bayar_operasi="Yes";
+                    kelas_operasi="Yes";
+                }  
+            } catch (Exception e) {
+                System.out.println("Notifikasi : "+e);
+            }finally{
+                if(rsset_tarif != null){
+                    rsset_tarif.close();
+                }
+                if(psset_tarif != null){
+                    psset_tarif.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notifikasi : "+e);
+        } 
+        
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+            });
+        }
     }//GEN-LAST:event_formWindowOpened
 
     /**
@@ -426,29 +415,22 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
             file=new File("./cache/paketoperasi.iyem");
             file.createNewFile();
             fileWriter = new FileWriter(file);
-            iyem="";
+            StringBuilder iyembuilder = new StringBuilder();
             pstindakan=koneksi.prepareStatement(
                    "select paket_operasi.kode_paket,paket_operasi.nm_perawatan,paket_operasi.kategori,paket_operasi.kd_pj,paket_operasi.kelas,"+
-                   "paket_operasi.operator1,paket_operasi.operator2,paket_operasi.operator3,paket_operasi.asisten_operator1,paket_operasi.asisten_operator2,"+
-                   "paket_operasi.asisten_operator3,paket_operasi.instrumen,paket_operasi.dokter_anak,paket_operasi.perawaat_resusitas,"+
-                   "paket_operasi.dokter_anestesi,paket_operasi.asisten_anestesi,paket_operasi.asisten_anestesi2,paket_operasi.bidan,paket_operasi.bidan2,"+
-                   "paket_operasi.bidan3,paket_operasi.perawat_luar,paket_operasi.alat,paket_operasi.sewa_ok,paket_operasi.akomodasi,paket_operasi.bagian_rs,"+
-                   "paket_operasi.omloop,paket_operasi.omloop2,paket_operasi.omloop3,paket_operasi.omloop4,paket_operasi.omloop5,paket_operasi.sarpras,"+
-                   "paket_operasi.dokter_pjanak,paket_operasi.dokter_umum from paket_operasi where paket_operasi.status='1' order by paket_operasi.nm_perawatan ");
+                   "(paket_operasi.operator1+paket_operasi.operator2+paket_operasi.operator3+paket_operasi.asisten_operator1+paket_operasi.asisten_operator2+"+
+                   "paket_operasi.asisten_operator3+paket_operasi.instrumen+paket_operasi.dokter_anak+paket_operasi.perawaat_resusitas+"+
+                   "paket_operasi.dokter_anestesi+paket_operasi.asisten_anestesi+paket_operasi.asisten_anestesi2+paket_operasi.bidan+paket_operasi.bidan2+"+
+                   "paket_operasi.bidan3+paket_operasi.perawat_luar+paket_operasi.alat+paket_operasi.sewa_ok+paket_operasi.akomodasi+paket_operasi.bagian_rs+"+
+                   "paket_operasi.omloop+paket_operasi.omloop2+paket_operasi.omloop3+paket_operasi.omloop4+paket_operasi.omloop5+paket_operasi.sarpras+"+
+                   "paket_operasi.dokter_pjanak+paket_operasi.dokter_umum) as total from paket_operasi where paket_operasi.status='1' order by paket_operasi.nm_perawatan ");
             try {
                 rs=pstindakan.executeQuery();
                 while(rs.next()){
-                    iyem=iyem+"{\"KodePaket\":\""+rs.getString("kode_paket")+"\",\"NamaOperasi\":\""+rs.getString("nm_perawatan").replaceAll("\"","")+"\",\"Kategori\":\""+rs.getString("kategori")+"\",\"Operator1\":\""+rs.getString("operator1")+
-                            "\",\"Operator2\":\""+rs.getString("operator2")+"\",\"Operator3\":\""+rs.getString("operator3")+"\",\"AsistenOp1\":\""+rs.getString("asisten_operator1")+"\",\"AsistenOp2\":\""+rs.getString("asisten_operator2")+
-                            "\",\"AsistenOp3\":\""+rs.getString("asisten_operator3")+"\",\"Instrumen\":\""+rs.getString("instrumen")+"\",\"drAnak\":\""+rs.getString("dokter_anak")+"\",\"PerawatResus\":\""+rs.getString("perawaat_resusitas")+
-                            "\",\"drAnastesi\":\""+rs.getString("dokter_anestesi")+"\",\"AsistenAnast1\":\""+rs.getString("asisten_anestesi")+"\",\"AsistenAnast2\":\""+rs.getString("asisten_anestesi2")+"\",\"Bidan1\":\""+rs.getString("bidan")+
-                            "\",\"Bidan2\":\""+rs.getString("bidan2")+"\",\"Bidan3\":\""+rs.getString("bidan3")+"\",\"PerawatLuar\":\""+rs.getString("perawat_luar")+"\",\"Alat\":\""+rs.getString("alat")+"\",\"SewaOK/VK\":\""+rs.getString("sewa_ok")+
-                            "\",\"Akomodasi\":\""+rs.getString("akomodasi")+"\",\"NMS\":\""+rs.getString("bagian_rs")+"\",\"Onloop1\":\""+rs.getString("omloop")+"\",\"Onloop2\":\""+rs.getString("omloop2")+"\",\"Onloop3\":\""+rs.getString("omloop3")+
-                            "\",\"Onloop4\":\""+rs.getString("omloop4")+"\",\"Onloop5\":\""+rs.getString("omloop5")+"\",\"Sarpras\":\""+rs.getString("sarpras")+"\",\"drPjAnak\":\""+rs.getString("dokter_pjanak")+"\",\"drUmum\":\""+rs.getString("dokter_umum")+
-                            "\",\"Total\":\""+(rs.getDouble("operator1")+rs.getDouble("operator2")+rs.getDouble("operator3")+rs.getDouble("asisten_operator1")+rs.getDouble("asisten_operator2")+rs.getDouble("asisten_operator3")+rs.getDouble("instrumen")+
-                            rs.getDouble("dokter_anak")+rs.getDouble("perawaat_resusitas")+rs.getDouble("alat")+rs.getDouble("dokter_anestesi")+rs.getDouble("asisten_anestesi")+rs.getDouble("asisten_anestesi2")+rs.getDouble("bidan")+rs.getDouble("bidan2")+
-                            rs.getDouble("bidan3")+rs.getDouble("perawat_luar")+rs.getDouble("sewa_ok")+rs.getDouble("akomodasi")+rs.getDouble("bagian_rs")+rs.getDouble("omloop")+rs.getDouble("omloop2")+rs.getDouble("omloop3")+rs.getDouble("omloop4")+
-                            rs.getDouble("omloop5")+rs.getDouble("sarpras")+rs.getDouble("dokter_pjanak")+rs.getDouble("dokter_umum"))+"\",\"KodePJ\":\""+rs.getString("kd_pj")+"\",\"Kelas\":\""+rs.getString("kelas")+"\"},";
+                    tabMode.addRow(new Object[]{
+                        rs.getString("kode_paket"),rs.getString("nm_perawatan"),rs.getString("kategori"),rs.getDouble("total")
+                    });
+                    iyembuilder.append("{\"KodePaket\":\"").append(rs.getString("kode_paket")).append("\",\"NamaOperasi\":\"").append(rs.getString("nm_perawatan").replaceAll("\"","")).append("\",\"Kategori\":\"").append(rs.getString("kategori")).append("\",\"Total\":\"").append(rs.getDouble("total")).append("\",\"KodePJ\":\"").append(rs.getString("kd_pj")).append("\",\"Kelas\":\"").append(rs.getString("kelas")).append("\"},");
                 }
             } catch (Exception e) {
                 System.out.println("Notifikasi : "+e);
@@ -460,10 +442,14 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
                     pstindakan.close();
                 }
             }   
-            fileWriter.write("{\"paketoperasi\":["+iyem.substring(0,iyem.length()-1)+"]}");
-            fileWriter.flush();
+            if (iyembuilder.length() > 0) {
+                iyembuilder.setLength(iyembuilder.length() - 1);
+                fileWriter.write("{\"paketoperasi\":["+iyembuilder+"]}");
+                fileWriter.flush();
+            }
+            
             fileWriter.close();
-            iyem=null;
+            iyembuilder=null;
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
@@ -481,7 +467,7 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
                         for(JsonNode list:response){
                             if(list.path("KodePJ").asText().equals(kd_pj.trim())||list.path("KodePJ").asText().equals("-")){
                                 tabMode.addRow(new Object[]{
-                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Operator1").asDouble(),list.path("Operator2").asDouble(),list.path("Operator3").asDouble(),list.path("AsistenOp1").asDouble(),list.path("AsistenOp2").asDouble(),list.path("AsistenOp3").asDouble(),list.path("Instrumen").asDouble(),list.path("drAnak").asDouble(),list.path("PerawatResus").asDouble(),list.path("drAnastesi").asDouble(),list.path("AsistenAnast1").asDouble(),list.path("AsistenAnast2").asDouble(),list.path("Bidan1").asDouble(),list.path("Bidan2").asDouble(),list.path("Bidan3").asDouble(),list.path("PerawatLuar").asDouble(),list.path("Alat").asDouble(),list.path("SewaOK/VK").asDouble(),list.path("Akomodasi").asDouble(),list.path("NMS").asDouble(),list.path("Onloop1").asDouble(),list.path("Onloop2").asDouble(),list.path("Onloop3").asDouble(),list.path("Onloop4").asDouble(),list.path("Onloop5").asDouble(),list.path("Sarpras").asDouble(),list.path("drPjAnak").asDouble(),list.path("drUmum").asDouble(),list.path("Total").asDouble()
+                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Total").asDouble()
                                 });
                             }
                         }
@@ -489,7 +475,7 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
                         for(JsonNode list:response){
                             if((list.path("KodePJ").asText().equals(kd_pj.trim())||list.path("KodePJ").asText().equals("-"))&&(list.path("KodePaket").asText().toLowerCase().contains(TCari.getText().toLowerCase())||list.path("NamaOperasi").asText().toLowerCase().contains(TCari.getText().toLowerCase()))){
                                 tabMode.addRow(new Object[]{
-                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Operator1").asDouble(),list.path("Operator2").asDouble(),list.path("Operator3").asDouble(),list.path("AsistenOp1").asDouble(),list.path("AsistenOp2").asDouble(),list.path("AsistenOp3").asDouble(),list.path("Instrumen").asDouble(),list.path("drAnak").asDouble(),list.path("PerawatResus").asDouble(),list.path("drAnastesi").asDouble(),list.path("AsistenAnast1").asDouble(),list.path("AsistenAnast2").asDouble(),list.path("Bidan1").asDouble(),list.path("Bidan2").asDouble(),list.path("Bidan3").asDouble(),list.path("PerawatLuar").asDouble(),list.path("Alat").asDouble(),list.path("SewaOK/VK").asDouble(),list.path("Akomodasi").asDouble(),list.path("NMS").asDouble(),list.path("Onloop1").asDouble(),list.path("Onloop2").asDouble(),list.path("Onloop3").asDouble(),list.path("Onloop4").asDouble(),list.path("Onloop5").asDouble(),list.path("Sarpras").asDouble(),list.path("drPjAnak").asDouble(),list.path("drUmum").asDouble(),list.path("Total").asDouble()
+                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Total").asDouble()
                                 });
                             }
                         }
@@ -500,14 +486,14 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
                     if(TCari.getText().trim().equals("")){
                         for(JsonNode list:response){
                             tabMode.addRow(new Object[]{
-                                list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Operator1").asDouble(),list.path("Operator2").asDouble(),list.path("Operator3").asDouble(),list.path("AsistenOp1").asDouble(),list.path("AsistenOp2").asDouble(),list.path("AsistenOp3").asDouble(),list.path("Instrumen").asDouble(),list.path("drAnak").asDouble(),list.path("PerawatResus").asDouble(),list.path("drAnastesi").asDouble(),list.path("AsistenAnast1").asDouble(),list.path("AsistenAnast2").asDouble(),list.path("Bidan1").asDouble(),list.path("Bidan2").asDouble(),list.path("Bidan3").asDouble(),list.path("PerawatLuar").asDouble(),list.path("Alat").asDouble(),list.path("SewaOK/VK").asDouble(),list.path("Akomodasi").asDouble(),list.path("NMS").asDouble(),list.path("Onloop1").asDouble(),list.path("Onloop2").asDouble(),list.path("Onloop3").asDouble(),list.path("Onloop4").asDouble(),list.path("Onloop5").asDouble(),list.path("Sarpras").asDouble(),list.path("drPjAnak").asDouble(),list.path("drUmum").asDouble(),list.path("Total").asDouble()
+                                list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Total").asDouble()
                             });
                         }
                     }else{
                         for(JsonNode list:response){
                             if(list.path("KodePaket").asText().toLowerCase().contains(TCari.getText().toLowerCase())||list.path("NamaOperasi").asText().toLowerCase().contains(TCari.getText().toLowerCase())){
                                 tabMode.addRow(new Object[]{
-                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Operator1").asDouble(),list.path("Operator2").asDouble(),list.path("Operator3").asDouble(),list.path("AsistenOp1").asDouble(),list.path("AsistenOp2").asDouble(),list.path("AsistenOp3").asDouble(),list.path("Instrumen").asDouble(),list.path("drAnak").asDouble(),list.path("PerawatResus").asDouble(),list.path("drAnastesi").asDouble(),list.path("AsistenAnast1").asDouble(),list.path("AsistenAnast2").asDouble(),list.path("Bidan1").asDouble(),list.path("Bidan2").asDouble(),list.path("Bidan3").asDouble(),list.path("PerawatLuar").asDouble(),list.path("Alat").asDouble(),list.path("SewaOK/VK").asDouble(),list.path("Akomodasi").asDouble(),list.path("NMS").asDouble(),list.path("Onloop1").asDouble(),list.path("Onloop2").asDouble(),list.path("Onloop3").asDouble(),list.path("Onloop4").asDouble(),list.path("Onloop5").asDouble(),list.path("Sarpras").asDouble(),list.path("drPjAnak").asDouble(),list.path("drUmum").asDouble(),list.path("Total").asDouble()
+                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Total").asDouble()
                                 });
                             }
                         }
@@ -519,7 +505,7 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
                         for(JsonNode list:response){
                             if((list.path("Kelas").asText().equals(kelas.trim())||list.path("Kelas").asText().equals("-"))&&(list.path("KodePJ").asText().equals(kd_pj.trim())||list.path("KodePJ").asText().equals("-"))){
                                 tabMode.addRow(new Object[]{
-                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Operator1").asDouble(),list.path("Operator2").asDouble(),list.path("Operator3").asDouble(),list.path("AsistenOp1").asDouble(),list.path("AsistenOp2").asDouble(),list.path("AsistenOp3").asDouble(),list.path("Instrumen").asDouble(),list.path("drAnak").asDouble(),list.path("PerawatResus").asDouble(),list.path("drAnastesi").asDouble(),list.path("AsistenAnast1").asDouble(),list.path("AsistenAnast2").asDouble(),list.path("Bidan1").asDouble(),list.path("Bidan2").asDouble(),list.path("Bidan3").asDouble(),list.path("PerawatLuar").asDouble(),list.path("Alat").asDouble(),list.path("SewaOK/VK").asDouble(),list.path("Akomodasi").asDouble(),list.path("NMS").asDouble(),list.path("Onloop1").asDouble(),list.path("Onloop2").asDouble(),list.path("Onloop3").asDouble(),list.path("Onloop4").asDouble(),list.path("Onloop5").asDouble(),list.path("Sarpras").asDouble(),list.path("drPjAnak").asDouble(),list.path("drUmum").asDouble(),list.path("Total").asDouble()
+                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Total").asDouble()
                                 });
                             }
                         }
@@ -527,7 +513,7 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
                         for(JsonNode list:response){
                             if((list.path("Kelas").asText().equals(kelas.trim())||list.path("Kelas").asText().equals("-"))&&(list.path("KodePJ").asText().equals(kd_pj.trim())||list.path("KodePJ").asText().equals("-"))&&(list.path("KodePaket").asText().toLowerCase().contains(TCari.getText().toLowerCase())||list.path("NamaOperasi").asText().toLowerCase().contains(TCari.getText().toLowerCase()))){
                                 tabMode.addRow(new Object[]{
-                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Operator1").asDouble(),list.path("Operator2").asDouble(),list.path("Operator3").asDouble(),list.path("AsistenOp1").asDouble(),list.path("AsistenOp2").asDouble(),list.path("AsistenOp3").asDouble(),list.path("Instrumen").asDouble(),list.path("drAnak").asDouble(),list.path("PerawatResus").asDouble(),list.path("drAnastesi").asDouble(),list.path("AsistenAnast1").asDouble(),list.path("AsistenAnast2").asDouble(),list.path("Bidan1").asDouble(),list.path("Bidan2").asDouble(),list.path("Bidan3").asDouble(),list.path("PerawatLuar").asDouble(),list.path("Alat").asDouble(),list.path("SewaOK/VK").asDouble(),list.path("Akomodasi").asDouble(),list.path("NMS").asDouble(),list.path("Onloop1").asDouble(),list.path("Onloop2").asDouble(),list.path("Onloop3").asDouble(),list.path("Onloop4").asDouble(),list.path("Onloop5").asDouble(),list.path("Sarpras").asDouble(),list.path("drPjAnak").asDouble(),list.path("drUmum").asDouble(),list.path("Total").asDouble()
+                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Total").asDouble()
                                 });
                             }
                         }
@@ -539,7 +525,7 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
                         for(JsonNode list:response){
                             if(list.path("Kelas").asText().equals(kelas.trim())||list.path("Kelas").asText().equals("-")){
                                 tabMode.addRow(new Object[]{
-                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Operator1").asDouble(),list.path("Operator2").asDouble(),list.path("Operator3").asDouble(),list.path("AsistenOp1").asDouble(),list.path("AsistenOp2").asDouble(),list.path("AsistenOp3").asDouble(),list.path("Instrumen").asDouble(),list.path("drAnak").asDouble(),list.path("PerawatResus").asDouble(),list.path("drAnastesi").asDouble(),list.path("AsistenAnast1").asDouble(),list.path("AsistenAnast2").asDouble(),list.path("Bidan1").asDouble(),list.path("Bidan2").asDouble(),list.path("Bidan3").asDouble(),list.path("PerawatLuar").asDouble(),list.path("Alat").asDouble(),list.path("SewaOK/VK").asDouble(),list.path("Akomodasi").asDouble(),list.path("NMS").asDouble(),list.path("Onloop1").asDouble(),list.path("Onloop2").asDouble(),list.path("Onloop3").asDouble(),list.path("Onloop4").asDouble(),list.path("Onloop5").asDouble(),list.path("Sarpras").asDouble(),list.path("drPjAnak").asDouble(),list.path("drUmum").asDouble(),list.path("Total").asDouble()
+                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Total").asDouble()
                                 });
                             }
                         }
@@ -547,7 +533,7 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
                         for(JsonNode list:response){
                             if((list.path("Kelas").asText().equals(kelas.trim())||list.path("Kelas").asText().equals("-"))&&(list.path("KodePaket").asText().toLowerCase().contains(TCari.getText().toLowerCase())||list.path("NamaOperasi").asText().toLowerCase().contains(TCari.getText().toLowerCase()))){
                                 tabMode.addRow(new Object[]{
-                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Operator1").asDouble(),list.path("Operator2").asDouble(),list.path("Operator3").asDouble(),list.path("AsistenOp1").asDouble(),list.path("AsistenOp2").asDouble(),list.path("AsistenOp3").asDouble(),list.path("Instrumen").asDouble(),list.path("drAnak").asDouble(),list.path("PerawatResus").asDouble(),list.path("drAnastesi").asDouble(),list.path("AsistenAnast1").asDouble(),list.path("AsistenAnast2").asDouble(),list.path("Bidan1").asDouble(),list.path("Bidan2").asDouble(),list.path("Bidan3").asDouble(),list.path("PerawatLuar").asDouble(),list.path("Alat").asDouble(),list.path("SewaOK/VK").asDouble(),list.path("Akomodasi").asDouble(),list.path("NMS").asDouble(),list.path("Onloop1").asDouble(),list.path("Onloop2").asDouble(),list.path("Onloop3").asDouble(),list.path("Onloop4").asDouble(),list.path("Onloop5").asDouble(),list.path("Sarpras").asDouble(),list.path("drPjAnak").asDouble(),list.path("drUmum").asDouble(),list.path("Total").asDouble()
+                                    list.path("KodePaket").asText(),list.path("NamaOperasi").asText(),list.path("Kategori").asText(),list.path("Total").asDouble()
                                 });
                             }
                         }
@@ -579,7 +565,40 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
         } catch (Exception e) {
         }
     }
+    
     public void isCek(){        
        BtnTambah.setEnabled(akses.gettarif_operasi());
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

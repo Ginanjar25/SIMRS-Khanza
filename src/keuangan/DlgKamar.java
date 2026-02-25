@@ -27,8 +27,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -47,6 +51,8 @@ public final class DlgKamar extends javax.swing.JDialog {
     private PreparedStatement ps;
     private ResultSet rs;
     private int i=0;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private String asalform="",ubah_status_kamar=Sequel.cariIsi("select set_jam_minimal.ubah_status_kamar from set_jam_minimal");
 
     /** Creates new form DlgKamar
@@ -108,68 +114,10 @@ public final class DlgKamar extends javax.swing.JDialog {
         kd_bangsal.setDocument(new batasInput((byte)5).getKata(kd_bangsal));
         kdbangsalcari.setDocument(new batasInput((byte)5).getKata(kdbangsalcari));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }  
+         
         panelCari.setVisible(false);
-        posisi();        
-        
-        bangsal.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(akses.getform().equals("DlgKamar")){
-                    load();
-                    if(bangsal.getTable().getSelectedRow()!= -1){                   
-                        if(pilihan==1){
-                           kd_bangsal.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),0).toString());
-                           TBangsal.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),1).toString());
-                           kd_bangsal.requestFocus();
-                        }else if(pilihan==2){
-                            kdbangsalcari.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),0).toString());
-                            BangsalCari.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),1).toString());
-                            kdbangsalcari.requestFocus();
-                        }    
-                    }                 
-                }
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        
+        posisi();       
     }
-    
-    public DlgCariBangsal bangsal=new DlgCariBangsal(null,false);
-    private int pilihan=0;
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -483,6 +431,7 @@ public final class DlgKamar extends javax.swing.JDialog {
         jLabel13.setPreferredSize(new java.awt.Dimension(70, 23));
         panelCari.add(jLabel13);
 
+        kdbangsalcari.setEditable(false);
         kdbangsalcari.setHighlighter(null);
         kdbangsalcari.setName("kdbangsalcari"); // NOI18N
         kdbangsalcari.setPreferredSize(new java.awt.Dimension(90, 23));
@@ -643,6 +592,7 @@ public final class DlgKamar extends javax.swing.JDialog {
         panelGlass4.add(btnKamar);
         btnKamar.setBounds(391, 42, 28, 23);
 
+        kd_bangsal.setEditable(false);
         kd_bangsal.setHighlighter(null);
         kd_bangsal.setName("kd_bangsal"); // NOI18N
         kd_bangsal.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -699,11 +649,15 @@ public final class DlgKamar extends javax.swing.JDialog {
         }else if(TTarif.getText().trim().equals("")){
             Valid.textKosong(TTarif,"Tarif");
         }else{
-            Sequel.menyimpan("kamar","?,?,?,?,?,?","Nomer Bad/Kamar",6,new String[]{
+            if(Sequel.menyimpantf("kamar","?,?,?,?,?,?","Nomer Bad/Kamar",6,new String[]{
                 TKd.getText(),kd_bangsal.getText(),TTarif.getText(),CmbStatus.getSelectedItem().toString(),Kelas.getSelectedItem().toString(),"1"
-            });
-            tampil();
-            emptTeks();
+            })==true){
+                tabMode.addRow(new Object[]{
+                    false,TKd.getText(),kd_bangsal.getText(),TBangsal.getText(),Kelas.getSelectedItem().toString(),Double.parseDouble(TTarif.getText()),CmbStatus.getSelectedItem().toString()
+                });
+                LCount.setText("" + tabMode.getRowCount());
+                emptTeks();
+            }
         }
 }//GEN-LAST:event_BtnSimpanActionPerformed
 
@@ -729,10 +683,11 @@ public final class DlgKamar extends javax.swing.JDialog {
         for(i=0;i<tbKamar.getRowCount();i++){ 
             if(tbKamar.getValueAt(i,0).toString().equals("true")){
                 Sequel.mengedit("kamar","kd_kamar='"+tbKamar.getValueAt(i,1).toString()+"'","statusdata='0'");
+                tabMode.removeRow(i);
+                i--;
             }
         } 
-        tampil();
-        emptTeks();
+        LCount.setText("" + tabMode.getRowCount());
 }//GEN-LAST:event_BtnHapusActionPerformed
 
     private void BtnHapusKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnHapusKeyPressed
@@ -752,12 +707,19 @@ public final class DlgKamar extends javax.swing.JDialog {
             Valid.textKosong(TTarif,"Tarif");
         }else{
             if(tbKamar.getSelectedRow()>-1){
-                Sequel.mengedit("kamar","kd_kamar=?","kd_bangsal=?,trf_kamar=?,status=?,kelas=?,kd_kamar=?",6,new String[]{
+                if(Sequel.mengedittf("kamar","kd_kamar=?","kd_bangsal=?,trf_kamar=?,status=?,kelas=?,kd_kamar=?",6,new String[]{
                     kd_bangsal.getText(),TTarif.getText(),CmbStatus.getSelectedItem().toString(),Kelas.getSelectedItem().toString(),
                     TKd.getText(),tbKamar.getValueAt(tbKamar.getSelectedRow(),1).toString()
-                });
-                tampil();
-                emptTeks();
+                })==true){
+                    tbKamar.setValueAt(false,tbKamar.getSelectedRow(),0);
+                    tbKamar.setValueAt(TKd.getText(),tbKamar.getSelectedRow(),1);
+                    tbKamar.setValueAt(kd_bangsal.getText(),tbKamar.getSelectedRow(),2);
+                    tbKamar.setValueAt(TBangsal.getText(),tbKamar.getSelectedRow(),3);
+                    tbKamar.setValueAt(Kelas.getSelectedItem().toString(),tbKamar.getSelectedRow(),4);
+                    tbKamar.setValueAt(Double.parseDouble(TTarif.getText()),tbKamar.getSelectedRow(),5);
+                    tbKamar.setValueAt(CmbStatus.getSelectedItem().toString(),tbKamar.getSelectedRow(),6);
+                    emptTeks();
+                }
             }
         }
 }//GEN-LAST:event_BtnEditActionPerformed
@@ -782,9 +744,6 @@ public final class DlgKamar extends javax.swing.JDialog {
 
     private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        if(! TCari.getText().trim().equals("")){
-            BtnCariActionPerformed(evt);
-        }
         if(tabMode.getRowCount()==0){
             JOptionPane.showMessageDialog(null,"Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
             BtnBatal.requestFocus();
@@ -861,7 +820,7 @@ public final class DlgKamar extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -877,7 +836,7 @@ public final class DlgKamar extends javax.swing.JDialog {
         BangsalCari.setText("");
         kdbangsalcari.setText("");
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -896,7 +855,7 @@ public final class DlgKamar extends javax.swing.JDialog {
         if(ChkCari.isSelected()==true){
             panelCari.setVisible(true);
             TCari.setText("");
-            tampil();
+            runBackground(() ->tampil());
             posisi();
         }else if(ChkCari.isSelected()==false){
             panelCari.setVisible(false);
@@ -914,8 +873,30 @@ public final class DlgKamar extends javax.swing.JDialog {
     }//GEN-LAST:event_TCariKeyTyped
 
     private void btnKamarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKamarActionPerformed
-        akses.setform("DlgKamar");
-        pilihan=1;
+        DlgCariBangsal bangsal=new DlgCariBangsal(null,false);
+        bangsal.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                load();
+                if(bangsal.getTable().getSelectedRow()!= -1){    
+                   kd_bangsal.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),0).toString());
+                   TBangsal.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),1).toString());
+                   kd_bangsal.requestFocus();
+                } 
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
         bangsal.isCek();
         bangsal.emptTeks();        
         bangsal.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
@@ -949,9 +930,7 @@ public final class DlgKamar extends javax.swing.JDialog {
 }//GEN-LAST:event_tbKamarKeyPressed
 
 private void kd_bangsalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kd_bangsalKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            TBangsal.setText(bangsal.tampil3(kd_bangsal.getText())); 
-        }else if(evt.getKeyCode()==KeyEvent.VK_UP){
+        if(evt.getKeyCode()==KeyEvent.VK_UP){
             btnKamarActionPerformed(null);
         }else{
             Valid.pindah(evt, TKd,TTarif);
@@ -959,10 +938,7 @@ private void kd_bangsalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
 }//GEN-LAST:event_kd_bangsalKeyPressed
 
 private void kdbangsalcariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdbangsalcariKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            BangsalCari.setText(bangsal.tampil3(kdbangsalcari.getText())); 
-            tampil();
-        }else if(evt.getKeyCode()==KeyEvent.VK_UP){
+        if(evt.getKeyCode()==KeyEvent.VK_UP){
             btnKamarCariActionPerformed(null);
         }else{
             Valid.pindah(evt, TCari,CmbCrIsi);
@@ -970,8 +946,31 @@ private void kdbangsalcariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:e
 }//GEN-LAST:event_kdbangsalcariKeyPressed
 
 private void btnKamarCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKamarCariActionPerformed
-        akses.setform("DlgKamar");
-        pilihan=2;        
+        DlgCariBangsal bangsal=new DlgCariBangsal(null,false);
+        bangsal.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                load();
+                if(bangsal.getTable().getSelectedRow()!= -1){   
+                    kdbangsalcari.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),0).toString());
+                    BangsalCari.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),1).toString());
+                    kdbangsalcari.requestFocus();
+                    runBackground(() ->tampil());
+                } 
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });       
         bangsal.isCek();
         bangsal.emptTeks();        
         bangsal.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
@@ -984,11 +983,33 @@ private void btnKamarCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:ev
 }//GEN-LAST:event_btnKamarCariKeyPressed
 
 private void CmbCrIsiItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_CmbCrIsiItemStateChanged
-    tampil();
+    runBackground(() ->tampil());
 }//GEN-LAST:event_CmbCrIsiItemStateChanged
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
+        runBackground(() ->tampil());
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        } 
     }//GEN-LAST:event_formWindowOpened
 
     private void KelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KelasKeyPressed
@@ -1074,36 +1095,44 @@ private void CmbCrIsiItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST
     private widget.Table tbKamar;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil() {
+    private void tampil() {
         Valid.tabelKosong(tabMode);
         try{     
-            ps=koneksi.prepareStatement("select kamar.kd_kamar,kamar.kd_bangsal,bangsal.nm_bangsal, "+
-                       "kamar.kelas,kamar.trf_kamar,kamar.status from bangsal inner join kamar "+
-                       "on kamar.kd_bangsal=bangsal.kd_bangsal where "+
-                       "kamar.statusdata='1' and bangsal.nm_bangsal like ? and kamar.status like ? "+
-                       (TCari.getText().trim().equals("")?"":
-                       "and (kamar.kd_kamar like ? or kamar.kd_bangsal like ? or bangsal.nm_bangsal like ? or "+
-                       "kamar.kelas like ? or kamar.trf_kamar like ? or kamar.status like ? ) ")+
-                       "order by bangsal.nm_bangsal");
-            try {                
-                ps.setString(1,"%"+BangsalCari.getText().trim()+"%");
-                ps.setString(2,"%"+CmbCrIsi.getSelectedItem().toString().trim()+"%");
+            ps=koneksi.prepareStatement(
+                "select kamar.kd_kamar,kamar.kd_bangsal,bangsal.nm_bangsal,kamar.kelas,kamar.trf_kamar,kamar.status from bangsal inner join kamar on kamar.kd_bangsal=bangsal.kd_bangsal "+
+                "where kamar.statusdata='1' "+(BangsalCari.getText().trim().equals("")?"":"and kamar.kd_bangsal=? ")+(CmbCrIsi.getSelectedIndex()==0?"":"and kamar.status=? ")+
+                (TCari.getText().trim().equals("")?"":"and (kamar.kd_kamar like ? or kamar.kd_bangsal like ? or bangsal.nm_bangsal like ? or kamar.kelas like ? or kamar.trf_kamar like ? or "+
+                "kamar.status like ? ) ")+"order by bangsal.nm_bangsal"
+            );
+            try {   
+                i=1;
+                if(!BangsalCari.getText().trim().equals("")){
+                    ps.setString(i,kdbangsalcari.getText().trim());
+                    i++;
+                }
+                if(CmbCrIsi.getSelectedIndex()>0){
+                    ps.setString(i,CmbCrIsi.getSelectedItem().toString().trim());
+                    i++;
+                }   
+                    
                 if(!TCari.getText().trim().equals("")){
-                    ps.setString(3,"%"+TCari.getText().trim()+"%");
-                    ps.setString(4,"%"+TCari.getText().trim()+"%");
-                    ps.setString(5,"%"+TCari.getText().trim()+"%");
-                    ps.setString(6,"%"+TCari.getText().trim()+"%");
-                    ps.setString(7,"%"+TCari.getText().trim()+"%");
-                    ps.setString(8,"%"+TCari.getText().trim()+"%");
+                    ps.setString(i,"%"+TCari.getText().trim()+"%");
+                    i++;
+                    ps.setString(i,"%"+TCari.getText().trim()+"%");
+                    i++;
+                    ps.setString(i,"%"+TCari.getText().trim()+"%");
+                    i++;
+                    ps.setString(i,"%"+TCari.getText().trim()+"%");
+                    i++;
+                    ps.setString(i,"%"+TCari.getText().trim()+"%");
+                    i++;
+                    ps.setString(i,"%"+TCari.getText().trim()+"%");
                 }
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new Object[]{false,rs.getString(1),
-                                   rs.getString(2),
-                                   rs.getString(3),
-                                   rs.getString(4),
-                                   rs.getDouble(5),
-                                   rs.getString(6)});
+                    tabMode.addRow(new Object[]{
+                        false,rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getDouble(5),rs.getString(6)
+                    });
                 }
             } catch (Exception e) {
                 System.out.println("Notif Kamar : "+e);
@@ -1119,6 +1148,10 @@ private void CmbCrIsiItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST
             System.out.println("Notifikasi : "+e);
         }
         LCount.setText(""+tabMode.getRowCount());
+    }
+    
+    public void tampil2() {
+        runBackground(() ->tampil());
     }
 
     private void posisi() {
@@ -1187,4 +1220,36 @@ private void CmbCrIsiItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST
             MnRestore.setEnabled(false);
         }
      }
+     
+     private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

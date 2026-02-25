@@ -19,13 +19,19 @@ import fungsi.akses;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javax.swing.WindowConstants;
+import java.awt.event.WindowEvent;
 
 /**
  *
@@ -37,6 +43,9 @@ public final class MasterCariTemplatePersetujuanPenolakanTindakan extends javax.
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps;
     private ResultSet rs;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
+    private MasterTemplatePersetujuanPenolakanTindakan formtemplate;
     /** Creates new form DlgPenyakit
      * @param parent
      * @param modal */
@@ -68,29 +77,6 @@ public final class MasterCariTemplatePersetujuanPenolakanTindakan extends javax.
         }
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable4());
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        } 
-        
     }   
 
     /** This method is called from within the constructor to
@@ -121,6 +107,9 @@ public final class MasterCariTemplatePersetujuanPenolakanTindakan extends javax.
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
             }
         });
 
@@ -257,7 +246,7 @@ public final class MasterCariTemplatePersetujuanPenolakanTindakan extends javax.
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -270,7 +259,7 @@ public final class MasterCariTemplatePersetujuanPenolakanTindakan extends javax.
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -286,15 +275,31 @@ public final class MasterCariTemplatePersetujuanPenolakanTindakan extends javax.
     }//GEN-LAST:event_BtnKeluarActionPerformed
 
     private void BtnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTambahActionPerformed
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));        
-        MasterTemplatePersetujuanPenolakanTindakan form=new MasterTemplatePersetujuanPenolakanTindakan(null,false);
-        form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        form.setLocationRelativeTo(internalFrame1);
-        form.setAlwaysOnTop(false);
-        form.emptTeks();
-        form.setVisible(true);
-        this.setCursor(Cursor.getDefaultCursor());   
-        
+        if (formtemplate == null || !formtemplate.isDisplayable()) {
+            formtemplate=new MasterTemplatePersetujuanPenolakanTindakan(null,false);
+            formtemplate.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            formtemplate.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    formtemplate=null;
+                }
+            });
+
+            formtemplate.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            formtemplate.setLocationRelativeTo(internalFrame1);
+        }
+            
+        if (formtemplate == null) return;
+        if (!formtemplate.isVisible()) {
+            formtemplate.isCek();    
+            formtemplate.emptTeks();
+        }  
+        if (formtemplate.isVisible()) {
+            formtemplate.toFront();
+            return;
+        }    
+        formtemplate.setVisible(true);
+
     }//GEN-LAST:event_BtnTambahActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
@@ -319,6 +324,32 @@ public final class MasterCariTemplatePersetujuanPenolakanTindakan extends javax.
             }
         }
     }//GEN-LAST:event_tbKamarKeyPressed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        runBackground(() ->tampil());
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        } 
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -359,17 +390,20 @@ public final class MasterCariTemplatePersetujuanPenolakanTindakan extends javax.
                     "template_persetujuan_penolakan_tindakan.indikasi_tindakan,template_persetujuan_penolakan_tindakan.tata_cara,template_persetujuan_penolakan_tindakan.tujuan,"+
                     "template_persetujuan_penolakan_tindakan.risiko,template_persetujuan_penolakan_tindakan.komplikasi,template_persetujuan_penolakan_tindakan.prognosis,"+
                     "template_persetujuan_penolakan_tindakan.alternatif_dan_risikonya,template_persetujuan_penolakan_tindakan.lain_lain,template_persetujuan_penolakan_tindakan.biaya "+
-                    "from template_persetujuan_penolakan_tindakan where template_persetujuan_penolakan_tindakan.kode_template like ? or template_persetujuan_penolakan_tindakan.tindakan like ? or "+
-                    "template_persetujuan_penolakan_tindakan.diagnosa like ? order by template_persetujuan_penolakan_tindakan.kode_template");
+                    "from template_persetujuan_penolakan_tindakan "+(TCari.getText().trim().equals("")?"":"where template_persetujuan_penolakan_tindakan.kode_template like ? or "+
+                    "template_persetujuan_penolakan_tindakan.tindakan like ? or template_persetujuan_penolakan_tindakan.diagnosa like ? ")+
+                    "order by template_persetujuan_penolakan_tindakan.kode_template");
             try {
-                ps.setString(1,"%"+TCari.getText().trim()+"%");
-                ps.setString(2,"%"+TCari.getText().trim()+"%");
-                ps.setString(3,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(1,"%"+TCari.getText().trim()+"%");
+                    ps.setString(2,"%"+TCari.getText().trim()+"%");
+                    ps.setString(3,"%"+TCari.getText().trim()+"%");
+                }
                 rs=ps.executeQuery();
                 while(rs.next()){
                     tabMode.addRow(new Object[]{
                         rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),
-                        rs.getString(7),rs.getString(8),rs.getString(9),rs.getString(10),rs.getString(11),rs.getString(12)
+                        rs.getString(7),rs.getString(8),rs.getString(9),rs.getString(10),rs.getString(11),Valid.SetAngka2(rs.getDouble(12))
                     });
                 }
             } catch (Exception e) {
@@ -398,5 +432,23 @@ public final class MasterCariTemplatePersetujuanPenolakanTindakan extends javax.
     
     public void isCek(){        
         BtnTambah.setEnabled(akses.gettemplate_persetujuan_penolakan_tindakan());
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        ceksukses = true;
+
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        executor.submit(() -> {
+            try {
+                task.run();
+            } finally {
+                ceksukses = false;
+                SwingUtilities.invokeLater(() -> {
+                    this.setCursor(Cursor.getDefaultCursor());
+                });
+            }
+        });
     }
 }

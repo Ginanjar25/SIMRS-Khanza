@@ -22,6 +22,9 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -70,6 +73,8 @@ public final class ICareRiwayatPerawatan extends javax.swing.JDialog {
 
     private final JTextField txtURL = new JTextField();
     private final JProgressBar progressBar = new JProgressBar();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
         
     /** Creates new form DlgKamar
      * @param parent
@@ -244,7 +249,7 @@ public final class ICareRiwayatPerawatan extends javax.swing.JDialog {
         }else if(KdDPJPLayanan.getText().equals("")){
             Valid.textKosong(KdDPJPLayanan,"Dokter");
         }else{
-            tampil();
+            runBackground(() ->tampil());
         }
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnCariActionPerformed
@@ -329,7 +334,7 @@ public final class ICareRiwayatPerawatan extends javax.swing.JDialog {
     public void setPasien(String param,String kodedokter){
         NoKartu.setText(param);
         KdDPJPLayanan.setText(kodedokter);
-        tampil();
+        runBackground(() ->tampil());
     }
     
     private void createScene() {        
@@ -440,4 +445,35 @@ public final class ICareRiwayatPerawatan extends javax.swing.JDialog {
         }
     }
  
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

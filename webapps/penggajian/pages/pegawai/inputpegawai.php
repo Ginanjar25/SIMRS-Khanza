@@ -543,6 +543,8 @@
                             <option id='TxtIsi24' value='AKTIF'>AKTIF</option>
                             <option id='TxtIsi24' value='CUTI'>CUTI</option>
                             <option id='TxtIsi24' value='KELUAR'>KELUAR</option>
+                            <option id='TxtIsi24' value='NON AKTIF'>NON AKTIF</option>
+                            <option id='TxtIsi24' value='TENAGA LUAR'>TENAGA LUAR</option>
                         </select>
                         <span id="MsgIsi24" style="color:#CC0000; font-size:10px;"></span>
                     </td>
@@ -640,7 +642,7 @@
                     $no_ktp         = validTeks(trim($_POST['no_ktp']));
                     if((strtolower(substr($photo,-4))==".jpg")||(strtolower(substr($photo,-5))==".jpeg")){
                         if(($_FILES['photo']['type'] == 'image/jpeg')||($_FILES['photo']['type'] == 'image/jpg')){
-                            if((mime_content_type($_FILES['photo']['tmp_name'])== 'image/jpeg')||(mime_content_type($_FILES['photo']['tmp_name'])== 'image/jpg')){
+                            if((@mime_content_type($_FILES['photo']['tmp_name'])== 'image/jpeg')||(@mime_content_type($_FILES['photo']['tmp_name'])== 'image/jpg')){
                                 if ((!empty($nik))&&(!empty($jnj_jabatan))&&(!empty($departemen))&&(!empty($bidang))&&(!empty($stts_wp))&&(!empty($stts_kerja))&&
                                     (!empty($pendidikan))&&(!empty($tgl_lahir))&&(!empty($mulai_kerja))&&(!empty($indexins))&&(!empty($bpd))&&(!empty($kode_kelompok))&&
                                      (!empty($kode_resiko))&&(!empty($kode_emergency))) {
@@ -665,12 +667,16 @@
                                                     tmp_lahir='$tmp_lahir',tgl_lahir='$tgl_lahir',almt_tgl='$alamat' where kd_dokter='$nik2'");
                                             Ubah2(" petugas ","nama='$nama',jk='".str_replace("Wanita","P",str_replace("Pria","L",$jk))."',
                                                     tmp_lahir='$tmp_lahir',tgl_lahir='$tgl_lahir',alamat='$alamat' where nip='$nik2' ");
-                                            Ubah(" pegawai "," nik='$nik',nama='$nama',jk='$jk',jbtn='$jbtn',jnj_jabatan='$jnj_jabatan',departemen='$departemen',
+                                            if(Ubah(" pegawai "," nik='$nik',nama='$nama',jk='$jk',jbtn='$jbtn',jnj_jabatan='$jnj_jabatan',departemen='$departemen',
                                                    bidang='$bidang',stts_wp='$stts_wp',stts_kerja='$stts_kerja',npwp='$npwp',pendidikan='$pendidikan',
                                                    tmp_lahir='$tmp_lahir',tgl_lahir='$tgl_lahir',alamat='$alamat',kota='$kota',mulai_kontrak='$mulai_kontrak',
                                                    mulai_kerja='$mulai_kerja',ms_kerja='$ms_kerja',indexins='$indexins',bpd='$bpd',rekening='$rekening',
                                                    stts_aktif='$stts_aktif',no_ktp='$no_ktp',wajibmasuk='$wajibmasuk',kode_kelompok='$kode_kelompok',
-                                                   kode_resiko='$kode_resiko',kode_emergency='$kode_emergency' ".$ph." WHERE id='$id' ", " pegawai ");
+                                                   kode_resiko='$kode_resiko',kode_emergency='$kode_emergency' ".$ph." WHERE id='$id' ", " pegawai ")){
+                                                if($photo<>"pages/pegawai/photo/"){
+                                                    move_uploaded_file($_FILES['photo']['tmp_name'],$photo);
+                                                }
+                                            }
                                             echo"<html><head><title></title><meta http-equiv='refresh' content='1;URL=?act=InputPegawai&action=UBAH&id=$id'></head><body></body></html>";
                                             break;
                                     }

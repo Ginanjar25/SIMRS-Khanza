@@ -110,29 +110,6 @@ public final class DlgCariCaraBayar2 extends javax.swing.JDialog {
         }
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable());
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil2();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil2();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil2();
-                    }
-                }
-            });
-        }
-        
         ChkAccor.setSelected(false);
         isPhoto();
         HTMLEditorKit kit = new HTMLEditorKit();
@@ -512,6 +489,28 @@ public final class DlgCariCaraBayar2 extends javax.swing.JDialog {
             }
         } catch (Exception e) {
         }
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        tampil2();
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        tampil2();
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        tampil2();
+                    }
+                }
+            });
+        }
     }//GEN-LAST:event_formWindowOpened
 
     private void ChkAccorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkAccorActionPerformed
@@ -588,13 +587,13 @@ public final class DlgCariCaraBayar2 extends javax.swing.JDialog {
             file=new File("./cache/penjab.iyem");
             file.createNewFile();
             fileWriter = new FileWriter(file);
-            iyem="";
+            StringBuilder iyembuilder = new StringBuilder();
             ps=koneksi.prepareStatement("select * from penjab where penjab.status='1' order by penjab.png_jawab");
             try{           
                 rs=ps.executeQuery();
                 while(rs.next()){
                     tabMode.addRow(new Object[]{false,rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6)});
-                    iyem=iyem+"{\"KodeAsuransi\":\""+rs.getString(1)+"\",\"NamaAsuransi\":\""+rs.getString(2)+"\",\"PerusahaanAsuransi\":\""+rs.getString(3)+"\",\"AlamatAsuransi\":\""+rs.getString(4)+"\",\"NoTelp\":\""+rs.getString(5)+"\",\"Attn\":\""+rs.getString(6)+"\"},";
+                    iyembuilder.append("{\"KodeAsuransi\":\"").append(rs.getString(1)).append("\",\"NamaAsuransi\":\"").append(rs.getString(2)).append("\",\"PerusahaanAsuransi\":\"").append(rs.getString(3)).append("\",\"AlamatAsuransi\":\"").append(rs.getString(4)).append("\",\"NoTelp\":\"").append(rs.getString(5)).append("\",\"Attn\":\"").append(rs.getString(6)).append("\"},");
                 }
             }catch(Exception e){
                 System.out.println("Notifikasi : "+e);
@@ -608,10 +607,14 @@ public final class DlgCariCaraBayar2 extends javax.swing.JDialog {
                 }
             }
 
-            fileWriter.write("{\"penjab\":["+iyem.substring(0,iyem.length()-1)+"]}");
-            fileWriter.flush();
+            if (iyembuilder.length() > 0) {
+                iyembuilder.setLength(iyembuilder.length() - 1);
+                fileWriter.write("{\"penjab\":["+iyembuilder+"]}");
+                fileWriter.flush();
+            }
+            
             fileWriter.close();
-            iyem=null;
+            iyembuilder=null;
         } catch (Exception e) {
             System.out.println("Notifikasi : "+e);
         }

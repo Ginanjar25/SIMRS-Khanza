@@ -18,11 +18,11 @@
             $_sqlnext         	= "SELECT pegawai.id FROM pegawai WHERE pegawai.id>'$id' order by pegawai.id asc limit 1";
             $hasilnext        	= bukaquery($_sqlnext);
             $barisnext        	= mysqli_fetch_row($hasilnext);
-            $next               = $barisnext[0];
+            @$next              = $barisnext[0];
             $_sqlprev         	= "SELECT pegawai.id FROM pegawai WHERE pegawai.id<'$id' order by pegawai.id desc limit 1";
             $hasilprev        	= bukaquery($_sqlprev);
             $barisprev        	= mysqli_fetch_row($hasilprev);
-            $prev               = $barisprev[0];
+            @$prev              = $barisprev[0];
             if(empty($prev)){
                 $prev = $next;
             }
@@ -159,7 +159,7 @@
                         case "TAMBAH":
                             if((strtolower(substr($dokumen,-4))==".jpg")||(strtolower(substr($dokumen,-5))==".jpeg")){
                                 if(($_FILES['dokumen']['type'] == 'image/jpeg')||($_FILES['dokumen']['type'] == 'image/jpg')){
-                                    if((mime_content_type($_FILES['dokumen']['tmp_name'])== 'image/jpeg')||(mime_content_type($_FILES['dokumen']['tmp_name'])== 'image/jpg')){
+                                    if((@mime_content_type($_FILES['dokumen']['tmp_name'])== 'image/jpeg')||(@mime_content_type($_FILES['dokumen']['tmp_name'])== 'image/jpg')){
                                         if(Tambah(" riwayat_jabatan "," '$id','$jabatan','$tmt_pangkat','$tmt_pangkat_yad','$pejabat_penetap','$nomor_sk','$tgl_sk','$dasar_peraturan','$masa_kerja','$bln_kerja','$dokumen'", " Riwayat Jabatan " )){
                                             move_uploaded_file($_FILES['dokumen']['tmp_name'],$dokumen);
                                         }

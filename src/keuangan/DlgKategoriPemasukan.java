@@ -19,7 +19,6 @@ import fungsi.validasi;
 import fungsi.akses;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
@@ -29,9 +28,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -45,12 +48,12 @@ public final class DlgKategoriPemasukan extends javax.swing.JDialog {
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
-    private PreparedStatement ps,ps2;
-    private ResultSet rs,rs2;
-    private Dimension screen=Toolkit.getDefaultToolkit().getScreenSize();
-    private DlgRekeningTahun rekening=new DlgRekeningTahun(null,false);
+    private PreparedStatement ps;
+    private ResultSet rs;
     private String asalform="",akun="",kontrakun="";
     private int pilihan=0;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     
     /** Creates new form DlgPenyakit
      * @param parent
@@ -85,85 +88,6 @@ public final class DlgKategoriPemasukan extends javax.swing.JDialog {
         KdAkun.setDocument(new batasInput((byte)15).getKata(KdAkun));
         KdKontraAkun.setDocument(new batasInput((byte)15).getKata(KdKontraAkun));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }  
-        
-        rekening.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(akses.getform().equals("DlgKategoriPemasukan")){
-                    if(rekening.getTabel().getSelectedRow()!= -1){  
-                        if(pilihan==1){
-                            KdAkun.setText(rekening.getTabel().getValueAt(rekening.getTabel().getSelectedRow(),1).toString());
-                            NmAkun.setText(rekening.getTabel().getValueAt(rekening.getTabel().getSelectedRow(),2).toString());
-                            KdAkun.requestFocus();                       
-                        }else if(pilihan==2){
-                            KdKontraAkun.setText(rekening.getTabel().getValueAt(rekening.getTabel().getSelectedRow(),1).toString());
-                            NmKontraAKun.setText(rekening.getTabel().getValueAt(rekening.getTabel().getSelectedRow(),2).toString());
-                            KdKontraAkun.requestFocus();                               
-                        }                          
-                    }                 
-                }
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        rekening.getTabel().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(akses.getform().equals("DlgKategoriPemasukan")){
-                    if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                        rekening.dispose();
-                    }
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });  
-        
-        try {
-            ps=koneksi.prepareStatement(
-                 "select * from kategori_pemasukan_lain "+
-                 "where kode_kategori like ? or "+
-                 "nama_kategori like ? order by nama_kategori");            
-            ps2=koneksi.prepareStatement("select rekening.nm_rek from rekening where rekening.kd_rek=?");
-        } catch (Exception e) {
-            System.out.println(e);
-        }
     }
 
 
@@ -220,8 +144,13 @@ public final class DlgKategoriPemasukan extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Kategori Pemasukan Lain-Lain ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Kategori Pemasukan Lain-Lain ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -579,7 +508,10 @@ public final class DlgKategoriPemasukan extends javax.swing.JDialog {
             if(Sequel.menyimpantf("kategori_pemasukan_lain","?,?,?,?","Kode Kategori",4,new String[]{
                     Kd.getText(),Nm.getText(),KdAkun.getText(),KdKontraAkun.getText()
                 })==true){
-                tampil();
+                tabMode.addRow(new Object[]{
+                    Kd.getText(),Nm.getText(),NmAkun.getText(),NmKontraAKun.getText()
+                });
+                LCount.setText("" + tabMode.getRowCount());
                 emptTeks();
             }
         }
@@ -604,9 +536,10 @@ public final class DlgKategoriPemasukan extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnBatalKeyPressed
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
-        Valid.hapusTable(tabMode,Kd,"kategori_pemasukan_lain ","kode_kategori");
-        tampil();
-        emptTeks();
+        if(Valid.hapusTabletf(tabMode,Kd,"kategori_pemasukan_lain ","kode_kategori")==true){
+            tabMode.removeRow(tbKamar.getSelectedRow());
+            LCount.setText("" + tabMode.getRowCount());
+        }
 }//GEN-LAST:event_BtnHapusActionPerformed
 
     private void BtnHapusKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnHapusKeyPressed
@@ -628,11 +561,15 @@ public final class DlgKategoriPemasukan extends javax.swing.JDialog {
             Valid.textKosong(KdKontraAkun,"Kontra Akun Rekening");
         }else{
             if(tbKamar.getSelectedRow()>-1){
-                Sequel.mengedit("kategori_pemasukan_lain","kode_kategori=?","kode_kategori=?,nama_kategori=?,kd_rek=?,kd_rek2=?",5,new String[]{
+                if(Sequel.mengedittf("kategori_pemasukan_lain","kode_kategori=?","kode_kategori=?,nama_kategori=?,kd_rek=?,kd_rek2=?",5,new String[]{
                     Kd.getText(),Nm.getText(),KdAkun.getText(),KdKontraAkun.getText(),tbKamar.getValueAt(tbKamar.getSelectedRow(),0).toString()
-                });
-                tampil();
-                emptTeks();
+                })==true){
+                    tbKamar.setValueAt(Kd.getText(),tbKamar.getSelectedRow(),0);
+                    tbKamar.setValueAt(Nm.getText(),tbKamar.getSelectedRow(),1);
+                    tbKamar.setValueAt(NmAkun.getText(),tbKamar.getSelectedRow(),2);
+                    tbKamar.setValueAt(NmKontraAKun.getText(),tbKamar.getSelectedRow(),3);
+                    emptTeks();
+                }
             }            
         }
 }//GEN-LAST:event_BtnEditActionPerformed
@@ -657,7 +594,6 @@ public final class DlgKategoriPemasukan extends javax.swing.JDialog {
 
     private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        BtnCariActionPerformed(evt);
         if(tabMode.getRowCount()==0){
             JOptionPane.showMessageDialog(null,"Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
             TCari.requestFocus();
@@ -703,7 +639,7 @@ public final class DlgKategoriPemasukan extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -716,7 +652,7 @@ public final class DlgKategoriPemasukan extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -760,8 +696,54 @@ private void NmAkunKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Nm
     private void BtnAkunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAkunActionPerformed
         akses.setform("DlgKategoriPemasukan");
         pilihan=1;
+        DlgRekeningTahun rekening=new DlgRekeningTahun(null,false);
+        rekening.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(akses.getform().equals("DlgKategoriPemasukan")){
+                    if(rekening.getTabel().getSelectedRow()!= -1){  
+                        if(pilihan==1){
+                            KdAkun.setText(rekening.getTabel().getValueAt(rekening.getTabel().getSelectedRow(),1).toString());
+                            NmAkun.setText(rekening.getTabel().getValueAt(rekening.getTabel().getSelectedRow(),2).toString());
+                            KdAkun.requestFocus();                       
+                        }else if(pilihan==2){
+                            KdKontraAkun.setText(rekening.getTabel().getValueAt(rekening.getTabel().getSelectedRow(),1).toString());
+                            NmKontraAKun.setText(rekening.getTabel().getValueAt(rekening.getTabel().getSelectedRow(),2).toString());
+                            KdKontraAkun.requestFocus();                               
+                        }                          
+                    }                 
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        rekening.getTabel().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(akses.getform().equals("DlgKategoriPemasukan")){
+                    if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                        rekening.dispose();
+                    }
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });  
         rekening.emptTeks();
-        rekening.tampil();
+        rekening.tampil2();
         rekening.isCek();
         rekening.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         rekening.setLocationRelativeTo(internalFrame1);
@@ -797,13 +779,84 @@ private void NmAkunKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Nm
     private void BtnKontraAkunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKontraAkunActionPerformed
         akses.setform("DlgKategoriPemasukan");
         pilihan=2;
+        DlgRekeningTahun rekening=new DlgRekeningTahun(null,false);
+        rekening.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(akses.getform().equals("DlgKategoriPemasukan")){
+                    if(rekening.getTabel().getSelectedRow()!= -1){  
+                        if(pilihan==1){
+                            KdAkun.setText(rekening.getTabel().getValueAt(rekening.getTabel().getSelectedRow(),1).toString());
+                            NmAkun.setText(rekening.getTabel().getValueAt(rekening.getTabel().getSelectedRow(),2).toString());
+                            KdAkun.requestFocus();                       
+                        }else if(pilihan==2){
+                            KdKontraAkun.setText(rekening.getTabel().getValueAt(rekening.getTabel().getSelectedRow(),1).toString());
+                            NmKontraAKun.setText(rekening.getTabel().getValueAt(rekening.getTabel().getSelectedRow(),2).toString());
+                            KdKontraAkun.requestFocus();                               
+                        }                          
+                    }                 
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        rekening.getTabel().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(akses.getform().equals("DlgKategoriPemasukan")){
+                    if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                        rekening.dispose();
+                    }
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });  
         rekening.emptTeks();
-        rekening.tampil();
+        rekening.tampil2();
         rekening.isCek();
         rekening.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         rekening.setLocationRelativeTo(internalFrame1);
         rekening.setVisible(true);
     }//GEN-LAST:event_BtnKontraAkunActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        } 
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -856,28 +909,32 @@ private void NmAkunKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Nm
     private widget.Table tbKamar;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil() {
+    private void tampil() {
         Valid.tabelKosong(tabMode);
-        try{            
-            ps.setString(1,"%"+TCari.getText().trim()+"%");
-            ps.setString(2,"%"+TCari.getText().trim()+"%");
-            rs=ps.executeQuery();
-            while(rs.next()){
-                akun="";
-                kontrakun="";
-                ps2.setString(1,rs.getString(3));
-                rs2=ps2.executeQuery();
-                if(rs2.next()){
-                    akun=rs2.getString(1);
+        try{  
+            ps=koneksi.prepareStatement("select * from kategori_pemasukan_lain "+(TCari.getText().trim().equals("")?"":"where kategori_pemasukan_lain.kode_kategori like ? or kategori_pemasukan_lain.nama_kategori like ?")+" order by kategori_pemasukan_lain.nama_kategori");  
+            try {
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(1,"%"+TCari.getText().trim()+"%");
+                    ps.setString(2,"%"+TCari.getText().trim()+"%");
                 }
-                ps2.setString(1,rs.getString(4));
-                rs2=ps2.executeQuery();
-                if(rs2.next()){
-                    kontrakun=rs2.getString(1);
+                rs=ps.executeQuery();
+                while(rs.next()){
+                    akun=Sequel.cariIsi("select rekening.nm_rek from rekening where rekening.kd_rek=?",rs.getString(3));
+                    kontrakun=Sequel.cariIsi("select rekening.nm_rek from rekening where rekening.kd_rek=?",rs.getString(4));
+                    tabMode.addRow(new Object[]{
+                        rs.getString(1),rs.getString(2),akun,kontrakun
+                    });
+                }          
+            } catch (Exception e) {
+                System.out.println(e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
                 }
-                tabMode.addRow(new Object[]{
-                    rs.getString(1),rs.getString(2),akun,kontrakun
-                });
+                if(ps!=null){
+                    ps.close();
+                }
             }
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
@@ -925,5 +982,37 @@ private void NmAkunKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Nm
         BtnEdit.setEnabled(akses.getkategori_pemasukan_lain());
         BtnHapus.setEnabled(akses.getkategori_pemasukan_lain());
         BtnPrint.setEnabled(akses.getkategori_pemasukan_lain());      
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

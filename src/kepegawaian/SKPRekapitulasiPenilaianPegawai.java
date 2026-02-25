@@ -31,8 +31,11 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import javax.swing.JOptionPane;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -41,9 +44,11 @@ public class SKPRekapitulasiPenilaianPegawai extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
+    private sekuel Sequel=new sekuel();
     private PreparedStatement ps;
     private ResultSet rs;
-    private sekuel Sequel=new sekuel();
     private int jml=0,i=0,row=0,index=0;
     private String[] KodeKriteria,Kriteria;
     private Boolean[] Ya,Tidak;
@@ -294,7 +299,7 @@ public class SKPRekapitulasiPenilaianPegawai extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Rekapitulasi Penilaian Petugas/Dokter Dalam Implementasi Sasaran Keselamatan Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Rekapitulasi Pengkajian Petugas/Dokter Dalam Implementasi Sasaran Keselamatan Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -765,7 +770,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             }
         }
         if(NoPenilaian.getText().trim().equals("")){
-            Valid.textKosong(NoPenilaian,"No.Penilaian");
+            Valid.textKosong(NoPenilaian,"No.Pengkajian");
         }else if(KdPenilai.getText().trim().equals("")||NmPenilai.getText().trim().equals("")){
             Valid.textKosong(btnPenilai,"Yang Menilai");
         }else if(KdDInilai.getText().trim().equals("")||NmDinilai.getText().trim().equals("")){
@@ -773,14 +778,14 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         }else if(Keterangan.getText().trim().equals("")){
             Valid.textKosong(Keterangan,"Keterangan");
         }else if(jml==0){
-            Valid.textKosong(TCari,"Data Penilaian");
+            Valid.textKosong(TCari,"Data Pengkajian");
         }else{
             index = JOptionPane.showConfirmDialog(rootPane,"Eeiiiiiits, udah bener belum data yang mau disimpan..??","Konfirmasi",JOptionPane.YES_NO_OPTION);
             if (index == JOptionPane.YES_OPTION) {
                 Sequel.AutoComitFalse();
                 sukses=true;
                 if(Sequel.menyimpantf2("skp_penilaian","?,?,?,?,?,?","No.Permintaan",6,new String[]{
-                    NoPenilaian.getText(),KdPenilai.getText(),KdDInilai.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),Keterangan.getText(),"Proses Penilaian"
+                    NoPenilaian.getText(),KdPenilai.getText(),KdDInilai.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),Keterangan.getText(),"Proses Pengkajian"
                     })==true){
                     row=tbDokter.getRowCount();
                     for(i=0;i<row;i++){
@@ -865,7 +870,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             if(Valid.daysOld("./cache/skppenilaianpegawai.iyem")<30){
                 tampil2();
             }else{
-                tampil();
+                runBackground(() ->tampil());
                 tampil2();
             }
         } catch (Exception e) {
@@ -881,9 +886,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     }//GEN-LAST:event_btnPenilaiActionPerformed
 
     private void KdPenilaiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KdPenilaiKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            NmPenilai.setText(pegawai.tampil3(KdPenilai.getText()));
-        }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
+        if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
             NoPenilaian.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
             KdDInilai.requestFocus();
@@ -912,7 +915,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         KdKategori.setText("");
         NmKategori.setText("");
         Sasaran.setSelectedIndex(0);
-        tampil();
+        runBackground(() ->tampil());
         tampil2();*/
     }//GEN-LAST:event_BtnAllActionPerformed
 
@@ -926,7 +929,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
     private void KdDInilaiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KdDInilaiKeyPressed
         /*if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            NmDinilai.setText(pegawai.tampil3(KdDInilai.getText()));
+            NmDinilai.setText(Sequel.CariPegawai(KdDInilai.getText()));
         }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
             KdDInilai.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
@@ -1160,7 +1163,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             btnPenilai.setEnabled(false);
             KdPenilai.setText(akses.getkode());
             BtnSimpan.setEnabled(akses.getskp_penilaian());
-            NmPenilai.setText(pegawai.tampil3(KdPenilai.getText()));
+            NmPenilai.setText(Sequel.CariPegawai(KdPenilai.getText()));
         }        
     }
     
@@ -1169,5 +1172,35 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                 "SKP"+Tanggal.getSelectedItem().toString().substring(6,10)+Tanggal.getSelectedItem().toString().substring(3,5)+Tanggal.getSelectedItem().toString().substring(0,2),4,NoPenilaian); 
     }
 
- 
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

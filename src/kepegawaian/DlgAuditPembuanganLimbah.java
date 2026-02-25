@@ -25,6 +25,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import javax.swing.SwingUtilities;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.Timer;
@@ -44,8 +48,9 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
     private validasi Valid=new validasi();
     private PreparedStatement ps;
     private ResultSet rs;
-    private int i=0;    
-    private DlgCariRuangAuditKepatuhan ruang=new DlgCariRuangAuditKepatuhan(null,false);
+    private int i=0;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;    
     private double pemisahan_limbah_oleh_penghasil_limbah=0,limbah_infeksius_dimasukkan_kantong_kuning=0,limbah_noninfeksius_dimasukkan_kantong_hitam=0,
                 limbah_tigaperempat_diikat=0,limbah_segera_dibawa_kepembuangan_sementara=0,ttlpemisahan_limbah_oleh_penghasil_limbah=0,kotak_sampah_dalam_kondisi_bersih=0,
                 pembersihan_tempat_sampah_dengan_desinfekten=0,pembersihan_penampungan_sementara_dengan_desinfekten=0,ttllimbah_infeksius_dimasukkan_kantong_kuning=0,
@@ -108,51 +113,6 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
         KdRuang.setDocument(new batasInput((byte)20).getKata(KdRuang));
         TCari.setDocument(new batasInput((int)100).getKata(TCari));
         
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }
-        
-        ruang.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(ruang.getTable().getSelectedRow()!= -1){                   
-                    KdRuang.setText(ruang.getTable().getValueAt(ruang.getTable().getSelectedRow(),0).toString());
-                    NmRuang.setText(ruang.getTable().getValueAt(ruang.getTable().getSelectedRow(),1).toString());
-                }  
-                KdRuang.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        }); 
         ChkInput.setSelected(false);
         isForm();
         
@@ -224,6 +184,11 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Audit Pembuangan Limbah ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
@@ -390,7 +355,7 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "15-06-2022" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -404,7 +369,7 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "15-06-2022" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -474,7 +439,7 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
         FormInput.setLayout(null);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "15-06-2022" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-02-2026" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -737,7 +702,7 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
                 LimbahSegeraDibawaKepembuanganSementara.getSelectedItem().toString(),KotakSampahDalamKondisiBersih.getSelectedItem().toString(),PembersihanTempatSampahDenganDesinfekten.getSelectedItem().toString(),
                 PembersihanPenampunganSementaraDenganDesinfekten.getSelectedItem().toString()
             })==true){
-                tampil();
+                runBackground(() ->tampil());
                 emptTeks();
             }  
         }
@@ -768,7 +733,7 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
             if(Sequel.queryu2tf("delete from audit_pembuangan_limbah where id_ruang=? and tanggal=?",2,new String[]{
                 tbObat.getValueAt(tbObat.getSelectedRow(),1).toString(),tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
             })==true){
-                tampil();
+                runBackground(() ->tampil());
                 emptTeks();
             }else{
                 JOptionPane.showMessageDialog(null,"Gagal menghapus..!!");
@@ -796,7 +761,7 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
                 LimbahSegeraDibawaKepembuanganSementara.getSelectedItem().toString(),KotakSampahDalamKondisiBersih.getSelectedItem().toString(),PembersihanTempatSampahDenganDesinfekten.getSelectedItem().toString(),
                 PembersihanPenampunganSementaraDenganDesinfekten.getSelectedItem().toString(),tbObat.getValueAt(tbObat.getSelectedRow(),1).toString(),tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
             });
-            if(tabMode.getRowCount()!=0){tampil();}
+            if(tabMode.getRowCount()!=0){runBackground(() ->tampil());}
             emptTeks();
         }
 }//GEN-LAST:event_BtnEditActionPerformed
@@ -810,7 +775,6 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnEditKeyPressed
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
-        ruang.dispose();
         dispose();
 }//GEN-LAST:event_BtnKeluarActionPerformed
 
@@ -878,7 +842,7 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -891,13 +855,13 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             TCari.setText("");
-            tampil();
+            runBackground(() ->tampil());
         }else{
             //Valid.pindah(evt, BtnCari, TPasien);
         }
@@ -954,6 +918,29 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
     }//GEN-LAST:event_KdRuangKeyPressed
 
     private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPetugasActionPerformed
+        DlgCariRuangAuditKepatuhan ruang=new DlgCariRuangAuditKepatuhan(null,false);
+        ruang.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(ruang.getTable().getSelectedRow()!= -1){                   
+                    KdRuang.setText(ruang.getTable().getValueAt(ruang.getTable().getSelectedRow(),0).toString());
+                    NmRuang.setText(ruang.getTable().getValueAt(ruang.getTable().getSelectedRow(),1).toString());
+                }  
+                KdRuang.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
         ruang.emptTeks();
         ruang.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         ruang.setLocationRelativeTo(internalFrame1);
@@ -995,6 +982,31 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
     private void PembersihanPenampunganSementaraDenganDesinfektenKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PembersihanPenampunganSementaraDenganDesinfektenKeyPressed
         Valid.pindah(evt, PembersihanTempatSampahDenganDesinfekten,BtnSimpan);
     }//GEN-LAST:event_PembersihanPenampunganSementaraDenganDesinfektenKeyPressed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -1125,7 +1137,7 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
                     ttlpenilaian=ttlpenilaian+(((pemisahan_limbah_oleh_penghasil_limbah+limbah_infeksius_dimasukkan_kantong_kuning+limbah_noninfeksius_dimasukkan_kantong_hitam+
                             limbah_tigaperempat_diikat+limbah_segera_dibawa_kepembuangan_sementara+kotak_sampah_dalam_kondisi_bersih+pembersihan_tempat_sampah_dengan_desinfekten+
                             pembersihan_penampungan_sementara_dengan_desinfekten)/8)*100);
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         rs.getString("tanggal"),rs.getString("id_ruang"),rs.getString("nama_ruang"),rs.getString("pemisahan_limbah_oleh_penghasil_limbah"),rs.getString("limbah_infeksius_dimasukkan_kantong_kuning"),
                         rs.getString("limbah_noninfeksius_dimasukkan_kantong_hitam"),rs.getString("limbah_tigaperempat_diikat"),rs.getString("limbah_segera_dibawa_kepembuangan_sementara"),
                         rs.getString("kotak_sampah_dalam_kondisi_bersih"),rs.getString("pembersihan_tempat_sampah_dengan_desinfekten"),rs.getString("pembersihan_penampungan_sementara_dengan_desinfekten"),
@@ -1136,21 +1148,21 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
                 }
                 i=i-1;
                 if(i>0){
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         "","Ya",":",""+ttlpemisahan_limbah_oleh_penghasil_limbah,""+ttllimbah_infeksius_dimasukkan_kantong_kuning,""+ttllimbah_noninfeksius_dimasukkan_kantong_hitam,
                         ""+ttllimbah_tigaperempat_diikat,""+ttllimbah_segera_dibawa_kepembuangan_sementara,""+ttlkotak_sampah_dalam_kondisi_bersih,""+ttlpembersihan_tempat_sampah_dengan_desinfekten,
                         ""+ttlpembersihan_penampungan_sementara_dengan_desinfekten,""+(ttlpemisahan_limbah_oleh_penghasil_limbah+ttllimbah_infeksius_dimasukkan_kantong_kuning+
                         ttllimbah_noninfeksius_dimasukkan_kantong_hitam+ttllimbah_tigaperempat_diikat+ttllimbah_segera_dibawa_kepembuangan_sementara+ttlkotak_sampah_dalam_kondisi_bersih+
                         ttlpembersihan_tempat_sampah_dengan_desinfekten+ttlpembersihan_penampungan_sementara_dengan_desinfekten)
                     });
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         "","Tidak",":",""+(i-ttlpemisahan_limbah_oleh_penghasil_limbah),""+(i-ttllimbah_infeksius_dimasukkan_kantong_kuning),""+(i-ttllimbah_noninfeksius_dimasukkan_kantong_hitam),
                         ""+(i-ttllimbah_tigaperempat_diikat),""+(i-ttllimbah_segera_dibawa_kepembuangan_sementara),""+(i-ttlkotak_sampah_dalam_kondisi_bersih),""+(i-ttlpembersihan_tempat_sampah_dengan_desinfekten),
                         ""+(i-ttlpembersihan_penampungan_sementara_dengan_desinfekten),""+((i-ttlpemisahan_limbah_oleh_penghasil_limbah)+(i-ttllimbah_infeksius_dimasukkan_kantong_kuning)+
                         (i-ttllimbah_noninfeksius_dimasukkan_kantong_hitam)+(i-ttllimbah_tigaperempat_diikat)+(i-ttllimbah_segera_dibawa_kepembuangan_sementara)+(i-ttlkotak_sampah_dalam_kondisi_bersih)+
                         (i-ttlpembersihan_tempat_sampah_dengan_desinfekten)+(i-ttlpembersihan_penampungan_sementara_dengan_desinfekten))
                     });
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         "","Rata-rata",":",Math.round((ttlpemisahan_limbah_oleh_penghasil_limbah/i)*100)+" %",Math.round((ttllimbah_infeksius_dimasukkan_kantong_kuning/i)*100)+" %",Math.round((ttllimbah_noninfeksius_dimasukkan_kantong_hitam/i)*100)+" %",
                         Math.round((ttllimbah_tigaperempat_diikat/i)*100)+" %",Math.round((ttllimbah_segera_dibawa_kepembuangan_sementara/i)*100)+" %",Math.round((ttlkotak_sampah_dalam_kondisi_bersih/i)*100)+" %",
                         Math.round((ttlpembersihan_tempat_sampah_dengan_desinfekten/i)*100)+" %",Math.round((ttlpembersihan_penampungan_sementara_dengan_desinfekten/i)*100)+" %",Math.round(ttlpenilaian/i)+" %"
@@ -1277,5 +1289,37 @@ public final class DlgAuditPembuanganLimbah extends javax.swing.JDialog {
         };
         // Timer
         new Timer(1000, taskPerformer).start();
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

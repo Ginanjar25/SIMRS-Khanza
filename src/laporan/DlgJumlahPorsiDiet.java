@@ -26,10 +26,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -39,13 +44,15 @@ import javax.swing.table.TableColumn;
  */
 public class DlgJumlahPorsiDiet extends javax.swing.JDialog {
     private DefaultTableModel tabMode;
-    private Connection koneksi=koneksiDB.condb();
-    private sekuel Sequel=new sekuel();
-    private validasi Valid=new validasi();
+    private final Connection koneksi=koneksiDB.condb();
+    private final sekuel Sequel=new sekuel();
+    private final validasi Valid=new validasi();
     private PreparedStatement ps;
     private ResultSet rs;
     private String dateString,dayOfWeek,hari;
     private Date date = null;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private int i=0,h1,h2,h3,h4,h5,h6,h7,h8,h9,h10,h11,h12,h13,h14,h15,h16,
                 h17,h18,h19,h20,h21,h22,h23,h24,h25,h26,h27,h28,h29,h30,h31,
                 jmlh1,jmlh2,jmlh3,jmlh4,jmlh5,jmlh6,jmlh7,jmlh8,jmlh9,jmlh10,
@@ -93,8 +100,13 @@ public class DlgJumlahPorsiDiet extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Rekap Jumlah Porsi Diet Yang Dilayani Gizi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Rekap Jumlah Porsi Diet Yang Dilayani Gizi ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -322,7 +334,7 @@ public class DlgJumlahPorsiDiet extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
     }//GEN-LAST:event_BtnCariActionPerformed
 
     private void TCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCariKeyPressed
@@ -334,6 +346,31 @@ public class DlgJumlahPorsiDiet extends javax.swing.JDialog {
             BtnKeluar.requestFocus();
         }
     }//GEN-LAST:event_TCariKeyPressed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -441,9 +478,11 @@ public class DlgJumlahPorsiDiet extends javax.swing.JDialog {
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement(
-                    "select kd_bangsal,nm_bangsal from bangsal where status='1' and nm_bangsal like ? order by nm_bangsal");
+                    "select bangsal.kd_bangsal,bangsal.nm_bangsal from bangsal where bangsal.status='1' "+(TCari.getText().trim().equals("")?"":"and bangsal.nm_bangsal like ? ")+"order by bangsal.nm_bangsal");
             try {
-                ps.setString(1,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(1,"%"+TCari.getText().trim()+"%");
+                }
                 rs=ps.executeQuery();
                 i=1;
                 jmlh1=0;jmlh2=0;jmlh3=0;jmlh4=0;jmlh5=0;jmlh6=0;jmlh7=0;jmlh8=0;jmlh9=0;jmlh10=0;
@@ -511,10 +550,10 @@ public class DlgJumlahPorsiDiet extends javax.swing.JDialog {
                         jmlh26=jmlh26+h26;
                         jmlh27=jmlh27+h27;
                         jmlh28=jmlh28+h28;
-                        jmlh29=jmlh28+h28;
+                        jmlh29=jmlh29+h29;
                         jmlh30=jmlh30+h30;
                         jmlh31=jmlh31+h31;    
-                        tabMode.addRow(new String[]{                        
+                        tabMode.addRow(new Object[]{                        
                             i+"",rs.getString("nm_bangsal"),h1+"",h2+"",h3+"",h4+"",h5+"",h6+"",h7+"",h8+"",h9+"",h10+"",
                             h11+"",h12+"",h13+"",h14+"",h15+"",h16+"",h17+"",h18+"",h19+"",h20+"",
                             h21+"",h22+"",h23+"",h24+"",h25+"",h26+"",h27+"",h28+"",h29+"",h30+"",h31+"",
@@ -525,7 +564,7 @@ public class DlgJumlahPorsiDiet extends javax.swing.JDialog {
                     }                        
                 }
                 if(i>1){
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         "","Total : ",jmlh1+"",jmlh2+"",jmlh3+"",jmlh4+"",jmlh5+"",jmlh6+"",jmlh7+"",jmlh8+"",jmlh9+"",jmlh10+"",
                         jmlh11+"",jmlh12+"",jmlh13+"",jmlh14+"",jmlh15+"",jmlh16+"",jmlh17+"",jmlh18+"",jmlh19+"",jmlh20+"",
                         jmlh21+"",jmlh22+"",jmlh23+"",jmlh24+"",jmlh25+"",jmlh26+"",jmlh27+"",jmlh28+"",jmlh29+"",jmlh30+"",jmlh31+"",
@@ -586,4 +625,35 @@ public class DlgJumlahPorsiDiet extends javax.swing.JDialog {
         return hari;
     }
     
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

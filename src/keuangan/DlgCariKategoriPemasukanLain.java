@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fungsi.WarnaTable;
 import fungsi.batasInput;
 import fungsi.koneksiDB;
-import fungsi.sekuel;
 import fungsi.validasi;
 import fungsi.akses;
 import java.awt.Cursor;
@@ -28,7 +27,12 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -38,19 +42,18 @@ import javax.swing.table.TableColumn;
  */
 public final class DlgCariKategoriPemasukanLain extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
-    private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps;
     private ResultSet rs;
-    private int pilihan=0;
     private File file;
     private FileWriter fileWriter;
-    private String iyem;
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
     private FileReader myObj;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     
     /** Creates new form DlgPenyakit
      * @param parent
@@ -235,7 +238,7 @@ public final class DlgCariKategoriPemasukanLain extends javax.swing.JDialog {
     }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil2();
+        runBackground(() ->tampil2());
     }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -248,7 +251,7 @@ public final class DlgCariKategoriPemasukanLain extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -264,7 +267,6 @@ public final class DlgCariKategoriPemasukanLain extends javax.swing.JDialog {
         DlgKategoriPemasukan penjab=new DlgKategoriPemasukan(null,false);
         penjab.emptTeks();
         penjab.isCek();
-        penjab.tampil();
         penjab.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         penjab.setLocationRelativeTo(internalFrame1);
         penjab.setAlwaysOnTop(false);
@@ -280,11 +282,33 @@ public final class DlgCariKategoriPemasukanLain extends javax.swing.JDialog {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
             if(Valid.daysOld("./cache/kategoripemasukkan.iyem")<30){
-                tampil2();
+                runBackground(() ->tampil2());
             }else{
-                tampil();
+                runBackground(() ->tampil());
             }
         } catch (Exception e) {
+        }
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+            });
         }
     }//GEN-LAST:event_formWindowOpened
 
@@ -325,7 +349,7 @@ public final class DlgCariKategoriPemasukanLain extends javax.swing.JDialog {
             file=new File("./cache/kategoripemasukkan.iyem");
             file.createNewFile();
             fileWriter = new FileWriter(file);
-            iyem="";
+            StringBuilder iyembuilder = new StringBuilder();
             ps=koneksi.prepareStatement(
                      "select kategori_pemasukan_lain.kode_kategori,kategori_pemasukan_lain.nama_kategori,akun1.nm_rek as akun1,akun2.nm_rek as akun2 "+
                      "from kategori_pemasukan_lain inner join rekening as akun1 on kategori_pemasukan_lain.kd_rek=akun1.kd_rek "+
@@ -336,7 +360,7 @@ public final class DlgCariKategoriPemasukanLain extends javax.swing.JDialog {
                     tabMode.addRow(new Object[]{
                         rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4)
                     });
-                    iyem=iyem+"{\"Kode\":\""+rs.getString(1)+"\",\"Kategori\":\""+rs.getString(2)+"\",\"AkunRekening\":\""+rs.getString(3)+"\",\"KontraAkun\":\""+rs.getString(4)+"\"},";
+                    iyembuilder.append("{\"Kode\":\"").append(rs.getString(1)).append("\",\"Kategori\":\"").append(rs.getString(2)).append("\",\"AkunRekening\":\"").append(rs.getString(3)).append("\",\"KontraAkun\":\"").append(rs.getString(4)).append("\"},");
                 }
             } catch (Exception e) {
                 System.out.println("Notif : "+e);
@@ -348,11 +372,14 @@ public final class DlgCariKategoriPemasukanLain extends javax.swing.JDialog {
                     ps.close();
                 }
             }
+            if (iyembuilder.length() > 0) {
+                iyembuilder.setLength(iyembuilder.length() - 1);
+                fileWriter.write("{\"kategoripemasukkan\":["+iyembuilder+"]}");
+                fileWriter.flush();
+            }
             
-            fileWriter.write("{\"kategoripemasukkan\":["+iyem.substring(0,iyem.length()-1)+"]}");
-            fileWriter.flush();
             fileWriter.close();
-            iyem=null;
+            iyembuilder=null;
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
@@ -366,17 +393,29 @@ public final class DlgCariKategoriPemasukanLain extends javax.swing.JDialog {
             Valid.tabelKosong(tabMode);
             response = root.path("kategoripemasukkan");
             if(response.isArray()){
-                for(JsonNode list:response){
-                    if(list.path("Kode").asText().toLowerCase().contains(TCari.getText().toLowerCase())||list.path("Kategori").asText().toLowerCase().contains(TCari.getText().toLowerCase())){
+                if(TCari.getText().trim().equals("")){
+                    for(JsonNode list:response){
                         tabMode.addRow(new Object[]{
                             list.path("Kode").asText(),list.path("Kategori").asText(),list.path("AkunRekening").asText(),list.path("KontraAkun").asText()
                         });
+                    }
+                }else{
+                    for(JsonNode list:response){
+                        if(list.path("Kode").asText().toLowerCase().contains(TCari.getText().toLowerCase())||list.path("Kategori").asText().toLowerCase().contains(TCari.getText().toLowerCase())){
+                            tabMode.addRow(new Object[]{
+                                list.path("Kode").asText(),list.path("Kategori").asText(),list.path("AkunRekening").asText(),list.path("KontraAkun").asText()
+                            });
+                        }
                     }
                 }
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
+            if(ex.toString().contains("java.io.FileNotFoundException")){
+                tampil();
+            }else{
+                System.out.println("Notifikasi : "+ex);
+            }
         }
         LCount.setText(""+tabMode.getRowCount());
     } 
@@ -387,5 +426,37 @@ public final class DlgCariKategoriPemasukanLain extends javax.swing.JDialog {
     
     public void isCek(){
         BtnTambah.setEnabled(akses.getkategori_pemasukan_lain());     
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

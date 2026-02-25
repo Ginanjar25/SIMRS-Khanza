@@ -1015,7 +1015,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="::[ Input Total BHP &amp; Obat]::">
+                <TitledBorder title="::[ Input Total BHP &amp; Obat ]::">
                   <Border PropertyName="innerBorder" info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                     <LineBorder>
                       <Color PropertyName="color" blue="eb" green="f5" red="f0" type="rgb"/>
@@ -1728,6 +1728,7 @@
             </Component>
             <Component class="widget.TextBox" name="kdpenjab">
               <Properties>
+                <Property name="editable" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="kdpenjab" noResource="true"/>
               </Properties>
               <Events>
@@ -2089,7 +2090,11 @@
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="1">
+<<<<<<< HEAD
                     <StringItem index="0" value="09-02-2026 10:44:56"/>
+=======
+                    <StringItem index="0" value="10-02-2026 06:23:19"/>
+>>>>>>> master
                   </StringArray>
                 </Property>
                 <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy HH:mm:ss"/>

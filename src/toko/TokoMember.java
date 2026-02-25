@@ -28,9 +28,13 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -47,6 +51,8 @@ public final class TokoMember extends javax.swing.JDialog {
     private PreparedStatement ps;
     private ResultSet rs;
     private int i,row;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /** Creates new form DlgPetugas
      * @param parent
@@ -98,28 +104,6 @@ public final class TokoMember extends javax.swing.JDialog {
         Alamat.setDocument(new batasInput((byte)60).getKata(Alamat));
         NoTelp.setDocument(new batasInput((byte)40).getOnlyAngka(NoTelp));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }  
         
         ChkInput.setSelected(false);
         isForm(); 
@@ -618,7 +602,7 @@ public final class TokoMember extends javax.swing.JDialog {
                 NoMember.getText(),NamaMember.getText(),JK.getSelectedItem().toString().substring(0,1),TmpLahir.getText(),Valid.SetTgl(TglLahir.getSelectedItem()+""),Alamat.getText(),NoTelp.getText(),Email.getText()
             })==true){
                 emptTeks();
-                tampil();
+                runBackground(() ->tampil());
             }         
         }
 }//GEN-LAST:event_BtnSimpanActionPerformed
@@ -645,7 +629,7 @@ public final class TokoMember extends javax.swing.JDialog {
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
         Sequel.meghapus("tokomember","no_member",NoMember.getText());
-        tampil();
+        runBackground(() ->tampil());
         emptTeks();
 }//GEN-LAST:event_BtnHapusActionPerformed
 
@@ -701,7 +685,7 @@ public final class TokoMember extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -727,7 +711,7 @@ public final class TokoMember extends javax.swing.JDialog {
                     NoMember.getText(),NamaMember.getText(),JK.getSelectedItem().toString().substring(0,1),TmpLahir.getText(),Valid.SetTgl(TglLahir.getSelectedItem()+""),Alamat.getText(),NoTelp.getText(),Email.getText(),tbPetugas.getValueAt(tbPetugas.getSelectedRow(),0).toString()
                 })==true){
                     emptTeks();
-                    tampil();
+                    runBackground(() ->tampil());
                 }  
             }       
         }
@@ -752,7 +736,7 @@ public final class TokoMember extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -781,7 +765,29 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_ChkInputActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
+        runBackground(() ->tampil());
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        } 
     }//GEN-LAST:event_formWindowOpened
 
     private void tbPetugasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbPetugasKeyReleased
@@ -886,14 +892,18 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement(
-                    "select no_member, nama, jk, tmp_lahir, tgl_lahir, alamat, no_telp, email from tokomember "+
-                    "where no_member like ? or nama like ? or alamat like ? or email like ? or tgl_lahir like ? order by no_member");
+                    "select tokomember.no_member,tokomember.nama,tokomember.jk,tokomember.tmp_lahir,tokomember.tgl_lahir,tokomember.alamat,tokomember.no_telp,tokomember.email from tokomember "+
+                    (TCari.getText().trim().equals("")?"":"where tokomember.no_member like ? or tokomember.nama like ? or tokomember.alamat like ? or tokomember.email like ? or tokomember.tgl_lahir like ? ")+
+                    "order by tokomember.no_member");
             try {
-                ps.setString(1,"%"+TCari.getText().trim()+"%");
-                ps.setString(2,"%"+TCari.getText().trim()+"%");
-                ps.setString(3,"%"+TCari.getText().trim()+"%");
-                ps.setString(4,"%"+TCari.getText().trim()+"%");
-                ps.setString(5,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(1,"%"+TCari.getText().trim()+"%");
+                    ps.setString(2,"%"+TCari.getText().trim()+"%");
+                    ps.setString(3,"%"+TCari.getText().trim()+"%");
+                    ps.setString(4,"%"+TCari.getText().trim()+"%");
+                    ps.setString(5,"%"+TCari.getText().trim()+"%");
+                }
+                    
                 rs=ps.executeQuery();
                 while(rs.next()){
                     tabMode.addRow(new Object[]{
@@ -927,7 +937,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         NoTelp.setText("");
         Email.setText("");
         TglLahir.setDate(new Date());
-        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_member,7),signed)),0) from tokomember ","M",7,NoMember);
+        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(tokomember.no_member,7),signed)),0) from tokomember ","M",7,NoMember);
         NoMember.requestFocus();
     }
 
@@ -973,5 +983,37 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         BtnHapus.setEnabled(akses.gettoko_member());
         BtnEdit.setEnabled(akses.gettoko_member());
         BtnPrint.setEnabled(akses.gettoko_member());
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

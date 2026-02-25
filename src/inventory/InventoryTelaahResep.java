@@ -21,6 +21,7 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
@@ -32,8 +33,12 @@ import java.sql.ResultSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -55,8 +60,10 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
     private PreparedStatement ps,ps2,ps3;
     private ResultSet rs,rs2,rs3;
     private int i=0;    
-    private DlgCariPetugas petugas=new DlgCariPetugas(null,false);
+    private DlgCariPetugas petugas;
     private StringBuilder htmlContent;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     /** Creates new form DlgRujuk
      * @param parent
      * @param modal */
@@ -173,52 +180,6 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
         KetResepInteraksiObat.setDocument(new batasInput((byte)30).getKata(KetResepInteraksiObat));
         KetResepKontraIndikasiObat.setDocument(new batasInput((byte)30).getKata(KetResepKontraIndikasiObat));
         TCari.setDocument(new batasInput((int)100).getKata(TCari));
-        
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }
-        
-        petugas.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(petugas.getTable().getSelectedRow()!= -1){                   
-                    Nip.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),0).toString());
-                    NamaPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),1).toString());
-                }  
-                Nip.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        }); 
         
         ChkInput.setSelected(false);
         isForm();
@@ -353,6 +314,11 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Telaah Resep & Obat ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
@@ -1206,7 +1172,7 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
                 ObatTepatObat.getSelectedItem().toString(),ObatTepatDosis.getSelectedItem().toString(), ObatTepatWaktuPemberian.getSelectedItem().toString(),
                 ObatKesesuaianFormula.getSelectedItem().toString(),Nip.getText(), ResepFormula.getSelectedItem().toString(), KetResepFormula.getText()
             })==true){
-                tampil();
+                runBackground(() ->tampil());
                 emptTeks();
             }   
         }
@@ -1288,7 +1254,6 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnEditKeyPressed
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
-        petugas.dispose();
         dispose();
 }//GEN-LAST:event_BtnKeluarActionPerformed
 
@@ -1442,17 +1407,41 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
 
     private void NipKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NipKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            NamaPetugas.setText(petugas.tampil3(Nip.getText()));
+            NamaPetugas.setText(Sequel.CariPetugas(Nip.getText()));
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             btnPetugasActionPerformed(null);
         }
     }//GEN-LAST:event_NipKeyPressed
 
     private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPetugasActionPerformed
-        petugas.emptTeks();
-        petugas.isCek();
-        petugas.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        petugas.setLocationRelativeTo(internalFrame1);
+        if (petugas == null || !petugas.isDisplayable()) {
+            petugas=new DlgCariPetugas(null,false);
+            petugas.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            petugas.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if(petugas.getTable().getSelectedRow()!= -1){
+                        Nip.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),0).toString());
+                        NamaPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),1).toString());
+                    }   
+                    Nip.requestFocus(); 
+                    petugas=null;
+                }
+            });
+
+            petugas.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            petugas.setLocationRelativeTo(internalFrame1);
+        }
+            
+        if (petugas == null) return;
+        if (!petugas.isVisible()) {
+            petugas.isCek();    
+            petugas.emptTeks();
+        }  
+        if (petugas.isVisible()) {
+            petugas.toFront();
+            return;
+        }    
         petugas.setVisible(true);
     }//GEN-LAST:event_btnPetugasActionPerformed
 
@@ -1474,9 +1463,9 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
 
     private void TabDataMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabDataMouseClicked
         if(TabData.getSelectedIndex()==0){
-            tampil();
+            runBackground(() ->tampil());
         }else if(TabData.getSelectedIndex()==1){
-            tampil2();
+            runBackground(() ->tampil2());
         }
     }//GEN-LAST:event_TabDataMouseClicked
 
@@ -1616,6 +1605,42 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
     private void ResepFormulaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResepFormulaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ResepFormulaActionPerformed
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        if(TabData.getSelectedIndex()==0){
+                            runBackground(() ->tampil());
+                        }else if(TabData.getSelectedIndex()==1){
+                            runBackground(() ->tampil2());
+                        }
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        if(TabData.getSelectedIndex()==0){
+                            runBackground(() ->tampil());
+                        }else if(TabData.getSelectedIndex()==1){
+                            runBackground(() ->tampil2());
+                        }
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        if(TabData.getSelectedIndex()==0){
+                            runBackground(() ->tampil());
+                        }else if(TabData.getSelectedIndex()==1){
+                            runBackground(() ->tampil2());
+                        }
+                    }
+                }
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -1732,7 +1757,7 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
     
-    public void tampil() {
+    private void tampil() {
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement(
@@ -1773,9 +1798,9 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
                     
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         rs.getString("no_resep"),rs.getString("tgl_perawatan"),rs.getString("jam"),rs.getString("no_rawat"),rs.getString("no_rkm_medis"),
-                        rs.getString("nm_pasien"),rs.getString("umur"),rs.getString("jk"),rs.getString("tgl_lahir"),rs.getString("kd_dokter"),
+                        rs.getString("nm_pasien"),rs.getString("umur"),rs.getString("jk"),rs.getDate("tgl_lahir"),rs.getString("kd_dokter"),
                         rs.getString("nm_dokter"),rs.getString("status").replace("r","R"),rs.getString("resep_identifikasi_pasien"),rs.getString("resep_ket_identifikasi_pasien"),
                         rs.getString("resep_tepat_obat"),rs.getString("resep_ket_tepat_obat"),rs.getString("resep_tepat_dosis"),rs.getString("resep_ket_tepat_dosis"),
                         rs.getString("resep_tepat_cara_pemberian"),rs.getString("resep_ket_tepat_cara_pemberian"),rs.getString("resep_tepat_waktu_pemberian"),
@@ -1886,6 +1911,7 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
         isPsien();
         ChkInput.setSelected(true);
         isForm();
+        runBackground(() ->tampil());
     }
     
     private void isForm(){
@@ -1915,7 +1941,7 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
             Nip.setEditable(false);
             btnPetugas.setEnabled(false);
             Nip.setText(akses.getkode());
-            NamaPetugas.setText(petugas.tampil3(Nip.getText()));
+            NamaPetugas.setText(Sequel.CariPetugas(Nip.getText()));
             if(NamaPetugas.getText().equals("")){
                 Nip.setText("");
                 JOptionPane.showMessageDialog(null,"User login bukan petugas...!!");
@@ -1927,7 +1953,7 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
         if(Sequel.queryu2tf("delete from telaah_farmasi where no_resep=?",1,new String[]{
             tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
         })==true){
-            tampil();
+            runBackground(() ->tampil());
         }else{
             JOptionPane.showMessageDialog(null,"Gagal menghapus..!!");
         }
@@ -1947,7 +1973,7 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
                 ObatTepatObat.getSelectedItem().toString(),ObatTepatDosis.getSelectedItem().toString(),ObatTepatWaktuPemberian.getSelectedItem().toString(),
                 ObatKesesuaianFormula.getSelectedItem().toString(),Nip.getText(),ResepFormula.getSelectedItem().toString(), KetResepFormula.getText(),tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
             })==true){
-               tampil();
+               runBackground(() ->tampil());
                emptTeks();
         }
     }
@@ -1968,15 +1994,11 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
                     "<td valign='middle' bgcolor='#FFFAFA' align='center' width='21%'>Dokter Peresep</td>"+
                     "<td valign='middle' bgcolor='#FFFAFA' align='center' width='5%'>Status</td>"+
                 "</tr>");
-            ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,"+
-                    " resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,"+
-                    " resep_obat.status,resep_obat.tgl_perawatan,resep_obat.jam "+
-                    " from resep_obat inner join reg_periksa inner join pasien inner join dokter on resep_obat.no_rawat=reg_periksa.no_rawat  "+
-                    " and reg_periksa.no_rkm_medis=pasien.no_rkm_medis and resep_obat.kd_dokter=dokter.kd_dokter where "+
-                    " resep_obat.tgl_peresepan<>'0000-00-00' and resep_obat.tgl_perawatan<>'0000-00-00' and resep_obat.tgl_peresepan between ? and ? "+
-                    (TCari.getText().trim().equals("")?"":"and (resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
-                    "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or resep_obat.kd_dokter like ? or dokter.nm_dokter like ? or "+
-                    "resep_obat.status like ?) ")+"order by resep_obat.tgl_perawatan,resep_obat.jam desc");
+            ps=koneksi.prepareStatement(
+                "select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,resep_obat.status,resep_obat.tgl_perawatan,resep_obat.jam "+
+                "from resep_obat inner join reg_periksa on resep_obat.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis inner join dokter on resep_obat.kd_dokter=dokter.kd_dokter "+
+                "where resep_obat.tgl_peresepan<>'0000-00-00' and resep_obat.tgl_perawatan<>'0000-00-00' and resep_obat.tgl_peresepan between ? and ? "+(TCari.getText().trim().equals("")?"":"and (resep_obat.no_resep like ? or "+
+                "resep_obat.no_rawat like ? or pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or resep_obat.kd_dokter like ? or dokter.nm_dokter like ? or resep_obat.status like ?) ")+"order by resep_obat.tgl_perawatan,resep_obat.jam desc");
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -2337,5 +2359,21 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
             }
     //        System.out.println(no_urut);
             return hasil;
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        ceksukses = true;
+
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        executor.submit(() -> {
+            try {
+                task.run();
+            } finally {
+                ceksukses = false;
+                SwingUtilities.invokeLater(() -> {
+                    this.setCursor(Cursor.getDefaultCursor());
+                });
+            }
+        });
     }
 }

@@ -27,7 +27,11 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -44,11 +48,12 @@ public final class DlgCariIndustriFarmasi extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private File file;
     private FileWriter fileWriter;
-    private String iyem;
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
     private FileReader myObj;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     
     /** Creates new form DlgPenyakit
      * @param parent
@@ -82,28 +87,6 @@ public final class DlgCariIndustriFarmasi extends javax.swing.JDialog {
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable());
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil2();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil2();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil2();
-                    }
-                }
-            });
-        }
     }    
 
 
@@ -276,7 +259,7 @@ public final class DlgCariIndustriFarmasi extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil2();
+        runBackground(() ->tampil2());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -289,7 +272,7 @@ public final class DlgCariIndustriFarmasi extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -342,11 +325,34 @@ public final class DlgCariIndustriFarmasi extends javax.swing.JDialog {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
             if(Valid.daysOld("./cache/industrifarmasi.iyem")<30){
-                tampil2();
+                runBackground(() ->tampil2());
             }else{
-                tampil();
+                runBackground(() ->tampil());
             }
         } catch (Exception e) {
+        }
+        
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil2());
+                    }
+                }
+            });
         }
     }//GEN-LAST:event_formWindowOpened
 
@@ -387,17 +393,17 @@ public final class DlgCariIndustriFarmasi extends javax.swing.JDialog {
             file=new File("./cache/industrifarmasi.iyem");
             file.createNewFile();
             fileWriter = new FileWriter(file);
-            iyem="";
+            StringBuilder iyembuilder = new StringBuilder();
             
             ps=koneksi.prepareStatement("select * from industrifarmasi order by industrifarmasi.nama_industri ");
             try {
                 rs=ps.executeQuery();
                 while(rs.next()){
                     //"Kode I.F.","Industri Farmasi","Alamat Industri Farmasi","Kota","No.Telp"
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         rs.getString("kode_industri"),rs.getString("nama_industri"),rs.getString("alamat"),rs.getString("kota"),rs.getString("no_telp")
                     });
-                    iyem=iyem+"{\"KodeIF\":\""+rs.getString("kode_industri")+"\",\"NamaIF\":\""+rs.getString("nama_industri")+"\",\"Alamat\":\""+rs.getString("alamat")+"\",\"Kota\":\""+rs.getString("kota")+"\",\"NoTelp\":\""+rs.getString("no_telp")+"\"},";
+                    iyembuilder.append("{\"KodeIF\":\"").append(rs.getString("kode_industri")).append("\",\"NamaIF\":\"").append(rs.getString("nama_industri")).append("\",\"Alamat\":\"").append(rs.getString("alamat")).append("\",\"Kota\":\"").append(rs.getString("kota")).append("\",\"NoTelp\":\"").append(rs.getString("no_telp")).append("\"},");
                 }
             } catch (Exception e) {
                 System.out.println(e);
@@ -410,10 +416,14 @@ public final class DlgCariIndustriFarmasi extends javax.swing.JDialog {
                 }
             }   
                 
-            fileWriter.write("{\"industrifarmasi\":["+iyem.substring(0,iyem.length()-1)+"]}");
-            fileWriter.flush();
+            if (iyembuilder.length() > 0) {
+                iyembuilder.setLength(iyembuilder.length() - 1);
+                fileWriter.write("{\"industrifarmasi\":["+iyembuilder+"]}");
+                fileWriter.flush();
+            }
+            
             fileWriter.close();
-            iyem=null;
+            iyembuilder=null;
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
@@ -445,7 +455,11 @@ public final class DlgCariIndustriFarmasi extends javax.swing.JDialog {
             }
             myObj.close();
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            if(e.toString().contains("java.io.FileNotFoundException")){
+                tampil();
+            }else{
+                System.out.println("Notifikasi : "+e);
+            }
         }
         LCount.setText(""+tabMode.getRowCount());
     }
@@ -460,5 +474,37 @@ public final class DlgCariIndustriFarmasi extends javax.swing.JDialog {
     
     public void isCek(){        
         BtnTambah.setEnabled(akses.getindustrifarmasi());
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

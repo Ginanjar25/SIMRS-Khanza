@@ -23,12 +23,17 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import fungsi.validasi;
 import java.awt.Cursor;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.FileReader;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 
 /**
@@ -38,12 +43,14 @@ import javax.swing.event.DocumentEvent;
 public final class YaskiReferensiKecamatan extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
     private validasi Valid=new validasi();
-    private YaskiReferensiKabupaten kabupaten=new YaskiReferensiKabupaten(null,false);
+    private YaskiReferensiKabupaten kabupaten;
     private int i=0;
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode response;
     private FileReader myObj;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     
     /** Creates new form DlgKamar
      * @param parent
@@ -77,66 +84,6 @@ public final class YaskiReferensiKecamatan extends javax.swing.JDialog {
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable());
         
         Kabupaten.setDocument(new batasInput((byte)100).getKata(Kabupaten));
-        
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            Kabupaten.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(Kabupaten.getText().length()>2){
-                        tampil(Kabupaten.getText());
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(Kabupaten.getText().length()>2){
-                        tampil(Kabupaten.getText());
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(Kabupaten.getText().length()>2){
-                        tampil(Kabupaten.getText());
-                    }
-                }
-            });
-        } 
-        
-        kabupaten.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(kabupaten.getTable().getSelectedRow()!= -1){                   
-                    KdKab.setText(kabupaten.getTable().getValueAt(kabupaten.getTable().getSelectedRow(),1).toString());
-                    NmKab.setText(kabupaten.getTable().getValueAt(kabupaten.getTable().getSelectedRow(),2).toString());
-                    KdKab.requestFocus();
-                }                  
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        kabupaten.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    kabupaten.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        }); 
-              
     }
     
     
@@ -169,6 +116,11 @@ public final class YaskiReferensiKecamatan extends javax.swing.JDialog {
         setIconImages(null);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pencarian Data Referensi Kecamatan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
@@ -302,9 +254,7 @@ public final class YaskiReferensiKecamatan extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null,"Silahkan pilih kabupaten dulu..!!");
             BtnPropinsi.requestFocus();
         }else{
-            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            tampil(Kabupaten.getText());
-            this.setCursor(Cursor.getDefaultCursor());
+            runBackground(() ->tampil(Kabupaten.getText()));
         }            
     }//GEN-LAST:event_BtnCariActionPerformed
 
@@ -317,10 +267,63 @@ public final class YaskiReferensiKecamatan extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnCariKeyPressed
 
     private void BtnPropinsiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPropinsiActionPerformed
-        kabupaten.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        kabupaten.setLocationRelativeTo(internalFrame1);
-        kabupaten.setVisible(true);
+        if (kabupaten == null || !kabupaten.isDisplayable()) {
+                kabupaten=new YaskiReferensiKabupaten(null,false);
+                kabupaten.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                kabupaten.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        if(kabupaten.getTable().getSelectedRow()!= -1){   
+                            KdKab.setText(kabupaten.getTable().getValueAt(kabupaten.getTable().getSelectedRow(),1).toString());
+                            NmKab.setText(kabupaten.getTable().getValueAt(kabupaten.getTable().getSelectedRow(),2).toString().toUpperCase());
+                        } 
+                        kabupaten=null;
+                    }
+                }); 
+
+                kabupaten.getTable().addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+                        if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                            kabupaten.dispose();
+                        } 
+                    }
+                });   
+                kabupaten.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                kabupaten.setLocationRelativeTo(internalFrame1);
+            }
+            if (kabupaten == null) return;
+            if (kabupaten.isVisible()) {
+                kabupaten.toFront();
+                return;
+            }    
+            kabupaten.setVisible(true);
     }//GEN-LAST:event_BtnPropinsiActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            Kabupaten.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(Kabupaten.getText().length()>2){
+                        runBackground(() ->tampil(Kabupaten.getText()));
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(Kabupaten.getText().length()>2){
+                        runBackground(() ->tampil(Kabupaten.getText()));
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(Kabupaten.getText().length()>2){
+                        runBackground(() ->tampil(Kabupaten.getText()));
+                    }
+                }
+            });
+        } 
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -354,7 +357,7 @@ public final class YaskiReferensiKecamatan extends javax.swing.JDialog {
     private widget.Table tbKamar;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil(String poli) {
+    private void tampil(String poli) {
         try {
             myObj = new FileReader("./cache/kecamatan.iyem");
             root = mapper.readTree(myObj);
@@ -384,6 +387,38 @@ public final class YaskiReferensiKecamatan extends javax.swing.JDialog {
     public void setPropinsi(String KdKab,String NmKab){
         this.KdKab.setText(KdKab);
         this.NmKab.setText(NmKab);
-        tampil("");
+        runBackground(() ->tampil(""));
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

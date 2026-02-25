@@ -21,8 +21,9 @@ import fungsi.akses;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.Connection;
@@ -31,8 +32,13 @@ import java.sql.ResultSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -40,20 +46,20 @@ import restore.DlgRestoreObat;
 import simrskhanza.DlgCariBangsal;
 
 public class DlgBarang extends javax.swing.JDialog {
-
     private DefaultTableModel tabMode;
     private sekuel Sequel = new sekuel();
     private validasi Valid = new validasi();
     private Connection koneksi = koneksiDB.condb();
-    public DlgCariJenis jenis = new DlgCariJenis(null, false);
-    public DlgCariKategori kategori = new DlgCariKategori(null, false);
-    public DlgCariGolongan golongan = new DlgCariGolongan(null, false);
-    public DlgCariSatuan satuan = new DlgCariSatuan(null, false);
-    public DlgCariIndustriFarmasi industri=new DlgCariIndustriFarmasi(null,false);
-    private DlgCariBangsal bangsal = new DlgCariBangsal(null, false);
     private double totalstok, stokgudang;
+    private DlgCariSatuan satuan;
+    private DlgCariJenis jenis;
+    private DlgCariKategori kategori;
+    private DlgCariGolongan golongan;
+    private DlgCariIndustriFarmasi industri;
     private PreparedStatement ps, ps2, ps3, ps4;
     private ResultSet rs, rs2, rs3;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private int i = 0;
     public String aktifkanbatch="no",pengaturanharga=Sequel.cariIsi("select set_harga_obat.setharga from set_harga_obat");
     private String kdlokasi = "", nmlokasi = "", tanggal = "0000-00-00",qrystok="";
@@ -199,264 +205,6 @@ public class DlgBarang extends javax.swing.JDialog {
 
         ChkInput.setSelected(false);
         isForm();
-
-        bangsal.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if (bangsal.getTable().getSelectedRow() != -1) {
-                    kdlokasi = bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(), 0).toString();
-                    nmlokasi = bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(), 1).toString();
-                    tampil3();
-                }
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-                bangsal.emptTeks();
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-            }
-        });
-
-        jenis.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if (jenis.getTable().getSelectedRow() != -1) {
-                    kdjns.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(), 0).toString());
-                    nmjns.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(), 1).toString());
-                }
-                BtnJenis.requestFocus();
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-            }
-        });
-
-        satuan.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if (akses.getform().equals("DlgBarang")) {
-                    if (satuan.getTable().getSelectedRow() != -1) {
-                        if(i==1){
-                            kdsat.setText(satuan.getTable().getValueAt(satuan.getTable().getSelectedRow(), 0).toString());
-                            nmsat.setText(satuan.getTable().getValueAt(satuan.getTable().getSelectedRow(), 1).toString());
-                            BtnSatuan.requestFocus();
-                        }else{
-                            kdsatBesar.setText(satuan.getTable().getValueAt(satuan.getTable().getSelectedRow(), 0).toString());
-                            nmsatBesar.setText(satuan.getTable().getValueAt(satuan.getTable().getSelectedRow(), 1).toString());
-                            BtnSatuanBesar.requestFocus();
-                        }
-                           
-                        if(kdsat.getText().equals(kdsatBesar.getText())){
-                            Isi.setText("1");
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-                satuan.emptTeks();
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-            }
-        });
-        
-        golongan.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if (akses.getform().equals("DlgBarang")) {
-                    if (golongan.getTable().getSelectedRow() != -1) {
-                        kdgolongan.setText(golongan.getTable().getValueAt(golongan.getTable().getSelectedRow(), 0).toString());
-                        nmgolongan.setText(golongan.getTable().getValueAt(golongan.getTable().getSelectedRow(), 1).toString());
-                    }
-                }
-                BtnGolongan.requestFocus();
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-                golongan.emptTeks();
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-            }
-        });
-        
-        kategori.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if (akses.getform().equals("DlgBarang")) {
-                    if (kategori.getTable().getSelectedRow() != -1) {
-                        kdkategori.setText(kategori.getTable().getValueAt(kategori.getTable().getSelectedRow(), 0).toString());
-                        nmkategori.setText(kategori.getTable().getValueAt(kategori.getTable().getSelectedRow(), 1).toString());
-                    }
-                }
-                BtnKategori.requestFocus();
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-                kategori.emptTeks();
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-            }
-        });
-        
-        industri.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(akses.getform().equals("DlgBarang")){
-                    if(industri.getTable().getSelectedRow()!= -1){                   
-                        KdIF.setText(industri.getTable().getValueAt(industri.getTable().getSelectedRow(),0).toString());                    
-                        NmIF.setText(industri.getTable().getValueAt(industri.getTable().getSelectedRow(),1).toString());
-                    }  
-                    BtnIF.requestFocus();
-                }
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        industri.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(akses.getform().equals("DlgBarang")){
-                    if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                        industri.dispose();
-                    }     
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        }); 
-        
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }
     }
 
     /**
@@ -1586,9 +1334,9 @@ public class DlgBarang extends javax.swing.JDialog {
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
         if(akses.getform().equals("tampil3")){
-            tampil3();
+            runBackground(() ->tampil3());
         }else{
-            tampil();
+            runBackground(() ->tampil());
         }   
 }//GEN-LAST:event_BtnCariActionPerformed
 
@@ -1631,7 +1379,6 @@ public class DlgBarang extends javax.swing.JDialog {
             }
         }
         LCount.setText("" + tabMode.getRowCount());
-        emptTeks();
 }//GEN-LAST:event_BtnHapusActionPerformed
 
     private void BtnHapusKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnHapusKeyPressed
@@ -1823,9 +1570,9 @@ public class DlgBarang extends javax.swing.JDialog {
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
         if(akses.getform().equals("tampil3")){
-            tampil3();
+            runBackground(() ->tampil3());
         }else{
-            tampil();
+            runBackground(() ->tampil());
         }        
 }//GEN-LAST:event_BtnAllActionPerformed
 
@@ -1961,13 +1708,36 @@ private void ralanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ral
 }//GEN-LAST:event_ralanKeyPressed
 
 private void BtnSatuanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSatuanActionPerformed
-    i=1;
-    akses.setform("DlgBarang");
-    satuan.isCek();
-    satuan.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
-    satuan.setLocationRelativeTo(internalFrame1);
-    satuan.setAlwaysOnTop(false);
-    satuan.setVisible(true);
+    if (satuan == null || !satuan.isDisplayable()) {
+        satuan = new DlgCariSatuan(null, false);
+        satuan.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        satuan.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (satuan.getTable().getSelectedRow() != -1) {
+                    kdsat.setText(satuan.getTable().getValueAt(satuan.getTable().getSelectedRow(), 0).toString());
+                    nmsat.setText(satuan.getTable().getValueAt(satuan.getTable().getSelectedRow(), 1).toString());
+                    BtnSatuan.requestFocus();
+                    if(kdsat.getText().equals(kdsatBesar.getText())){
+                        Isi.setText("1");
+                    }
+                }
+                satuan=null;
+            }
+        });
+        satuan.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+        satuan.setLocationRelativeTo(internalFrame1);
+    }
+    if (satuan == null) return;
+    if (!satuan.isVisible()) {
+        satuan.emptTeks();
+    }
+
+    if (satuan.isVisible()) {
+        satuan.toFront();
+        return;
+    }
+    satuan.setVisible(true);  
 }//GEN-LAST:event_BtnSatuanActionPerformed
 
 private void stok_minimalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_stok_minimalKeyPressed
@@ -1975,12 +1745,33 @@ private void stok_minimalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:ev
 }//GEN-LAST:event_stok_minimalKeyPressed
 
     private void BtnJenisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnJenisActionPerformed
-        akses.setform("DlgBarang");
-        jenis.isCek();
-        jenis.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
-        jenis.setLocationRelativeTo(internalFrame1);
-        jenis.setAlwaysOnTop(false);
-        jenis.setVisible(true);
+        if (jenis == null || !jenis.isDisplayable()) {
+            jenis = new DlgCariJenis(null, false);
+            jenis.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            jenis.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if (jenis.getTable().getSelectedRow() != -1) {
+                        kdjns.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(), 0).toString());
+                        nmjns.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(), 1).toString());
+                    }
+                    BtnJenis.requestFocus();
+                    jenis=null;
+                }
+            });
+            jenis.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+            jenis.setLocationRelativeTo(internalFrame1);
+        }
+        if (jenis == null) return;
+        if (!jenis.isVisible()) {
+            jenis.emptTeks();
+        }
+        
+        if (jenis.isVisible()) {
+            jenis.toFront();
+            return;
+        }
+        jenis.setVisible(true); 
     }//GEN-LAST:event_BtnJenisActionPerformed
 
     private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KdKeyPressed
@@ -2140,7 +1931,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_ChkInputActionPerformed
 
 private void ppStokBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppStokBtnPrintActionPerformed
-    tampil2();
+    runBackground(() ->tampil2());
 }//GEN-LAST:event_ppStokBtnPrintActionPerformed
 
 private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KapasitasKeyPressed
@@ -2150,14 +1941,72 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         if(!akses.getform().equals("DlgReturJual")){
             if(akses.getform().equals("tampil3")){
-                tampil3();
+                runBackground(() ->tampil3());
             }else{
-                tampil();
+                runBackground(() ->tampil());
             }   
+        }
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
         }
     }//GEN-LAST:event_formWindowOpened
 
     private void ppStok2BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppStok2BtnPrintActionPerformed
+        DlgCariBangsal bangsal = new DlgCariBangsal(null, false);
+        bangsal.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (bangsal.getTable().getSelectedRow() != -1) {
+                    kdlokasi = bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(), 0).toString();
+                    nmlokasi = bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(), 1).toString();
+                    runBackground(() ->tampil3());
+                }
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+                bangsal.emptTeks();
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+            }
+        });
         bangsal.isCek();
         bangsal.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
         bangsal.setLocationRelativeTo(internalFrame1);
@@ -2288,30 +2137,103 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     }//GEN-LAST:event_MnRestoreActionPerformed
 
     private void BtnIFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnIFActionPerformed
-        akses.setform("DlgBarang");
-        industri.isCek();
-        industri.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
-        industri.setLocationRelativeTo(internalFrame1);
-        industri.setAlwaysOnTop(false);
+        if (industri == null || !industri.isDisplayable()) {
+            industri=new DlgCariIndustriFarmasi(null,false);
+            industri.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            industri.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if(industri.getTable().getSelectedRow()!= -1){                   
+                        KdIF.setText(industri.getTable().getValueAt(industri.getTable().getSelectedRow(),0).toString());                    
+                        NmIF.setText(industri.getTable().getValueAt(industri.getTable().getSelectedRow(),1).toString());
+                    }  
+                    BtnIF.requestFocus();
+                    industri=null;
+                }
+            }); 
+
+            industri.getTable().addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                        industri.dispose();
+                    } 
+                }
+            });   
+            industri.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            industri.setLocationRelativeTo(internalFrame1);
+        }
+               
+        if (industri == null) return;
+        if (!industri.isVisible()) {
+            industri.emptTeks();
+            industri.isCek();
+        }  
+        if (industri.isVisible()) {
+            industri.toFront();
+            return;
+        }    
         industri.setVisible(true);
     }//GEN-LAST:event_BtnIFActionPerformed
 
     private void BtnKategoriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKategoriActionPerformed
-        akses.setform("DlgBarang");
-        kategori.isCek();
-        kategori.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
-        kategori.setLocationRelativeTo(internalFrame1);
-        kategori.setAlwaysOnTop(false);
-        kategori.setVisible(true);
+        if (kategori == null || !kategori.isDisplayable()) {
+            kategori = new DlgCariKategori(null, false);
+            kategori.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            kategori.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if (kategori.getTable().getSelectedRow() != -1) {
+                        kdkategori.setText(kategori.getTable().getValueAt(kategori.getTable().getSelectedRow(), 0).toString());
+                        nmkategori.setText(kategori.getTable().getValueAt(kategori.getTable().getSelectedRow(), 1).toString());
+                    }
+                    BtnKategori.requestFocus();
+                    kategori=null;
+                }
+            });
+            kategori.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+            kategori.setLocationRelativeTo(internalFrame1);
+        }
+        if (kategori == null) return;
+        if (!kategori.isVisible()) {
+            kategori.emptTeks();
+        }
+        
+        if (kategori.isVisible()) {
+            kategori.toFront();
+            return;
+        }
+        kategori.setVisible(true); 
     }//GEN-LAST:event_BtnKategoriActionPerformed
 
     private void BtnGolonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnGolonganActionPerformed
-        akses.setform("DlgBarang");
-        golongan.isCek();
-        golongan.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
-        golongan.setLocationRelativeTo(internalFrame1);
-        golongan.setAlwaysOnTop(false);
-        golongan.setVisible(true);
+        if (golongan == null || !golongan.isDisplayable()) {
+            golongan = new DlgCariGolongan(null, false);
+            golongan.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            golongan.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if (golongan.getTable().getSelectedRow() != -1) {
+                        kdgolongan.setText(golongan.getTable().getValueAt(golongan.getTable().getSelectedRow(), 0).toString());
+                        nmgolongan.setText(golongan.getTable().getValueAt(golongan.getTable().getSelectedRow(), 1).toString());
+                    }
+                    BtnGolongan.requestFocus();
+                    golongan=null;
+                }
+            });
+            golongan.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+            golongan.setLocationRelativeTo(internalFrame1);
+        }
+        if (golongan == null) return;
+        if (!golongan.isVisible()) {
+            golongan.emptTeks();
+        }
+        
+        if (golongan.isVisible()) {
+            golongan.toFront();
+            return;
+        }
+        golongan.setVisible(true); 
     }//GEN-LAST:event_BtnGolonganActionPerformed
 
     private void tbObatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbObatKeyReleased
@@ -2326,13 +2248,37 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     }//GEN-LAST:event_tbObatKeyReleased
 
     private void BtnSatuanBesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSatuanBesarActionPerformed
-        i=2;
-        akses.setform("DlgBarang");
-        satuan.isCek();
-        satuan.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
-        satuan.setLocationRelativeTo(internalFrame1);
-        satuan.setAlwaysOnTop(false);
-        satuan.setVisible(true);
+        if (satuan == null || !satuan.isDisplayable()) {
+            satuan = new DlgCariSatuan(null, false);
+            satuan.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            satuan.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if (satuan.getTable().getSelectedRow() != -1) {
+                        kdsatBesar.setText(satuan.getTable().getValueAt(satuan.getTable().getSelectedRow(), 0).toString());
+                        nmsatBesar.setText(satuan.getTable().getValueAt(satuan.getTable().getSelectedRow(), 1).toString());
+                        BtnSatuanBesar.requestFocus();
+
+                        if(kdsat.getText().equals(kdsatBesar.getText())){
+                            Isi.setText("1");
+                        }
+                    }
+                    satuan=null;
+                }
+            });
+            satuan.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+            satuan.setLocationRelativeTo(internalFrame1);
+        }
+        if (satuan == null) return;
+        if (!satuan.isVisible()) {
+            satuan.emptTeks();
+        }
+        
+        if (satuan.isVisible()) {
+            satuan.toFront();
+            return;
+        }
+        satuan.setVisible(true);   
     }//GEN-LAST:event_BtnSatuanBesarActionPerformed
 
     private void IsiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_IsiKeyPressed
@@ -2529,19 +2475,10 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                             + " inner join industrifarmasi on databarang.kode_industri=industrifarmasi.kode_industri "
                             + " inner join golongan_barang on databarang.kode_golongan=golongan_barang.kode "
                             + " inner join kategori_barang on databarang.kode_kategori=kategori_barang.kode "
-                            + " where databarang.status='1' and databarang.kode_brng like ? or "
-                            + " databarang.status='1' and databarang.nama_brng like ? or "
-                            + " databarang.status='1' and databarang.kode_sat like ? or "
-                            + " databarang.status='1' and kodesatuan.satuan like ? or "
-                            + " databarang.status='1' and databarang.kode_satbesar like ? or "
-                            + " databarang.status='1' and satuanbesar.satuan like ? or "
-                            + " databarang.status='1' and databarang.letak_barang like ? or "
-                            + " databarang.status='1' and databarang.kdjns like ? or "
-                            + " databarang.status='1' and kategori_barang.nama like ? or "
-                            + " databarang.status='1' and golongan_barang.nama like ? or "
-                            + " databarang.status='1' and jenis.nama like ? or "
-                            + " databarang.status='1' and databarang.kode_industri like ? or "
-                            + " databarang.status='1' and industrifarmasi.nama_industri like ? order by databarang.nama_brng");
+                            + " where databarang.status='1' and (databarang.kode_brng like ? or  databarang.nama_brng like ? or databarang.kode_sat like ? or "
+                            + " kodesatuan.satuan like ? or  databarang.kode_satbesar like ? or satuanbesar.satuan like ? or databarang.letak_barang like ? or "
+                            + " databarang.kdjns like ? or kategori_barang.nama like ? or golongan_barang.nama like ? or jenis.nama like ? or "
+                            + " databarang.kode_industri like ? or industrifarmasi.nama_industri like ?) order by databarang.nama_brng");
                 }
                     
                 try {
@@ -2628,21 +2565,12 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                     + " inner join industrifarmasi on databarang.kode_industri=industrifarmasi.kode_industri "
                     + " inner join golongan_barang on databarang.kode_golongan=golongan_barang.kode "
                     + " inner join kategori_barang on databarang.kode_kategori=kategori_barang.kode "
-                    + " where data_batch.sisa>0 and data_batch.kode_brng like ? or "
-                    + " data_batch.sisa>0 and databarang.nama_brng like ? or "
-                    + " data_batch.sisa>0 and databarang.kode_sat like ? or "
-                    + " data_batch.sisa>0 and kodesatuan.satuan like ? or "
-                    + " data_batch.sisa>0 and databarang.kode_satbesar like ? or "
-                    + " data_batch.sisa>0 and satuanbesar.satuan like ? or "
-                    + " data_batch.sisa>0 and databarang.letak_barang like ? or "
-                    + " data_batch.sisa>0 and databarang.kdjns like ? or "
-                    + " data_batch.sisa>0 and kategori_barang.nama like ? or "
-                    + " data_batch.sisa>0 and golongan_barang.nama like ? or "
-                    + " data_batch.sisa>0 and data_batch.no_batch like ? or "
-                    + " data_batch.sisa>0 and data_batch.no_faktur like ? or "
-                    + " data_batch.sisa>0 and jenis.nama like ? or "
-                    + " data_batch.sisa>0 and databarang.kode_industri like ? or "
-                    + " data_batch.sisa>0 and industrifarmasi.nama_industri like ? order by data_batch.tgl_kadaluarsa");
+                    + " where data_batch.sisa>0 and (data_batch.kode_brng like ? or  databarang.nama_brng like ? or "
+                    + " databarang.kode_sat like ? or kodesatuan.satuan like ? or databarang.kode_satbesar like ? or "
+                    + " satuanbesar.satuan like ? or databarang.letak_barang like ? or databarang.kdjns like ? or "
+                    + " kategori_barang.nama like ? or golongan_barang.nama like ? or data_batch.no_batch like ? or "
+                    + " data_batch.no_faktur like ? or jenis.nama like ? or databarang.kode_industri like ? or "
+                    + " industrifarmasi.nama_industri like ?) order by data_batch.tgl_kadaluarsa");
                 try {
                     ps.setString(1, "%" + TCari.getText().trim() + "%");
                     ps.setString(2, "%" + TCari.getText().trim() + "%");
@@ -2755,19 +2683,11 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                         + " inner join industrifarmasi on databarang.kode_industri=industrifarmasi.kode_industri "
                         + " inner join golongan_barang on databarang.kode_golongan=golongan_barang.kode "
                         + " inner join kategori_barang on databarang.kode_kategori=kategori_barang.kode "
-                        + " where databarang.status='1' and databarang.kode_brng like ? or "
-                        + " databarang.status='1' and databarang.nama_brng like ? or "
-                        + " databarang.status='1' and databarang.kode_sat like ? or "
-                        + " databarang.status='1' and kodesatuan.satuan like ? or "
-                        + " databarang.status='1' and databarang.kode_satbesar like ? or "
-                        + " databarang.status='1' and satuanbesar.satuan like ? or "
-                        + " databarang.status='1' and databarang.letak_barang like ? or "
-                        + " databarang.status='1' and databarang.kdjns like ? or "
-                        + " databarang.status='1' and kategori_barang.nama like ? or "
-                        + " databarang.status='1' and golongan_barang.nama like ? or "
-                        + " databarang.status='1' and jenis.nama like ? or "
-                        + " databarang.status='1' and databarang.kode_industri like ? or "
-                        + " databarang.status='1' and industrifarmasi.nama_industri like ? order by databarang.nama_brng");
+                        + " where databarang.status='1' and (databarang.kode_brng like ? or databarang.nama_brng like ? or "
+                        + " databarang.kode_sat like ? or kodesatuan.satuan like ? or databarang.kode_satbesar like ? or "
+                        + " satuanbesar.satuan like ? or databarang.letak_barang like ? or databarang.kdjns like ? or "
+                        + " kategori_barang.nama like ? or golongan_barang.nama like ? or jenis.nama like ? or "
+                        + " databarang.kode_industri like ? or industrifarmasi.nama_industri like ?) order by databarang.nama_brng");
             }
 
             try {
@@ -2879,13 +2799,13 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         }
     }
 
-    public void tampil3() {
+    private void tampil3() {
         Valid.tabelKosong(tabMode);
         try {
             if(aktifkanbatch.equals("yes")){
-                qrystok="select sum(stok) from gudangbarang where kode_brng=? and kd_bangsal=? and no_batch<>'' and no_faktur<>''";
+                qrystok="select sum(gudangbarang.stok) from gudangbarang where gudangbarang.kode_brng=? and gudangbarang.kd_bangsal=? and gudangbarang.no_batch<>'' and gudangbarang.no_faktur<>''";
             }else{
-                qrystok="select sum(stok) from gudangbarang where kode_brng=? and kd_bangsal=? and no_batch='' and no_faktur=''";
+                qrystok="select sum(gudangbarang.stok) from gudangbarang where gudangbarang.kode_brng=? and gudangbarang.kd_bangsal=? and gudangbarang.no_batch='' and gudangbarang.no_faktur=''";
             }
             if(TCari.getText().trim().equals("")){
                 ps = koneksi.prepareStatement(
@@ -2918,19 +2838,11 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                         + " inner join industrifarmasi on databarang.kode_industri=industrifarmasi.kode_industri "
                         + " inner join golongan_barang on databarang.kode_golongan=golongan_barang.kode "
                         + " inner join kategori_barang on databarang.kode_kategori=kategori_barang.kode "
-                        + " where databarang.status='1' and databarang.kode_brng like ? or "
-                        + " databarang.status='1' and databarang.nama_brng like ? or "
-                        + " databarang.status='1' and databarang.kode_sat like ? or "
-                        + " databarang.status='1' and kodesatuan.satuan like ? or "
-                        + " databarang.status='1' and databarang.kode_satbesar like ? or "
-                        + " databarang.status='1' and satuanbesar.satuan like ? or "
-                        + " databarang.status='1' and databarang.letak_barang like ? or "
-                        + " databarang.status='1' and databarang.kdjns like ? or "
-                        + " databarang.status='1' and kategori_barang.nama like ? or "
-                        + " databarang.status='1' and golongan_barang.nama like ? or "
-                        + " databarang.status='1' and jenis.nama like ? or "
-                        + " databarang.status='1' and databarang.kode_industri like ? or "
-                        + " databarang.status='1' and industrifarmasi.nama_industri like ? order by databarang.nama_brng");
+                        + " where databarang.status='1' and (databarang.kode_brng like ? or databarang.nama_brng like ? or "
+                        + " databarang.kode_sat like ? or kodesatuan.satuan like ? or databarang.kode_satbesar like ? or "
+                        + " satuanbesar.satuan like ? or databarang.letak_barang like ? or databarang.kdjns like ? or "
+                        + " kategori_barang.nama like ? or golongan_barang.nama like ? or jenis.nama like ? or "
+                        + " databarang.kode_industri like ? or industrifarmasi.nama_industri like ?) order by databarang.nama_brng");
             }
 
             try {
@@ -3024,6 +2936,10 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     }
     
     public void tampil4(String NoRetur) {
+        runBackground(() ->tampilretur(NoRetur));
+    }
+    
+    private void tampilretur(String NoRetur) {
         if(akses.getform().equals("DlgReturJual")){
             if(aktifkanbatch.equals("yes")){
                 Valid.tabelKosong(tabMode);
@@ -3179,8 +3095,7 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
             }
         }else{
             tampil();
-        }    
-            
+        }  
     }
 
     public void emptTeks() {
@@ -3516,4 +3431,36 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
             tbObat.setDefaultRenderer(Object.class, new WarnaTable());
     }
 
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            System.out.println("Notif : "+ex);
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

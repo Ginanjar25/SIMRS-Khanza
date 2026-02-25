@@ -10,11 +10,15 @@ import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import java.awt.Cursor;
 
 public class MasterTemplatePersetujuanPenolakanTindakan extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
@@ -24,6 +28,8 @@ public class MasterTemplatePersetujuanPenolakanTindakan extends javax.swing.JDia
     private PreparedStatement ps;
     private ResultSet rs;
     private int i;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /** Creates new form DlgProgramStudi
      * @param parent
@@ -67,28 +73,6 @@ public class MasterTemplatePersetujuanPenolakanTindakan extends javax.swing.JDia
         LainLain.setDocument(new batasInput((int)200).getKata(LainLain));
         Biaya.setDocument(new batasInput((byte)12).getOnlyAngka(Biaya));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));    
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }             
     }
 
     /** This method is called from within the constructor to
@@ -160,6 +144,11 @@ public class MasterTemplatePersetujuanPenolakanTindakan extends javax.swing.JDia
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Master Template Persetujuan Penolakan Tindakan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
@@ -676,7 +665,7 @@ public class MasterTemplatePersetujuanPenolakanTindakan extends javax.swing.JDia
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -779,7 +768,7 @@ public class MasterTemplatePersetujuanPenolakanTindakan extends javax.swing.JDia
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -814,7 +803,7 @@ public class MasterTemplatePersetujuanPenolakanTindakan extends javax.swing.JDia
                 Kd.getText(),Diagnosa.getText(),TindakanKedokteran.getText(),IndikasiTindakan.getText(),TataCara.getText(),Tujuan.getText(),
                 Risiko.getText(),Komplikasi.getText(),Prognosis.getText(),AlternatifResiko.getText(),LainLain.getText(),Biaya.getText()
             })==true){
-                tabMode.addRow(new String[]{
+                tabMode.addRow(new Object[]{
                     Kd.getText(),Diagnosa.getText(),TindakanKedokteran.getText(),IndikasiTindakan.getText(),TataCara.getText(),Tujuan.getText(),
                     Risiko.getText(),Komplikasi.getText(),Prognosis.getText(),AlternatifResiko.getText(),LainLain.getText(),Biaya.getText()
                 });
@@ -894,6 +883,31 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private void BiayaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BiayaKeyPressed
         Valid.pindah(evt,Kd,Diagnosa);
     }//GEN-LAST:event_BiayaKeyPressed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        } 
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -978,12 +992,15 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     "template_persetujuan_penolakan_tindakan.indikasi_tindakan,template_persetujuan_penolakan_tindakan.tata_cara,template_persetujuan_penolakan_tindakan.tujuan,"+
                     "template_persetujuan_penolakan_tindakan.risiko,template_persetujuan_penolakan_tindakan.komplikasi,template_persetujuan_penolakan_tindakan.prognosis,"+
                     "template_persetujuan_penolakan_tindakan.alternatif_dan_risikonya,template_persetujuan_penolakan_tindakan.lain_lain,template_persetujuan_penolakan_tindakan.biaya "+
-                    "from template_persetujuan_penolakan_tindakan where template_persetujuan_penolakan_tindakan.kode_template like ? or template_persetujuan_penolakan_tindakan.tindakan like ? or "+
-                    "template_persetujuan_penolakan_tindakan.diagnosa like ? order by template_persetujuan_penolakan_tindakan.kode_template");
+                    "from template_persetujuan_penolakan_tindakan "+(TCari.getText().trim().equals("")?"":"where template_persetujuan_penolakan_tindakan.kode_template like ? or "+
+                    "template_persetujuan_penolakan_tindakan.tindakan like ? or template_persetujuan_penolakan_tindakan.diagnosa like ? ")+
+                    "order by template_persetujuan_penolakan_tindakan.kode_template");
             try {
-                ps.setString(1,"%"+TCari.getText().trim()+"%");
-                ps.setString(2,"%"+TCari.getText().trim()+"%");
-                ps.setString(3,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(1,"%"+TCari.getText().trim()+"%");
+                    ps.setString(2,"%"+TCari.getText().trim()+"%");
+                    ps.setString(3,"%"+TCari.getText().trim()+"%");
+                }
                 rs=ps.executeQuery();
                 while(rs.next()){
                     tabMode.addRow(new Object[]{
@@ -1054,5 +1071,23 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     
     public void setTampil(){
        TabRawat.setSelectedIndex(1);
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        ceksukses = true;
+
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        executor.submit(() -> {
+            try {
+                task.run();
+            } finally {
+                ceksukses = false;
+                SwingUtilities.invokeLater(() -> {
+                    this.setCursor(Cursor.getDefaultCursor());
+                });
+            }
+        });
     }
 }

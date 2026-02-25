@@ -218,7 +218,7 @@ public class frmUtama extends javax.swing.JFrame {
                     Tanggal1.setText(tanggalFormat.format(date)); 
                     Tanggal2.setText(tanggalFormat.format(date)); 
                 }
-                if(detik.equals("01")&&((nilai_menit%5)==0)){
+                if(detik.equals("01")){
                     day=cal.get(Calendar.DAY_OF_WEEK);
                     switch (day) {
                         case 1:
@@ -302,38 +302,6 @@ public class frmUtama extends javax.swing.JFrame {
                                                     headers.add("user_key",koneksiDB.USERKEYMOBILEJKNFKTP());
                                                     requestJson ="{" +
                                                                     "\"nomorkartu\": \"\"," +
-                                                                    "\"nik\": \""+rs.getString("no_ktp")+"\"," +
-                                                                    "\"nohp\": \""+rs.getString("no_tlp")+"\"," +
-                                                                    "\"kodepoli\": \""+kodepoli+"\"," +
-                                                                    "\"namapoli\": \""+rs.getString("nm_poli")+"\"," +
-                                                                    "\"norm\": \""+rs.getString("no_rkm_medis")+"\"," +
-                                                                    "\"tanggalperiksa\": \""+rs.getString("tgl_registrasi")+"\"," +
-                                                                    "\"kodedokter\": "+kodedokter+"," +
-                                                                    "\"namadokter\": \""+rs.getString("nm_dokter")+"\"," +
-                                                                    "\"jampraktek\": \""+rs2.getString("jam_mulai").substring(0,5)+"-"+rs2.getString("jam_selesai").substring(0,5)+"\"," +
-                                                                    "\"nomorantrean\": \""+rs.getString("no_reg")+"\"," +
-                                                                    "\"angkaantrean\": "+Integer.parseInt(rs.getString("no_reg"))+"," +
-                                                                    "\"keterangan\": \"Peserta harap 30 menit lebih awal guna pencatatan administrasi.\"" +
-                                                                "}";
-                                                    TeksArea.append("JSON : "+requestJson+"\n");
-                                                    requestEntity = new HttpEntity(requestJson,headers);
-                                                    URL = link+"/antrean/add";	
-                                                    System.out.println("URL : "+URL);
-                                                    //System.out.println(api.getRest().exchange(URL, HttpMethod.POST, requestEntity, String.class).getBody());
-                                                    root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.POST, requestEntity, String.class).getBody());
-                                                    nameNode = root.path("metadata");  
-                                                    TeksArea.append("respon WS BPJS : "+nameNode.path("code").asText()+" "+nameNode.path("message").asText()+"\n");
-                                                }else{
-                                                    headers = new HttpHeaders();
-                                                    headers.setContentType(MediaType.APPLICATION_JSON);
-                                                    headers.add("X-cons-id",koneksiDB.CONSIDMOBILEJKNFKTP());
-                                                    utc=String.valueOf(api.GetUTCdatetimeAsString());
-                                                    headers.add("X-timestamp",utc);            
-                                                    headers.add("X-signature",api.getHmac());
-                                                    headers.add("X-authorization","Basic "+Base64.encodeBase64String(otorisasi.getBytes()));
-                                                    headers.add("user_key",koneksiDB.USERKEYMOBILEJKNFKTP());
-                                                    requestJson ="{" +
-                                                                    "\"nomorkartu\": \""+rs.getString("no_peserta")+"\"," +
                                                                     "\"nik\": \""+rs.getString("no_ktp")+"\"," +
                                                                     "\"nohp\": \""+rs.getString("no_tlp")+"\"," +
                                                                     "\"kodepoli\": \""+kodepoli+"\"," +

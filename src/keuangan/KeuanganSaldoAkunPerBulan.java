@@ -15,15 +15,18 @@ import java.sql.ResultSet;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
 
 public class KeuanganSaldoAkunPerBulan extends javax.swing.JDialog {
-    private sekuel Sequel=new sekuel();
-    private validasi Valid=new validasi();
-    private Jurnal jur=new Jurnal();
-    private Connection koneksi=koneksiDB.condb();
+    private final sekuel Sequel=new sekuel();
+    private final validasi Valid=new validasi();
+    private final Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps,ps2,ps3,ps4,ps5,ps6,ps7,ps8,ps9,ps10,ps11,ps12,ps13;
     private ResultSet rs,rs2,rs3,rs4,rs5,rs6,rs7,rs8,rs9,rs10,rs11,rs12,rs13;
-    private int i=0;
     private StringBuilder htmlContent;
     private double saldoawaljanuari=0,debetjanuari=0,kreditjanuari=0,saldoakhirjanuari=0,
             debetfebruari=0,kreditfebruari=0,saldoakhirfebruari=0,debetmaret=0,kreditmaret=0,
@@ -33,6 +36,8 @@ public class KeuanganSaldoAkunPerBulan extends javax.swing.JDialog {
             kreditseptember,saldoakhirseptember=0,debetoktober=0,kreditoktober=0,saldoakhiroktober=0,
             debetnovember=0,kreditnovember=0,saldoakhirnovember=0,debetdesember=0,kreditdesember=0,
             saldoakhirdesember=0;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     
     /** Creates new form DlgProgramStudi
      * @param parent
@@ -89,6 +94,11 @@ public class KeuanganSaldoAkunPerBulan extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Saldo Akun Per Bulan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
@@ -273,9 +283,9 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
 
 private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
     if(TCari.getText().trim().equals("")){
-        prosesCari();
+        runBackground(() ->prosesCari());
     }else{
-        prosesCari2();
+        runBackground(() ->prosesCari2());
     }
 }//GEN-LAST:event_btnCariActionPerformed
 
@@ -289,13 +299,13 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        prosesCari();
+        runBackground(() ->prosesCari());
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             TCari.setText("");
-            prosesCari();
+            runBackground(() ->prosesCari());
         }else{
             Valid.pindah(evt, BtnPrint, BtnKeluar);
         }
@@ -310,6 +320,31 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
             BtnKeluar.requestFocus();
         }
     }//GEN-LAST:event_TCariKeyPressed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->prosesCari2());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->prosesCari2());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->prosesCari2());
+                    }
+                }
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -349,79 +384,80 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
         try {
             htmlContent = new StringBuilder();
             htmlContent.append(                             
-                "<tr class='isi'>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='2%' rowspan='2'>Kode Akun</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='6%' rowspan='2'>Akun Rekening</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Januari</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Februari</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Maret</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>April</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Mei</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Juni</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Juli</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Agustus</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>September</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Oktober</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>November</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Desember</td>"+
-                "</tr>"+
-                "<tr class='isi'>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
+                "<tr class='isi'>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='2%' rowspan='2'>Kode Akun</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='6%' rowspan='2'>Akun Rekening</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Januari</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Februari</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Maret</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>April</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Mei</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Juni</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Juli</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Agustus</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>September</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Oktober</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>November</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Desember</td>").append(
+                "</tr>").append(
+                "<tr class='isi'>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
                 "</tr>"
             );     
-            ps=koneksi.prepareStatement("select kd_rek, nm_rek "+
-                    " from rekening where level='0' and kd_rek like ? or "+
-                    " level='0' and nm_rek like ? order by kd_rek");
+            ps=koneksi.prepareStatement("select rekening.kd_rek,rekening.nm_rek from rekening where rekening.level='0' "+(TCari.getText().trim().equals("")?"":"and (rekening.kd_rek like ? or rekening.nm_rek like ?) ")+" order by kd_rek");
             try {
-                ps.setString(1,"%"+TCari.getText().trim()+"%");
-                ps.setString(2,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(1,"%"+TCari.getText().trim()+"%");
+                    ps.setString(2,"%"+TCari.getText().trim()+"%");
+                }
+                    
                 rs=ps.executeQuery();
                 while(rs.next()){
                     saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs.getString("kd_rek"));
@@ -462,68 +498,68 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                     kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs.getString("kd_rek"));
                     saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
                     htmlContent.append(    
-                        "<tr class='isi'>"+
-                            "<td>"+rs.getString("kd_rek")+"</td>"+
-                            "<td>"+rs.getString("nm_rek")+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
+                        "<tr class='isi'>").append(
+                            "<td>").append(rs.getString("kd_rek")).append("</td>").append(
+                            "<td>").append(rs.getString("nm_rek")).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(debetapril)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(debetmei)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td>").append(
+                            "<td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td>").append(
                         "</tr>"
                     );
-                    ps2=koneksi.prepareStatement("select rekening.kd_rek, rekening.nm_rek "+
-                        " from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
-                        " where subrekening.kd_rek=? and rekening.level='1' and rekening.kd_rek like ? or "+
-                        " subrekening.kd_rek=? and rekening.level='1' and rekening.nm_rek like ? order by rekening.kd_rek");
+                    ps2=koneksi.prepareStatement(
+                        "select rekening.kd_rek, rekening.nm_rek from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
+                        "where subrekening.kd_rek=? and rekening.level='1' "+(TCari.getText().trim().equals("")?"":"and (rekening.kd_rek like ? or rekening.nm_rek like ?) ")+" order by rekening.kd_rek");
                     try {
                         ps2.setString(1,rs.getString("kd_rek"));
-                        ps2.setString(2,"%"+TCari.getText().trim()+"%");
-                        ps2.setString(3,rs.getString("kd_rek"));
-                        ps2.setString(4,"%"+TCari.getText().trim()+"%");
+                        if(!TCari.getText().trim().equals("")){
+                            ps2.setString(2,"%"+TCari.getText().trim()+"%");
+                            ps2.setString(3,"%"+TCari.getText().trim()+"%");
+                        }
                         rs2=ps2.executeQuery();
                         while(rs2.next()){
                             saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs2.getString("kd_rek"));
@@ -564,68 +600,68 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                             kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs2.getString("kd_rek"));
                             saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
                             htmlContent.append(    
-                                "<tr class='isi'>"+
-                                    "<td>&nbsp;"+rs2.getString("kd_rek")+"</td>"+
-                                    "<td>&nbsp;"+rs2.getString("nm_rek")+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                                    "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
+                                "<tr class='isi'>").append(
+                                    "<td>&nbsp;").append(rs2.getString("kd_rek")).append("</td>").append(
+                                    "<td>&nbsp;").append(rs2.getString("nm_rek")).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(debetapril)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(debetmei)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td>").append(
+                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td>").append(
                                 "</tr>"
                             );
-                            ps3=koneksi.prepareStatement("select rekening.kd_rek, rekening.nm_rek "+
-                                " from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
-                                " where subrekening.kd_rek=? and rekening.level='1' and rekening.kd_rek like ? or "+
-                                " subrekening.kd_rek=? and rekening.level='1' and rekening.nm_rek like ? order by rekening.kd_rek");
+                            ps3=koneksi.prepareStatement(
+                                "select rekening.kd_rek, rekening.nm_rek from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
+                                "where subrekening.kd_rek=? and rekening.level='1' "+(TCari.getText().trim().equals("")?"":"and (rekening.kd_rek like ? or rekening.nm_rek like ?) ")+" order by rekening.kd_rek");
                             try {
                                 ps3.setString(1,rs2.getString("kd_rek"));
-                                ps3.setString(2,"%"+TCari.getText().trim()+"%");
-                                ps3.setString(3,rs2.getString("kd_rek"));
-                                ps3.setString(4,"%"+TCari.getText().trim()+"%");
+                                if(!TCari.getText().trim().equals("")){
+                                    ps3.setString(2,"%"+TCari.getText().trim()+"%");
+                                    ps3.setString(3,"%"+TCari.getText().trim()+"%");
+                                }
                                 rs3=ps3.executeQuery();
                                 while(rs3.next()){
                                     saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs3.getString("kd_rek"));
@@ -666,68 +702,68 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                     kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs3.getString("kd_rek"));
                                     saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
                                     htmlContent.append(    
-                                        "<tr class='isi'>"+
-                                            "<td>&nbsp;&nbsp;"+rs3.getString("kd_rek")+"</td>"+
-                                            "<td>&nbsp;&nbsp;"+rs3.getString("nm_rek")+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                                            "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
+                                        "<tr class='isi'>").append(
+                                            "<td>&nbsp;&nbsp;").append(rs3.getString("kd_rek")).append("</td>").append(
+                                            "<td>&nbsp;&nbsp;").append(rs3.getString("nm_rek")).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(debetapril)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(debetmei)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td>").append(
+                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td>").append(
                                         "</tr>"
                                     );
-                                    ps4=koneksi.prepareStatement("select rekening.kd_rek, rekening.nm_rek "+
-                                        " from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
-                                        " where subrekening.kd_rek=? and rekening.level='1' and rekening.kd_rek like ? or "+
-                                        " subrekening.kd_rek=? and rekening.level='1' and rekening.nm_rek like ? order by rekening.kd_rek");
+                                    ps4=koneksi.prepareStatement(
+                                        "select rekening.kd_rek, rekening.nm_rek from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
+                                        "where subrekening.kd_rek=? and rekening.level='1' "+(TCari.getText().trim().equals("")?"":"and (rekening.kd_rek like ? or rekening.nm_rek like ?) ")+" order by rekening.kd_rek");
                                     try {
                                         ps4.setString(1,rs3.getString("kd_rek"));
-                                        ps4.setString(2,"%"+TCari.getText().trim()+"%");
-                                        ps4.setString(3,rs3.getString("kd_rek"));
-                                        ps4.setString(4,"%"+TCari.getText().trim()+"%");
+                                        if(!TCari.getText().trim().equals("")){
+                                            ps4.setString(2,"%"+TCari.getText().trim()+"%");
+                                            ps4.setString(3,"%"+TCari.getText().trim()+"%");
+                                        }
                                         rs4=ps4.executeQuery();
                                         while(rs4.next()){
                                             saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs4.getString("kd_rek"));
@@ -768,68 +804,68 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                             kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs4.getString("kd_rek"));
                                             saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
                                             htmlContent.append(    
-                                                "<tr class='isi'>"+
-                                                    "<td>&nbsp;&nbsp;&nbsp;"+rs4.getString("kd_rek")+"</td>"+
-                                                    "<td>&nbsp;&nbsp;&nbsp;"+rs4.getString("nm_rek")+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
+                                                "<tr class='isi'>").append(
+                                                    "<td>&nbsp;&nbsp;&nbsp;").append(rs4.getString("kd_rek")).append("</td>").append(
+                                                    "<td>&nbsp;&nbsp;&nbsp;").append(rs4.getString("nm_rek")).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(debetapril)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(debetmei)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td>").append(
+                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td>").append(
                                                 "</tr>"
                                             );
-                                            ps5=koneksi.prepareStatement("select rekening.kd_rek, rekening.nm_rek "+
-                                                " from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
-                                                " where subrekening.kd_rek=? and rekening.level='1' and rekening.kd_rek like ? or "+
-                                                " subrekening.kd_rek=? and rekening.level='1' and rekening.nm_rek like ? order by rekening.kd_rek");
+                                            ps5=koneksi.prepareStatement(
+                                                "select rekening.kd_rek, rekening.nm_rek from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
+                                                "where subrekening.kd_rek=? and rekening.level='1' "+(TCari.getText().trim().equals("")?"":"and (rekening.kd_rek like ? or rekening.nm_rek like ?) ")+" order by rekening.kd_rek");
                                             try {
                                                 ps5.setString(1,rs4.getString("kd_rek"));
-                                                ps5.setString(2,"%"+TCari.getText().trim()+"%");
-                                                ps5.setString(3,rs4.getString("kd_rek"));
-                                                ps5.setString(4,"%"+TCari.getText().trim()+"%");
+                                                if(!TCari.getText().trim().equals("")){
+                                                    ps5.setString(2,"%"+TCari.getText().trim()+"%");
+                                                    ps5.setString(3,"%"+TCari.getText().trim()+"%");
+                                                }
                                                 rs5=ps5.executeQuery();
                                                 while(rs5.next()){
                                                     saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs5.getString("kd_rek"));
@@ -870,68 +906,68 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                                     kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs5.getString("kd_rek"));
                                                     saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
                                                     htmlContent.append(    
-                                                        "<tr class='isi'>"+
-                                                            "<td>&nbsp;&nbsp;&nbsp;&nbsp;"+rs5.getString("kd_rek")+"</td>"+
-                                                            "<td>&nbsp;&nbsp;&nbsp;&nbsp;"+rs5.getString("nm_rek")+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
+                                                        "<tr class='isi'>").append(
+                                                            "<td>&nbsp;&nbsp;&nbsp;&nbsp;").append(rs5.getString("kd_rek")).append("</td>").append(
+                                                            "<td>&nbsp;&nbsp;&nbsp;&nbsp;").append(rs5.getString("nm_rek")).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(debetapril)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(debetmei)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td>").append(
+                                                            "<td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td>").append(
                                                         "</tr>"
                                                     );
-                                                    ps6=koneksi.prepareStatement("select rekening.kd_rek, rekening.nm_rek "+
-                                                        " from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
-                                                        " where subrekening.kd_rek=? and rekening.level='1' and rekening.kd_rek like ? or "+
-                                                        " subrekening.kd_rek=? and rekening.level='1' and rekening.nm_rek like ? order by rekening.kd_rek");
+                                                    ps6=koneksi.prepareStatement(
+                                                        "select rekening.kd_rek, rekening.nm_rek from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
+                                                        "where subrekening.kd_rek=? and rekening.level='1' "+(TCari.getText().trim().equals("")?"":"and (rekening.kd_rek like ? or rekening.nm_rek like ?) ")+" order by rekening.kd_rek");
                                                     try {
                                                         ps6.setString(1,rs5.getString("kd_rek"));
-                                                        ps6.setString(2,"%"+TCari.getText().trim()+"%");
-                                                        ps6.setString(3,rs5.getString("kd_rek"));
-                                                        ps6.setString(4,"%"+TCari.getText().trim()+"%");
+                                                        if(!TCari.getText().trim().equals("")){
+                                                            ps6.setString(2,"%"+TCari.getText().trim()+"%");
+                                                            ps6.setString(3,"%"+TCari.getText().trim()+"%");
+                                                        }
                                                         rs6=ps6.executeQuery();
                                                         while(rs6.next()){
                                                             saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs6.getString("kd_rek"));
@@ -972,68 +1008,68 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                                             kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs6.getString("kd_rek"));
                                                             saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
                                                             htmlContent.append(    
-                                                                "<tr class='isi'>"+
-                                                                    "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs6.getString("kd_rek")+"</td>"+
-                                                                    "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs6.getString("nm_rek")+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
+                                                                "<tr class='isi'>").append(
+                                                                    "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs6.getString("kd_rek")).append("</td>").append(
+                                                                    "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs6.getString("nm_rek")).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(debetapril)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(debetmei)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td>").append(
+                                                                    "<td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td>").append(
                                                                 "</tr>"
                                                             );
-                                                            ps7=koneksi.prepareStatement("select rekening.kd_rek, rekening.nm_rek "+
-                                                                " from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
-                                                                " where subrekening.kd_rek=? and rekening.level='1' and rekening.kd_rek like ? or "+
-                                                                " subrekening.kd_rek=? and rekening.level='1' and rekening.nm_rek like ? order by rekening.kd_rek");
+                                                            ps7=koneksi.prepareStatement(
+                                                                "select rekening.kd_rek, rekening.nm_rek from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
+                                                                "where subrekening.kd_rek=? and rekening.level='1' "+(TCari.getText().trim().equals("")?"":"and (rekening.kd_rek like ? or rekening.nm_rek like ?) ")+" order by rekening.kd_rek");
                                                             try {
                                                                 ps7.setString(1,rs6.getString("kd_rek"));
-                                                                ps7.setString(2,"%"+TCari.getText().trim()+"%");
-                                                                ps7.setString(3,rs6.getString("kd_rek"));
-                                                                ps7.setString(4,"%"+TCari.getText().trim()+"%");
+                                                                if(!TCari.getText().trim().equals("")){
+                                                                    ps7.setString(2,"%"+TCari.getText().trim()+"%");
+                                                                    ps7.setString(3,"%"+TCari.getText().trim()+"%");
+                                                                }
                                                                 rs7=ps7.executeQuery();
                                                                 while(rs7.next()){
                                                                     saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs7.getString("kd_rek"));
@@ -1073,69 +1109,16 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                                                     debetdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.debet) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs7.getString("kd_rek"));
                                                                     kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs7.getString("kd_rek"));
                                                                     saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
-                                                                    htmlContent.append(    
-                                                                        "<tr class='isi'>"+
-                                                                            "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs7.getString("kd_rek")+"</td>"+
-                                                                            "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs7.getString("nm_rek")+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
-                                                                        "</tr>"
-                                                                    );
-                                                                    ps8=koneksi.prepareStatement("select rekening.kd_rek, rekening.nm_rek "+
-                                                                        " from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
-                                                                        " where subrekening.kd_rek=? and rekening.level='1' and rekening.kd_rek like ? or "+
-                                                                        " subrekening.kd_rek=? and rekening.level='1' and rekening.nm_rek like ? order by rekening.kd_rek");
+                                                                    htmlContent.append("<tr class='isi'><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs7.getString("kd_rek")).append("</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs7.getString("nm_rek")).append("</td><td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(debetapril)).append("</td><td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(debetmei)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td><td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td><td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td></tr>");
+                                                                    ps8=koneksi.prepareStatement(
+                                                                        "select rekening.kd_rek, rekening.nm_rek from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
+                                                                        "where subrekening.kd_rek=? and rekening.level='1' "+(TCari.getText().trim().equals("")?"":"and (rekening.kd_rek like ? or rekening.nm_rek like ?) ")+" order by rekening.kd_rek");
                                                                     try {
                                                                         ps8.setString(1,rs7.getString("kd_rek"));
-                                                                        ps8.setString(2,"%"+TCari.getText().trim()+"%");
-                                                                        ps8.setString(3,rs7.getString("kd_rek"));
-                                                                        ps8.setString(4,"%"+TCari.getText().trim()+"%");
+                                                                        if(!TCari.getText().trim().equals("")){
+                                                                            ps8.setString(2,"%"+TCari.getText().trim()+"%");
+                                                                            ps8.setString(3,"%"+TCari.getText().trim()+"%");
+                                                                        }
                                                                         rs8=ps8.executeQuery();
                                                                         while(rs8.next()){
                                                                             saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs8.getString("kd_rek"));
@@ -1175,69 +1158,16 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                                                             debetdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.debet) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs8.getString("kd_rek"));
                                                                             kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs8.getString("kd_rek"));
                                                                             saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
-                                                                            htmlContent.append(    
-                                                                                "<tr class='isi'>"+
-                                                                                    "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs8.getString("kd_rek")+"</td>"+
-                                                                                    "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs8.getString("nm_rek")+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
-                                                                                "</tr>"
-                                                                            );
-                                                                            ps9=koneksi.prepareStatement("select rekening.kd_rek, rekening.nm_rek "+
-                                                                                " from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
-                                                                                " where subrekening.kd_rek=? and rekening.level='1' and rekening.kd_rek like ? or "+
-                                                                                " subrekening.kd_rek=? and rekening.level='1' and rekening.nm_rek like ? order by rekening.kd_rek");
+                                                                            htmlContent.append("<tr class='isi'><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs8.getString("kd_rek")).append("</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs8.getString("nm_rek")).append("</td><td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(debetapril)).append("</td><td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(debetmei)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td><td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td><td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td></tr>");
+                                                                            ps9=koneksi.prepareStatement(
+                                                                                "select rekening.kd_rek, rekening.nm_rek from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
+                                                                                "where subrekening.kd_rek=? and rekening.level='1' "+(TCari.getText().trim().equals("")?"":"and (rekening.kd_rek like ? or rekening.nm_rek like ?) ")+" order by rekening.kd_rek");
                                                                             try {
                                                                                 ps9.setString(1,rs8.getString("kd_rek"));
-                                                                                ps9.setString(2,"%"+TCari.getText().trim()+"%");
-                                                                                ps9.setString(3,rs8.getString("kd_rek"));
-                                                                                ps9.setString(4,"%"+TCari.getText().trim()+"%");
+                                                                                if(!TCari.getText().trim().equals("")){
+                                                                                    ps9.setString(2,"%"+TCari.getText().trim()+"%");
+                                                                                    ps9.setString(3,"%"+TCari.getText().trim()+"%");
+                                                                                }
                                                                                 rs9=ps9.executeQuery();
                                                                                 while(rs9.next()){
                                                                                     saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs9.getString("kd_rek"));
@@ -1277,69 +1207,16 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                                                                     debetdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.debet) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs9.getString("kd_rek"));
                                                                                     kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs9.getString("kd_rek"));
                                                                                     saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
-                                                                                    htmlContent.append(    
-                                                                                        "<tr class='isi'>"+
-                                                                                            "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs9.getString("kd_rek")+"</td>"+
-                                                                                            "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs9.getString("nm_rek")+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
-                                                                                        "</tr>"
-                                                                                    );
-                                                                                    ps10=koneksi.prepareStatement("select rekening.kd_rek, rekening.nm_rek "+
-                                                                                        " from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
-                                                                                        " where subrekening.kd_rek=? and rekening.level='1' and rekening.kd_rek like ? or "+
-                                                                                        " subrekening.kd_rek=? and rekening.level='1' and rekening.nm_rek like ? order by rekening.kd_rek");
+                                                                                    htmlContent.append("<tr class='isi'><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs9.getString("kd_rek")).append("</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs9.getString("nm_rek")).append("</td><td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(debetapril)).append("</td><td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(debetmei)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td><td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td><td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td></tr>");
+                                                                                    ps10=koneksi.prepareStatement(
+                                                                                        "select rekening.kd_rek, rekening.nm_rek from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
+                                                                                        "where subrekening.kd_rek=? and rekening.level='1' "+(TCari.getText().trim().equals("")?"":"and (rekening.kd_rek like ? or rekening.nm_rek like ?) ")+" order by rekening.kd_rek");
                                                                                     try {
                                                                                         ps10.setString(1,rs9.getString("kd_rek"));
-                                                                                        ps10.setString(2,"%"+TCari.getText().trim()+"%");
-                                                                                        ps10.setString(3,rs9.getString("kd_rek"));
-                                                                                        ps10.setString(4,"%"+TCari.getText().trim()+"%");
+                                                                                        if(!TCari.getText().trim().equals("")){
+                                                                                            ps10.setString(2,"%"+TCari.getText().trim()+"%");
+                                                                                            ps10.setString(3,"%"+TCari.getText().trim()+"%");
+                                                                                        }
                                                                                         rs10=ps10.executeQuery();
                                                                                         while(rs10.next()){
                                                                                             saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs10.getString("kd_rek"));
@@ -1379,69 +1256,16 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                                                                             debetdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.debet) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs10.getString("kd_rek"));
                                                                                             kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs10.getString("kd_rek"));
                                                                                             saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
-                                                                                            htmlContent.append(    
-                                                                                                "<tr class='isi'>"+
-                                                                                                    "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs10.getString("kd_rek")+"</td>"+
-                                                                                                    "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs10.getString("nm_rek")+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
-                                                                                                "</tr>"
-                                                                                            );
-                                                                                            ps11=koneksi.prepareStatement("select rekening.kd_rek, rekening.nm_rek "+
-                                                                                                " from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
-                                                                                                " where subrekening.kd_rek=? and rekening.level='1' and rekening.kd_rek like ? or "+
-                                                                                                " subrekening.kd_rek=? and rekening.level='1' and rekening.nm_rek like ? order by rekening.kd_rek");
+                                                                                            htmlContent.append("<tr class='isi'><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs10.getString("kd_rek")).append("</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs10.getString("nm_rek")).append("</td><td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(debetapril)).append("</td><td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(debetmei)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td><td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td><td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td></tr>");
+                                                                                            ps11=koneksi.prepareStatement(
+                                                                                                "select rekening.kd_rek, rekening.nm_rek from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
+                                                                                                "where subrekening.kd_rek=? and rekening.level='1' "+(TCari.getText().trim().equals("")?"":"and (rekening.kd_rek like ? or rekening.nm_rek like ?) ")+" order by rekening.kd_rek");
                                                                                             try {
                                                                                                 ps11.setString(1,rs10.getString("kd_rek"));
-                                                                                                ps11.setString(2,"%"+TCari.getText().trim()+"%");
-                                                                                                ps11.setString(3,rs10.getString("kd_rek"));
-                                                                                                ps11.setString(4,"%"+TCari.getText().trim()+"%");
+                                                                                                if(!TCari.getText().trim().equals("")){
+                                                                                                    ps11.setString(2,"%"+TCari.getText().trim()+"%");
+                                                                                                    ps11.setString(3,"%"+TCari.getText().trim()+"%");
+                                                                                                }
                                                                                                 rs11=ps11.executeQuery();
                                                                                                 while(rs11.next()){
                                                                                                     saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs11.getString("kd_rek"));
@@ -1481,69 +1305,16 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                                                                                     debetdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.debet) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs11.getString("kd_rek"));
                                                                                                     kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs11.getString("kd_rek"));
                                                                                                     saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
-                                                                                                    htmlContent.append(    
-                                                                                                        "<tr class='isi'>"+
-                                                                                                            "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs11.getString("kd_rek")+"</td>"+
-                                                                                                            "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs11.getString("nm_rek")+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
-                                                                                                        "</tr>"
-                                                                                                    );
-                                                                                                    ps12=koneksi.prepareStatement("select rekening.kd_rek, rekening.nm_rek "+
-                                                                                                        " from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
-                                                                                                        " where subrekening.kd_rek=? and rekening.level='1' and rekening.kd_rek like ? or "+
-                                                                                                        " subrekening.kd_rek=? and rekening.level='1' and rekening.nm_rek like ? order by rekening.kd_rek");
+                                                                                                    htmlContent.append("<tr class='isi'><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs11.getString("kd_rek")).append("</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs11.getString("nm_rek")).append("</td><td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(debetapril)).append("</td><td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(debetmei)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td><td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td><td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td></tr>");
+                                                                                                    ps12=koneksi.prepareStatement(
+                                                                                                        "select rekening.kd_rek, rekening.nm_rek from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
+                                                                                                        "where subrekening.kd_rek=? and rekening.level='1' "+(TCari.getText().trim().equals("")?"":"and (rekening.kd_rek like ? or rekening.nm_rek like ?) ")+" order by rekening.kd_rek");
                                                                                                     try {
                                                                                                         ps12.setString(1,rs11.getString("kd_rek"));
-                                                                                                        ps12.setString(2,"%"+TCari.getText().trim()+"%");
-                                                                                                        ps12.setString(3,rs11.getString("kd_rek"));
-                                                                                                        ps12.setString(4,"%"+TCari.getText().trim()+"%");
+                                                                                                        if(!TCari.getText().trim().equals("")){
+                                                                                                            ps12.setString(2,"%"+TCari.getText().trim()+"%");
+                                                                                                            ps12.setString(3,"%"+TCari.getText().trim()+"%");
+                                                                                                        }
                                                                                                         rs12=ps12.executeQuery();
                                                                                                         while(rs12.next()){
                                                                                                             saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs12.getString("kd_rek"));
@@ -1583,69 +1354,16 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                                                                                             debetdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.debet) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs12.getString("kd_rek"));
                                                                                                             kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs12.getString("kd_rek"));
                                                                                                             saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
-                                                                                                            htmlContent.append(    
-                                                                                                                "<tr class='isi'>"+
-                                                                                                                    "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs12.getString("kd_rek")+"</td>"+
-                                                                                                                    "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs12.getString("nm_rek")+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                                                                                                                    "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
-                                                                                                                "</tr>"
-                                                                                                            );
-                                                                                                            ps13=koneksi.prepareStatement("select rekening.kd_rek, rekening.nm_rek "+
-                                                                                                                " from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
-                                                                                                                " where subrekening.kd_rek=? and rekening.level='1' and rekening.kd_rek like ? or "+
-                                                                                                                " subrekening.kd_rek=? and rekening.level='1' and rekening.nm_rek like ? order by rekening.kd_rek");
+                                                                                                            htmlContent.append("<tr class='isi'><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs12.getString("kd_rek")).append("</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs12.getString("nm_rek")).append("</td><td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(debetapril)).append("</td><td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(debetmei)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td><td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td><td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td></tr>");
+                                                                                                            ps13=koneksi.prepareStatement(
+                                                                                                                "select rekening.kd_rek, rekening.nm_rek from rekening inner join subrekening on rekening.kd_rek=subrekening.kd_rek2 "+
+                                                                                                                "where subrekening.kd_rek=? and rekening.level='1' "+(TCari.getText().trim().equals("")?"":"and (rekening.kd_rek like ? or rekening.nm_rek like ?) ")+" order by rekening.kd_rek");
                                                                                                             try {
                                                                                                                 ps13.setString(1,rs12.getString("kd_rek"));
-                                                                                                                ps13.setString(2,"%"+TCari.getText().trim()+"%");
-                                                                                                                ps13.setString(3,rs12.getString("kd_rek"));
-                                                                                                                ps13.setString(4,"%"+TCari.getText().trim()+"%");
+                                                                                                                if(!TCari.getText().trim().equals("")){
+                                                                                                                    ps13.setString(2,"%"+TCari.getText().trim()+"%");
+                                                                                                                    ps13.setString(3,"%"+TCari.getText().trim()+"%");
+                                                                                                                }
                                                                                                                 rs13=ps13.executeQuery();
                                                                                                                 while(rs13.next()){
                                                                                                                     saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs13.getString("kd_rek"));
@@ -1685,60 +1403,7 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                                                                                                     debetdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.debet) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs13.getString("kd_rek"));
                                                                                                                     kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs13.getString("kd_rek"));
                                                                                                                     saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
-                                                                                                                    htmlContent.append(    
-                                                                                                                        "<tr class='isi'>"+
-                                                                                                                            "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs13.getString("kd_rek")+"</td>"+
-                                                                                                                            "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+rs13.getString("nm_rek")+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                                                                                                                            "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
-                                                                                                                        "</tr>"
-                                                                                                                    );
+                                                                                                                    htmlContent.append("<tr class='isi'><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs13.getString("kd_rek")).append("</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(rs13.getString("nm_rek")).append("</td><td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(debetapril)).append("</td><td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(debetmei)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td><td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td><td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td></tr>");
                                                                                                                 }
                                                                                                             } catch (Exception e) {
                                                                                                                 System.out.println("Notif rs13 : "+e);
@@ -1900,79 +1565,80 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
         try {
             htmlContent = new StringBuilder();
             htmlContent.append(                             
-                "<tr class='isi'>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='2%' rowspan='2'>Kode Akun</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='6%' rowspan='2'>Akun Rekening</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Januari</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Februari</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Maret</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>April</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Mei</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Juni</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Juli</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Agutus</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>September</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Otober</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>November</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Desember</td>"+
-                "</tr>"+
-                "<tr class='isi'>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>"+
+                "<tr class='isi'>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='2%' rowspan='2'>Kode Akun</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='6%' rowspan='2'>Akun Rekening</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Januari</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Februari</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Maret</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>April</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Mei</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Juni</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Juli</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Agutus</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>September</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Otober</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>November</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='7%' colspan='4'>Desember</td>").append(
+                "</tr>").append(
+                "<tr class='isi'>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Awal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Debet</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Kredit</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Saldo Akhir</td>").append(
                 "</tr>"
             );     
-            ps=koneksi.prepareStatement("select kd_rek, nm_rek "+
-                    " from rekening where kd_rek like ? or "+
-                    " nm_rek like ? order by kd_rek");
+            ps=koneksi.prepareStatement("select rekening.kd_rek, rekening.nm_rek from rekening "+(TCari.getText().trim().equals("")?"":"where rekening.kd_rek like ? or rekening.nm_rek like ? ")+" order by rekening.kd_rek");
             try {
-                ps.setString(1,"%"+TCari.getText().trim()+"%");
-                ps.setString(2,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(1,"%"+TCari.getText().trim()+"%");
+                    ps.setString(2,"%"+TCari.getText().trim()+"%");
+                }
+                    
                 rs=ps.executeQuery();
                 while(rs.next()){
                     saldoawaljanuari=Sequel.cariIsiAngka2("select saldo_awal from rekeningtahun where thn=? and kd_rek=?",ThnCari.getSelectedItem().toString(),rs.getString("kd_rek"));
@@ -2012,60 +1678,7 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                     debetdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.debet) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs.getString("kd_rek"));
                     kreditdesember=Sequel.cariIsiAngka2("select sum(detailjurnal.kredit) from jurnal inner join detailjurnal on detailjurnal.no_jurnal=jurnal.no_jurnal where jurnal.tgl_jurnal like ? and detailjurnal.kd_rek=?","%"+ThnCari.getSelectedItem().toString()+"-12"+"%",rs.getString("kd_rek"));
                     saldoakhirdesember=saldoakhirnovember+(debetdesember-kreditdesember);
-                    htmlContent.append(    
-                        "<tr class='isi'>"+
-                            "<td>"+rs.getString("kd_rek")+"</td>"+
-                            "<td>"+rs.getString("nm_rek")+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoawaljanuari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetjanuari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditjanuari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirjanuari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetfebruari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditfebruari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirfebruari)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetmaret)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditmaret)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirmaret)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetapril)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditapril)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirapril)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetmei)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditmei)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirmei)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetjuni)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditjuni)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuni)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetjuli)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditjuli)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirjuli)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetagustus)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditagustus)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhiragustus)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetseptember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditseptember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirseptember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetoktober)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditoktober)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhiroktober)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetnovember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditnovember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirnovember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(debetdesember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(kreditdesember)+"</td>"+
-                            "<td align='right'>"+Valid.SetAngka(saldoakhirdesember)+"</td>"+
-                        "</tr>"
-                    );                    
+                    htmlContent.append("<tr class='isi'><td>").append(rs.getString("kd_rek")).append("</td><td>").append(rs.getString("nm_rek")).append("</td><td align='right'>").append(Valid.SetAngka(saldoawaljanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjanuari)).append("</td><td align='right'>").append(Valid.SetAngka(debetfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(kreditfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirfebruari)).append("</td><td align='right'>").append(Valid.SetAngka(debetmaret)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmaret)).append("</td><td align='right'>").append(Valid.SetAngka(debetapril)).append("</td><td align='right'>").append(Valid.SetAngka(kreditapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirapril)).append("</td><td align='right'>").append(Valid.SetAngka(debetmei)).append("</td><td align='right'>").append(Valid.SetAngka(kreditmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirmei)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuni)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuni)).append("</td><td align='right'>").append(Valid.SetAngka(debetjuli)).append("</td><td align='right'>").append(Valid.SetAngka(kreditjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirjuli)).append("</td><td align='right'>").append(Valid.SetAngka(debetagustus)).append("</td><td align='right'>").append(Valid.SetAngka(kreditagustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiragustus)).append("</td><td align='right'>").append(Valid.SetAngka(debetseptember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirseptember)).append("</td><td align='right'>").append(Valid.SetAngka(debetoktober)).append("</td><td align='right'>").append(Valid.SetAngka(kreditoktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhiroktober)).append("</td><td align='right'>").append(Valid.SetAngka(debetnovember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirnovember)).append("</td><td align='right'>").append(Valid.SetAngka(debetdesember)).append("</td><td align='right'>").append(Valid.SetAngka(kreditdesember)).append("</td><td align='right'>").append(Valid.SetAngka(saldoakhirdesember)).append("</td></tr>");                    
                 }
             } catch (Exception e) {
                 System.out.println("Notif : "+e);
@@ -2094,4 +1707,35 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
         BtnPrint.setEnabled(akses.getsaldo_akun_perbulan());
     }
     
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }
