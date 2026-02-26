@@ -1,7 +1,9 @@
 package bridging;
 
+import AESsecurity.EnkripsiAES;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
@@ -32,6 +34,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import java.util.Base64;
+import java.util.Properties;
 import org.springframework.web.client.RestTemplate;
 
 public class ApiEklaimConfig {        
@@ -46,12 +49,14 @@ public class ApiEklaimConfig {
     private JsonNode root;
     private HttpEntity requestEntity;
     private ObjectMapper mapper = new ObjectMapper();
+    private static final Properties prop = new Properties();
+    private static String var = "";
     
  public ApiEklaimConfig() {
         try {
-            key = "8e96e280a56691be888656b7e945023c2f50ec5a09b38b0b96e7acf22d2f5582";
-            urlWS = "http://192.168.106.100/E-Klaim/ws.php";
-            kelasRS = "CS";
+            key = SECRETKEYAPIECLAIM();
+            urlWS = URLAPIEKLAIM();
+            kelasRS = KELASRSEKLAIM();
         } catch (Exception ex) {
             System.out.println("Notifikasi : " + ex);
         }
@@ -168,6 +173,37 @@ public class ApiEklaimConfig {
         factory=new HttpComponentsClientHttpRequestFactory();
         factory.getHttpClient().getConnectionManager().getSchemeRegistry().register(scheme);
         return new RestTemplate(factory);
+    }
+    
+    
+    private static String SECRETKEYAPIECLAIM() {
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = EnkripsiAES.decrypt(prop.getProperty("SECRETKEYAPIECLAIM"));
+        } catch (Exception e) {
+            var = "";
+        }
+        return var;
+    }
+     
+    private static String KELASRSEKLAIM() {
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = prop.getProperty("KELASRSEKLAIM");
+        } catch (Exception e) {
+            var = "CS";
+        }
+        return var;
+    }
+    
+    private static String URLAPIEKLAIM() {
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = prop.getProperty("URLAPIEKLAIM");
+        } catch (Exception e) {
+            var = "";
+        }
+        return var;
     }
 
 }

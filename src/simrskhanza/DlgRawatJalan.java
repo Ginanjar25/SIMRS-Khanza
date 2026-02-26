@@ -8827,7 +8827,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             TCari.requestFocus();
         }else{
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            soapterakhir.setNoRM(TNoRM.getText(),KdPeg.getText(),"Ralan");
+            soapterakhir.setNoRM(TNoRM.getText(),KdPeg.getText(),"Ralan", TNoRw.getText());
             soapterakhir.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
             soapterakhir.setLocationRelativeTo(internalFrame1);
             soapterakhir.setVisible(true);

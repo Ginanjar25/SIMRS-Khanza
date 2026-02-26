@@ -1778,11 +1778,15 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                         TCari.requestFocus();
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau divalidasi..!!");
+                    }else if(Sequel.cariInteger("select count(no_resep) from antriapotek3 where no_resep = ?", NoResep) > 0){
+                         JOptionPane.showMessageDialog(null,"Maaf, Resep sedang dalam proses Validasi!!");
                     }else{
-                       if(Status.equals("Sudah Terlayani")){
-                                JOptionPane.showMessageDialog(rootPane,"Resep sudah tervalidasi ..!!");
-                        }
-                        else{
+//                       if(Status.equals("Sudah Terlayani")){
+//                                JOptionPane.showMessageDialog(rootPane,"Resep sudah tervalidasi ..!!");
+//                        }
+                        if(isValidResep()) {
+                            JOptionPane.showMessageDialog(null, "Maaf, Resep sudah tervalidasi...!!!");
+                        }else{
                             if(Sequel.cariRegistrasi(NoRawat)>0){
                                 JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi ..!!");
                             }else {
@@ -1793,6 +1797,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                                 if(jmlparsial>0){
                                     Sequel.queryu("delete from antriapotek2");
                                     Sequel.queryu("insert into antriapotek2 values('"+NoResep+"','1','"+NoRawat+"')");
+                                    Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','0','"+NoRawat+"')");
                                     panggilform();
                                 }else{
                                     if(Sequel.cariRegistrasi(NoRawat)>0){
@@ -1800,6 +1805,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                                     }else{ 
                                         Sequel.queryu("delete from antriapotek2");
                                         Sequel.queryu("insert into antriapotek2 values('"+NoResep+"','1','"+NoRawat+"')");
+                                        Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','0','"+NoRawat+"')");
                                         panggilform();                             
                                     }
                                 }               
@@ -2298,7 +2304,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau diserahkan..!!");
                     }else{
-                        Sequel.queryu("delete from antriapotek3");
+                        Sequel.queryu("delete from antriapotek3 where status = '1'");
                         Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','1','"+NoRawat+"')");
                         Sequel.queryu("delete from bukti_penyerahan_resep_obat where no_resep='"+NoResep+"'");
                     }
@@ -3207,7 +3213,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     TCari.requestFocus();
                 }else if(NoResep.equals("")){
                     JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data pasien yang mau dicetak resep..!!");
-                }else if("No".equals(cekValidasi(NoResep))){
+                }else if(!isValidResep()){
                     JOptionPane.showMessageDialog(null,"Maaf, Silahkan lakukan validasi resep terlebih dahulu..!!");
                 }else{
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -3387,7 +3393,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     TCari.requestFocus();
                 }else if(NoResep.equals("")){
                     JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data pasien yang mau dicetak resep..!!");
-                }else if("No".equals(cekValidasi(NoResep))){
+                }else if(!isValidResep()){
                     JOptionPane.showMessageDialog(null,"Maaf, Silahkan lakukan validasi resep terlebih dahulu..!!");
                 }else{
                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -3577,7 +3583,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau ditelaah..!!");
                     }else{
-                        if ("Yes".equals(cekTelaah(NoResep))) {
+                        if (isValidResep()) {
                             int reply = JOptionPane.showConfirmDialog(rootPane,"Resep sudah ditelaah, apakah anda ingin melanjutkan ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
                                 if (reply == JOptionPane.YES_OPTION) {
                                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -3625,7 +3631,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau ditelaah..!!");
                     }else{
-                        if ("Yes".equals(cekTelaah(NoResep))) {
+                        if (isValidResep()) {
                             int reply = JOptionPane.showConfirmDialog(rootPane,"Resep sudah ditelaah, apakah anda ingin melanjutkan ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
                                 if (reply == JOptionPane.YES_OPTION) {
                                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -6375,40 +6381,13 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         return no_urut;
     }
     
-    private String cekTelaah(String no_resep){
-        String hasil = "";
-        String query = "";
-        String poli = "";
-        try {
-           String angka = Sequel.cariIsi("select * from telaah_farmasi where no_resep = ?", no_resep);
-           
-           if(!angka.isBlank()){
-               hasil = "Yes";
-           }else{
-               hasil = "No";
-           }
-        } catch (Exception e) {
-            System.out.println("Notif : " + e);
-        }
-//        System.out.println(no_urut);
-        return hasil;
-    }
-    
-    private String cekValidasi(String no_resep){
-        String hasil = "";
-        try {
-           String angka = Sequel.cariIsi("select * from resep_obat where no_resep = ? and tgl_perawatan <> '0000-00-00' and jam <> '00:00:00'", no_resep);
-           
-           if(!angka.isBlank()){
-               hasil = "Yes";
-           }else{
-               hasil = "No";
-           }
-        } catch (Exception e) {
-            System.out.println("Notif : " + e);
-        }
-//        System.out.println(no_urut);
-        return hasil;
+    public boolean isValidResep() {
+        return Sequel.cariInteger(
+                "SELECT COUNT(*) FROM resep_obat "
+                + "WHERE no_resep = ? "
+                + "AND (tgl_perawatan <> '0000-00-00' OR jam <> '00:00:00')",
+                NoResep
+        ) > 0;
     }
                  
 
