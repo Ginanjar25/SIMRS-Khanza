@@ -3583,7 +3583,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau ditelaah..!!");
                     }else{
-                        if (isValidResep()) {
+                        if ("Yes".equals(cekTelaah(NoResep))) {
                             int reply = JOptionPane.showConfirmDialog(rootPane,"Resep sudah ditelaah, apakah anda ingin melanjutkan ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
                                 if (reply == JOptionPane.YES_OPTION) {
                                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -3631,7 +3631,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau ditelaah..!!");
                     }else{
-                        if (isValidResep()) {
+                        if ("Yes".equals(cekTelaah(NoResep))) {
                             int reply = JOptionPane.showConfirmDialog(rootPane,"Resep sudah ditelaah, apakah anda ingin melanjutkan ?","Konfirmasi",JOptionPane.YES_NO_OPTION);
                                 if (reply == JOptionPane.YES_OPTION) {
                                     this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -6379,6 +6379,25 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         }
 //        System.out.println(no_urut);
         return no_urut;
+    }
+    
+    private String cekTelaah(String no_resep){
+        String hasil = "";
+        String query = "";
+        String poli = "";
+        try {
+           String angka = Sequel.cariIsi("select * from telaah_farmasi where no_resep = ?", no_resep);
+           
+           if(!angka.isBlank()){
+               hasil = "Yes";
+           }else{
+               hasil = "No";
+           }
+        } catch (Exception e) {
+            System.out.println("Notif : " + e);
+        }
+//        System.out.println(no_urut);
+        return hasil;
     }
     
     public boolean isValidResep() {
