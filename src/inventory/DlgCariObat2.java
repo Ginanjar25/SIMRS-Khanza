@@ -1185,6 +1185,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
             }
             if(evt.getClickCount()==2){
                 if(akses.getform().equals("DlgPemberianObat")){
+                    Sequel.queryu("delete from antriapotek3 where no_resep = '"+noresep+"'");
                     dispose();
                 }
             }
@@ -1270,6 +1271,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
 }//GEN-LAST:event_tbObatKeyPressed
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
+        Sequel.queryu("delete from antriapotek3 where no_resep = '"+noresep+"'");
         dispose();
     }//GEN-LAST:event_BtnKeluarActionPerformed
 
@@ -1301,7 +1303,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             Valid.textKosong(TCari,"Data");
         }else if(kdgudang.getText().equals("")){
             Valid.textKosong(TCari,"Lokasi");                              
-        }else if("Yes".equals(cekValidResep())){
+        }else if(isValidResep()){
             JOptionPane.showMessageDialog(null,"Maaf, Resep sudah tervalidasi...!!!");
         }else{
             int reply = JOptionPane.showConfirmDialog(rootPane,"Eeiiiiiits, udah bener belum data yang mau disimpan..??","Konfirmasi",JOptionPane.YES_NO_OPTION);
@@ -1648,6 +1650,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                             resep.dokter.setAlwaysOnTop(true);
                             resep.setVisible(true);
                         }
+                        Sequel.queryu("delete from antriapotek3 where no_resep = '"+noresep+"'");
                         dispose();  
                     }                       
                 } catch (Exception ex) {
@@ -4741,17 +4744,13 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         }            
     }
     
-    public String cekValidResep(){
-        String validResep = "";
-        validResep = Sequel.cariIsi("SELECT CONCAT(resep_obat.tgl_perawatan, ' ', resep_obat.jam) AS valid_resep FROM resep_obat WHERE resep_obat.no_resep = ?", noresep);
-        
-        if(validResep.equals("0000-00-00 00:00:00")){
-            validResep = "No";
-        }else{
-            validResep = "Yes";
-        }
-        
-        return validResep;
+    public boolean isValidResep() {
+        return Sequel.cariInteger(
+                "SELECT COUNT(*) FROM resep_obat "
+                + "WHERE no_resep = ? "
+                + "AND (tgl_perawatan <> '0000-00-00' OR jam <> '00:00:00')",
+                noresep
+        ) > 0;
     }
     
     public void setPCare(String aktif,String nokunjung){

@@ -1836,6 +1836,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                             if(Sequel.cariRegistrasi(NoRawat)>0){
                                 JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi ..!!");
                             }else{ 
+                                Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','0','"+NoRawat+"')");
                                 panggilform2();                             
                             }                
                         }
@@ -1860,7 +1861,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                         }else {                           
                             if(Sequel.cariRegistrasi(NoRawat)>0){
                                 JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi ..!!");
-                            }else{ 
+                            }else{
                                 panggilform3();                             
                             }                
                         }
@@ -1885,7 +1886,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                         }else {                           
                             if(Sequel.cariRegistrasi(NoRawat)>0){
                                 JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi ..!!");
-                            }else{ 
+                            }else{
                                 panggilform4();                             
                             }                
                         }
