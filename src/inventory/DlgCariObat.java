@@ -2103,6 +2103,7 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
+                    dialog.hapusAntrian();
                     System.exit(0);
                 }
             });
@@ -4556,5 +4557,9 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
                 JOptionPane.showMessageDialog(null,"Data tidak ditemukan...!");
             }
         } 
+    }
+    
+    public void hapusAntrian() {
+        Sequel.queryu("delete from antriapotek3 where no_resep = '"+noresep+"'");
     }
 }
