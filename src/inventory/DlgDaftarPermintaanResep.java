@@ -1778,9 +1778,11 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                         TCari.requestFocus();
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau divalidasi..!!");
-                    }else if(Sequel.cariInteger("select count(no_resep) from antriapotek3 where no_resep = ?", NoResep) > 0){
-                         JOptionPane.showMessageDialog(null,"Maaf, Resep sedang dalam proses Validasi!!");
-                    }else{
+                    }
+//                    else if(Sequel.cariInteger("select count(no_resep) from antriapotek3 where no_resep = ?", NoResep) > 0){
+//                         JOptionPane.showMessageDialog(null,"Maaf, Resep sedang dalam proses Validasi!!");
+//                    }
+                    else{
 //                       if(Status.equals("Sudah Terlayani")){
 //                                JOptionPane.showMessageDialog(rootPane,"Resep sudah tervalidasi ..!!");
 //                        }
