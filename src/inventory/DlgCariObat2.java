@@ -618,6 +618,9 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
             }
+            public void windowDeactivated(java.awt.event.WindowEvent evt) {
+                formWindowDeactivated(evt);
+            }
         });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Obat, Alkes & BHP Medis ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
@@ -777,7 +780,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         jLabel5.setBounds(0, 40, 68, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "14-03-2025" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-02-2026" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -1185,8 +1188,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
             }
             if(evt.getClickCount()==2){
                 if(akses.getform().equals("DlgPemberianObat")){
-                    Sequel.queryu("delete from antriapotek3 where no_resep = '"+noresep+"'");
-                    dispose();
+                   dispose();
                 }
             }
         }
@@ -1271,7 +1273,6 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
 }//GEN-LAST:event_tbObatKeyPressed
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
-        Sequel.queryu("delete from antriapotek3 where no_resep = '"+noresep+"'");
         dispose();
     }//GEN-LAST:event_BtnKeluarActionPerformed
 
@@ -1650,7 +1651,6 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                             resep.dokter.setAlwaysOnTop(true);
                             resep.setVisible(true);
                         }
-                        Sequel.queryu("delete from antriapotek3 where no_resep = '"+noresep+"'");
                         dispose();  
                     }                       
                 } catch (Exception ex) {
@@ -2024,6 +2024,10 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         // TODO add your handling code here:
     }//GEN-LAST:event_TIterActionPerformed
 
+    private void formWindowDeactivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowDeactivated
+       Sequel.queryu("delete from antriapotek3 where no_resep = '"+noresep+"'");
+    }//GEN-LAST:event_formWindowDeactivated
+
     /**
     * @param args the command line arguments
     */
@@ -2033,7 +2037,6 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
-                    dialog.hapusAntrian();
                     System.exit(0);
                 }
             });
@@ -4822,9 +4825,5 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                 JOptionPane.showMessageDialog(null,"Data tidak ditemukan...!");
             }
         } 
-    }
-    
-    public void hapusAntrian() {
-        Sequel.queryu("delete from antriapotek3 where no_resep = '"+noresep+"'");
     }
 }

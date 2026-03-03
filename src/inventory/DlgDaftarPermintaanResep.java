@@ -1779,9 +1779,9 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau divalidasi..!!");
                     }
-//                    else if(Sequel.cariInteger("select count(no_resep) from antriapotek3 where no_resep = ?", NoResep) > 0){
-//                         JOptionPane.showMessageDialog(null,"Maaf, Resep sedang dalam proses Validasi!!");
-//                    }
+                    else if(Sequel.cariInteger("select count(no_resep) from antriapotek3 where no_resep = ?", NoResep) > 0){
+                         JOptionPane.showMessageDialog(null,"Maaf, Resep sedang dalam proses Validasi!!");
+                    }
                     else{
 //                       if(Status.equals("Sudah Terlayani")){
 //                                JOptionPane.showMessageDialog(rootPane,"Resep sudah tervalidasi ..!!");
@@ -1799,7 +1799,6 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                                 if(jmlparsial>0){
                                     Sequel.queryu("delete from antriapotek2");
                                     Sequel.queryu("insert into antriapotek2 values('"+NoResep+"','1','"+NoRawat+"')");
-                                    Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','0','"+NoRawat+"')");
                                     panggilform();
                                 }else{
                                     if(Sequel.cariRegistrasi(NoRawat)>0){
@@ -1807,7 +1806,6 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                                     }else{ 
                                         Sequel.queryu("delete from antriapotek2");
                                         Sequel.queryu("insert into antriapotek2 values('"+NoResep+"','1','"+NoRawat+"')");
-                                        Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','0','"+NoRawat+"')");
                                         panggilform();                             
                                     }
                                 }               
@@ -1838,7 +1836,6 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                             if(Sequel.cariRegistrasi(NoRawat)>0){
                                 JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi ..!!");
                             }else{ 
-                                Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','0','"+NoRawat+"')");
                                 panggilform2();                             
                             }                
                         }
@@ -4359,6 +4356,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         dlgobt.isCek();
         dlgobt.tampilobat2(NoResep);
         dlgobt.setNoResep(NoResep);
+        Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','0','"+NoRawat+"')");
         dlgobt.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         dlgobt.setLocationRelativeTo(internalFrame1);
         TeksKosong();
@@ -4396,6 +4394,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         dlgobt2.isCek();
         dlgobt2.tampilobat2(NoResep);
         dlgobt2.setNoResep(NoResep);
+        Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','0','"+NoRawat+"')");
         dlgobt2.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         dlgobt2.setLocationRelativeTo(internalFrame1);
         TeksKosong();
