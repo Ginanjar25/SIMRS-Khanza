@@ -2651,6 +2651,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             if(Sequel.cariRegistrasi(TNoRw.getText())>0){
                 JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi, data tidak boleh dihapus.\nSilahkan hubungi bagian kasir/keuangan ..!!");
                 TCariPaket.requestFocus();
+            }else if(Sequel.cariInteger("SELECT COUNT(aa.tgl_perawatan) FROM "+(status.equals("Ralan")?"pemeriksaan_ralan":"pemeriksaan_ranap")+" aa JOIN dokter dr ON dr.kd_dokter = aa.nip "
+                    + "WHERE aa.no_rawat = ? and aa.tgl_perawatan = '"+Valid.SetTgl(tgl.getSelectedItem()+"")+"' and "
+                    + "aa.jam_rawat < '"+tgl.getSelectedItem().toString().substring(11,19)+"'  ", TNoRw.getText())==0 ){
+                        JOptionPane.showMessageDialog(rootPane, "SOAP Dokter Pre operasi belum tersedia, Silahkan isi SOAP dokter dulu !!!");
+                        dispose();                    
             }else{
                 Map<String, String> reportMap = new HashMap<>();                
                 try{    
