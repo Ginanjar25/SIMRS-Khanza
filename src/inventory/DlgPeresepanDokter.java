@@ -4404,7 +4404,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
          if (FILTEROBATPENJAB.equals("yes")) {
              switch (KdPj.getText()) {
                  case "BPJ":
-                     return " and databarang_filter.kd_pj like '%BPJ%' ";
+                     return " and (databarang_filter.kd_pj like '%BPJ%' or databarang.kode_brng not like 'OBT%') ";
                  default:
                      return "";
              }
