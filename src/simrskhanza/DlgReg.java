@@ -7328,6 +7328,7 @@ public final class DlgReg extends javax.swing.JDialog {
             }             
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
             isPas();
+            isNumber();
             TPngJwb.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
             kdpoli.requestFocus();
