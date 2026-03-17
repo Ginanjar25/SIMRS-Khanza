@@ -2026,6 +2026,7 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 
     private void formWindowDeactivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowDeactivated
        Sequel.queryu("delete from antriapotek3 where no_resep = '"+noresep+"'");
+       this.dispose();
     }//GEN-LAST:event_formWindowDeactivated
 
     /**

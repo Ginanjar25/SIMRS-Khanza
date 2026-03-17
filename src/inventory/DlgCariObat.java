@@ -1776,6 +1776,7 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
             BtnHapus.setVisible(true);
             label13.setPreferredSize(new Dimension(1, 23));
         }  
+        Sequel.queryu("insert into antriapotek3 values('"+noresep+"','0','"+LblNoRawat.getText()+"')");
     }//GEN-LAST:event_formWindowActivated
 
     private void ChkNoResepItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ChkNoResepItemStateChanged
@@ -2096,6 +2097,7 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
 
     private void formWindowDeactivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowDeactivated
        Sequel.queryu("delete from antriapotek3 where no_resep = '"+noresep+"'");
+       this.dispose();
     }//GEN-LAST:event_formWindowDeactivated
 
     /**
