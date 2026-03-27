@@ -194,6 +194,7 @@ import keuangan.DlgDeposit;
 import laporan.DlgCariPenyakit;
 import modif.DlgBatalPeriksa;
 import rekammedis.RMKonsultasiDokter;
+import widget.DialogCatatan;
 
 /**
  *
@@ -281,8 +282,8 @@ public final class DlgIGD extends javax.swing.JDialog {
         setSize(885,674);
 
         Object[] row={"P","No.Reg","No.Rawat","Tanggal","Jam","Kd.Dokter","Dokter Dituju","Nomer RM",
-            "Pasien","J.K.","Umur","Poliklinik","Penanggung Jawab","Alamat P.J.","Hubungan dg P.J.",
-            "Biaya Regristrasi","Status","Jenis Bayar","Stts Rawat","Kd PJ","Status Bayar","FP","Readmisi", "KD PJ 2"};
+            "Pasien","J.K.","Umur","Jenis Bayar","Catatan","Penanggung Jawab","Alamat P.J.","Hubungan dg P.J.",
+            "Biaya Regristrasi","Status","Stts Rawat","Kd PJ","Status Bayar","FP","Readmisi", "KD PJ 2"};
         tabMode=new DefaultTableModel(null,row){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -334,19 +335,19 @@ public final class DlgIGD extends javax.swing.JDialog {
             }else if(i==10){
                 column.setPreferredWidth(50);
             }else if(i==11){
-                column.setPreferredWidth(140);
+                column.setPreferredWidth(120);
             }else if(i==12){
                 column.setPreferredWidth(140);
             }else if(i==13){
-                column.setPreferredWidth(200);
+                column.setPreferredWidth(140);
             }else if(i==14){
-                column.setPreferredWidth(90);
+                column.setPreferredWidth(200);
             }else if(i==15){
                 column.setPreferredWidth(90);
             }else if(i==16){
                 column.setPreferredWidth(50);
             }else if(i==17){
-                column.setPreferredWidth(120);
+                column.setPreferredWidth(60);
             }else if(i==18){
                 column.setPreferredWidth(70);
             }else if(i==19){
@@ -4274,7 +4275,7 @@ public final class DlgIGD extends javax.swing.JDialog {
         ppCatatanPasien.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         ppCatatanPasien.setForeground(new java.awt.Color(50, 50, 50));
         ppCatatanPasien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
-        ppCatatanPasien.setText("Catatan Untuk Pasien");
+        ppCatatanPasien.setText("Catatan Pasien");
         ppCatatanPasien.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         ppCatatanPasien.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         ppCatatanPasien.setName("ppCatatanPasien"); // NOI18N
@@ -5802,7 +5803,6 @@ public final class DlgIGD extends javax.swing.JDialog {
 
         WindowDiagnosaMasuk.getContentPane().add(internalFrameDiagnosa, java.awt.BorderLayout.CENTER);
         
-        
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -6142,9 +6142,9 @@ public final class DlgIGD extends javax.swing.JDialog {
             } catch (java.lang.NullPointerException e) {
             }
             if(evt.getClickCount()==1){
-                if(norawatdipilih.equals("")){
-                    i=tbPetugas.getSelectedColumn();
-                    if(i==8){
+                if (norawatdipilih.equals("")) {
+                    i = tbPetugas.getSelectedColumn();
+                    if (i == 8) {
                         if(validasicatatan.equals("Yes")){
                             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                             LabelCatatan.setText(Sequel.cariIsi("select catatan_pasien.catatan from catatan_pasien where catatan_pasien.no_rkm_medis=?",TNoRM.getText()));
@@ -6156,7 +6156,26 @@ public final class DlgIGD extends javax.swing.JDialog {
                             }                           
                             this.setCursor(Cursor.getDefaultCursor());
                         }  
-                    }   
+                    }
+                    if (i == 12) {
+                        if (validasicatatan.equals("Yes")) {
+                            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                            String catatan = Sequel.cariIsi(
+                                    "select catatan_pasien.catatan from catatan_pasien where catatan_pasien.no_rkm_medis=?",
+                                    TNoRM.getText()
+                            );
+
+                            String catatan_reg = Sequel.cariIsi(
+                                    "select catatan_registrasi.catatan from catatan_registrasi where catatan_registrasi.no_rawat=? and catatan_registrasi.status='1'",
+                                    TNoRw.getText()
+                            );
+
+                            if (!catatan.equals("") || !catatan_reg.equals("")) {
+                                DialogCatatan.show(this, catatan, catatan_reg);
+                            }
+                            this.setCursor(Cursor.getDefaultCursor());
+                        }
+                    }
                 }else{
                     if(tbPetugas.getSelectedRow()!= -1){
                         if(Sequel.cariRegistrasi(TNoRw.getText())>0){
@@ -8192,7 +8211,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }else{
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             DlgCatatan catatan=new DlgCatatan(null,false);
-            catatan.setNoRm(TNoRM.getText());
+            catatan.setNoRm(TNoRM.getText(), TNoRw.getText());
             catatan.setSize(720,330);
             catatan.setLocationRelativeTo(internalFrame1);
             catatan.setVisible(true);
@@ -11903,7 +11922,6 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             }
         }
     }//GEN-LAST:event_MnDepositActionPerformed
-    
     /**
     * @data args the command line arguments
     */
@@ -12306,11 +12324,33 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         try{  
             ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,\n" +
                     "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli,\n" +
-                    "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,reg_periksa.stts,reg_periksa.kd_pj,reg_periksa.status_bayar, \n" +
+                    "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar," +
+                    "CONCAT(penjab.png_jawab,CASE WHEN penjab.png_jawab = 'BPJS' AND reg_periksa.status_lanjut = 'Ralan' AND reg_periksa.stts != 'Batal' THEN\n" +
+                    "      CONCAT(\n" +
+                    "        CASE \n" +
+                    "          WHEN sep.klsrawat IS NULL OR sep.klsrawat = '' THEN ' (SEP -)' ELSE CONCAT(' ', sep.klsrawat)\n" +
+                    "        END,\n" +
+                    "        CASE sep.klsnaik\n" +
+                    "          WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE ''\n" +
+                    "        END\n" +
+                    "      )\n" +
+                    "    ELSE '' END ) AS png_jawab,\n" +
+                    "reg_periksa.stts,reg_periksa.kd_pj,reg_periksa.status_bayar, \n" +
                     "if(ISNULL(fp.nokartu),'Belum','Sudah') AS fingerprint, if(ISNULL(side_db.readmisi_igd.no_rawat),'No','Yes') AS readmisi,\n" +
-                    "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_cara_bayar2.png_jawab = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2,\n" +
+                    "CASE \n" +
+                    "  WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' \n" +
+                    "  ELSE CONCAT( ' - ', penjab_cara_bayar2.png_jawab,\n" +
+                    "      CASE WHEN penjab_cara_bayar2.png_jawab = 'BPJS' AND reg_periksa.status_lanjut = 'Ralan' AND reg_periksa.stts != 'Batal' THEN \n" +
+                    "          CONCAT( \n" +
+                    "			   CASE WHEN sep.klsrawat IS NULL OR sep.klsrawat = '' THEN ' (SEP -)' ELSE CONCAT(' ', sep.klsrawat)\n" +
+                    "            END,\n" +
+                    "            CASE sep.klsnaik WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE ''\n" +
+                    "            END\n" +
+                    "          )\n" +
+                    "      ELSE '' END)\n" +
+                    "END AS cara_bayar2," +
                     "if(ISNULL(penjab_reg.no_kartu),'',CONCAT(' - ', penjab_reg.no_kartu)) AS no_kartu2, \n" +
-                    "IFNULL(penjab_reg.kd_pj, '') AS kd_pj2\n" +
+                    "IFNULL(penjab_reg.kd_pj, '') AS kd_pj2, IFNULL(catatan_reg.catatan, '') AS catatan \n" +
                     "from reg_periksa inner join dokter inner join pasien inner join poliklinik\n" +
                     "on reg_periksa.kd_dokter=dokter.kd_dokter and reg_periksa.no_rkm_medis=pasien.no_rkm_medis \n" +
                     "and reg_periksa.kd_poli=poliklinik.kd_poli \n" +
@@ -12319,7 +12359,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     "left join side_db.readmisi_igd on reg_periksa.no_rawat = side_db.readmisi_igd.no_rawat\n" +
                     "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj\n" +
                     "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
-                    "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj " +
+                    "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj "+
+                    "LEFT JOIN ( select * from catatan_registrasi where status = '1') as catatan_reg on catatan_reg.no_rawat = reg_periksa.no_rawat " +
+                    "LEFT JOIN (select * from bridging_sep where jnspelayanan = 2 and catatan != '%MRS%') as sep ON sep.no_rawat = reg_periksa.no_rawat " +
                    "where poliklinik.kd_poli='IGDK' and reg_periksa.tgl_registrasi between ? and ? "+
                    (TCari.getText().trim().equals("")?"":"and (reg_periksa.no_reg like ? or reg_periksa.no_rawat like ? or reg_periksa.tgl_registrasi like ? or "+
                    "reg_periksa.kd_dokter like ? or dokter.nm_dokter like ? or reg_periksa.no_rkm_medis like ? or "+
@@ -12349,8 +12391,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     tabMode.addRow(new Object[] {
                         false,rs.getString("no_reg"),rs.getString("no_rawat"),rs.getString("tgl_registrasi"),rs.getString("jam_reg"),
                         rs.getString("kd_dokter"),rs.getString("nm_dokter"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("jk"),
-                        rs.getString("umur"),rs.getString("nm_poli"),rs.getString("p_jawab"),rs.getString("almt_pj"),rs.getString("hubunganpj"),
-                        Valid.SetAngka(rs.getDouble("biaya_reg")),rs.getString("stts_daftar"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),rs.getString("stts"),
+                        rs.getString("umur"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),rs.getString("catatan"),rs.getString("p_jawab"),rs.getString("almt_pj"),rs.getString("hubunganpj"),
+                        Valid.SetAngka(rs.getDouble("biaya_reg")),rs.getString("stts_daftar"),rs.getString("stts"),
                         rs.getString("kd_pj"),rs.getString("status_bayar"),rs.getString("fingerprint"),rs.getString("readmisi"), rs.getString("kd_pj2")
                     });
                 } 

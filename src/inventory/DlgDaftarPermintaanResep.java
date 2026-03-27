@@ -2165,6 +2165,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         TCari.requestFocus();
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau dihapus..!!");
+                    }else if(Sequel.cariInteger("select count(no_resep) from antriapotek3 where no_resep = ?", NoResep) > 0){
+                         JOptionPane.showMessageDialog(null,"Maaf, Resep sedang dalam proses Validasi!!");
                     }else{
                         if(Sequel.cariIsi("select if(resep_obat.tgl_perawatan='0000-00-00','Belum','Sudah') as status from resep_obat where resep_obat.no_resep = ?", NoResep).equals("Sudah") || Status.equals("Sudah Terlayani")) {
                             JOptionPane.showMessageDialog(rootPane,"Resep sudah tervalidasi ..!!");
@@ -2190,6 +2192,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         TCari.requestFocus();
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau dihapus..!!");
+                    }else if(Sequel.cariInteger("select count(no_resep) from antriapotek3 where no_resep = ?", NoResep) > 0){
+                         JOptionPane.showMessageDialog(null,"Maaf, Resep sedang dalam proses Validasi!!");
                     }else{
                          if(Sequel.cariIsi("select if(resep_obat.tgl_perawatan='0000-00-00','Belum','Sudah') as status from resep_obat where resep_obat.no_resep = ?", NoResep).equals("Sudah") || Status.equals("Sudah Terlayani")) {
                             JOptionPane.showMessageDialog(rootPane,"Resep sudah tervalidasi ..!!");

@@ -186,6 +186,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import modif.ApotekBPJSResepFKTL;
+import widget.DialogCatatan;
 
 /**
  *
@@ -208,7 +209,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private Date date = new Date();
     private String now=dateFormat.format(date),kmr="",key="",tglmasuk,jammasuk,kd_pj,KUNCIDOKTERRANAP="",
-            hariawal="",pilihancetak="",aktifkan_hapus_data_salah="",terbitsep="",namadokter="";
+            hariawal="",pilihancetak="",aktifkan_hapus_data_salah="",terbitsep="",namadokter="",validasicatatan=Sequel.cariIsi("select set_validasi_catatan.tampilkan_catatan from set_validasi_catatan");
     private PreparedStatement ps,pssetjam,pscaripiutang,psdiagnosa,psibu,psanak,pstarif,psdpjp,pscariumur, psinsertkamar, psupdatekamar, psrekapkamar, pstitip;
     private ResultSet rs,rs2,rssetjam, rsrekapkamar, rstitip;;
     private int i,row=0;
@@ -240,7 +241,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             "No.Rawat","Nomer RM","Nama Pasien","Alamat Pasien","Penanggung Jawab","Hubungan P.J.","Jenis Bayar","Kamar","Tarif Kamar",
             "Diagnosa Awal","Diagnosa Akhir","Tgl.Masuk","Jam Masuk","Tgl.Keluar","Jam Keluar",
             "Ttl.Biaya","Stts.Pulang","Lama","Dokter P.J.","Kamar","Status Bayar","Agama",
-            "Nomer RM","Nama Pasien","DPJP","Alamat Pasien","No HP","Jenis Bayar","Kamar","Tarif Kamar",
+            "Nomer RM","Nama Pasien","DPJP","Alamat Pasien","Jenis Bayar","Catatan","Kamar","Tarif Kamar",
             "Diagnosa Awal","Diagnosa Akhir","Tgl.Masuk","Jam Masuk","Tgl.Keluar","Jam Keluar",
             "Tarif RS","Tarif INACBG","Selisih Pasien","INACBG Total","Deposit","Stts.Pulang","Lama","Kamar","Status Bayar", "Limit Tarif"
             }){
@@ -329,10 +330,10 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 column.setPreferredWidth(150);
             }else if(i==25){//"Alamat Pasien",
                 column.setPreferredWidth(180);
-            }else if(i==26){//"No HP",
-                column.setPreferredWidth(85);
-            }else if(i==27){//"Jenis Bayar",
+            }else if(i==26){//"Jenis Bayar",
                 column.setPreferredWidth(120);
+            }else if(i==27){//"catatan",
+                column.setPreferredWidth(100);
             }else if(i==28){//"Kamar",
                 column.setPreferredWidth(170);
             }else if(i==29){//"Tarif Kamar",
@@ -6802,6 +6803,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
             
             if(evt.getClickCount()==1){
+                i = tbKamIn.getSelectedColumn();
                 if(gabungkan.equals("gabung")){
                     if(norawat.getText().equals(norawatgabung)){
                         JOptionPane.showMessageDialog(null,"Gabungkan ke ranap ibu gagal karena no perawatan ibu dan bayi yang dipilih sama..!!");
@@ -6828,6 +6830,26 @@ public class DlgKamarInap extends javax.swing.JDialog {
                             norawatgabung="";
                             normgabung="";
                         }
+                    }
+                }
+                
+                if (i == 27) {
+                    if (validasicatatan.equals("Yes")) {
+                        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                        String catatan = Sequel.cariIsi(
+                                "select catatan_pasien.catatan from catatan_pasien where catatan_pasien.no_rkm_medis=?",
+                                TNoRM.getText()
+                        );
+
+                        String catatan_reg = Sequel.cariIsi(
+                                "select catatan_registrasi.catatan from catatan_registrasi where catatan_registrasi.no_rawat=? and catatan_registrasi.status='1'",
+                                norawat.getText()
+                        );
+
+                        if (!catatan.equals("") || !catatan_reg.equals("")) {
+                            DialogCatatan.show(this, catatan, catatan_reg);
+                        }
+                        this.setCursor(Cursor.getDefaultCursor());
                     }
                 }
             }
@@ -18314,7 +18336,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     + "            END\n"
                     + "          )\n"
                     + "      ELSE '' END)\n"
-                    + "END AS cara_bayar2\n"
+                    + "END AS cara_bayar2, IFNULL(catatan_reg.catatan, '') AS catatan \n"
                     + "from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis\n"
                     + "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = reg_periksa.no_rawat inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar\n"
                     + "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel\n"
@@ -18326,6 +18348,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     + "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj\n"
                     + "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n"
                     + "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj \n"
+                    + "LEFT JOIN ( select * from catatan_registrasi where status = '1') as catatan_reg on catatan_reg.no_rawat = reg_periksa.no_rawat \n"
                     + (namadokter.equals("")?"where "+key+" "+order:"inner join dpjp_ranap on dpjp_ranap.no_rawat=reg_periksa.no_rawat where dpjp_ranap.kd_dokter='"+namadokter+"' and "+key+" "+order));
             try {
                 rs=ps.executeQuery();
@@ -18338,7 +18361,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                         rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")),rs.getString("stts_pulang"),
                         rs.getString("lama"),rs.getString("nm_dokter"),rs.getString("kd_kamar"),rs.getString("status_bayar"),rs.getString("agama"),
                         rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+" ("+rs.getString("jk")+") ("+rs.getString("umur")+")",rs.getString("nm_dokter"),
-                        rs.getString("alamat"),rs.getString("no_tlp"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),
+                        rs.getString("alamat"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),rs.getString("catatan"),
                         rs.getString("kamar") + " (" + rs.getString("kelas") + ")",Valid.SetAngka(rs.getDouble("trf_kamar")),rs.getString("diagnosa_awal"),
                         rs.getString("diagnosa_akhir"),rs.getString("tgl_masuk"),rs.getString("jam_masuk"),rs.getString("tgl_keluar"),
                         rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")),Valid.SetAngka(rs.getDouble("tarif_inacbg")),Valid.SetAngka(rs.getDouble("tarif_naik")),

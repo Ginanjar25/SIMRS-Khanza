@@ -1639,6 +1639,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }else if(NoReg.getText().trim().equals("")){
             Valid.textKosong(NoReg,"No.Antri");
         }else{
+            isNomer();
             if(akses.getkode().equals("Admin Utama")){
                 isBooking();
             }else{

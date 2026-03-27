@@ -17,15 +17,6 @@ import fungsi.sekuel;
 import fungsi.validasi;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import inventory.DlgCariKonversi;
-import inventory.DlgCariObat;
-import inventory.DlgCariObat2;
-import inventory.DlgCariObat3;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -70,11 +61,17 @@ public class DlgCatatan extends javax.swing.JDialog {
         internalFrame1 = new widget.InternalFrame();
         FormInput = new widget.PanelBiasa();
         jLabel3 = new widget.Label();
+        BtnHapusCatatanReg = new widget.Button();
         TNoRM = new widget.TextBox();
         TPasien = new widget.TextBox();
         jLabel9 = new widget.Label();
         Scroll3 = new widget.ScrollPane();
         TCatatan = new widget.TextArea();
+        TNoRawat = new widget.TextBox();
+        jLabel10 = new widget.Label();
+        Scroll4 = new widget.ScrollPane();
+        TCatatanReg = new widget.TextArea();
+        BtnHapusCatatanPasien = new widget.Button();
         panelGlass8 = new widget.panelisi();
         BtnSimpan = new widget.Button();
         BtnHapus = new widget.Button();
@@ -90,7 +87,7 @@ public class DlgCatatan extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Catatan Untuk Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Catatan Untuk Pasien ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -103,23 +100,42 @@ public class DlgCatatan extends javax.swing.JDialog {
         FormInput.add(jLabel3);
         jLabel3.setBounds(0, 10, 65, 23);
 
+        BtnHapusCatatanReg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cancel.png"))); // NOI18N
+        BtnHapusCatatanReg.setMnemonic('H');
+        BtnHapusCatatanReg.setToolTipText("Alt+H");
+        BtnHapusCatatanReg.setName("BtnHapusCatatanReg"); // NOI18N
+        BtnHapusCatatanReg.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnHapusCatatanReg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnHapusCatatanRegActionPerformed(evt);
+            }
+        });
+        BtnHapusCatatanReg.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnHapusCatatanRegKeyPressed(evt);
+            }
+        });
+        FormInput.add(BtnHapusCatatanReg);
+        BtnHapusCatatanReg.setBounds(70, 170, 30, 30);
+        BtnHapus.setVisible(false);
+
         TNoRM.setEditable(false);
         TNoRM.setHighlighter(null);
         TNoRM.setName("TNoRM"); // NOI18N
         FormInput.add(TNoRM);
-        TNoRM.setBounds(70, 10, 130, 23);
+        TNoRM.setBounds(70, 10, 90, 23);
 
         TPasien.setEditable(false);
         TPasien.setHighlighter(null);
         TPasien.setName("TPasien"); // NOI18N
         TPasien.setPreferredSize(new java.awt.Dimension(25, 28));
         FormInput.add(TPasien);
-        TPasien.setBounds(202, 10, 486, 23);
+        TPasien.setBounds(288, 10, 400, 23);
 
-        jLabel9.setText("Catatan :");
+        jLabel9.setText("Catatan Pasien:");
         jLabel9.setName("jLabel9"); // NOI18N
         FormInput.add(jLabel9);
-        jLabel9.setBounds(0, 40, 65, 23);
+        jLabel9.setBounds(0, 40, 100, 23);
 
         Scroll3.setName("Scroll3"); // NOI18N
         Scroll3.setOpaque(true);
@@ -130,7 +146,49 @@ public class DlgCatatan extends javax.swing.JDialog {
         Scroll3.setViewportView(TCatatan);
 
         FormInput.add(Scroll3);
-        Scroll3.setBounds(70, 40, 620, 200);
+        Scroll3.setBounds(110, 40, 580, 100);
+
+        TNoRawat.setEditable(false);
+        TNoRawat.setHighlighter(null);
+        TNoRawat.setName("TNoRawat"); // NOI18N
+        TNoRawat.setPreferredSize(new java.awt.Dimension(25, 28));
+        FormInput.add(TNoRawat);
+        TNoRawat.setBounds(165, 10, 120, 23);
+
+        jLabel10.setText("Catatan Registrasi:");
+        jLabel10.setName("jLabel10"); // NOI18N
+        FormInput.add(jLabel10);
+        jLabel10.setBounds(0, 150, 100, 23);
+
+        Scroll4.setName("Scroll4"); // NOI18N
+        Scroll4.setOpaque(true);
+
+        TCatatanReg.setColumns(20);
+        TCatatanReg.setRows(5);
+        TCatatanReg.setName("TCatatanReg"); // NOI18N
+        Scroll4.setViewportView(TCatatanReg);
+
+        FormInput.add(Scroll4);
+        Scroll4.setBounds(110, 150, 580, 100);
+
+        BtnHapusCatatanPasien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cancel.png"))); // NOI18N
+        BtnHapusCatatanPasien.setMnemonic('H');
+        BtnHapusCatatanPasien.setToolTipText("Alt+H");
+        BtnHapusCatatanPasien.setName("BtnHapusCatatanPasien"); // NOI18N
+        BtnHapusCatatanPasien.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnHapusCatatanPasien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnHapusCatatanPasienActionPerformed(evt);
+            }
+        });
+        BtnHapusCatatanPasien.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnHapusCatatanPasienKeyPressed(evt);
+            }
+        });
+        FormInput.add(BtnHapusCatatanPasien);
+        BtnHapusCatatanPasien.setBounds(70, 60, 30, 30);
+        BtnHapus.setVisible(false);
 
         internalFrame1.add(FormInput, java.awt.BorderLayout.CENTER);
         FormInput.getAccessibleContext().setAccessibleName("");
@@ -175,6 +233,7 @@ public class DlgCatatan extends javax.swing.JDialog {
             }
         });
         panelGlass8.add(BtnHapus);
+        //BtnHapus.setVisible(false);
 
         BtnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
         BtnEdit.setMnemonic('G');
@@ -193,6 +252,7 @@ public class DlgCatatan extends javax.swing.JDialog {
             }
         });
         panelGlass8.add(BtnEdit);
+        BtnEdit.setVisible(false);
 
         BtnKeluar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/cross.png"))); // NOI18N
         BtnKeluar.setMnemonic('T');
@@ -222,10 +282,14 @@ public class DlgCatatan extends javax.swing.JDialog {
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         if(TNoRM.getText().trim().equals("")||TPasien.getText().trim().equals("")){
             Valid.textKosong(TNoRM,"No.Rekam Medis");
-        }else if(TCatatan.getText().trim().equals("")){
-            Valid.textKosong(TCatatan,"Catatan");
-        }else{          
-            Sequel.menyimpan3("catatan_pasien","?,?",2,new String[]{TNoRM.getText(),TCatatan.getText()},"no_rkm_medis=?","catatan=?",2,new String[]{TCatatan.getText(),TNoRM.getText()});
+        }else{  
+            if(!TCatatan.getText().trim().equals("")){
+                Sequel.menyimpan3("catatan_pasien","?,?",2,new String[]{TNoRM.getText(),TCatatan.getText()},"no_rkm_medis=?","catatan=?",2,new String[]{TCatatan.getText(),TNoRM.getText()});
+            }
+            
+            if(!TCatatanReg.getText().trim().equals("") && !TNoRawat.getText().trim().equals("")){
+                 Sequel.menyimpan3("catatan_registrasi","?,?,'1', now(), now()",2,new String[]{TNoRawat.getText(),TCatatanReg.getText()},"no_rawat=? and status='1'","catatan=?,updated_at=now()",2,new String[]{TCatatanReg.getText(),TNoRawat.getText()});
+            }
             BtnKeluarActionPerformed(evt);        
         }  
 }//GEN-LAST:event_BtnSimpanActionPerformed
@@ -240,6 +304,9 @@ public class DlgCatatan extends javax.swing.JDialog {
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
        Sequel.meghapus2("catatan_pasien","no_rkm_medis",TNoRM.getText());
+       Sequel.mengedit("catatan_registrasi","no_rawat='"+TNoRawat.getText()+"' and status='1'","status='0', updated_at=now()");
+       TCatatan.setText("");
+       TCatatanReg.setText("");
        BtnKeluarActionPerformed(evt);       
 }//GEN-LAST:event_BtnHapusActionPerformed
 
@@ -260,12 +327,20 @@ public class DlgCatatan extends javax.swing.JDialog {
 private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
     if(TNoRM.getText().trim().equals("")||TPasien.getText().trim().equals("")){
         Valid.textKosong(TNoRM,"No.Rekam Medis");
-    }else if(TCatatan.getText().trim().equals("")){
-        Valid.textKosong(TCatatan,"Catatan");
     }else{  
-        Sequel.mengedit2("catatan_pasien","no_rkm_medis=?","catatan=?",2,new String[]{
-            TCatatan.getText(),TNoRM.getText()
-        });
+        if(TCatatan.getText().trim().equals("")){
+           Sequel.meghapus("catatan_pasien","no_rkm_medis",TNoRM.getText());
+        }else{
+             Sequel.mengedit("catatan_pasien","no_rkm_medis='"+TNoRM.getText()+"'","catatan='"+TCatatan.getText()+"'");
+        }
+        
+        if(TCatatanReg.getText().trim().equals("")){
+           Sequel.mengedit("catatan_registrasi","no_rawat='"+TNoRawat.getText()+"' and status='1'","status='0', updated_at=now()");
+        }else{
+            Sequel.mengedit2("catatan_registrasi","no_rawat=? and status='1'","catatan=?, updated_at=now()",2,new String[]{
+                TCatatanReg.getText(),TNoRawat.getText()
+            });
+        }
         BtnKeluarActionPerformed(evt);
     }
 }//GEN-LAST:event_BtnEditActionPerformed
@@ -279,6 +354,24 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         TCatatan.requestFocus();
     }//GEN-LAST:event_formWindowActivated
+
+    private void BtnHapusCatatanRegActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusCatatanRegActionPerformed
+       Sequel.mengedit("catatan_registrasi","no_rawat='"+TNoRawat.getText()+"' and status='1'","status='0', updated_at=now()");
+       TCatatanReg.setText("");
+    }//GEN-LAST:event_BtnHapusCatatanRegActionPerformed
+
+    private void BtnHapusCatatanRegKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnHapusCatatanRegKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnHapusCatatanRegKeyPressed
+
+    private void BtnHapusCatatanPasienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusCatatanPasienActionPerformed
+       Sequel.meghapus2("catatan_pasien","no_rkm_medis",TNoRM.getText());
+       TCatatan.setText("");
+    }//GEN-LAST:event_BtnHapusCatatanPasienActionPerformed
+
+    private void BtnHapusCatatanPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnHapusCatatanPasienKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnHapusCatatanPasienKeyPressed
 
     /**
     * @param args the command line arguments
@@ -299,14 +392,20 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private widget.Button BtnEdit;
     private widget.Button BtnHapus;
+    private widget.Button BtnHapusCatatanPasien;
+    private widget.Button BtnHapusCatatanReg;
     private widget.Button BtnKeluar;
     private widget.Button BtnSimpan;
     private widget.PanelBiasa FormInput;
     private widget.ScrollPane Scroll3;
+    private widget.ScrollPane Scroll4;
     private widget.TextArea TCatatan;
+    private widget.TextArea TCatatanReg;
     private widget.TextBox TNoRM;
+    private widget.TextBox TNoRawat;
     private widget.TextBox TPasien;
     private widget.InternalFrame internalFrame1;
+    private widget.Label jLabel10;
     private widget.Label jLabel3;
     private widget.Label jLabel9;
     private widget.panelisi panelGlass8;
@@ -317,19 +416,35 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=? ",TPasien,TNoRM.getText());
     }
 
-    public void setNoRm(String norm) {
-        TNoRM.setText(norm);  
-        isPsien();   
-        Sequel.cariIsi("select catatan_pasien.catatan from catatan_pasien where catatan_pasien.no_rkm_medis=?",TCatatan,TNoRM.getText());       
+    public void setNoRm(String norm, String no_rawat) {
+        TNoRM.setText(norm);
+        TNoRawat.setText(no_rawat);
+        isPsien();
+
+        Sequel.cariIsi(
+                "select catatan_pasien.catatan from catatan_pasien where catatan_pasien.no_rkm_medis=?",
+                TCatatan,
+                TNoRM.getText()
+        );
+        TCatatanReg.setEditable(true);
+        
+        if(TNoRawat.getText().trim().equals("")){
+            TCatatanReg.setEditable(false);
+        }else{
+           TCatatanReg.setEditable(true);
+           Sequel.cariIsi("select catatan_registrasi.catatan from catatan_registrasi where catatan_registrasi.no_rawat=? and catatan_registrasi.status = '1' ",TCatatanReg,TNoRawat.getText());       
+        }
     }
-    
+
+// Overload (tanpa no_rawat)
+    public void setNoRm(String norm) {
+        setNoRm(norm, "");
+    }
     
     public void isCek(){
         BtnSimpan.setEnabled(true);
         BtnHapus.setEnabled(true);
-        BtnEdit.setEnabled(true);
-       
-        
+        BtnEdit.setEnabled(true);        
     }
 
 
