@@ -189,6 +189,7 @@ import surat.SuratSakit;
 import surat.SuratSakitPihak2;
 import surat.SuratTidakHamil;
 import bridging.BPJSRujukanKeluar;
+import java.io.FileInputStream;
 import java.text.DateFormat;
 import keuangan.DlgDeposit;
 import laporan.DlgCariPenyakit;
@@ -222,7 +223,7 @@ public final class DlgIGD extends javax.swing.JDialog {
     private String kdigd="",nosisrute="",aktifkanparsial="no",URUTNOREG="",terbitsep="",
             status="Baru",alamatperujuk="-",umur="0",sttsumur="Th",IPPRINTERTRACER="",norawatdipilih="",normdipilih="",
             validasiregistrasi=Sequel.cariIsi("select set_validasi_registrasi.wajib_closing_kasir from set_validasi_registrasi"),
-            validasicatatan=Sequel.cariIsi("select set_validasi_catatan.tampilkan_catatan from set_validasi_catatan"),variabel="", stts="", ptg="";
+            validasicatatan=Sequel.cariIsi("select set_validasi_catatan.tampilkan_catatan from set_validasi_catatan"),variabel="", stts="", ptg="", DIAGNOSAVCLAIM="no";
     private char ESC = 27;
     // ganti kertas
     private char[] FORM_FEED = {12};
@@ -269,6 +270,8 @@ public final class DlgIGD extends javax.swing.JDialog {
     private char[] UNIT_1_360 = {ESC,40, 'U', '1', '0'};
     // move vertical print position
     private char[] VERTICAL_PRINT_POSITION = {ESC, 'J', '1'};
+    private static final Properties prop = new Properties();
+    private static String var = "";
 
     /** Creates new form DlgReg
      * @param parent
@@ -824,6 +827,12 @@ public final class DlgIGD extends javax.swing.JDialog {
         } catch (Exception ex) {
             IPPRINTERTRACER="";
             URUTNOREG="";
+        }
+        
+        try {
+            DIAGNOSAVCLAIM = DIAGNOSAVCLAIM();
+        } catch (Exception e) {
+             DIAGNOSAVCLAIM="no";
         }
     }
     
@@ -11858,10 +11867,20 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     }     
     
      private void btnDiagnosaActionPerformed(java.awt.event.ActionEvent evt) {                                            
-        if(Sequel.cariIsi("select kd_pj from reg_periksa where no_rawat = ?", TNoRw.getText()).equals("BPJ")){
-            penyakitvclaim.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-            penyakitvclaim.setLocationRelativeTo(internalFrame1);
-            penyakitvclaim.setVisible(true);
+       
+         
+         if(Sequel.cariIsi("select kd_pj from reg_periksa where no_rawat = ?", TNoRw.getText()).equals("BPJ")){
+              if(DIAGNOSAVCLAIM.equals("yes")){
+                penyakitvclaim.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                penyakitvclaim.setLocationRelativeTo(internalFrame1);
+                penyakitvclaim.setVisible(true);
+              }else{
+                penyakit.isCek();
+                penyakit.emptTeks();
+                penyakit.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                penyakit.setLocationRelativeTo(internalFrame1);
+                penyakit.setVisible(true);
+              }
         }else{
             penyakit.isCek();
             penyakit.emptTeks();
@@ -13584,6 +13603,16 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 + ") x WHERE no_reg BETWEEN " + min + " AND " + max;
 
         return Sequel.cariInteger(sql);
+    }
+     
+    private static String DIAGNOSAVCLAIM() {
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var = prop.getProperty("DIAGNOSAVCLAIM");
+        } catch (Exception e) {
+            var = "no";
+        }
+        return var;
     }
     
 }
