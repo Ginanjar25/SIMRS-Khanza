@@ -12434,7 +12434,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
 
     private void getData() {
         if(tbPetugas.getSelectedRow()!= -1){
-            String penjab1 = tbPetugas.getValueAt(tbPetugas.getSelectedRow(),17).toString();
+            String penjab1 = tbPetugas.getValueAt(tbPetugas.getSelectedRow(),11).toString();
             String penjab2 = "";
             if(penjab1.contains(" - ")){
                 String[] penjab = penjab1.split(" - ", 2);
@@ -12452,10 +12452,10 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             TDokter.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),6).toString());
             TNoRM.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),7).toString());            
             isCekPasien();
-            TPngJwb.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),12).toString());
-            TAlmt.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),13).toString());
-            THbngn.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),14).toString());
-            TStatus.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),16).toString());            
+            TPngJwb.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),13).toString());
+            TAlmt.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),14).toString());
+            THbngn.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),15).toString());
+            TStatus.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),17).toString());            
 //            nmpnj.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),17).toString());
             nmpnj.setText(penjab1);
             nmpnj1.setText(penjab2);
@@ -12584,7 +12584,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     kdpnj.setText(rs.getString("kd_pj"));
                     nmpnj.setText(rs.getString("png_jawab"));
                     TStatus.setText(rs.getString("daftar"));
-                    JK.setText("jk");
+                    JK.setText(rs.getString("jk"));
                     umur="0";
                     sttsumur="Th";
                     if(rs.getInt("tahun")>0){
@@ -13269,13 +13269,13 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 tabMode.setValueAt(TPasien.getText(),tbPetugas.getSelectedRow(),8);
                 tabMode.setValueAt(JK.getText(),tbPetugas.getSelectedRow(),9);
                 tabMode.setValueAt(umur+" "+sttsumur,tbPetugas.getSelectedRow(),10);
-                tabMode.setValueAt("IGD",tbPetugas.getSelectedRow(),11);
-                tabMode.setValueAt(TPngJwb.getText(),tbPetugas.getSelectedRow(),12);
-                tabMode.setValueAt(TAlmt.getText(),tbPetugas.getSelectedRow(),13);
-                tabMode.setValueAt(THbngn.getText(),tbPetugas.getSelectedRow(),14);
-                tabMode.setValueAt(Valid.SetAngka(biaya),tbPetugas.getSelectedRow(),15);
-                tabMode.setValueAt(TStatus.getText(),tbPetugas.getSelectedRow(),16);
-                tabMode.setValueAt(nmpnj.getText() + " - " + nmpnj1.getText(),tbPetugas.getSelectedRow(),17);
+                tabMode.setValueAt(nmpnj.getText(),tbPetugas.getSelectedRow(),11);
+                tabMode.setValueAt(TPngJwb.getText(),tbPetugas.getSelectedRow(),13);
+                tabMode.setValueAt(TAlmt.getText(),tbPetugas.getSelectedRow(),14);
+                tabMode.setValueAt(THbngn.getText(),tbPetugas.getSelectedRow(),15);
+                tabMode.setValueAt(Valid.SetAngka(biaya),tbPetugas.getSelectedRow(),16);
+                tabMode.setValueAt(TStatus.getText(),tbPetugas.getSelectedRow(),17);
+                tabMode.setValueAt(nmpnj.getText() + " - " + nmpnj1.getText(),tbPetugas.getSelectedRow(),11);
                 tabMode.setValueAt(kdpnj.getText(),tbPetugas.getSelectedRow(),19);
                 emptTeks();
             }
