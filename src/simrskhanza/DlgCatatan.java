@@ -287,10 +287,17 @@ public class DlgCatatan extends javax.swing.JDialog {
                 Sequel.menyimpan3("catatan_pasien","?,?",2,new String[]{TNoRM.getText(),TCatatan.getText()},"no_rkm_medis=?","catatan=?",2,new String[]{TCatatan.getText(),TNoRM.getText()});
             }
             
-            if(!TCatatanReg.getText().trim().equals("") && !TNoRawat.getText().trim().equals("")){
-                 Sequel.menyimpan3("catatan_registrasi","?,?,'1', now(), now()",2,new String[]{TNoRawat.getText(),TCatatanReg.getText()},"no_rawat=? and status='1'","catatan=?,updated_at=now()",2,new String[]{TCatatanReg.getText(),TNoRawat.getText()});
+            if(Sequel.cariInteger("SELECT count(no_rawat) from catatan_registrasi where no_rawat=? and status = '1'", TNoRawat.getText()) > 0){
+                Sequel.mengedit("catatan_registrasi", "no_rawat='"+TNoRawat.getText()+"' and status='1'", "catatan='"+TCatatanReg.getText()+"',updated_at=now()");
+            }else{
+                Sequel.menyimpan2("catatan_registrasi","?,?,'1', now(), now()", 2,new String[]{TNoRawat.getText(),TCatatanReg.getText()});
             }
-            BtnKeluarActionPerformed(evt);        
+            
+//            if(!TCatatanReg.getText().trim().equals("") && !TNoRawat.getText().trim().equals("")){
+//                 Sequel.menyimpan3("catatan_registrasi","?,?,'1', now(), now()",2,new String[]{TNoRawat.getText(),TCatatanReg.getText()},"no_rawat=? and status='1'","catatan=?,updated_at=now()",2,new String[]{TCatatanReg.getText(),TNoRawat.getText()});
+//            }
+//            BtnKeluarActionPerformed(evt);     
+            tampilCatatan();
         }  
 }//GEN-LAST:event_BtnSimpanActionPerformed
 
@@ -356,7 +363,12 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     }//GEN-LAST:event_formWindowActivated
 
     private void BtnHapusCatatanRegActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusCatatanRegActionPerformed
-       Sequel.mengedit("catatan_registrasi","no_rawat='"+TNoRawat.getText()+"' and status='1'","status='0', updated_at=now()");
+//       Sequel.mengedit("catatan_registrasi","no_rawat='"+TNoRawat.getText()+"' and status='1'","status='0', updated_at=now()");
+       
+        Sequel.mengedit2("catatan_registrasi", "no_rawat=? and status='1'", "status='0', updated_at=now()", 1, new String[]{
+            TNoRawat.getText()
+        });
+        
        TCatatanReg.setText("");
     }//GEN-LAST:event_BtnHapusCatatanRegActionPerformed
 
@@ -421,19 +433,31 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         TNoRawat.setText(no_rawat);
         isPsien();
 
-        Sequel.cariIsi(
-                "select catatan_pasien.catatan from catatan_pasien where catatan_pasien.no_rkm_medis=?",
-                TCatatan,
-                TNoRM.getText()
-        );
+//        Sequel.cariIsi(
+//                "select catatan_pasien.catatan from catatan_pasien where catatan_pasien.no_rkm_medis=?",
+//                TCatatan,
+//                TNoRM.getText()
+//        );
         TCatatanReg.setEditable(true);
         
         if(TNoRawat.getText().trim().equals("")){
             TCatatanReg.setEditable(false);
         }else{
            TCatatanReg.setEditable(true);
-           Sequel.cariIsi("select catatan_registrasi.catatan from catatan_registrasi where catatan_registrasi.no_rawat=? and catatan_registrasi.status = '1' ",TCatatanReg,TNoRawat.getText());       
+//           Sequel.cariIsi("select catatan_registrasi.catatan from catatan_registrasi where catatan_registrasi.no_rawat=? and catatan_registrasi.status = '1' ",TCatatanReg,TNoRawat.getText());       
         }
+        
+        tampilCatatan();
+    }
+    
+    public void tampilCatatan(){
+         Sequel.cariIsi(
+                "select catatan_pasien.catatan from catatan_pasien where catatan_pasien.no_rkm_medis=?",
+                TCatatan,
+                TNoRM.getText()
+        );
+         
+        Sequel.cariIsi("select catatan_registrasi.catatan from catatan_registrasi where catatan_registrasi.no_rawat=? and catatan_registrasi.status = '1' ",TCatatanReg,TNoRawat.getText());       
     }
 
 // Overload (tanpa no_rawat)
