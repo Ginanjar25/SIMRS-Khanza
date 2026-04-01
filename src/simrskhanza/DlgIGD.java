@@ -12580,7 +12580,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     kdpnj.setText(rs.getString("kd_pj"));
                     nmpnj.setText(rs.getString("png_jawab"));
                     TStatus.setText(rs.getString("daftar"));
-                    JK.setText("jk");
+                    JK.setText(rs.getString("jk"));
                     umur="0";
                     sttsumur="Th";
                     if(rs.getInt("tahun")>0){
@@ -13265,13 +13265,13 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 tabMode.setValueAt(TPasien.getText(),tbPetugas.getSelectedRow(),8);
                 tabMode.setValueAt(JK.getText(),tbPetugas.getSelectedRow(),9);
                 tabMode.setValueAt(umur+" "+sttsumur,tbPetugas.getSelectedRow(),10);
-                tabMode.setValueAt("IGD",tbPetugas.getSelectedRow(),11);
-                tabMode.setValueAt(TPngJwb.getText(),tbPetugas.getSelectedRow(),12);
-                tabMode.setValueAt(TAlmt.getText(),tbPetugas.getSelectedRow(),13);
-                tabMode.setValueAt(THbngn.getText(),tbPetugas.getSelectedRow(),14);
-                tabMode.setValueAt(Valid.SetAngka(biaya),tbPetugas.getSelectedRow(),15);
-                tabMode.setValueAt(TStatus.getText(),tbPetugas.getSelectedRow(),16);
-                tabMode.setValueAt(nmpnj.getText() + " - " + nmpnj1.getText(),tbPetugas.getSelectedRow(),17);
+                tabMode.setValueAt(nmpnj.getText(),tbPetugas.getSelectedRow(),11);
+                tabMode.setValueAt(TPngJwb.getText(),tbPetugas.getSelectedRow(),13);
+                tabMode.setValueAt(TAlmt.getText(),tbPetugas.getSelectedRow(),14);
+                tabMode.setValueAt(THbngn.getText(),tbPetugas.getSelectedRow(),15);
+                tabMode.setValueAt(Valid.SetAngka(biaya),tbPetugas.getSelectedRow(),16);
+                tabMode.setValueAt(TStatus.getText(),tbPetugas.getSelectedRow(),17);
+                tabMode.setValueAt(nmpnj.getText() + " - " + nmpnj1.getText(),tbPetugas.getSelectedRow(),11);
                 tabMode.setValueAt(kdpnj.getText(),tbPetugas.getSelectedRow(),19);
                 emptTeks();
             }

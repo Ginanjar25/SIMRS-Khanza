@@ -113,19 +113,19 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
-                        tampil2();
+                        tampil3();
                     }
                 }
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
-                        tampil2();
+                        tampil3();
                     }
                 }
                 @Override
                 public void changedUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
-                        tampil2();
+                        tampil3();
                     }
                 }
             });
@@ -323,7 +323,7 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil2();
+        tampil3();
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -338,6 +338,7 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
         TCari.setText("");
 //        tampil();
 //        tampil2();
+          tampil3();
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -560,6 +561,96 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
         }
         LCount.setText(""+tabMode.getRowCount());
     }
+    
+    private void tampil3() {
+        Valid.tabelKosong(tabMode);
+        try {
+            if (TCari.getText().trim().equals("")) {
+                pstindakan = koneksi.prepareStatement(
+                        "select paket_operasi.kode_paket,paket_operasi.nm_perawatan,paket_operasi.kategori,paket_operasi.kd_pj,paket_operasi.kelas,"
+                        + "paket_operasi.operator1,paket_operasi.operator2,paket_operasi.operator3,paket_operasi.asisten_operator1,paket_operasi.asisten_operator2,"
+                        + "paket_operasi.asisten_operator3,paket_operasi.instrumen,paket_operasi.dokter_anak,paket_operasi.perawaat_resusitas,"
+                        + "paket_operasi.dokter_anestesi,paket_operasi.asisten_anestesi,paket_operasi.asisten_anestesi2,paket_operasi.bidan,paket_operasi.bidan2,"
+                        + "paket_operasi.bidan3,paket_operasi.perawat_luar,paket_operasi.alat,paket_operasi.sewa_ok,paket_operasi.akomodasi,paket_operasi.bagian_rs,"
+                        + "paket_operasi.omloop,paket_operasi.omloop2,paket_operasi.omloop3,paket_operasi.omloop4,paket_operasi.omloop5,paket_operasi.sarpras,"
+                        + "paket_operasi.dokter_pjanak,paket_operasi.dokter_umum from paket_operasi where paket_operasi.status='1' and paket_operasi.kd_pj = ? and paket_operasi.kelas = ? order by paket_operasi.nm_perawatan ");
+
+            } else {
+                pstindakan = koneksi.prepareStatement(
+                        "select paket_operasi.kode_paket,paket_operasi.nm_perawatan,paket_operasi.kategori,paket_operasi.kd_pj,paket_operasi.kelas,"
+                        + "paket_operasi.operator1,paket_operasi.operator2,paket_operasi.operator3,paket_operasi.asisten_operator1,paket_operasi.asisten_operator2,"
+                        + "paket_operasi.asisten_operator3,paket_operasi.instrumen,paket_operasi.dokter_anak,paket_operasi.perawaat_resusitas,"
+                        + "paket_operasi.dokter_anestesi,paket_operasi.asisten_anestesi,paket_operasi.asisten_anestesi2,paket_operasi.bidan,paket_operasi.bidan2,"
+                        + "paket_operasi.bidan3,paket_operasi.perawat_luar,paket_operasi.alat,paket_operasi.sewa_ok,paket_operasi.akomodasi,paket_operasi.bagian_rs,"
+                        + "paket_operasi.omloop,paket_operasi.omloop2,paket_operasi.omloop3,paket_operasi.omloop4,paket_operasi.omloop5,paket_operasi.sarpras,"
+                        + "paket_operasi.dokter_pjanak,paket_operasi.dokter_umum from paket_operasi where paket_operasi.status='1' and paket_operasi.kd_pj = ? and paket_operasi.kelas = ? and paket_operasi.nm_perawatan like ? order by paket_operasi.nm_perawatan ");
+            }
+
+            try {
+                if (TCari.getText().trim().equals("")) {
+                    pstindakan.setString(1, kd_pj.trim());
+                    pstindakan.setString(2, kelas.trim());
+                } else {
+                    pstindakan.setString(1, kd_pj.trim());
+                    pstindakan.setString(2, kelas.trim());
+                    pstindakan.setString(3, "%" + TCari.getText().trim() + "%");
+                }
+                rs = pstindakan.executeQuery();
+                while (rs.next()) {
+                    tabMode.addRow(new Object[]{
+                        rs.getString("kode_paket"),
+                        rs.getString("nm_perawatan").replaceAll("\"", ""),
+                        rs.getString("kategori"),
+                        rs.getDouble("operator1"),
+                        rs.getDouble("operator2"),
+                        rs.getDouble("operator3"),
+                        rs.getDouble("asisten_operator1"),
+                        rs.getDouble("asisten_operator2"),
+                        rs.getDouble("asisten_operator3"),
+                        rs.getDouble("instrumen"),
+                        rs.getDouble("dokter_anak"),
+                        rs.getDouble("perawaat_resusitas"),
+                        rs.getDouble("dokter_anestesi"),
+                        rs.getDouble("asisten_anestesi"),
+                        rs.getDouble("asisten_anestesi2"),
+                        rs.getDouble("bidan"),
+                        rs.getDouble("bidan2"),
+                        rs.getDouble("bidan3"),
+                        rs.getDouble("perawat_luar"),
+                        rs.getDouble("alat"),
+                        rs.getDouble("sewa_ok"),
+                        rs.getDouble("akomodasi"),
+                        rs.getDouble("bagian_rs"),
+                        rs.getDouble("omloop"),
+                        rs.getDouble("omloop2"),
+                        rs.getDouble("omloop3"),
+                        rs.getDouble("omloop4"),
+                        rs.getDouble("omloop5"),
+                        rs.getDouble("sarpras"),
+                        rs.getDouble("dokter_pjanak"),
+                        rs.getDouble("dokter_umum"),
+                        (rs.getDouble("operator1") + rs.getDouble("operator2") + rs.getDouble("operator3") + rs.getDouble("asisten_operator1") + rs.getDouble("asisten_operator2") + rs.getDouble("asisten_operator3") + rs.getDouble("instrumen")
+                        + rs.getDouble("dokter_anak") + rs.getDouble("perawaat_resusitas") + rs.getDouble("alat") + rs.getDouble("dokter_anestesi") + rs.getDouble("asisten_anestesi") + rs.getDouble("asisten_anestesi2") + rs.getDouble("bidan") + rs.getDouble("bidan2")
+                        + rs.getDouble("bidan3") + rs.getDouble("perawat_luar") + rs.getDouble("sewa_ok") + rs.getDouble("akomodasi") + rs.getDouble("bagian_rs") + rs.getDouble("omloop") + rs.getDouble("omloop2") + rs.getDouble("omloop3") + rs.getDouble("omloop4")
+                        + rs.getDouble("omloop5") + rs.getDouble("sarpras") + rs.getDouble("dokter_pjanak") + rs.getDouble("dokter_umum"))
+                    });
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pstindakan != null) {
+                    pstindakan.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+        LCount.setText("" + tabMode.getRowCount());
+    }
+
 
     public void emptTeks() {
         TCari.requestFocus();
@@ -573,9 +664,7 @@ public final class DlgCariDaftarOperasi extends javax.swing.JDialog {
         this.kd_pj=penjab;
         this.kelas=kelasoperasi;
         try {
-            if(Valid.daysOld("./cache/paketoperasi.iyem")<8){
-                tampil2();
-            }
+            tampil3();
         } catch (Exception e) {
         }
     }
