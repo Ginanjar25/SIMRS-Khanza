@@ -191,6 +191,7 @@ import surat.SuratTidakHamil;
 import bridging.BPJSRujukanKeluar;
 import java.io.FileInputStream;
 import java.text.DateFormat;
+import java.util.Properties;
 import keuangan.DlgDeposit;
 import laporan.DlgCariPenyakit;
 import modif.DlgBatalPeriksa;
