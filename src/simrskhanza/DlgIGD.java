@@ -648,9 +648,6 @@ public final class DlgIGD extends javax.swing.JDialog {
                             kdpnj1.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),1).toString());
                             nmpnj1.setText(pasien.penjab.getTable().getValueAt(pasien.penjab.getTable().getSelectedRow(),2).toString());
                         }
-                    if (URUTNOREG.equals("dokter + poli + penjab")) {
-                        isNumber();
-                    }
                     kdpnj.requestFocus();
                 }
             }
