@@ -17732,6 +17732,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                         kdpnj2.getText(), NoKa2.getText(), TNoRw.getText()
                     });
                 }
+            }else{
+                Sequel.meghapus("penjab_reg", "no_rawat", TNoRw.getText());
             }
             
             tabMode.setValueAt(TNoReg.getText(),tbPetugas.getSelectedRow(),1);

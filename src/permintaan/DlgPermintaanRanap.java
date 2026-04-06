@@ -1487,7 +1487,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     if(!tbObat.getValueAt(tbObat.getSelectedRow(),10).toString().equals(KdKamar.getText())){
                         Sequel.mengedit("kamar", "kd_kamar=?", "status='KOSONG'", 1, new String[]{tbObat.getValueAt(tbObat.getSelectedRow(),10).toString()});
                         Sequel.mengedit("kamar", "kd_kamar=?", "status='DIBOOKING'", 1, new String[]{KdKamar.getText()});
-                        Sequel.mengedit("kamar_inap", "no_rawat=? and kd_kamar=?", "diagnosa=?", 3, new String[]{Diagnosa.getText(),NoRw.getText(),KdKamar.getText()});
+                        Sequel.mengedit("kamar_inap", "no_rawat=? and kd_kamar=?", "diagnosa_awal=?", 3, new String[]{Diagnosa.getText(),NoRw.getText(),KdKamar.getText()});
                     }                   
                     Sequel.mengedittf("dpjp_ranap", "no_rawat=?", "kd_dokter=?", 2, new String[]{KdDokter1.getText(), NoRw.getText()});
                     tampil();
@@ -1623,8 +1623,10 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             + Diagnosa.getText() + "','"
                             + diagakir + "','"
 //                            + Valid.SetTgl(DTPTgl.getSelectedItem() + "") + "','"
-                            + tbObat.getValueAt(tbObat.getSelectedRow(),9).toString() + "','"
-                            + Catatan.getText() + "','0000-00-00','00:00:00','" + jml_hari + "','"
+//                            + tbObat.getValueAt(tbObat.getSelectedRow(),9).toString() + "','"
+                            + dateFormat2.format(new Date()) + "','"
+                            + now.substring(11, 13) + ":" + now.substring(14, 16) + ":" + now.substring(17, 19)
+                            + "','0000-00-00','00:00:00','" + jml_hari + "','"
                             + hargakmr2 + "','-'", "No.Rawat") == true) {
                         Sequel.mengedit("reg_periksa", "no_rawat='" + NoRw.getText() + "'", "status_lanjut='Ranap'");
                         Sequel.mengedit("kamar", "kd_kamar='" + KdKamar.getText() + "'", "status='ISI'");
@@ -1637,7 +1639,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         }
                         
                         Sequel.menyimpan("side_db.detail_pindah_kamar",
-                                "'" + NoRw.getText() + "','" + KdKamar.getText() + "','" + Valid.SetTgl(DTPTgl.getSelectedItem() + "") + "','" + Catatan.getText() + "','" + Valid.SetTgl(DTPTgl.getSelectedItem() + "") + "','" + hargakmr2 + "','"+titip_kamar+"','-'", "No.Rawat");
+                                "'" + NoRw.getText() + "','" + KdKamar.getText() + "','" + dateFormat2.format(new Date()) + "','" + now.substring(11, 13) + ":" + now.substring(14, 16) + ":" + now.substring(17, 19) + "','" + dateFormat2.format(new Date()) + "','" + hargakmr2 + "','"+titip_kamar+"','-'", "No.Rawat");
                         JOptionPane.showMessageDialog(rootPane, "Berhasil menginapkan pasien " + NmPasien.getText());
                         tampil();
                     }
