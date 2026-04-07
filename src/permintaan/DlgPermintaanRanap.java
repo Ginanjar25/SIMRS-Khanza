@@ -1579,6 +1579,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             JOptionPane.showMessageDialog(null,"Permintaan Ranap tidak tersedia, silahkan hubungi pendaftaran!!");
         } else if(Sequel.cariIsi("select no_rawat2 from ranap_gabung where no_rawat2 = ?", NoRw.getText()).equals(NoRw.getText())){
                 JOptionPane.showMessageDialog(null, "Pasien dengan No. RM : \n" + NoRM.getText()+" " + NmPasien.getText() + " No Rawat : "+NoRw.getText() +" /nSudah terdaftar di Ranap Gabung Ibu & Bayi. ");
+        }else if(Sequel.cariInteger("select count(no_rawat) from kamar_inap where no_rawat = ?", NoRw.getText()) > 0){
+                JOptionPane.showMessageDialog(null,"Pasien sudah masuk kamar inap !");
+                tampil();
         }else {
             if (tbObat.getSelectedRow() != -1) {
                 if (Sequel.cariRegistrasi(NoRw.getText()) > 0) {
