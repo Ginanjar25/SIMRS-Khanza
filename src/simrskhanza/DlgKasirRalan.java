@@ -6935,6 +6935,9 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         tbKasirRalan.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tbKasirRalanMouseClicked(evt);
+            } 
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tbKasirRalanMousePressed(evt);
             }
         });
         tbKasirRalan.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -7111,6 +7114,16 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             Valid.pindah(evt, TCari, BtnAll);
         }
 }//GEN-LAST:event_BtnCariKeyPressed
+    
+    private void tbKasirRalanMousePressed(java.awt.event.MouseEvent evt) {
+        if (tabModekasir.getRowCount() != 0) {
+            try {
+                 getDatakasir();
+//                System.out.println("KEY PRESSED");
+            } catch (java.lang.NullPointerException e) {
+            }
+        }
+    }
 
     private void tbKasirRalanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbKasirRalanMouseClicked
         if(tabModekasir.getRowCount()!=0){

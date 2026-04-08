@@ -4871,6 +4871,9 @@ public final class DlgIGD extends javax.swing.JDialog {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tbPetugasMouseClicked(evt);
             }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tbPetugasMousePressed(evt);
+            }
         });
         tbPetugas.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -7028,6 +7031,16 @@ public final class DlgIGD extends javax.swing.JDialog {
         }
         
 }//GEN-LAST:event_tbPetugasMouseClicked
+    
+    private void tbPetugasMousePressed(java.awt.event.MouseEvent evt) {
+        if (tabMode.getRowCount() != 0) {
+            try {
+                getData();
+//                System.out.println("KEY PRESSED");
+            } catch (java.lang.NullPointerException e) {
+            }
+        }
+    }
 
     private void tbPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbPetugasKeyPressed
         if(tabMode.getRowCount()!=0){

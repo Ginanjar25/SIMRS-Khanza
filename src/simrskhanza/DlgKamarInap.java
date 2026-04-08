@@ -6198,6 +6198,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tbKamInMouseClicked(evt);
             }
+             public void mousePressed(java.awt.event.MouseEvent evt) {
+                tbKamInMousePressed(evt);
+            }
         });
         tbKamIn.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -6794,6 +6797,16 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private void TOutKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TOutKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_TOutKeyPressed
+    
+    private void tbKamInMousePressed(java.awt.event.MouseEvent evt) {
+        if (tabMode.getRowCount() != 0) {
+            try {
+                getData();
+//                System.out.println("KEY PRESSED");
+            } catch (java.lang.NullPointerException e) {
+            }
+        }
+    }
 
     private void tbKamInMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbKamInMouseClicked
         if(tabMode.getRowCount()!=0){
