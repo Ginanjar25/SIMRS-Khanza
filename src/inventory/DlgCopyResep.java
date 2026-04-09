@@ -607,10 +607,11 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             }
             try {
                 if (ChkTanggal.isSelected() == true) {
-                    ps.setString(1, Valid.SetTgl(DTPCari1.getSelectedItem() + ""));
-                    ps.setString(2, Valid.SetTgl(DTPCari2.getSelectedItem() + ""));
-                    ps.setString(3, kodePoli);
+                    ps.setString(1, kodePoli);
+                    ps.setString(2, Valid.SetTgl(DTPCari1.getSelectedItem() + ""));
+                    ps.setString(3, Valid.SetTgl(DTPCari2.getSelectedItem() + ""));
                     ps.setString(4, norm);
+                    
                 } else {
                     ps.setString(1, kodePoli);
                     ps.setString(2, norm);
