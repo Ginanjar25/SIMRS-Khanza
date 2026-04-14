@@ -19446,7 +19446,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     }
     
     private void updateLamaInap(){
-        String masukJam23 = Sequel.cariIsi("SELECT if(LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(pr.catatan, '~', 4), '~', -1),8 ) > '23:00:00','Yes','No') AS hasil_cek FROM permintaan_ranap pr WHERE pr.no_rawat=? ", norawat.getText());
+        String masukJam23 = Sequel.cariIsi("SELECT if(pr.jam_masuk > '23:00:00','Yes','No') AS hasil_cek FROM kamar_inap pr WHERE pr.no_rawat= ?", norawat.getText());
         try {
             ps = koneksi.prepareStatement("SELECT tbl1.no_rawat ,SUBSTRING_INDEX(tbl1.kd_tgl_jam,' ',1) AS kd_fix, SUBSTRING_INDEX(SUBSTRING_INDEX(tbl1.kd_tgl_jam,' ',2),' ',-1) AS tgl_masuk, "
                     + "SUBSTRING_INDEX(tbl1.kd_tgl_jam,' ',-1) AS jam_masuk, "
