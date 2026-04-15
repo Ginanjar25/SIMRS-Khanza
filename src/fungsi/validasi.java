@@ -51,6 +51,7 @@ import widget.ComboBox;
 import widget.Tanggal;
 import widget.TextArea;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
@@ -1512,6 +1513,51 @@ public final class validasi {
             System.out.println("Report can't be viewed because: " + e);
             JOptionPane.showMessageDialog(null, "Report can't be viewed because: " + e.getMessage());
         }
+    }
+    
+    public String singkatNama(String nama) {
+        if (nama == null || nama.trim().isEmpty()) {
+            return nama;
+        }
+
+        String[] words = nama.trim().split("\\s+");
+
+        List<String> prefix = new ArrayList<>();
+        List<String> namaUtama = new ArrayList<>();
+
+        // Pisahkan prefix (By., Ny.) dan nama utama
+        for (String w : words) {
+            if (w.equalsIgnoreCase("By.") || w.equalsIgnoreCase("Ny.")) {
+                prefix.add(w);
+            } else {
+                namaUtama.add(w);
+            }
+        }
+
+        // Jika nama utama lebih dari 3 kata → singkat
+        if (namaUtama.size() > 3) {
+            List<String> hasil = new ArrayList<>();
+
+            // Ambil 2 kata pertama tetap utuh
+            hasil.add(namaUtama.get(0));
+            hasil.add(namaUtama.get(1));
+
+            // Sisanya jadi inisial
+            for (int i = 2; i < namaUtama.size(); i++) {
+                hasil.add(namaUtama.get(i).substring(0, 1).toUpperCase()  + "." );
+            }
+
+            // Gabungkan kembali
+            String finalNama = String.join(" ", hasil);
+
+            if (!prefix.isEmpty()) {
+                return String.join(" ", prefix) + " " + finalNama;
+            }
+
+            return finalNama;
+        }
+
+        return nama;
     }
 
 }

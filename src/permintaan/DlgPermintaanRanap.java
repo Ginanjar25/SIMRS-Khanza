@@ -25,9 +25,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -1790,6 +1792,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             param.put("emailrs", akses.getemailrs());
             param.put("no_rawat", NoRw.getText());
             param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
+            param.put("nama_pasien", Valid.singkatNama(Sequel.cariIsi("select pasien.nm_pasien from reg_periksa inner join pasien on pasien.no_rkm_medis = reg_periksa.no_rkm_medis where reg_periksa.no_rawat = ?", NoRw.getText())));
             Valid.MyReport("rptBarcodeRawat4_2.jasper", param, "::[ Label ]::");
             this.setCursor(Cursor.getDefaultCursor());           
         }
@@ -2351,5 +2354,4 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         private void isMenu2() {
 
     }
-    
 }

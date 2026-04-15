@@ -12232,6 +12232,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             param.put("emailrs",akses.getemailrs());
             param.put("no_rawat",TNoRw.getText());
             param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
+            param.put("nama_pasien", Valid.singkatNama(Sequel.cariIsi("select pasien.nm_pasien from reg_periksa inner join pasien on pasien.no_rkm_medis = reg_periksa.no_rkm_medis where reg_periksa.no_rawat = ?", TNoRw.getText())));
             Valid.MyReport("rptBarcodeRawat3.jasper",param,"::[ Barcode No.RM ]::");
             this.setCursor(Cursor.getDefaultCursor());
             simpanAntrianPoli(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), "1", "now()", "0000-00-00 00:00:00", TNoReg.getText());

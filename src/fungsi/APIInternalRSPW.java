@@ -22,6 +22,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import fungsi.validasi;
 
 /**
  *
@@ -36,6 +37,7 @@ public class APIInternalRSPW {
     private PreparedStatement ps;
     private ResultSet rs;
     private sekuel Sequel = new sekuel();
+    private validasi Valid=new validasi();
 
     public APIInternalRSPW() {
         try {
@@ -71,7 +73,7 @@ public class APIInternalRSPW {
                     jsonBody.put("nik", rs.getString("no_ktp"));
                     jsonBody.put("tanggal", rs.getString("tgl_registrasi"));
                     jsonBody.put("jam", rs.getString("jam_reg"));
-                    jsonBody.put("nama", rs.getString("nm_pasien"));
+                    jsonBody.put("nama", Valid.singkatNama(rs.getString("nm_pasien")));
                     jsonBody.put("tgl_lahir", rs.getString("tgl_lahir"));
                     jsonBody.put("umur", rs.getString("umur"));
                     jsonBody.put("jk", rs.getString("jk"));

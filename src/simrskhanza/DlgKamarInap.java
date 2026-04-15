@@ -12126,6 +12126,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             param.put("emailrs",akses.getemailrs());
             param.put("no_rawat",TNoRwCari.getText());
             param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
+            param.put("nama_pasien", Valid.singkatNama(Sequel.cariIsi("select pasien.nm_pasien from reg_periksa inner join pasien on pasien.no_rkm_medis = reg_periksa.no_rkm_medis where reg_periksa.no_rawat = ?", TNoRwCari.getText())));
             Valid.MyReport("rptBarcodeRawat4.jasper",param,"::[ Barcode No.RM ]::");
             this.setCursor(Cursor.getDefaultCursor());
         }
