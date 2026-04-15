@@ -1514,40 +1514,47 @@ public final class validasi {
             JOptionPane.showMessageDialog(null, "Report can't be viewed because: " + e.getMessage());
         }
     }
-    
+
     public String singkatNama(String nama) {
         if (nama == null || nama.trim().isEmpty()) {
             return nama;
         }
+
+        // Tambahkan spasi setelah titik jika tidak ada (BY.NY. → BY. NY.)
+        nama = nama.replaceAll("\\.(?=\\S)", ". ");
 
         String[] words = nama.trim().split("\\s+");
 
         List<String> prefix = new ArrayList<>();
         List<String> namaUtama = new ArrayList<>();
 
-        // Pisahkan prefix (By., Ny.) dan nama utama
         for (String w : words) {
-            if (w.equalsIgnoreCase("By.") || w.equalsIgnoreCase("Ny.")) {
-                prefix.add(w);
+            String clean = w.replace(".", "").toUpperCase();
+
+            if (clean.equals("BY")) {
+                prefix.add("By."); // prefix tetap dirapikan
+            } else if (clean.equals("NY")) {
+                prefix.add("Ny.");
             } else {
-                namaUtama.add(w);
+                namaUtama.add(w); // tidak diubah
             }
         }
 
-        // Jika nama utama lebih dari 3 kata → singkat
         if (namaUtama.size() > 3) {
             List<String> hasil = new ArrayList<>();
 
-            // Ambil 2 kata pertama tetap utuh
+            // ambil apa adanya (tidak capitalize)
             hasil.add(namaUtama.get(0));
             hasil.add(namaUtama.get(1));
 
-            // Sisanya jadi inisial
             for (int i = 2; i < namaUtama.size(); i++) {
-                hasil.add(namaUtama.get(i).substring(0, 1).toUpperCase()  + "." );
+                String huruf = namaUtama.get(i)
+                        .substring(0, 1)
+                        .toUpperCase()
+                        .replace(".", "");
+                hasil.add(huruf + ".");
             }
 
-            // Gabungkan kembali
             String finalNama = String.join(" ", hasil);
 
             if (!prefix.isEmpty()) {
@@ -1557,7 +1564,12 @@ public final class validasi {
             return finalNama;
         }
 
-        return nama;
+        // <= 3 kata → biarkan asli
+        if (!prefix.isEmpty()) {
+            return String.join(" ", prefix) + " " + String.join(" ", namaUtama);
+        }
+
+        return String.join(" ", namaUtama);
     }
 
 }
