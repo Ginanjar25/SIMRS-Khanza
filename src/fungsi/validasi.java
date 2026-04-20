@@ -1532,9 +1532,9 @@ public final class validasi {
             String clean = w.replace(".", "").toUpperCase();
 
             if (clean.equals("BY")) {
-                prefix.add("By."); // prefix tetap dirapikan
+                prefix.add("BY."); // prefix tetap dirapikan
             } else if (clean.equals("NY")) {
-                prefix.add("Ny.");
+                prefix.add("NY.");
             } else {
                 namaUtama.add(w); // tidak diubah
             }
