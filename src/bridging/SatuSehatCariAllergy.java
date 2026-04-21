@@ -56,7 +56,7 @@ public final class SatuSehatCariAllergy extends javax.swing.JDialog {
         this.setLocation(10,2);
         setSize(656,250);
 
-        Object[] row={"Code","System","Display"};
+        Object[] row={"Code","System","Display","Keyword","Text"};
         
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
@@ -66,14 +66,18 @@ public final class SatuSehatCariAllergy extends javax.swing.JDialog {
         tbKamar.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbKamar.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             TableColumn column = tbKamar.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(100);
             }else if(i==1){
-                column.setPreferredWidth(300);
+                column.setPreferredWidth(200);
             }else if(i==2){
                 column.setPreferredWidth(220);
+            }else if(i==3){
+                column.setPreferredWidth(100);
+            }else if(i==4){
+                column.setPreferredWidth(320);
             }
         }
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable());
@@ -345,8 +349,8 @@ public final class SatuSehatCariAllergy extends javax.swing.JDialog {
             try {
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new String[]{rs.getString(1),rs.getString(2),rs.getString(3)});    
-                    iyem=iyem+"{\"code\":\""+rs.getString(1)+"\",\"system\":\""+rs.getString(2)+"\",\"display\":\""+rs.getString(3)+"\"},";
+                    tabMode.addRow(new String[]{rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)});    
+                    iyem=iyem+"{\"code\":\""+rs.getString(1)+"\",\"system\":\""+rs.getString(2)+"\",\"display\":\""+rs.getString(3)+"\",\"keyword\":\""+rs.getString(4)+"\",\"text\":\""+rs.getString(5)+"\"},";
                 }
             } catch (Exception e) {
                 System.out.println("Notifikasi : "+e);
@@ -376,9 +380,9 @@ public final class SatuSehatCariAllergy extends javax.swing.JDialog {
             response = root.path("satu_sehat_master_allergy");
             if(response.isArray()){
                 for(JsonNode list:response){
-                    if(list.path("sytem").asText().toLowerCase().contains(TCari.getText().toLowerCase())||list.path("display").asText().toLowerCase().contains(TCari.getText().toLowerCase())){
+                    if(list.path("sytem").asText().toLowerCase().contains(TCari.getText().toLowerCase())||list.path("display").asText().toLowerCase().contains(TCari.getText().toLowerCase())||list.path("keyword").asText().toLowerCase().contains(TCari.getText().toLowerCase())||list.path("text").asText().toLowerCase().contains(TCari.getText().toLowerCase())){
                         tabMode.addRow(new Object[]{
-                            list.path("code").asText(),list.path("system").asText(),list.path("display").asText()
+                            list.path("code").asText(),list.path("system").asText(),list.path("display").asText(),list.path("keyword").asText(),list.path("text").asText()
                         });                    
                     }
                 }
