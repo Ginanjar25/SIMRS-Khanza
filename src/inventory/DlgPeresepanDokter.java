@@ -13,6 +13,7 @@
 package inventory;
 
 import fungsi.WarnaTable2;
+import fungsi.WarnaTableResepRacikan;
 import fungsi.batasInput;
 import fungsi.koneksiDB;
 import fungsi.sekuel;
@@ -68,7 +69,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
     public DlgCariAturanPakai aturanpakai=new DlgCariAturanPakai(null,false);
     private WarnaTable2 warna=new WarnaTable2();
     private WarnaTable2 warna2=new WarnaTable2();
-    private WarnaTable2 warna3=new WarnaTable2();
+    private WarnaTableResepRacikan warna3=new WarnaTableResepRacikan();
     private DlgCariMetodeRacik metoderacik=new DlgCariMetodeRacik(null,false);
     public DlgCariDokter dokter=new DlgCariDokter(null,false);
     private String noracik="",aktifkanbatch="no",STOKKOSONGRESEP="no",qrystokkosong="",tampilkan_ppnobat_ralan="",status="",bangsal="",resep="",DEPOAKTIFOBAT="",
@@ -510,25 +511,43 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
-                        tampilobat();
-                        tampildetailracikanresep();
-                        tampildetailracikanresep2();
+                        if (TabRawat.getSelectedIndex() == 0) {
+                            tampilobat();
+                        }
+                        if (TabRawat.getSelectedIndex() == 1) {
+                            tampildetailracikanresep();
+                        }
+                        if (TabRawat.getSelectedIndex() == 2) {
+                            tampildetailracikanresep2();
+                        }
                     }
                 }
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
-                        tampilobat();
-                        tampildetailracikanresep();
-                        tampildetailracikanresep2();
+                        if (TabRawat.getSelectedIndex() == 0) {
+                            tampilobat();
+                        }
+                        if (TabRawat.getSelectedIndex() == 1) {
+                            tampildetailracikanresep();
+                        }
+                        if (TabRawat.getSelectedIndex() == 2) {
+                            tampildetailracikanresep2();
+                        }
                     }
                 }
                 @Override
                 public void changedUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
-                        tampilobat();
-                        tampildetailracikanresep();
-                        tampildetailracikanresep2();
+                        if (TabRawat.getSelectedIndex() == 0) {
+                            tampilobat();
+                        }
+                        if (TabRawat.getSelectedIndex() == 1) {
+                            tampildetailracikanresep();
+                        }
+                        if (TabRawat.getSelectedIndex() == 2) {
+                            tampildetailracikanresep2();
+                        }
                     }
                 }
             });

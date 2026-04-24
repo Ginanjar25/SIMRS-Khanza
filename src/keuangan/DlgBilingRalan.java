@@ -288,12 +288,12 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         tbTambahan.setDefaultRenderer(Object.class, new WarnaTable());
         
         //potongan biaya
-        Object[] rowPotongan={"Potongan Biaya","Besar Potongan"};
+        Object[] rowPotongan={"P", "Potongan Biaya","Besar Potongan"};
         tabModePotongan=new DefaultTableModel(null,rowPotongan){
               @Override 
               public boolean isCellEditable(int rowIndex, int colIndex){return true;}
              Class[] types = new Class[] {
-                java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class,  java.lang.Object.class, java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -305,11 +305,13 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         tbPotongan.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbPotongan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 2; i++) {
+        for (i = 0; i < 3; i++) {
             TableColumn column = tbPotongan.getColumnModel().getColumn(i);
             if(i==0){
-                column.setPreferredWidth(300);
+                column.setPreferredWidth(20);
             }else if(i==1){
+                column.setPreferredWidth(300);
+            }else if(i==2){
                 column.setPreferredWidth(150);
             }
         }
@@ -723,6 +725,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         MnPenjualan = new javax.swing.JMenuItem();
         MnGabungNota = new javax.swing.JMenuItem();
         MnHapusTagihan = new javax.swing.JMenuItem();
+        MnFreeKarcis = new javax.swing.JMenuItem();
         WindowGantiDokterPoli = new javax.swing.JDialog();
         internalFrame3 = new widget.InternalFrame();
         BtnCloseIn1 = new widget.Button();
@@ -1193,6 +1196,22 @@ public class DlgBilingRalan extends javax.swing.JDialog {
             }
         });
         jPopupMenu1.add(MnHapusTagihan);
+
+        MnFreeKarcis.setBackground(new java.awt.Color(255, 255, 254));
+        MnFreeKarcis.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnFreeKarcis.setForeground(new java.awt.Color(50, 50, 50));
+        MnFreeKarcis.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnFreeKarcis.setText("Free Karcis");
+        MnFreeKarcis.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnFreeKarcis.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnFreeKarcis.setName("MnFreeKarcis"); // NOI18N
+        MnFreeKarcis.setPreferredSize(new java.awt.Dimension(250, 25));
+        MnFreeKarcis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnFreeKarcisActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(MnFreeKarcis);
 
         WindowGantiDokterPoli.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         WindowGantiDokterPoli.setName("WindowGantiDokterPoli"); // NOI18N
@@ -1812,7 +1831,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         panelGlass1.add(jLabel4);
         jLabel4.setBounds(693, 11, 65, 23);
 
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-11-2025 07:32:41" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-04-2026 10:45:24" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -3395,7 +3414,7 @@ private void norawatpotonganKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST
 }//GEN-LAST:event_norawatpotonganKeyPressed
 
 private void BtnTambahPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTambahPotonganActionPerformed
-  tabModePotongan.addRow(new Object[]{"",""});
+  tabModePotongan.addRow(new Object[]{true,"",""});
 }//GEN-LAST:event_BtnTambahPotonganActionPerformed
 
 private void BtnSimpanPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanPotonganActionPerformed
@@ -3403,9 +3422,9 @@ private void BtnSimpanPotonganActionPerformed(java.awt.event.ActionEvent evt) {/
         Valid.textKosong(norawat,"Data");
     }else{
         for(r=0;r<tbPotongan.getRowCount();r++){
-            if(Valid.SetAngka(tbPotongan.getValueAt(r,1).toString())>0){
-                Sequel.menyimpan("pengurangan_biaya","'"+norawatpotongan.getText()+"','"+tbPotongan.getValueAt(r,0).toString()+
-                        "','"+tbPotongan.getValueAt(r,1).toString()+"'","Potongan Biaya");
+            if(tbPotongan.getValueAt(r,0).toString().equals("true") && Valid.SetAngka(tbPotongan.getValueAt(r,2).toString())>0){
+                Sequel.menyimpan("pengurangan_biaya","'"+norawatpotongan.getText()+"','"+tbPotongan.getValueAt(r,1).toString()+
+                           "','"+tbPotongan.getValueAt(r,2).toString()+"'","Potongan Biaya");
             }
         }
         isRawat();
@@ -3416,8 +3435,9 @@ private void BtnSimpanPotonganActionPerformed(java.awt.event.ActionEvent evt) {/
 
 private void BtnHapusPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusPotonganActionPerformed
     Sequel.queryu("delete from pengurangan_biaya where no_rawat='"+norawatpotongan.getText()+
-            "' and nama_pengurangan='"+tbPotongan.getValueAt(tbPotongan.getSelectedRow(),0).toString() +"'");
+            "' and nama_pengurangan='"+tbPotongan.getValueAt(tbPotongan.getSelectedRow(),1).toString() +"'");
     tabModePotongan.removeRow(tbPotongan.getSelectedRow());
+    tampilPotongan(norawatpotongan.getText());
     isRawat();
     isKembali();
 }//GEN-LAST:event_BtnHapusPotonganActionPerformed
@@ -4096,6 +4116,13 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_MnGabungNotaActionPerformed
 
+    private void MnFreeKarcisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnFreeKarcisActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        Sequel.mengedit("reg_periksa", "no_rawat = '"+TNoRw.getText()+"'", "biaya_reg=0");
+        this.setCursor(Cursor.getDefaultCursor());
+        BtnAllActionPerformed(null);
+    }//GEN-LAST:event_MnFreeKarcisActionPerformed
+
  
     /**
     * @param args the command line arguments
@@ -4146,6 +4173,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private javax.swing.JMenuItem MnCariPeriksaLabPA;
     private javax.swing.JMenuItem MnCariRadiologi;
     private javax.swing.JMenuItem MnDokter;
+    private javax.swing.JMenuItem MnFreeKarcis;
     private javax.swing.JMenuItem MnGabungNota;
     private javax.swing.JMenuItem MnHapusTagihan;
     private javax.swing.JMenuItem MnInputObat;
@@ -5271,7 +5299,77 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                      pspotongan.setString(1,TNoRw.getText());
                      rspotongan=pspotongan.executeQuery();
                      while(rspotongan.next()){                    
-                         tabModePotongan.addRow(new Object[]{rspotongan.getString(1),rspotongan.getString(2)});
+                         tabModePotongan.addRow(new Object[]{true, rspotongan.getString(1),rspotongan.getString(2)});
+                     } 
+                 }catch (Exception e) {
+                     System.out.println("Notifikasi : "+e);
+                 } finally{
+                     if(rspotongan != null){
+                         rspotongan.close();
+                     } 
+                     if(pspotongan != null){
+                         pspotongan.close();
+                     } 
+                 }
+                    
+             }catch (Exception ex) {
+                System.out.println("Notifikasi : "+ex);
+             }
+             
+             try{           
+                 pspotongan=koneksi.prepareStatement("SELECT \n" +
+                    "    CONCAT(rjd.kd_jenis_prw,'#', jp.nm_perawatan), \n" +
+                    "    rjd.biaya_rawat \n" +
+                    "FROM reg_periksa rp\n" +
+                    "INNER JOIN rawat_jl_dr rjd ON rjd.no_rawat = rp.no_rawat \n" +
+                    "INNER JOIN jns_perawatan jp ON jp.kd_jenis_prw = rjd.kd_jenis_prw \n" +
+                    "WHERE rp.no_rawat = ?\n" +
+                    "AND NOT EXISTS (\n" +
+                    "    SELECT 1 \n" +
+                    "    FROM pengurangan_biaya pb\n" +
+                    "    WHERE pb.no_rawat = rjd.no_rawat \n" +
+                    "    AND pb.nama_pengurangan = CONCAT(rjd.kd_jenis_prw,'#', jp.nm_perawatan)\n" +
+                    ")");
+                 try{
+                     pspotongan.setString(1,TNoRw.getText());
+                     rspotongan=pspotongan.executeQuery();
+                     while(rspotongan.next()){                    
+                         tabModePotongan.addRow(new Object[]{false, rspotongan.getString(1),rspotongan.getString(2)});
+                     } 
+                 }catch (Exception e) {
+                     System.out.println("Notifikasi : "+e);
+                 } finally{
+                     if(rspotongan != null){
+                         rspotongan.close();
+                     } 
+                     if(pspotongan != null){
+                         pspotongan.close();
+                     } 
+                 }
+                    
+             }catch (Exception ex) {
+                System.out.println("Notifikasi : "+ex);
+             }
+             
+              try{           
+                 pspotongan=koneksi.prepareStatement("SELECT \n" +
+                    "    CONCAT(rjp.kd_jenis_prw,'#', jp.nm_perawatan), \n" +
+                    "    rjp.biaya_rawat \n" +
+                    "FROM reg_periksa rp\n" +
+                    "INNER JOIN rawat_jl_pr rjp ON rjp.no_rawat = rp.no_rawat \n" +
+                    "INNER JOIN jns_perawatan jp ON jp.kd_jenis_prw = rjp.kd_jenis_prw \n" +
+                    "WHERE rp.no_rawat = ?\n" +
+                    "AND NOT EXISTS (\n" +
+                    "    SELECT 1 \n" +
+                    "    FROM pengurangan_biaya pb\n" +
+                    "    WHERE pb.no_rawat = rjp.no_rawat \n" +
+                    "    AND pb.nama_pengurangan = CONCAT(rjp.kd_jenis_prw,'#', jp.nm_perawatan)\n" +
+                    ")");
+                 try{
+                     pspotongan.setString(1,TNoRw.getText());
+                     rspotongan=pspotongan.executeQuery();
+                     while(rspotongan.next()){                    
+                         tabModePotongan.addRow(new Object[]{false, rspotongan.getString(1),rspotongan.getString(2)});
                      } 
                  }catch (Exception e) {
                      System.out.println("Notifikasi : "+e);

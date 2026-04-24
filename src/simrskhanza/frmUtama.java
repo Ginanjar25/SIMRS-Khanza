@@ -1083,6 +1083,7 @@ import fungsi.AntrianPoli;
 import modif.DlgJadwalOperasi;
 import modif.Eklaim.EklaimBridgingTarif;
 import permintaan.DlgBookingKuota;
+import bridging.SatuSehatKirimImageStudyRadiologi;
 
 
 /**
@@ -21711,6 +21712,18 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         btnJadwalOperasi.setEnabled(akses.getbooking_operasi());
         FlayMenu.setVisible(true);       
     }       
+    
+    private void btnKirimImageStudySatuSehatActionPerformed(java.awt.event.ActionEvent evt) {
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SatuSehatKirimImageStudyRadiologi aplikasi=new SatuSehatKirimImageStudyRadiologi(this,false);
+        aplikasi.isCek();
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        this.setCursor(Cursor.getDefaultCursor());
+    }
             
     /**
     * @param args the command line arguments
@@ -22408,7 +22421,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             btnKirimDiagnosticReportLabMBSatuSehat,btnKepatuhanKelengkapanKeselamatanBedah,btnNilaiPiutangPerJenisBayarPerBulan,btnRingkasanPiutangPerJenisBayar,
             btnPenilaianPasienImunitasRendah,btnCatatanKeseimbanganCairan,btnCatatanObservasiCHBP,btnCatatanObservasiInduksiPersalinan,btnSKPKategoriPenilaian,btnSKPKriteriaPenilaian,
             btnReferensiPoliMobileJKNFKTP,btnReferensiDokterMobileJKNFKTP,btnSKPPenilaianPegawai,btnMandiriMetodePembayaran,btnMandiriBankTujuanTRansfer,btnPembayaranPihakKe3BankMandiri,
-            btnMandiriKodeTransaksiTujuanTRansfer,btnSKPRekapitulasiPenilaian,btnPCareReferensiAlergi,btnPCareReferensiPrognosa,btnKonsultasiMedik;
+            btnMandiriKodeTransaksiTujuanTRansfer,btnSKPRekapitulasiPenilaian,btnPCareReferensiAlergi,btnPCareReferensiPrognosa,btnKonsultasiMedik, btnKirimImageStudySatuSehat;
     
     public void isWall(){
         try{            
@@ -40155,6 +40168,11 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             Panelmenu.add(btnEklaim);
             jmlmenu++;
         }
+        
+        if(akses.getsatu_sehat_kirim_medication()==true){
+                Panelmenu.add(btnKirimImageStudySatuSehat);
+                jmlmenu++;
+        }
     }
 
     private void initKhanza() {
@@ -44798,6 +44816,14 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         btnKonsultasiMedik.setName("btnKonsultasiMedik"); 
         btnKonsultasiMedik.setPreferredSize(new java.awt.Dimension(200, 90));
         btnKonsultasiMedik.addActionListener(this::btnKonsultasiMedikActionPerformed);
+        
+        btnKirimImageStudySatuSehat = new widget.ButtonBig();
+        btnKirimImageStudySatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnKirimImageStudySatuSehat.setText("Kirim Image Study Satu Sehat");
+        btnKirimImageStudySatuSehat.setIconTextGap(0);
+        btnKirimImageStudySatuSehat.setName("btnKirimImageStudySatuSehat"); 
+        btnKirimImageStudySatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnKirimImageStudySatuSehat.addActionListener(this::btnKirimImageStudySatuSehatActionPerformed);
     }
     
     private String getIPAntrian(){
