@@ -3780,7 +3780,7 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                 kd = "INV";
                 break;
             case "DARMAWANGSA":
-                kd = "DRG";
+                kd = "DAR";
                 break;
             case "GAS":
                 kd = "GAS";
