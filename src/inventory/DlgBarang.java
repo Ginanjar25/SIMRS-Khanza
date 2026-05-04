@@ -3790,7 +3790,7 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                 break;
         }
 //        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(databarang.kode_brng,4),signed)),0) from databarang ", kd, 9, Kd);
-        Valid.autoNomer3("SELECT IFNULL(MAX(CONVERT(RIGHT(kode_brng,4), SIGNED)),0) FROM databarang WHERE LEFT(kode_brng,3)='"+kd+"'",kd,9,Kd
+        Valid.autoNomer3("SELECT IFNULL(MAX(CONVERT(RIGHT(kode_brng,6), SIGNED)),0) FROM databarang WHERE LEFT(kode_brng,3)='"+kd+"'",kd,9,Kd
         );
     }
 }
