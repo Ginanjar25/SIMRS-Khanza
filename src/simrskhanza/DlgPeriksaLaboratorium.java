@@ -3250,6 +3250,14 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             if(sukses==true){
                 Sequel.Commit();
                 JOptionPane.showMessageDialog(null,"Proses simpan selesai...!");
+                if (Sequel.cariIsi("select kd_poli from reg_periksa where no_rawat = ?", TNoRw.getText()).equals("U0012")) {
+                    if (!Sequel.cariIsi("select stts from reg_periksa where no_rawat = ?", TNoRw.getText()).equals("Sudah")) {
+                        Sequel.mengedit("antripoli", "no_rawat = ?", "status=?, updated_at = now() ", 2, new String[]{"2", TNoRw.getText()});
+                    }
+                    if (Sequel.mengedittf("reg_periksa", "no_rawat=?", "stts=?", 2, new String[]{"Sudah", TNoRw.getText()}) == true) {
+                        Sequel.menyimpan("mutasi_berkas", "'" + TNoRw.getText() + "','Sudah Kembali',now(),'0000-00-00 00:00:00',now(),'0000-00-00 00:00:00','0000-00-00 00:00:00'", "status='Sudah Kembali',kembali=now()", "no_rawat='" + TNoRw.getText() + "'");
+                    }
+                }
                 isReset();
             }else{
                 JOptionPane.showMessageDialog(null,"Terjadi kesalahan saat pemrosesan data, transaksi dibatalkan.\nPeriksa kembali data sebelum melanjutkan menyimpan..!!");

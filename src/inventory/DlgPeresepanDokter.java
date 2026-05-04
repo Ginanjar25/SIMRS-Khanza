@@ -5081,8 +5081,10 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                         sukses=false;
                     } 
                 }
-            }            
-            simpandataracikanv2();
+            }
+            if(tbObatResepRacikan.getRowCount()==0){
+                simpandataracikanv2();
+            }
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         } 
