@@ -5316,55 +5316,24 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 System.out.println("Notifikasi : "+ex);
              }
              
-             try{           
-                 pspotongan=koneksi.prepareStatement("SELECT \n" +
-                    "    CONCAT(rjd.kd_jenis_prw,'#', jp.nm_perawatan), \n" +
-                    "    rjd.biaya_rawat \n" +
-                    "FROM reg_periksa rp\n" +
-                    "INNER JOIN rawat_jl_dr rjd ON rjd.no_rawat = rp.no_rawat \n" +
-                    "INNER JOIN jns_perawatan jp ON jp.kd_jenis_prw = rjd.kd_jenis_prw \n" +
-                    "WHERE rp.no_rawat = ?\n" +
-                    "AND NOT EXISTS (\n" +
-                    "    SELECT 1 \n" +
-                    "    FROM pengurangan_biaya pb\n" +
-                    "    WHERE pb.no_rawat = rjd.no_rawat \n" +
-                    "    AND pb.nama_pengurangan = CONCAT(rjd.kd_jenis_prw,'#', jp.nm_perawatan)\n" +
-                    ")");
-                 try{
-                     pspotongan.setString(1,TNoRw.getText());
-                     rspotongan=pspotongan.executeQuery();
-                     while(rspotongan.next()){                    
-                         tabModePotongan.addRow(new Object[]{false, rspotongan.getString(1),rspotongan.getString(2)});
-                     } 
-                 }catch (Exception e) {
-                     System.out.println("Notifikasi : "+e);
-                 } finally{
-                     if(rspotongan != null){
-                         rspotongan.close();
-                     } 
-                     if(pspotongan != null){
-                         pspotongan.close();
-                     } 
-                 }
-                    
-             }catch (Exception ex) {
-                System.out.println("Notifikasi : "+ex);
-             }
-             
               try{           
                  pspotongan=koneksi.prepareStatement("SELECT \n" +
-                    "    CONCAT(rjp.kd_jenis_prw,'#', jp.nm_perawatan), \n" +
-                    "    rjp.biaya_rawat \n" +
-                    "FROM reg_periksa rp\n" +
-                    "INNER JOIN rawat_jl_pr rjp ON rjp.no_rawat = rp.no_rawat \n" +
-                    "INNER JOIN jns_perawatan jp ON jp.kd_jenis_prw = rjp.kd_jenis_prw \n" +
-                    "WHERE rp.no_rawat = ?\n" +
+                    "    CONCAT(t.kd_jenis_prw,'#', jp.nm_perawatan) AS nama,\n" +
+                    "    t.biaya_rawat\n" +
+                    "FROM (\n" +
+                    "    SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_jl_dr\n" +
+                    "    UNION ALL\n" +
+                    "    SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_jl_pr\n" +
+                    ") t\n" +
+                    "INNER JOIN jns_perawatan jp \n" +
+                    "    ON jp.kd_jenis_prw = t.kd_jenis_prw\n" +
+                    "WHERE t.no_rawat = ?\n" +
                     "AND NOT EXISTS (\n" +
                     "    SELECT 1 \n" +
                     "    FROM pengurangan_biaya pb\n" +
-                    "    WHERE pb.no_rawat = rjp.no_rawat \n" +
-                    "    AND pb.nama_pengurangan = CONCAT(rjp.kd_jenis_prw,'#', jp.nm_perawatan)\n" +
-                    ")");
+                    "    WHERE pb.no_rawat = t.no_rawat \n" +
+                    "    AND pb.nama_pengurangan = CONCAT(t.kd_jenis_prw,'#', jp.nm_perawatan)\n" +
+                    ");");
                  try{
                      pspotongan.setString(1,TNoRw.getText());
                      rspotongan=pspotongan.executeQuery();

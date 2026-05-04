@@ -609,6 +609,8 @@ public class DlgBarang extends javax.swing.JDialog {
         kdPenjab = new widget.TextBox();
         NmPenjab = new widget.TextBox();
         BtnPenjab = new widget.Button();
+        tipe = new widget.ComboBox();
+        label25 = new widget.Label();
         ChkInput = new widget.CekBox();
 
         Popup.setName("Popup"); // NOI18N
@@ -1037,7 +1039,7 @@ public class DlgBarang extends javax.swing.JDialog {
             }
         });
         FormInput.add(Letak);
-        Letak.setBounds(92, 72, 388, 23);
+        Letak.setBounds(92, 72, 210, 23);
 
         label27.setText("Hrg Ralan : Rp.");
         label27.setName("label27"); // NOI18N
@@ -1388,7 +1390,7 @@ public class DlgBarang extends javax.swing.JDialog {
         karyawan.setBounds(630, 222, 110, 23);
 
         DTPExpired.setForeground(new java.awt.Color(50, 70, 50));
-        DTPExpired.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-03-2026" }));
+        DTPExpired.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-04-2026" }));
         DTPExpired.setDisplayFormat("dd-MM-yyyy");
         DTPExpired.setName("DTPExpired"); // NOI18N
         DTPExpired.setOpaque(false);
@@ -1637,6 +1639,23 @@ public class DlgBarang extends javax.swing.JDialog {
         });
         FormInput.add(BtnPenjab);
         BtnPenjab.setBounds(360, 310, 25, 23);
+
+        tipe.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "OBAT", "ALKES", "LABORATORIUM", "INVENTARIS", "DARMAWANGSA", "GAS", "GIGI", " " }));
+        tipe.setName("tipe"); // NOI18N
+        tipe.setPreferredSize(new java.awt.Dimension(100, 23));
+        tipe.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tipeKeyPressed(evt);
+            }
+        });
+        FormInput.add(tipe);
+        tipe.setBounds(350, 70, 130, 23);
+
+        label25.setText("Tipe :");
+        label25.setName("label25"); // NOI18N
+        label25.setPreferredSize(new java.awt.Dimension(65, 23));
+        FormInput.add(label25);
+        label25.setBounds(305, 70, 40, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -2520,6 +2539,10 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         // TODO add your handling code here:
     }//GEN-LAST:event_BtnPenjabKeyPressed
 
+    private void tipeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tipeKeyPressed
+        Valid.pindah(evt,AlamatIbu,Panjang);
+    }//GEN-LAST:event_tipeKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -2598,6 +2621,7 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     private widget.Label label22;
     private widget.Label label23;
     private widget.Label label24;
+    private widget.Label label25;
     private widget.Label label26;
     private widget.Label label27;
     private widget.Label label28;
@@ -2629,6 +2653,7 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     private widget.ScrollPane scrollPane1;
     private widget.TextBox stok_minimal;
     private widget.Table tbObat;
+    private widget.ComboBox tipe;
     private widget.TextBox utama;
     // End of variables declaration//GEN-END:variables
 
@@ -3390,7 +3415,7 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         BtnPenjab.setEnabled(false);
 
         Kd.requestFocus();
-        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(databarang.kode_brng,4),signed)),0)  from databarang ", "B", 9, Kd);
+        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(databarang.kode_brng,4),signed)),0) from databarang ", "B", 9, Kd);
         //Valid.autoNomer("databarang","B",9,Kd);
     }
 

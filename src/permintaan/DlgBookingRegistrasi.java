@@ -2104,7 +2104,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 "SELECT IFNULL(kuota,0) FROM kuota_poli "
                 + "WHERE kd_poli='" + kdPoli + "' "
                 + "AND kd_dokter='" + kdDokter + "' "
-                + "AND kd_pj='A09'"
+                + "AND kd_pj != 'BPJ'"
         );
         int maxGlobal = getMaxNoRegAllTable(
                 kdDokter, kdPoli, tanggal, 0, 9999
@@ -2120,7 +2120,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         int noRegBaru;
         if (kuotaUmum == 0) {
             noRegBaru = maxGlobal + 1;
-        } else if (penjab.equalsIgnoreCase("A09")) {
+        } else if (!penjab.equalsIgnoreCase("BPJ")) {
             // UMUM
             if (maxUmum < kuotaUmum) {
                 noRegBaru = maxUmum + 1;
