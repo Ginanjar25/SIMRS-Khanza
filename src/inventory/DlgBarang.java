@@ -609,7 +609,7 @@ public class DlgBarang extends javax.swing.JDialog {
         kdPenjab = new widget.TextBox();
         NmPenjab = new widget.TextBox();
         BtnPenjab = new widget.Button();
-        tipe = new widget.ComboBox();
+        tipeObat = new widget.ComboBox();
         label25 = new widget.Label();
         ChkInput = new widget.CekBox();
 
@@ -947,6 +947,7 @@ public class DlgBarang extends javax.swing.JDialog {
         FormInput.add(label12);
         label12.setBounds(0, 12, 88, 23);
 
+        Kd.setEditable(false);
         Kd.setName("Kd"); // NOI18N
         Kd.setPreferredSize(new java.awt.Dimension(207, 23));
         Kd.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1390,7 +1391,7 @@ public class DlgBarang extends javax.swing.JDialog {
         karyawan.setBounds(630, 222, 110, 23);
 
         DTPExpired.setForeground(new java.awt.Color(50, 70, 50));
-        DTPExpired.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "30-04-2026" }));
+        DTPExpired.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-05-2026" }));
         DTPExpired.setDisplayFormat("dd-MM-yyyy");
         DTPExpired.setName("DTPExpired"); // NOI18N
         DTPExpired.setOpaque(false);
@@ -1640,16 +1641,28 @@ public class DlgBarang extends javax.swing.JDialog {
         FormInput.add(BtnPenjab);
         BtnPenjab.setBounds(360, 310, 25, 23);
 
-        tipe.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "OBAT", "ALKES", "LABORATORIUM", "INVENTARIS", "DARMAWANGSA", "GAS", "GIGI", " " }));
-        tipe.setName("tipe"); // NOI18N
-        tipe.setPreferredSize(new java.awt.Dimension(100, 23));
-        tipe.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                tipeKeyPressed(evt);
+        tipeObat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "OBAT", "ALKES", "LABORATORIUM", "INVENTARIS", "DARMAWANGSA", "GAS", "GIGI", " " }));
+        tipeObat.setName("tipeObat"); // NOI18N
+        tipeObat.setPreferredSize(new java.awt.Dimension(100, 23));
+        tipeObat.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                tipeObatItemStateChanged(evt);
             }
         });
-        FormInput.add(tipe);
-        tipe.setBounds(350, 70, 130, 23);
+        tipeObat.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                tipeObatInputMethodTextChanged(evt);
+            }
+        });
+        tipeObat.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tipeObatKeyPressed(evt);
+            }
+        });
+        FormInput.add(tipeObat);
+        tipeObat.setBounds(350, 70, 130, 23);
 
         label25.setText("Tipe :");
         label25.setName("label25"); // NOI18N
@@ -2539,9 +2552,17 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         // TODO add your handling code here:
     }//GEN-LAST:event_BtnPenjabKeyPressed
 
-    private void tipeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tipeKeyPressed
-        Valid.pindah(evt,AlamatIbu,Panjang);
-    }//GEN-LAST:event_tipeKeyPressed
+    private void tipeObatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tipeObatKeyPressed
+       
+    }//GEN-LAST:event_tipeObatKeyPressed
+
+    private void tipeObatItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_tipeObatItemStateChanged
+       setKodeObat();
+    }//GEN-LAST:event_tipeObatItemStateChanged
+
+    private void tipeObatInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_tipeObatInputMethodTextChanged
+        setKodeObat();
+    }//GEN-LAST:event_tipeObatInputMethodTextChanged
 
     /**
      * @param args the command line arguments
@@ -2653,7 +2674,7 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     private widget.ScrollPane scrollPane1;
     private widget.TextBox stok_minimal;
     private widget.Table tbObat;
-    private widget.ComboBox tipe;
+    private widget.ComboBox tipeObat;
     private widget.TextBox utama;
     // End of variables declaration//GEN-END:variables
 
@@ -3415,8 +3436,9 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         BtnPenjab.setEnabled(false);
 
         Kd.requestFocus();
-        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(databarang.kode_brng,4),signed)),0) from databarang ", "B", 9, Kd);
+//        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(databarang.kode_brng,4),signed)),0) from databarang ", "B", 9, Kd);
         //Valid.autoNomer("databarang","B",9,Kd);
+        setKodeObat();
     }
 
     private void getData() {
@@ -3742,4 +3764,33 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
             tbObat.setDefaultRenderer(Object.class, new WarnaTable());
     }
 
+    private void setKodeObat() {
+        String kd = "";
+        switch (tipeObat.getSelectedItem().toString()) {
+            case "OBAT":
+                kd = "OBT";
+                break;
+            case "ALKES":
+                kd = "ALK";
+                break;
+            case "LABORATORIUM":
+                kd = "LAB";
+                break;
+            case "INVENTARIS":
+                kd = "INV";
+                break;
+            case "DARMAWANGSA":
+                kd = "DRG";
+                break;
+            case "GAS":
+                kd = "GAS";
+                break;
+            case "GIGI":
+                kd = "GIG";
+                break;
+        }
+//        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(databarang.kode_brng,4),signed)),0) from databarang ", kd, 9, Kd);
+        Valid.autoNomer3("SELECT IFNULL(MAX(CONVERT(RIGHT(kode_brng,4), SIGNED)),0) FROM databarang WHERE LEFT(kode_brng,3)='"+kd+"'",kd,9,Kd
+        );
+    }
 }
