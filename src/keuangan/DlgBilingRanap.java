@@ -3621,6 +3621,12 @@ private void MnPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         WindowInput4.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         WindowInput4.setLocationRelativeTo(internalFrame1);
         WindowInput4.setVisible(true);
+//        DlgPotonganBiaya potongan=new DlgPotonganBiaya(null,false);
+//        potongan.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+//        potongan.setLocationRelativeTo(internalFrame1); 
+//        potongan.isCek();
+//        potongan.setNoRm(TNoRw.getText()); 
+//        potongan.setVisible(true);
     }        
 }//GEN-LAST:event_MnPotonganActionPerformed
 
@@ -6848,7 +6854,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             //rs.close();
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
-        }            
+        }          
     }
     
     public void tampilUbahLama(String NoRawat) {

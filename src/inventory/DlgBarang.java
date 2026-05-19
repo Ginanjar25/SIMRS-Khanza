@@ -1641,7 +1641,7 @@ public class DlgBarang extends javax.swing.JDialog {
         FormInput.add(BtnPenjab);
         BtnPenjab.setBounds(360, 310, 25, 23);
 
-        tipeObat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "OBAT", "ALKES", "LABORATORIUM", "INVENTARIS", "DARMAWANGSA", "GAS", "GIGI", " " }));
+        tipeObat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "OBAT", "ALKES", "DARMAWANGSA", "LABORATORIUM", "INVENTARIS", "GAS", "GIGI", "VAKSIN", " " }));
         tipeObat.setName("tipeObat"); // NOI18N
         tipeObat.setPreferredSize(new java.awt.Dimension(100, 23));
         tipeObat.addItemListener(new java.awt.event.ItemListener() {
@@ -3788,9 +3788,12 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
             case "GIGI":
                 kd = "GIG";
                 break;
+            case "VAKSIN":
+                kd = "VAK";
+                break;
         }
 //        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(databarang.kode_brng,4),signed)),0) from databarang ", kd, 9, Kd);
-        Valid.autoNomer3("SELECT IFNULL(MAX(CONVERT(RIGHT(kode_brng,6), SIGNED)),0) FROM databarang WHERE LEFT(kode_brng,3)='"+kd+"'",kd,9,Kd
+        Valid.autoNomer3("SELECT IFNULL(MAX(CONVERT(RIGHT(kode_brng,6), SIGNED)),0) FROM databarang WHERE LEFT(kode_brng,3)='"+kd+"'",kd,7,Kd
         );
     }
 }

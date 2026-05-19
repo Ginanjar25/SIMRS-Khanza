@@ -37,7 +37,7 @@ resume_pasien.diagnosa_sekunder,resume_pasien.kd_diagnosa_sekunder,resume_pasien
 resume_pasien.diagnosa_sekunder3,resume_pasien.kd_diagnosa_sekunder3,resume_pasien.diagnosa_sekunder4,resume_pasien.kd_diagnosa_sekunder4,
 resume_pasien.prosedur_utama,resume_pasien.kd_prosedur_utama,resume_pasien.prosedur_sekunder,resume_pasien.kd_prosedur_sekunder, 
 resume_pasien.prosedur_sekunder2,resume_pasien.kd_prosedur_sekunder2,resume_pasien.prosedur_sekunder3,resume_pasien.kd_prosedur_sekunder3, 
-resume_pasien.obat_pulang, dokter.no_ijn_praktek from resume_pasien inner join reg_periksa on resume_pasien.no_rawat=reg_periksa.no_rawat  
+resume_pasien.obat_pulang, dokter.no_ijn_praktek, resume_pasien.dilanjutkan, resume_pasien.ket_dilanjutkan, resume_pasien.kontrol from resume_pasien inner join reg_periksa on resume_pasien.no_rawat=reg_periksa.no_rawat  
 inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis inner join dokter on resume_pasien.kd_dokter=dokter.kd_dokter 
 inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel inner join kecamatan on pasien.kd_kec=kecamatan.kd_kec 
 inner join kabupaten on pasien.kd_kab=kabupaten.kd_kab inner join propinsi on pasien.kd_prop=propinsi.kd_prop
@@ -189,6 +189,18 @@ where resume_pasien.no_rawat= $P{norawat}]]>
 	<field name="no_ijn_praktek" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="no_ijn_praktek"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="dokter"/>
+	</field>
+	<field name="dilanjutkan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="dilanjutkan"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="resume_pasien"/>
+	</field>
+	<field name="ket_dilanjutkan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ket_dilanjutkan"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="resume_pasien"/>
+	</field>
+	<field name="kontrol" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="kontrol"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="resume_pasien"/>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -1229,7 +1241,7 @@ where resume_pasien.no_rawat= $P{norawat}]]>
 				<text><![CDATA[Kondisi pasien pulang :]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" mode="Transparent" x="11" y="633" width="520" height="63" backcolor="#CCCCCC" uuid="9f72a80f-6098-45c1-b6c3-f7ba8e7debab"/>
+				<reportElement positionType="Float" mode="Transparent" x="11" y="633" width="520" height="37" backcolor="#CCCCCC" uuid="9f72a80f-6098-45c1-b6c3-f7ba8e7debab"/>
 				<textElement>
 					<font fontName="Tahoma" size="8" isItalic="false" isUnderline="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -1254,6 +1266,66 @@ where resume_pasien.no_rawat= $P{norawat}]]>
 				</textElement>
 				<textFieldExpression><![CDATA["(No.SIP " + $F{no_ijn_praktek} +")"]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="69" y="687" width="1" height="10" uuid="ccc866e7-5e05-4df3-aaeb-4367042d663e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="69" y="673" width="1" height="10" uuid="df238937-e4d2-48cc-9d1d-751fe4e6c676">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd-MM-yyyy H:m:s">
+				<reportElement positionType="Float" mode="Transparent" x="75" y="687" width="169" height="10" backcolor="#CCCCCC" uuid="548d74f1-0289-49b8-b952-f366e1f862b0">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Tahoma" size="8" isItalic="false" isUnderline="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{kontrol}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" mode="Transparent" x="75" y="673" width="456" height="10" backcolor="#CCCCCC" uuid="a0146e4f-8e6a-4538-a148-b4aea388d18b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Tahoma" size="8" isItalic="false" isUnderline="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dilanjutkan}+($F{ket_dilanjutkan}.equals("")?"":", "+$F{ket_dilanjutkan})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="7" y="673" width="58" height="10" uuid="94555853-bfa5-4ac1-bbce-4dbe6f9bc748">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Tahoma" size="8" isBold="false" isItalic="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Dilanjutkan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="7" y="687" width="58" height="10" uuid="b8ecb115-306f-42a0-9e9e-43a68f9eaa95">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="Tahoma" size="8" isBold="false" isItalic="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Tanggal Kontrol]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<columnFooter>

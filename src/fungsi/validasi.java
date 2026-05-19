@@ -1515,61 +1515,104 @@ public final class validasi {
         }
     }
 
+//    public String singkatNama(String nama) {
+//        if (nama == null || nama.trim().isEmpty()) {
+//            return nama;
+//        }
+//
+//        // Tambahkan spasi setelah titik jika tidak ada (BY.NY. → BY. NY.)
+//        nama = nama.replaceAll("\\.(?=\\S)", ". ");
+//
+//        String[] words = nama.trim().split("\\s+");
+//
+//        List<String> prefix = new ArrayList<>();
+//        List<String> namaUtama = new ArrayList<>();
+//
+//        for (String w : words) {
+//            String clean = w.replace(".", "").toUpperCase();
+//
+//            if (clean.equals("BY")) {
+//                prefix.add("BY."); // prefix tetap dirapikan
+//            } else if (clean.equals("NY")) {
+//                prefix.add("NY.");
+//            } else {
+//                namaUtama.add(w); // tidak diubah
+//            }
+//        }
+//
+//        if (namaUtama.size() > 3) {
+//            List<String> hasil = new ArrayList<>();
+//
+//            // ambil apa adanya (tidak capitalize)
+//            hasil.add(namaUtama.get(0));
+//            hasil.add(namaUtama.get(1));
+//
+//            for (int i = 2; i < namaUtama.size(); i++) {
+//                String huruf = namaUtama.get(i)
+//                        .substring(0, 1)
+//                        .toUpperCase()
+//                        .replace(".", "");
+//                hasil.add(huruf + ".");
+//            }
+//
+//            String finalNama = String.join(" ", hasil);
+//
+//            if (!prefix.isEmpty()) {
+//                return String.join(" ", prefix) + " " + finalNama;
+//            }
+//
+//            return finalNama;
+//        }
+//
+//        // <= 3 kata → biarkan asli
+//        if (!prefix.isEmpty()) {
+//            return String.join(" ", prefix) + " " + String.join(" ", namaUtama);
+//        }
+//
+//        return String.join(" ", namaUtama);
+//    }
+    
     public String singkatNama(String nama) {
         if (nama == null || nama.trim().isEmpty()) {
             return nama;
         }
 
-        // Tambahkan spasi setelah titik jika tidak ada (BY.NY. → BY. NY.)
-        nama = nama.replaceAll("\\.(?=\\S)", ". ");
+        // Rapikan titik
+        nama = nama.replaceAll("\\.(?=[A-Z])", ". ");
+        nama = nama.trim().replaceAll("\\s+", " ");
 
-        String[] words = nama.trim().split("\\s+");
+        String[] words = nama.split("\\s+");
 
-        List<String> prefix = new ArrayList<>();
-        List<String> namaUtama = new ArrayList<>();
+        List<String> hasil = new ArrayList<>();
 
         for (String w : words) {
             String clean = w.replace(".", "").toUpperCase();
 
-            if (clean.equals("BY")) {
-                prefix.add("BY."); // prefix tetap dirapikan
-            } else if (clean.equals("NY")) {
-                prefix.add("NY.");
+            // gelar/singkatan tetap
+            if (w.endsWith(".")) {
+                hasil.add(w);
             } else {
-                namaUtama.add(w); // tidak diubah
+                hasil.add(w);
             }
         }
 
-        if (namaUtama.size() > 3) {
-            List<String> hasil = new ArrayList<>();
+        // jika lebih dari 3 kata
+        if (hasil.size() > 3) {
 
-            // ambil apa adanya (tidak capitalize)
-            hasil.add(namaUtama.get(0));
-            hasil.add(namaUtama.get(1));
+            // singkat kata terakhir saja
+            int last = hasil.size() - 1;
 
-            for (int i = 2; i < namaUtama.size(); i++) {
-                String huruf = namaUtama.get(i)
-                        .substring(0, 1)
-                        .toUpperCase()
-                        .replace(".", "");
-                hasil.add(huruf + ".");
+            String kataTerakhir = hasil.get(last);
+
+            if (!kataTerakhir.endsWith(".")) {
+                hasil.set(
+                        last,
+                        kataTerakhir.substring(0, 1).toUpperCase() + "."
+                );
             }
-
-            String finalNama = String.join(" ", hasil);
-
-            if (!prefix.isEmpty()) {
-                return String.join(" ", prefix) + " " + finalNama;
-            }
-
-            return finalNama;
         }
 
-        // <= 3 kata → biarkan asli
-        if (!prefix.isEmpty()) {
-            return String.join(" ", prefix) + " " + String.join(" ", namaUtama);
-        }
-
-        return String.join(" ", namaUtama);
+        return String.join(" ", hasil);
     }
 
 }
