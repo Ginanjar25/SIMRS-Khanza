@@ -11686,7 +11686,14 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         "WHERE reg_periksa.no_rawat=?\n" +
         "AND penjab_reg.order != '1'", no_rawat);
         String kelas = Sequel.cariIsi("SELECT COALESCE(bridging_sep.klsrawat, '') AS kelas FROM bridging_sep where bridging_sep.no_rawat = ? ", no_rawat);
-        String PRB = Sequel.cariIsi("SELECT CONCAT(' - ', bpjs_prb.prb) as prb FROM bpjs_prb INNER JOIN bridging_sep ON bridging_sep.no_sep = bpjs_prb.no_sep WHERE bridging_sep.no_rawat = ? and bpjs_prb.prb like '%Potensi%'", no_rawat);
+        String PRB = Sequel.cariIsi("SELECT bpjs_prb.prb as prb FROM bpjs_prb INNER JOIN bridging_sep ON bridging_sep.no_sep = bpjs_prb.no_sep WHERE bridging_sep.no_rawat = ? ", no_rawat);
+        if("Potensi PRB".equals(PRB)){
+            PRB = "-Belum mendapat PRB";
+        }else if(PRB.contains("PRB : ")){
+            PRB = "-Sudah Mendapat "+ PRB;
+        }else{
+            PRB="";
+        }
         if (cara_bayar2.isEmpty()) {
             result = cara_bayar1 + " " + kelas + PRB;
         } else {

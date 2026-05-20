@@ -1719,6 +1719,7 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
             BtnHapus.setVisible(true);
             label13.setPreferredSize(new Dimension(1, 23));
         }
+        Sequel.queryu("insert into antriapotek3 values('"+noresep+"','0','"+LblNoRawat.getText()+"')");
     }//GEN-LAST:event_formWindowActivated
 
     private void ChkNoResepItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ChkNoResepItemStateChanged

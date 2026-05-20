@@ -768,9 +768,15 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                         Trackobat.catatRiwayat(rs2.getString("kode_brng"),0,rs2.getDouble("jumlah2"),"Penerimaan",akses.getkode(),rs.getString("kd_bangsal") ,"Hapus","","",NoFaktur.getText()+" "+NoOrder.getText()+" "+nmsup.getText());
                                         Sequel.menyimpan("gudangbarang","'"+rs2.getString("kode_brng") +"','"+rs.getString("kd_bangsal") +"','-"+rs2.getString("jumlah2")+"','',''", 
                                                    "stok=stok-'"+rs2.getString("jumlah2") +"'","kode_brng='"+rs2.getString("kode_brng")+"' and kd_bangsal='"+rs.getString("kd_bangsal") +"' and no_batch='' and no_faktur=''");
-                                        Sequel.queryu3("delete from data_batch where kode_brng=? and no_batch=? and no_faktur=?",3,new String[]{
-                                            rs2.getString("kode_brng"),"",""
-                                        });
+                                        if (rs2.getString("no_batch").equals("")) {
+                                            Sequel.queryu3("delete from data_batch where kode_brng=? and no_batch=? and no_faktur=?", 3, new String[]{
+                                                rs2.getString("kode_brng"), "", ""
+                                            });
+                                        } else {
+                                            Sequel.queryu3("delete from data_batch where kode_brng=? and no_batch=? and no_faktur=?", 3, new String[]{
+                                                rs2.getString("kode_brng"), rs2.getString("no_batch"), rs2.getString("no_faktur")
+                                            });
+                                        }                                        
                                     }
                                 }
                                 sukses=true;

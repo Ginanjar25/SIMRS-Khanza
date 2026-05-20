@@ -7460,6 +7460,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                     KeteranganNoLp = Keterangan.getText() + "#" + NoLP.getText();
                 }
                  response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc)).path("sep").path("noSep");
+                 prb = mapper.readTree(api.Decrypt(root.path("response").asText(),utc)).path("sep").path("informasi").path("prolanisPRB").asText().replaceAll("null","");
                  //response = root.path("response").path("sep").path("noSep");
                  if(Sequel.menyimpantf2("bridging_sep","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","SEP",52,new String[]{
                      response.asText(),TNoRw.getText(),Valid.SetTgl(TanggalSEP.getSelectedItem()+""),Valid.SetTgl(TanggalRujuk.getSelectedItem()+""),NoRujukan.getText(),KdPpkRujukan.getText(), 
