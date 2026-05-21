@@ -15678,9 +15678,11 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         if(akses.getkode().equals("Admin Utama")){
             MnHapusData.setEnabled(true);
             MnStatus.setEnabled(true);
+            ppMasukPoli.setEnabled(true);
         }else{
             String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
             MnHapusData.setEnabled(false);
+             ppMasukPoli.setEnabled(false);
              if(jabatan.equals("J014") || jabatan.equals("J005")||jabatan.equals("J022")){
                  MnStatus.setEnabled(true);
              }else{
