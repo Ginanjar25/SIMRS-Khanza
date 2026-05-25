@@ -695,6 +695,10 @@ public final class SatuSehatKirimServiceRequestRadiologi extends javax.swing.JDi
                                             "\"system\": \"http://sys-ids.kemkes.go.id/servicerequest/"+koneksiDB.IDSATUSEHAT()+"\"," +
                                             "\"value\": \""+tbObat.getValueAt(i,9).toString()+"."+tbObat.getValueAt(i,17).toString()+"\"" +
                                         "}" +
+                                        ",{" +
+                                            "\"system\": \"http://sys-ids.kemkes.go.id/acsn/"+koneksiDB.IDSATUSEHAT()+"\"," +
+                                            "\"value\": \""+tbObat.getValueAt(i,9).toString()+"\"" + 
+                                        "}" +
                                     "]," +
                                     "\"status\": \"active\"," +
                                     "\"intent\": \"order\"," +
