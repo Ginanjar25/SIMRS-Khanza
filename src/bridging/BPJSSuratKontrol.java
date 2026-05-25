@@ -913,6 +913,8 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
                     + ""+noSkdpPoli+""
                     + "\n"+data+" "
                     + "\nRencana Kontrol POST Ranap tidak boleh lebih dari tanggal rencana kontrol Poli");
+        }else if(Sequel.cariInteger("select count(no_surat) from bridging_surat_kontrol_bpjs where no_sep = ?", NoSEP.getText()) > 0){
+              JOptionPane.showMessageDialog(null,"Sudah terdapat SKDP dengan tanggal rencana kontrol yg sama");
         }else{
             try {
                 headers = new HttpHeaders();
