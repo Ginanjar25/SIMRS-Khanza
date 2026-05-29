@@ -35,6 +35,7 @@ import kepegawaian.DlgCariDokter;
 import laporan.DlgBerkasRawat;
 import rekammedis.MasterCariTemplateHasilRadiologi;
 import rekammedis.RMRiwayatPerawatan;
+import widget.DialogQrCode;
 
 public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
     private final DefaultTableModel tabMode,tabModeDicom;
@@ -401,6 +402,7 @@ public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
         MnUbahDokterPetugas = new javax.swing.JMenuItem();
         ppBerkasDigital = new javax.swing.JMenuItem();
         ppRiwayat = new javax.swing.JMenuItem();
+        ppBarcodeperiksaRad = new javax.swing.JMenuItem();
         Penjab = new widget.TextBox();
         Jk = new widget.TextBox();
         Umur = new widget.TextBox();
@@ -545,6 +547,22 @@ public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
             }
         });
         jPopupMenu1.add(ppRiwayat);
+
+        ppBarcodeperiksaRad.setBackground(new java.awt.Color(255, 255, 254));
+        ppBarcodeperiksaRad.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppBarcodeperiksaRad.setForeground(new java.awt.Color(50, 50, 50));
+        ppBarcodeperiksaRad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppBarcodeperiksaRad.setText("Barcode Periksa Radiologi");
+        ppBarcodeperiksaRad.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppBarcodeperiksaRad.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppBarcodeperiksaRad.setName("ppBarcodeperiksaRad"); // NOI18N
+        ppBarcodeperiksaRad.setPreferredSize(new java.awt.Dimension(220, 28));
+        ppBarcodeperiksaRad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppBarcodeperiksaRadBtnPrintActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(ppBarcodeperiksaRad);
 
         Penjab.setEditable(false);
         Penjab.setFocusTraversalPolicyProvider(true);
@@ -2075,6 +2093,45 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         }
     }//GEN-LAST:event_ppRiwayatBtnPrintActionPerformed
 
+    private void ppBarcodeperiksaRadBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppBarcodeperiksaRadBtnPrintActionPerformed
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
+            TCari.requestFocus();
+        }else if(tbDokter.getSelectedRow()<= -1){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data..!!");
+        }else {
+            if(Kd2.getText().equals("")||Petugas.getText().equals("")){
+               JOptionPane.showMessageDialog(null,"Maaf, silahkan pilih data terlebih dahulu...!!!!"); 
+            }else{
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                String norm =Sequel.cariIsi("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.no_rawat = '"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()+"'");
+                String tahun = new java.text.SimpleDateFormat("yy").format(new java.util.Date());
+                String nourut = Sequel.cariIsi("SELECT nomor FROM side_db.set_nomor_periksa WHERE unit = 'RAD'");
+                String no_periksa = tahun + "." + nourut;
+                String split_norm = "";
+                if (norm.length() == 6) {
+                    split_norm = norm.substring(0, 2) + "." + norm.substring(2, 4) + "." + norm.substring(4, 6);
+                }
+                String gelar = Sequel.cariIsi("SELECT \n"
+                        + "    CASE \n"
+                        + "        WHEN CAST(SUBSTRING_INDEX(ps.umur, ' ', 1) AS UNSIGNED) < 18 THEN 'An'\n"
+                        + "        WHEN ps.jk = 'L' THEN 'Tn'\n"
+                        + "        WHEN ps.jk = 'P' THEN 'Ny'\n"
+                        + "        ELSE '-'\n"
+                        + "    END AS gelar\n"
+                        + "FROM pasien ps \n"
+                        + "WHERE ps.no_rkm_medis = " + norm + "");
+                String nm_pasien = Sequel.cariIsi("SELECT ps.nm_pasien FROM pasien ps WHERE ps.no_rkm_medis =" + norm + ""); 
+                String nm_dokter = tbDokter.getValueAt(tbDokter.getSelectedRow(),5).toString();
+                String jk = Sequel.cariIsi("SELECT IF(ps.jk = 'L', 'M', 'F') AS jk FROM pasien ps WHERE ps.no_rkm_medis =" + norm + "");
+                String tgl_lahir = Sequel.cariIsi("SELECT DATE_FORMAT(ps.tgl_lahir, '%d.%m.%Y') AS tgl_lahir FROM pasien ps WHERE ps.no_rkm_medis=" + norm + "");
+                String catatanpasien = Sequel.cariIsi("SELECT pr.noorder FROM permintaan_radiologi pr WHERE pr.no_rawat = '"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString()+"' AND pr.tgl_hasil = '"+tbDokter.getValueAt(tbDokter.getSelectedRow(),3).toString()+"' AND pr.jam_hasil = '"+tbDokter.getValueAt(tbDokter.getSelectedRow(),4).toString()+"'");
+                DialogQrCode.show(this, no_periksa + "-" + split_norm + "\t" + nm_pasien + "." + gelar + "." + nm_dokter + "\t" + jk + "\t" + tgl_lahir + "\t" + catatanpasien, no_periksa + "-" + split_norm + " " + gelar + ". " + nm_pasien);
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+    }//GEN-LAST:event_ppBarcodeperiksaRadBtnPrintActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -2172,6 +2229,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.panelisi panelGlass7;
     private widget.panelisi panelisi1;
     private widget.panelisi panelisi3;
+    private javax.swing.JMenuItem ppBarcodeperiksaRad;
     private javax.swing.JMenuItem ppBerkasDigital;
     private javax.swing.JMenuItem ppRiwayat;
     private widget.ScrollPane scrollPane1;

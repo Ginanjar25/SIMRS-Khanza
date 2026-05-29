@@ -44,6 +44,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import keuangan.Jurnal;
 import rekammedis.MasterCariTemplateHasilRadiologi;
+import widget.DialogQrCode;
 
 /**
  *
@@ -469,6 +470,7 @@ public final class DlgPeriksaRadiologi extends javax.swing.JDialog {
         Jk = new widget.TextBox();
         Umur = new widget.TextBox();
         Alamat = new widget.TextBox();
+        TNoPermintaan = new widget.TextBox();
         internalFrame1 = new widget.InternalFrame();
         panelGlass8 = new widget.panelisi();
         BtnSimpan = new widget.Button();
@@ -549,6 +551,10 @@ public final class DlgPeriksaRadiologi extends javax.swing.JDialog {
         Alamat.setEditable(false);
         Alamat.setHighlighter(null);
         Alamat.setName("Alamat"); // NOI18N
+
+        TNoPermintaan.setEditable(false);
+        TNoPermintaan.setHighlighter(null);
+        TNoPermintaan.setName("TNoPermintaan"); // NOI18N
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -778,7 +784,7 @@ public final class DlgPeriksaRadiologi extends javax.swing.JDialog {
         NmPtg.setBounds(546, 42, 249, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "25-09-2022" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-05-2026" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -1630,6 +1636,7 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private widget.ScrollPane Scroll2;
     private widget.TextBox TCariBhp;
     private widget.TextBox TCariPeriksa;
+    private widget.TextBox TNoPermintaan;
     private widget.TextBox TNoRM;
     private widget.TextBox TNoRw;
     private widget.TextBox TPasien;
@@ -2054,7 +2061,11 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         noorder="";
         TNoRw.setText(norwt);
         this.status=posisi;
-        Sequel.cariIsi("select reg_periksa.kd_dokter from reg_periksa where reg_periksa.no_rawat=? ",KodePerujuk,TNoRw.getText());
+        if(posisi.equals("Ranap")){
+            Sequel.cariIsi("SELECT dpjp.kd_dokter FROM dpjp_ranap dpjp WHERE dpjp.no_rawat=? ",KodePerujuk,TNoRw.getText());
+        }else{
+            Sequel.cariIsi("select reg_periksa.kd_dokter from reg_periksa where reg_periksa.no_rawat=? ",KodePerujuk,TNoRw.getText());
+        }        
         NmPerujuk.setText(dokter.tampil3(KodePerujuk.getText()));
         isPsien();
         if(noorder.equals("")){
@@ -2230,6 +2241,21 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
             ttljmdokter=0;ttljmpetugas=0;ttlkso=0;ttlpendapatan=0;ttlbhp=0;ttljasasarana=0;ttljmperujuk=0;ttlmenejemen=0;
             Sequel.AutoComitFalse();
             sukses=true;
+            boolean isTindakanRad = false;
+            for (int i = 0; i < tbPemeriksaan.getRowCount(); i++) {
+                if (tbPemeriksaan.getValueAt(i, 0).toString().equals("true")) {
+                    String kode = tbPemeriksaan.getValueAt(i, 2).toString();
+                    if (kode.length() >= 2 && kode.substring(0, 2).equals("XR")) {
+                        isTindakanRad = true;
+                        break;
+                    }
+                }
+            }
+            if (isTindakanRad) {
+                if (noorder.equals("")) {
+                    cekPermintaanRad();
+                }
+            }                        
             for(i=0;i<tbPemeriksaan.getRowCount();i++){ 
                 if(tbPemeriksaan.getValueAt(i,0).toString().equals("true")){
                     proyeksi="";
@@ -2445,6 +2471,9 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                     if (Sequel.mengedittf("reg_periksa", "no_rawat=?", "stts=?", 2, new String[]{"Sudah", TNoRw.getText()}) == true) {
                         Sequel.menyimpan("mutasi_berkas", "'" + TNoRw.getText() + "','Sudah Kembali',now(),'0000-00-00 00:00:00',now(),'0000-00-00 00:00:00','0000-00-00 00:00:00'", "status='Sudah Kembali',kembali=now()", "no_rawat='" + TNoRw.getText() + "'");
                     }
+                }                
+                if (isTindakanRad) {
+                    barcodePermeriksaanRad();
                 }
                 isReset();
             }else{
@@ -2454,6 +2483,144 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
             Sequel.AutoComitTrue();    
             ChkJln.setSelected(true);
         }
+    }
+    
+    private void autoNomor() {
+        Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(permintaan_radiologi.noorder,4),signed)),0) from permintaan_radiologi where permintaan_radiologi.tgl_permintaan='"+Valid.SetTgl(Tanggal.getSelectedItem()+"")+"' ","PR"+Valid.SetTgl(Tanggal.getSelectedItem()+"").replaceAll("-",""),4,TNoPermintaan);           
+    }
+    
+    private void cekPermintaanRad() {
+        String detail_permintaan_rad = Sequel.cariIsi("SELECT GROUP_CONCAT(ppr.kd_jenis_prw ORDER BY ppr.kd_jenis_prw) AS detail_permintaan FROM permintaan_radiologi pr JOIN permintaan_pemeriksaan_radiologi ppr ON ppr.noorder = pr.noorder WHERE pr.tgl_hasil = '0000-00-00' and pr.jam_hasil = '00:00:00' and pr.no_rawat = '" + TNoRw.getText() + "'");
+        
+        if (detail_permintaan_rad == null || detail_permintaan_rad.equals("")) {
+            //belum ada permintaan
+            autoNomor();
+            simpanPermintaanRadiologi();
+            noorder = TNoPermintaan.getText();
+        } else {
+            //cek isi permintaan deengan pemeriksaan
+            java.util.ArrayList<String> listTindakan = new java.util.ArrayList<>();
+            for (i = 0; i < tbPemeriksaan.getRowCount(); i++) {
+                if (tbPemeriksaan.getValueAt(i, 0).toString().equals("true")) {
+                    listTindakan.add(tbPemeriksaan.getValueAt(i, 1).toString());
+                }
+            }
+            java.util.Collections.sort(listTindakan);
+            String detail_tindakan_rad = String.join(",", listTindakan);
+            if (!detail_permintaan_rad.equals(detail_tindakan_rad)) {
+                autoNomor();
+                simpanPermintaanRadiologi();
+                noorder = TNoPermintaan.getText();
+            }else{
+                noorder=Sequel.cariIsi("SELECT pr.noorder FROM permintaan_radiologi pr where pr.tgl_hasil = '0000-00-00' and pr.jam_hasil = '00:00:00' and pr.no_rawat = '" + TNoRw.getText() + "'");
+            }
+        }
+    }
+    
+    private void simpanPermintaanRadiologi() {
+        ChkJln.setSelected(false);
+        try {
+            koneksi.setAutoCommit(false);
+            //autoNomor();
+            if (Sequel.menyimpantf2("permintaan_radiologi", "?,?,?,?,?,?,?,?,?,?,?,?", "No.Permintaan", 12, new String[]{
+                TNoPermintaan.getText(), TNoRw.getText(), Valid.SetTgl(Tanggal.getSelectedItem() + ""),
+                CmbJam.getSelectedItem() + ":" + CmbMenit.getSelectedItem() + ":" + CmbDetik.getSelectedItem(),
+                "0000-00-00", "00:00:00", "0000-00-00", "00:00:00", KodePerujuk.getText(), status.replaceAll("R", "r"),
+                "-", "-"
+            }) == true) {
+                for (i = 0; i < tbPemeriksaan.getRowCount(); i++) {
+                    if (tbPemeriksaan.getValueAt(i, 0).toString().equals("true")) {
+                        Sequel.menyimpan2("permintaan_pemeriksaan_radiologi", "?,?,?", "pemeriksaan radiologi", 3, new String[]{
+                            TNoPermintaan.getText(), tbPemeriksaan.getValueAt(i, 1).toString(), "Belum"
+                        });
+                    }
+                }
+            } else {
+                autoNomor();
+                if (Sequel.menyimpantf2("permintaan_radiologi", "?,?,?,?,?,?,?,?,?,?,?,?", "No.Permintaan", 12, new String[]{
+                    TNoPermintaan.getText(), TNoRw.getText(), Valid.SetTgl(Tanggal.getSelectedItem() + ""),
+                    CmbJam.getSelectedItem() + ":" + CmbMenit.getSelectedItem() + ":" + CmbDetik.getSelectedItem(),
+                    "0000-00-00", "00:00:00", "0000-00-00", "00:00:00", KodePerujuk.getText(), status.replaceAll("R", "r"),
+                    "-", "-"
+                }) == true) {
+                    for (i = 0; i < tbPemeriksaan.getRowCount(); i++) {
+                        if (tbPemeriksaan.getValueAt(i, 0).toString().equals("true")) {
+                            Sequel.menyimpan2("permintaan_pemeriksaan_radiologi", "?,?,?", "pemeriksaan lab", 3, new String[]{
+                                TNoPermintaan.getText(), tbPemeriksaan.getValueAt(i, 1).toString(), "Belum"
+                            });
+                        }
+                    }
+                } else {
+                    autoNomor();
+                    if (Sequel.menyimpantf2("permintaan_radiologi", "?,?,?,?,?,?,?,?,?,?,?,?", "No.Permintaan", 12, new String[]{
+                        TNoPermintaan.getText(), TNoRw.getText(), Valid.SetTgl(Tanggal.getSelectedItem() + ""),
+                        CmbJam.getSelectedItem() + ":" + CmbMenit.getSelectedItem() + ":" + CmbDetik.getSelectedItem(),
+                        "0000-00-00", "00:00:00", "0000-00-00", "00:00:00", KodePerujuk.getText(), status.replaceAll("R", "r"),
+                        "-", "-"
+                    }) == true) {
+                        for (i = 0; i < tbPemeriksaan.getRowCount(); i++) {
+                            if (tbPemeriksaan.getValueAt(i, 0).toString().equals("true")) {
+                                Sequel.menyimpan2("permintaan_pemeriksaan_radiologi", "?,?,?", "pemeriksaan lab", 3, new String[]{
+                                    TNoPermintaan.getText(), tbPemeriksaan.getValueAt(i, 1).toString(), "Belum"
+                                });
+                            }
+                        }
+                    } else {
+                        autoNomor();
+                        if (Sequel.menyimpantf2("permintaan_radiologi", "?,?,?,?,?,?,?,?,?,?,?,?", "No.Permintaan", 12, new String[]{
+                            TNoPermintaan.getText(), TNoRw.getText(), Valid.SetTgl(Tanggal.getSelectedItem() + ""),
+                            CmbJam.getSelectedItem() + ":" + CmbMenit.getSelectedItem() + ":" + CmbDetik.getSelectedItem(),
+                            "0000-00-00", "00:00:00", "0000-00-00", "00:00:00", KodePerujuk.getText(), status.replaceAll("R", "r"),
+                            "-", "-"
+                        }) == true) {
+                            for (i = 0; i < tbPemeriksaan.getRowCount(); i++) {
+                                if (tbPemeriksaan.getValueAt(i, 0).toString().equals("true")) {
+                                    Sequel.menyimpan2("permintaan_pemeriksaan_radiologi", "?,?,?", "pemeriksaan lab", 3, new String[]{
+                                        TNoPermintaan.getText(), tbPemeriksaan.getValueAt(i, 1).toString(), "Belum"
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            koneksi.setAutoCommit(true);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        ChkJln.setSelected(true);
+    }
+    
+    private void barcodePermeriksaanRad() {
+        String catatanpasien = "";
+        if(noorder.equals("")){
+           catatanpasien = TNoPermintaan.getText();
+        }else{
+           catatanpasien = noorder;
+        }
+        catatanpasien = catatanpasien.length() > 6 ? catatanpasien.substring(6) : catatanpasien;
+        String tahun = new java.text.SimpleDateFormat("yy").format(new java.util.Date());
+        String nourut = Sequel.cariIsi("SELECT LPAD(IFNULL(MAX(nomor), 0) + 1, 4, '0') AS nomor_baru FROM side_db.set_nomor_periksa WHERE unit = 'RAD'");
+        String no_periksa = tahun+"."+nourut;
+        String norm = TNoRM.getText();
+        if (norm.length() == 6) {
+            norm = norm.substring(0, 2) + "." + norm.substring(2, 4) + "." + norm.substring(4, 6);
+        }        
+        String gelar = Sequel.cariIsi("SELECT \n"
+                + "    CASE \n"
+                + "        WHEN CAST(SUBSTRING_INDEX(ps.umur, ' ', 1) AS UNSIGNED) < 18 THEN 'An'\n"
+                + "        WHEN ps.jk = 'L' THEN 'Tn'\n"
+                + "        WHEN ps.jk = 'P' THEN 'Ny'\n"
+                + "        ELSE '-'\n"
+                + "    END AS gelar\n"
+                + "FROM pasien ps \n"
+                + "WHERE ps.no_rkm_medis = " + TNoRM.getText() + "");
+        String nm_pasien = TPasien.getText();
+        String nm_dokter = NmPerujuk.getText();
+        String jk = Sequel.cariIsi("SELECT IF(ps.jk = 'L', 'M', 'F') AS jk FROM pasien ps WHERE ps.no_rkm_medis =" + TNoRM.getText() + "");
+        String tgl_lahir = Sequel.cariIsi("SELECT DATE_FORMAT(ps.tgl_lahir, '%d.%m.%Y') AS tgl_lahir FROM pasien ps WHERE ps.no_rkm_medis=" + TNoRM.getText() + "");
+        Sequel.mengedit("side_db.set_nomor_periksa","unit='RAD'","nomor='"+nourut+"'");
+        DialogQrCode.show(this, no_periksa + "-" + norm + "\t" + nm_pasien + "." + gelar + "." + nm_dokter + "\t" + jk + "\t" + tgl_lahir + "\t" + catatanpasien, no_periksa + "-" + norm+" "+gelar+". "+nm_pasien);
     }
 
 }
