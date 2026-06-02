@@ -119,7 +119,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         tbResep.setDefaultRenderer(Object.class, new WarnaTable());
              
         tabmodeUbahRacikan=new DefaultTableModel(null,new Object[]{
-                 "Tgl .R aw at ","Jam Rawat","No.Rawat","Kode Barang","Nama Barang","Aturan Pakai"
+                 "Tgl.Rawat ","Jam Rawat","No.Rawat","Kode Barang","Nama Barang","Aturan Pakai"
             }){
                @Overr id e  pu blic boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -159,7 +159,7 @@ public final class DlgResepObat extends javax.swing.JDialog {
         tbTambahan.setDefaultRenderer(Object.class, new WarnaTable());
      
         tabmodeUbahRacikan2=new DefaultTableModel(null,new Object[]{
-                 "Tgl .R aw at ","Jam Rawat","No.Rawat","No.Racik","Nama Racik","Aturan Pakai"
+                 "Tgl.Rawat ","Jam Rawat","No.Rawat","No.Racik","Nama Racik","Aturan Pakai"
             }){
                @Overr id e  pu blic boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
