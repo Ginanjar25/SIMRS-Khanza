@@ -9,11 +9,13 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -30,8 +32,7 @@ public class DlgParkirMasuk extends javax.swing.JDialog {
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
     private int i;
-    private DlgParkirJenis jenis=new DlgParkirJenis(null,false);
-    private DlgCariPetugas petugas=new DlgCariPetugas(null,false);
+    private DlgCariPetugas petugas;
 
     /** Creates new form DlgKamarInap
      * @param parent
@@ -123,78 +124,6 @@ public class DlgParkirMasuk extends javax.swing.JDialog {
         }  
         WindowInputParkir.setSize(445,200);
         WindowInputParkir.setLocationRelativeTo(null);
-        
-        jenis.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(jenis.getTable().getSelectedRow()!= -1){                   
-                    KdJenis.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(),0).toString());                    
-                    NmJenis.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(),1).toString());                    
-                    Tarif.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(),2).toString());                    
-                    SIstem.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(),3).toString());                    
-                }  
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        jenis.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    jenis.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        }); 
-        
-        petugas.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(petugas.getTable().getSelectedRow()!= -1){                   
-                    KdPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),0).toString());                    
-                    NmPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),1).toString());                   
-                }  
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        petugas.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    petugas.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
         
         try {
             //  
@@ -817,11 +746,35 @@ public class DlgParkirMasuk extends javax.swing.JDialog {
 }//GEN-LAST:event_tbKamInKeyPressed
 
 private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPetugasActionPerformed
-    petugas.isCek();
-    petugas.emptTeks(); 
-    petugas.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-    petugas.setLocationRelativeTo(internalFrame1);
-    petugas.setVisible(true);
+    if (petugas == null || !petugas.isDisplayable()) {
+            petugas=new DlgCariPetugas(null,false);
+            petugas.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            petugas.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if(petugas.getTable().getSelectedRow()!= -1){
+                        KdPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),0).toString());
+                        NmPetugas.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),1).toString());
+                    }   
+                    KdPetugas.requestFocus(); 
+                    petugas=null;
+                }
+            });
+
+            petugas.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            petugas.setLocationRelativeTo(internalFrame1);
+        }
+            
+        if (petugas == null) return;
+        if (!petugas.isVisible()) {
+            petugas.isCek();    
+            petugas.emptTeks();
+        }  
+        if (petugas.isVisible()) {
+            petugas.toFront();
+            return;
+        }    
+        petugas.setVisible(true);
 }//GEN-LAST:event_btnPetugasActionPerformed
 
 private void btnPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnPetugasKeyPressed
@@ -830,7 +783,7 @@ private void btnPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
 
 private void KdPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KdPetugasKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            NmPetugas.setText(petugas.tampil3(KdPetugas.getText()));
+            NmPetugas.setText(Sequel.CariPetugas(KdPetugas.getText()));
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             btnPetugasActionPerformed(null);
         }else{
@@ -886,11 +839,43 @@ private void KdPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     }//GEN-LAST:event_KdJenisKeyPressed
 
     private void btnJenisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJenisActionPerformed
-        jenis.isCek();
-        jenis.emptTeks();        
-        jenis.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        jenis.setLocationRelativeTo(internalFrame1);
-        jenis.setVisible(true);
+        DlgParkirJenis jenis=new DlgParkirJenis(null,false);
+        jenis.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(jenis.getTable().getSelectedRow()!= -1){                   
+                    KdJenis.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(),0).toString());                    
+                    NmJenis.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(),1).toString());                    
+                    Tarif.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(),2).toString());                    
+                    SIstem.setText(jenis.getTable().getValueAt(jenis.getTable().getSelectedRow(),3).toString());                    
+                }  
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        jenis.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    jenis.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        }); 
     }//GEN-LAST:event_btnJenisActionPerformed
 
     private void btnJenisKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnJenisKeyPressed
@@ -1003,7 +988,7 @@ private void KdPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                    "and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab " +
                    "where  "+key+" order by bangsal.nm_bangsal,kamar_inap.tgl_masuk,kamar_inap.jam_masuk").executeQuery();
             while(rs.next()){
-                tabMode.addRow(new String[]{rs.getString(1),
+                tabMode.addRow(new Object[]{rs.getString(1),
                                rs.getString(2),
                                rs.getString(3),
                                rs.getString(4),
@@ -1023,7 +1008,7 @@ private void KdPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                 psanak.setString(1,rs.getString(1));
                 rs2=psanak.executeQuery();
                 if(rs2.next()){
-                    tabMode.addRow(new String[]{"",
+                    tabMode.addRow(new Object[]{"",
                                     rs2.getString("no_rkm_medis"),
                                     rs2.getString("nm_pasien"),
                                     rs.getString(4),
@@ -1073,7 +1058,7 @@ private void KdPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
             BtnHapus.setEnabled(akses.getparkir_in());
             BtnPrint.setEnabled(akses.getparkir_in());
             KdPetugas.setText(akses.getkode());
-            NmPetugas.setText(petugas.tampil3(KdPetugas.getText()));
+            NmPetugas.setText(Sequel.CariPetugas(KdPetugas.getText()));
         }else{
             KdPetugas.setEditable(true);
             NmPetugas.setEnabled(true);

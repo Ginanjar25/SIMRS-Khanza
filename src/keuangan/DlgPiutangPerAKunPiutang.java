@@ -24,6 +24,11 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
@@ -37,13 +42,14 @@ public final class DlgPiutangPerAKunPiutang extends javax.swing.JDialog {
     private final Connection koneksi=koneksiDB.condb();
     private final sekuel Sequel=new sekuel();
     private final validasi Valid=new validasi();
-    private PreparedStatement ps,psakunbayar;
-    private ResultSet rs,rsakunbayar;
-    private StringBuilder htmlContent;
-    private String[] akunbayar;
-    private double[] totalbayar;
+    private PreparedStatement ps,psakunpiutang;
+    private ResultSet rs,rsakunpiutang;
+    private String[] akunpiutang;
+    private double[] totalpiutang;
     private int i,kolom=0,no=0;
     private double bayar=0,uangmuka=0,piutang=0;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /** Creates new form DlgLhtBiaya
      * @param parent
@@ -55,28 +61,6 @@ public final class DlgPiutangPerAKunPiutang extends javax.swing.JDialog {
         setSize(885,674);
 
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }  
         LoadHTML.setEditable(true);
         HTMLEditorKit kit = new HTMLEditorKit();
         LoadHTML.setEditorKit(kit);
@@ -286,22 +270,45 @@ public final class DlgPiutangPerAKunPiutang extends javax.swing.JDialog {
             );
             bg.close();
             
-            File f = new File("PembayaranPerAkunBayar.html");            
-            BufferedWriter bw = new BufferedWriter(new FileWriter(f));            
-            bw.write(LoadHTML.getText().replaceAll("<head>","<head><link href=\"fileakunbayar.css\" rel=\"stylesheet\" type=\"text/css\" />"+
-                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
-                            "<tr class='isi2'>"+
-                                "<td valign='top' align='center'>"+
-                                    "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
-                                    akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
-                                    akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
-                                    "<font size='2' face='Tahoma'>PIUTANG PER AKUN PIUTANG<br>TANGGAL "+Tgl1.getSelectedItem()+" s.d. "+Tgl2.getSelectedItem()+"<br><br></font>"+        
-                                "</td>"+
-                           "</tr>"+
-                        "</table>")
-            );
-            bw.close();                         
-            Desktop.getDesktop().browse(f.toURI());
+            BufferedWriter bw;
+            File f;
+            
+            String pilihan = (String)JOptionPane.showInputDialog(null,"Silahkan pilih laporan..!","Pilihan Cetak",JOptionPane.QUESTION_MESSAGE,null,new Object[]{"Laporan 1 (HTML)","Laporan 2 (WPS)","Laporan 3 (XLS)"},"Laporan 1 (HTML)");
+            switch (pilihan) {
+                case "Laporan 1 (HTML)":
+                    f = new File("PiutangPerAkunPiutang.html");            
+                    bw = new BufferedWriter(new FileWriter(f));            
+                    bw.write(LoadHTML.getText().replaceAll("<head>","<head><link href=\"fileakunbayar.css\" rel=\"stylesheet\" type=\"text/css\" />"+
+                                "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
+                                    "<tr class='isi2'>"+
+                                        "<td valign='top' align='center'>"+
+                                            "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
+                                            akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
+                                            akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
+                                            "<font size='2' face='Tahoma'>PIUTANG PER AKUN PIUTANG<br>TANGGAL "+Tgl1.getSelectedItem()+"<br><br></font>"+        
+                                        "</td>"+
+                                   "</tr>"+
+                                "</table>")
+                    );
+                    bw.close();                         
+                    Desktop.getDesktop().browse(f.toURI());
+                    break;
+                case "Laporan 2 (WPS)":
+                    f = new File("PiutangPerAkunPiutang.wps");            
+                    bw = new BufferedWriter(new FileWriter(f));            
+                    bw.write(LoadHTML.getText());
+                    bw.close();                         
+                    Desktop.getDesktop().browse(f.toURI());
+                    break;
+                case "Laporan 3 (XLS)":
+                    f= new File("PiutangPerAkunPiutang.xls");            
+                    bw = new BufferedWriter(new FileWriter(f));            
+                    bw.write(LoadHTML.getText());
+                    bw.close();                         
+                    Desktop.getDesktop().browse(f.toURI());
+                    break;
+
+            }
         } catch (Exception e) {
             System.out.println("Notifikasi : "+e);
         }     
@@ -328,12 +335,55 @@ public final class DlgPiutangPerAKunPiutang extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnKeluarKeyPressed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
+        try{        
+            StringBuilder htmlContent = new StringBuilder();
+            htmlContent.append(                             
+                "<tr class='head'>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='27px'>No.</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='80px'>Tanggal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='100px'>No.Nota</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='220px'>Nama Pasien</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='90px'>Uang Muka</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='90px'>Piutang</td>").append(
+                "</tr>"
+            );           
+            LoadHTML.setText(
+                    "<html>"+
+                      "<table width='100%' border='0' align='left' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
+                       htmlContent.toString()+
+                      "</table>"+
+                    "</html>");
+            htmlContent=null;
+        }catch(Exception e){
+            System.out.println("Notifikasi : "+e);
+        }
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }
     }//GEN-LAST:event_formWindowOpened
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -347,7 +397,7 @@ public final class DlgPiutangPerAKunPiutang extends javax.swing.JDialog {
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            tampil();
+            runBackground(() ->tampil());
             this.setCursor(Cursor.getDefaultCursor());
         }else{
             Valid.pindah(evt,TCari, BtnPrint);
@@ -355,7 +405,7 @@ public final class DlgPiutangPerAKunPiutang extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
     }//GEN-LAST:event_BtnCariActionPerformed
 
     private void TCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCariKeyPressed
@@ -403,39 +453,41 @@ public final class DlgPiutangPerAKunPiutang extends javax.swing.JDialog {
     private widget.panelisi panelGlass5;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil(){
+    private void tampil(){
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
         try{        
-            htmlContent = new StringBuilder();
+            StringBuilder htmlContent = new StringBuilder();
             htmlContent.append(                             
-                "<tr class='head'>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='27px'>No.</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='80px'>Tanggal</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='100px'>No.Nota</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='220px'>Nama Pasien</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='90px'>Uang Muka</td>"+
+                "<tr class='head'>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='27px'>No.</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='80px'>Tanggal</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='100px'>No.Nota</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='220px'>Nama Pasien</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='90px'>Uang Muka</td>").append(
                     "<td valign='middle' bgcolor='#FFFAFA' align='center' width='90px'>Piutang</td>");
             kolom=0;
-            akunbayar=new String[Sequel.cariInteger("select count(nama_bayar) from akun_piutang")];
-            psakunbayar=koneksi.prepareStatement("select nama_bayar from akun_piutang order by nama_bayar");
+            psakunpiutang=koneksi.prepareStatement("select akun_piutang.nama_bayar from akun_piutang order by akun_piutang.nama_bayar");
             try {
-                rsakunbayar=psakunbayar.executeQuery();
-                while(rsakunbayar.next()){
-                    akunbayar[kolom]=rsakunbayar.getString("nama_bayar");
+                rsakunpiutang=psakunpiutang.executeQuery();
+                rsakunpiutang.last();
+                akunpiutang=new String[rsakunpiutang.getRow()];
+                rsakunpiutang.beforeFirst();
+                while(rsakunpiutang.next()){
+                    akunpiutang[kolom]=rsakunpiutang.getString("nama_bayar");
                     kolom++;
-                    htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center' width='130px'>"+rsakunbayar.getString("nama_bayar")+"</td>");
+                    htmlContent.append("<td valign='middle' bgcolor='#FFFAFA' align='center' width='130px'>").append(rsakunpiutang.getString("nama_bayar")).append("</td>");
                 }
             } catch (Exception e) {
                 System.out.println("Akun Bayar : "+e);
             } finally{
-                if(rsakunbayar!=null){
-                    rsakunbayar.close();
+                if(rsakunpiutang!=null){
+                    rsakunpiutang.close();
                 }
-                if(psakunbayar!=null){
-                    psakunbayar.close();
+                if(psakunpiutang!=null){
+                    psakunpiutang.close();
                 }
             }
-            totalbayar=new double[kolom];            
+            totalpiutang=new double[kolom];            
             htmlContent.append(
                 "</tr>"
             );   
@@ -447,31 +499,31 @@ public final class DlgPiutangPerAKunPiutang extends javax.swing.JDialog {
                     "select nota_jalan.no_rawat,nota_jalan.no_nota,nota_jalan.tanggal,pasien.nm_pasien,(piutang_pasien.totalpiutang-piutang_pasien.uangmuka) as totalpiutang,"+
                     "piutang_pasien.uangmuka from piutang_pasien inner join nota_jalan inner join pasien "+
                     "on piutang_pasien.no_rawat=nota_jalan.no_rawat and piutang_pasien.no_rkm_medis=pasien.no_rkm_medis "+
-                    "where nota_jalan.tanggal between ? and ? and pasien.nm_pasien like ? or "+
-                    "nota_jalan.tanggal between ? and ? and nota_jalan.no_nota like ? order by nota_jalan.tanggal,nota_jalan.no_nota");
+                    "where nota_jalan.tanggal between ? and ? "+(!TCari.getText().trim().equals("")?"and (pasien.nm_pasien like ? or nota_jalan.no_nota like ?) ":"")+
+                    "order by nota_jalan.tanggal,nota_jalan.no_nota");
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(3,"%"+TCari.getText().trim()+"%");
-                ps.setString(4,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(5,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(6,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(3,"%"+TCari.getText().trim()+"%");
+                    ps.setString(4,"%"+TCari.getText().trim()+"%");
+                }
                 rs=ps.executeQuery();
                 while(rs.next()){
                     uangmuka=uangmuka+rs.getDouble("uangmuka");
                     piutang=piutang+rs.getDouble("totalpiutang");
                     htmlContent.append(                             
-                        "<tr class='isi'>"+
-                            "<td valign='middle' align='center'>"+no+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getString("tanggal")+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getString("no_nota")+"</td>"+
-                            "<td valign='middle' align='left'>"+rs.getString("nm_pasien")+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("uangmuka"))+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("totalpiutang"))+"</td>");
+                        "<tr class='isi'>").append(
+                            "<td valign='middle' align='center'>").append(no).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getString("tanggal")).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getString("no_nota")).append("</td>").append(
+                            "<td valign='middle' align='left'>").append(rs.getString("nm_pasien")).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("uangmuka"))).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("totalpiutang"))).append("</td>");
                     for(i=0;i<kolom;i++){
-                        bayar=Sequel.cariIsiAngka("select totalpiutang from detail_piutang_pasien where no_rawat='"+rs.getString("no_rawat")+"' and nama_bayar='"+akunbayar[i]+"'");
-                        htmlContent.append("<td valign='middle' align='right'>"+Valid.SetAngka(bayar)+"</td>");
-                        totalbayar[i]=totalbayar[i]+bayar;
+                        bayar=Sequel.cariIsiAngka("select sum(detail_piutang_pasien.totalpiutang) from detail_piutang_pasien where detail_piutang_pasien.no_rawat='"+rs.getString("no_rawat")+"' and detail_piutang_pasien.nama_bayar='"+akunpiutang[i]+"'");
+                        htmlContent.append("<td valign='middle' align='right'>").append(Valid.SetAngka(bayar)).append("</td>");
+                        totalpiutang[i]=totalpiutang[i]+bayar;
                     }
                     htmlContent.append( 
                         "</tr>"
@@ -493,31 +545,31 @@ public final class DlgPiutangPerAKunPiutang extends javax.swing.JDialog {
                     "select nota_inap.no_rawat,nota_inap.no_nota,nota_inap.tanggal,pasien.nm_pasien,(piutang_pasien.totalpiutang-piutang_pasien.uangmuka) as totalpiutang,"+
                     "piutang_pasien.uangmuka from piutang_pasien inner join nota_inap inner join pasien "+
                     "on piutang_pasien.no_rawat=nota_inap.no_rawat and piutang_pasien.no_rkm_medis=pasien.no_rkm_medis "+
-                    "where nota_inap.tanggal between ? and ? and pasien.nm_pasien like ? or "+
-                    "nota_inap.tanggal between ? and ? and nota_inap.no_nota like ? order by nota_inap.tanggal,nota_inap.no_nota");
+                    "where nota_inap.tanggal between ? and ? "+(!TCari.getText().trim().equals("")?"and (pasien.nm_pasien like ? or nota_inap.no_nota like ?) ":"")+
+                    "order by nota_inap.tanggal,nota_inap.no_nota");
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(3,"%"+TCari.getText().trim()+"%");
-                ps.setString(4,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(5,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(6,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(3,"%"+TCari.getText().trim()+"%");
+                    ps.setString(4,"%"+TCari.getText().trim()+"%");
+                }
                 rs=ps.executeQuery();
                 while(rs.next()){
                     uangmuka=uangmuka+rs.getDouble("uangmuka");
                     piutang=piutang+rs.getDouble("totalpiutang");
                     htmlContent.append(                             
-                        "<tr class='isi'>"+
-                            "<td valign='middle' align='center'>"+no+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getString("tanggal")+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getString("no_nota")+"</td>"+
-                            "<td valign='middle' align='left'>"+rs.getString("nm_pasien")+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("uangmuka"))+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("totalpiutang"))+"</td>");
+                        "<tr class='isi'>").append(
+                            "<td valign='middle' align='center'>").append(no).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getString("tanggal")).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getString("no_nota")).append("</td>").append(
+                            "<td valign='middle' align='left'>").append(rs.getString("nm_pasien")).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("uangmuka"))).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("totalpiutang"))).append("</td>");
                     for(i=0;i<kolom;i++){
-                        bayar=Sequel.cariIsiAngka("select totalpiutang from detail_piutang_pasien where no_rawat='"+rs.getString("no_rawat")+"' and nama_bayar='"+akunbayar[i]+"'");
-                        htmlContent.append("<td valign='middle' align='right'>"+Valid.SetAngka(bayar)+"</td>");
-                        totalbayar[i]=totalbayar[i]+bayar;
+                        bayar=Sequel.cariIsiAngka("select sum(detail_piutang_pasien.totalpiutang) from detail_piutang_pasien where detail_piutang_pasien.no_rawat='"+rs.getString("no_rawat")+"' and detail_piutang_pasien.nama_bayar='"+akunpiutang[i]+"'");
+                        htmlContent.append("<td valign='middle' align='right'>").append(Valid.SetAngka(bayar)).append("</td>");
+                        totalpiutang[i]=totalpiutang[i]+bayar;
                     }
                     htmlContent.append( 
                         "</tr>"
@@ -536,15 +588,15 @@ public final class DlgPiutangPerAKunPiutang extends javax.swing.JDialog {
             } 
             
             htmlContent.append(                             
-                "<tr class='isi'>"+
-                    "<td valign='middle' align='center'></td>"+
-                    "<td valign='middle' align='right'>Total :</td>"+
-                    "<td valign='middle' align='center'></td>"+
-                    "<td valign='middle' align='center'></td>"+
-                    "<td valign='middle' align='right'>"+Valid.SetAngka(uangmuka)+"</td>"+
-                    "<td valign='middle' align='right'>"+Valid.SetAngka(piutang)+"</td>");
+                "<tr class='isi'>").append(
+                    "<td valign='middle' align='center'></td>").append(
+                    "<td valign='middle' align='right'>Total :</td>").append(
+                    "<td valign='middle' align='center'></td>").append(
+                    "<td valign='middle' align='center'></td>").append(
+                    "<td valign='middle' align='right'>").append(Valid.SetAngka(uangmuka)).append("</td>").append(
+                    "<td valign='middle' align='right'>").append(Valid.SetAngka(piutang)).append("</td>");
             for(i=0;i<kolom;i++){
-                htmlContent.append("<td valign='middle' align='right'>"+Valid.SetAngka(totalbayar[i])+"</td>"); 
+                htmlContent.append("<td valign='middle' align='right'>").append(Valid.SetAngka(totalpiutang[i])).append("</td>"); 
             }
             htmlContent.append( 
                 "</tr>"
@@ -578,11 +630,43 @@ public final class DlgPiutangPerAKunPiutang extends javax.swing.JDialog {
                            htmlContent.toString()+
                           "</table>"+
                         "</html>");
-            }                
+            } 
+            htmlContent=null;
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
         this.setCursor(Cursor.getDefaultCursor());
     }    
 
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

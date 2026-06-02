@@ -23,8 +23,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
@@ -42,6 +46,8 @@ public final class DlgAuditKamarJenazah extends javax.swing.JDialog {
     private validasi Valid=new validasi();
     private PreparedStatement ps;
     private ResultSet rs;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private int i=0;    
     private double audit1=0,audit2=0,audit3=0,
                 audit4=0,audit5=0,ttlaudit1=0,audit6=0,
@@ -590,7 +596,7 @@ public final class DlgAuditKamarJenazah extends javax.swing.JDialog {
             Audit5.getSelectedItem().toString(),Audit6.getSelectedItem().toString(),Audit7.getSelectedItem().toString(),
             Audit8.getSelectedItem().toString()
         })==true){
-            tampil();
+            runBackground(() ->tampil());
             emptTeks();
         }  
 }//GEN-LAST:event_BtnSimpanActionPerformed
@@ -620,7 +626,7 @@ public final class DlgAuditKamarJenazah extends javax.swing.JDialog {
             if(Sequel.queryu2tf("delete from audit_kamar_jenazah where tanggal=?",1,new String[]{
                 tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
             })==true){
-                tampil();
+                runBackground(() ->tampil());
                 emptTeks();
             }else{
                 JOptionPane.showMessageDialog(null,"Gagal menghapus..!!");
@@ -646,7 +652,7 @@ public final class DlgAuditKamarJenazah extends javax.swing.JDialog {
                 Audit5.getSelectedItem().toString(),Audit6.getSelectedItem().toString(),Audit7.getSelectedItem().toString(),
                 Audit8.getSelectedItem().toString(),tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
             });
-            if(tabMode.getRowCount()!=0){tampil();}
+            if(tabMode.getRowCount()!=0){runBackground(() ->tampil());}
             emptTeks();
         }
 }//GEN-LAST:event_BtnEditActionPerformed
@@ -706,7 +712,7 @@ public final class DlgAuditKamarJenazah extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnPrintKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -888,7 +894,7 @@ public final class DlgAuditKamarJenazah extends javax.swing.JDialog {
                     ttlpenilaian=ttlpenilaian+(((audit1+audit2+audit3+
                             audit4+audit5+audit6+audit7+
                             audit8)/8)*100);
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         rs.getString("tanggal"),rs.getString("audit1"),rs.getString("audit2"),
                         rs.getString("audit3"),rs.getString("audit4"),rs.getString("audit5"),
                         rs.getString("audit6"),rs.getString("audit7"),rs.getString("audit8"),
@@ -899,21 +905,21 @@ public final class DlgAuditKamarJenazah extends javax.swing.JDialog {
                 }
                 i=i-1;
                 if(i>0){
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         "Ya",""+ttlaudit1,""+ttlaudit2,""+ttlaudit3,
                         ""+ttlaudit4,""+ttlaudit5,""+ttlaudit6,""+ttlaudit7,
                         ""+ttlaudit8,""+(ttlaudit1+ttlaudit2+
                         ttlaudit3+ttlaudit4+ttlaudit5+ttlaudit6+
                         ttlaudit7+ttlaudit8)
                     });
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         "Tidak",""+(i-ttlaudit1),""+(i-ttlaudit2),""+(i-ttlaudit3),
                         ""+(i-ttlaudit4),""+(i-ttlaudit5),""+(i-ttlaudit6),""+(i-ttlaudit7),
                         ""+(i-ttlaudit8),""+((i-ttlaudit1)+(i-ttlaudit2)+
                         (i-ttlaudit3)+(i-ttlaudit4)+(i-ttlaudit5)+(i-ttlaudit6)+
                         (i-ttlaudit7)+(i-ttlaudit8))
                     });
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         "Rata-rata",Math.round((ttlaudit1/i)*100)+" %",Math.round((ttlaudit2/i)*100)+" %",Math.round((ttlaudit3/i)*100)+" %",
                         Math.round((ttlaudit4/i)*100)+" %",Math.round((ttlaudit5/i)*100)+" %",Math.round((ttlaudit6/i)*100)+" %",
                         Math.round((ttlaudit7/i)*100)+" %",Math.round((ttlaudit8/i)*100)+" %",Math.round(ttlpenilaian/i)+" %"
@@ -1039,5 +1045,37 @@ public final class DlgAuditKamarJenazah extends javax.swing.JDialog {
         };
         // Timer
         new Timer(1000, taskPerformer).start();
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

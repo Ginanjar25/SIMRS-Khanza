@@ -33,6 +33,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="robots" content="noindex,nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>Selamat Datang di EPasien <?=$_SESSION["nama_instansi"];?></title>
@@ -275,7 +276,7 @@
         <aside id="leftsidebar" class="sidebar">
             <div class="user-info">
                 <div class="image">
-                    <img src="<?=$_SESSION["photo"];?>" width="55" height="48" alt="Photo" />&nbsp;&nbsp;&nbsp;&nbsp;<b><font color="#DDFF55">No.RM : <?=encrypt_decrypt($_SESSION["ses_pasien"],"d");?></font></b>
+                    <img src="<?='data: image/jpeg;base64,'.base64_encode(file_get_contents($_SESSION["photo"]));?>" width="55" height="48" alt="Photo" />&nbsp;&nbsp;&nbsp;&nbsp;<b><font color="#DDFF55">No.RM : <?=encrypt_decrypt($_SESSION["ses_pasien"],"d");?></font></b>
                 </div>
                 <div class="info-container">
                     <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?=$_SESSION["nm_pasien"];?></div>
@@ -283,7 +284,7 @@
                     <div class="btn-group user-helper-dropdown">
                         <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
                         <ul class="dropdown-menu pull-right">
-                            <li><a href="javascript:void(0);"><i class="material-icons">person</i>Profile</a></li>
+                            <li><a href="index.php?act=UpdatePassword"><i class="material-icons">person</i>Ubah Password</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="pages/logout.php"><i class="material-icons">input</i>Log Out</a></li>
                         </ul>
@@ -308,26 +309,65 @@
                     <li <?=$halaman=="RiwayatPeriksa"?"class='active'":""?>>
                         <a href="index.php?act=RiwayatPeriksa&hal=RiwayatPeriksa">
                             <i class="material-icons">local_pharmacy</i>
-                            <span>Riwayat Periksa</span>
+                            <span>Riwayat Kunjungan</span>
+                        </a>
+                    </li>
+                    <li <?=$halaman=="RiwayatMCU"?"class='active'":""?>>
+                        <a href="index.php?act=RiwayatMCU&hal=RiwayatMCU">
+                            <i class="material-icons">assignment_ind</i>
+                            <span>Riwayat MCU</span>
                         </a>
                     </li>
                     <li <?=$halaman=="AntrianTindakan"?"class='active'":""?>>
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">event_seat</i>
-                            <span>Daftar Permintaan & Tindakan</span>
+                            <span>Hasil Pemeriksaan</span>
                         </a>
                         <ul class="ml-menu">
                             <li <?=$subhalaman=="AntrianPemeriksaanLab"?"class='active'":""?>>
-                                <a href="index.php?act=AntrianPemeriksaanLab&hal=AntrianTindakan">Pemeriksaan Laborat</a>
+                                <a href="index.php?act=AntrianPemeriksaanLab&hal=AntrianTindakan">Laborat PK</a>
+                            </li>
+                            <li <?=$subhalaman=="AntrianPemeriksaanLabMB"?"class='active'":""?>>
+                                <a href="index.php?act=AntrianPemeriksaanLabMB&hal=AntrianTindakan">Laborat MB</a>
+                            </li>
+                            <li <?=$subhalaman=="AntrianPemeriksaanLabPA"?"class='active'":""?>>
+                                <a href="index.php?act=AntrianPemeriksaanLabPA&hal=AntrianTindakan">Laborat PA</a>
                             </li>
                             <li <?=$subhalaman=="AntrianPemeriksaanRad"?"class='active'":""?>>
-                                <a href="index.php?act=AntrianPemeriksaanRad&hal=AntrianTindakan">Pemeriksaan Radiologi</a>
+                                <a href="index.php?act=AntrianPemeriksaanRad&hal=AntrianTindakan">Radiologi</a>
                             </li>
-                            <li <?=$subhalaman=="AtrianResepObat"?"class='active'":""?>>
-                                <a href="index.php?act=AtrianResepObat&hal=AntrianTindakan">Resep Obat</a>
+                            <li <?=$subhalaman=="AntrianUSGKandungan"?"class='active'":""?>>
+                                <a href="index.php?act=AntrianUSGKandungan&hal=AntrianTindakan">USG Kandungan</a>
                             </li>
-                            <li <?=$subhalaman=="AtrianOperasi"?"class='active'":""?>>
-                                <a href="index.php?act=AtrianOperasi&hal=AntrianTindakan">Operasi</a>
+                            <li <?=$subhalaman=="AntrianUSGUrologi"?"class='active'":""?>>
+                                <a href="index.php?act=AntrianUSGUrologi&hal=AntrianTindakan">USG Urologi</a>
+                            </li>
+                            <li <?=$subhalaman=="AntrianUSGGynecologi"?"class='active'":""?>>
+                                <a href="index.php?act=AntrianUSGGynecologi&hal=AntrianTindakan">USG Gynecologi</a>
+                            </li>
+                            <li <?=$subhalaman=="AntrianUSGNeonatus"?"class='active'":""?>>
+                                <a href="index.php?act=AntrianUSGNeonatus&hal=AntrianTindakan">USG Neonatus</a>
+                            </li>
+                            <li <?=$subhalaman=="AntrianEKG"?"class='active'":""?>>
+                                <a href="index.php?act=AntrianEKG&hal=AntrianTindakan">EKG</a>
+                            </li>
+                            <li <?=$subhalaman=="AntrianEcho"?"class='active'":""?>>
+                                <a href="index.php?act=AntrianEcho&hal=AntrianTindakan">Echocardiografi</a>
+                            </li>
+                            <li <?=$subhalaman=="AntrianSlitLamp"?"class='active'":""?>>
+                                <a href="index.php?act=AntrianSlitLamp&hal=AntrianTindakan">Slit Lamp</a>
+                            </li>
+                            <li <?=$subhalaman=="AntrianOCT"?"class='active'":""?>>
+                                <a href="index.php?act=AntrianOCT&hal=AntrianTindakan">OCT</a>
+                            </li>
+                            <li <?=$subhalaman=="AntrianEndoskopiFaring"?"class='active'":""?>>
+                                <a href="index.php?act=AntrianEndoskopiFaring&hal=AntrianTindakan">Endoskopi Faring/Laringoskopi</a>
+                            </li>
+                            <li <?=$subhalaman=="AntrianEndoskopiHidung"?"class='active'":""?>>
+                                <a href="index.php?act=AntrianEndoskopiHidung&hal=AntrianTindakan">Endoskopi Hidung</a>
+                            </li>
+                            <li <?=$subhalaman=="AntrianEndoskopiTelinga"?"class='active'":""?>>
+                                <a href="index.php?act=AntrianEndoskopiTelinga&hal=AntrianTindakan">Endoskopi Telinga</a>
                             </li>
                         </ul>
                     </li>
@@ -354,6 +394,62 @@
                             </li>
                             <li <?=$subhalaman=="SuratCovid"?"class='active'":""?>>
                                 <a href="index.php?act=SuratCovid&hal=Surat">Keterangan Covid</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li <?=$halaman=="Persetujuan"?"class='active'":""?>>
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="material-icons">assignment_turned_in</i>
+                            <span>Persetujuan</span>
+                        </a>
+                        <ul class="ml-menu">
+                            <li <?=$subhalaman=="PersetujuanUmum"?"class='active'":""?>>
+                                <a href="index.php?act=PersetujuanUmum&hal=Persetujuan">Persetujuan Umum</a>
+                            </li>
+                            <li <?=$subhalaman=="PersetujuanPenolakanTindakan"?"class='active'":""?>>
+                                <a href="index.php?act=PersetujuanPenolakanTindakan&hal=Persetujuan">Persetujuan/Penolakan Tindakan</a>
+                            </li>
+                            <li <?=$subhalaman=="PersetujuanRencanaPemulangan"?"class='active'":""?>>
+                                <a href="index.php?act=PersetujuanRencanaPemulangan&hal=Persetujuan">Rencana Pemulangan</a>
+                            </li>
+                            <li <?=$subhalaman=="PersetujuanPenyerahanResepRalan"?"class='active'":""?>>
+                                <a href="index.php?act=PersetujuanPenyerahanResepRalan&hal=Persetujuan">Penyerahan Resep Ralan</a>
+                            </li>
+                            <li <?=$subhalaman=="PersetujuanPernyataanPasienUmum"?"class='active'":""?>>
+                                <a href="index.php?act=PersetujuanPernyataanPasienUmum&hal=Persetujuan">Pernyataan Pasien Umum</a>
+                            </li>
+                            <li <?=$subhalaman=="PersetujuanPernyataanPulangAPS"?"class='active'":""?>>
+                                <a href="index.php?act=PersetujuanPernyataanPulangAPS&hal=Persetujuan">Pernyataan Pulang APS</a>
+                            </li>
+                            <li <?=$subhalaman=="PersetujuanTransferAntarRuang"?"class='active'":""?>>
+                                <a href="index.php?act=PersetujuanTransferAntarRuang&hal=Persetujuan">Transfer Antar Ruang</a>
+                            </li>
+                            <li <?=$subhalaman=="PersetujuanRawatInap"?"class='active'":""?>>
+                                <a href="index.php?act=PersetujuanRawatInap&hal=Persetujuan">Persetujuan Rawat Inap</a>
+                            </li>
+                            <li <?=$subhalaman=="PersetujuanPenundaanPelayanan"?"class='active'":""?>>
+                                <a href="index.php?act=PersetujuanPenundaanPelayanan&hal=Persetujuan">Penundaan Pelayanan</a>
+                            </li>
+                            <li <?=$subhalaman=="PersetujuanPenolakanAnjuranMedis"?"class='active'":""?>>
+                                <a href="index.php?act=PersetujuanPenolakanAnjuranMedis&hal=Persetujuan">Penolakan Anjuran Medis</a>
+                            </li>
+                            <li <?=$subhalaman=="PersetujuanRestrain"?"class='active'":""?>>
+                                <a href="index.php?act=PersetujuanRestrain&hal=Persetujuan">Persetujuan Restrain</a>
+                            </li>
+                            <li <?=$subhalaman=="PersetujuanPemeriksaanHIV"?"class='active'":""?>>
+                                <a href="index.php?act=PersetujuanPemeriksaanHIV&hal=Persetujuan">Persetujuan Pemeriksaan HIV</a>
+                            </li>
+                            <li <?=$subhalaman=="BuktiPelaksanaanEdukasi"?"class='active'":""?>>
+                                <a href="index.php?act=BuktiPelaksanaanEdukasi&hal=Persetujuan">Pelaksanaan Informasi/Edukasi</a>
+                            </li>
+                            <li <?=$subhalaman=="BuktiPelayananRehabilitasi"?"class='active'":""?>>
+                                <a href="index.php?act=BuktiPelayananRehabilitasi&hal=Persetujuan">Layanan Kedokteran Fisik</a>
+                            </li>
+                            <li <?=$subhalaman=="BuktiPelayananProgramKFR"?"class='active'":""?>>
+                                <a href="index.php?act=BuktiPelayananProgramKFR&hal=Persetujuan">Layanan Program KFR</a>
+                            </li>
+                            <li <?=$subhalaman=="PernyataanMemilihDPJP"?"class='active'":""?>>
+                                <a href="index.php?act=PernyataanMemilihDPJP&hal=Persetujuan">Pernyataan Memilih DPJP</a>
                             </li>
                         </ul>
                     </li>

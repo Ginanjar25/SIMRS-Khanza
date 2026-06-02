@@ -24,17 +24,17 @@ import fungsi.validasi;
 import fungsi.koneksiDB;
 import java.awt.Cursor;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import simrskhanza.DlgCariPasien;
 
 /**
  *
@@ -44,7 +44,6 @@ public final class BPJSCekHistoriPelayanan extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
     private validasi Valid=new validasi();
     private int i=0;
-    private DlgCariPasien pasien=new DlgCariPasien(null,false);
     private ApiBPJS api=new ApiBPJS();
     private String URL="",link="",utc="";
     private HttpHeaders headers ;
@@ -53,6 +52,8 @@ public final class BPJSCekHistoriPelayanan extends javax.swing.JDialog {
     private JsonNode root;
     private JsonNode nameNode;
     private JsonNode response;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
         
     /** Creates new form DlgKamar
      * @param parent
@@ -106,44 +107,6 @@ public final class BPJSCekHistoriPelayanan extends javax.swing.JDialog {
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable());
         
         NoKartu.setDocument(new batasInput((byte)100).getKata(NoKartu));
-        
-        pasien.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(pasien.getTable().getSelectedRow()!= -1){                   
-                    if(pasien.getTable().getValueAt(pasien.getTable().getSelectedRow(),19).toString().equals("")){
-                        JOptionPane.showMessageDialog(rootPane,"Maaf pasien tidak punya Nomor Kartu...!");
-                    }else{
-                        NoKartu.setText(pasien.getTable().getValueAt(pasien.getTable().getSelectedRow(),19).toString());
-                    }                            
-                }  
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        pasien.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    pasien.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        }); 
         
         try {
             link=koneksiDB.URLAPIBPJS();
@@ -305,7 +268,7 @@ public final class BPJSCekHistoriPelayanan extends javax.swing.JDialog {
         if(NoKartu.getText().equals("")){
             Valid.textKosong(NoKartu,"No.Kartu");
         }else{
-            tampil(NoKartu.getText());
+            runBackground(() ->tampil(NoKartu.getText()));
         }
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_BtnCariActionPerformed
@@ -341,7 +304,7 @@ public final class BPJSCekHistoriPelayanan extends javax.swing.JDialog {
     private widget.Table tbKamar;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil(String nomorrujukan) {
+    private void tampil(String nomorrujukan) {
         try {
             headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -389,4 +352,35 @@ public final class BPJSCekHistoriPelayanan extends javax.swing.JDialog {
         this.NoKartu.setText(Kartu);
     }
     
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

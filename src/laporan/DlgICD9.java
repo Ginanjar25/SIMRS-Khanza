@@ -25,9 +25,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -43,6 +47,8 @@ public final class DlgICD9 extends javax.swing.JDialog {
     private validasi Valid=new validasi();
     private PreparedStatement ps;
     private ResultSet rs;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private int z=0;
     /** Creates new form DlgPenyakit
      * @param parent
@@ -53,7 +59,7 @@ public final class DlgICD9 extends javax.swing.JDialog {
         this.setLocation(10,2);
         setSize(628,674);
 
-        Object[] row={"P","Kode","Deskripsi Panjang","Deskripsi Pendek"};
+        Object[] row={"P","Kode","Deskripsi Panjang","Deskripsi Pendek","Valid Code","ACC PDX","IM"};
         tabMode=new DefaultTableModel(null,row){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -63,7 +69,8 @@ public final class DlgICD9 extends javax.swing.JDialog {
                 return a;
              }
              Class[] types = new Class[] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
+                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -75,7 +82,7 @@ public final class DlgICD9 extends javax.swing.JDialog {
         tbPenyakit.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbPenyakit.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (z = 0; z < 4; z++) {
+        for (z = 0; z < 7; z++) {
             TableColumn column = tbPenyakit.getColumnModel().getColumn(z);
             if(z==0){
                 column.setPreferredWidth(20);
@@ -85,6 +92,12 @@ public final class DlgICD9 extends javax.swing.JDialog {
                 column.setPreferredWidth(360);
             }else if(z==3){
                 column.setPreferredWidth(200);
+            }else if(z==4){
+                column.setPreferredWidth(62);
+            }else if(z==5){
+                column.setPreferredWidth(53);
+            }else if(z==6){
+                column.setPreferredWidth(28);
             }
         }
         tbPenyakit.setDefaultRenderer(Object.class, new WarnaTable());
@@ -94,32 +107,8 @@ public final class DlgICD9 extends javax.swing.JDialog {
         Pendek.setDocument(new batasInput((int)100).getKata(Pendek));
         Panjang.setDocument(new batasInput((int)1500).getKata(Panjang));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        } 
-        
         ChkInput.setSelected(false);
         isForm(); 
-        
     }
     
     
@@ -160,6 +149,12 @@ public final class DlgICD9 extends javax.swing.JDialog {
         jLabel9 = new widget.Label();
         ScrollCiri = new widget.ScrollPane();
         Panjang = new widget.TextArea();
+        jLabel14 = new widget.Label();
+        cmbValidCode = new widget.ComboBox();
+        jLabel15 = new widget.Label();
+        cmbACCPDX = new widget.ComboBox();
+        jLabel13 = new widget.Label();
+        cmbIM = new widget.ComboBox();
         ChkInput = new widget.CekBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -171,7 +166,7 @@ public final class DlgICD9 extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data ICD 9 Prosedur Tindakan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data ICD 9 Prosedur Tindakan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -383,7 +378,7 @@ public final class DlgICD9 extends javax.swing.JDialog {
 
         PanelInput.setName("PanelInput"); // NOI18N
         PanelInput.setOpaque(false);
-        PanelInput.setPreferredSize(new java.awt.Dimension(611, 118));
+        PanelInput.setPreferredSize(new java.awt.Dimension(611, 145));
         PanelInput.setLayout(new java.awt.BorderLayout(1, 1));
 
         FormInput.setName("FormInput"); // NOI18N
@@ -393,7 +388,7 @@ public final class DlgICD9 extends javax.swing.JDialog {
         jLabel3.setText("Kode Prosedur :");
         jLabel3.setName("jLabel3"); // NOI18N
         FormInput.add(jLabel3);
-        jLabel3.setBounds(0, 12, 100, 23);
+        jLabel3.setBounds(0, 10, 110, 23);
 
         Kode.setHighlighter(null);
         Kode.setName("Kode"); // NOI18N
@@ -403,12 +398,12 @@ public final class DlgICD9 extends javax.swing.JDialog {
             }
         });
         FormInput.add(Kode);
-        Kode.setBounds(103, 12, 110, 23);
+        Kode.setBounds(114, 10, 110, 23);
 
         jLabel8.setText("Deskripsi Pendek :");
         jLabel8.setName("jLabel8"); // NOI18N
         FormInput.add(jLabel8);
-        jLabel8.setBounds(222, 12, 110, 23);
+        jLabel8.setBounds(222, 10, 110, 23);
 
         Pendek.setHighlighter(null);
         Pendek.setName("Pendek"); // NOI18N
@@ -418,15 +413,15 @@ public final class DlgICD9 extends javax.swing.JDialog {
             }
         });
         FormInput.add(Pendek);
-        Pendek.setBounds(335, 12, 284, 23);
+        Pendek.setBounds(335, 10, 284, 23);
 
         jLabel9.setText("Deskripsi Panjang :");
         jLabel9.setName("jLabel9"); // NOI18N
         FormInput.add(jLabel9);
-        jLabel9.setBounds(0, 42, 100, 23);
+        jLabel9.setBounds(0, 40, 110, 23);
 
         ScrollCiri.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        ScrollCiri.setForeground(new java.awt.Color(50,50,50));
+        ScrollCiri.setForeground(new java.awt.Color(50, 50, 50));
         ScrollCiri.setName("ScrollCiri"); // NOI18N
 
         Panjang.setBorder(null);
@@ -441,7 +436,55 @@ public final class DlgICD9 extends javax.swing.JDialog {
         ScrollCiri.setViewportView(Panjang);
 
         FormInput.add(ScrollCiri);
-        ScrollCiri.setBounds(103, 42, 516, 40);
+        ScrollCiri.setBounds(114, 40, 505, 43);
+
+        jLabel14.setText("Valid Code :");
+        jLabel14.setName("jLabel14"); // NOI18N
+        FormInput.add(jLabel14);
+        jLabel14.setBounds(0, 90, 110, 23);
+
+        cmbValidCode.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1" }));
+        cmbValidCode.setLightWeightPopupEnabled(false);
+        cmbValidCode.setName("cmbValidCode"); // NOI18N
+        cmbValidCode.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cmbValidCodeKeyPressed(evt);
+            }
+        });
+        FormInput.add(cmbValidCode);
+        cmbValidCode.setBounds(114, 90, 60, 23);
+
+        jLabel15.setText("ACC PDX :");
+        jLabel15.setName("jLabel15"); // NOI18N
+        FormInput.add(jLabel15);
+        jLabel15.setBounds(190, 90, 90, 23);
+
+        cmbACCPDX.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Y", "N" }));
+        cmbACCPDX.setLightWeightPopupEnabled(false);
+        cmbACCPDX.setName("cmbACCPDX"); // NOI18N
+        cmbACCPDX.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cmbACCPDXKeyPressed(evt);
+            }
+        });
+        FormInput.add(cmbACCPDX);
+        cmbACCPDX.setBounds(284, 90, 60, 23);
+
+        jLabel13.setText("IM :");
+        jLabel13.setName("jLabel13"); // NOI18N
+        FormInput.add(jLabel13);
+        jLabel13.setBounds(370, 90, 50, 23);
+
+        cmbIM.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1" }));
+        cmbIM.setLightWeightPopupEnabled(false);
+        cmbIM.setName("cmbIM"); // NOI18N
+        cmbIM.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cmbIMKeyPressed(evt);
+            }
+        });
+        FormInput.add(cmbIM);
+        cmbIM.setBounds(424, 90, 60, 23);
 
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
@@ -482,7 +525,7 @@ public final class DlgICD9 extends javax.swing.JDialog {
 }//GEN-LAST:event_PendekKeyPressed
 
     private void PanjangKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PanjangKeyPressed
-        Valid.pindah(evt,Pendek,BtnSimpan);
+        Valid.pindah2(evt,Pendek,cmbValidCode);
 }//GEN-LAST:event_PanjangKeyPressed
 
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
@@ -493,11 +536,13 @@ public final class DlgICD9 extends javax.swing.JDialog {
         }else if(Panjang.getText().trim().equals("")){
             Valid.textKosong(Panjang,"Deskripsi Pajang");
         }else{            
-            Sequel.menyimpan("icd9","?,?,?","Kode Prosedur",3,new String[]{
-                Kode.getText(),Panjang.getText(),Pendek.getText()
-            });
-            tampil();
-            emptTeks();
+            if(Sequel.menyimpantf("icd9","?,?,?,?,?,?","Kode Prosedur",6,new String[]{
+                Kode.getText(),Panjang.getText(),Pendek.getText(),cmbValidCode.getSelectedItem().toString(),
+                cmbACCPDX.getSelectedItem().toString(),cmbIM.getSelectedItem().toString()
+            })==true){
+                runBackground(() ->tampil());
+                emptTeks();
+            }
         }
 }//GEN-LAST:event_BtnSimpanActionPerformed
 
@@ -505,7 +550,7 @@ public final class DlgICD9 extends javax.swing.JDialog {
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             BtnSimpanActionPerformed(null);
         }else{
-            Valid.pindah(evt,Panjang,BtnBatal);
+            Valid.pindah(evt,cmbIM,BtnBatal);
         }
 }//GEN-LAST:event_BtnSimpanKeyPressed
 
@@ -527,7 +572,7 @@ public final class DlgICD9 extends javax.swing.JDialog {
                 Sequel.meghapus("icd9","kode",tbPenyakit.getValueAt(z,1).toString());
             }
         } 
-        tampil();
+        runBackground(() ->tampil());
         emptTeks();
 }//GEN-LAST:event_BtnHapusActionPerformed
 
@@ -547,11 +592,13 @@ public final class DlgICD9 extends javax.swing.JDialog {
         }else if(Panjang.getText().trim().equals("")){
             Valid.textKosong(Panjang,"Deskripsi Pajang");
         }else{
-            Valid.editTable(tabMode,"icd9","kode","?","deskripsi_panjang=?,deskripsi_pendek=?,kode=?",4,new String[]{
-                Panjang.getText(),Pendek.getText(),Kode.getText(),tbPenyakit.getValueAt(tbPenyakit.getSelectedRow(),1).toString()
-            });
-            if(tabMode.getRowCount()!=0){tampil();}
-            emptTeks();
+            if(Valid.editTabletf(tabMode,"icd9","kode","?","deskripsi_panjang=?,deskripsi_pendek=?,kode=?,validcode=?,accpdx=?,im=?",7,new String[]{
+                Panjang.getText(),Pendek.getText(),Kode.getText(),cmbValidCode.getSelectedItem().toString(),cmbACCPDX.getSelectedItem().toString(),
+                cmbIM.getSelectedItem().toString(),tbPenyakit.getValueAt(tbPenyakit.getSelectedRow(),1).toString()
+            })==true){
+                if(tabMode.getRowCount()!=0){runBackground(() ->tampil());}
+                emptTeks();
+            }
         }
 }//GEN-LAST:event_BtnEditActionPerformed
 
@@ -614,12 +661,12 @@ public final class DlgICD9 extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            tampil();
+            runBackground(() ->tampil());
         }else{
             Valid.pindah(evt, TCari, BtnAll);
         }
@@ -627,13 +674,13 @@ public final class DlgICD9 extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             TCari.setText("");
-            tampil();
+            runBackground(() ->tampil());
         }else{
             Valid.pindah(evt, BtnCari,TCari);
         }
@@ -669,8 +716,41 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_ChkInputActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        //tampil();
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        } 
     }//GEN-LAST:event_formWindowOpened
+
+    private void cmbValidCodeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbValidCodeKeyPressed
+        Valid.pindah(evt,Panjang,cmbACCPDX);
+    }//GEN-LAST:event_cmbValidCodeKeyPressed
+
+    private void cmbACCPDXKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbACCPDXKeyPressed
+        Valid.pindah(evt,cmbValidCode,cmbIM);
+    }//GEN-LAST:event_cmbACCPDXKeyPressed
+
+    private void cmbIMKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbIMKeyPressed
+        Valid.pindah(evt,cmbACCPDX,BtnSimpan);
+    }//GEN-LAST:event_cmbIMKeyPressed
 
     /**
     * @param args the command line arguments
@@ -707,7 +787,13 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.ScrollPane Scroll;
     private widget.ScrollPane ScrollCiri;
     private widget.TextBox TCari;
+    private widget.ComboBox cmbACCPDX;
+    private widget.ComboBox cmbIM;
+    private widget.ComboBox cmbValidCode;
     private widget.InternalFrame internalFrame1;
+    private widget.Label jLabel13;
+    private widget.Label jLabel14;
+    private widget.Label jLabel15;
     private widget.Label jLabel3;
     private widget.Label jLabel6;
     private widget.Label jLabel7;
@@ -722,16 +808,19 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private void tampil() {
         Valid.tabelKosong(tabMode);
         try{
-            ps=koneksi.prepareStatement("select * from icd9 where kode like ? or "+
-                    " deskripsi_panjang like ? or  deskripsi_pendek like ? order by kode");
+            ps=koneksi.prepareStatement(
+                "select * from icd9 "+(TCari.getText().trim().equals("")?"":"where icd9.kode like ? or icd9.deskripsi_panjang like ? or icd9.deskripsi_pendek like ? ")+"order by icd9.kode");
             try{
-                ps.setString(1,"%"+TCari.getText().trim()+"%");
-                ps.setString(2,"%"+TCari.getText().trim()+"%");
-                ps.setString(3,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(1,"%"+TCari.getText().trim()+"%");
+                    ps.setString(2,"%"+TCari.getText().trim()+"%");
+                    ps.setString(3,"%"+TCari.getText().trim()+"%");
+                }   
                 rs=ps.executeQuery();
                 while(rs.next()){
                     tabMode.addRow(new Object[]{
-                        false,rs.getString(1),rs.getString(2),rs.getString(3)});
+                        false,rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6)
+                    });
                 }
             }catch(Exception ex){
                 System.out.println(ex);
@@ -762,6 +851,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             Kode.setText(tbPenyakit.getValueAt(row,1).toString());
             Pendek.setText(tbPenyakit.getValueAt(row,3).toString());
             Panjang.setText(tbPenyakit.getValueAt(row,2).toString());
+            cmbValidCode.setSelectedItem(tbPenyakit.getValueAt(row,4).toString());
+            cmbACCPDX.setSelectedItem(tbPenyakit.getValueAt(row,5).toString());
+            cmbIM.setSelectedItem(tbPenyakit.getValueAt(row,6).toString());
         }
     }
 
@@ -776,7 +868,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
-            PanelInput.setPreferredSize(new Dimension(WIDTH,118));
+            PanelInput.setPreferredSize(new Dimension(WIDTH,145));
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
@@ -792,5 +884,37 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         BtnHapus.setEnabled(akses.geticd9());
         BtnEdit.setEnabled(akses.geticd9());
         BtnPrint.setEnabled(akses.geticd9());
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

@@ -19,14 +19,15 @@
                 $codernik       = validTeks4((isset($_GET['codernik'])?$_GET['codernik']:NULL),30);
                 $carabayar      = validTeks4((str_replace("_"," ",isset($_GET['carabayar']))?str_replace("_"," ",$_GET['carabayar']):NULL),40);
                 $keyword        = validTeks4((isset($_GET['keyword'])?$_GET['keyword']:NULL),20);
+                $statuskirim    = validTeks(str_replace("_"," ",isset($_GET['statuskirim']))?str_replace("_"," ",$_GET['statuskirim']):NULL);
                 echo "<input type=hidden name=codernik  value=$codernik><input type=hidden name=keyword value=$keyword>";
         ?>
         <div style="width: 100%; height: 85%; overflow: auto;">
         <?php
             $BtnCari  =isset($_POST['BtnCari'])?$_POST['BtnCari']:NULL;
-            $keyword  =isset($_POST['keyword'])?trim($_POST['keyword']):NULL;
-            $keyword  = validTeks4($keyword,20);
-            if (isset($BtnCari)) {      
+            if (isset($BtnCari)) {    
+                    $keyword        =isset($_POST['keyword'])?trim($_POST['keyword']):NULL;
+                    $keyword        = validTeks4($keyword,20);
                     $tahunawal      = validTeks4(trim($_POST['tahunawal']),4);
                     $bulanawal      = validTeks4(trim($_POST['bulanawal']),2);
                     $tanggalawal    = validTeks4(trim($_POST['tanggalawal']),2);
@@ -34,7 +35,8 @@
                     $bulanakhir     = validTeks4(trim($_POST['bulanakhir']),2);
                     $tanggalakhir   = validTeks4(trim($_POST['tanggalakhir']),2);
                     $codernik       = validTeks4(trim($_POST['codernik']),30); 
-                    $carabayar      = validTeks4((isset($_POST['carabayar'])?trim($_POST['carabayar']):NULL),40);
+                    $carabayar      = validTeks4((str_replace("_"," ",isset($_POST['carabayar']))?str_replace("_"," ",trim($_POST['carabayar'])):NULL),40);
+                    $statuskirim    = validTeks((str_replace("_"," ",isset($_POST['statuskirim']))?str_replace("_"," ",trim($_POST['statuskirim'])):NULL),40);
             }
             if(empty($tahunawal)){
                 $tahunawal=date('Y');
@@ -56,81 +58,84 @@
             }
             $_sql = "select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,
                     reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,if(pasien.jk='L','Laki-Laki','Perempuan') as jk,pasien.umur,poliklinik.nm_poli,
-                    reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab 
-                    from reg_periksa inner join dokter inner join pasien inner join poliklinik inner join penjab 
-                    on reg_periksa.kd_dokter=dokter.kd_dokter and reg_periksa.no_rkm_medis=pasien.no_rkm_medis 
-                    and reg_periksa.kd_pj=penjab.kd_pj and reg_periksa.kd_poli=poliklinik.kd_poli  where  
-                    reg_periksa.stts<>'Batal' and penjab.png_jawab like '%".$carabayar."%' and tgl_registrasi between '".$tahunawal."-".$bulanawal."-".$tanggalawal."' and '".$tahunakhir."-".$bulanakhir."-".$tanggalakhir."' and  reg_periksa.no_reg like '%".$keyword."%' or 
-                    reg_periksa.stts<>'Batal' and penjab.png_jawab like '%".$carabayar."%' and tgl_registrasi between '".$tahunawal."-".$bulanawal."-".$tanggalawal."' and '".$tahunakhir."-".$bulanakhir."-".$tanggalakhir."' and  reg_periksa.no_rawat like '%".$keyword."%' or 
-                    reg_periksa.stts<>'Batal' and penjab.png_jawab like '%".$carabayar."%' and tgl_registrasi between '".$tahunawal."-".$bulanawal."-".$tanggalawal."' and '".$tahunakhir."-".$bulanakhir."-".$tanggalakhir."' and  reg_periksa.tgl_registrasi like '%".$keyword."%' or
-                    reg_periksa.stts<>'Batal' and penjab.png_jawab like '%".$carabayar."%' and tgl_registrasi between '".$tahunawal."-".$bulanawal."-".$tanggalawal."' and '".$tahunakhir."-".$bulanakhir."-".$tanggalakhir."' and  reg_periksa.kd_dokter like '%".$keyword."%' or 
-                    reg_periksa.stts<>'Batal' and penjab.png_jawab like '%".$carabayar."%' and tgl_registrasi between '".$tahunawal."-".$bulanawal."-".$tanggalawal."' and '".$tahunakhir."-".$bulanakhir."-".$tanggalakhir."' and  dokter.nm_dokter like '%".$keyword."%' or 
-                    reg_periksa.stts<>'Batal' and penjab.png_jawab like '%".$carabayar."%' and tgl_registrasi between '".$tahunawal."-".$bulanawal."-".$tanggalawal."' and '".$tahunakhir."-".$bulanakhir."-".$tanggalakhir."' and  reg_periksa.no_rkm_medis like '%".$keyword."%' or 
-                    reg_periksa.stts<>'Batal' and penjab.png_jawab like '%".$carabayar."%' and tgl_registrasi between '".$tahunawal."-".$bulanawal."-".$tanggalawal."' and '".$tahunakhir."-".$bulanakhir."-".$tanggalakhir."' and  reg_periksa.stts_daftar like '%".$keyword."%' or 
-                    reg_periksa.stts<>'Batal' and penjab.png_jawab like '%".$carabayar."%' and tgl_registrasi between '".$tahunawal."-".$bulanawal."-".$tanggalawal."' and '".$tahunakhir."-".$bulanakhir."-".$tanggalakhir."' and  pasien.nm_pasien like '%".$keyword."%' or 
-                    reg_periksa.stts<>'Batal' and penjab.png_jawab like '%".$carabayar."%' and tgl_registrasi between '".$tahunawal."-".$bulanawal."-".$tanggalawal."' and '".$tahunakhir."-".$bulanakhir."-".$tanggalakhir."' and  poliklinik.nm_poli like '%".$keyword."%' or 
-                    reg_periksa.stts<>'Batal' and penjab.png_jawab like '%".$carabayar."%' and tgl_registrasi between '".$tahunawal."-".$bulanawal."-".$tanggalawal."' and '".$tahunakhir."-".$bulanakhir."-".$tanggalakhir."' and  penjab.png_jawab like '%".$keyword."%' order by reg_periksa.tgl_registrasi,reg_periksa.jam_reg desc ";
+                    reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.status_bayar,penjab.png_jawab 
+                    from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis
+                    inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli inner join penjab on reg_periksa.kd_pj=penjab.kd_pj where  
+                    reg_periksa.stts<>'Batal' ".(!empty($carabayar)?"and penjab.png_jawab like '%".$carabayar."%'":"")." and tgl_registrasi between '".$tahunawal."-".$bulanawal."-".$tanggalawal."' and '".$tahunakhir."-".$bulanakhir."-".$tanggalakhir."' ".
+                    (!empty($keyword)?"and (reg_periksa.no_reg like '%".$keyword."%' or reg_periksa.no_rawat like '%".$keyword."%' or reg_periksa.tgl_registrasi like '%".$keyword."%' or reg_periksa.kd_dokter like '%".$keyword."%' or dokter.nm_dokter like '%".$keyword."%' or 
+                    reg_periksa.no_rkm_medis like '%".$keyword."%' or reg_periksa.status_bayar like '%".$keyword."%' or pasien.nm_pasien like '%".$keyword."%' or poliklinik.nm_poli like '%".$keyword."%' or penjab.png_jawab like '%".$keyword."%') ":"").
+                    " order by reg_periksa.tgl_registrasi,reg_periksa.jam_reg desc ";
             $hasil=bukaquery($_sql);
-            $jumlah=mysqli_num_rows($hasil);
+            $jumlah=0;
             if(mysqli_num_rows($hasil)!=0) {
                 echo "<table width='100%' border='0' align='center' cellpadding='0' cellspacing='0' class='tbl_form'>
                         <tr class='head2'>
                             <td width='30%'><div align='center'>Data Pasien</div></td>
                             <td width='20%'><div align='center'>Registrasi</div></td>
                             <td width='20%'><div align='center'>Dokter</div></td>
-                            <td width='20%'><div align='center'>Diagnosa</div></td>
-                            <td width='10%'><div align='center'>Status</div></td>
+                            <td width='18%'><div align='center'>Diagnosa</div></td>
+                            <td width='12%'><div align='center'>Status</div></td>
                         </tr>";
                         while($baris = mysqli_fetch_array($hasil)) {
                             $statuscovid="Bukan Corona";
                             $aksi="BukanCorona";
-                            if(getOne("select count(perawatan_corona.no_rawat) from perawatan_corona where perawatan_corona.no_rawat='".$baris["no_rawat"]."'")>0){
+                            /*if(getOne("select count(perawatan_corona.no_rawat) from perawatan_corona where perawatan_corona.no_rawat='".$baris["no_rawat"]."'")>0){
                                 $statuscovid="Pasien Corona";
                                 $aksi="PasienCorona";
-                            }
+                            }*/
 
                             $carabayar =str_replace(" ","_",$carabayar)?str_replace(" ","_",$carabayar):NULL;
-                            $status="<a href='?act=DetailKirim&corona=$aksi&norawat=".$baris["no_rawat"]."&codernik=$codernik&tahunawal=$tahunawal&bulanawal=$bulanawal&tanggalawal=$tanggalawal&tahunakhir=$tahunakhir&bulanakhir=$bulanakhir&tanggalakhir=$tanggalakhir&carabayar=$carabayar'>[Kirim]</a>";
+                            $statuskirim =str_replace(" ","_",$statuskirim)?str_replace(" ","_",$statuskirim):NULL;
+                            $status="<a href='?act=DetailKirim&corona=$aksi&norawat=".$baris["no_rawat"]."&tahunawal=$tahunawal&bulanawal=$bulanawal&tanggalawal=$tanggalawal&tahunakhir=$tahunakhir&bulanakhir=$bulanakhir&tanggalakhir=$tanggalakhir&codernik=$codernik&keyword=$keyword&carabayar=$carabayar&statuskirim=$statuskirim'>[Kirim]</a>";
+                            $statusdata="Belum Terkirim";
                             if(getOne("select count(inacbg_klaim_baru2.no_rawat) from inacbg_klaim_baru2 where inacbg_klaim_baru2.no_rawat='".$baris["no_rawat"]."'")>0){
-                                $status="<a href='?act=DetailKirim&corona=$aksi&norawat=".$baris["no_rawat"]."&codernik=$codernik&tahunawal=$tahunawal&bulanawal=$bulanawal&tanggalawal=$tanggalawal&tahunakhir=$tahunakhir&bulanakhir=$bulanakhir&tanggalakhir=$tanggalakhir&carabayar=$carabayar'>[Kirim Ulang]</a>";
+                                $status="<a href='?act=DetailKirim&corona=$aksi&norawat=".$baris["no_rawat"]."&tahunawal=$tahunawal&bulanawal=$bulanawal&tanggalawal=$tanggalawal&tahunakhir=$tahunakhir&bulanakhir=$bulanakhir&tanggalakhir=$tanggalakhir&codernik=$codernik&keyword=$keyword&carabayar=$carabayar&statuskirim=$statuskirim'>[Kirim Ulang]</a>";
+                                $statusdata="Sudah Terkirim";
                             }
-                            echo "<tr class='isi' title='".$baris["no_rawat"].", ".$baris["no_rkm_medis"].", ".$baris["nm_pasien"]."'>
-                                    <td bgcolor='#FFFFFF' valign='top'>".$baris["no_rkm_medis"]." ".$baris["nm_pasien"]."<br>".$baris["almt_pj"]."<br>".$baris["jk"].", Usia ".$baris["umur"]."</td>
-                                    <td bgcolor='#FFFFFF' valign='top'>".$baris["no_rawat"]." ".$baris["no_reg"]."<br>".$baris["tgl_registrasi"]." ".$baris["jam_reg"]."<br>Status : ".$baris["stts_daftar"]."</td>
-                                    <td bgcolor='#FFFFFF' valign='top'>".$baris["nm_dokter"]."<br>".$baris["nm_poli"]."<br>Cara Bayar : ".$baris["png_jawab"]."</td>
-                                    <td valign='top'>";
-                                    $penyakit="";
-                                    $a=1;
-                                    $hasilpenyakit=bukaquery("select diagnosa_pasien.kd_penyakit from diagnosa_pasien where diagnosa_pasien.no_rawat='".$baris["no_rawat"]."' order by diagnosa_pasien.prioritas asc");
-                                    while($barispenyakit = mysqli_fetch_array($hasilpenyakit)) {
-                                        if($a==1){
-                                            $penyakit=$barispenyakit["kd_penyakit"];
-                                        }else{
-                                            $penyakit=$penyakit.", ".$barispenyakit["kd_penyakit"];
-                                        }                
-                                        $a++;
-                                    }
-                                    echo $penyakit."<br>";
+                            $carabayar =str_replace("_"," ",$carabayar)?str_replace("_"," ",$carabayar):NULL;
+                            $statuskirim =str_replace("_"," ",$statuskirim)?str_replace("_"," ",$statuskirim):NULL;
+                            if(($statuskirim=="Semua")||($statuskirim==$statusdata)){
+                                echo "<tr class='isi' title='".$baris["no_rawat"].", ".$baris["no_rkm_medis"].", ".$baris["nm_pasien"]."'>
+                                        <td bgcolor='#FFFFFF' valign='middle'>".$baris["no_rkm_medis"]." ".$baris["nm_pasien"]."<br>".$baris["almt_pj"]."<br>".$baris["jk"].", Usia ".$baris["umur"]."</td>
+                                        <td bgcolor='#FFFFFF' valign='middle'>".$baris["no_rawat"]." ".$baris["no_reg"]."<br>".$baris["tgl_registrasi"]." ".$baris["jam_reg"]."<br>Status : ".str_replace("Bayar","Closing",$baris["status_bayar"])."</td>
+                                        <td bgcolor='#FFFFFF' valign='middle'>".$baris["nm_dokter"]."<br>".$baris["nm_poli"]."<br>Cara Bayar : ".$baris["png_jawab"]."</td>
+                                        <td valign='middle'>";
+                                        $penyakit="";
+                                        $a=1;
+                                        $hasilpenyakit=bukaquery("select diagnosa_pasien.kd_penyakit from diagnosa_pasien where diagnosa_pasien.no_rawat='".$baris["no_rawat"]."' order by diagnosa_pasien.prioritas asc");
+                                        while($barispenyakit = mysqli_fetch_array($hasilpenyakit)) {
+                                            if($a==1){
+                                                $penyakit=$barispenyakit["kd_penyakit"];
+                                            }else{
+                                                $penyakit=$penyakit.", ".$barispenyakit["kd_penyakit"];
+                                            }                
+                                            $a++;
+                                        }
+                                        echo $penyakit."<br>";
 
-                                    $prosedur="";
-                                    $a=1;
-                                    $hasilprosedur=bukaquery("select prosedur_pasien.kode from prosedur_pasien where prosedur_pasien.no_rawat='".$baris["no_rawat"]."' order by prosedur_pasien.prioritas asc");
-                                    while($barisprosedur = mysqli_fetch_array($hasilprosedur)) {
-                                        if($a==1){
-                                            $prosedur=$barisprosedur["kode"];
-                                        }else{
-                                            $prosedur=$prosedur.", ".$barisprosedur["kode"];
-                                        }                
-                                        $a++;
-                                    } 
-                                    echo $prosedur." ".$keyword;
-                             echo  "</td>
-                                    <td valign='center' align='center'>
-                                        <a href='?act=KlaimBaruManual2&action=InputCorona&norawat=".$baris["no_rawat"]."&tahunawal=$tahunawal&bulanawal=$bulanawal&tanggalawal=$tanggalawal&tahunakhir=$tahunakhir&bulanakhir=$bulanakhir&tanggalakhir=$tanggalakhir&codernik=$codernik&keyword=$keyword'>[$statuscovid]</a><br>
-                                        <a href='?act=KlaimBaruManual2&action=InputDiagnosa&norawat=".$baris["no_rawat"]."&tahunawal=$tahunawal&bulanawal=$bulanawal&tanggalawal=$tanggalawal&tahunakhir=$tahunakhir&bulanakhir=$bulanakhir&tanggalakhir=$tanggalakhir&codernik=$codernik&keyword=$keyword'>[Input Diagnosa]</a><br>
-                                        ".$status."
-                                    </td>                                
-                                 </tr>";
+                                        $prosedur="";
+                                        $a=1;
+                                        $hasilprosedur=bukaquery("select prosedur_pasien.kode,prosedur_pasien.jumlah from prosedur_pasien where prosedur_pasien.no_rawat='".$baris["no_rawat"]."' order by prosedur_pasien.prioritas asc");
+                                        while($barisprosedur = mysqli_fetch_array($hasilprosedur)) {
+                                            if($a==1){
+                                                $prosedur=$barisprosedur["kode"].str_replace("+1","","+".$barisprosedur["jumlah"]);
+                                            }else{
+                                                $prosedur=$prosedur.", ".$barisprosedur["kode"].str_replace("+1","","+".$barisprosedur["jumlah"]);
+                                            }                
+                                            $a++;
+                                        } 
+                                        echo $prosedur;
+                                 echo  "</td>
+                                        <td valign='center' align='center'>
+                                            <!-- <a href='?act=KlaimBaruManual2&action=InputCorona&norawat=".$baris["no_rawat"]."&tahunawal=$tahunawal&bulanawal=$bulanawal&tanggalawal=$tanggalawal&tahunakhir=$tahunakhir&bulanakhir=$bulanakhir&tanggalakhir=$tanggalakhir&codernik=$codernik&keyword=$keyword&carabayar=$carabayar&statuskirim=$statuskirim'>[$statuscovid]</a><br> -->
+                                            <a href='?act=KlaimBaruManual2&action=RiwayatPerawatan&norawat=".$baris["no_rawat"]."&tahunawal=$tahunawal&bulanawal=$bulanawal&tanggalawal=$tanggalawal&tahunakhir=$tahunakhir&bulanakhir=$bulanakhir&tanggalakhir=$tanggalakhir&codernik=$codernik&keyword=$keyword&carabayar=$carabayar&statuskirim=$statuskirim'>[Riwayat Perawatan]</a><br>
+                                            <a href='?act=KlaimBaruManual2&action=DataBilling&norawat=".$baris["no_rawat"]."&tahunawal=$tahunawal&bulanawal=$bulanawal&tanggalawal=$tanggalawal&tahunakhir=$tahunakhir&bulanakhir=$bulanakhir&tanggalakhir=$tanggalakhir&codernik=$codernik&keyword=$keyword&carabayar=$carabayar&statuskirim=$statuskirim'>[Billing]</a><br>
+                                            <a href='?act=KlaimBaruManual2&action=InputDiagnosa&norawat=".$baris["no_rawat"]."&tahunawal=$tahunawal&bulanawal=$bulanawal&tanggalawal=$tanggalawal&tahunakhir=$tahunakhir&bulanakhir=$bulanakhir&tanggalakhir=$tanggalakhir&codernik=$codernik&keyword=$keyword&carabayar=$carabayar&statuskirim=$statuskirim'>[Input Diagnosa]</a><br>
+                                            ".$status."
+                                        </td>                                
+                                     </tr>";
+                                 $jumlah++;
+                            }
                         }
                 echo "</table>";           
             }else{
@@ -145,14 +150,10 @@
                        </table>";
             }         
 
-            if($action=="InputDiagnosa") {
+            if(($action=="InputDiagnosa")||($action=="InputCorona")||($action=="RiwayatPerawatan")||($action=="DataBilling")) {
                 HapusAll("temppanggilnorawat");
                 InsertData2("temppanggilnorawat","'$norawat'");
-                echo "<meta http-equiv='refresh' content='1;URL=?act=KlaimBaruManual2&tahunawal=$tahunawal&bulanawal=$bulanawal&tanggalawal=$tanggalawal&tahunakhir=$tahunakhir&bulanakhir=$bulanakhir&tanggalakhir=$tanggalakhir&codernik=$codernik&action=no&keyword=$keyword'>";
-            }else if($action=="InputCorona") {
-                HapusAll("temppanggilnorawat");
-                InsertData2("temppanggilnorawat","'$norawat'");
-                echo "<meta http-equiv='refresh' content='1;URL=?act=KlaimBaruManual2&tahunawal=$tahunawal&bulanawal=$bulanawal&tanggalawal=$tanggalawal&tahunakhir=$tahunakhir&bulanakhir=$bulanakhir&tanggalakhir=$tanggalakhir&codernik=$codernik&action=no&keyword=$keyword'>";
+                echo "<meta http-equiv='refresh' content='1;URL=?act=KlaimBaruManual2&tahunawal=$tahunawal&bulanawal=$bulanawal&tanggalawal=$tanggalawal&tahunakhir=$tahunakhir&bulanakhir=$bulanakhir&tanggalakhir=$tanggalakhir&codernik=$codernik&action=no&keyword=$keyword&carabayar=$carabayar&statuskirim=$statuskirim'>";
             }
 
             $BtnKeluar=isset($_POST['BtnKeluar'])?$_POST['BtnKeluar']:NULL;
@@ -219,14 +220,22 @@
                         Cara Bayar : 
                         <select name="carabayar" class="text4">
                             <?php
-                                $_sql = "SELECT penjab.png_jawab FROM penjab  ORDER BY penjab.png_jawab";
-                                $hasil=bukaquery($_sql);
                                 if(!empty($carabayar)){
                                     echo "<option value='$carabayar'>$carabayar</option>";
                                 }
-                                echo "<option value=''></option>";
-                                while($baris = mysqli_fetch_array($hasil)) {
-                                    echo "<option value='$baris[0]'>$baris[0]</option>";
+                                
+                                if(!isset($_SESSION["penjab"])){
+                                    $penjab = "<option value=''>Semua</option>";
+                                    $_sql   = "SELECT penjab.png_jawab FROM penjab  ORDER BY penjab.png_jawab";
+                                    $hasil=bukaquery($_sql);
+                                    echo "<option value=''>Semua</option>";
+                                    while($baris = mysqli_fetch_array($hasil)) {
+                                        echo "<option value='$baris[0]'>$baris[0]</option>";
+                                        $penjab=$penjab."<option value='$baris[0]'>$baris[0]</option>";
+                                    }
+                                    $_SESSION["penjab"]=$penjab;
+                                }else{
+                                    echo $_SESSION["penjab"];
                                 }
                             ?>
                         </select>                        
@@ -234,7 +243,18 @@
                 </tr>
                 <tr class="head3">					
                     <td width="690px">
-                        Keyword : <input name="keyword" class="text" onkeydown="setDefault(this, document.getElementById('MsgIsi1'));" type=text id="TxtIsi1" value="<?php echo $keyword;?>" size="55" maxlength="20" pattern="[a-zA-Z0-9, ./@_]{1,20}" title=" a-zA-Z0-9, ./@_ (Maksimal 20 karakter)" autocomplete="off" autocomplete="off" autofocus />
+                        Status :
+                        <select name="statuskirim" class="text">
+                            <?php
+                                if(!empty($statuskirim)){
+                                    echo "<option value='$statuskirim'>$statuskirim</option>";
+                                }
+                            ?>
+                            <option value="Semua">Semua</option>
+                            <option value="Sudah Terkirim">Sudah Terkirim</option>
+                            <option value="Belum Terkirim">Belum Terkirim</option>
+                        </select>&nbsp;&nbsp;&nbsp;
+                        Keyword : <input name="keyword" class="text" onkeydown="setDefault(this, document.getElementById('MsgIsi1'));" type=text id="TxtIsi1" value="<?php echo $keyword;?>" size="37" maxlength="20" pattern="[a-zA-Z0-9, ./@_]{1,20}" title=" a-zA-Z0-9, ./@_ (Maksimal 20 karakter)" autocomplete="off" autocomplete="off" autofocus />
                         <input name=BtnCari type=submit class="button" value="&nbsp;&nbsp;Cari&nbsp;&nbsp;" />
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         Record : <?php echo $jumlah; ?>

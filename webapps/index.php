@@ -1,4 +1,5 @@
 <?php
+    header("X-Robots-Tag: noindex", true);
     session_start();
     require_once('conf/conf.php');
     header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); 
@@ -18,6 +19,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+    <meta name="robots" content="noindex,nofollow">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Edukasi, Konfirmasi & Persetujuan</title>
     <link href="css/login.css" rel="stylesheet" type="text/css" />
@@ -26,8 +28,7 @@
         function PopupCenter(pageURL, title,w,h) {
             var left = (screen.width/2)-(w/2);
             var top = (screen.height/2)-(h/2);
-            var targetWin = window.open (pageURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
-            
+            var targetWin = window.open (pageURL, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);        
         }
     </script>
 </head>
@@ -41,82 +42,146 @@
            if ($sesilogin==USERHYBRIDWEB.PASHYBRIDWEB){
                 echo "
                     <div id=\"navcontainer\">
-                        <div style='width: 100%; height: 100%; overflow: auto;'> 
+                        <div style='width: 100%; height: 120%; overflow: auto;'> 
                             <table width='100%' align='center' height='100%'>
                                 <tr width='100%' align='center'>
-                                    <td width='33%' align='center'>
+                                    <td width='25%' align='center'>
                                       <a target=_blank href=persetujuanumum/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
                                          <img src='images/5868931_architecture_building_coronavirus_hospital_corona_icon.png'/><br>
                                          Persetujuan Umum                                                  
                                       </a>
                                     </td>
-                                    <td width='33%' align='center'>
+                                    <td width='25%' align='center'>
                                       <a target=_blank href=persetujuantindakan/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
                                          <img src='images/6771569_education_learning_pencil_school_signature_icon.png'/><br>
                                          Persetujuan/Penolakan Tindakan                                                  
                                       </a>
                                     </td>
-                                    <td width='33%' align='center'>
+                                    <td width='25%' align='center'>
                                       <a target=_blank href=perencanaanpemulangan/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
                                          <img src='images/6141469_coronavirus_covid_covid19_hospital_infected_icon.png'/><br>
                                          Perencanaan Pemulangan Pasien                                                  
                                       </a>
                                     </td>
-                                </tr>
-                                <tr width='100%' align='center'>
-                                    <td width='33%' align='center'>
+                                    <td width='25%' align='center'>
                                       <a target=_blank href=penyerahanresep/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
                                          <img src='images/1360485894_add-notes.png'/><br>
                                          Penyerahan Resep Rawat Jalan                                                 
                                       </a>
                                     </td>
-                                    <td width='33%' align='center'>
+                                </tr>
+                                <tr width='100%' align='center'>
+                                    <td width='25%' align='center'>
                                       <a target=_blank href=pernyataanumum/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
                                          <img src='images/Edit-Male-User.png'/><br>
                                          Pernyataan Pasien Umum                                                  
                                       </a>
                                     </td>
-                                    <td width='33%' align='center'>
+                                    <td width='25%' align='center'>
                                       <a target=_blank href=pulangaps/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
                                          <img src='images/5947112_clinic_doctor_healthcare_hospital_medical_icon.png'/><br>
                                          Pernyataan Pulang Atas Permintaan Sendiri                                                 
                                       </a>
                                     </td>
-                                </tr>
-                                <tr width='100%' align='center'>
-                                    <td width='33%' align='center'>
+                                    <td width='25%' align='center'>
                                       <a target=_blank href=persetujuantransferruang/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
                                          <img src='images/6009596_case_coronavirus_covid19_hospital_patient_icon.png'/><br>
                                          Persetujuan Transfer Antar Ruang                                                
                                       </a>
                                     </td>
-                                    <td width='33%' align='center'>
+                                    <td width='25%' align='center'>
                                       <a target=_blank href=persetujuanrawatinap/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
                                          <img src='images/5983455_bed_hospital_medical_patient_icon.png'/><br>
                                          Persetujuan Rawat Inap                                                
                                       </a>
                                     </td>
-                                    <td width='33%' align='center'>
+                                </tr>
+                                <tr width='100%' align='center'>
+                                    <td width='25%' align='center'>
                                       <a target=_blank href=penundaanpelayanan/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
                                          <img src='images/9160890_clock_commerce_shopping_online_store_icon.png'/><br>
                                          Persetujuan Penundaan Pelayanan                                                
                                       </a>
                                     </td>
-                                </tr>
-                                <tr width='100%' align='center'>
-                                    <td width='33%' align='center'>
+                                    <td width='25%' align='center'>
                                       <a target=_blank href=penolakananjuranmedis/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
                                          <img src='images/8960611_hospitals_hospital_building_medic_health_icon.png'/><br>
                                          Penolakan Anjuran Medis                                               
                                       </a>
                                     </td>
-                                    <td width='33%' align='center'>
+                                    <td width='25%' align='center'>
                                       <a target=_blank href=pengkajianrestrain/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
                                          <img src='images/3841816_chain_hyperlink_interface_link_multimedia_icon.png'/><br>
                                          Persetujuan Restrain                                               
                                       </a>
                                     </td>
-                                    <td width='33%' align='center'>
+                                    <td width='25%' align='center'>
+                                      <a target=_blank href=pelaksanaanedukasi/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
+                                         <img src='images/11211449_book_library_learning_knowledge_education_icon.png'/><br>
+                                         Bukti Pelaksanaan Informasi & Edukasi                                               
+                                      </a>
+                                    </td>
+                                </tr>
+                                <tr width='100%' align='center'>
+                                    <td width='25%' align='center'>
+                                      <a target=_blank href=layanankedokteranfisikrehabilitasi/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
+                                         <img src='images/4082071_healthcare_hospital_medical_icon.png'/><br>
+                                         Bukti Pelayanan Kedokteran Fisik & Rehabilitasi                                               
+                                      </a>
+                                    </td>
+                                    <td width='25%' align='center'>
+                                      <a target=_blank href=layananprogramkfr/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
+                                         <img src='images/8960631_crutches_crutch_orthopedic_physiotherapy_rehabilitation_icon.png'/><br>
+                                         Bukti Pelayanan Program KFR                                            
+                                      </a>
+                                    </td>
+                                    <td width='25%' align='center'>
+                                      <a target=_blank href=persetujuanpemeriksaanhiv/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
+                                         <img src='images/6217201_corona_coronavirus_test_tube_virus_icon.png'/><br>
+                                         Bukti Persetujuan Pemeriksaan HIV                                           
+                                      </a>
+                                    </td>
+                                    <td width='25%' align='center'>
+                                      <a target=_blank href=pernyataanmemilihdpjp/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
+                                         <img src='images/5898997_avatar_doctor_man_mask_user_icon.png'/><br>
+                                         Pernyataan Memilih DPJP                                          
+                                      </a>
+                                    </td>
+                                </tr>
+                                <tr width='100%' align='center'>
+                                    <td width='25%' align='center'>
+                                      <a target=_blank href=pernyataanmenerimabarang/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
+                                         <img src='images/file-manager.png'/><br>
+                                         Serah Terima Anggota Tubuh/Barang                                          
+                                      </a>
+                                    </td>
+                                    <td width='25%' align='center'>
+                                      <a target=_blank href=permintaanbinrohtal/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
+                                         <img src='images/mental-health_18376031-2.png'/><br>
+                                         Persetujuan Bimbingan Rohani & Mental                                         
+                                      </a>
+                                    </td>
+                                    <td width='25%' align='center'>
+                                      <a target=_blank href=perlindungankekerasan/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
+                                         <img src='images/boxing_2043124.png'/><br>
+                                         Permintaan Perlindungan Dari Kekerasan                                        
+                                      </a>
+                                    </td>
+                                    <td width='25%' align='center'>
+                                      <a target=_blank href=permohonanprivasi/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
+                                         <img src='images/compliant_4252354.png'/><br>
+                                         Permohonan Privasi Pasien                                        
+                                      </a>
+                                    </td>
+                                </tr>
+                                <tr width='100%' align='center'>
+                                    <td width='25%' align='center'>
+                                      <a target=_blank href=secondopinion/login.php?iyem=".encrypt_decrypt("{\"usere\":\"".USERHYBRIDWEB."\",\"passwordte\":\"".PASHYBRIDWEB."\"}","e").">                                                 
+                                         <img src='images/conversation_3601377.png'/><br>
+                                         Permintaan Second Opinion                                       
+                                      </a>
+                                    </td>
+                                    <td width='25%' align='center'>
                                       <a href='?aksi=Keluar'>                                                 
                                          <img src='images/1360484978_application-pgp-signature.png'/><br>
                                          Keluar                                               

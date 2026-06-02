@@ -13,7 +13,7 @@
                 $action             = isset($_GET['action'])?$_GET['action']:NULL;
                 $no_rawat           = validTeks(isset($_GET['no_rawat'])?$_GET['no_rawat']:NULL);
                 $tanggal            = validTeks(isset($_GET['tanggal'])?$_GET['tanggal']:NULL);
-                $jam                = validTeks(isset($_GET['jam'])?$_GET['jam']:NULL);
+                $jam                = validTeks3(isset($_GET['jam'])?$_GET['jam']:NULL);
                 $no_rm              = getOne("select reg_periksa.no_rkm_medis from reg_periksa where reg_periksa.no_rawat='$no_rawat'");
                 $nama_pasien        = getOne("select pasien.nm_pasien from pasien where pasien.no_rkm_medis='$no_rm'");
                 echo "<input type=hidden name=no_rawat value=$no_rawat>
@@ -54,12 +54,20 @@
                     $gambar     = validTeks(str_replace(" ","_","pages/upload/".$_FILES['gambar']['name']));
                     if((strtolower(substr($gambar,-4))==".jpg")||(strtolower(substr($gambar,-5))==".jpeg")){
                         if(($_FILES['gambar']['type'] == 'image/jpeg')||($_FILES['gambar']['type'] == 'image/jpg')){
-                            if((mime_content_type($_FILES['gambar']['tmp_name'])== 'image/jpeg')||(mime_content_type($_FILES['gambar']['tmp_name'])== 'image/jpg')){
+                            if((@mime_content_type($_FILES['gambar']['tmp_name'])== 'image/jpeg')||(@mime_content_type($_FILES['gambar']['tmp_name'])== 'image/jpg')){
                                 if ((!empty($no_rawat))&&(!empty($gambar))) {
-                                    if(Tambah(" gambar_radiologi "," '$no_rawat','$tanggal','$jam','$gambar'", " Gambar Radiologi " )){
-                                        move_uploaded_file($_FILES['gambar']['tmp_name'],$gambar);
+                                    try {
+                                        if(Tambah(" gambar_radiologi "," '$no_rawat','$tanggal','$jam','$gambar' "," Gambar Radiologi ")){
+                                            move_uploaded_file($_FILES['gambar']['tmp_name'],$gambar);
+                                        }
+                                        echo"<meta http-equiv='refresh' content='1;URL=?act=List&no_rawat=$no_rawat&tanggal=$tanggal&jam=$jam'>";
+                                    } catch(mysqli_sql_exception $e) {
+                                        if($e->getCode()==1062){
+                                            echo "<b style='color:red'>Data gambar sudah ada..!!!</b>";
+                                        }else{
+                                            echo "<b style='color:red'>Gagal menyimpan</b>";
+                                        }
                                     }
-                                    echo"<meta http-equiv='refresh' content='1;URL=?act=List&no_rawat=$no_rawat&tanggal=$tanggal&jam=$jam'>";                              
                                 }else if ((empty($no_rawat))||(empty($gambar))){
                                     echo 'Semua field harus isi..!!!';
                                 }
@@ -115,8 +123,12 @@
         </form>
         <?php
             if ($action=="HAPUS") {
-                unlink($_GET['gambar']);
-                Hapus(" gambar_radiologi "," no_rawat ='".validTeks($_GET['no_rawat'])."' and tgl_periksa ='".validTeks($_GET['tanggal'])."' and jam ='".validTeks($_GET['jam'])."' and lokasi_gambar ='".validTeks($_GET['gambar'])."'","?act=List&action=TAMBAH&no_rawat=$no_rawat&tanggal=$tanggal&jam=$jam");
+                try {
+                    unlink($_GET['gambar']);
+                    Hapus(" gambar_radiologi "," no_rawat ='".validTeks($_GET['no_rawat'])."' and tgl_periksa ='".validTeks($_GET['tanggal'])."' and jam ='".validTeks($_GET['jam'])."' and lokasi_gambar ='".validTeks($_GET['gambar'])."'","?act=List&action=TAMBAH&no_rawat=$no_rawat&tanggal=$tanggal&jam=$jam");
+                } catch(mysqli_sql_exception $e) {
+                    echo "<b style='color:red'>Gagal menghapus</b>";
+                }
             }
 
         

@@ -32,8 +32,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import simrskhanza.DlgCariCaraBayar;
@@ -50,14 +54,13 @@ public final class DlgPiutangRalan extends javax.swing.JDialog {
     private validasi Valid=new validasi();
     private PreparedStatement ps,ps2;
     private ResultSet rs,rs2;
-    private DlgCariCaraBayar penjab=new DlgCariCaraBayar(null,false);
-    private DlgCariPoli poli=new DlgCariPoli(null,false);
     private double all=0,Laborat=0,Radiologi=0,Obat=0,Ralan_Dokter=0,Ralan_Dokter_paramedis=0,Ralan_Paramedis=0,Tambahan=0,Potongan=0,Registrasi=0,
                     ttlLaborat=0,ttlRadiologi=0,ttlObat=0,ttlRalan_Dokter=0,ttlRalan_Paramedis=0,ttlTambahan=0,ttlPotongan=0,ttlRegistrasi=0,
                    Operasi=0,ttlOperasi=0,ekses=0,ttlekses=0,dibayar=0,ttldibayar=0,sisa=0,ttlsisa=0,diskon=0,ttldiskon=0,tidakdibayar=0,ttltidakdibayar=0;
-    private String pilihan="",status="";
-    private StringBuilder htmlContent;
+    private String status="";
     private int i=0;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /** Creates new form DlgLhtBiaya
      * @param parent
@@ -103,79 +106,6 @@ public final class DlgPiutangRalan extends javax.swing.JDialog {
         tbBangsal.setDefaultRenderer(Object.class, new WarnaTable());
 
         TKd.setDocument(new batasInput((byte)20).getKata(TKd));
-        
-        penjab.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(penjab.getTable().getSelectedRow()!= -1){
-                    kdpenjab.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),1).toString());
-                    nmpenjab.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),2).toString());
-                    tampil();
-                }      
-                kdpenjab.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {penjab.emptTeks();}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        penjab.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    penjab.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-        
-        poli.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(poli.getTable().getSelectedRow()!= -1){
-                    KdPoli.setText(poli.getTable().getValueAt(poli.getTable().getSelectedRow(),0).toString());
-                    NmPoli.setText(poli.getTable().getValueAt(poli.getTable().getSelectedRow(),1).toString());
-                }      
-                BtnPoli.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {poli.emptTeks();}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        poli.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    poli.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
     }    
     
      
@@ -256,11 +186,6 @@ public final class DlgPiutangRalan extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowOpened(java.awt.event.WindowEvent evt) {
-                formWindowOpened(evt);
-            }
-        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Piutang Pasien Ralan ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
@@ -499,59 +424,60 @@ public final class DlgPiutangRalan extends javax.swing.JDialog {
                 File f;            
                 BufferedWriter bw; 
 
-                pilihan = (String)JOptionPane.showInputDialog(null,"Silahkan pilih laporan..!","Pilihan Cetak",JOptionPane.QUESTION_MESSAGE,null,new Object[]{"Laporan 1 (HTML)","Laporan 2 (WPS)","Laporan 3 (CSV)","Laporan 4 (Jasper)"},"Laporan 1 (HTML)");
+                StringBuilder htmlContent;
+                String pilihan = (String)JOptionPane.showInputDialog(null,"Silahkan pilih laporan..!","Pilihan Cetak",JOptionPane.QUESTION_MESSAGE,null,new Object[]{"Laporan 1 (HTML)","Laporan 2 (WPS)","Laporan 3 (CSV)","Laporan 4 (Jasper)"},"Laporan 1 (HTML)");
                 switch (pilihan) {
                     case "Laporan 1 (HTML)":
                             htmlContent = new StringBuilder();
                             htmlContent.append(                             
-                                "<tr class='isi'>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tanggal</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>No.Nota</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>No.RM</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Nama Pasien</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Jenis Bayar</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Perujuk</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Registrasi</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Obat+Emb+Tsl</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Paket Tindakan</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Operasi</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Laborat</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Radiologi</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tambahan</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Potongan</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Total</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Ekses</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Sudah Dibayar</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Diskon Bayar</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tidak Terbayar</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Sisa</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Dokter</td>"+
+                                "<tr class='isi'>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tanggal</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>No.Nota</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>No.RM</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Nama Pasien</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Jenis Bayar</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Perujuk</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Registrasi</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Obat).append(Emb).append(Tsl</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Paket Tindakan</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Operasi</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Laborat</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Radiologi</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tambahan</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Potongan</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Total</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Ekses</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Sudah Dibayar</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Diskon Bayar</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tidak Terbayar</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Sisa</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Dokter</td>").append(
                                 "</tr>"
                             ); 
                             for(i=0;i<tabMode.getRowCount();i++){  
                                 htmlContent.append(                             
-                                    "<tr class='isi'>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,0)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,1)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,2)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,3)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,4)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,5)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,6)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,7)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,8)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,9)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,10)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,11)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,12)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,13)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,14)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,15)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,16)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,17)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,18)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,19)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,20)+"</td>"+
+                                    "<tr class='isi'>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,0)).append("</td>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,1)).append("</td>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,2)).append("</td>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,3)).append("</td>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,4)).append("</td>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,5)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,6)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,7)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,8)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,9)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,10)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,11)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,12)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,13)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,14)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,15)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,16)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,17)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,18)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,19)).append("</td>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,20)).append("</td>").append(
                                     "</tr>"
                                 ); 
                             }            
@@ -584,54 +510,54 @@ public final class DlgPiutangRalan extends javax.swing.JDialog {
                     case "Laporan 2 (WPS)":
                             htmlContent = new StringBuilder();
                             htmlContent.append(                             
-                                "<tr class='isi'>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tanggal</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>No.Nota</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>No.RM</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Nama Pasien</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Jenis Bayar</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Perujuk</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Registrasi</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Obat+Emb+Tsl</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Paket Tindakan</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Operasi</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Laborat</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Radiologi</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tambahan</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Potongan</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Total</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Ekses</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Sudah Dibayar</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Diskon Bayar</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tidak Terbayar</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Sisa</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Dokter</td>"+
+                                "<tr class='isi'>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tanggal</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>No.Nota</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>No.RM</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Nama Pasien</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Jenis Bayar</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Perujuk</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Registrasi</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Obat).append(Emb).append(Tsl</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Paket Tindakan</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Operasi</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Laborat</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Radiologi</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tambahan</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Potongan</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Total</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Ekses</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Sudah Dibayar</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Diskon Bayar</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Tidak Terbayar</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Sisa</td>").append(
+                                    "<td valign='middle' bgcolor='#FFFAFA' align='center'>Dokter</td>").append(
                                 "</tr>"
                             ); 
                             for(i=0;i<tabMode.getRowCount();i++){  
                                 htmlContent.append(                             
-                                    "<tr class='isi'>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,0)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,1)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,2)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,3)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,4)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,5)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,6)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,7)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,8)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,9)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,10)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,11)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,12)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,13)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,14)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,15)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,16)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,17)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,18)+"</td>"+
-                                        "<td valign='top' align='right'>"+tabMode.getValueAt(i,19)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,20)+"</td>"+
+                                    "<tr class='isi'>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,0)).append("</td>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,1)).append("</td>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,2)).append("</td>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,3)).append("</td>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,4)).append("</td>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,5)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,6)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,7)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,8)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,9)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,10)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,11)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,12)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,13)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,14)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,15)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,16)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,17)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,18)).append("</td>").append(
+                                        "<td valign='top' align='right'>").append(tabMode.getValueAt(i,19)).append("</td>").append(
+                                        "<td valign='top'>").append(tabMode.getValueAt(i,20)).append("</td>").append(
                                     "</tr>"
                                 ); 
                             }           
@@ -668,7 +594,7 @@ public final class DlgPiutangRalan extends javax.swing.JDialog {
                             ); 
                             for(i=0;i<tabMode.getRowCount();i++){  
                                 htmlContent.append(                             
-                                    "\""+tabMode.getValueAt(i,0)+"\";\""+tabMode.getValueAt(i,1)+"\";\""+tabMode.getValueAt(i,2)+"\";\""+tabMode.getValueAt(i,3)+"\";\""+tabMode.getValueAt(i,4)+"\";\""+tabMode.getValueAt(i,5)+"\";\""+tabMode.getValueAt(i,6)+"\";\""+tabMode.getValueAt(i,7)+"\";\""+tabMode.getValueAt(i,8)+"\";\""+tabMode.getValueAt(i,9)+"\";\""+tabMode.getValueAt(i,10)+"\";\""+tabMode.getValueAt(i,11)+"\";\""+tabMode.getValueAt(i,12)+"\";\""+tabMode.getValueAt(i,13)+"\";\""+tabMode.getValueAt(i,14)+"\";\""+tabMode.getValueAt(i,15)+"\";\""+tabMode.getValueAt(i,16)+"\";\""+tabMode.getValueAt(i,17)+"\";\""+tabMode.getValueAt(i,18)+"\";\""+tabMode.getValueAt(i,19)+"\";\""+tabMode.getValueAt(i,20)+"\"\n"
+                                    "\"").append(tabMode.getValueAt(i,0)).append("\";\"").append(tabMode.getValueAt(i,1)).append("\";\"").append(tabMode.getValueAt(i,2)).append("\";\"").append(tabMode.getValueAt(i,3)).append("\";\"").append(tabMode.getValueAt(i,4)).append("\";\"").append(tabMode.getValueAt(i,5)).append("\";\"").append(tabMode.getValueAt(i,6)).append("\";\"").append(tabMode.getValueAt(i,7)).append("\";\"").append(tabMode.getValueAt(i,8)).append("\";\"").append(tabMode.getValueAt(i,9)).append("\";\"").append(tabMode.getValueAt(i,10)).append("\";\"").append(tabMode.getValueAt(i,11)).append("\";\"").append(tabMode.getValueAt(i,12)).append("\";\"").append(tabMode.getValueAt(i,13)).append("\";\"").append(tabMode.getValueAt(i,14)).append("\";\"").append(tabMode.getValueAt(i,15)).append("\";\"").append(tabMode.getValueAt(i,16)).append("\";\"").append(tabMode.getValueAt(i,17)).append("\";\"").append(tabMode.getValueAt(i,18)).append("\";\"").append(tabMode.getValueAt(i,19)).append("\";\"").append(tabMode.getValueAt(i,20)).append("\"\n"
                                 ); 
                             }            
 
@@ -716,7 +642,8 @@ public final class DlgPiutangRalan extends javax.swing.JDialog {
                             param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
                             Valid.MyReportqry("rptRPiutangRalan.jasper","report","::[ Rekap Piutang Ralan Masuk ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
                         break; 
-                }                 
+                }
+                htmlContent=null;
             } catch (Exception e) {
             }     
             this.setCursor(Cursor.getDefaultCursor());
@@ -763,22 +690,18 @@ public final class DlgPiutangRalan extends javax.swing.JDialog {
 
 private void BtnCari1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCari1ActionPerformed
         
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCari1ActionPerformed
 
 private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCari1KeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
-            tampil();
+            runBackground(() ->tampil());
             this.setCursor(Cursor.getDefaultCursor());
         }else{
             Valid.pindah(evt, TKd, BtnPrint);
         }
 }//GEN-LAST:event_BtnCari1KeyPressed
-
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
-    }//GEN-LAST:event_formWindowOpened
 
     private void kdpenjabKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdpenjabKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
@@ -793,6 +716,43 @@ private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     }//GEN-LAST:event_kdpenjabKeyPressed
 
     private void BtnSeek2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeek2ActionPerformed
+        DlgCariCaraBayar penjab=new DlgCariCaraBayar(null,false);
+        penjab.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(penjab.getTable().getSelectedRow()!= -1){
+                    kdpenjab.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),1).toString());
+                    nmpenjab.setText(penjab.getTable().getValueAt(penjab.getTable().getSelectedRow(),2).toString());
+                    runBackground(() ->tampil());
+                }      
+                kdpenjab.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {penjab.emptTeks();}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        penjab.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    penjab.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         penjab.isCek();
         penjab.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         penjab.setLocationRelativeTo(internalFrame1);
@@ -810,7 +770,7 @@ private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         KdPoli.setText("");
         NmPoli.setText("");
         StatusLunas.setSelectedIndex(0);
-        tampil();
+        runBackground(() ->tampil());
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -839,6 +799,42 @@ private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     }//GEN-LAST:event_MnBillingActionPerformed
 
     private void BtnPoliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPoliActionPerformed
+        DlgCariPoli poli=new DlgCariPoli(null,false);
+        poli.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(poli.getTable().getSelectedRow()!= -1){
+                    KdPoli.setText(poli.getTable().getValueAt(poli.getTable().getSelectedRow(),0).toString());
+                    NmPoli.setText(poli.getTable().getValueAt(poli.getTable().getSelectedRow(),1).toString());
+                }      
+                BtnPoli.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {poli.emptTeks();}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        poli.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    poli.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         poli.isCek();
         poli.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         poli.setLocationRelativeTo(internalFrame1);
@@ -895,7 +891,7 @@ private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.Table tbBangsal;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil(){
+    private void tampil(){
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
         Valid.tabelKosong(tabMode);
         try{    
@@ -1041,4 +1037,35 @@ private void BtnCari1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         }
     }
 
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

@@ -23,7 +23,7 @@ public class Jurnal {
     private PreparedStatement ps2,ps,pscek;
     private String nojur="";
     private boolean sukses=true;
-    public boolean simpanJurnal(String nobukti,String jenis,String keterangan){  
+    public synchronized boolean simpanJurnal(String nobukti,String jenis,String keterangan){  
         try {
             pscek=koneksi.prepareStatement("select count(*) as jml,current_date() as tanggal,current_time() as jam,sum(tampjurnal.debet) as debet,sum(tampjurnal.kredit) as kredit from tampjurnal");
             try {
@@ -76,24 +76,22 @@ public class Jurnal {
 
                                  if(sukses==true){
                                     try {
+                                       ps2=koneksi.prepareStatement("insert into detailjurnal values(?,?,?,?)");
                                        rs=koneksi.prepareStatement("select tampjurnal.kd_rek,tampjurnal.nm_rek,tampjurnal.debet,tampjurnal.kredit from tampjurnal").executeQuery();
                                        while(rs.next()){
-                                           ps2=koneksi.prepareStatement("insert into detailjurnal values(?,?,?,?)");
                                            try {
                                                ps2.setString(1,nojur);
                                                ps2.setString(2,rs.getString(1));
                                                ps2.setString(3,rs.getString(3));
                                                ps2.setString(4,rs.getString(4));
-                                               ps2.executeUpdate();
+                                               ps2.addBatch();
                                            } catch (Exception e) {
                                                sukses=false;
                                                System.out.println("Notifikasi sub : "+e);
-                                           } finally{
-                                               if(ps2!=null){
-                                                   ps2.close();
-                                               }
                                            }
                                        }
+                                       ps2.executeBatch();
+                                       ps2.close();
                                     } catch (Exception e) {
                                         sukses=false;
                                         System.out.println("Notif Temp Rek : "+e);
@@ -102,7 +100,25 @@ public class Jurnal {
                                             rs.close();
                                         }
                                     }
-                                    Sequel.queryu2("delete from tampjurnal");    
+                                    if(sukses==true){
+                                        try {
+                                            rs=koneksi.prepareStatement("select sum(detailjurnal.debet),sum(detailjurnal.kredit) from detailjurnal where detailjurnal.no_jurnal='"+nojur+"'").executeQuery();
+                                            while(rs.next()){
+                                                if(rs.getInt(1)!=rs.getInt(2)){
+                                                    sukses=false;
+                                                    System.out.println("Notif : Debet dan Kredit tidak sama");
+                                                }
+                                            }
+                                        } catch (Exception e) {
+                                             sukses=false;
+                                             System.out.println("Notifikasi : "+e);
+                                        } finally{
+                                             if(rs!=null){
+                                                 rs.close();
+                                             }
+                                        }
+                                        Sequel.queryu2("delete from tampjurnal"); 
+                                    }   
                                  }            
                             } catch (Exception ex) {
                                 sukses=false;

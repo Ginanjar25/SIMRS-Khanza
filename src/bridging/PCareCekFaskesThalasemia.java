@@ -49,7 +49,6 @@ public final class PCareCekFaskesThalasemia extends javax.swing.JDialog {
     private final Properties prop = new Properties();
     private validasi Valid=new validasi();
     private sekuel Sequel=new sekuel();
-    private PCareCekReferensiSubspesialis spesialis=new PCareCekReferensiSubspesialis(null,false);
     private int i=0;
     private ApiPcare api=new ApiPcare();
     private String URL="",link="",otorisasi,utc="";
@@ -59,7 +58,6 @@ public final class PCareCekFaskesThalasemia extends javax.swing.JDialog {
     private JsonNode root;
     private JsonNode nameNode;
     private JsonNode response;
-    private DlgCariPasien pasien=new DlgCariPasien(null,false);
     /** Creates new form DlgKamar
      * @param parent
      * @param modal */
@@ -111,80 +109,6 @@ public final class PCareCekFaskesThalasemia extends javax.swing.JDialog {
             }
         }
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable());
-        
-        spesialis.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(spesialis.getTable().getSelectedRow()!= -1){                   
-                    KdSpesialis.setText(spesialis.getTable().getValueAt(spesialis.getTable().getSelectedRow(),1).toString());
-                    NmSpesialis.setText(spesialis.getTable().getValueAt(spesialis.getTable().getSelectedRow(),2).toString());
-                    KdSpesialis.requestFocus();
-                }                  
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        spesialis.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    spesialis.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        }); 
-        
-        pasien.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(pasien.getTable().getSelectedRow()!= -1){                   
-                    if(pasien.getTable().getValueAt(pasien.getTable().getSelectedRow(),19).toString().equals("")){
-                        JOptionPane.showMessageDialog(rootPane,"Maaf pasien tidak punya Nomor Kartu...!");
-                    }else{
-                        NoKartu.setText(pasien.getTable().getValueAt(pasien.getTable().getSelectedRow(),19).toString());
-                    }                     
-                }            
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        pasien.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    pasien.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });   
         
         try {
             prop.loadFromXML(new FileInputStream("setting/database.xml"));  
@@ -404,7 +328,6 @@ public final class PCareCekFaskesThalasemia extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
-        spesialis.dispose();
         dispose();
     }//GEN-LAST:event_BtnKeluarActionPerformed
 
@@ -415,6 +338,42 @@ public final class PCareCekFaskesThalasemia extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnKeluarKeyPressed
 
     private void BtnPropinsiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPropinsiActionPerformed
+        PCareCekReferensiSubspesialis spesialis=new PCareCekReferensiSubspesialis(null,false);
+        spesialis.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(spesialis.getTable().getSelectedRow()!= -1){                   
+                    KdSpesialis.setText(spesialis.getTable().getValueAt(spesialis.getTable().getSelectedRow(),1).toString());
+                    NmSpesialis.setText(spesialis.getTable().getValueAt(spesialis.getTable().getSelectedRow(),2).toString());
+                    KdSpesialis.requestFocus();
+                }                  
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        spesialis.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    spesialis.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        }); 
         spesialis.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         spesialis.setLocationRelativeTo(internalFrame1);
         spesialis.setVisible(true);
@@ -489,6 +448,44 @@ public final class PCareCekFaskesThalasemia extends javax.swing.JDialog {
     }//GEN-LAST:event_NoKartuKeyPressed
 
     private void btnPasienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPasienActionPerformed
+        DlgCariPasien pasien=new DlgCariPasien(null,false);
+        pasien.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(pasien.getTable().getSelectedRow()!= -1){                   
+                    if(pasien.getTable().getValueAt(pasien.getTable().getSelectedRow(),19).toString().equals("")){
+                        JOptionPane.showMessageDialog(rootPane,"Maaf pasien tidak punya Nomor Kartu...!");
+                    }else{
+                        NoKartu.setText(pasien.getTable().getValueAt(pasien.getTable().getSelectedRow(),19).toString());
+                    }                     
+                }            
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        pasien.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    pasien.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });  
         pasien.emptTeks();
         pasien.isCek();
         pasien.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);

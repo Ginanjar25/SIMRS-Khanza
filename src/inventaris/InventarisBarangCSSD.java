@@ -29,8 +29,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -40,13 +44,14 @@ import javax.swing.table.TableColumn;
  * @author dosen
  */
 public class InventarisBarangCSSD extends javax.swing.JDialog {
-    private DefaultTableModel tabMode;
+    private final DefaultTableModel tabMode;
     private Connection koneksi=koneksiDB.condb();
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi(); 
     private PreparedStatement ps;
     private ResultSet rs;
-    private InventarisKoleksi inventaris=new InventarisKoleksi(null,false);
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /** Creates new form DlgSpesialis
      * @param parent
@@ -56,7 +61,7 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
         initComponents();
 
         this.setLocation(10,10);
-        setSize(459,539);
+        
 
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Inventaris","Kode Barang","Nama Barang","Ruang","Kategori"
@@ -80,69 +85,12 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
             }else if(i==3){
                 column.setPreferredWidth(120);
             }else if(i==4){
-                column.setPreferredWidth(100);
+                column.setPreferredWidth(120);
             }
         }
         tbSpesialis.setDefaultRenderer(Object.class, new WarnaTable());
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }
-        
-        inventaris.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(inventaris.getTable().getSelectedRow()!= -1){                   
-                    no_inventaris.setText(inventaris.getTable().getValueAt(inventaris.getTable().getSelectedRow(),0).toString());
-                    nama_barang.setText(inventaris.getTable().getValueAt(inventaris.getTable().getSelectedRow(),1).toString()+", "+inventaris.getTable().getValueAt(inventaris.getTable().getSelectedRow(),2).toString());
-                }                
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        inventaris.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    inventaris.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
     }
 
     /** This method is called from within the constructor to
@@ -192,7 +140,7 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Barang CSSD ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Barang CSSD ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -417,7 +365,7 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
         label1.setText("Jenis :");
         label1.setName("label1"); // NOI18N
         panelGlass7.add(label1);
-        label1.setBounds(510, 10, 60, 23);
+        label1.setBounds(510, 10, 50, 23);
 
         no_inventaris.setEditable(false);
         no_inventaris.setName("no_inventaris"); // NOI18N
@@ -448,7 +396,7 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
         panelGlass7.add(btnInv);
         btnInv.setBounds(480, 10, 25, 23);
 
-        KategoriBarang.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Heacting Set", "Partus Set", "Set Bedah" }));
+        KategoriBarang.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Heacting Set", "Partus Set", "Set Bedah", "Set Minor", "Set SC", "Set Kuret", "Set Hernia", "Set THT", "Set APP", "Set Histerektomi", "Set Tonsil", "Set Mata", "Set Pheco", "Set Bedah Mulut", "Set Othopedi Minor", "Set Bor Orthopedi", "Set Vaskuler", "Set Hemoroid", "Set Duk", "Set Instrumen Satuan", "Selang", "-" }));
         KategoriBarang.setName("KategoriBarang"); // NOI18N
         KategoriBarang.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -456,7 +404,7 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
             }
         });
         panelGlass7.add(KategoriBarang);
-        KategoriBarang.setBounds(573, 10, 140, 23);
+        KategoriBarang.setBounds(563, 10, 160, 23);
 
         label2.setText("No.Inventaris :");
         label2.setName("label2"); // NOI18N
@@ -475,7 +423,7 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
             Valid.textKosong(no_inventaris,"Barang");
         }else{
             Sequel.menyimpan("cssd_barang","'"+no_inventaris.getText()+"','"+KategoriBarang.getSelectedItem().toString()+"'","Barang");
-            tampil();
+            runBackground(() ->tampil());
             emptTeks();
         }
 }//GEN-LAST:event_BtnSimpanActionPerformed
@@ -500,7 +448,7 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
         Valid.hapusTable(tabMode,no_inventaris,"cssd_barang","no_inventaris");
-        tampil();
+        runBackground(() ->tampil());
         emptTeks();
 }//GEN-LAST:event_BtnHapusActionPerformed
 
@@ -519,7 +467,7 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
             Sequel.mengedit("cssd_barang","no_inventaris=?","no_inventaris=?,jenis_barang=?",3,new String[]{
                 no_inventaris.getText(),KategoriBarang.getSelectedItem().toString(),tbSpesialis.getValueAt(tbSpesialis.getSelectedRow(),0).toString()
             });
-            if(tabMode.getRowCount()!=0){tampil();}
+            if(tabMode.getRowCount()!=0){runBackground(() ->tampil());}
             emptTeks();
         }
 }//GEN-LAST:event_BtnEditActionPerformed
@@ -555,7 +503,7 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -590,7 +538,29 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
 }//GEN-LAST:event_tbSpesialisKeyPressed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
+        runBackground(() ->tampil());
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }
     }//GEN-LAST:event_formWindowOpened
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
@@ -602,6 +572,41 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
     }//GEN-LAST:event_no_inventarisKeyPressed
 
     private void btnInvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInvActionPerformed
+        InventarisKoleksi inventaris=new InventarisKoleksi(null,false);
+        inventaris.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(inventaris.getTable().getSelectedRow()!= -1){                   
+                    no_inventaris.setText(inventaris.getTable().getValueAt(inventaris.getTable().getSelectedRow(),0).toString());
+                    nama_barang.setText(inventaris.getTable().getValueAt(inventaris.getTable().getSelectedRow(),1).toString()+", "+inventaris.getTable().getValueAt(inventaris.getTable().getSelectedRow(),2).toString());
+                }                
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        inventaris.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    inventaris.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         inventaris.isCek();
         inventaris.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         inventaris.setLocationRelativeTo(internalFrame1);
@@ -643,7 +648,7 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -709,20 +714,24 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement(
-                    "select inventaris.no_inventaris,inventaris_barang.kode_barang, inventaris_barang.nama_barang,"+
-                    "inventaris_ruang.nama_ruang,cssd_barang.jenis_barang from inventaris inner join inventaris_barang "+
-                    "inner join inventaris_ruang inner join cssd_barang on inventaris_barang.kode_barang=inventaris.kode_barang "+
-                    "and inventaris.id_ruang=inventaris_ruang.id_ruang and inventaris.no_inventaris=cssd_barang.no_inventaris where "+
-                    "inventaris.no_inventaris like ? or inventaris_barang.nama_barang like ? or inventaris_ruang.nama_ruang like ? or "+
-                    "cssd_barang.jenis_barang like ? order by cssd_barang.jenis_barang");
+                    "select inventaris.no_inventaris,inventaris_barang.kode_barang,inventaris_barang.nama_barang,"+
+                    "inventaris_ruang.nama_ruang,cssd_barang.jenis_barang "+
+                    "from inventaris inner join inventaris_barang on inventaris_barang.kode_barang=inventaris.kode_barang "+
+                    "inner join inventaris_ruang on inventaris.id_ruang=inventaris_ruang.id_ruang "+
+                    "inner join cssd_barang on inventaris.no_inventaris=cssd_barang.no_inventaris "+
+                    (TCari.getText().trim().equals("")?"":"where inventaris.no_inventaris like ? or "+
+                    "inventaris_barang.nama_barang like ? or inventaris_ruang.nama_ruang like ? or "+
+                    "cssd_barang.jenis_barang like ? ")+"order by cssd_barang.jenis_barang");
             try {
-                ps.setString(1,"%"+TCari.getText().trim()+"%");
-                ps.setString(2,"%"+TCari.getText().trim()+"%");
-                ps.setString(3,"%"+TCari.getText().trim()+"%");
-                ps.setString(4,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(1,"%"+TCari.getText().trim()+"%");
+                    ps.setString(2,"%"+TCari.getText().trim()+"%");
+                    ps.setString(3,"%"+TCari.getText().trim()+"%");
+                    ps.setString(4,"%"+TCari.getText().trim()+"%");
+                }
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new String[]{rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)});
+                    tabMode.addRow(new Object[]{rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5)});
                 }
             } catch (Exception e) {
                 System.out.println("Notif : "+e);
@@ -763,5 +772,37 @@ public class InventarisBarangCSSD extends javax.swing.JDialog {
         BtnSimpan.setEnabled(akses.getbarang_cssd());
         BtnHapus.setEnabled(akses.getbarang_cssd());
         BtnEdit.setEnabled(akses.getbarang_cssd());
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

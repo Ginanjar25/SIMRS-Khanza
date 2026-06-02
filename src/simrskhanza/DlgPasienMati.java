@@ -30,8 +30,12 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -54,20 +58,31 @@ public class DlgPasienMati extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
-    private DlgPasien pasien=new DlgPasien(null,false);
     private PreparedStatement ps;
     private ResultSet rs;
-    private DlgCariDokter dokter=new DlgCariDokter(null,false);
     private String finger="";
-    private ApiBPJS api=new ApiBPJS();
-    private HttpHeaders headers;
+    private ApiBPJS api=new Api
+    ();
+    private HttpHeaders aders;
     private HttpEntity requestEntity;
     private ObjectMapper mapper = new ObjectMapper();
     private JsonNode root;
     private JsonNode nameNode;
     private JsonNode response;
-    private String utc="",requestJson="",URL="",link="", no_rawat = "";
-    private static final Properties prop = new Properties(); 
+    private String utc = "", requestJson = "", URL = "", link = "", no_rawat = "";
+    private static final
+    Pro
+    erties prop
+    = ne P
+    ope
+    tie
+    (); 
+
+    
+
+    private final ExecutorService executor = Executors.newSi
+    ThreadExecutor();
+
     
     /** Creates new form DlgPasienMati
      * @param parent
@@ -133,7 +148,6 @@ public class DlgPasienMati extends javax.swing.JDialog {
             }
         }
         tbMati.setDefaultRenderer(Object.class, new WarnaTable());
-
 
         TNoRM.setDocument(new batasInput((byte)15).getKata(TNoRM));
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
@@ -795,7 +809,8 @@ public class DlgPasienMati extends javax.swing.JDialog {
         icd3.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 icd3KeyPressed(evt);
-            }
+
+        }
         });
         FormInput.add(icd3);
         icd3.setBounds(500, 70, 154, 23);
@@ -837,125 +852,95 @@ public class DlgPasienMati extends javax.swing.JDialog {
         FormInput.add(NmDokter);
         NmDokter.setBounds(464, 130, 160, 23);
 
-        BtnDokter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
-        BtnDokter.setMnemonic('X');
-        BtnDokter.setToolTipText("Alt+X");
-        BtnDokter.setName("BtnDokter"); // NOI18N
-        BtnDokter.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnDokterActionPerformed(evt);
-            }
-        });
-        BtnDokter.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnDokterKeyPressed(evt);
-            }
-        });
-        FormInput.add(BtnDokter);
-        BtnDokter.setBounds(626, 130, 28, 23);
 
-        NoSKM.setHighlighter(null);
-        NoSKM.setName("NoSKM"); // NOI18N
-        NoSKM.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                NoSKMKeyPressed(evt);
-            }
-        });
-        FormInput.add(NoSKM);
-        NoSKM.setBounds(515, 40, 150, 23);
+    okter.setIco
 
-        jLabel17.setText("No. SKM :");
+    okter.setMnemonic('X');
+        r.setToolTipText("Al
+    oBtn    public void acti        BtnDokterAcionP
+
+    });BtnDokter.addKeyListener(new java.awt.event.KeyAd
+
+        public void keyPress
+
+    d(java
+
+    tnDokterKeyPressed(evt);
+        Forkter.setBounds(626, 130, 28, 
+
+        NoSKM.setName("NoKM"); // NO.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPress        NoSKMKeyPressedevt)
+
+        FormInput.add(NoSKM);NoSKM.setBounds(515, 40, 150, 23);
+jLabel17.setText("No. SM :";
         jLabel17.setName("jLabel17"); // NOI18N
-        FormInput.add(jLabel17);
-        jLabel17.setBounds(460, 40, 50, 20);
-
-        PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
-
+        FormInput.add(jLabel17);jLabel17.setBounds(460, 40, 50
+        PanelInput.add(FormInput
         internalFrame1.add(PanelInput, java.awt.BorderLayout.PAGE_START);
 
-        getContentPane().add(internalFrame1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(internpack();
+    }// </editor-fold>//GEN-END:initComponents DTPTglKeyPressed(java.awt.evedASTvoid BtnSeekActionPerformed(java.awt.event.ActionEvntform("DlgPasienMati");apas    @Override    public void windowOpned(indwEvent e) {}
+            @Override
+            public void windowClosi    @Override
+            public void windowClosed(WindowEvent e) {    if(akses.getform().equals("DlgPasienMati")){    if(pasien.getTabl                }              TNoRM.reuesFocu();
+                }
+            }    @Override
+            public void windowIc    @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        pasien.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override 
+            public void k eyPres sed(KeyE
+                     if(akses.getform().equals("DlgPasienMati")){
+                    if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                        pasien.dispose(); 
+                    }        }    }@Override public void keyReleased(KeyEvent e) {} en.emptTeks();en.isCek( en.setSize(internalFrame1.getWidth()-20ietLocationRelativeTo(internalFrame1);sible(true);kActionPerformedS(evt,TNoRM,TKtg);tvoid cmbJ d.pindah(evt,DTPTgl,cmbMnt);event_cmb void cmbM d.pindah(evt,cmbJam,cmbDtk);event_cmb ate
 
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
+        AST:event_cmbDtkKeyPressed void BtnSimpanActionPerformed(jaa.TNoRM.get Valid.textKosong(TNoRM, "pasien");f (TKtg.getText().trim().equals("")) {xtKosong(TKtg, "keterangan");ter.getText().trixi        +        + TNoRM.getText() + "','" + TK.g               + icd4.g        //updat             if (!noSep.equal
+                         
 
-    private void DTPTglKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DTPTglKeyPressed
-        Valid.pindah(evt,TCari,cmbJam);
-}//GEN-LAST:event_DTPTglKeyPressed
+               tglMeninggal = Valid.SetTgl(DTPTgl.getSelectedItem()  + "");
+                    jamMe ningga l = cm
+                         sttsMeninggal =
 
-    private void BtnSeekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeekActionPerformed
-        akses.setform("DlgPasienMati");
-        pasien.emptTeks();
-        pasien.isCek();
-        pasien.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        pasien.setLocationRelativeTo(internalFrame1);
-        pasien.setVisible(true);
-}//GEN-LAST:event_BtnSeekActionPerformed
+                    System.out.println(noSep); 
+                               headers = 
 
-    private void BtnSeekKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSeekKeyPressed
-        Valid.pindah(evt,TNoRM,TKtg);
-}//GEN-LAST:event_BtnSeekKeyPressed
-
-    private void cmbJamKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbJamKeyPressed
-        Valid.pindah(evt,DTPTgl,cmbMnt);
-}//GEN-LAST:event_cmbJamKeyPressed
-
-    private void cmbMntKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbMntKeyPressed
-        Valid.pindah(evt,cmbJam,cmbDtk);
-}//GEN-LAST:event_cmbMntKeyPressed
-
-    private void cmbDtkKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbDtkKeyPressed
-        Valid.pindah(evt,cmbMnt,tmptmeninggal);
-}//GEN-LAST:event_cmbDtkKeyPressed
-
-    private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
-        if (TNoRM.getText().trim().equals("") || TPasien.getText().trim().equals("")) {
-            Valid.textKosong(TNoRM, "pasien");
-        } else if (TKtg.getText().trim().equals("")) {
-            Valid.textKosong(TKtg, "keterangan");
-        } else if (NmDokter.getText().trim().equals("")) {
-            Valid.textKosong(BtnDokter, "Dokter DPJP");
-        } else {
-            if (Sequel.menyimpantf("pasien_mati", "'" + Valid.SetTgl(DTPTgl.getSelectedItem() + "") + "','"
-                    + cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem() + "','"
-                    + TNoRM.getText() + "','" + TKtg.getText() + "#" + NoSKM.getText() + "','" + tmptmeninggal.getSelectedItem() + "','"
-                    + icd1.getText() + "','" + icd2.getText() + "','" + icd3.getText() + "','"
-                    + icd4.getText() + "','" + KdDokter.getText() + "'", "pasien") == true) {
-                //update SEP Meninggal jika sep ditemukan
-                String noSep = Sequel.cariIsi("SELECT bs.no_sep FROM bridging_sep bs WHERE bs.no_rawat=?", no_rawat);
-                
-                if (!noSep.equals("")) {
-                    
-                    String sttsMeninggal = "", tglMeninggal = "", jamMeninggal = "", ksg = "";
-                    tglMeninggal = Valid.SetTgl(DTPTgl.getSelectedItem() + "");
-                    jamMeninggal = cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem();
-                    sttsMeninggal = "4";
-                    ksg = NoSKM.getText();
-                    System.out.println(noSep);
-                        try {
-                            headers = new HttpHeaders();
-                            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
                             headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
                             utc = String.valueOf(api.GetUTCdatetimeAsString());
-                            headers.add("X-Timestamp", utc);
-                            headers.add("X-Signature", api.getHmac(utc));
-                            headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
-                            requestJson = "{"
-                                    + "\"request\":"
-                                    + "{"
-                                    + "\"t_sep\":"
-                                    + "{"
-                                    + "\"noSep\":\"" + noSep + "\","
-                                    + "\"statusPulang\":\"" + sttsMeninggal + "\","
+                            headers.add("X-Timestamp", utc); 
+                            headers.add(X
+                                 headers
+
+                               + "\"request\":" 
+                                      + "{"
+                                       
+
+                                    + "\"noSep\":\"" + noSep + "\"," 
+
+                                + "\"statusPulang\":\"" + sttsMeninggal + "\","
                                     + "\"noSuratMeninggal\":\"" + ksg + "\","
                                     + "\"tglMeninggal\":\"" + tglMeninggal + "\","
                                     + "\"tglPulang\":\"" + tglMeninggal + "\","
-                                    + "\"noLPManual\":\"" + ksg + "\","
-                                    + "\"user\":\"RSPW" + akses.getkode() + "\""
-                                    + "}"
+                                  + "\"noLPManual\":\"
+
+     
+                                + "\"user\":\"RSPW"
+         
+                         + "}"
                                     + "}"
                                     + "}";
                             System.out.println("JSON : " + requestJson);
-                            requestEntity = new HttpEntity(requestJson, headers);
+                      
+
+         requestEntity = new HttpEntity(requestJson, headers);
                             root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.PUT, requestEntity, String.class).getBody());
                             nameNode = root.path("metaData");
                             System.out.println("code : " + nameNode.path("code").asText());
@@ -972,14 +957,16 @@ public class DlgPasienMati extends javax.swing.JDialog {
                                 JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
                             }
                         } catch (Exception ex) {
-                            System.out.println("Notifikasi Bridging Simpan : " + ex);
-                            if (ex.toString().contains("UnknownHostException")) {
+                            System.out.println("Not
+
+        if (ex.toString().contains("UnknownHostException")) {
                                 JOptionPane.showMessageDialog(null, "Koneksi ke server BPJS terputus...!");
                             }
-                        }
+
+    }
                     }
 
-                tampil();
+                runBackground(() ->tampil());
                 emptTeks();
             }
         }
@@ -997,6 +984,8 @@ public class DlgPasienMati extends javax.swing.JDialog {
         emptTeks();
 }//GEN-LAST:event_BtnBatalActionPerformed
 
+    
+
     private void BtnBatalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnBatalKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_ENTER){
             emptTeks();
@@ -1005,7 +994,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
         Valid.hapusTable(tabMode,TNoRM,"pasien_mati","pasien_mati.no_rkm_medis");
-        tampil();
+        runBackground(() ->tampil());
         emptTeks();
 }//GEN-LAST:event_BtnHapusActionPerformed
 
@@ -1013,63 +1002,74 @@ public class DlgPasienMati extends javax.swing.JDialog {
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             BtnHapusActionPerformed(null);
         }else{
-            Valid.pindah(evt, BtnBatal, BtnPrint);
+            Valid.pindah(evt, B
+
+    nBatal, BtnPrint);
         }
 }//GEN-LAST:event_BtnHapusKeyPressed
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
         dispose();
-}//GEN-LAST:event_BtnKeluarActionPerformed
 
-    private void BtnKeluarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnKeluarKeyPressed
+     BtnKeluarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnKeluarKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            dispose();
-        }else{Valid.pindah(evt,BtnPrint,TCari);}
-}//GEN-LAST:event_BtnKeluarKeyPressed
+            d{}// GEN-LAST:event_BtnKeluarKeyPressed
 
-    private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        if(! TCari.getText().trim().equals("")){
+    private 
+    oid BtnPrintAct
+
+    onPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
+        this.setCursor(Cursor.getPredefinedCurso
+
+    TCari.getText().trim().equals("")){
             BtnCariActionPerformed(evt);
         }
         if(tabMode.getRowCount()==0){
-            JOptionPane.showMessageDialog(null,"Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
-            BtnBatal.requestFocus();
-        }else if(tabMode.getRowCount()!=0){            
-            Map<String, Object> param = new HashMap<>();    
+             JOptionPane.showMessageDi
+
+        }else if(tabMode.getRowCount()!=0){             
+            Map<Str
                 param.put("namars",akses.getnamars());
                 param.put("alamatrs",akses.getalamatrs());
-                param.put("kotars",akses.getkabupatenrs());
+                param.put("kotars",akses.getkabupatenrs()); 
                 param.put("propinsirs",akses.getpropinsirs());
                 param.put("kontakrs",akses.getkontakrs());
-                param.put("emailrs",akses.getemailrs());   
-                param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
+                
+              param.put("emai s",akses.getemailrs()
+        )
+                     param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
                 Valid.MyReportqry("rptPasienMati.jasper","report","::[ Data Pasien Meninggal ]::",
                     "select pasien_mati.tanggal,pasien_mati.jam,pasien_mati.no_rkm_medis,pasien.nm_pasien, "+
-                    "pasien.jk,pasien.tmp_lahir,pasien.tgl_lahir,pasien.gol_darah,pasien.stts_nikah, "+
-                    "pasien.agama,pasien_mati.keterangan,pasien_mati.temp_meninggal,pasien_mati.icd1,pasien_mati.icd2,"+
+                    "pasien.jk,pasien.tmp_lahir,pasien.tgl_lahir,pasien.gol_darah,pasi
+
+                "pasien.agama,pasien_mati.keterangan,pasien_mati.temp_meninggal,pasien_mati.icd1,pasien_mati.icd2,"+
                     "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter "+
-                    "from pasien_mati inner join pasien on pasien_mati.no_rkm_medis=pasien.no_rkm_medis "+
+                     "from pasien_mati inner join pasien on pasien_mati.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join dokter on pasien_mati.kd_dokter=dokter.kd_dokter "+
-                    (TCari.getText().trim().equals("")?"":
-                    "where pasien_mati.tanggal like '%"+TCari.getText().trim()+"%' or "+
-                    "pasien_mati.no_rkm_medis like '%"+TCari.getText().trim()+"%' or "+
-                    "pasien.nm_pasien like '%"+TCari.getText().trim()+"%' or "+
-                    "pasien.stts_nikah like '%"+TCari.getText().trim()+"%' or "+
+                    (TCari.getText().trim().equals("")?"": 
+                    "where pasien_mati.tanggal l        "pasien_mati.no_rkm_me    "pasien.stts_nkah like '%"+TCari.getText().trim()+"%' or "+
                     "pasien.agama like '%"+TCari.getText().trim()+"%' or "+
-                    "pasien_mati.kd_dokter like '%"+TCari.getText().trim()+"%' or "+
-                    "dokter.nm_dokter like '%"+TCari.getText().trim()+"%' or "+
-                    "pasien_mati.icd1 like '%"+TCari.getText().trim()+"%' or "+
+                     "pasien_mati.kd_dokt
+
+     
+
+          "pasien_mati.icd1 like '%"+TCari.getText().trim()+"%' or "+
                     "pasien_mati.keterangan like '%"+TCari.getText().trim()+"%' ")+
                     "order by pasien_mati.tanggal ",param);            
         }
-        this.setCursor(Cursor.getDefaultCursor());
+        this.
+
+    etCursor(Cursor.get
+
+    efaultCursor());
 }//GEN-LAST:event_BtnPrintActionPerformed
 
     private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnPrintKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             BtnPrintActionPerformed(null);
-        }else{
+        }else
+
+    
             Valid.pindah(evt, BtnHapus, BtnKeluar);
         }
 }//GEN-LAST:event_BtnPrintKeyPressed
@@ -1085,7 +1085,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -1098,13 +1098,13 @@ public class DlgPasienMati extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             TCari.setText("");
-            tampil();
+            runBackground(() ->tampil());
         }else{
             Valid.pindah(evt, BtnCari, TPasien);
         }
@@ -1115,9 +1115,9 @@ public class DlgPasienMati extends javax.swing.JDialog {
             try {
                 getData();
             } catch (java.lang.NullPointerException e) {
-            }
-        }
-}//GEN-LAST:event_tbMatiMouseClicked
+         }
+
+}// GEN-LAST:event_tbMatiMouseClicked
 
 private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnCetakSuratMatiActionPerformed
       if(TPasien.getText().trim().equals("")){
@@ -1125,11 +1125,12 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
       }else{
           Map<String, Object> param = new HashMap<>(); 
           param.put("namars",akses.getnamars());
-          param.put("alamatrs",akses.getalamatrs());
-          param.put("kotars",akses.getkabupatenrs());
+           param.put("alamatrs",akses.
+
           param.put("propinsirs",akses.getpropinsirs());
-          param.put("kontakrs",akses.getkontakrs());
-          param.put("emailrs",akses.getemailrs());
+          param.put("kontakrs",akses.getkontakrs(
+
+    ram.put("emailrs",akses.getemailrs());
           param.put("no_rm",TNoRM.getText());
           param.put("no_rawat", Sequel.cariIsi("SELECT no_rawat from reg_periksa where no_rkm_medis = ? order BY tgl_registrasi DESC LIMIT 1", TNoRM.getText()));
           param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
@@ -1142,221 +1143,226 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
           param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+NmDokter.getText()+"\nID "+(finger.equals("")?KdDokter.getText():finger)+"\n"+DTPTgl.getSelectedItem());  
           Valid.MyReport("rptSuratKematian.jasper","report","::[ Surat Kematian ]::",param);
       }
-}//GEN-LAST:event_MnCetakSuratMatiActionPerformed
 
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
-    }//GEN-LAST:event_formWindowOpened
+    mpil());
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+            
 
-    private void MnAngkutJenazahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnAngkutJenazahActionPerformed
-        if(TPasien.getText().trim().equals("")){
-          JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");                
-        }else{
-            Map<String, Object> param = new HashMap<>();
-            param.put("namars",akses.getnamars());
-            param.put("alamatrs",akses.getalamatrs());
-            param.put("kotars",akses.getkabupatenrs());
-            param.put("propinsirs",akses.getpropinsirs());
+               runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                     }
+
+                @Override
+
+    
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                         runBackground((
+
+                }
+
+     
+            });   
+        }
+    }//GEN-LAST:event_formWindo wOpened
+          
+            oid MnAngkutJenazahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnAngkutJenazahActionPerformed
+        i
+               JOptionPane.showMessageD
+
+            
+
+    ap<String, Object> param = new HashMap<>(); 
+             param.put("namars",a ks es .getnamars());
+            param
+                m.put("koa
+            aram.put("propinsirs",akses.getpropinsirs());
             param.put("kontakrs",akses.getkontakrs());
-            param.put("emailrs",akses.getemailrs());
-            param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
-            finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",KdDokter.getText());
-            param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+NmDokter.getText()+"\nID "+(finger.equals("")?KdDokter.getText():finger)+"\n"+DTPTgl.getSelectedItem());  
-            Valid.MyReportqry("rptAngkutJenazah.jasper","report","::[ Surat Angkut Jenazah ]::",
-                "select date_format(pasien_mati.tanggal,'%d-%m-%Y') as tanggal,pasien_mati.jam,pasien_mati.no_rkm_medis,pasien.nm_pasien, "+
-                "pasien.jk,pasien.tmp_lahir,pasien.tgl_lahir,pasien.gol_darah,pasien.stts_nikah,pasien.umur,pasien.alamat,pasien.pekerjaan, "+
-                "pasien.agama,pasien_mati.keterangan,pasien_mati.temp_meninggal,pasien_mati.icd1,pasien_mati.icd2,"+
-                "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter "+
-                "from pasien_mati inner join pasien on pasien_mati.no_rkm_medis=pasien.no_rkm_medis "+
-                "inner join dokter on pasien_mati.kd_dokter=dokter.kd_dokter where pasien_mati.no_rkm_medis='"+TNoRM.getText()+"' ",param);
-        }
-    }//GEN-LAST:event_MnAngkutJenazahActionPerformed
+         
+                 param.put("logo",Sequel.ca
 
-    private void TNoRMKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNoRMKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=? ",TPasien,TNoRM.getText());
-        }else if(evt.getKeyCode()==KeyEvent.VK_UP){
-            BtnSeekActionPerformed(null);
-        }else{
-            Valid.pindah(evt,tmptmeninggal,icd1);
-        }
-    }//GEN-LAST:event_TNoRMKeyPressed
+                param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/ Kota "+akses.getkabupatenrs()+"\nDitandatangani
+              Valid.MyReportqry("rptAngkutJenaza      "select date_format(pasien_mati.tanggal,'%d-%m-%Y') as tanggal,pasien_mati.jam            "pasin.agamapasie_ati.keterangan,p      "pasien_mati.icd3,pasien_mati.ic     "from pasien_mati innerjoin pasien on p      "inner join dokter o pasien_mati.kd_dot
 
-    private void icd1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_icd1KeyPressed
-        Valid.pindah(evt,TNoRM,icd2);
-    }//GEN-LAST:event_icd1KeyPressed
+        -LAST:event_MnAngkutJenazahActionPerformede void TNoRMKeyPressed(java.awt.event.Ke(evt.getKeyCode()==KeyEvent.VK_PAGE  Sequel.cariIsi("selct pasien.nm_pasien from pasien where pasien.no_rkm_medis=? ",TPasien,TNoRM.getText());lse if(evt.getKeyCode()==KeyEvent.VK_UP){ BtnSeekActionPerfomed(null);d.pindah(evt,tmptmeninggal,icd1);event_TNoRMKeyPressede void icd1KeyPressed(java.awt.event.KeyEvent  d.pindah(evt,TNoRM,icd2);/
+     
 
-    private void icd2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_icd2KeyPressed
         Valid.pindah(evt,icd1,icd3);
-    }//GEN-LAST:event_icd2KeyPressed
+    }//GEN-LAST:event_icd2K
 
-    private void icd3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_icd3KeyPressed
-        Valid.pindah(evt,icd2,icd4);
-    }//GEN-LAST:event_icd3KeyPressed
+    eyPressed 
+        void icd3KeyPressed(java.awt.event.Ke (evt,icd2,icd4);
 
-    private void icd4KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_icd4KeyPressed
-        Valid.pindah(evt,icd3,TKtg);
-    }//GEN-LAST:event_icd4KeyPressed
+          icd4KeyPressed(java.awt.event. (evt,icd3,KssedyD
 
-    private void tmptmeninggalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tmptmeninggalKeyPressed
-        Valid.pindah(evt,cmbDtk,TNoRM);
-    }//GEN-LAST:event_tmptmeninggalKeyPressed
+        
 
-    private void TKtgKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKtgKeyPressed
-        Valid.pindah(evt,icd4,BtnSimpan);
-    }//GEN-LAST:event_TKtgKeyPressed
+        event_TKtgKeyPr 
 
-    private void tbMatiKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbMatiKeyReleased
-        if(tabMode.getRowCount()!=0){
-            if((evt.getKeyCode()==KeyEvent.VK_ENTER)||(evt.getKeyCode()==KeyEvent.VK_UP)||(evt.getKeyCode()==KeyEvent.VK_DOWN)){
-                try {
-                    getData();
-                } catch (java.lang.NullPointerException e) {
+        getKeyCode()==KeyEvent.VK_ENTERe}} MatiKeyReleased Pas    JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");                
+         }else{
+
+            param.put("propinsirs",akses.getpropinsirs p
+
+    param.put("no_rm",TNoRM.getText()); 
+          param.put("no_rawat", Sequel.cariIsi("SELECT no_rawat from reg_periksa where no_    pat("lamat",Seque.ariIsi("SELECT C    "INNER JOIN kelurahan kl ON kl.kd_    "INNER JOIN kecamatan kc ON kc.kd_kec  
+
+        finger=Sequel.cariIsi("select sha1(sidikjari.sparam.put("finger","Dikeluarkan di "+akses
+
+        AST:event_MnCetakSuratMati1ActionPerformv
+
+        AST:event_ChkInputActionPerformed v
+
+        er.addWindowListener(new WindowListener() {rridepublic vod windowOpened(WindowEvent e) {;}rrideic void windowClosing(WindowEvent e) {}rrideic void windowClosed(WindowEvent e) {if(dokter.getTable().getSelectedRow()!= -1){                                KdDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),0).toString());
+                    NmDokter.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(),1).toString());
                 }
             }
-        }
-    }//GEN-LAST:event_tbMatiKeyReleased
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
 
-    private void MnCetakSuratMati1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnCetakSuratMati1ActionPerformed
-        if(TPasien.getText().trim().equals("")){
-            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");                
-        }else{
-            Map<String, Object> param = new HashMap<>(); 
-            param.put("namars",akses.getnamars());
-            param.put("alamatrs",akses.getalamatrs());
-            param.put("kotars",akses.getkabupatenrs());
-            param.put("propinsirs",akses.getpropinsirs());
-            param.put("kontakrs",akses.getkontakrs());
-            param.put("emailrs",akses.getemailrs());   
-            param.put("no_rm",TNoRM.getText());
-            param.put("no_rawat", Sequel.cariIsi("SELECT no_rawat from reg_periksa where no_rkm_medis = ? order BY tgl_registrasi DESC LIMIT 1", TNoRM.getText()));
-            param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
-            param.put("alamat", Sequel.cariIsi("SELECT CONCAT(ps.alamat, ', DS. ',kl.nm_kel, ', KEC. ',kc.nm_kec, ',',kb.nm_kab) FROM pasien ps " +
-                "INNER JOIN kelurahan kl ON kl.kd_kel = ps.kd_kel " +
-                "INNER JOIN kecamatan kc ON kc.kd_kec = ps.kd_kec " +
-                "INNER JOIN kabupaten kb ON kb.kd_kab = ps.kd_kab " +
-                "WHERE ps.no_rkm_medis = ?", TNoRM.getText()));
-            finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",KdDokter.getText());
-            param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+NmDokter.getText()+"\nID "+(finger.equals("")?KdDokter.getText():finger)+"\n"+DTPTgl.getSelectedItem());  
-            Valid.MyReport("rptSuratKematian2.jasper","report","::[ Surat Kematian ]::",param);
-        }
-    }//GEN-LAST:event_MnCetakSuratMati1ActionPerformed
+    public void windowDeicoified(W
+    @ O
+    ublic void windowActivated(WindowEven          public void windowDeactivted(WindowEvent e) {}
+        });
+        dokt
 
-    private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkInputActionPerformed
-        isForm();
-    }//GEN-LAST:event_ChkInputActionPerformed
-
-    private void BtnDokterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDokterActionPerformed
-        dokter.isCek();
-        dokter.TCari.requestFocus();
-        dokter.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+    r.isCek(); 
+        dokter.TCari.requ estFoc us();
+         dokter.setSize(internalFrame.getWidth()-20,internalFrame1.getHeight()-20);
         dokter.setLocationRelativeTo(internalFrame1);
-        dokter.setVisible(true);
-    }//GEN-LAST:event_BtnDokterActionPerformed
-
+        dokter.setVisible(true); 
+    }//GEN-LAST:event_Btn Dokte rActionPerformed
+ 
     private void BtnDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnDokterKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            BtnDokterActionPerformed(null);
-        }else{
-            Valid.pindah(evt,TKtg,BtnSimpan);
-        }
-    }//GEN-LAST:event_BtnDokterKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_SPACE){ 
+            BtDokterActionPerformed(null);
+         }else{
+
+    eyPressed
 
     private void NoSKMKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NoSKMKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_NoSKMKeyPressed
+        // TODO add your ha
 
+    
     private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
-        if (TNoRM.getText().trim().equals("") || TPasien.getText().trim().equals("")) {
-            Valid.textKosong(TNoRM, "pasien");
-        } else if (TKtg.getText().trim().equals("")) {
-            Valid.textKosong(TKtg, "keterangan");
+         if (TNoRM.getText().trim().equals("")
+
+        } else if (TKtg.getText().trim().equals("")) { 
+            Valid.textKos ong(T Ktg, "keterangan");
         } else if (NmDokter.getText().trim().equals("")) {
             Valid.textKosong(BtnDokter, "Dokter DPJP");
         }else{
-            try {
-                Sequel.mengedit("pasien_mati", "no_rkm_medis=?", "keterangan=?,temp_meninggal=?,icd1=?, icd2=?, icd3=?, icd4=?, kd_dokter=?", 8, new String[]{
-                    TKtg.getText() + "#" + NoSKM.getText(),tmptmeninggal.getSelectedItem().toString(),
-                    icd1.getText(), icd2.getText(), icd3.getText(), icd4.getText(), KdDokter.getText(), TNoRM.getText()
-                });
-                
-                tampil();
-                emptTeks();
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null,"Maaf, gagal menyimpan data. Silahkan periksa kembali data !");
-            }
-        }
-    }//GEN-LAST:event_BtnEditActionPerformed
+            try {   Sequel.mengedit("pasien_mati", "no_rkm_medis=?", "keterangan=?,temp_meninggal=?,icd1=?, icd2=?, icd3=?, icd4=?, k   T
 
-    private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnEditKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BtnEditKeyPressed
+        ) 
+     
 
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
+         } catch (Exception e) {
+
+        } 
+        }  
+    }//GEN-LAST:event_BtnEditActionPerformed 
+          
+    private void BtnEditKeyPressed(java.awt.event.KeyEve
+            ODO add your handli ng code here:
+    }//GEN-LAST:event_BtnEditKeyP ressed
+ 
+    /** 
+    * @param args the command lin e arguments
+    */ 
+            tatic void main(St ring args[]) {
         java.awt.EventQueue.invokeLater(() -> {
-            DlgPasienMati dialog = new DlgPasienMati(new javax.swing.JFrame(), true);
-            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                @Override
-                public void windowClosing(java.awt.event.WindowEvent e) {
-                    System.exit(0);
-                }
-            });
-            dialog.setVisible(true);
-        });
+                    
+                    
+            DlgPasienMati dia log = new DlgPasienMati(new javax.swing.JFrame(), true);
+            dialog.addWindowListener(new java.a
+                    wt.event.WindowAdapter() {
+                            @Override
+                            public void windowClosing(java.awt.event.WindowEvent 
+                                System.exit(0);
+                            }
+                    
+            });  
+                    
+                    
+            dialog.setVisible(t
+                    rue);      
+                                 
+                                     
+               
     }
-
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private widget.Button BtnAll;
+    private widget.Button BtnAll; 
     private widget.Button BtnBatal;
-    private widget.Button BtnCari;
+    pri vate widget.Button BtnCari;
     private widget.Button BtnDokter;
-    private widget.Button BtnEdit;
-    private widget.Button BtnHapus;
+    private widget.Button BtnEdit; 
+    private widget.Button Bt n Hapus; 
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
     private widget.Button BtnSeek;
-    private widget.Button BtnSimpan;
+                
+            
+
+            widget.Button BtnSimpan;
     private widget.CekBox ChkInput;
-    private widget.Tanggal DTPTgl;
+            
+
+            widget.Tanggal DTPTgl;
     private widget.panelisi FormInput;
-    private widget.TextBox KdDokter;
-    private widget.Label LCount;
-    private javax.swing.JMenuItem MnAngkutJenazah;
+    private widget .TextBox KdDokter;  
+                    abel LCount; 
+    private javax.swing.JMenuItem MnAngkutJenazah; 
     private javax.swing.JMenuItem MnCetakSuratMati;
-    private javax.swing.JMenuItem MnCetakSuratMati1;
-    private widget.TextBox NmDokter;
+    private j
+
+            widget.TextBox NmDokter;
     private widget.TextBox NoSKM;
-    private javax.swing.JPanel PanelInput;
+            
+
+            javax.swing.JPanel PanelInput;
     private widget.ScrollPane Scroll;
-    private widget.TextBox TCari;
+            
+
+            widget.TextBox TCari;
     private widget.TextBox TKtg;
-    private widget.TextBox TNoRM;
+            
+
+            widget.TextBox TNoRM;
     private widget.TextBox TPasien;
+            
     private widget.ComboBox cmbDtk;
     private widget.ComboBox cmbJam;
     private widget.ComboBox cmbMnt;
-    private widget.TextBox icd1;
+    private widget.TextBox icd1;     
     private widget.TextBox icd2;
     private widget.TextBox icd3;
-    private widget.TextBox icd4;
+    pri vate widget.TextBox icd4;
     private widget.InternalFrame internalFrame1;
-    private widget.Label jLabel10;
-    private widget.Label jLabel11;
+    private widget.Label jLabel10; 
+    privat e widget.Label jL ab el11; 
     private widget.Label jLabel12;
-    private widget.Label jLabel13;
-    private widget.Label jLabel14;
+    priva te w idget.Label jLabel13;
+    private widget.Label jLab el14; 
     private widget.Label jLabel15;
-    private widget.Label jLabel16;
+    pri vate widget.Label jLabel16;
     private widget.Label jLabel17;
-    private widget.Label jLabel4;
-    private widget.Label jLabel5;
-    private widget.Label jLabel6;
-    private widget.Label jLabel7;
-    private widget.Label jLabel8;
-    private widget.Label jLabel9;
+    private widget.Label jLabel4; 
+    privat widget.Label jLabel5;
+    pri vate widget.Label jLabel6;
+
+    bel9;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu jPopupMenu1;
     private widget.panelisi panelGlass8;
@@ -1375,32 +1381,31 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
                    "from pasien_mati inner join pasien on pasien_mati.no_rkm_medis=pasien.no_rkm_medis "+
                    "inner join dokter on pasien_mati.kd_dokter=dokter.kd_dokter "+
                    (TCari.getText().trim().equals("")?"":
-                   "where pasien_mati.tanggal like '%"+TCari.getText().trim()+"%' or "+
-                   "pasien_mati.no_rkm_medis like '%"+TCari.getText().trim()+"%' or "+
-                   "pasien.nm_pasien like '%"+TCari.getText().trim()+"%' or "+
-                   "pasien.stts_nikah like '%"+TCari.getText().trim()+"%' or "+
-                   "pasien.agama like '%"+TCari.getText().trim()+"%' or "+
-                   "pasien_mati.kd_dokter like '%"+TCari.getText().trim()+"%' or "+
-                   "dokter.nm_dokter like '%"+TCari.getText().trim()+"%' or "+
-                   "pasien_mati.icd1 like '%"+TCari.getText().trim()+"%' or "+
-                   "pasien_mati.keterangan like '%"+TCari.getText().trim()+"%' ")+
+             
+
+         "ere pasien_mati
+           "pasien_mati.no_
+
+        gama like '%"+TCari.g
+
+        m_dokter like '%"+TCari.getText().t m()+%'  or "+
+        ti.icd1 like '%"+TCari.getText().trim()+"%' or "+
+                    "pasien_mati.keterangan like '%"+TCari.getText().trim()+"%' ")+
                    "order by pasien_mati.tanggal ");
-            try {
-                rs=ps.executeQuery();
-                while(rs.next()){               
-                    tabMode.addRow(new Object[]{
+       
+                 rs=ps.executeQuery();
+       
+                   tabM
+
+    e.addRow(new Object[]{
                         rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),
                         rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),
-                        rs.getString(9),rs.getString(10),rs.getString(11),rs.getString(12),
-                        rs.getString(13),rs.getString(14),rs.getString(15),rs.getString(16),
-                        rs.getString(17),rs.getString(18), rs.getString(19)
-                    });
-                }
-            } catch (Exception e) {
-                System.out.println("Notif : "+e);
-            } finally{
-                if(rs!=null){
-                    rs.close();
+                        r
+
+    .getString(9),rs.getString(10),rs.getString(11),rs.
+                r         rs.getString(17),rs.getString(18), rs.getString1});} c    System.out.println("
+        
+
                 }
                 if(ps!=null){
                     ps.close();
@@ -1419,46 +1424,47 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
         TKtg.setText("");
         tmptmeninggal.setSelectedItem("");
         icd1.setText("");
-        icd2.setText("");
+        icd2
+    setText(""); 
         icd3.setText("");
         icd4.setText("");
         KdDokter.setText("");
         NmDokter.setText("");
-        DTPTgl.setDate(new Date());
+        DTPTgl.setDate(new Date()
         DTPTgl.requestFocus();
-        NoSKM.setText(IncrementNumberString());
+        NoSKM.setText(IncrementNm
     }
-
+    
     private void getData() {
-        if(tbMati.getSelectedRow()!= -1){
-            cmbJam.setSelectedItem(tbMati.getValueAt(tbMati.getSelectedRow(),1).toString().substring(0,2));
-            cmbMnt.setSelectedItem(tbMati.getValueAt(tbMati.getSelectedRow(),1).toString().substring(3,5));
-            cmbDtk.setSelectedItem(tbMati.getValueAt(tbMati.getSelectedRow(),1).toString().substring(6,8));
-            TNoRM.setText(tbMati.getValueAt(tbMati.getSelectedRow(),2).toString());
-            TPasien.setText(tbMati.getValueAt(tbMati.getSelectedRow(),3).toString());
-            TKtg.setText(tbMati.getValueAt(tbMati.getSelectedRow(),10).toString());
+        if(tbMati.getSelectedRow()!
+            cmbJam.setSelectedIt
+            cmbMnt.setSelectedIt
+            cmbDtk.setSelectedIt
+            TNoRM.setText(tbMati
+            TPasien.setText(tbMati.getValueAt(tb        TKtg.setText(tbMati.getValueAt(tbMati.getSelectedRow(),10).toString());
             Valid.SetTgl(DTPTgl,tbMati.getValueAt(tbMati.getSelectedRow(),0).toString());
             tmptmeninggal.setSelectedItem(tbMati.getValueAt(tbMati.getSelectedRow(),11).toString());
             icd1.setText(tbMati.getValueAt(tbMati.getSelectedRow(),12).toString());
             icd2.setText(tbMati.getValueAt(tbMati.getSelectedRow(),13).toString());
-            icd3.setText(tbMati.getValueAt(tbMati.getSelectedRow(),14).toString());
-            icd4.setText(tbMati.getValueAt(tbMati.getSelectedRow(),15).toString());
+            icd3.setText(tbMati.ge        icd4.setText(tbMati.getValueAt(tbMati.getSelectedRow(),15).toString());
             KdDokter.setText(tbMati.getValueAt(tbMati.getSelectedRow(),16).toString());
-            NmDokter.setText(tbMati.getValueAt(tbMati.getSelectedRow(),17).toString());
-            NoSKM.setText(tbMati.getValueAt(tbMati.getSelectedRow(),18).toString());
-        }
+            NmDokter.setText(tbMa
+            NoSKM.setText(tb
     }
     
+
+    
+    
     public void isCek(){
-        BtnSimpan.setEnabled(akses.getpasien_meninggal());
-        BtnHapus.setEnabled(akses.getpasien_meninggal());
+        BtnSimpan.setEnabled(akses.getp    BtnHapus.setEnabled(akses.getpasien_meninggal());
         BtnPrint.setEnabled(akses.getpasien_meninggal());
     }
     
-    public void setNoRm(String norm,String nama) {
-        TNoRM.setText(norm);  
-        TPasien.setText(nama);
+    p
+
         
+
+    
         ChkInput.setSelected(true);
         isForm();
         TCari.setText(norm);
@@ -1483,43 +1489,71 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
     }
     
     private String IncrementNumberString() {
-        // Ambil keterangan terakhir dari database
-        String keterangan = Sequel.cariIsi("SELECT pm.keterangan FROM pasien_mati pm ORDER BY CONCAT(pm.tanggal, pm.jam) DESC LIMIT 1");
+        // Ambil keterangan terakhir dari databa
 
-        // Regex untuk mencari angka setelah tanda #
-        String regex = "#(\\d+)";
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
-        java.util.regex.Matcher matcher = pattern.matcher(keterangan);
+    n = Sequel.cariIsi("SELECT pm.keterangan FROM pasien_mati pm ORDEencari angka setelah tanda ##(\\d+)";Pattern pattern = java.util.regex.attern.compile(r
+gexray ank
 
-        // Array angka Romawi untuk bulan
-        String[] romanNumerals = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"};
+a Romawi untuk
+     romanNumerals = {"I", "II", "IIImbil bulan dalendar caleeentYear = calbnif (cur
+    rentMonth >= 1 &romanMonth = romanNumerals[currentMont}
+        r e turn "Invalid month"; }
 
-        // Mengambil bulan dan tahun saat ini
-        java.util.Calendar calendar = java.util.Calendar.getInstance();
-        int currentMonth = calendar.get(java.util.Calendar.MONTH) + 1; // Januari = 0, jadi ditambah 1
-        int currentYear = calendar.get(java.util.Calendar.YEAR);
 
-        // Mengubah bulan ke format angka Romawi
-        String romanMonth = "";
-        if (currentMonth >= 1 && currentMonth <= 12) {
-            romanMonth = romanNumerals[currentMonth - 1];
-        } else {
-            return "Invalid month"; // Menangani kasus di luar rentang bulan
-        }
 
-        int number = 1; // Default jika tidak ada angka ditemukan
+        if (matcher.find()    // Mengambil ang    String number
 
-        if (matcher.find()) {
-            // Mengambil angka dari grup regex
-            String numberStr = matcher.group(1);
-            number = Integer.parseInt(numberStr);
+        }enreturn number + "/SKM
 
-            // Increment angka
-            number += 1;
-        }
+        
 
-        // Mengembalikan string dengan format "MODAR#38/SKM/Bulan Roman/Tahun"
-        return number + "/SKM/" + romanMonth + "/" + currentYear;
-    }
+        ate void runBackground(Runnif (ceksukses) return;if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
 
+        ceksukses = true;
+        se tCursor(Cursor.getPredef inedCu rsor(Cursor.WAIT_CURSOR));
+  
+        try {  
+            executor.submit(() -> {  
+                try { 
+                    task.run(); 
+                } finally { 
+                    ceksukses =  false; 
+                    SwingUtilities.invokeLater(() -> { 
+                        if (isDisplayable()) { 
+                            setCursor(Cursor.getDefaultCursor()); 
+                        } 
+                    }); 
+                } 
+
+            ceksukses = false;
+     
+
+     
+        e
+    public void dispose() {
+     
+
+    } 
 }
+        
+
+        
+
+    
+
+          
+                 
+            
+             
+            
+
+    
+                  
+
+    
+            
+            
+            
+
+    

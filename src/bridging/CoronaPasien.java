@@ -42,7 +42,6 @@ public class CoronaPasien extends javax.swing.JDialog {
     private PreparedStatement ps;
     private ResultSet rs;
     private int i=0;
-    private DlgCariPetugas petugas=new DlgCariPetugas(null,false);
     private CoronaReferensiJK jk=new CoronaReferensiJK(null,false);
     private CoronaReferensiKewarganegaraan kewarganegaraan=new CoronaReferensiKewarganegaraan(null,false);
     private CoronaReferensiSumberPenularan penularan=new CoronaReferensiSumberPenularan(null,false);
@@ -196,29 +195,6 @@ public class CoronaPasien extends javax.swing.JDialog {
         
         ChkInput.setSelected(false);
         isForm();
-        
-        petugas.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(petugas.getTable().getSelectedRow()!= -1){                   
-                    KodeJK.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),0).toString());
-                    NamaJK.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(),1).toString());
-                }  
-                KodeJK.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        }); 
         
         jk.addWindowListener(new WindowListener() {
             @Override
@@ -2068,7 +2044,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 }
                 rs=ps.executeQuery();
                 while(rs.next()){    
-                    tabMode.addRow(new String[]{
+                    tabMode.addRow(new Object[]{
                         rs.getString("no_pengenal"),rs.getString("no_rkm_medis"),rs.getString("nama_lengkap"),rs.getString("inisial"),rs.getString("kode_jk"),rs.getString("nama_jk"),
                         rs.getString("tgl_lahir"),rs.getString("email"),rs.getString("notelp"),rs.getString("tgl_lapor"),rs.getString("tgl_masuk"),rs.getString("tgl_keluar"),
                         rs.getString("kode_kewarganegaraan"),rs.getString("nama_kewarganegaraan"),rs.getString("kode_penularan"),rs.getString("sumber_penularan"),rs.getString("kd_kelurahan"),

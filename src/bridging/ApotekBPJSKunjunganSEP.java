@@ -28,7 +28,11 @@ import java.awt.Cursor;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -43,7 +47,6 @@ public final class ApotekBPJSKunjunganSEP extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
     private validasi Valid=new validasi();
     private sekuel Sequel=new sekuel();
-    private int i=0;
     private ApiApotekBPJS api=new ApiApotekBPJS();
     private String URL="",link="",utc="";
     private HttpHeaders headers;
@@ -52,6 +55,8 @@ public final class ApotekBPJSKunjunganSEP extends javax.swing.JDialog {
     private JsonNode root;
     private JsonNode nameNode;
     private JsonNode response;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /** Creates new form DlgKamar
      * @param parent
@@ -83,29 +88,6 @@ public final class ApotekBPJSKunjunganSEP extends javax.swing.JDialog {
         tbKamar.setDefaultRenderer(Object.class, new WarnaTable());
         
         NoSEP.setDocument(new batasInput((byte)100).getKata(NoSEP));
-        
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            NoSEP.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(NoSEP.getText().length()>2){
-                        tampil(NoSEP.getText());
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(NoSEP.getText().length()>2){
-                        tampil(NoSEP.getText());
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(NoSEP.getText().length()>2){
-                        tampil(NoSEP.getText());
-                    }
-                }
-            });
-        } 
         
         try {
             link=koneksiDB.URLAPIAPOTEKBPJS();
@@ -142,6 +124,11 @@ public final class ApotekBPJSKunjunganSEP extends javax.swing.JDialog {
         setIconImages(null);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Pencarian SEP Apotek BPJS ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
@@ -273,10 +260,10 @@ public final class ApotekBPJSKunjunganSEP extends javax.swing.JDialog {
 
     private void NoSEPKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NoSEPKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            tampil(NoSEP.getText());
+            runBackground(() ->tampil(NoSEP.getText()));
             BtnPrint.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
-            tampil(NoSEP.getText());
+            runBackground(() ->tampil(NoSEP.getText()));
         }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
             BtnKeluar.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
@@ -285,9 +272,11 @@ public final class ApotekBPJSKunjunganSEP extends javax.swing.JDialog {
     }//GEN-LAST:event_NoSEPKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        tampil(NoSEP.getText());
-        this.setCursor(Cursor.getDefaultCursor());
+        if(NoSEP.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(rootPane,"Masukkan Nomor SEP terlebih dahulu...!");
+        }else{
+            runBackground(() ->tampil(NoSEP.getText()));
+        }
     }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -297,6 +286,31 @@ public final class ApotekBPJSKunjunganSEP extends javax.swing.JDialog {
             Valid.pindah(evt,NoSEP,BtnPrint);
         }
     }//GEN-LAST:event_BtnCariKeyPressed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            NoSEP.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(NoSEP.getText().length()>2){
+                        runBackground(() ->tampil(NoSEP.getText()));
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(NoSEP.getText().length()>2){
+                        runBackground(() ->tampil(NoSEP.getText()));
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(NoSEP.getText().length()>2){
+                        runBackground(() ->tampil(NoSEP.getText()));
+                    }
+                }
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -318,7 +332,7 @@ public final class ApotekBPJSKunjunganSEP extends javax.swing.JDialog {
     private widget.Button BtnCari;
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
-    private widget.TextBox NoSEP;
+    public widget.TextBox NoSEP;
     private widget.ScrollPane Scroll;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel16;
@@ -327,7 +341,7 @@ public final class ApotekBPJSKunjunganSEP extends javax.swing.JDialog {
     private widget.Table tbKamar;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil(String keyword) {
+    private void tampil(String keyword) {
         try {
             headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -337,7 +351,7 @@ public final class ApotekBPJSKunjunganSEP extends javax.swing.JDialog {
 	    headers.add("x-signature",api.getHmac(utc));
 	    headers.add("user_key",koneksiDB.USERKEYAPIAPOTEKBPJS());
             requestEntity = new HttpEntity(headers);
-            URL = link+"/SEP/"+keyword;	
+            URL = link+"/sep/"+keyword;	
             System.out.println(URL);
             root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.GET, requestEntity, String.class).getBody());
             nameNode = root.path("metaData");
@@ -416,9 +430,45 @@ public final class ApotekBPJSKunjunganSEP extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(rootPane,"Koneksi ke server BPJS terputus...!");
             }
         }
-    }    
+    }  
+    
+    public void tampil2(String keyword) {
+        runBackground(() ->tampil(keyword));
+    }
 
     public JTable getTable(){
         return tbKamar;
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

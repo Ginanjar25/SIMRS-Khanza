@@ -57,6 +57,9 @@
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
+  <Events>
+    <EventHandler event="windowOpened" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowOpened"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
@@ -334,7 +337,7 @@
                     </Property>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                       <StringArray count="1">
-                        <StringItem index="0" value="21-03-2023"/>
+                        <StringItem index="0" value="07-02-2026"/>
                       </StringArray>
                     </Property>
                     <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy"/>
@@ -362,7 +365,7 @@
                     </Property>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                       <StringArray count="1">
-                        <StringItem index="0" value="21-03-2023"/>
+                        <StringItem index="0" value="07-02-2026"/>
                       </StringArray>
                     </Property>
                     <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy"/>
@@ -570,7 +573,7 @@
                         </Property>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="1">
-                            <StringItem index="0" value="21-03-2023"/>
+                            <StringItem index="0" value="07-02-2026"/>
                           </StringArray>
                         </Property>
                         <Property name="displayFormat" type="java.lang.String" value="dd-MM-yyyy"/>
@@ -868,18 +871,18 @@
                         </Constraint>
                       </Constraints>
                     </Component>
-                    <Component class="widget.Button" name="btnPetugas">
+                    <Component class="widget.Button" name="BtnPetugas">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/picture/190.png"/>
                         </Property>
                         <Property name="mnemonic" type="int" value="50"/>
                         <Property name="toolTipText" type="java.lang.String" value="ALt+2"/>
-                        <Property name="name" type="java.lang.String" value="btnPetugas" noResource="true"/>
+                        <Property name="name" type="java.lang.String" value="BtnPetugas" noResource="true"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPetugasActionPerformed"/>
-                        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="btnPetugasKeyPressed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnPetugasActionPerformed"/>
+                        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="BtnPetugasKeyPressed"/>
                       </Events>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -1213,9 +1216,9 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="3">
-                            <StringItem index="0" value="Asupan Makan Tidak Berkurang"/>
+                            <StringItem index="0" value="Asupan Makan Sangat Berkurang"/>
                             <StringItem index="1" value="Asupan Makan Agak Berkurang"/>
-                            <StringItem index="2" value="Asupan Makan Sangat Berkurang"/>
+                            <StringItem index="2" value="Asupan Makan Tidak Berkurang"/>
                           </StringArray>
                         </Property>
                         <Property name="name" type="java.lang.String" value="SG1" noResource="true"/>
@@ -1269,10 +1272,10 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="4">
-                            <StringItem index="0" value="Tidak Ada Penurunan Berat Badan"/>
-                            <StringItem index="1" value="Penurunan Berat Badan Antara 1 Hingga 3 Kg"/>
-                            <StringItem index="2" value="Tidak Tahu"/>
-                            <StringItem index="3" value="Penurunan Berat Badan Lebih Dari 3 Kg"/>
+                            <StringItem index="0" value="Penurunan Berat Badan Lebih Dari 3 Kg"/>
+                            <StringItem index="1" value="Tidak Tahu"/>
+                            <StringItem index="2" value="Penurunan Berat Badan Antara 1 Hingga 3 Kg"/>
+                            <StringItem index="3" value="Tidak Ada Penurunan Berat Badan"/>
                           </StringArray>
                         </Property>
                         <Property name="name" type="java.lang.String" value="SG2" noResource="true"/>
@@ -1379,9 +1382,9 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="3">
-                            <StringItem index="0" value="Dapat Bepergian Keluar Rumah"/>
+                            <StringItem index="0" value="Terbatas Dari Tempat Tidur Atau Kursi"/>
                             <StringItem index="1" value="Mampu Bangun Dari Tempat Tidur/Kursi Tetapi Tidak Bepergian Keluar Rumah"/>
-                            <StringItem index="2" value="Terbatas Dari Tempat Tidur Atau Kursi"/>
+                            <StringItem index="2" value="Dapat Bepergian Keluar Rumah"/>
                           </StringArray>
                         </Property>
                         <Property name="name" type="java.lang.String" value="SG3" noResource="true"/>
@@ -1448,8 +1451,8 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="2">
-                            <StringItem index="0" value="Tidak"/>
-                            <StringItem index="1" value="Ya"/>
+                            <StringItem index="0" value="Ya"/>
+                            <StringItem index="1" value="Tidak"/>
                           </StringArray>
                         </Property>
                         <Property name="name" type="java.lang.String" value="SG4" noResource="true"/>
@@ -1492,10 +1495,10 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="4">
-                            <StringItem index="0" value="IMT &gt;= 23"/>
-                            <StringItem index="1" value="21 Hingga &lt; 23"/>
-                            <StringItem index="2" value="19 Hingga &lt; 21"/>
-                            <StringItem index="3" value="IMT &lt; 19"/>
+                            <StringItem index="0" value="IMT &lt; 19"/>
+                            <StringItem index="1" value="19 Hingga &lt; 21"/>
+                            <StringItem index="2" value="21 Hingga &lt; 23"/>
+                            <StringItem index="3" value="IMT &gt;= 23"/>
                           </StringArray>
                         </Property>
                         <Property name="name" type="java.lang.String" value="SG6" noResource="true"/>
@@ -1560,9 +1563,9 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="3">
-                            <StringItem index="0" value="Tidak Ada Gangguan Psikologis"/>
+                            <StringItem index="0" value="Depresi Berat Atau Kepikunan Berat"/>
                             <StringItem index="1" value="Kepikunan Ringan"/>
-                            <StringItem index="2" value="Depresi Berat Atau Kepikunan Berat"/>
+                            <StringItem index="2" value="Tidak Ada Gangguan Psikologis"/>
                           </StringArray>
                         </Property>
                         <Property name="name" type="java.lang.String" value="SG5" noResource="true"/>
@@ -1629,8 +1632,8 @@
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="2">
-                            <StringItem index="0" value="Lingkar Betis &gt;= 31"/>
-                            <StringItem index="1" value="Lingkar Betis &lt; 31"/>
+                            <StringItem index="0" value="Lingkar Betis &lt; 31"/>
+                            <StringItem index="1" value="Lingkar Betis &gt;= 31"/>
                           </StringArray>
                         </Property>
                         <Property name="name" type="java.lang.String" value="SG7" noResource="true"/>

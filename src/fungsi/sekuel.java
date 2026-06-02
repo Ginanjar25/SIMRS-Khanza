@@ -53,1225 +53,1304 @@ import uz.ncipro.calendar.JDateTimePicker;
  */
 public final class sekuel {
     private javax.swing.ImageIcon icon = null;
-    private String folder,AKTIFKANTRACKSQL = koneksiDB.AKTIFKANTRACKSQL();
-    private final Connection connect=koneksiDB.condb();
+    private String folder, AKTIFKANTRACKSQL = koneksiDB.AKTIFKANTRACKSQL();
+    private final Connection connect = koneksiDB.condb();
     private PreparedStatement ps;
     private ResultSet rs;
-    private int angka=0;
-    private double angka2=0;
-    private String dicari="";
-    private Date tanggal=new Date();
-    private boolean bool=false;
+    private int angka = 0;
+    private double angka2 = 0;
+    private String dicari = "";
+    private Date tanggal = new Date();
+    private boolean bool = false;
     private final DecimalFormat df2 = new DecimalFormat("####");
     private SimpleDateFormat formattanggal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private Date waktumulai,kegiatan;
-    private long bedawaktu=0;
-    
-    public sekuel(){
+    private Date waktumulai, kegiatan;
+    private long bedawaktu = 0;
+
+    public sekuel() {
         super();
     }
 
-
-    public void menyimpan(String table,String value,String sama){
+    public void menyimpan(String table, String value, String sama) {
         try {
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            try{                  
-                ps.executeUpdate();
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);            
-                JOptionPane.showMessageDialog(null,"Maaf, gagal menyimpan data. Kemungkinan ada "+sama+" yang sama dimasukkan sebelumnya...!");
-            }finally{
-                if(ps != null){
-                    ps.close();
-                }                
-            }
-            SimpanTrack("insert into "+table+" values("+value+")");
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e); 
-        }            
-    }
-    
-    public void menyimpan2(String table,String value,String sama){
-        try {
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            try{                  
-                ps.executeUpdate();
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);    
-            }finally{
-                if(ps != null){
-                    ps.close();
-                }                
-            }
-            
-            SimpanTrack("insert into "+table+" values("+value+")");
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e); 
-        }            
-    }
-    
-    public boolean menyimpantf(String table,String value,String sama){
-        try {
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            ps.executeUpdate();
-            if(ps != null){
-                ps.close();
-            }  
-            
-            SimpanTrack("insert into "+table+" values("+value+")");
-            return true;           
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e); 
-            JOptionPane.showMessageDialog(null,"Maaf, gagal menyimpan data. Kemungkinan ada "+sama+" yang sama dimasukkan sebelumnya...!");
-            return false;
-        }            
-    }
-    
-    public boolean menyimpantf2(String table,String value,String sama){
-        try {
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            ps.executeUpdate();
-            if(ps != null){
-                ps.close();
-            }  
-            
-            SimpanTrack("insert into "+table+" values("+value+")");
-            return true;           
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e); 
-            return false;
-        }            
-    }
-    
-    public boolean menyimpantf(String table,String value,int i,String[] a,String acuan_field,String update,int j,String[] b){
-        bool=false;
-        try{ 
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            for(angka=1;angka<=i;angka++){
-                ps.setString(angka,a[angka-1]);
-            }            
-            ps.executeUpdate();
-            
-            if(ps != null){
-                ps.close();
-            } 
-            
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
-                }
-            }
-            SimpanTrack("insert into "+table+" values("+dicari+")");
-            bool=true;
-        }catch(Exception e){
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
             try {
-                ps=connect.prepareStatement("update "+table+" set "+update+" where "+acuan_field);
-                for(angka=1;angka<=j;angka++){
-                    ps.setString(angka,b[angka-1]);
-                } 
-                ps.executeUpdate();   
-                
-                if(ps != null){
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null,
+                        "Maaf, gagal menyimpan data. Kemungkinan ada " + sama + " yang sama dimasukkan sebelumnya...!");
+            } finally {
+                if (ps != null) {
                     ps.close();
-                } 
-                
-                if(AKTIFKANTRACKSQL.equals("yes")){
-                    dicari="";
-                    for(angka=1;angka<=i;angka++){
-                        dicari=dicari+"|"+b[angka-1];
-                    }
                 }
-                SimpanTrack("update "+table+" set "+update+" "+dicari+" where "+acuan_field);
-                bool=true;
-            } catch (Exception e2) {
-                bool=false;
-                System.out.println("Notifikasi : "+e2);
-            }                         
+            }
+            SimpanTrack("insert into " + table + " values(" + value + ")");
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
         }
-        return bool;
     }
-    
-    public void menyimpan(String table,String value,String sama,int i,String[] a){
+
+    public void menyimpan2(String table, String value, String sama) {
         try {
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            try{
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                }            
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
+            try {
                 ps.executeUpdate();
-                
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);            
-                JOptionPane.showMessageDialog(null,"Maaf, gagal menyimpan data. Kemungkinan ada "+sama+" yang sama dimasukkan sebelumnya...!");
-            }finally{
-                if(ps != null){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
                     ps.close();
-                }                
-            }
-            
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
                 }
             }
-            SimpanTrack("insert into "+table+" values("+dicari+")");
+
+            SimpanTrack("insert into " + table + " values(" + value + ")");
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+table+" "+e); 
-        }            
+            System.out.println("Notifikasi : " + e);
+        }
     }
-    
-    public void menyimpan2(String table,String value,String sama,int i,String[] a){
+
+    public boolean menyimpantf(String table, String value, String sama) {
         try {
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            try{
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                }            
-                ps.executeUpdate();
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);            
-            }finally{
-                if(ps != null){
-                    ps.close();
-                }                
-            }
-            
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
-                }
-            }
-            SimpanTrack("insert into "+table+" values("+dicari+")");
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);            
-        }    
-    }
-    
-    public void menyimpan3(String table,String value,String sama,int i,String[] a){
-        try {
-            ps=connect.prepareStatement("insert ignore into "+table+" values("+value+")");
-            try{
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                }            
-                ps.executeUpdate();
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);            
-            }finally{
-                if(ps != null){
-                    ps.close();
-                }                
-            }
-            
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
-                }
-            }
-            SimpanTrack("insert into "+table+" values("+dicari+")");
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);            
-        }    
-    }
-    
-    public boolean menyimpantf(String table,String value,String sama,int i,String[] a){        
-        try{             
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            for(angka=1;angka<=i;angka++){
-                ps.setString(angka,a[angka-1]);
-            }            
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
             ps.executeUpdate();
-            
-            if(ps != null){
+            if (ps != null) {
                 ps.close();
             }
-            
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
-                }
-            }
-            SimpanTrack("insert into "+table+" values("+dicari+")");
+
+            SimpanTrack("insert into " + table + " values(" + value + ")");
             return true;
-        }catch(Exception e){
-            System.out.println("Notifikasi : "+e);  
-            if(e.toString().contains("Duplicate")){
-                JOptionPane.showMessageDialog(null,"Maaf, gagal menyimpan data. Kemungkinan ada "+sama+" yang sama dimasukkan sebelumnya...!");
-            }else{
-                JOptionPane.showMessageDialog(null,"Maaf, gagal menyimpan data. Ada kesalahan Query...!");
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+            JOptionPane.showMessageDialog(null,
+                    "Maaf, gagal menyimpan data. Kemungkinan ada " + sama + " yang sama dimasukkan sebelumnya...!");
+            return false;
+        }
+    }
+
+    public boolean menyimpantf2(String table, String value, String sama) {
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
+            ps.executeUpdate();
+            if (ps != null) {
+                ps.close();
+            }
+
+            SimpanTrack("insert into " + table + " values(" + value + ")");
+            return true;
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+            return false;
+        }
+    }
+
+    public boolean menyimpantf(String table, String value, int i, String[] a, String acuan_field, String update, int j,
+            String[] b) {
+        bool = false;
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
+            for (angka = 1; angka <= i; angka++) {
+                ps.setString(angka, a[angka - 1]);
+            }
+            ps.executeUpdate();
+
+            if (ps != null) {
+                ps.close();
+            }
+
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack("insert into " + table + " values(" + dicari + ")");
+            bool = true;
+        } catch (Exception e) {
+            try {
+                ps = connect.prepareStatement("update " + table + " set " + update + " where " + acuan_field);
+                for (angka = 1; angka <= j; angka++) {
+                    ps.setString(angka, b[angka - 1]);
+                }
+                ps.executeUpdate();
+
+                if (ps != null) {
+                    ps.close();
+                }
+
+                if (AKTIFKANTRACKSQL.equals("yes")) {
+                    dicari = "";
+                    for (angka = 1; angka <= i; angka++) {
+                        dicari = dicari + "|" + b[angka - 1];
+                    }
+                }
+                SimpanTrack("update " + table + " set " + update + " " + dicari + " where " + acuan_field);
+                bool = true;
+            } catch (Exception e2) {
+                bool = false;
+                System.out.println("Notifikasi : " + e2);
+            }
+        }
+        return bool;
+    }
+
+    public void menyimpan(String table, String value, String sama, int i, String[] a) {
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
+            try {
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null,
+                        "Maaf, gagal menyimpan data. Kemungkinan ada " + sama + " yang sama dimasukkan sebelumnya...!");
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack("insert into " + table + " values(" + dicari + ")");
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + table + " " + e);
+        }
+    }
+
+    public void menyimpan2(String table, String value, String sama, int i, String[] a) {
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
+            try {
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack("insert into " + table + " values(" + dicari + ")");
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+    }
+
+    public void menyimpan3(String table, String value, String sama, int i, String[] a) {
+        try {
+            ps = connect.prepareStatement("insert ignore into " + table + " values(" + value + ")");
+            try {
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack("insert into " + table + " values(" + dicari + ")");
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+    }
+
+    public boolean menyimpantf(String table, String value, String sama, int i, String[] a) {
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
+            for (angka = 1; angka <= i; angka++) {
+                ps.setString(angka, a[angka - 1]);
+            }
+            ps.executeUpdate();
+
+            if (ps != null) {
+                ps.close();
+            }
+
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack("insert into " + table + " values(" + dicari + ")");
+            return true;
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+            if (e.toString().contains("Duplicate")) {
+                JOptionPane.showMessageDialog(null,
+                        "Maaf, gagal menyimpan data. Kemungkinan ada " + sama + " yang sama dimasukkan sebelumnya...!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Maaf, gagal menyimpan data. Ada kesalahan Query...!");
             }
             return false;
         }
     }
-    
-    public boolean menyimpantf2(String table,String value,String sama,int i,String[] a){
-        bool=true;
-        try{ 
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
+
+    public boolean menyimpantf2(String table, String value, String sama, int i, String[] a) {
+        bool = true;
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
             try {
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                }            
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
                 ps.executeUpdate();
-                bool=true;
+                bool = true;
             } catch (Exception e) {
-                bool=false;
-                System.out.println("Notifikasi : "+e);  
-            } finally{
-                if(ps != null){
+                bool = false;
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
                 }
             }
-            SimpanTrack("insert into "+table+" values("+dicari+")");
-        }catch(Exception e){
-            bool=false;
-            System.out.println("Notifikasi : "+e);  
+            SimpanTrack("insert into " + table + " values(" + dicari + ")");
+        } catch (Exception e) {
+            bool = false;
+            System.out.println("Notifikasi : " + e);
         }
         return bool;
     }
-    
-    public boolean menyimpantf2(String table,String value,int i,String[] a){
-        bool=true;
-        try{ 
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
+
+    public boolean menyimpantf2(String table, String value, int i, String[] a) {
+        bool = true;
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
             try {
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                }            
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
                 ps.executeUpdate();
-                bool=true;
+                bool = true;
             } catch (Exception e) {
-                bool=false;
-                System.out.println("Notifikasi : "+e);  
-            } finally{
-                if(ps != null){
+                bool = false;
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
                 }
             }
-            SimpanTrack("insert into "+table+" values("+dicari+")");
-        }catch(Exception e){
-            bool=false;
-            System.out.println("Notifikasi : "+e);  
+            SimpanTrack("insert into " + table + " values(" + dicari + ")");
+        } catch (Exception e) {
+            bool = false;
+            System.out.println("Notifikasi : " + e);
         }
         return bool;
     }
-    
-    public void menyimpan(String table,String value,int i,String[] a){
+
+    public void menyimpan(String table, String value, int i, String[] a) {
         try {
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            try{                 
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                }            
-                ps.executeUpdate();
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);            
-            }finally{
-                if(ps != null){
-                    ps.close();
-                }                
-            }
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
-                }
-            }
-            SimpanTrack("insert into "+table+" values("+dicari+")");
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);   
-        }            
-    }
-    
-    public void menyimpanignore(String table,String value,int i,String[] a){
-        try {
-            ps=connect.prepareStatement("insert ignore into "+table+" values("+value+")");
-            try{                 
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                }            
-                ps.executeUpdate();
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e); ;            
-            }finally{
-                if(ps != null){
-                    ps.close();
-                }                
-            }
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
-                }
-            }
-            SimpanTrack("insert into "+table+" values("+dicari+")");
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);   
-        }            
-    }
-    
-    public void menyimpan2(String table,String value,int i,String[] a){
-        try {
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            try{                 
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                }            
-                ps.executeUpdate();
-            }catch(Exception e){
-                System.out.println("Notifikasi "+table+" : "+e);            
-            }finally{
-                if(ps != null){
-                    ps.close();
-                }                
-            }
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
-                }
-            }
-            SimpanTrack("insert into "+table+" values("+dicari+")");
-        } catch (Exception e) { 
-        }            
-    }
-    
-    public void menyimpan(String table,String value,int i,String[] a,String acuan_field,String update,int j,String[] b){
-        try{ 
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            for(angka=1;angka<=i;angka++){
-                ps.setString(angka,a[angka-1]);
-            }            
-            ps.executeUpdate();
-            
-            if(ps != null){
-                ps.close();
-            } 
-            
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
-                }
-            }
-            SimpanTrack("insert into "+table+" values("+dicari+")");
-        }catch(Exception e){
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
             try {
-                ps=connect.prepareStatement("update "+table+" set "+update+" where "+acuan_field);
-                for(angka=1;angka<=j;angka++){
-                    ps.setString(angka,b[angka-1]);
-                } 
-                ps.executeUpdate();   
-                
-                if(ps != null){
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
                     ps.close();
-                } 
-                
-                if(AKTIFKANTRACKSQL.equals("yes")){
-                    dicari="";
-                    for(angka=1;angka<=i;angka++){
-                        dicari=dicari+"|"+b[angka-1];
+                }
+            }
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack("insert into " + table + " values(" + dicari + ")");
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+    }
+
+    public void menyimpanignore(String table, String value, int i, String[] a) {
+        try {
+            ps = connect.prepareStatement("insert ignore into " + table + " values(" + value + ")");
+            try {
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                ;
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack("insert into " + table + " values(" + dicari + ")");
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+    }
+
+    public void menyimpan2(String table, String value, int i, String[] a) {
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
+            try {
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi " + table + " : " + e);
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack("insert into " + table + " values(" + dicari + ")");
+        } catch (Exception e) {
+        }
+    }
+
+    public void menyimpan(String table, String value, int i, String[] a, String acuan_field, String update, int j,
+            String[] b) {
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
+            for (angka = 1; angka <= i; angka++) {
+                ps.setString(angka, a[angka - 1]);
+            }
+            ps.executeUpdate();
+
+            if (ps != null) {
+                ps.close();
+            }
+
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack("insert into " + table + " values(" + dicari + ")");
+        } catch (Exception e) {
+            try {
+                ps = connect.prepareStatement("update " + table + " set " + update + " where " + acuan_field);
+                for (angka = 1; angka <= j; angka++) {
+                    ps.setString(angka, b[angka - 1]);
+                }
+                ps.executeUpdate();
+
+                if (ps != null) {
+                    ps.close();
+                }
+
+                if (AKTIFKANTRACKSQL.equals("yes")) {
+                    dicari = "";
+                    for (angka = 1; angka <= i; angka++) {
+                        dicari = dicari + "|" + b[angka - 1];
                     }
                 }
-                SimpanTrack("update "+table+" set "+update+" "+dicari+" where "+acuan_field);
+                SimpanTrack("update " + table + " set " + update + " " + dicari + " where " + acuan_field);
             } catch (Exception e2) {
-                System.out.println("Notifikasi : "+e2);
-            }                         
-        }
-    }
-    
-    public void menyimpan2(String table,String value,int i,String[] a,String acuan_field,String update,int j,String[] b){
-        try{ 
-            dicari="";
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            for(angka=1;angka<=i;angka++){
-                dicari=dicari+", "+a[angka-1];
-                ps.setString(angka,a[angka-1]);
-            }            
-            ps.executeUpdate();
-            
-            if(ps != null){
-                  ps.close();
-            } 
-            
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
-                }
-            }
-            SimpanTrack("insert into "+table+" values("+dicari+")");
-        }catch(Exception e){
-            try {
-                ps=connect.prepareStatement("update "+table+" set "+update+" where "+acuan_field);
-                for(angka=1;angka<=j;angka++){
-                    ps.setString(angka,b[angka-1]);
-                } 
-                ps.executeUpdate(); 
-                
-                if(ps != null){
-                    ps.close();
-                } 
-                
-                if(AKTIFKANTRACKSQL.equals("yes")){
-                    dicari="";
-                    for(angka=1;angka<=i;angka++){
-                        dicari=dicari+"|"+b[angka-1];
-                    }
-                }
-                SimpanTrack("update "+table+" set "+update+" "+dicari+" where "+acuan_field);
-            } catch (Exception e2) {                
-                System.out.println("Notifikasi : "+e2);
-            }            
-        }
-    }
-    
-    public void menyimpan3(String table,String value,int i,String[] a,String acuan_field,String update,int j,String[] b){
-        try{ 
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            for(angka=1;angka<=i;angka++){
-                ps.setString(angka,a[angka-1]);
-            }            
-            ps.executeUpdate();
-            
-            JOptionPane.showMessageDialog(null,"Proses simpan berhasil..!!");
-            if(ps != null){
-                ps.close();
-            } 
-            
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
-                }
-            }
-            SimpanTrack("insert into "+table+" values("+dicari+")");
-        }catch(Exception e){
-            try {
-                ps=connect.prepareStatement("update "+table+" set "+update+" where "+acuan_field);
-                for(angka=1;angka<=j;angka++){
-                    ps.setString(angka,b[angka-1]);
-                } 
-                ps.executeUpdate();   
-                
-                JOptionPane.showMessageDialog(null,"Proses simpan berhasil..!!");
-                if(ps != null){
-                    ps.close();
-                } 
-                if(AKTIFKANTRACKSQL.equals("yes")){
-                    dicari="";
-                    for(angka=1;angka<=i;angka++){
-                        dicari=dicari+"|"+b[angka-1];
-                    }
-                }
-                SimpanTrack("update "+table+" set "+update+" "+dicari+" where "+acuan_field);
-            } catch (Exception e2) {
-                System.out.println("Notifikasi : "+e2);
-            }                         
-        }
-    }
-    
-    public void menyimpan(String table,String value){
-        try {
-            ps=connect.prepareStatement("insert into "+table+" values("+value+")");
-            try{
-                ps.executeUpdate();
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);         
-            }finally{
-                if(ps != null){
-                    ps.close();
-                }                
-            }
-            SimpanTrack("insert into "+table+" values("+value+")");
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);  
-        }
-    }
-    
-    public void menyimpanignore(String table,String value){
-        try {
-            ps=connect.prepareStatement("insert ignore into "+table+" values("+value+")");
-            try{
-                ps.executeUpdate();
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);         
-            }finally{
-                if(ps != null){
-                    ps.close();
-                }                
-            }
-            SimpanTrack("insert into "+table+" values("+value+")");
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);  
-        }
-    }
-    
-    public void menyimpan(String table,String isisimpan,String isiedit,String acuan_field){
-        try{            
-            ps=connect.prepareStatement("insert into "+table+" values("+isisimpan+")");
-            ps.executeUpdate();   
-            if(ps != null){
-                ps.close();
-            }  
-            SimpanTrack("insert into "+table+" values("+isisimpan+")");
-        }catch(Exception e){
-            try {
-                ps=connect.prepareStatement("update "+table+" set "+isiedit+" where "+acuan_field);
-                ps.executeUpdate();
-                if(ps != null){
-                    ps.close();
-                }  
-                SimpanTrack("update "+table+" set "+isiedit+" where "+acuan_field);
-            } catch (Exception ex) {
-                System.out.println("Notifikasi Edit : "+ex);
+                System.out.println("Notifikasi : " + e2);
             }
         }
     }
 
-    public void menyimpan(String table,String value,String sama,JTextField AlmGb){
+    public void menyimpan2(String table, String value, int i, String[] a, String acuan_field, String update, int j,
+            String[] b) {
         try {
-            ps = connect.prepareStatement("insert into "+table+" values("+value+",?)");
-            try{                        
+            dicari = "";
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
+            for (angka = 1; angka <= i; angka++) {
+                dicari = dicari + ", " + a[angka - 1];
+                ps.setString(angka, a[angka - 1]);
+            }
+            ps.executeUpdate();
+
+            if (ps != null) {
+                ps.close();
+            }
+
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack("insert into " + table + " values(" + dicari + ")");
+        } catch (Exception e) {
+            try {
+                ps = connect.prepareStatement("update " + table + " set " + update + " where " + acuan_field);
+                for (angka = 1; angka <= j; angka++) {
+                    ps.setString(angka, b[angka - 1]);
+                }
+                ps.executeUpdate();
+
+                if (ps != null) {
+                    ps.close();
+                }
+
+                if (AKTIFKANTRACKSQL.equals("yes")) {
+                    dicari = "";
+                    for (angka = 1; angka <= i; angka++) {
+                        dicari = dicari + "|" + b[angka - 1];
+                    }
+                }
+                SimpanTrack("update " + table + " set " + update + " " + dicari + " where " + acuan_field);
+            } catch (Exception e2) {
+                System.out.println("Notifikasi : " + e2);
+            }
+        }
+    }
+
+    public void menyimpan3(String table, String value, int i, String[] a, String acuan_field, String update, int j,
+            String[] b) {
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
+            for (angka = 1; angka <= i; angka++) {
+                ps.setString(angka, a[angka - 1]);
+            }
+            ps.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Proses simpan berhasil..!!");
+            if (ps != null) {
+                ps.close();
+            }
+
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack("insert into " + table + " values(" + dicari + ")");
+        } catch (Exception e) {
+            try {
+                ps = connect.prepareStatement("update " + table + " set " + update + " where " + acuan_field);
+                for (angka = 1; angka <= j; angka++) {
+                    ps.setString(angka, b[angka - 1]);
+                }
+                ps.executeUpdate();
+
+                JOptionPane.showMessageDialog(null, "Proses simpan berhasil..!!");
+                if (ps != null) {
+                    ps.close();
+                }
+                if (AKTIFKANTRACKSQL.equals("yes")) {
+                    dicari = "";
+                    for (angka = 1; angka <= i; angka++) {
+                        dicari = dicari + "|" + b[angka - 1];
+                    }
+                }
+                SimpanTrack("update " + table + " set " + update + " " + dicari + " where " + acuan_field);
+            } catch (Exception e2) {
+                System.out.println("Notifikasi : " + e2);
+            }
+        }
+    }
+
+    public void menyimpan(String table, String value) {
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ")");
+            try {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+            SimpanTrack("insert into " + table + " values(" + value + ")");
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+    }
+
+    public void menyimpanignore(String table, String value) {
+        try {
+            ps = connect.prepareStatement("insert ignore into " + table + " values(" + value + ")");
+            try {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+            SimpanTrack("insert into " + table + " values(" + value + ")");
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+    }
+
+    public void menyimpan(String table, String isisimpan, String isiedit, String acuan_field) {
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + isisimpan + ")");
+            ps.executeUpdate();
+            if (ps != null) {
+                ps.close();
+            }
+            SimpanTrack("insert into " + table + " values(" + isisimpan + ")");
+        } catch (Exception e) {
+            try {
+                ps = connect.prepareStatement("update " + table + " set " + isiedit + " where " + acuan_field);
+                ps.executeUpdate();
+                if (ps != null) {
+                    ps.close();
+                }
+                SimpanTrack("update " + table + " set " + isiedit + " where " + acuan_field);
+            } catch (Exception ex) {
+                System.out.println("Notifikasi Edit : " + ex);
+            }
+        }
+    }
+
+    public boolean menyimpantf(String table, String isisimpan, String isiedit, String acuan_field) {
+        bool = true;
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + isisimpan + ")");
+            ps.executeUpdate();
+            if (ps != null) {
+                ps.close();
+            }
+            SimpanTrack("insert into " + table + " values(" + isisimpan + ")");
+            bool = true;
+        } catch (Exception e) {
+            if (e.toString().toLowerCase().contains("duplicate")) {
+                try {
+                    ps = connect.prepareStatement("update " + table + " set " + isiedit + " where " + acuan_field);
+                    ps.executeUpdate();
+                    if (ps != null) {
+                        ps.close();
+                    }
+                    SimpanTrack("update " + table + " set " + isiedit + " where " + acuan_field);
+                    bool = true;
+                } catch (Exception ex) {
+                    bool = false;
+                    System.out.println("Notifikasi Edit : " + ex);
+                }
+            } else {
+                bool = false;
+            }
+        }
+        return bool;
+    }
+
+    public void menyimpan(String table, String value, String sama, JTextField AlmGb) {
+        try {
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ",?)");
+            try {
                 ps.setBinaryStream(1, new FileInputStream(AlmGb.getText()), new File(AlmGb.getText()).length());
                 ps.executeUpdate();
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, gagal menyimpan data. Kemungkinan ada "+sama+" yang sama dimasukkan sebelumnya...!");
-            }finally{
-                if(ps != null){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null,
+                        "Maaf, gagal menyimpan data. Kemungkinan ada " + sama + " yang sama dimasukkan sebelumnya...!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
-            
+
     }
-    
-    public void menyimpan(String table,String value,String sama,JTextField AlmGb,JTextField AlmPhoto){
+
+    public void menyimpan(String table, String value, String sama, JTextField AlmGb, JTextField AlmPhoto) {
         try {
-            ps = connect.prepareStatement("insert into "+table+" values("+value+",?,?)");
-            try{                        
+            ps = connect.prepareStatement("insert into " + table + " values(" + value + ",?,?)");
+            try {
                 ps.setBinaryStream(1, new FileInputStream(AlmGb.getText()), new File(AlmGb.getText()).length());
                 ps.setBinaryStream(2, new FileInputStream(AlmPhoto.getText()), new File(AlmPhoto.getText()).length());
                 ps.executeUpdate();
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, gagal menyimpan data. Kemungkinan ada "+sama+" yang sama dimasukkan sebelumnya...!");
-            }finally{
-                if(ps != null){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null,
+                        "Maaf, gagal menyimpan data. Kemungkinan ada " + sama + " yang sama dimasukkan sebelumnya...!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
     }
-    
 
-    public void meghapus(String table,String field,String nilai_field) {
+    public void meghapus(String table, String field, String nilai_field) {
         try {
-            ps=connect.prepareStatement("delete from "+table+" where "+field+"=?");
-            try{       
-                ps.setString(1,nilai_field);
-                ps.executeUpdate(); 
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, data gagal dihapus. Kemungkinan data tersebut masih dipakai di table lain...!!!!");
-             }finally{
-                if(ps != null){
-                    ps.close();
-                }
-            }
-            SimpanTrack("delete from "+table+" where "+field+"='"+nilai_field+"'");
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }
-    }
-    
-    public boolean meghapustf(String table,String field,String nilai_field) {
-        bool=true;
-        try {
-            ps=connect.prepareStatement("delete from "+table+" where "+field+"=?");
-            try{       
-                ps.setString(1,nilai_field);
+            ps = connect.prepareStatement("delete from " + table + " where " + field + "=?");
+            try {
+                ps.setString(1, nilai_field);
                 ps.executeUpdate();
-                bool=true;
-             }catch(Exception e){
-                bool=false;
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, data gagal dihapus. Kemungkinan data tersebut masih dipakai di table lain...!!!!");
-             }finally{
-                if(ps != null){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null,
+                        "Maaf, data gagal dihapus. Kemungkinan data tersebut masih dipakai di table lain...!!!!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            SimpanTrack("delete from "+table+" where "+field+"='"+nilai_field+"'");
+            SimpanTrack("delete from " + table + " where " + field + "='" + nilai_field + "'");
         } catch (Exception e) {
-            bool=false;
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
+        }
+    }
+
+    public boolean meghapustf(String table, String field, String nilai_field) {
+        bool = true;
+        try {
+            ps = connect.prepareStatement("delete from " + table + " where " + field + "=?");
+            try {
+                ps.setString(1, nilai_field);
+                ps.executeUpdate();
+                bool = true;
+            } catch (Exception e) {
+                bool = false;
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null,
+                        "Maaf, data gagal dihapus. Kemungkinan data tersebut masih dipakai di table lain...!!!!");
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+            SimpanTrack("delete from " + table + " where " + field + "='" + nilai_field + "'");
+        } catch (Exception e) {
+            bool = false;
+            System.out.println("Notifikasi : " + e);
         }
         return bool;
     }
-    
-    public void meghapus(String table,String field,String field2,String nilai_field,String nilai_field2) {
+
+    public void meghapus(String table, String field, String field2, String nilai_field, String nilai_field2) {
         try {
-            ps=connect.prepareStatement("delete from "+table+" where "+field+"=? and "+field2+"=?");
-            try{       
-                ps.setString(1,nilai_field);
-                ps.setString(2,nilai_field2);
-                ps.executeUpdate(); 
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, data gagal dihapus. Kemungkinan data tersebut masih dipakai di table lain...!!!!");
-             }finally{
-                if(ps != null){
+            ps = connect.prepareStatement("delete from " + table + " where " + field + "=? and " + field2 + "=?");
+            try {
+                ps.setString(1, nilai_field);
+                ps.setString(2, nilai_field2);
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null,
+                        "Maaf, data gagal dihapus. Kemungkinan data tersebut masih dipakai di table lain...!!!!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            SimpanTrack("delete from "+table+" where "+field+"='"+nilai_field+"' and "+field2+"='"+nilai_field2+"'");
+            SimpanTrack("delete from " + table + " where " + field + "='" + nilai_field + "' and " + field2 + "='"
+                    + nilai_field2 + "'");
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
     }
-    
-    public void meghapus2(String table,String field,String nilai_field) {
+
+    public void meghapus2(String table, String field, String nilai_field) {
         try {
-            ps=connect.prepareStatement("delete from "+table+" where "+field+"=?");
-            try{       
-                ps.setString(1,nilai_field);
-                ps.executeUpdate(); 
-                JOptionPane.showMessageDialog(null,"Proses hapus berhasil...!!!!");
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, data gagal dihapus. Kemungkinan data tersebut masih dipakai di table lain...!!!!");
-             }finally{
-                if(ps != null){
+            ps = connect.prepareStatement("delete from " + table + " where " + field + "=?");
+            try {
+                ps.setString(1, nilai_field);
+                ps.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Proses hapus berhasil...!!!!");
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null,
+                        "Maaf, data gagal dihapus. Kemungkinan data tersebut masih dipakai di table lain...!!!!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            SimpanTrack("delete from "+table+" where "+field+"='"+nilai_field+"'");
+            SimpanTrack("delete from " + table + " where " + field + "='" + nilai_field + "'");
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
     }
-    
-    public void meghapus3(String table,String field,String nilai_field) {
+
+    public void meghapus3(String table, String field, String nilai_field) {
         try {
-            ps=connect.prepareStatement("delete from "+table+" where "+field+"=?");
-            try{       
-                ps.setString(1,nilai_field);
-                ps.executeUpdate(); 
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-             }finally{
-                if(ps != null){
+            ps = connect.prepareStatement("delete from " + table + " where " + field + "=?");
+            try {
+                ps.setString(1, nilai_field);
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            SimpanTrack("delete from "+table+" where "+field+"='"+nilai_field+"'");
+            SimpanTrack("delete from " + table + " where " + field + "='" + nilai_field + "'");
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
     }
-    
-    public void mengedit(String table,String acuan_field,String update){
+
+    public void mengedit(String table, String acuan_field, String update) {
         try {
-            ps=connect.prepareStatement("update "+table+" set "+update+" where "+acuan_field);
-            try{                        
-                ps.executeUpdate();       
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, Gagal Mengedit. Mungkin kode sudah digunakan sebelumnya...!!!!");
-             }finally{
-                if(ps != null){
+            ps = connect.prepareStatement("update " + table + " set " + update + " where " + acuan_field);
+            try {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null,
+                        "Maaf, Gagal Mengedit. Mungkin kode sudah digunakan sebelumnya...!!!!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            SimpanTrack("update "+table+" set "+update+" where "+acuan_field);
+            SimpanTrack("update " + table + " set " + update + " where " + acuan_field);
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
     }
-    
-    public boolean mengedittf(String table,String acuan_field,String update){
-        bool=true;
+
+    public boolean mengedittf(String table, String acuan_field, String update) {
+        bool = true;
         try {
-            ps=connect.prepareStatement("update "+table+" set "+update+" where "+acuan_field);
-            try{                        
-                ps.executeUpdate();  
-                bool=true;
-             }catch(Exception e){
-                bool=false;
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, Gagal Mengedit. Mungkin kode sudah digunakan sebelumnya...!!!!");
-             }finally{
-                if(ps != null){
+            ps = connect.prepareStatement("update " + table + " set " + update + " where " + acuan_field);
+            try {
+                ps.executeUpdate();
+                bool = true;
+            } catch (Exception e) {
+                bool = false;
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null,
+                        "Maaf, Gagal Mengedit. Mungkin kode sudah digunakan sebelumnya...!!!!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            SimpanTrack("update "+table+" set "+update+" where "+acuan_field);
+            SimpanTrack("update " + table + " set " + update + " where " + acuan_field);
         } catch (Exception e) {
-            bool=false;
-            System.out.println("Notifikasi : "+e);
+            bool = false;
+            System.out.println("Notifikasi : " + e);
         }
         return bool;
     }
-    
-    public void mengedit(String table,String acuan_field,String update,int i,String[] a){
+
+    public void mengedit(String table, String acuan_field, String update, int i, String[] a) {
         try {
-            ps=connect.prepareStatement("update "+table+" set "+update+" where "+acuan_field);
-            try{
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                } 
-                ps.executeUpdate();       
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, Gagal Mengedit. Periksa kembali data...!!!!");
-             }finally{
-                if(ps != null){
+            ps = connect.prepareStatement("update " + table + " set " + update + " where " + acuan_field);
+            try {
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null, "Maaf, Gagal Mengedit. Periksa kembali data...!!!!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
+
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
                 }
             }
-            SimpanTrack("update "+table+" set "+update+" "+dicari+" where "+acuan_field);
+            SimpanTrack("update " + table + " set " + update + " " + dicari + " where " + acuan_field);
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }    
+            System.out.println("Notifikasi : " + e);
+        }
     }
-    
-    public void mengedit2(String table,String acuan_field,String update,int i,String[] a){
+
+    public void mengedit2(String table, String acuan_field, String update, int i, String[] a) {
         try {
-            ps=connect.prepareStatement("update "+table+" set "+update+" where "+acuan_field);
-            try{
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                } 
-                ps.executeUpdate();   
-                JOptionPane.showMessageDialog(null,"Proses edit berhasil...!!!!");
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, Gagal mengedit. Periksa kembali data...!!!!");
-             }finally{
-                if(ps != null){
+            ps = connect.prepareStatement("update " + table + " set " + update + " where " + acuan_field);
+            try {
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Proses edit berhasil...!!!!");
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null, "Maaf, Gagal mengedit. Periksa kembali data...!!!!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
+
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
                 }
             }
-            SimpanTrack("update "+table+" set "+update+" "+dicari+" where "+acuan_field);
+            SimpanTrack("update " + table + " set " + update + " " + dicari + " where " + acuan_field);
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }    
+            System.out.println("Notifikasi : " + e);
+        }
     }
-    
-    public void mengedit3(String table,String acuan_field,String update,int i,String[] a){
+
+    public void mengedit3(String table, String acuan_field, String update, int i, String[] a) {
         try {
-            ps=connect.prepareStatement("update "+table+" set "+update+" where "+acuan_field);
-            try{
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                } 
-                ps.executeUpdate();       
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-             }finally{
-                if(ps != null){
+            ps = connect.prepareStatement("update " + table + " set " + update + " where " + acuan_field);
+            try {
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
                 }
             }
-            SimpanTrack("update "+table+" set "+update+" "+dicari+" where "+acuan_field);
+            SimpanTrack("update " + table + " set " + update + " " + dicari + " where " + acuan_field);
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }    
+            System.out.println("Notifikasi : " + e);
+        }
     }
-    
-    public boolean mengedittf(String table,String acuan_field,String update,int i,String[] a){
-        bool=true;
+
+    public boolean mengedittf(String table, String acuan_field, String update, int i, String[] a) {
+        bool = true;
         try {
-            ps=connect.prepareStatement("update "+table+" set "+update+" where "+acuan_field);
-            try{
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                } 
-                ps.executeUpdate();       
-                bool=true;
-             }catch(Exception e){
-                bool=false;
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, Gagal Mengedit. Periksa kembali data...!!!!");
-             }finally{
-                if(ps != null){
+            ps = connect.prepareStatement("update " + table + " set " + update + " where " + acuan_field);
+            try {
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+                bool = true;
+            } catch (Exception e) {
+                bool = false;
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null, "Maaf, Gagal Mengedit. Periksa kembali data...!!!!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
                 }
             }
-            SimpanTrack("update "+table+" set "+update+" "+dicari+" where "+acuan_field);
+            SimpanTrack("update " + table + " set " + update + " " + dicari + " where " + acuan_field);
         } catch (Exception e) {
-            bool=false;
-            System.out.println("Notifikasi : "+e);
-        }   
+            bool = false;
+            System.out.println("Notifikasi : " + e);
+        }
         return bool;
     }
-    
-    public void mengedit(String table,String acuan_field,String update,JTextField AlmGb){
+
+    public boolean mengedittf2(String table, String acuan_field, String update, int i, String[] a) {
+        bool = true;
         try {
-            ps = connect.prepareStatement("update "+table+" set "+update+" where "+acuan_field);
-            try{            
+            ps = connect.prepareStatement("update " + table + " set " + update + " where " + acuan_field);
+            try {
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+                bool = true;
+            } catch (Exception e) {
+                bool = false;
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack("update " + table + " set " + update + " " + dicari + " where " + acuan_field);
+        } catch (Exception e) {
+            bool = false;
+            System.out.println("Notifikasi : " + e);
+        }
+        return bool;
+    }
+
+    public void mengedit(String table, String acuan_field, String update, JTextField AlmGb) {
+        try {
+            ps = connect.prepareStatement("update " + table + " set " + update + " where " + acuan_field);
+            try {
                 ps.setBinaryStream(1, new FileInputStream(AlmGb.getText()), new File(AlmGb.getText()).length());
                 ps.executeUpdate();
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, Pilih dulu data yang mau anda edit...\n Klik data pada table untuk memilih...!!!!");
-             }finally{
-                if(ps != null){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null,
+                        "Maaf, Pilih dulu data yang mau anda edit...\n Klik data pada table untuk memilih...!!!!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
     }
 
-    public void query(String qry){
+    public void query(String qry) {
         try {
-            ps=connect.prepareStatement(qry);
-            try{
+            ps = connect.prepareStatement(qry);
+            try {
                 ps.executeQuery();
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, Query tidak bisa dijalankan...!!!!");
-             }finally{
-                if(ps != null){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null, "Maaf, Query tidak bisa dijalankan...!!!!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
             SimpanTrack(qry);
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }            
+            System.out.println("Notifikasi : " + e);
+        }
     }
 
-    public void queryu(String qry){
+    public void queryu(String qry) {
         try {
-            ps=connect.prepareStatement(qry);
-            try{                            
-                ps.executeUpdate(); 
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, Query tidak bisa dijalankan...!!!!");
-             }finally{
-                if(ps != null){
-                    ps.close();
-                }
-            }
-            
-            SimpanTrack(qry);
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }
-    }
-    
-    public boolean queryutf(String qry){
-        bool=false;
-        try {
-            ps=connect.prepareStatement(qry);
-            try{                            
-                ps.executeUpdate(); 
-                bool=true;
-             }catch(Exception e){
-                bool=false;
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, Query tidak bisa dijalankan...!!!!");                
-             }finally{
-                if(ps != null){
-                    ps.close();
-                }
-            }
-            SimpanTrack(qry);
-        } catch (Exception e) {
-            bool=false;
-            System.out.println("Notifikasi : "+e);
-        }
-        return bool;
-    }
-    
-    public boolean queryutf2(String qry){
-        bool=false;
-        try {
-            ps=connect.prepareStatement(qry);
-            try{                            
-                ps.executeUpdate(); 
-                bool=true;
-             }catch(Exception e){
-                bool=false;
-                System.out.println("Notifikasi : "+e);           
-             }finally{
-                if(ps != null){
-                    ps.close();
-                }
-            }
-            SimpanTrack(qry);
-        } catch (Exception e) {
-            bool=false;
-            System.out.println("Notifikasi : "+e);
-        }
-        return bool;
-    }
-    
-    public void queryu(String qry,String parameter){
-        try {
-            ps=connect.prepareStatement(qry);
-            try{
-                ps.setString(1,parameter);
+            ps = connect.prepareStatement(qry);
+            try {
                 ps.executeUpdate();
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-                JOptionPane.showMessageDialog(null,"Maaf, Query tidak bisa dijalankan...!!!!");
-             }finally{
-                if(ps != null){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null, "Maaf, Query tidak bisa dijalankan...!!!!");
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+
+            SimpanTrack(qry);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+    }
+
+    public boolean queryutf(String qry) {
+        bool = false;
+        try {
+            ps = connect.prepareStatement(qry);
+            try {
+                ps.executeUpdate();
+                bool = true;
+            } catch (Exception e) {
+                bool = false;
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null, "Maaf, Query tidak bisa dijalankan...!!!!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
             SimpanTrack(qry);
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }    
-    }
-    
-    
-    public void queryu2(String qry){
-        try {
-            ps=connect.prepareStatement(qry);
-            try{                            
-                ps.executeUpdate(); 
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-             }finally{
-                if(ps != null){
-                    ps.close();
-                }
-            }
-            SimpanTrack(qry);
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }
-    }
-    
-    public void queryu2(String qry,int i,String[] a){
-        try {
-            try{            
-                ps=connect.prepareStatement(qry);
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                } 
-                ps.executeUpdate(); 
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-             }finally{
-                if(ps != null){
-                    ps.close();
-                }
-            }
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
-                }
-            }
-            SimpanTrack(qry+" "+dicari);
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }
-    }
-    
-    public boolean queryu2tf(String qry,int i,String[] a){
-        bool=false;
-        try {
-            try{            
-                ps=connect.prepareStatement(qry);
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                } 
-                ps.executeUpdate(); 
-                bool=true;
-             }catch(Exception e){
-                bool=false;
-                System.out.println("Notifikasi : "+e);
-             }finally{
-                if(ps != null){
-                    ps.close();
-                }
-            }
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
-                }
-            }
-            SimpanTrack(qry+" "+dicari);
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            bool = false;
+            System.out.println("Notifikasi : " + e);
         }
         return bool;
     }
-    
-    public void queryu3(String qry,int i,String[] a){
+
+    public boolean queryutf2(String qry) {
+        bool = false;
         try {
-            try{            
-                ps=connect.prepareStatement(qry);
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                } 
-                ps.executeUpdate(); 
-             }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-             }finally{
-                if(ps != null){
+            ps = connect.prepareStatement(qry);
+            try {
+                ps.executeUpdate();
+                bool = true;
+            } catch (Exception e) {
+                bool = false;
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
-                }
-            }
-            SimpanTrack(qry+" "+dicari);
+            SimpanTrack(qry);
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            bool = false;
+            System.out.println("Notifikasi : " + e);
         }
+        return bool;
     }
-    
-    public void queryu4(String qry,int i,String[] a){
+
+    public void queryu(String qry, String parameter) {
         try {
-            try{            
-                ps=connect.prepareStatement(qry);
-                for(angka=1;angka<=i;angka++){
-                    ps.setString(angka,a[angka-1]);
-                } 
-                ps.executeUpdate(); 
-             }catch(Exception e){
-             }finally{
-                if(ps != null){
+            ps = connect.prepareStatement(qry);
+            try {
+                ps.setString(1, parameter);
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+                JOptionPane.showMessageDialog(null, "Maaf, Query tidak bisa dijalankan...!!!!");
+            } finally {
+                if (ps != null) {
                     ps.close();
                 }
             }
-            if(AKTIFKANTRACKSQL.equals("yes")){
-                dicari="";
-                for(angka=1;angka<=i;angka++){
-                    dicari=dicari+"|"+a[angka-1];
+            SimpanTrack(qry);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+    }
+
+    public void queryu2(String qry) {
+        try {
+            ps = connect.prepareStatement(qry);
+            try {
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
+                    ps.close();
                 }
             }
-            SimpanTrack(qry+" "+dicari);
+            SimpanTrack(qry);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+    }
+
+    public void queryu2(String qry, int i, String[] a) {
+        try {
+            try {
+                ps = connect.prepareStatement(qry);
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack(qry + " " + dicari);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+    }
+
+    public boolean queryu2tf(String qry, int i, String[] a) {
+        bool = false;
+        try {
+            try {
+                ps = connect.prepareStatement(qry);
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+                bool = true;
+            } catch (Exception e) {
+                bool = false;
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack(qry + " " + dicari);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+        return bool;
+    }
+
+    public void queryu3(String qry, int i, String[] a) {
+        try {
+            try {
+                ps = connect.prepareStatement(qry);
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack(qry + " " + dicari);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+    }
+
+    public void queryu4(String qry, int i, String[] a) {
+        try {
+            try {
+                ps = connect.prepareStatement(qry);
+                for (angka = 1; angka <= i; angka++) {
+                    ps.setString(angka, a[angka - 1]);
+                }
+                ps.executeUpdate();
+            } catch (Exception e) {
+            } finally {
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+            if (AKTIFKANTRACKSQL.equals("yes")) {
+                dicari = "";
+                for (angka = 1; angka <= i; angka++) {
+                    dicari = dicari + "|" + a[angka - 1];
+                }
+            }
+            SimpanTrack(qry + " " + dicari);
         } catch (Exception e) {
         }
     }
-    
-    public void AutoComitFalse(){
+
+    public void AutoComitFalse() {
         try {
             connect.setAutoCommit(false);
         } catch (Exception e) {
         }
     }
-    
-    public void AutoComitTrue(){
+
+    public void AutoComitTrue() {
         try {
             connect.setAutoCommit(true);
         } catch (Exception e) {
         }
     }
-    
-    public void Commit(){
+
+    public void Commit() {
         try {
             connect.commit();
         } catch (Exception e) {
         }
     }
-     
-    public void RollBack(){
+
+    public void RollBack() {
         try {
             connect.rollback();
         } catch (Exception e) {
-            System.out.println("Notif : "+e);
-            JOptionPane.showMessageDialog(null,"Gagal melakukan rollback..!");
+            System.out.println("Notif : " + e);
+            JOptionPane.showMessageDialog(null, "Gagal melakukan rollback..!");
         }
     }
-    
-    public void cariIsi(String sql,JComboBox cmb){
+
+    public void cariIsi(String sql, JComboBox cmb) {
         try {
-            ps=connect.prepareStatement(sql);
-            try{  
-                rs=ps.executeQuery();
-                if(rs.next()){
-                    String dicari=rs.getString(1);
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    String dicari = rs.getString(1);
                     cmb.setSelectedItem(dicari);
-                }else{
+                } else {
                     cmb.setSelectedItem("");
-                }    
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }   
+            System.out.println("Notifikasi : " + e);
+        }
     }
 
-    public void cariIsi(String sql,JDateTimePicker dtp){
+    public void cariIsi(String sql, JDateTimePicker dtp) {
         try {
-            ps=connect.prepareStatement(sql);
-            try{            
-                rs=ps.executeQuery();
-                if(rs.next()){
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
                     try {
                         dtp.setDisplayFormat("yyyy-MM-dd");
                         dtp.setDate(new SimpleDateFormat("yyyy-MM-dd").parse(rs.getString(1)));
@@ -1279,1046 +1358,1089 @@ public final class sekuel {
                     } catch (Exception ex) {
                         System.out.println(ex);
                     }
-                }       
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
     }
 
-    public void cariIsi(String sql,JTextField txt){
+    public void cariIsi(String sql, JTextField txt) {
         try {
-            ps=connect.prepareStatement(sql);
-            try{            
-                rs=ps.executeQuery();
-                if(rs.next()){
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
                     txt.setText(rs.getString(1));
-                }else{
+                } else {
                     txt.setText("");
-                }  
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
     }
-    
-    public int cariRegistrasi(String norawat){
-        angka=0;
-        angka=cariInteger("select count(billing.no_rawat) from billing where billing.no_rawat=?",norawat)+
-              cariInteger("select count(reg_periksa.no_rawat) from reg_periksa where reg_periksa.no_rawat=? and reg_periksa.stts='Batal'",norawat);
+
+    public int cariRegistrasi(String norawat) {
+        angka = 0;
+        angka = cariInteger("select count(billing.no_rawat) from billing where billing.no_rawat=?", norawat) +
+                cariInteger(
+                        "select count(reg_periksa.no_rawat) from reg_periksa where reg_periksa.no_rawat=? and reg_periksa.stts='Batal'",
+                        norawat);
         return angka;
     }
-    
-    public boolean cekTanggalRegistrasi(String tanggalregistrasi,String tanggalinputdata){
-        bool=false;
+
+    public boolean cekTanggalRegistrasi(String tanggalregistrasi, String tanggalinputdata) {
+        bool = false;
         try {
             waktumulai = formattanggal.parse(tanggalregistrasi);
             kegiatan = formattanggal.parse(tanggalinputdata);
-            bedawaktu = (kegiatan.getTime()-waktumulai.getTime())/1000;
-            if(bedawaktu<0){
-                bool=false;
-                JOptionPane.showMessageDialog(null,"Maaf, jam input data / perubahan data minimal di jam "+tanggalregistrasi+" !");
-            }else{
-                bool=true;
+            bedawaktu = (kegiatan.getTime() - waktumulai.getTime()) / 1000;
+            if (bedawaktu < 0) {
+                bool = false;
+                JOptionPane.showMessageDialog(null,
+                        "Maaf, jam input data / perubahan data minimal di jam " + tanggalregistrasi + " !");
+            } else {
+                bool = true;
             }
         } catch (Exception ex) {
-            bool=false;
-            System.out.println("Notif : "+ex);
+            bool = false;
+            System.out.println("Notif : " + ex);
         }
         return bool;
     }
-    
-    public boolean cekTanggal48jam(String tanggalmulai,String tanggalinputdata){
-        bool=false;
+
+    public boolean cekTanggal48jam(String tanggalmulai, String tanggalinputdata) {
+        bool = false;
         String jabatan = cariIsi("select kd_jbtn from petugas where nip = ?", akses.getkode());
-        
-        if (jabatan.equals("J005") || jabatan.equals("J024")){
-            bool=true;
-        }else{
+
+        if (jabatan.equals("J005") || jabatan.equals("J024")) {
+            bool = true;
+        } else {
             try {
                 waktumulai = formattanggal.parse(tanggalmulai);
                 kegiatan = formattanggal.parse(tanggalinputdata);
-                bedawaktu = (kegiatan.getTime()-waktumulai.getTime())/1000;
-                if(bedawaktu>172800){
-                    bool=false;
-                    JOptionPane.showMessageDialog(null,"Maaf, perubahan data / penghapusan data tidak boleh lebih dari 2 x 24 jam !");
-                }else{
-                    bool=true;
+                bedawaktu = (kegiatan.getTime() - waktumulai.getTime()) / 1000;
+                if (bedawaktu > 172800) {
+                    bool = false;
+                    JOptionPane.showMessageDialog(null,
+                            "Maaf, perubahan data / penghapusan data tidak boleh lebih dari 2 x 24 jam !");
+                } else {
+                    bool = true;
                 }
             } catch (Exception ex) {
-                bool=false;
-                System.out.println("Notif : "+ex);
+                bool = false;
+                System.out.println("Notif : " + ex);
             }
         }
-        
+
         return bool;
     }
-    
-    public String ambiltanggalsekarang(){
+
+    public String ambiltanggalsekarang() {
         return formattanggal.format(new Date());
     }
-    
-    public void cariIsi(String sql,JTextField txt,String kunci){
-        try {
-            ps=connect.prepareStatement(sql);
-            try{
-                ps.setString(1,kunci);
-                rs=ps.executeQuery();
-                if(rs.next()){
-                    txt.setText(rs.getString(1));
-                }else{
-                    txt.setText("");
-                }   
-            }catch(SQLException e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
-                    rs.close();
-                }
-                
-                if(ps != null){
-                    ps.close();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }
-    } 
-    
-    public void cariIsi(String sql,JTextArea txt,String kunci){
-        try {
-            ps=connect.prepareStatement(sql);
-            try{
-                ps.setString(1,kunci);
-                rs=ps.executeQuery();
-                if(rs.next()){
-                    txt.setText(rs.getString(1));
-                }else{
-                    txt.setText("");
-                }   
-            }catch(SQLException e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
-                    rs.close();
-                }
-                
-                if(ps != null){
-                    ps.close();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }
-    }
-    
 
-    public void cariIsi(String sql,JLabel txt){
+    public void cariIsi(String sql, JTextField txt, String kunci) {
         try {
-            ps=connect.prepareStatement(sql);
-            try{
-                rs=ps.executeQuery();
-                if(rs.next()){
+            ps = connect.prepareStatement(sql);
+            try {
+                ps.setString(1, kunci);
+                rs = ps.executeQuery();
+                if (rs.next()) {
                     txt.setText(rs.getString(1));
-                }else{
+                } else {
                     txt.setText("");
                 }
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+            } catch (SQLException e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
     }
-    
-    public String cariIsi(String sql){
-        dicari="";
+
+    public void cariIsi(String sql, JTextArea txt, String kunci) {
         try {
-            ps=connect.prepareStatement(sql);
-            try{            
-                rs=ps.executeQuery();            
-                if(rs.next()){
-                    dicari=rs.getString(1);
-                }else{
-                    dicari="";
-                }   
-            }catch(Exception e){
-                dicari="";
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+            ps = connect.prepareStatement(sql);
+            try {
+                ps.setString(1, kunci);
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    txt.setText(rs.getString(1));
+                } else {
+                    txt.setText("");
+                }
+            } catch (SQLException e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
-        
+    }
+
+    public void cariIsi(String sql, JLabel txt) {
+        try {
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    txt.setText(rs.getString(1));
+                } else {
+                    txt.setText("");
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+    }
+
+    public String cariIsi(String sql) {
+        dicari = "";
+        try {
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    dicari = rs.getString(1);
+                } else {
+                    dicari = "";
+                }
+            } catch (Exception e) {
+                dicari = "";
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+
         return dicari;
     }
-    
-    public ByteArrayInputStream cariGambar(String sql){
-        ByteArrayInputStream inputStream=null;
+
+    public ByteArrayInputStream cariGambar(String sql) {
+        ByteArrayInputStream inputStream = null;
         try {
-            ps=connect.prepareStatement(sql);
-            try{            
-                rs=ps.executeQuery();            
-                if(rs.next()){                
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
                     inputStream = new ByteArrayInputStream(rs.getBytes(1));
                 }
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
-                    rs.close();
-                }
-                
-                if(ps != null){
-                    ps.close();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }
-            
-        return inputStream;
-    }
-    
-    public String cariIsi(String sql,String data){
-        dicari="";
-        try {
-            ps=connect.prepareStatement(sql);
-            try{                            
-                ps.setString(1,data);
-                rs=ps.executeQuery();            
-                if(rs.next()){
-                    dicari=rs.getString(1);
-                }else{
-                    dicari="";
-                }   
-            }catch(Exception e){
-                dicari="";
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null ){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
 
-                if(ps != null){
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
-            
-        return dicari;
+
+        return inputStream;
     }
-    
-    public Date cariIsi2(String sql){
+
+    public String cariIsi(String sql, String data) {
+        dicari = "";
         try {
-            ps=connect.prepareStatement(sql);
-            try{            
-                rs=ps.executeQuery();            
-                if(rs.next()){
-                    tanggal=rs.getDate(1);
-                }else{
-                    tanggal=new Date();
-                }   
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+            ps = connect.prepareStatement(sql);
+            try {
+                ps.setString(1, data);
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    dicari = rs.getString(1);
+                } else {
+                    dicari = "";
+                }
+            } catch (Exception e) {
+                dicari = "";
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
+        }
+
+        return dicari;
+    }
+
+    public Date cariIsi2(String sql) {
+        try {
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    tanggal = rs.getDate(1);
+                } else {
+                    tanggal = new Date();
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
         }
         return tanggal;
     }
 
-    public Integer cariInteger(String sql){
-        angka=0;
+    public Integer cariInteger(String sql) {
+        angka = 0;
         try {
-            ps=connect.prepareStatement(sql);
-            try{            
-                rs=ps.executeQuery();            
-                if(rs.next()){
-                    angka=rs.getInt(1);
-                }else{
-                    angka=0;
-                } 
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    angka = rs.getInt(1);
+                } else {
+                    angka = 0;
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
-            
+
         return angka;
     }
-    
-    public Integer cariIntegerCount(String sql){
-        angka=0;
+
+    public Integer cariIntegerCount(String sql) {
+        angka = 0;
         try {
-            ps=connect.prepareStatement(sql);
-            try{            
-                rs=ps.executeQuery();            
-                while(rs.next()){
-                    angka=angka+rs.getInt(1);
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    angka = angka + rs.getInt(1);
                 }
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
-            
+
         return angka;
     }
-    
-    public Integer cariInteger(String sql,String data){
-        angka=0;
+
+    public Integer cariInteger(String sql, String data) {
+        angka = 0;
         try {
-            ps=connect.prepareStatement(sql);
-            try{
-                ps.setString(1,data);
-                rs=ps.executeQuery();            
-                if(rs.next()){
-                    angka=rs.getInt(1);
-                }else{
-                    angka=0;
-                }  
-            }catch(Exception e){
-                angka=0;
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+            ps = connect.prepareStatement(sql);
+            try {
+                ps.setString(1, data);
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    angka = rs.getInt(1);
+                } else {
+                    angka = 0;
+                }
+            } catch (Exception e) {
+                angka = 0;
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
-            
+
         return angka;
     }
-    
-    public Integer cariInteger(String sql,String data,String data2){
-        angka=0;
+
+    public Integer cariInteger(String sql, String data, String data2) {
+        angka = 0;
         try {
-            ps=connect.prepareStatement(sql);
-            try{
-                ps.setString(1,data);
-                ps.setString(2,data2);
-                rs=ps.executeQuery();            
-                if(rs.next()){
-                    angka=rs.getInt(1);
-                }else{
-                    angka=0;
-                }  
-            }catch(Exception e){
-                angka=0;
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+            ps = connect.prepareStatement(sql);
+            try {
+                ps.setString(1, data);
+                ps.setString(2, data2);
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    angka = rs.getInt(1);
+                } else {
+                    angka = 0;
+                }
+            } catch (Exception e) {
+                angka = 0;
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
-            
+
         return angka;
     }
-    
-    public Integer cariInteger(String sql,String data,String data2,String data3){
-        angka=0;
+
+    public Integer cariInteger(String sql, String data, String data2, String data3) {
+        angka = 0;
         try {
-            ps=connect.prepareStatement(sql);
-            try{
-                ps.setString(1,data);
-                ps.setString(2,data2);
-                ps.setString(3,data3);
-                rs=ps.executeQuery();            
-                if(rs.next()){
-                    angka=rs.getInt(1);
-                }else{
-                    angka=0;
-                }  
-            }catch(Exception e){
-                angka=0;
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+            ps = connect.prepareStatement(sql);
+            try {
+                ps.setString(1, data);
+                ps.setString(2, data2);
+                ps.setString(3, data3);
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    angka = rs.getInt(1);
+                } else {
+                    angka = 0;
+                }
+            } catch (Exception e) {
+                angka = 0;
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
-            
+
         return angka;
     }
-    
-    public Integer cariInteger2(String sql){
-        angka=0;
+
+    public Integer cariInteger2(String sql) {
+        angka = 0;
         try {
-            ps=connect.prepareStatement(sql);
-            try{
-                rs=ps.executeQuery();            
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
                 rs.last();
-                angka=rs.getRow();
-                if(angka<1){
-                    angka=0;
-                }   
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+                angka = rs.getRow();
+                if (angka < 1) {
+                    angka = 0;
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
-            
+
         return angka;
     }
 
-    public void cariIsiAngka(String sql,JTextField txt){
+    public void cariIsiAngka(String sql, JTextField txt) {
         try {
-            ps=connect.prepareStatement(sql);
-            try{
-                rs=ps.executeQuery();
-                if(rs.next()){
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
                     txt.setText(df2.format(rs.getDouble(1)));
-                }else{
+                } else {
                     txt.setText("0");
                 }
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
     }
 
-    public void cariIsiAngka(String sql,JLabel txt) {
+    public void cariIsiAngka(String sql, JLabel txt) {
         try {
-            ps=connect.prepareStatement(sql);
-            try{
-                rs=ps.executeQuery();
-                if(rs.next()){
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
                     txt.setText(df2.format(rs.getDouble(1)));
-                }else{
+                } else {
                     txt.setText("0");
                 }
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }            
+            System.out.println("Notifikasi : " + e);
+        }
     }
-    
+
     public double cariIsiAngka(String sql) {
-        angka2=0;
+        angka2 = 0;
         try {
-            ps=connect.prepareStatement(sql);
-            try{            
-                rs=ps.executeQuery();
-                if(rs.next()){
-                    angka2=rs.getDouble(1);
-                }else{
-                    angka2=0;
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    angka2 = rs.getDouble(1);
+                } else {
+                    angka2 = 0;
                 }
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
-            
-        return angka2;
-    }
-    
-    public double cariIsiAngka(String sql,String data) {
-        angka2=0;
-        try {
-            ps=connect.prepareStatement(sql);
-            try{            
-                ps.setString(1,data);
-                rs=ps.executeQuery();
-                if(rs.next()){
-                    angka2=rs.getDouble(1);
-                }else{
-                    angka2=0;
-                }
-                //rs.close();
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
-                    rs.close();
-                }
-                
-                if(ps != null){
-                    ps.close();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }
-            
-        return angka2;
-    }
-    
-    public double cariIsiAngka2(String sql,String data,String data2) {
-        angka2=0;
-        try {
-            ps=connect.prepareStatement(sql);
-            try{            
-                ps.setString(1,data);
-                ps.setString(2,data2);
-                rs=ps.executeQuery();
-                if(rs.next()){
-                    angka2=rs.getDouble(1);
-                }else{
-                    angka2=0;
-                }
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
-                    rs.close();
-                }                
-                if(ps != null){
-                    ps.close();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }
-            
+
         return angka2;
     }
 
-    public void cariGambar(String sql,JLabel txt){        
+    public double cariIsiAngka(String sql, String data) {
+        angka2 = 0;
         try {
-            ps=connect.prepareStatement(sql);
-            try{
-                rs=ps.executeQuery();
-                if(rs.next()){
+            ps = connect.prepareStatement(sql);
+            try {
+                ps.setString(1, data);
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    angka2 = rs.getDouble(1);
+                } else {
+                    angka2 = 0;
+                }
+                // rs.close();
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+
+        return angka2;
+    }
+
+    public double cariIsiAngka2(String sql, String data, String data2) {
+        angka2 = 0;
+        try {
+            ps = connect.prepareStatement(sql);
+            try {
+                ps.setString(1, data);
+                ps.setString(2, data2);
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    angka2 = rs.getDouble(1);
+                } else {
+                    angka2 = 0;
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        }
+
+        return angka2;
+    }
+
+    public void cariGambar(String sql, JLabel txt) {
+        try {
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
                     icon = new javax.swing.ImageIcon(rs.getBlob(1).getBytes(1L, (int) rs.getBlob(1).length()));
                     createThumbnail();
                     txt.setIcon(icon);
-                }else{
+                } else {
                     txt.setText(null);
                 }
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
     }
 
-    public void cariGambar(String sql,java.awt.Canvas txt,String text){
+    public void cariGambar(String sql, java.awt.Canvas txt, String text) {
         try {
-            ps=connect.prepareStatement(sql);
+            ps = connect.prepareStatement(sql);
             try {
                 rs = ps.executeQuery();
                 for (int I = 0; rs.next(); I++) {
                     ((Painter) txt).setImage(gambar(text));
                     Blob blob = rs.getBlob(5);
                     ((Painter) txt).setImageIcon(new javax.swing.ImageIcon(
-                        blob.getBytes(1, (int) (blob.length()))));
-                }  
+                            blob.getBytes(1, (int) (blob.length()))));
+                }
             } catch (Exception ex) {
                 cetak(ex.toString());
-            }finally{
-                if(rs != null){
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
-            
+
     }
-    
-    private void SimpanTrack(String sql){
-        if(AKTIFKANTRACKSQL.equals("yes")){
+
+    private void SimpanTrack(String sql) {
+        if (AKTIFKANTRACKSQL.equals("yes")) {
             try {
-                ps=connect.prepareStatement("insert into trackersql values(now(),?,?)");
-                try{       
-                    ps.setString(1,akses.getalamatip()+" "+sql);
-                    ps.setString(2,akses.getkode());
-                    ps.executeUpdate(); 
-                 }catch(Exception e){
-                    System.out.println("Notifikasi : "+e);
-                 }finally{
-                    if(ps != null){
+                ps = connect.prepareStatement("insert into trackersql values(now(),?,?)");
+                try {
+                    ps.setString(1, akses.getalamatip() + " " + sql);
+                    ps.setString(2, akses.getkode());
+                    ps.executeUpdate();
+                } catch (Exception e) {
+                    System.out.println("Notifikasi : " + e);
+                } finally {
+                    if (ps != null) {
                         ps.close();
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Notifikasi : "+e);
+                System.out.println("Notifikasi : " + e);
             }
         }
     }
-    
-    public String cariString(String sql){
-        dicari="";
+
+    public String cariString(String sql) {
+        dicari = "";
         try {
-            ps=connect.prepareStatement(sql);
-            try{
-                rs=ps.executeQuery();            
-                if(rs.next()){
-                    dicari=rs.getString(1);
-                }else{
-                    dicari="";
+            ps = connect.prepareStatement(sql);
+            try {
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    dicari = rs.getString(1);
+                } else {
+                    dicari = "";
                 }
-            }catch(Exception e){
-                System.out.println("Notifikasi : "+e);
-            }finally{
-                if(rs != null){
+            } catch (Exception e) {
+                System.out.println("Notifikasi : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                
-                if(ps != null){
+
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
+            System.out.println("Notifikasi : " + e);
         }
-            
+
         return dicari;
     }
-    
-     public String CariDokter(String kode) {
+
+    public String CariDokter(String kode) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
         JsonNode response;
-        FileReader myObj=null;
-        String iyem="";
+        FileReader myObj = null;
+        String iyem = "";
         try {
             myObj = new FileReader("./cache/dokter.iyem");
             root = mapper.readTree(myObj);
             response = root.path("dokter");
-            if(response.isArray()){
-                for(JsonNode list:response){
-                    if(list.path("KodeDokter").asText().equalsIgnoreCase(kode)){
-                        iyem=list.path("NamaDokter").asText();
+            if (response.isArray()) {
+                for (JsonNode list : response) {
+                    if (list.path("KodeDokter").asText().equalsIgnoreCase(kode)) {
+                        iyem = list.path("NamaDokter").asText();
                         break;
                     }
                 }
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
-        }finally {
-            if (myObj != null) try { myObj.close(); } catch (Exception e) {}
+            System.out.println("Notifikasi : " + ex);
+        } finally {
+            if (myObj != null)
+                try {
+                    myObj.close();
+                } catch (Exception e) {
+                }
             response = null;
             root = null;
         }
-        if(iyem.equals("")){
-            iyem=cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",kode);
+        if (iyem.equals("")) {
+            iyem = cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?", kode);
         }
         return iyem;
     }
-    
+
     public String CariPetugas(String kode) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
         JsonNode response;
-        FileReader myObj=null;
-        String iyem="";
+        FileReader myObj = null;
+        String iyem = "";
         try {
             myObj = new FileReader("./cache/petugas.iyem");
             root = mapper.readTree(myObj);
             response = root.path("petugas");
-            if(response.isArray()){
-                for(JsonNode list:response){
-                    if(list.path("NIP").asText().equalsIgnoreCase(kode)){
-                        iyem=list.path("NamaPetugas").asText();
+            if (response.isArray()) {
+                for (JsonNode list : response) {
+                    if (list.path("NIP").asText().equalsIgnoreCase(kode)) {
+                        iyem = list.path("NamaPetugas").asText();
                         break;
                     }
                 }
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
-        }finally {
-            if (myObj != null) try { myObj.close(); } catch (Exception e) {}
+            System.out.println("Notifikasi : " + ex);
+        } finally {
+            if (myObj != null)
+                try {
+                    myObj.close();
+                } catch (Exception e) {
+                }
             response = null;
             root = null;
         }
-        if(iyem.equals("")){
-            iyem=cariIsi("select petugas.nama from petugas where petugas.nip=?",kode);
+        if (iyem.equals("")) {
+            iyem = cariIsi("select petugas.nama from petugas where petugas.nip=?", kode);
         }
         return iyem;
     }
-    
+
     public String CariPegawai(String kode) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
         JsonNode response;
         FileReader myObj = null;
-        String iyem="";
+        String iyem = "";
         try {
             myObj = new FileReader("./cache/pegawai.iyem");
             root = mapper.readTree(myObj);
             response = root.path("pegawai");
-            if(response.isArray()){
-                for(JsonNode list:response){
-                    if(list.path("NIP").asText().equalsIgnoreCase(kode)){
-                        iyem=list.path("Nama").asText();
+            if (response.isArray()) {
+                for (JsonNode list : response) {
+                    if (list.path("NIP").asText().equalsIgnoreCase(kode)) {
+                        iyem = list.path("Nama").asText();
                         break;
                     }
                 }
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
-        }finally {
-            if (myObj != null) try { myObj.close(); } catch (Exception e) {}
+            System.out.println("Notifikasi : " + ex);
+        } finally {
+            if (myObj != null)
+                try {
+                    myObj.close();
+                } catch (Exception e) {
+                }
             response = null;
             root = null;
         }
-        if(iyem.equals("")){
-            iyem=cariIsi("select pegawai.nama from pegawai where pegawai.nik=?",kode);
+        if (iyem.equals("")) {
+            iyem = cariIsi("select pegawai.nama from pegawai where pegawai.nik=?", kode);
         }
         return iyem;
     }
-    
+
     public String CariJabatanPegawai(String kode) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
         JsonNode response;
-        FileReader myObj=null;
-        String iyem="";
+        FileReader myObj = null;
+        String iyem = "";
         try {
             myObj = new FileReader("./cache/pegawai.iyem");
             root = mapper.readTree(myObj);
             response = root.path("pegawai");
-            if(response.isArray()){
-                for(JsonNode list:response){
-                    if(list.path("NIP").asText().toLowerCase().equals(kode)){
-                        iyem=list.path("Jabatan").asText();
+            if (response.isArray()) {
+                for (JsonNode list : response) {
+                    if (list.path("NIP").asText().toLowerCase().equals(kode)) {
+                        iyem = list.path("Jabatan").asText();
                         break;
                     }
                 }
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
-        }finally {
-            if (myObj != null) try { myObj.close(); } catch (Exception e) {}
+            System.out.println("Notifikasi : " + ex);
+        } finally {
+            if (myObj != null)
+                try {
+                    myObj.close();
+                } catch (Exception e) {
+                }
             response = null;
             root = null;
         }
-        if(iyem.equals("")){
-            iyem=cariIsi("select pegawai.jbtn from pegawai where pegawai.nik=?",kode);
+        if (iyem.equals("")) {
+            iyem = cariIsi("select pegawai.jbtn from pegawai where pegawai.nik=?", kode);
         }
         return iyem;
     }
-    
+
     public String CariDepartemenPegawai(String kode) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
         JsonNode response;
-        FileReader myObj=null;
-        String iyem="";
+        FileReader myObj = null;
+        String iyem = "";
         try {
             myObj = new FileReader("./cache/pegawai.iyem");
             root = mapper.readTree(myObj);
             response = root.path("pegawai");
-            if(response.isArray()){
-                for(JsonNode list:response){
-                    if(list.path("NIP").asText().toLowerCase().equals(kode)){
-                        iyem=list.path("Departemen").asText();
+            if (response.isArray()) {
+                for (JsonNode list : response) {
+                    if (list.path("NIP").asText().toLowerCase().equals(kode)) {
+                        iyem = list.path("Departemen").asText();
                         break;
                     }
                 }
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
-        }finally {
-            if (myObj != null) try { myObj.close(); } catch (Exception e) {}
+            System.out.println("Notifikasi : " + ex);
+        } finally {
+            if (myObj != null)
+                try {
+                    myObj.close();
+                } catch (Exception e) {
+                }
             response = null;
             root = null;
         }
-        if(iyem.equals("")){
-            iyem=cariIsi("select pegawai.departemen from pegawai where pegawai.nik=?",kode);
+        if (iyem.equals("")) {
+            iyem = cariIsi("select pegawai.departemen from pegawai where pegawai.nik=?", kode);
         }
         return iyem;
     }
-    
+
     public String CariBangsal(String kode) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
         JsonNode response;
-        FileReader myObj=null;
-        String iyem="";
+        FileReader myObj = null;
+        String iyem = "";
         try {
             myObj = new FileReader("./cache/bangsal.iyem");
             root = mapper.readTree(myObj);
             response = root.path("bangsal");
-            if(response.isArray()){
-                for(JsonNode list:response){
-                    if(list.path("KodeKamar").asText().equalsIgnoreCase(kode)){
-                        iyem=list.path("NamaKamar").asText();
+            if (response.isArray()) {
+                for (JsonNode list : response) {
+                    if (list.path("KodeKamar").asText().equalsIgnoreCase(kode)) {
+                        iyem = list.path("NamaKamar").asText();
                         break;
                     }
                 }
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
-        }finally {
-            if (myObj != null) try { myObj.close(); } catch (Exception e) {}
+            System.out.println("Notifikasi : " + ex);
+        } finally {
+            if (myObj != null)
+                try {
+                    myObj.close();
+                } catch (Exception e) {
+                }
             response = null;
             root = null;
         }
-        if(iyem.equals("")){
-            iyem=cariIsi("select bangsal.nm_bangsal from bangsal where bangsal.kd_bangsal=?",kode);
+        if (iyem.equals("")) {
+            iyem = cariIsi("select bangsal.nm_bangsal from bangsal where bangsal.kd_bangsal=?", kode);
         }
         return iyem;
     }
-    
+
     public String CariKodePropinsi(String nama) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
         JsonNode response;
-        FileReader myObj=null;
-        String iyem="";
+        FileReader myObj = null;
+        String iyem = "";
         try {
             myObj = new FileReader("./cache/masterpropinsi.iyem");
             root = mapper.readTree(myObj);
             response = root.path("masterpropinsi");
-            if(response.isArray()){
-                for(JsonNode list:response){
-                    if(list.path("NamaProp").asText().toLowerCase().equals(nama)){
-                        iyem=list.path("KodeProp").asText();
+            if (response.isArray()) {
+                for (JsonNode list : response) {
+                    if (list.path("NamaProp").asText().toLowerCase().equals(nama)) {
+                        iyem = list.path("KodeProp").asText();
                         break;
                     }
                 }
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
-        }finally {
-            if (myObj != null) try { myObj.close(); } catch (Exception e) {}
+            System.out.println("Notifikasi : " + ex);
+        } finally {
+            if (myObj != null)
+                try {
+                    myObj.close();
+                } catch (Exception e) {
+                }
             response = null;
             root = null;
         }
-        if(iyem.equals("")){
-            iyem=cariIsi("select propinsi.kd_prop from propinsi where propinsi.nm_prop=?",nama);
+        if (iyem.equals("")) {
+            iyem = cariIsi("select propinsi.kd_prop from propinsi where propinsi.nm_prop=?", nama);
         }
         return iyem;
     }
-    
+
     public String CariKodeKabupaten(String nama) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
         JsonNode response;
-        FileReader myObj=null;
-        String iyem="";
+        FileReader myObj = null;
+        String iyem = "";
         try {
             myObj = new FileReader("./cache/masterkabupaten.iyem");
             root = mapper.readTree(myObj);
             response = root.path("masterkabupaten");
-            if(response.isArray()){
-                for(JsonNode list:response){
-                    if(list.path("NamaKab").asText().toLowerCase().equals(nama)){
-                        iyem=list.path("KodeKab").asText();
+            if (response.isArray()) {
+                for (JsonNode list : response) {
+                    if (list.path("NamaKab").asText().toLowerCase().equals(nama)) {
+                        iyem = list.path("KodeKab").asText();
                         break;
                     }
                 }
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
-        }finally {
-            if (myObj != null) try { myObj.close(); } catch (Exception e) {}
+            System.out.println("Notifikasi : " + ex);
+        } finally {
+            if (myObj != null)
+                try {
+                    myObj.close();
+                } catch (Exception e) {
+                }
             response = null;
             root = null;
         }
-        if(iyem.equals("")){
-            iyem=cariIsi("select kabupaten.kd_kab from kabupaten where kabupaten.nm_kab=?",nama);
+        if (iyem.equals("")) {
+            iyem = cariIsi("select kabupaten.kd_kab from kabupaten where kabupaten.nm_kab=?", nama);
         }
         return iyem;
     }
-    
+
     public String CariKodeKecamatan(String nama) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
         JsonNode response;
-        FileReader myObj=null;
-        String iyem="";
+        FileReader myObj = null;
+        String iyem = "";
         try {
             myObj = new FileReader("./cache/masterkecamatan.iyem");
             root = mapper.readTree(myObj);
             response = root.path("masterkecamatan");
-            if(response.isArray()){
-                for(JsonNode list:response){
-                    if(list.path("NamaKec").asText().toLowerCase().equals(nama)){
-                        iyem=list.path("KodeKec").asText();
+            if (response.isArray()) {
+                for (JsonNode list : response) {
+                    if (list.path("NamaKec").asText().toLowerCase().equals(nama)) {
+                        iyem = list.path("KodeKec").asText();
                         break;
                     }
                 }
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
-        }finally {
-            if (myObj != null) try { myObj.close(); } catch (Exception e) {}
+            System.out.println("Notifikasi : " + ex);
+        } finally {
+            if (myObj != null)
+                try {
+                    myObj.close();
+                } catch (Exception e) {
+                }
             response = null;
             root = null;
         }
-        if(iyem.equals("")){
-            iyem=cariIsi("select kecamatan.kd_kec from kecamatan where kecamatan.nm_kec=?",nama);
+        if (iyem.equals("")) {
+            iyem = cariIsi("select kecamatan.kd_kec from kecamatan where kecamatan.nm_kec=?", nama);
         }
         return iyem;
     }
-    
+
     public String CariKodeKelurahan(String nama) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
         JsonNode response;
-        FileReader myObj=null;
-        String iyem="";
+        FileReader myObj = null;
+        String iyem = "";
         try {
             myObj = new FileReader("./cache/masterkelurahan.iyem");
             root = mapper.readTree(myObj);
             response = root.path("masterkelurahan");
-            if(response.isArray()){
-                for(JsonNode list:response){
-                    if(list.path("NamaKel").asText().toLowerCase().equals(nama)){
-                        iyem=list.path("KodeKel").asText();
+            if (response.isArray()) {
+                for (JsonNode list : response) {
+                    if (list.path("NamaKel").asText().toLowerCase().equals(nama)) {
+                        iyem = list.path("KodeKel").asText();
                         break;
                     }
                 }
             }
             myObj.close();
         } catch (Exception ex) {
-            System.out.println("Notifikasi : "+ex);
-        }finally {
-            if (myObj != null) try { myObj.close(); } catch (Exception e) {}
+            System.out.println("Notifikasi : " + ex);
+        } finally {
+            if (myObj != null)
+                try {
+                    myObj.close();
+                } catch (Exception e) {
+                }
             response = null;
             root = null;
         }
-        if(iyem.equals("")){
-            iyem=cariIsi("select kelurahan.kd_kel from kelurahan where kelurahan.nm_kel=?",nama);
+        if (iyem.equals("")) {
+            iyem = cariIsi("select kelurahan.kd_kel from kelurahan where kelurahan.nm_kel=?", nama);
         }
         return iyem;
     }
@@ -2326,16 +2448,16 @@ public final class sekuel {
     private String gambar(String id) {
         return folder + File.separator + id.trim() + ".jpg";
     }
-    
-    public void Tabel(javax.swing.JTable tb,int lebar[]){
-      tb.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-      angka=tb.getColumnCount();
-      for(int i=0;i < angka;i++){
-          javax.swing.table.TableColumn tbc = tb.getColumnModel().getColumn(i);
-          tbc.setPreferredWidth(lebar[i]);
-          //tb.setRowHeight(17);
-      }
-  }
+
+    public void Tabel(javax.swing.JTable tb, int lebar[]) {
+        tb.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        angka = tb.getColumnCount();
+        for (int i = 0; i < angka; i++) {
+            javax.swing.table.TableColumn tbc = tb.getColumnModel().getColumn(i);
+            tbc.setPreferredWidth(lebar[i]);
+            // tb.setRowHeight(17);
+        }
+    }
 
     private void createThumbnail() {
         int maxDim = 150;
@@ -2351,7 +2473,7 @@ public final class sekuel {
             int scaledH = (int) (scale * inImage.getHeight(null));
 
             BufferedImage outImage = new BufferedImage(scaledW, scaledH,
-            BufferedImage.TYPE_INT_RGB);
+                    BufferedImage.TYPE_INT_RGB);
 
             AffineTransform tx = new AffineTransform();
 
@@ -2386,6 +2508,7 @@ public final class sekuel {
             image = getToolkit().getImage(url);
             repaint();
         }
+
         private void setImageIcon(ImageIcon file) {
             image = file.getImage();
             repaint();
@@ -2404,7 +2527,7 @@ public final class sekuel {
         }
     }
 
-   public class NIOCopier {
+    public class NIOCopier {
         public NIOCopier(String asal, String tujuan) throws IOException {
             FileOutputStream outFile;
             try (FileInputStream inFile = new FileInputStream(asal)) {
@@ -2412,22 +2535,20 @@ public final class sekuel {
                 FileChannel outChannel;
                 try (FileChannel inChannel = inFile.getChannel()) {
                     outChannel = outFile.getChannel();
-                    for (ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024);
-                            inChannel.read(buffer) != -1;
-                            buffer.clear()) {
+                    for (ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024); inChannel.read(buffer) != -1; buffer
+                            .clear()) {
                         buffer.flip();
                         while (buffer.hasRemaining()) {
                             outChannel.write(buffer);
                         }
                     }
                 }
-            outChannel.close();
+                outChannel.close();
             }
             outFile.close();
         }
     }
 
-   
     public void menyimpanJSON(String url, String request_json, String response, String user) {
         PreparedStatement ps = null;
         try {

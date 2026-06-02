@@ -20,10 +20,14 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -32,19 +36,19 @@ import simrskhanza.DlgCariBangsal;
 
 public class InventoryStokAkhirFarmasiPerTanggal extends javax.swing.JDialog {
     private DefaultTableModel tabMode;
-    private sekuel Sequel=new sekuel();
-    private validasi Valid=new validasi();
-    private Connection koneksi=koneksiDB.condb();    
+    private final sekuel Sequel=new sekuel();
+    private final validasi Valid=new validasi();
+    private final Connection koneksi=koneksiDB.condb();    
     private PreparedStatement ps;
     private ResultSet rs;
-    private DlgCariBangsal bangsal=new DlgCariBangsal(null,false);
-    private String pilihan="",dateString,dayOfWeek,hari,h1="",h2="",h3="",h4="",h5="",h6="",h7="",h8="",h9="",h10="",h11="",h12="",h13="",
-                   h14="",h15="",h16="",h17="",h18="",h19="",h20="",h21="",h22="",h23="",h24="",h25="",h26="",h27="",h28="",h29="",h30="",h31="";
+    private String pilihan="",dateString,dayOfWeek,hari;
     private String stokawal="",s1="",s2="",s3="",s4="",s5="",s6="",s7="",s8="",s9="",s10="",s11="",s12="",s13="",s14="",s15="",s16="",s17="",s18="",s19="",s20="",
                    s21="",s22="",s23="",s24="",s25="",s26="",s27="",s28="",s29="",s30="",s31="";
     private Date date = null;
     private StringBuilder htmlContent;
     private int i=0;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     /** 
      * @param parent
      * @param modal */
@@ -55,57 +59,8 @@ public class InventoryStokAkhirFarmasiPerTanggal extends javax.swing.JDialog {
         tbDokter.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        prosesCari();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        prosesCari();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        prosesCari();
-                    }
-                }
-            });
-        }   
-        
-        bangsal.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(akses.getform().equals("InventoryStokAkhirFarmasiPerTanggal")){
-                    if(bangsal.getTable().getSelectedRow()!= -1){                   
-                        KdGudang.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),0).toString());
-                        NmGudang.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),1).toString());
-                    }  
-                    KdGudang.requestFocus();
-                }
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
         
         Valid.LoadTahun(ThnCari);
-        
     }    
     /** This method is called from within the constructor to
      * initialize the form.
@@ -144,6 +99,11 @@ public class InventoryStokAkhirFarmasiPerTanggal extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Stok Akhir Farmasi Per Tanggal ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
@@ -329,316 +289,320 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             JOptionPane.showMessageDialog(null,"Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
             BtnPrint.requestFocus();
         }else if(tabMode.getRowCount()!=0){
-            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            try {            
-                File g = new File("file2.css");            
-                BufferedWriter bg = new BufferedWriter(new FileWriter(g));
-                bg.write(
-                        ".isi td{border-right: 1px solid #e2e7dd;font: 11px tahoma;height:12px;border-bottom: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"+
-                        ".isi2 td{font: 11px tahoma;height:12px;background: #ffffff;color:#323232;}"+                    
-                        ".isi3 td{border-right: 1px solid #e2e7dd;font: 11px tahoma;height:12px;border-top: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"+
-                        ".isi4 td{font: 11px tahoma;height:12px;border-top: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"
-                );
-                bg.close();
+            if(ceksukses==false){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                try {            
+                    File g = new File("file2.css");            
+                    BufferedWriter bg = new BufferedWriter(new FileWriter(g));
+                    bg.write(
+                            ".isi td{border-right: 1px solid #e2e7dd;font: 11px tahoma;height:12px;border-bottom: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"+
+                            ".isi2 td{font: 11px tahoma;height:12px;background: #ffffff;color:#323232;}"+                    
+                            ".isi3 td{border-right: 1px solid #e2e7dd;font: 11px tahoma;height:12px;border-top: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"+
+                            ".isi4 td{font: 11px tahoma;height:12px;border-top: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"
+                    );
+                    bg.close();
 
-                File f;            
-                BufferedWriter bw; 
+                    File f;            
+                    BufferedWriter bw; 
 
-                pilihan = (String)JOptionPane.showInputDialog(null,"Silahkan pilih laporan..!","Pilihan Cetak",JOptionPane.QUESTION_MESSAGE,null,new Object[]{"Laporan 1 (HTML)","Laporan 2 (WPS)","Laporan 3 (CSV)"},"Laporan 1 (HTML)");
-                switch (pilihan) {
-                    case "Laporan 1 (HTML)":
-                            htmlContent = new StringBuilder();
-                            htmlContent.append(                             
-                                "<tr class='isi'>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='85px'>Kode Barang</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='190px'>Nama Barang</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>1("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),1)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>2("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),2)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>3("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),3)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>4("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),4)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>5("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),5)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>6("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),6)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>7("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),7)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>8("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),8)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>9("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),9)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>10("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),10)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>11("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),11)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>12("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),12)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>13("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),13)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>14("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),14)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>15("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),15)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>16("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),16)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>17("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),17)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>18("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),18)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>19("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),19)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>20("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),20)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>21("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),21)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>22("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),22)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>23("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),23)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>24("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),24)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>25("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),25)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>26("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),26)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>27("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),27)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>28("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),28)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>29("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),29)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>30("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),30)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>31("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),31)+")</td>"+
-                                "</tr>"
-                            ); 
-                            for(i=0;i<tabMode.getRowCount();i++){  
+                    pilihan = (String)JOptionPane.showInputDialog(null,"Silahkan pilih laporan..!","Pilihan Cetak",JOptionPane.QUESTION_MESSAGE,null,new Object[]{"Laporan 1 (HTML)","Laporan 2 (WPS)","Laporan 3 (CSV)"},"Laporan 1 (HTML)");
+                    switch (pilihan) {
+                        case "Laporan 1 (HTML)":
+                                htmlContent = new StringBuilder();
                                 htmlContent.append(                             
                                     "<tr class='isi'>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,0)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,1)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,2)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,3)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,4)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,5)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,6)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,7)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,8)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,9)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,10)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,11)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,12)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,13)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,14)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,15)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,16)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,17)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,18)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,19)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,20)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,21)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,22)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,23)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,24)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,25)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,26)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,27)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,28)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,29)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,30)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,31)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,32)+"</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='85px'>Kode Barang</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='190px'>Nama Barang</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>1("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),1)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>2("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),2)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>3("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),3)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>4("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),4)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>5("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),5)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>6("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),6)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>7("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),7)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>8("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),8)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>9("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),9)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>10("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),10)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>11("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),11)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>12("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),12)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>13("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),13)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>14("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),14)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>15("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),15)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>16("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),16)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>17("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),17)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>18("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),18)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>19("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),19)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>20("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),20)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>21("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),21)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>22("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),22)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>23("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),23)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>24("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),24)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>25("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),25)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>26("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),26)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>27("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),27)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>28("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),28)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>29("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),29)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>30("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),30)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>31("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),31)+")</td>"+
                                     "</tr>"
                                 ); 
-                            }            
+                                for(i=0;i<tabMode.getRowCount();i++){  
+                                    htmlContent.append(                             
+                                        "<tr class='isi'>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,0)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,1)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,2)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,3)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,4)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,5)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,6)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,7)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,8)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,9)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,10)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,11)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,12)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,13)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,14)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,15)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,16)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,17)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,18)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,19)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,20)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,21)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,22)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,23)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,24)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,25)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,26)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,27)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,28)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,29)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,30)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,31)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,32)+"</td>"+
+                                        "</tr>"
+                                    ); 
+                                }            
 
-                            f = new File("StokAkhirFarmasi.html");            
-                            bw = new BufferedWriter(new FileWriter(f));            
-                            bw.write("<html>"+
-                                        "<head><link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" /></head>"+
-                                        "<body>"+
-                                            "<table width='1900px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
-                                                "<tr class='isi2'>"+
-                                                    "<td valign='top' align='center'>"+
-                                                        "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
-                                                        akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
-                                                        akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
-                                                        "<font size='2' face='Tahoma'>STOK AKHIR FARMASI TAHUN "+ThnCari.getSelectedItem()+" BULAN "+BlnCari.getSelectedItem()+"<br><br></font>"+        
-                                                    "</td>"+
-                                               "</tr>"+
-                                            "</table>"+
-                                            "<table width='1900px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
-                                                htmlContent.toString()+
-                                            "</table>"+
-                                        "</body>"+                   
-                                     "</html>"
-                            );
+                                f = new File("StokAkhirFarmasi.html");            
+                                bw = new BufferedWriter(new FileWriter(f));            
+                                bw.write("<html>"+
+                                            "<head><link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" /></head>"+
+                                            "<body>"+
+                                                "<table width='1900px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
+                                                    "<tr class='isi2'>"+
+                                                        "<td valign='top' align='center'>"+
+                                                            "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
+                                                            akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
+                                                            akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
+                                                            "<font size='2' face='Tahoma'>STOK AKHIR FARMASI TAHUN "+ThnCari.getSelectedItem()+" BULAN "+BlnCari.getSelectedItem()+"<br><br></font>"+        
+                                                        "</td>"+
+                                                   "</tr>"+
+                                                "</table>"+
+                                                "<table width='1900px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
+                                                    htmlContent.toString()+
+                                                "</table>"+
+                                            "</body>"+                   
+                                         "</html>"
+                                );
 
-                            bw.close();                         
-                            Desktop.getDesktop().browse(f.toURI());
-                        break;
-                    case "Laporan 2 (WPS)":
-                            htmlContent = new StringBuilder();
-                            htmlContent.append(                             
-                                "<tr class='isi'>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='85px'>Kode Barang</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='190px'>Nama Barang</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>1("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),1)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>2("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),2)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>3("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),3)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>4("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),4)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>5("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),5)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>6("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),6)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>7("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),7)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>8("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),8)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>9("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),9)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>10("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),10)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>11("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),11)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>12("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),12)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>13("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),13)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>14("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),14)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>15("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),15)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>16("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),16)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>17("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),17)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>18("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),18)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>19("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),19)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>20("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),20)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>21("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),21)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>22("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),22)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>23("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),23)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>24("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),24)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>25("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),25)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>26("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),26)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>27("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),27)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>28("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),28)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>29("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),29)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>30("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),30)+")</td>"+
-                                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>31("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),31)+")</td>"+
-                                "</tr>"
-                            ); 
-                            for(i=0;i<tabMode.getRowCount();i++){  
+                                bw.close();                         
+                                Desktop.getDesktop().browse(f.toURI());
+                            break;
+                        case "Laporan 2 (WPS)":
+                                htmlContent = new StringBuilder();
                                 htmlContent.append(                             
                                     "<tr class='isi'>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,0)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,1)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,2)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,3)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,4)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,5)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,6)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,7)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,8)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,9)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,10)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,11)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,12)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,13)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,14)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,15)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,16)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,17)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,18)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,19)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,20)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,21)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,22)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,23)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,24)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,25)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,26)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,27)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,28)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,29)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,30)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,31)+"</td>"+
-                                        "<td valign='top'>"+tabMode.getValueAt(i,32)+"</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='85px'>Kode Barang</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='190px'>Nama Barang</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>1("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),1)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>2("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),2)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>3("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),3)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>4("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),4)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>5("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),5)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>6("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),6)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>7("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),7)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>8("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),8)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>9("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),9)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>10("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),10)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>11("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),11)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>12("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),12)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>13("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),13)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>14("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),14)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>15("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),15)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>16("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),16)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>17("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),17)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>18("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),18)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>19("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),19)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>20("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),20)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>21("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),21)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>22("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),22)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>23("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),23)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>24("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),24)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>25("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),25)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>26("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),26)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>27("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),27)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>28("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),28)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>29("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),29)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>30("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),30)+")</td>"+
+                                        "<td valign='middle' bgcolor='#FFFAFA' align='center' width='63px'>31("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),31)+")</td>"+
                                     "</tr>"
                                 ); 
-                            }              
+                                for(i=0;i<tabMode.getRowCount();i++){  
+                                    htmlContent.append(                             
+                                        "<tr class='isi'>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,0)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,1)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,2)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,3)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,4)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,5)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,6)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,7)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,8)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,9)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,10)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,11)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,12)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,13)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,14)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,15)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,16)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,17)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,18)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,19)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,20)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,21)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,22)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,23)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,24)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,25)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,26)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,27)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,28)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,29)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,30)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,31)+"</td>"+
+                                            "<td valign='top'>"+tabMode.getValueAt(i,32)+"</td>"+
+                                        "</tr>"
+                                    ); 
+                                }              
 
-                            f = new File("StokAkhirFarmasi.wps");            
-                            bw = new BufferedWriter(new FileWriter(f));            
-                            bw.write("<html>"+
-                                        "<head><link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" /></head>"+
-                                        "<body>"+
-                                            "<table width='1900px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
-                                                "<tr class='isi2'>"+
-                                                    "<td valign='top' align='center'>"+
-                                                        "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
-                                                        akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
-                                                        akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
-                                                        "<font size='2' face='Tahoma'>STOK AKHIR FARMASI TAHUN "+ThnCari.getSelectedItem()+" BULAN "+BlnCari.getSelectedItem()+"<br><br></font>"+        
-                                                    "</td>"+
-                                               "</tr>"+
-                                            "</table>"+
-                                            "<table width='1900px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
-                                                htmlContent.toString()+
-                                            "</table>"+
-                                        "</body>"+                   
-                                     "</html>"
-                            );
+                                f = new File("StokAkhirFarmasi.wps");            
+                                bw = new BufferedWriter(new FileWriter(f));            
+                                bw.write("<html>"+
+                                            "<head><link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" /></head>"+
+                                            "<body>"+
+                                                "<table width='1900px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
+                                                    "<tr class='isi2'>"+
+                                                        "<td valign='top' align='center'>"+
+                                                            "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
+                                                            akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
+                                                            akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
+                                                            "<font size='2' face='Tahoma'>STOK AKHIR FARMASI TAHUN "+ThnCari.getSelectedItem()+" BULAN "+BlnCari.getSelectedItem()+"<br><br></font>"+        
+                                                        "</td>"+
+                                                   "</tr>"+
+                                                "</table>"+
+                                                "<table width='1900px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
+                                                    htmlContent.toString()+
+                                                "</table>"+
+                                            "</body>"+                   
+                                         "</html>"
+                                );
 
-                            bw.close();                         
-                            Desktop.getDesktop().browse(f.toURI());
-                        break;
-                    case "Laporan 3 (CSV)":
-                            htmlContent = new StringBuilder();
-                            htmlContent.append(         
-                                    "\"Kode Barang\";\"Nama Barang\";"+
-                                    "\"1("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),1)+")\";"+
-                                    "\"2("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),2)+")\";"+
-                                    "\"3("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),3)+")\";"+
-                                    "\"4("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),4)+")\";"+
-                                    "\"5("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),5)+")\";"+
-                                    "\"6("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),6)+")\";"+
-                                    "\"7("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),7)+")\";"+
-                                    "\"8("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),8)+")\";"+
-                                    "\"9("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),9)+")\";"+
-                                    "\"10("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),10)+")\";"+
-                                    "\"11("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),11)+")\";"+
-                                    "\"12("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),12)+")\";"+
-                                    "\"13("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),13)+")\";"+
-                                    "\"14("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),14)+")\";"+
-                                    "\"15("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),15)+")\";"+
-                                    "\"16("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),16)+")\";"+
-                                    "\"17("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),17)+")\";"+
-                                    "\"18("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),18)+")\";"+
-                                    "\"19("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),19)+")\";"+
-                                    "\"20("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),20)+")\";"+
-                                    "\"21("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),21)+")\";"+
-                                    "\"22("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),22)+")\";"+
-                                    "\"23("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),23)+")\";"+
-                                    "\"24("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),24)+")\";"+
-                                    "\"25("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),25)+")\";"+
-                                    "\"26("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),26)+")\";"+
-                                    "\"27("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),27)+")\";"+
-                                    "\"28("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),28)+")\";"+
-                                    "\"29("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),29)+")\";"+
-                                    "\"30("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),30)+")\";"+
-                                    "\"31("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),31)+")\"\n"
-                            ); 
-                            for(i=0;i<tabMode.getRowCount();i++){  
-                                htmlContent.append(      
-                                    "\""+tabMode.getValueAt(i,0)+"\";"+
-                                    "\""+tabMode.getValueAt(i,1)+"\";"+
-                                    "\""+tabMode.getValueAt(i,2)+"\";"+
-                                    "\""+tabMode.getValueAt(i,3)+"\";"+
-                                    "\""+tabMode.getValueAt(i,4)+"\";"+
-                                    "\""+tabMode.getValueAt(i,5)+"\";"+
-                                    "\""+tabMode.getValueAt(i,6)+"\";"+
-                                    "\""+tabMode.getValueAt(i,7)+"\";"+
-                                    "\""+tabMode.getValueAt(i,8)+"\";"+
-                                    "\""+tabMode.getValueAt(i,9)+"\";"+
-                                    "\""+tabMode.getValueAt(i,10)+"\";"+
-                                    "\""+tabMode.getValueAt(i,11)+"\";"+
-                                    "\""+tabMode.getValueAt(i,12)+"\";"+
-                                    "\""+tabMode.getValueAt(i,13)+"\";"+
-                                    "\""+tabMode.getValueAt(i,14)+"\";"+
-                                    "\""+tabMode.getValueAt(i,15)+"\";"+
-                                    "\""+tabMode.getValueAt(i,16)+"\";"+
-                                    "\""+tabMode.getValueAt(i,17)+"\";"+
-                                    "\""+tabMode.getValueAt(i,18)+"\";"+
-                                    "\""+tabMode.getValueAt(i,19)+"\";"+
-                                    "\""+tabMode.getValueAt(i,20)+"\";"+
-                                    "\""+tabMode.getValueAt(i,21)+"\";"+
-                                    "\""+tabMode.getValueAt(i,22)+"\";"+
-                                    "\""+tabMode.getValueAt(i,23)+"\";"+
-                                    "\""+tabMode.getValueAt(i,24)+"\";"+
-                                    "\""+tabMode.getValueAt(i,25)+"\";"+
-                                    "\""+tabMode.getValueAt(i,26)+"\";"+
-                                    "\""+tabMode.getValueAt(i,27)+"\";"+
-                                    "\""+tabMode.getValueAt(i,28)+"\";"+
-                                    "\""+tabMode.getValueAt(i,29)+"\";"+
-                                    "\""+tabMode.getValueAt(i,30)+"\";"+
-                                    "\""+tabMode.getValueAt(i,31)+"\";"+
-                                    "\""+tabMode.getValueAt(i,32)+"\"\n"
+                                bw.close();                         
+                                Desktop.getDesktop().browse(f.toURI());
+                            break;
+                        case "Laporan 3 (CSV)":
+                                htmlContent = new StringBuilder();
+                                htmlContent.append(         
+                                        "\"Kode Barang\";\"Nama Barang\";"+
+                                        "\"1("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),1)+")\";"+
+                                        "\"2("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),2)+")\";"+
+                                        "\"3("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),3)+")\";"+
+                                        "\"4("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),4)+")\";"+
+                                        "\"5("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),5)+")\";"+
+                                        "\"6("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),6)+")\";"+
+                                        "\"7("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),7)+")\";"+
+                                        "\"8("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),8)+")\";"+
+                                        "\"9("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),9)+")\";"+
+                                        "\"10("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),10)+")\";"+
+                                        "\"11("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),11)+")\";"+
+                                        "\"12("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),12)+")\";"+
+                                        "\"13("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),13)+")\";"+
+                                        "\"14("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),14)+")\";"+
+                                        "\"15("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),15)+")\";"+
+                                        "\"16("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),16)+")\";"+
+                                        "\"17("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),17)+")\";"+
+                                        "\"18("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),18)+")\";"+
+                                        "\"19("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),19)+")\";"+
+                                        "\"20("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),20)+")\";"+
+                                        "\"21("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),21)+")\";"+
+                                        "\"22("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),22)+")\";"+
+                                        "\"23("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),23)+")\";"+
+                                        "\"24("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),24)+")\";"+
+                                        "\"25("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),25)+")\";"+
+                                        "\"26("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),26)+")\";"+
+                                        "\"27("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),27)+")\";"+
+                                        "\"28("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),28)+")\";"+
+                                        "\"29("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),29)+")\";"+
+                                        "\"30("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),30)+")\";"+
+                                        "\"31("+konversi(Integer.parseInt(ThnCari.getSelectedItem().toString()),Integer.parseInt(BlnCari.getSelectedItem().toString()),31)+")\"\n"
                                 ); 
-                            }            
+                                for(i=0;i<tabMode.getRowCount();i++){  
+                                    htmlContent.append(      
+                                        "\""+tabMode.getValueAt(i,0)+"\";"+
+                                        "\""+tabMode.getValueAt(i,1)+"\";"+
+                                        "\""+tabMode.getValueAt(i,2)+"\";"+
+                                        "\""+tabMode.getValueAt(i,3)+"\";"+
+                                        "\""+tabMode.getValueAt(i,4)+"\";"+
+                                        "\""+tabMode.getValueAt(i,5)+"\";"+
+                                        "\""+tabMode.getValueAt(i,6)+"\";"+
+                                        "\""+tabMode.getValueAt(i,7)+"\";"+
+                                        "\""+tabMode.getValueAt(i,8)+"\";"+
+                                        "\""+tabMode.getValueAt(i,9)+"\";"+
+                                        "\""+tabMode.getValueAt(i,10)+"\";"+
+                                        "\""+tabMode.getValueAt(i,11)+"\";"+
+                                        "\""+tabMode.getValueAt(i,12)+"\";"+
+                                        "\""+tabMode.getValueAt(i,13)+"\";"+
+                                        "\""+tabMode.getValueAt(i,14)+"\";"+
+                                        "\""+tabMode.getValueAt(i,15)+"\";"+
+                                        "\""+tabMode.getValueAt(i,16)+"\";"+
+                                        "\""+tabMode.getValueAt(i,17)+"\";"+
+                                        "\""+tabMode.getValueAt(i,18)+"\";"+
+                                        "\""+tabMode.getValueAt(i,19)+"\";"+
+                                        "\""+tabMode.getValueAt(i,20)+"\";"+
+                                        "\""+tabMode.getValueAt(i,21)+"\";"+
+                                        "\""+tabMode.getValueAt(i,22)+"\";"+
+                                        "\""+tabMode.getValueAt(i,23)+"\";"+
+                                        "\""+tabMode.getValueAt(i,24)+"\";"+
+                                        "\""+tabMode.getValueAt(i,25)+"\";"+
+                                        "\""+tabMode.getValueAt(i,26)+"\";"+
+                                        "\""+tabMode.getValueAt(i,27)+"\";"+
+                                        "\""+tabMode.getValueAt(i,28)+"\";"+
+                                        "\""+tabMode.getValueAt(i,29)+"\";"+
+                                        "\""+tabMode.getValueAt(i,30)+"\";"+
+                                        "\""+tabMode.getValueAt(i,31)+"\";"+
+                                        "\""+tabMode.getValueAt(i,32)+"\"\n"
+                                    ); 
+                                }            
 
-                            f = new File("StokAkhirFarmasi.csv");            
-                            bw = new BufferedWriter(new FileWriter(f));            
-                            bw.write(htmlContent.toString());
+                                f = new File("StokAkhirFarmasi.csv");            
+                                bw = new BufferedWriter(new FileWriter(f));            
+                                bw.write(htmlContent.toString());
 
-                            bw.close();                         
-                            Desktop.getDesktop().browse(f.toURI());
-                        break; 
-                }                 
-            } catch (Exception e) {
-            }     
-            this.setCursor(Cursor.getDefaultCursor());
+                                bw.close();                         
+                                Desktop.getDesktop().browse(f.toURI());
+                            break; 
+                    }                 
+                } catch (Exception e) {
+                }     
+                this.setCursor(Cursor.getDefaultCursor());
+            }else{
+                JOptionPane.showMessageDialog(null,"Masih proses menampilkan data, harap tunggu terlebih dahulu...!");
+            }
         }
     }//GEN-LAST:event_BtnPrintActionPerformed
 
@@ -671,9 +635,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
-        prosesCari();
-        this.setCursor(Cursor.getDefaultCursor());
+        runBackground(() ->prosesCari());
     }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -688,9 +650,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         TCari.setText("");
         KdGudang.setText("");
         NmGudang.setText("");
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
-        prosesCari();
-        this.setCursor(Cursor.getDefaultCursor());
+        runBackground(() ->prosesCari());
     }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -703,6 +663,31 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
 
     private void btnBarang1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBarang1ActionPerformed
         akses.setform("InventoryStokAkhirFarmasiPerTanggal");
+        DlgCariBangsal bangsal=new DlgCariBangsal(null,false);
+        bangsal.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(akses.getform().equals("InventoryStokAkhirFarmasiPerTanggal")){
+                    if(bangsal.getTable().getSelectedRow()!= -1){                   
+                        KdGudang.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),0).toString());
+                        NmGudang.setText(bangsal.getTable().getValueAt(bangsal.getTable().getSelectedRow(),1).toString());
+                    }  
+                    KdGudang.requestFocus();
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
         bangsal.emptTeks();
         bangsal.isCek();
         bangsal.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
@@ -714,6 +699,31 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private void KdGudangKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KdGudangKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_KdGudangKeyPressed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->prosesCari());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->prosesCari());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->prosesCari());
+                    }
+                }
+            });
+        } 
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -830,8 +840,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
              Valid.tabelKosong(tabMode);
              try{
                  ps=koneksi.prepareStatement(
-                     "select databarang.kode_brng,databarang.nama_brng from databarang where databarang.status='1' "+(TCari.getText().trim().equals("")?"":
-                     "and (databarang.kode_brng like ? or databarang.nama_brng like ?) ")+"order by databarang.nama_brng");
+                     "select databarang.kode_brng,databarang.nama_brng from databarang where databarang.status='1' "+(TCari.getText().trim().equals("")?"":"and (databarang.kode_brng like ? or databarang.nama_brng like ?) ")+"order by databarang.nama_brng");
                  try {
                      if(!TCari.getText().trim().equals("")){
                          ps.setString(1,"%"+TCari.getText().trim()+"%");
@@ -841,226 +850,226 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                      while(rs.next()){
                          stokawal=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal < '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-01' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
                          s1=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-01' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s1==""){
+                         if(s1.equals("")){
                              s1=stokawal;
                          }
                          s2=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-02' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s2==""){
+                         if(s2.equals("")){
                              s2=s1;
                          }
                          s3=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-03' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s3==""){
+                         if(s3.equals("")){
                              s3=s2;
                          }
                          s4=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-04' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s4==""){
+                         if(s4.equals("")){
                              s4=s3;
                          }
                          s5=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-05' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s5==""){
+                         if(s5.equals("")){
                              s5=s4;
                          }
                          s6=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-06' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s6==""){
+                         if(s6.equals("")){
                              s6=s5;
                          }
                          s7=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-07' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s7==""){
+                         if(s7.equals("")){
                              s7=s6;
                          }
                          s8=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-08' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s8==""){
+                         if(s8.equals("")){
                              s8=s7;
                          }
                          s9=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-09' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s9==""){
+                         if(s9.equals("")){
                              s9=s8;
                          }
                          s10=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-10' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s10==""){
+                         if(s10.equals("")){
                              s10=s9;
                          }
                          s11=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-11' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s11==""){
+                         if(s11.equals("")){
                              s11=s10;
                          }
                          s12=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-12' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s12==""){
+                         if(s12.equals("")){
                              s12=s11;
                          }
                          s13=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-13' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s13==""){
+                         if(s13.equals("")){
                              s13=s12;
                          }
                          s14=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-14' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s14==""){
+                         if(s14.equals("")){
                              s14=s13;
                          }
                          s15=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-15' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s15==""){
+                         if(s15.equals("")){
                              s15=s14;
                          }
                          s16=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-16' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s16==""){
+                         if(s16.equals("")){
                              s16=s15;
                          }
                          s17=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-17' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s17==""){
+                         if(s17.equals("")){
                              s17=s16;
                          }
                          s18=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-18' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s18==""){
+                         if(s18.equals("")){
                              s18=s17;
                          }
                          s19=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-19' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s19==""){
+                         if(s19.equals("")){
                              s19=s18;
                          }
                          s20=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-20' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s20==""){
+                         if(s20.equals("")){
                              s20=s19;
                          }
                          s21=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-21' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s21==""){
+                         if(s21.equals("")){
                              s21=s20;
                          }
                          s22=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-22' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s22==""){
+                         if(s22.equals("")){
                              s22=s21;
                          }
                          s23=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-23' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s23==""){
+                         if(s23.equals("")){
                              s23=s22;
                          }
                          s24=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-24' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s24==""){
+                         if(s24.equals("")){
                              s24=s23;
                          }
                          s25=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-25' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s25==""){
+                         if(s25.equals("")){
                              s25=s24;
                          }
                          s26=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-26' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s26==""){
+                         if(s26.equals("")){
                              s26=s25;
                          }
                          s27=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-27' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s27==""){
+                         if(s27.equals("")){
                              s27=s26;
                          }
                          s28=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-28' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s28==""){
+                         if(s28.equals("")){
                              s28=s27;
                          }
                          s29=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-29' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s29==""){
+                         if(s29.equals("")){
                              s29=s28;
                          }
                          s30=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-30' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s30==""){
+                         if(s30.equals("")){
                              s30=s29;
                          }
                          s31=Sequel.cariIsi("select riwayat_barang_medis.stok_akhir from riwayat_barang_medis where riwayat_barang_medis.tanggal = '"+ThnCari.getSelectedItem().toString()+"-"+BlnCari.getSelectedItem().toString()+"-31' and riwayat_barang_medis.kode_brng='"+rs.getString("kode_brng")+"' and riwayat_barang_medis.kd_bangsal='"+KdGudang.getText()+"' order by concat(riwayat_barang_medis.tanggal,' ',riwayat_barang_medis.jam) desc limit 1");
-                         if(s31==""){
+                         if(s31.equals("")){
                              s31=s30;
                          }
-                         if(stokawal==""){
+                         if(stokawal.equals("")){
                              stokawal="0";
                          }
-                         if(s1==""){
+                         if(s1.equals("")){
                              s1="0";
                          }
-                         if(s2==""){
+                         if(s2.equals("")){
                              s2="0";
                          }
-                         if(s3==""){
+                         if(s3.equals("")){
                              s3="0";
                          }
-                         if(s4==""){
+                         if(s4.equals("")){
                              s4="0";
                          }
-                         if(s5==""){
+                         if(s5.equals("")){
                              s5="0";
                          }
-                         if(s6==""){
+                         if(s6.equals("")){
                              s6="0";
                          }
-                         if(s7==""){
+                         if(s7.equals("")){
                              s7="0";
                          }
-                         if(s8==""){
+                         if(s8.equals("")){
                              s8="0";
                          }
-                         if(s9==""){
+                         if(s9.equals("")){
                              s9="0";
                          }
-                         if(s10==""){
+                         if(s10.equals("")){
                              s10="0";
                          }
-                         if(s11==""){
+                         if(s11.equals("")){
                              s11="0";
                          }
-                         if(s12==""){
+                         if(s12.equals("")){
                              s12="0";
                          }
-                         if(s13==""){
+                         if(s13.equals("")){
                              s13="0";
                          }
-                         if(s14==""){
+                         if(s14.equals("")){
                              s14="0";
                          }
-                         if(s15==""){
+                         if(s15.equals("")){
                              s15="0";
                          }
-                         if(s16==""){
+                         if(s16.equals("")){
                              s16="0";
                          }
-                         if(s17==""){
+                         if(s17.equals("")){
                              s17="0";
                          }
-                         if(s18==""){
+                         if(s18.equals("")){
                              s18="0";
                          }
-                         if(s19==""){
+                         if(s19.equals("")){
                              s19="0";
                          }
-                         if(s20==""){
+                         if(s20.equals("")){
                              s20="0";
                          }
-                         if(s21==""){
+                         if(s21.equals("")){
                              s21="0";
                          }
-                         if(s22==""){
+                         if(s22.equals("")){
                              s22="0";
                          }
-                         if(s23==""){
+                         if(s23.equals("")){
                              s23="0";
                          }
-                         if(s24==""){
+                         if(s24.equals("")){
                              s24="0";
                          }
-                         if(s25==""){
+                         if(s25.equals("")){
                              s25="0";
                          }
-                         if(s26==""){
+                         if(s26.equals("")){
                              s26="0";
                          }
-                         if(s27==""){
+                         if(s27.equals("")){
                              s27="0";
                          }
-                         if(s28==""){
+                         if(s28.equals("")){
                              s28="0";
                          }
-                         if(s29==""){
+                         if(s29.equals("")){
                              s29="0";
                          }
-                         if(s30==""){
+                         if(s30.equals("")){
                              s30="0";
                          }
-                         if(s31==""){
+                         if(s31.equals("")){
                              s31="0";
                          }
-                         tabMode.addRow(new String[]{
+                         tabMode.addRow(new Object[]{
                              rs.getString("kode_brng"),rs.getString("nama_brng"),s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,s17,s18,s19,s20,s21,s22,s23,s24,s25,s26,s27,s28,s29,s30,s31
                          });
                      }
@@ -1120,5 +1129,37 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                 break;
         }
         return hari;
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 }

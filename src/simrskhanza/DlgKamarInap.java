@@ -242,7 +242,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             "Diagnosa Awal","Diagnosa Akhir","Tgl.Masuk","Jam Masuk","Tgl.Keluar","Jam Keluar",
             "Ttl.Biaya","Stts.Pulang","Lama","Dokter P.J.","Kamar","Status Bayar","Agama",
             "Nomer RM","Nama Pasien","DPJP","Alamat Pasien","Jenis Bayar","Catatan","Kamar","Tarif Kamar",
-            "Diagnosa Awal","Diagnosa Akhir","Tgl.Registrasi","Jam Registrasi","Tgl.Keluar","Jam Keluar",
+            "Diagnosa Awal","Diagnosa Akhir","Tgl.Masuk","Jam Masuk","Tgl.Keluar","Jam Keluar",
             "Tarif RS","Tarif INACBG","Selisih Pasien","INACBG Total","Deposit","Stts.Pulang","Lama","Kamar","Status Bayar", "Limit Tarif", "No.Telp"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
@@ -343,9 +343,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }else if(i==31){//"Diagnosa Akhir",
                 column.setPreferredWidth(90);
             }else if(i==32){//"Tgl.Masuk",
-                column.setPreferredWidth(80);
+                column.setPreferredWidth(70);
             }else if(i==33){//"Jam Masuk",
-                column.setPreferredWidth(80);
+                column.setPreferredWidth(70);
             }else if(i==34){//"Tgl.Keluar",
                 column.setPreferredWidth(70);
             }else if(i==35){//"Jam Keluar",
@@ -18352,7 +18352,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     + "            END\n"
                     + "          )\n"
                     + "      ELSE '' END)\n"
-                    + "END AS cara_bayar2, IFNULL(catatan_reg.catatan, '') AS catatan, pasien.no_tlp, reg_periksa.tgl_registrasi, reg_periksa.jam_reg \n"
+                    + "END AS cara_bayar2, IFNULL(catatan_reg.catatan, '') AS catatan, pasien.no_tlp \n"
                     + "from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis\n"
                     + "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = reg_periksa.no_rawat inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar\n"
                     + "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel\n"
@@ -18379,7 +18379,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                         rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+" ("+rs.getString("jk")+") ("+rs.getString("umur")+")",rs.getString("nm_dokter"),
                         rs.getString("alamat"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),rs.getString("catatan"),
                         rs.getString("kamar") + " (" + rs.getString("kelas") + ")",Valid.SetAngka(rs.getDouble("trf_kamar")),rs.getString("diagnosa_awal"),
-                        rs.getString("diagnosa_akhir"),rs.getString("tgl_registrasi"),rs.getString("jam_reg"),rs.getString("tgl_keluar"),
+                        rs.getString("diagnosa_akhir"),rs.getString("tgl_masuk"),rs.getString("jam_masuk"),rs.getString("tgl_keluar"),
                         rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")),Valid.SetAngka(rs.getDouble("tarif_inacbg")),Valid.SetAngka(rs.getDouble("tarif_naik")),
                         Valid.SetAngka(rs.getDouble("selisih_tarif")),Valid.SetAngka(rs.getDouble("deposit")), rs.getString("stts_pulang"),
                         rs.getString("lama"),rs.getString("kd_kamar"),rs.getString("status_bayar"),rs.getString("limit_tarif"),rs.getString("no_tlp") 

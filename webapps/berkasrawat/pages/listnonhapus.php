@@ -13,6 +13,17 @@
             $action = validTeks(isset($_GET['action'])?$_GET['action']:NULL);
             $cari   = trim(isset($_GET['iyem']))?trim($_GET['iyem']):NULL;
             $cari   = json_decode(encrypt_decrypt($cari,"d"),true); 
+            $tahunawal      = "";
+            $bulanawal      = "";
+            $tanggalawal    = "";
+            $tahunakhir     = "";
+            $bulanakhir     = "";
+            $tanggalakhir   = ""; 
+            $no_rawat       = "";
+            $status         = "";
+            $keyword        = "";
+            $carabayar      = "";
+            $poli           = "";
             if (isset($cari["tahunawal"])) {
                 $tahunawal      = validTeks4((isset($cari['tahunawal'])?$cari['tahunawal']:NULL),4);
                 $bulanawal      = validTeks4((isset($cari['bulanawal'])?$cari['bulanawal']:NULL),2);
@@ -171,10 +182,17 @@
             echo"<meta http-equiv='refresh' content='1;URL=?act=ListNonHapus&action=Keluar'>";
 	}
         
-        if ($action=="GABUNG") { 
-            HapusAll("temppanggilnorawat");
-            Tambah3(" temppanggilnorawat "," '$no_rawat'");
-            echo "<meta http-equiv='refresh' content='1;URL=?act=ListNonHapus&iyem=".encrypt_decrypt("{\"keyword\":\"".str_replace(" ","_",$keyword)."\",\"carabayar\":\"".str_replace(" ","_",$carabayar)."\",\"poli\":\"".str_replace(" ","_",$poli)."\",\"tahunawal\":\"".$tahunawal."\",\"bulanawal\":\"".$bulanawal."\",\"tanggalawal\":\"".$tanggalawal."\",\"tahunakhir\":\"".$tahunakhir."\",\"bulanakhir\":\"".$bulanakhir."\",\"tanggalakhir\":\"".$tanggalakhir."\"}","e")."&action=no'>";                 
+        if ($action=="GABUNG") {
+            try {
+                HapusAll("temppanggilnorawat");
+                Tambah3(" temppanggilnorawat "," '$no_rawat'");
+                echo "<meta http-equiv='refresh' content='1;URL=?act=ListNonHapus&iyem=".encrypt_decrypt("{\"keyword\":\"".str_replace(" ","_",$keyword)."\",\"carabayar\":\"".str_replace(" ","_",$carabayar)."\",\"poli\":\"".str_replace(" ","_",$poli)."\",\"tahunawal\":\"".$tahunawal."\",\"bulanawal\":\"".$bulanawal."\",\"tanggalawal\":\"".$tanggalawal."\",\"tahunakhir\":\"".$tahunakhir."\",\"bulanakhir\":\"".$bulanakhir."\",\"tanggalakhir\":\"".$tanggalakhir."\"}","e")."&action=no'>";
+            } catch(mysqli_sql_exception $e) {
+                if($e->getCode()==1062)
+                    echo "<b style='color:red'>Data sudah ada..!!!</b>";
+                else
+                    echo "<b style='color:red'>Gagal proses gabung</b>";
+            }
         }else{
             if($action!="no"){                 
                 echo "<meta http-equiv='refresh' content='1;URL=?act=ListNonHapus&iyem=".encrypt_decrypt("{\"keyword\":\"".str_replace(" ","_",$keyword)."\",\"carabayar\":\"".str_replace(" ","_",$carabayar)."\",\"poli\":\"".str_replace(" ","_",$poli)."\",\"tahunawal\":\"".$tahunawal."\",\"bulanawal\":\"".$bulanawal."\",\"tanggalawal\":\"".$tanggalawal."\",\"tahunakhir\":\"".$tahunakhir."\",\"bulanakhir\":\"".$bulanakhir."\",\"tanggalakhir\":\"".$tanggalakhir."\"}","e")."&action=no'>";                 
@@ -287,4 +305,3 @@
 	</form>
     </div>
 </div>
-

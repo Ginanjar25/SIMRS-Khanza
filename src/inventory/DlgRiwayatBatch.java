@@ -12,6 +12,11 @@ import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
@@ -22,7 +27,8 @@ public class DlgRiwayatBatch extends javax.swing.JDialog {
     private final Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps;
     private ResultSet rs,rs2;
-    private StringBuilder htmlContent;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     
     /** Creates new form DlgProgramStudi
@@ -51,29 +57,6 @@ public class DlgRiwayatBatch extends javax.swing.JDialog {
         LoadHTML2.setDocument(doc);
         
         TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        btnCariActionPerformed(null);
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        btnCariActionPerformed(null);
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        btnCariActionPerformed(null);
-                    }
-                }
-
-            });
-        }
     }
    
 
@@ -275,59 +258,63 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
 */
 
     private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        try {
-            
-            File g = new File("file2.css");            
-            BufferedWriter bg = new BufferedWriter(new FileWriter(g));
-            bg.write(
-                    ".isi td{border-right: 1px solid #e2e7dd;font: 8.5px tahoma;height:12px;border-bottom: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"+
-                    ".isi2 td{font: 8.5px tahoma;height:12px;background: #ffffff;color:#323232;}"+
-                    ".head td{border-right: 1px solid #777777;font: 8.5px tahoma;height:9px;border-bottom: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"+
-                    ".isi3 td{border-right: 1px solid #e2e7dd;font: 8.5px tahoma;height:12px;border-top: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"+
-                    ".isi4 td{font: 11px tahoma;height:12px;border-top: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"
-            );
-            bg.close();
-            
-            File f = new File("riwayatbatch.html");            
-            BufferedWriter bw = new BufferedWriter(new FileWriter(f));   
-            if(TabRawat.getSelectedIndex()==0){
-                bw.write(LoadHTML.getText().replaceAll("<head>","<head>"+
-                            "<link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" />"+
-                            "<table width='1400px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
-                                "<tr class='isi2'>"+
-                                    "<td valign='top' align='center'>"+
-                                        "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
-                                        akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
-                                        akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
-                                        "<font size='2' face='Tahoma'>DATA RIWAYAT BATCH<br>PERIODE BARANG DATANG "+Tgl1.getSelectedItem()+" s.d. "+Tgl2.getSelectedItem()+"<br><br></font>"+        
-                                    "</td>"+
-                               "</tr>"+
-                            "</table>")
+        if(ceksukses==false){
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            try {
+
+                File g = new File("file2.css");            
+                BufferedWriter bg = new BufferedWriter(new FileWriter(g));
+                bg.write(
+                        ".isi td{border-right: 1px solid #e2e7dd;font: 8.5px tahoma;height:12px;border-bottom: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"+
+                        ".isi2 td{font: 8.5px tahoma;height:12px;background: #ffffff;color:#323232;}"+
+                        ".head td{border-right: 1px solid #777777;font: 8.5px tahoma;height:9px;border-bottom: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"+
+                        ".isi3 td{border-right: 1px solid #e2e7dd;font: 8.5px tahoma;height:12px;border-top: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"+
+                        ".isi4 td{font: 11px tahoma;height:12px;border-top: 1px solid #e2e7dd;background: #ffffff;color:#323232;}"
                 );
-            }else if(TabRawat.getSelectedIndex()==1){
-                bw.write(LoadHTML2.getText().replaceAll("<head>","<head>"+
-                            "<link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" />"+
-                            "<table width='850px' border='0' align='left' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
-                                "<tr class='isi2'>"+
-                                    "<td valign='top' align='center'>"+
-                                        "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
-                                        akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
-                                        akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
-                                        "<font size='2' face='Tahoma'>DATA RIWAYAT BATCH<br>PERIODE BARANG DATANG "+Tgl1.getSelectedItem()+" s.d. "+Tgl2.getSelectedItem()+"<br><br></font>"+        
-                                    "</td>"+
-                               "</tr>"+
-                            "</table>")
-                );
-            }
-                
-            bw.close();                         
-            Desktop.getDesktop().browse(f.toURI());
-        } catch (Exception e) {
-            System.out.println("Notifikasi : "+e);
-        }     
-        
-        this.setCursor(Cursor.getDefaultCursor());
+                bg.close();
+
+                File f = new File("riwayatbatch.html");            
+                BufferedWriter bw = new BufferedWriter(new FileWriter(f));   
+                if(TabRawat.getSelectedIndex()==0){
+                    bw.write(LoadHTML.getText().replaceAll("<head>","<head>"+
+                                "<link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" />"+
+                                "<table width='1400px' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
+                                    "<tr class='isi2'>"+
+                                        "<td valign='top' align='center'>"+
+                                            "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
+                                            akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
+                                            akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
+                                            "<font size='2' face='Tahoma'>DATA RIWAYAT BATCH<br>PERIODE BARANG DATANG "+Tgl1.getSelectedItem()+" s.d. "+Tgl2.getSelectedItem()+"<br><br></font>"+        
+                                        "</td>"+
+                                   "</tr>"+
+                                "</table>")
+                    );
+                }else if(TabRawat.getSelectedIndex()==1){
+                    bw.write(LoadHTML2.getText().replaceAll("<head>","<head>"+
+                                "<link href=\"file2.css\" rel=\"stylesheet\" type=\"text/css\" />"+
+                                "<table width='850px' border='0' align='left' cellpadding='3px' cellspacing='0' class='tbl_form'>"+
+                                    "<tr class='isi2'>"+
+                                        "<td valign='top' align='center'>"+
+                                            "<font size='4' face='Tahoma'>"+akses.getnamars()+"</font><br>"+
+                                            akses.getalamatrs()+", "+akses.getkabupatenrs()+", "+akses.getpropinsirs()+"<br>"+
+                                            akses.getkontakrs()+", E-mail : "+akses.getemailrs()+"<br><br>"+
+                                            "<font size='2' face='Tahoma'>DATA RIWAYAT BATCH<br>PERIODE BARANG DATANG "+Tgl1.getSelectedItem()+" s.d. "+Tgl2.getSelectedItem()+"<br><br></font>"+        
+                                        "</td>"+
+                                   "</tr>"+
+                                "</table>")
+                    );
+                }
+
+                bw.close();                         
+                Desktop.getDesktop().browse(f.toURI());
+            } catch (Exception e) {
+                System.out.println("Notifikasi : "+e);
+            }     
+
+            this.setCursor(Cursor.getDefaultCursor());
+        }else{
+            JOptionPane.showMessageDialog(null,"Masih proses menampilkan data, harap tunggu terlebih dahulu...!");
+        }
     }//GEN-LAST:event_BtnPrintActionPerformed
 
     private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnPrintKeyPressed
@@ -360,10 +347,6 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
         }
 }//GEN-LAST:event_btnCariKeyPressed
 
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        prosesCari();
-    }//GEN-LAST:event_formWindowOpened
-
     private void TCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCariKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_ENTER){
             TabRawatMouseClicked(null);
@@ -391,11 +374,37 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
 
     private void TabRawatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabRawatMouseClicked
         if(TabRawat.getSelectedIndex()==0){
-            prosesCari();
+            runBackground(() ->prosesCari());
         }else if(TabRawat.getSelectedIndex()==1){
-            prosesCari2();
+            runBackground(() ->prosesCari2());
         }
     }//GEN-LAST:event_TabRawatMouseClicked
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        btnCariActionPerformed(null);
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        btnCariActionPerformed(null);
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        btnCariActionPerformed(null);
+                    }
+                }
+
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     /**
     * @param args the command line arguments
@@ -437,30 +446,30 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
     private void prosesCari() {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
-            htmlContent = new StringBuilder();
+            StringBuilder htmlContent = new StringBuilder();
             htmlContent.append(                             
-                "<tr class='head'>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='80px'>No.Batch</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='90px'>Kode Barang</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='230px'>Nama Barang</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='50px'>Satuan</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='70px'>Datang</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='70px'>Kadaluarsa</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='70px'>Asal Barang</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='95px'>No.Faktur</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.PP</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Ralan</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Kelas 1</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Kelas 2</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Kelas 3</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Utama</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.VIP</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.VVIP</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Beli Luar</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Jual Bebas</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Karyawan</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='65px'>Jumlah</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='65px'>Sisa</td>"+
+                "<tr class='head'>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='80px'>No.Batch</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='90px'>Kode Barang</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='230px'>Nama Barang</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='50px'>Satuan</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='70px'>Datang</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='70px'>Kadaluarsa</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='70px'>Asal Barang</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='95px'>No.Faktur</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.PP</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Ralan</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Kelas 1</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Kelas 2</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Kelas 3</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Utama</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.VIP</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.VVIP</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Beli Luar</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Jual Bebas</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='75px'>H.Karyawan</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='65px'>Jumlah</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='65px'>Sisa</td>").append(
                 "</tr>"
             );   
             
@@ -472,52 +481,46 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                     "data_batch.vip,data_batch.vvip,data_batch.beliluar,data_batch.jualbebas,"+
                     "data_batch.karyawan,data_batch.jumlahbeli,data_batch.sisa from databarang "+
                     "inner join data_batch on data_batch.kode_brng=databarang.kode_brng where "+
-                    "data_batch.tgl_beli between ? and ? and data_batch.no_batch like ? or "+
-                    "data_batch.tgl_beli between ? and ? and data_batch.kode_brng like ? or "+
-                    "data_batch.tgl_beli between ? and ? and databarang.nama_brng like ? or "+
-                    "data_batch.tgl_beli between ? and ? and data_batch.asal like ? or "+
-                    "data_batch.tgl_beli between ? and ? and data_batch.no_faktur like ? order by data_batch.tgl_beli");
+                    "data_batch.tgl_beli between ? and ? "+(!TCari.getText().trim().equals("")?"and "+
+                    "(data_batch.no_batch like ? or data_batch.kode_brng like ? or "+
+                    "databarang.nama_brng like ? or data_batch.asal like ? or "+
+                    "data_batch.no_faktur like ?)":"")+
+                    "order by data_batch.tgl_beli");
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(3,"%"+TCari.getText().trim()+"%");
-                ps.setString(4,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(5,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(6,"%"+TCari.getText().trim()+"%");
-                ps.setString(7,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(8,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(9,"%"+TCari.getText().trim()+"%");
-                ps.setString(10,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(11,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(12,"%"+TCari.getText().trim()+"%");
-                ps.setString(13,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(14,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(15,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(3,"%"+TCari.getText().trim()+"%");
+                    ps.setString(4,"%"+TCari.getText().trim()+"%");
+                    ps.setString(5,"%"+TCari.getText().trim()+"%");
+                    ps.setString(6,"%"+TCari.getText().trim()+"%");
+                    ps.setString(7,"%"+TCari.getText().trim()+"%");
+                }
                 rs=ps.executeQuery();
                 while(rs.next()){
                     htmlContent.append(
-                        "<tr class='isi'>"+
-                            "<td valign='middle' align='left'>"+rs.getString("no_batch")+"</td>"+
-                            "<td valign='middle' align='left'>"+rs.getString("kode_brng")+"</td>"+
-                            "<td valign='middle' align='left'>"+rs.getString("nama_brng")+"</td>"+
-                            "<td valign='middle' align='left'>"+rs.getString("kode_sat")+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getString("tgl_beli")+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getString("tgl_kadaluarsa")+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getString("asal")+"</td>"+
-                            "<td valign='middle' align='left'>"+rs.getString("no_faktur")+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("h_beli"))+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("ralan"))+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("kelas1"))+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("kelas2"))+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("kelas3"))+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("utama"))+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("vip"))+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("vvip"))+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("beliluar"))+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("jualbebas"))+"</td>"+
-                            "<td valign='middle' align='right'>"+Valid.SetAngka(rs.getDouble("karyawan"))+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getDouble("jumlahbeli")+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getDouble("sisa")+"</td>"+
+                        "<tr class='isi'>").append(
+                            "<td valign='middle' align='left'>").append(rs.getString("no_batch")).append("</td>").append(
+                            "<td valign='middle' align='left'>").append(rs.getString("kode_brng")).append("</td>").append(
+                            "<td valign='middle' align='left'>").append(rs.getString("nama_brng")).append("</td>").append(
+                            "<td valign='middle' align='left'>").append(rs.getString("kode_sat")).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getString("tgl_beli")).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getString("tgl_kadaluarsa")).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getString("asal")).append("</td>").append(
+                            "<td valign='middle' align='left'>").append(rs.getString("no_faktur")).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("h_beli"))).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("ralan"))).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("kelas1"))).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("kelas2"))).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("kelas3"))).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("utama"))).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("vip"))).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("vvip"))).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("beliluar"))).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("jualbebas"))).append("</td>").append(
+                            "<td valign='middle' align='right'>").append(Valid.SetAngka(rs.getDouble("karyawan"))).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getDouble("jumlahbeli")).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getDouble("sisa")).append("</td>").append(
                         "</tr>");
                     //penjualan
                     try {
@@ -530,37 +533,37 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                 "where penjualan.status='Sudah Dibayar' and detailjual.kode_brng='"+rs.getString("kode_brng")+"' and detailjual.no_batch='"+rs.getString("no_batch")+"' and detailjual.no_faktur='"+rs.getString("no_faktur")+"'").executeQuery();
                         if(rs2.next()){
                             htmlContent.append(
-                                "<tr class='isi'>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top' align='right'>Penjualan :</td>"+
-                                    "<td valign='top' colspan='18'>"+
-                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>"+
-                                           "<tr class='isi'>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Nota</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>Tgl.Jual</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='21%'>Petugas</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='21%'>Pembeli</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='21%'>Asal Stok</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='18%'>Keterangan</td>"+
+                                "<tr class='isi'>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top' align='right'>Penjualan :</td>").append(
+                                    "<td valign='top' colspan='18'>").append(
+                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>").append(
+                                           "<tr class='isi'>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Nota</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>Tgl.Jual</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='21%'>Petugas</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='21%'>Pembeli</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='21%'>Asal Stok</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='18%'>Keterangan</td>").append(
                                            "</tr>");
                                            rs2.beforeFirst();
                                            while(rs2.next()){
                                                htmlContent.append(
-                                                "<tr>"+
-                                                   "<td valign='top'>"+rs2.getString("nota_jual")+"</td>"+
-                                                   "<td valign='top' align='center'>"+rs2.getString("tgl_jual")+"</td>"+
-                                                   "<td valign='top' align='center'>(-) "+rs2.getDouble("jumlah")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("nip")+" "+rs2.getString("nama")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("no_rkm_medis")+" "+rs2.getString("nm_pasien")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("kd_bangsal")+" "+rs2.getString("nm_bangsal")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("keterangan")+"</td>"+
+                                                "<tr>").append(
+                                                   "<td valign='top'>").append(rs2.getString("nota_jual")).append("</td>").append(
+                                                   "<td valign='top' align='center'>").append(rs2.getString("tgl_jual")).append("</td>").append(
+                                                   "<td valign='top' align='center'>(-) ").append(rs2.getDouble("jumlah")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("nip")).append(" ").append(rs2.getString("nama")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("no_rkm_medis")).append(" ").append(rs2.getString("nm_pasien")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("kd_bangsal")).append(" ").append(rs2.getString("nm_bangsal")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("keterangan")).append("</td>").append(
                                                 "</tr>");
                                            }
                             htmlContent.append(
-                                        "</table>"+
-                                    "</td>"+
+                                        "</table>").append(
+                                    "</td>").append(
                                 "</tr>");
                         }
                     } catch (Exception e) {
@@ -582,35 +585,35 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                 "where detail_pemberian_obat.kode_brng='"+rs.getString("kode_brng")+"' and detail_pemberian_obat.no_batch='"+rs.getString("no_batch")+"' and detail_pemberian_obat.no_faktur='"+rs.getString("no_faktur")+"'").executeQuery();
                         if(rs2.next()){
                             htmlContent.append(
-                                "<tr class='isi'>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top' align='right'>Pemberian Obat :</td>"+
-                                    "<td valign='top' colspan='18'>"+
-                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>"+
-                                           "<tr class='isi'>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='10%'>No.Rawat</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='10%'>Tgl.Beri</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='30%'>Pasien</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Asal Stok</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='10%'>Keterangan</td>"+
+                                "<tr class='isi'>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top' align='right'>Pemberian Obat :</td>").append(
+                                    "<td valign='top' colspan='18'>").append(
+                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>").append(
+                                           "<tr class='isi'>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='10%'>No.Rawat</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='10%'>Tgl.Beri</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='30%'>Pasien</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Asal Stok</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='10%'>Keterangan</td>").append(
                                            "</tr>");
                                            rs2.beforeFirst();
                                            while(rs2.next()){
                                                htmlContent.append(
-                                                "<tr>"+
-                                                   "<td valign='top'>"+rs2.getString("no_rawat")+"</td>"+
-                                                   "<td valign='top' align='center'>"+rs2.getString("tgl_perawatan")+" "+rs2.getString("jam")+"</td>"+
-                                                   "<td valign='top' align='center'>(-) "+rs2.getDouble("jml")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("no_rkm_medis")+" "+rs2.getString("nm_pasien")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("kd_bangsal")+" "+rs2.getString("nm_bangsal")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("status")+"</td>"+
+                                                "<tr>").append(
+                                                   "<td valign='top'>").append(rs2.getString("no_rawat")).append("</td>").append(
+                                                   "<td valign='top' align='center'>").append(rs2.getString("tgl_perawatan")).append(" ").append(rs2.getString("jam")).append("</td>").append(
+                                                   "<td valign='top' align='center'>(-) ").append(rs2.getDouble("jml")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("no_rkm_medis")).append(" ").append(rs2.getString("nm_pasien")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("kd_bangsal")).append(" ").append(rs2.getString("nm_bangsal")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("status")).append("</td>").append(
                                                 "</tr>");
                                            }
                             htmlContent.append(
-                                        "</table>"+
-                                    "</td>"+
+                                        "</table>").append(
+                                    "</td>").append(
                                 "</tr>");
                         }
                     } catch (Exception e) {
@@ -631,31 +634,31 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                 "where utd_pengambilan_medis.kode_brng='"+rs.getString("kode_brng")+"' and utd_pengambilan_medis.no_batch='"+rs.getString("no_batch")+"' and utd_pengambilan_medis.no_faktur='"+rs.getString("no_faktur")+"'").executeQuery();
                         if(rs2.next()){
                             htmlContent.append(
-                                "<tr class='isi'>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top' align='right'>Pengambilan UTD :</td>"+
-                                    "<td valign='top' colspan='18'>"+
-                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>"+
-                                           "<tr class='isi'>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='10%'>Tanggal</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Asal Stok</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='10%'>Keterangan</td>"+
+                                "<tr class='isi'>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top' align='right'>Pengambilan UTD :</td>").append(
+                                    "<td valign='top' colspan='18'>").append(
+                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>").append(
+                                           "<tr class='isi'>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='10%'>Tanggal</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Asal Stok</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='10%'>Keterangan</td>").append(
                                            "</tr>");
                                            rs2.beforeFirst();
                                            while(rs2.next()){
                                                htmlContent.append(
-                                                "<tr>"+
-                                                   "<td valign='top' align='center'>"+rs2.getString("tanggal")+"</td>"+
-                                                   "<td valign='top' align='center'>(-) "+rs2.getDouble("jml")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("kd_bangsal_dr")+" "+rs2.getString("nm_bangsal")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("keterangan")+"</td>"+
+                                                "<tr>").append(
+                                                   "<td valign='top' align='center'>").append(rs2.getString("tanggal")).append("</td>").append(
+                                                   "<td valign='top' align='center'>(-) ").append(rs2.getDouble("jml")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("kd_bangsal_dr")).append(" ").append(rs2.getString("nm_bangsal")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("keterangan")).append("</td>").append(
                                                 "</tr>");
                                            }
                             htmlContent.append(
-                                        "</table>"+
-                                    "</td>"+
+                                        "</table>").append(
+                                    "</td>").append(
                                 "</tr>");
                         }
                     } catch (Exception e) {
@@ -677,37 +680,37 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                 "where detreturjual.kode_brng='"+rs.getString("kode_brng")+"' and detreturjual.no_batch='"+rs.getString("no_batch")+"' and detreturjual.no_faktur='"+rs.getString("no_faktur")+"'").executeQuery();
                         if(rs2.next()){
                             htmlContent.append(
-                                "<tr class='isi'>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top' align='right'>Retur Pasien/Pembeli :</td>"+
-                                    "<td valign='top' colspan='18'>"+
-                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>"+
-                                           "<tr class='isi'>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Retur</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>Tgl.Retur</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Petugas</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Pembeli/Pasien</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='24%'>Retur Ke</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Nota</td>"+
+                                "<tr class='isi'>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top' align='right'>Retur Pasien/Pembeli :</td>").append(
+                                    "<td valign='top' colspan='18'>").append(
+                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>").append(
+                                           "<tr class='isi'>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Retur</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>Tgl.Retur</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Petugas</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Pembeli/Pasien</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='24%'>Retur Ke</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Nota</td>").append(
                                            "</tr>");
                                            rs2.beforeFirst();
                                            while(rs2.next()){
                                                htmlContent.append(
-                                                "<tr>"+
-                                                   "<td valign='top'>"+rs2.getString("no_retur_jual")+"</td>"+
-                                                   "<td valign='top' align='center'>"+rs2.getString("tgl_retur")+"</td>"+
-                                                   "<td valign='top' align='center'>(+) "+rs2.getDouble("jml_retur")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("nip")+" "+rs2.getString("nama")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("no_rkm_medis")+" "+rs2.getString("nm_pasien")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("kd_bangsal")+" "+rs2.getString("nm_bangsal")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("nota_jual")+"</td>"+
+                                                "<tr>").append(
+                                                   "<td valign='top'>").append(rs2.getString("no_retur_jual")).append("</td>").append(
+                                                   "<td valign='top' align='center'>").append(rs2.getString("tgl_retur")).append("</td>").append(
+                                                   "<td valign='top' align='center'>(+) ").append(rs2.getDouble("jml_retur")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("nip")).append(" ").append(rs2.getString("nama")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("no_rkm_medis")).append(" ").append(rs2.getString("nm_pasien")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("kd_bangsal")).append(" ").append(rs2.getString("nm_bangsal")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("nota_jual")).append("</td>").append(
                                                 "</tr>");
                                            }
                             htmlContent.append(
-                                        "</table>"+
-                                    "</td>"+
+                                        "</table>").append(
+                                    "</td>").append(
                                 "</tr>");
                         }
                     } catch (Exception e) {
@@ -729,37 +732,37 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                 "where detailpiutang.kode_brng='"+rs.getString("kode_brng")+"' and detailpiutang.no_batch='"+rs.getString("no_batch")+"' and detailpiutang.no_faktur='"+rs.getString("no_faktur")+"'").executeQuery();
                         if(rs2.next()){
                             htmlContent.append(
-                                "<tr class='isi'>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top' align='right'>Piutang :</td>"+
-                                    "<td valign='top' colspan='18'>"+
-                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>"+
-                                           "<tr class='isi'>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Nota</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>Tgl.Piutang</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='21%'>Petugas</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='21%'>Pasien/Penghutang</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='21%'>Asal Stok</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='18%'>Catatan</td>"+
+                                "<tr class='isi'>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top' align='right'>Piutang :</td>").append(
+                                    "<td valign='top' colspan='18'>").append(
+                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>").append(
+                                           "<tr class='isi'>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Nota</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>Tgl.Piutang</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='21%'>Petugas</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='21%'>Pasien/Penghutang</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='21%'>Asal Stok</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='18%'>Catatan</td>").append(
                                            "</tr>");
                                            rs2.beforeFirst();
                                            while(rs2.next()){
                                                htmlContent.append(
-                                                "<tr>"+
-                                                   "<td valign='top'>"+rs2.getString("nota_piutang")+"</td>"+
-                                                   "<td valign='top' align='center'>"+rs2.getString("tgl_piutang")+"</td>"+
-                                                   "<td valign='top' align='center'>(-) "+rs2.getDouble("jumlah")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("nip")+" "+rs2.getString("nama")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("no_rkm_medis")+" "+rs2.getString("nm_pasien")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("kd_bangsal")+" "+rs2.getString("nm_bangsal")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("catatan")+"</td>"+
+                                                "<tr>").append(
+                                                   "<td valign='top'>").append(rs2.getString("nota_piutang")).append("</td>").append(
+                                                   "<td valign='top' align='center'>").append(rs2.getString("tgl_piutang")).append("</td>").append(
+                                                   "<td valign='top' align='center'>(-) ").append(rs2.getDouble("jumlah")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("nip")).append(" ").append(rs2.getString("nama")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("no_rkm_medis")).append(" ").append(rs2.getString("nm_pasien")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("kd_bangsal")).append(" ").append(rs2.getString("nm_bangsal")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("catatan")).append("</td>").append(
                                                 "</tr>");
                                            }
                             htmlContent.append(
-                                        "</table>"+
-                                    "</td>"+
+                                        "</table>").append(
+                                    "</td>").append(
                                 "</tr>");
                         }
                     } catch (Exception e) {
@@ -781,37 +784,37 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                 "where detreturpiutang.kode_brng='"+rs.getString("kode_brng")+"' and detreturpiutang.no_batch='"+rs.getString("no_batch")+"' and detreturpiutang.no_faktur='"+rs.getString("no_faktur")+"'").executeQuery();
                         if(rs2.next()){
                             htmlContent.append(
-                                "<tr class='isi'>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top' align='right'>Retur Piutang :</td>"+
-                                    "<td valign='top' colspan='18'>"+
-                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>"+
-                                           "<tr class='isi'>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Retur</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>Tgl.Retur</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Petugas</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Pasien/Penghutang</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='24%'>Retur Ke</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Nota</td>"+
+                                "<tr class='isi'>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top' align='right'>Retur Piutang :</td>").append(
+                                    "<td valign='top' colspan='18'>").append(
+                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>").append(
+                                           "<tr class='isi'>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Retur</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>Tgl.Retur</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Petugas</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Pasien/Penghutang</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='24%'>Retur Ke</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Nota</td>").append(
                                            "</tr>");
                                            rs2.beforeFirst();
                                            while(rs2.next()){
                                                htmlContent.append(
-                                                "<tr>"+
-                                                   "<td valign='top'>"+rs2.getString("no_retur_piutang")+"</td>"+
-                                                   "<td valign='top' align='center'>"+rs2.getString("tgl_retur")+"</td>"+
-                                                   "<td valign='top' align='center'>(+) "+rs2.getDouble("jml_retur")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("nip")+" "+rs2.getString("nama")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("no_rkm_medis")+" "+rs2.getString("nm_pasien")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("kd_bangsal")+" "+rs2.getString("nm_bangsal")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("nota_piutang")+"</td>"+
+                                                "<tr>").append(
+                                                   "<td valign='top'>").append(rs2.getString("no_retur_piutang")).append("</td>").append(
+                                                   "<td valign='top' align='center'>").append(rs2.getString("tgl_retur")).append("</td>").append(
+                                                   "<td valign='top' align='center'>(+) ").append(rs2.getDouble("jml_retur")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("nip")).append(" ").append(rs2.getString("nama")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("no_rkm_medis")).append(" ").append(rs2.getString("nm_pasien")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("kd_bangsal")).append(" ").append(rs2.getString("nm_bangsal")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("nota_piutang")).append("</td>").append(
                                                 "</tr>");
                                            }
                             htmlContent.append(
-                                        "</table>"+
-                                    "</td>"+
+                                        "</table>").append(
+                                    "</td>").append(
                                 "</tr>");
                         }
                     } catch (Exception e) {
@@ -833,37 +836,37 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                 "where detreturbeli.kode_brng='"+rs.getString("kode_brng")+"' and detreturbeli.no_batch='"+rs.getString("no_batch")+"' and detreturbeli.no_faktur='"+rs.getString("no_faktur")+"'").executeQuery();
                         if(rs2.next()){
                             htmlContent.append(
-                                "<tr class='isi'>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top'></td>"+
-                                    "<td valign='top' align='right'>Retur Ke Suplier :</td>"+
-                                    "<td valign='top' colspan='18'>"+
-                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>"+
-                                           "<tr class='isi'>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Retur</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>Tgl.Retur</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Petugas</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Suplier</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='24%'>Asal Stok</td>"+
-                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Faktur</td>"+
+                                "<tr class='isi'>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top'></td>").append(
+                                    "<td valign='top' align='right'>Retur Ke Suplier :</td>").append(
+                                    "<td valign='top' colspan='18'>").append(
+                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0'>").append(
+                                           "<tr class='isi'>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Retur</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>Tgl.Retur</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='5%'>Jumlah</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Petugas</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='25%'>Suplier</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='24%'>Asal Stok</td>").append(
+                                              "<td valign='middle' bgcolor='#fdfff9' align='center' width='7%'>No.Faktur</td>").append(
                                            "</tr>");
                                            rs2.beforeFirst();
                                            while(rs2.next()){
                                                htmlContent.append(
-                                                "<tr>"+
-                                                   "<td valign='top'>"+rs2.getString("no_retur_beli")+"</td>"+
-                                                   "<td valign='top' align='center'>"+rs2.getString("tgl_retur")+"</td>"+
-                                                   "<td valign='top' align='center'>(-) "+rs2.getDouble("jml_retur")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("nip")+" "+rs2.getString("nama")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("kode_suplier")+" "+rs2.getString("nama_suplier")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("kd_bangsal")+" "+rs2.getString("nm_bangsal")+"</td>"+
-                                                   "<td valign='top'>"+rs2.getString("no_faktur")+"</td>"+
+                                                "<tr>").append(
+                                                   "<td valign='top'>").append(rs2.getString("no_retur_beli")).append("</td>").append(
+                                                   "<td valign='top' align='center'>").append(rs2.getString("tgl_retur")).append("</td>").append(
+                                                   "<td valign='top' align='center'>(-) ").append(rs2.getDouble("jml_retur")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("nip")).append(" ").append(rs2.getString("nama")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("kode_suplier")).append(" ").append(rs2.getString("nama_suplier")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("kd_bangsal")).append(" ").append(rs2.getString("nm_bangsal")).append("</td>").append(
+                                                   "<td valign='top'>").append(rs2.getString("no_faktur")).append("</td>").append(
                                                 "</tr>");
                                            }
                             htmlContent.append(
-                                        "</table>"+
-                                    "</td>"+
+                                        "</table>").append(
+                                    "</td>").append(
                                 "</tr>");
                         }
                     } catch (Exception e) {
@@ -892,6 +895,7 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                        htmlContent.toString()+
                       "</table>"+
                     "</html>");
+            htmlContent=null;
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         } 
@@ -902,19 +906,19 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
     private void prosesCari2() {
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         try {
-            htmlContent = new StringBuilder();
+            StringBuilder htmlContent = new StringBuilder();
             htmlContent.append(                             
-                "<tr class='head'>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='80px'>No.Batch</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='90px'>Kode Barang</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='230px'>Nama Barang</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='50px'>Satuan</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='70px'>Datang</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='70px'>Kadaluarsa</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='70px'>Asal Barang</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='95px'>No.Faktur</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='65px'>Jumlah</td>"+
-                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='65px'>Sisa</td>"+
+                "<tr class='head'>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='80px'>No.Batch</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='90px'>Kode Barang</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='230px'>Nama Barang</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='50px'>Satuan</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='70px'>Datang</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='70px'>Kadaluarsa</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='70px'>Asal Barang</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='95px'>No.Faktur</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='65px'>Jumlah</td>").append(
+                    "<td valign='middle' bgcolor='#FFFAFA' align='center' width='65px'>Sisa</td>").append(
                 "</tr>"
             );   
             
@@ -926,41 +930,33 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                     "data_batch.vip,data_batch.vvip,data_batch.beliluar,data_batch.jualbebas,"+
                     "data_batch.karyawan,data_batch.jumlahbeli,data_batch.sisa from databarang "+
                     "inner join data_batch on data_batch.kode_brng=databarang.kode_brng where "+
-                    "data_batch.tgl_beli between ? and ? and data_batch.no_batch like ? or "+
-                    "data_batch.tgl_beli between ? and ? and data_batch.kode_brng like ? or "+
-                    "data_batch.tgl_beli between ? and ? and databarang.nama_brng like ? or "+
-                    "data_batch.tgl_beli between ? and ? and data_batch.asal like ? or "+
-                    "data_batch.tgl_beli between ? and ? and data_batch.no_faktur like ? order by data_batch.tgl_beli");
+                    "data_batch.tgl_beli between ? and ? "+(TCari.getText().trim().equals("")?"":
+                    "and (data_batch.no_batch like ? or data_batch.kode_brng like ? or databarang.nama_brng like ? or "+
+                    "data_batch.asal like ? or data_batch.no_faktur like ?)")+" order by data_batch.tgl_beli");
             try {
                 ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(3,"%"+TCari.getText().trim()+"%");
-                ps.setString(4,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(5,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(6,"%"+TCari.getText().trim()+"%");
-                ps.setString(7,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(8,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(9,"%"+TCari.getText().trim()+"%");
-                ps.setString(10,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(11,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(12,"%"+TCari.getText().trim()+"%");
-                ps.setString(13,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(14,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(15,"%"+TCari.getText().trim()+"%");
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(3,"%"+TCari.getText().trim()+"%");
+                    ps.setString(4,"%"+TCari.getText().trim()+"%");
+                    ps.setString(5,"%"+TCari.getText().trim()+"%");
+                    ps.setString(6,"%"+TCari.getText().trim()+"%");
+                    ps.setString(7,"%"+TCari.getText().trim()+"%");
+                }
                 rs=ps.executeQuery();
                 while(rs.next()){
                     htmlContent.append(
-                        "<tr class='isi'>"+
-                            "<td valign='middle' align='left'>"+rs.getString("no_batch")+"</td>"+
-                            "<td valign='middle' align='left'>"+rs.getString("kode_brng")+"</td>"+
-                            "<td valign='middle' align='left'>"+rs.getString("nama_brng")+"</td>"+
-                            "<td valign='middle' align='left'>"+rs.getString("kode_sat")+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getString("tgl_beli")+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getString("tgl_kadaluarsa")+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getString("asal")+"</td>"+
-                            "<td valign='middle' align='left'>"+rs.getString("no_faktur")+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getDouble("jumlahbeli")+"</td>"+
-                            "<td valign='middle' align='center'>"+rs.getDouble("sisa")+"</td>"+
+                        "<tr class='isi'>").append(
+                            "<td valign='middle' align='left'>").append(rs.getString("no_batch")).append("</td>").append(
+                            "<td valign='middle' align='left'>").append(rs.getString("kode_brng")).append("</td>").append(
+                            "<td valign='middle' align='left'>").append(rs.getString("nama_brng")).append("</td>").append(
+                            "<td valign='middle' align='left'>").append(rs.getString("kode_sat")).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getString("tgl_beli")).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getString("tgl_kadaluarsa")).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getString("asal")).append("</td>").append(
+                            "<td valign='middle' align='left'>").append(rs.getString("no_faktur")).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getDouble("jumlahbeli")).append("</td>").append(
+                            "<td valign='middle' align='center'>").append(rs.getDouble("sisa")).append("</td>").append(
                         "</tr>");
                     try {
                         rs2=koneksi.prepareStatement(
@@ -969,27 +965,27 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                                 "and gudangbarang.no_faktur='"+rs.getString("no_faktur")+"' and gudangbarang.stok>0").executeQuery();
                         if(rs2.next()){
                             htmlContent.append(
-                                "<tr class='isi'>"+
-                                    "<td valign='middle' align='left' colspan='2'>&nbsp;</td>"+
-                                    "<td valign='middle' bgcolor='#fdfff9' align='center' colspan='7'>Ruang/Posisi Stok/Depo</td>"+
-                                    "<td valign='middle' bgcolor='#fdfff9' align='center'>Stok</td>"+
+                                "<tr class='isi'>").append(
+                                    "<td valign='middle' align='left' colspan='2'>&nbsp;</td>").append(
+                                    "<td valign='middle' bgcolor='#fdfff9' align='center' colspan='7'>Ruang/Posisi Stok/Depo</td>").append(
+                                    "<td valign='middle' bgcolor='#fdfff9' align='center'>Stok</td>").append(
                                 "</tr>"
                             );
                             
                             rs2.beforeFirst();
                             while(rs2.next()){
                                htmlContent.append(
-                                    "<tr class='isi'>"+
-                                       "<td valign='middle' align='left' colspan='2'>&nbsp;</td>"+
-                                       "<td valign='top' colspan='7'>"+rs2.getString("nm_bangsal")+"</td>"+
-                                       "<td valign='top' align='center'>"+rs2.getDouble("stok")+"</td>"+
+                                    "<tr class='isi'>").append(
+                                       "<td valign='middle' align='left' colspan='2'>&nbsp;</td>").append(
+                                       "<td valign='top' colspan='7'>").append(rs2.getString("nm_bangsal")).append("</td>").append(
+                                       "<td valign='top' align='center'>").append(rs2.getDouble("stok")).append("</td>").append(
                                     "</tr>"
                                );
                             }
                             
                             htmlContent.append(
-                                "<tr class='isi'>"+
-                                    "<td valign='middle' align='left' colspan='11'><hr></td>"+
+                                "<tr class='isi'>").append(
+                                    "<td valign='middle' align='left' colspan='11'><hr></td>").append(
                                 "</tr>"
                             );
                         }
@@ -1018,6 +1014,7 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
                        htmlContent.toString()+
                       "</table>"+
                     "</html>");
+            htmlContent=null;
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         } 
@@ -1029,4 +1026,35 @@ private void btnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_b
         BtnPrint.setEnabled(akses.getriwayat_data_batch());
     }
     
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

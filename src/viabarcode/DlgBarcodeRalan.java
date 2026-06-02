@@ -19,7 +19,13 @@ import fungsi.koneksiDB;
 import fungsi.sekuel;
 import fungsi.validasi;
 import fungsi.akses;
+import fungsi.akunobatralan;
+import fungsi.akuntindakanralan;
+import fungsi.embalasetuslah;
+import fungsi.lokasidepoutama;
+import fungsi.tarifralan;
 import inventory.riwayatobat;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
@@ -27,8 +33,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -42,28 +52,26 @@ import simrskhanza.DlgRawatJalan;
 public final class DlgBarcodeRalan extends javax.swing.JDialog {
     private final DefaultTableModel TabModeTindakan,tabModeObat;
     private int jml=0,i=0,index=0,z=0;
-    private PreparedStatement pstindakan,pstindakan2,pstindakan3,pstindakan4,psobat,psrekening,psset_tarif,pscarikapasitas;
-    private ResultSet rstindakan,rsset_tarif,rsobat,carikapasitas,rsrekening;
+    private PreparedStatement pstindakan,pstindakan2,pstindakan3,pstindakan4,psobat,pscarikapasitas;
+    private ResultSet rstindakan,rsobat,carikapasitas;
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
     private boolean[] pilih; 
     private String[] kode,nama,kategori;
     private double[] totaltnd,bagianrs,bhp,jmdokter,jmperawat,kso,menejemen;
-    private String kd_pj="",kd_poli="",kd_dokter="",poli_ralan="Yes", cara_bayar_ralan="Yes",norm="";    
+    private String kd_pj="",kd_poli="",kd_dokter="",norm="";    
     private double[] jumlah,harga,stok,eb,tsl,beli;
     private String[] kodebarang,namabarang,kodesatuan,letakbarang,namajenis,nobatch,nofaktur;
-    private String bangsal="",Suspen_Piutang_Obat_Ralan="",Obat_Ralan="",HPP_Obat_Rawat_Jalan="",Persediaan_Obat_Rawat_Jalan="",
-            Suspen_Piutang_Tindakan_Ralan="",Tindakan_Ralan="",Beban_Jasa_Medik_Dokter_Tindakan_Ralan="",Utang_Jasa_Medik_Dokter_Tindakan_Ralan="",
-            Beban_Jasa_Medik_Paramedis_Tindakan_Ralan="",Utang_Jasa_Medik_Paramedis_Tindakan_Ralan="",Beban_KSO_Tindakan_Ralan="",Utang_KSO_Tindakan_Ralan="",
-            Beban_Jasa_Sarana_Tindakan_Ralan="",Utang_Jasa_Sarana_Tindakan_Ralan="",HPP_BHP_Tindakan_Ralan="",Persediaan_BHP_Tindakan_Ralan="",
-            Beban_Jasa_Menejemen_Tindakan_Ralan="",Utang_Jasa_Menejemen_Tindakan_Ralan="",hppfarmasi="";
-    private double embalase=0,tuslah=0,kenaikan=0,stokbarang=0,j=0;
+    private String bangsal="",hppfarmasi="";
+    private double kenaikan=0,stokbarang=0,j=0;
     private WarnaTable2 warna=new WarnaTable2();
     private riwayatobat Trackobat=new riwayatobat();
     private String aktifkanbatch="no";
     private boolean sukses=true;
     private Jurnal jur=new Jurnal();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private double ttljmdokter=0,ttlkso=0,ttlpendapatan=0,ttlhpp=0,ttljual=0,ttljasasarana=0,ttlbhp=0,ttlmenejemen=0;
             
     /**
@@ -201,50 +209,6 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
         warna.kolom=1;
         tbObat.setDefaultRenderer(Object.class,warna);
         TCariObat.setDocument(new batasInput((byte)100).getKata(TCariObat));
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCariTindakan.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCariTindakan.getText().length()>2){
-                        tampiltindakan();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCariTindakan.getText().length()>2){
-                        tampiltindakan();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCariTindakan.getText().length()>2){
-                        tampiltindakan();
-                    }
-                }
-            });
-            TCariObat.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCariObat.getText().length()>2){
-                        tampilobat();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCariObat.getText().length()>2){
-                        tampilobat();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCariObat.getText().length()>2){
-                        tampilobat();
-                    }if(TCariObat.getText().length()>2){
-                        tampilobat();
-                    }
-                }
-            });
-        } 
         
         try {
             aktifkanbatch = koneksiDB.AKTIFKANBATCHOBAT();
@@ -253,42 +217,8 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
             aktifkanbatch = "no";
         }
         
-        try {
-            psrekening=koneksi.prepareStatement("select * from set_akun_ralan");
-            try {
-                rsrekening=psrekening.executeQuery();
-                while(rsrekening.next()){
-                    Suspen_Piutang_Tindakan_Ralan=rsrekening.getString("Suspen_Piutang_Tindakan_Ralan");
-                    Tindakan_Ralan=rsrekening.getString("Tindakan_Ralan");
-                    Beban_Jasa_Medik_Dokter_Tindakan_Ralan=rsrekening.getString("Beban_Jasa_Medik_Dokter_Tindakan_Ralan");
-                    Utang_Jasa_Medik_Dokter_Tindakan_Ralan=rsrekening.getString("Utang_Jasa_Medik_Dokter_Tindakan_Ralan");
-                    Beban_Jasa_Medik_Paramedis_Tindakan_Ralan=rsrekening.getString("Beban_Jasa_Medik_Paramedis_Tindakan_Ralan");
-                    Utang_Jasa_Medik_Paramedis_Tindakan_Ralan=rsrekening.getString("Utang_Jasa_Medik_Paramedis_Tindakan_Ralan");
-                    Beban_KSO_Tindakan_Ralan=rsrekening.getString("Beban_KSO_Tindakan_Ralan");
-                    Utang_KSO_Tindakan_Ralan=rsrekening.getString("Utang_KSO_Tindakan_Ralan");
-                    Beban_Jasa_Sarana_Tindakan_Ralan=rsrekening.getString("Beban_Jasa_Sarana_Tindakan_Ralan");
-                    Utang_Jasa_Sarana_Tindakan_Ralan=rsrekening.getString("Utang_Jasa_Sarana_Tindakan_Ralan");
-                    Beban_Jasa_Menejemen_Tindakan_Ralan=rsrekening.getString("Beban_Jasa_Menejemen_Tindakan_Ralan");
-                    Utang_Jasa_Menejemen_Tindakan_Ralan=rsrekening.getString("Utang_Jasa_Menejemen_Tindakan_Ralan");
-                    HPP_BHP_Tindakan_Ralan=rsrekening.getString("HPP_BHP_Tindakan_Ralan");
-                    Persediaan_BHP_Tindakan_Ralan=rsrekening.getString("Persediaan_BHP_Tindakan_Ralan");
-                    Suspen_Piutang_Obat_Ralan=rsrekening.getString("Suspen_Piutang_Obat_Ralan");
-                    Obat_Ralan=rsrekening.getString("Obat_Ralan");
-                    HPP_Obat_Rawat_Jalan=rsrekening.getString("HPP_Obat_Rawat_Jalan");
-                    Persediaan_Obat_Rawat_Jalan=rsrekening.getString("Persediaan_Obat_Rawat_Jalan");
-                }
-            } catch (Exception e) {
-                System.out.println("Notif Rekening : "+e);
-            } finally{
-                if(rsrekening!=null){
-                    rsrekening.close();
-                }
-                if(psrekening!=null){
-                    psrekening.close();
-                }
-            }            
-        } catch (Exception e) {
-            System.out.println(e);
+        if(tarifralan.getCaraBayarRalan().equals("")){
+            tarifralan.SetTarifRalan();
         }
         
         try {
@@ -592,8 +522,8 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
     private void NoRawatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NoRawatKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_ENTER){
             setNoRm(NoRawat.getText());
-            tampiltindakan();
-            tampilobat();
+            runBackground(() ->tampiltindakan());
+            runBackground(() ->tampilobat());
         }
     }//GEN-LAST:event_NoRawatKeyPressed
 
@@ -646,30 +576,56 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
                 if(sukses==true){
                     Sequel.queryu("delete from tampjurnal");    
                     if(ttlpendapatan>0){
-                        Sequel.menyimpan("tampjurnal","'"+Suspen_Piutang_Tindakan_Ralan+"','Suspen Piutang Tindakan Ralan','"+ttlpendapatan+"','0'","debet=debet+'"+(ttlpendapatan)+"'","kd_rek='"+Suspen_Piutang_Tindakan_Ralan+"'");    
-                        Sequel.menyimpan("tampjurnal","'"+Tindakan_Ralan+"','Pendapatan Tindakan Rawat Jalan','0','"+ttlpendapatan+"'","kredit=kredit+'"+(ttlpendapatan)+"'","kd_rek='"+Tindakan_Ralan+"'");                             
+                        if(Sequel.menyimpantf("tampjurnal","'"+akuntindakanralan.getSuspen_Piutang_Tindakan_Ralan()+"','Suspen Piutang Tindakan Ralan','"+ttlpendapatan+"','0'","debet=debet+'"+(ttlpendapatan)+"'","kd_rek='"+akuntindakanralan.getSuspen_Piutang_Tindakan_Ralan()+"'")==false){
+                            sukses=false;
+                        }    
+                        if(Sequel.menyimpantf("tampjurnal","'"+akuntindakanralan.getTindakan_Ralan()+"','Pendapatan Tindakan Rawat Jalan','0','"+ttlpendapatan+"'","kredit=kredit+'"+(ttlpendapatan)+"'","kd_rek='"+akuntindakanralan.getTindakan_Ralan()+"'")==false){
+                            sukses=false;
+                        }                             
                     }
                     if(ttljmdokter>0){
-                        Sequel.menyimpan("tampjurnal","'"+Beban_Jasa_Medik_Dokter_Tindakan_Ralan+"','Beban Jasa Medik Dokter Tindakan Ralan','"+ttljmdokter+"','0'","debet=debet+'"+(ttljmdokter)+"'","kd_rek='"+Beban_Jasa_Medik_Dokter_Tindakan_Ralan+"'");       
-                        Sequel.menyimpan("tampjurnal","'"+Utang_Jasa_Medik_Dokter_Tindakan_Ralan+"','Utang Jasa Medik Dokter Tindakan Ralan','0','"+ttljmdokter+"'","kredit=kredit+'"+(ttljmdokter)+"'","kd_rek='"+Utang_Jasa_Medik_Dokter_Tindakan_Ralan+"'");                               
+                        if(Sequel.menyimpantf("tampjurnal","'"+akuntindakanralan.getBeban_Jasa_Medik_Dokter_Tindakan_Ralan()+"','Beban Jasa Medik Dokter Tindakan Ralan','"+ttljmdokter+"','0'","debet=debet+'"+(ttljmdokter)+"'","kd_rek='"+akuntindakanralan.getBeban_Jasa_Medik_Dokter_Tindakan_Ralan()+"'")==false){
+                            sukses=false;
+                        }       
+                        if(Sequel.menyimpantf("tampjurnal","'"+akuntindakanralan.getUtang_Jasa_Medik_Dokter_Tindakan_Ralan()+"','Utang Jasa Medik Dokter Tindakan Ralan','0','"+ttljmdokter+"'","kredit=kredit+'"+(ttljmdokter)+"'","kd_rek='"+akuntindakanralan.getUtang_Jasa_Medik_Dokter_Tindakan_Ralan()+"'")==false){
+                            sukses=false;
+                        }                               
                     }
                     if(ttlkso>0){
-                        Sequel.menyimpan("tampjurnal","'"+Beban_KSO_Tindakan_Ralan+"','Beban KSO Tindakan Ralan','"+ttlkso+"','0'","debet=debet+'"+(ttlkso)+"'","kd_rek='"+Beban_KSO_Tindakan_Ralan+"'");       
-                        Sequel.menyimpan("tampjurnal","'"+Utang_KSO_Tindakan_Ralan+"','Utang KSO Tindakan Ralan','0','"+ttlkso+"'","kredit=kredit+'"+(ttlkso)+"'","kd_rek='"+Utang_KSO_Tindakan_Ralan+"'");                              
+                        if(Sequel.menyimpantf("tampjurnal","'"+akuntindakanralan.getBeban_KSO_Tindakan_Ralan()+"','Beban KSO Tindakan Ralan','"+ttlkso+"','0'","debet=debet+'"+(ttlkso)+"'","kd_rek='"+akuntindakanralan.getBeban_KSO_Tindakan_Ralan()+"'")==false){
+                            sukses=false;
+                        }       
+                        if(Sequel.menyimpantf("tampjurnal","'"+akuntindakanralan.getUtang_KSO_Tindakan_Ralan()+"','Utang KSO Tindakan Ralan','0','"+ttlkso+"'","kredit=kredit+'"+(ttlkso)+"'","kd_rek='"+akuntindakanralan.getUtang_KSO_Tindakan_Ralan()+"'")==false){
+                            sukses=false;
+                        }                              
                     }
                     if(ttljasasarana>0){
-                        Sequel.menyimpan("tampjurnal","'"+Beban_Jasa_Sarana_Tindakan_Ralan+"','Beban Jasa Sarana Tindakan Ralan','"+ttljasasarana+"','0'","debet=debet+'"+(ttljasasarana)+"'","kd_rek='"+Beban_Jasa_Sarana_Tindakan_Ralan+"'");     
-                        Sequel.menyimpan("tampjurnal","'"+Utang_Jasa_Sarana_Tindakan_Ralan+"','Utang Jasa Sarana Tindakan Ralan','0','"+ttljasasarana+"'","kredit=kredit+'"+(ttljasasarana)+"'","kd_rek='"+Utang_Jasa_Sarana_Tindakan_Ralan+"'");                              
+                        if(Sequel.menyimpantf("tampjurnal","'"+akuntindakanralan.getBeban_Jasa_Sarana_Tindakan_Ralan()+"','Beban Jasa Sarana Tindakan Ralan','"+ttljasasarana+"','0'","debet=debet+'"+(ttljasasarana)+"'","kd_rek='"+akuntindakanralan.getBeban_Jasa_Sarana_Tindakan_Ralan()+"'")==false){
+                            sukses=false;
+                        }     
+                        if(Sequel.menyimpantf("tampjurnal","'"+akuntindakanralan.getUtang_Jasa_Sarana_Tindakan_Ralan()+"','Utang Jasa Sarana Tindakan Ralan','0','"+ttljasasarana+"'","kredit=kredit+'"+(ttljasasarana)+"'","kd_rek='"+akuntindakanralan.getUtang_Jasa_Sarana_Tindakan_Ralan()+"'")==false){
+                            sukses=false;
+                        }                              
                     }
                     if(ttlbhp>0){
-                        Sequel.menyimpan("tampjurnal","'"+HPP_BHP_Tindakan_Ralan+"','HPP BHP Tindakan Ralan','"+ttlbhp+"','0'","debet=debet+'"+(ttlbhp)+"'","kd_rek='"+HPP_BHP_Tindakan_Ralan+"'");      
-                        Sequel.menyimpan("tampjurnal","'"+Persediaan_BHP_Tindakan_Ralan+"','Persediaan BHP Tindakan Ralan','0','"+ttlbhp+"'","kredit=kredit+'"+(ttlbhp)+"'","kd_rek='"+Persediaan_BHP_Tindakan_Ralan+"'");                           
+                        if(Sequel.menyimpantf("tampjurnal","'"+akuntindakanralan.getHPP_BHP_Tindakan_Ralan()+"','HPP BHP Tindakan Ralan','"+ttlbhp+"','0'","debet=debet+'"+(ttlbhp)+"'","kd_rek='"+akuntindakanralan.getHPP_BHP_Tindakan_Ralan()+"'")==false){
+                            sukses=false;
+                        }      
+                        if(Sequel.menyimpantf("tampjurnal","'"+akuntindakanralan.getPersediaan_BHP_Tindakan_Ralan()+"','Persediaan BHP Tindakan Ralan','0','"+ttlbhp+"'","kredit=kredit+'"+(ttlbhp)+"'","kd_rek='"+akuntindakanralan.getPersediaan_BHP_Tindakan_Ralan()+"'")==false){
+                            sukses=false;
+                        }                           
                     }
                     if(ttlmenejemen>0){
-                        Sequel.menyimpan("tampjurnal","'"+Beban_Jasa_Menejemen_Tindakan_Ralan+"','Beban Jasa Menejemen Tindakan Ralan','"+ttlmenejemen+"','0'","debet=debet+'"+(ttlmenejemen)+"'","kd_rek='"+Beban_Jasa_Menejemen_Tindakan_Ralan+"'");       
-                        Sequel.menyimpan("tampjurnal","'"+Utang_Jasa_Menejemen_Tindakan_Ralan+"','Utang Jasa Menejemen Tindakan Ralan','0','"+ttlmenejemen+"'","kredit=kredit+'"+(ttlmenejemen)+"'","kd_rek='"+Utang_Jasa_Menejemen_Tindakan_Ralan+"'");                            
+                        if(Sequel.menyimpantf("tampjurnal","'"+akuntindakanralan.getBeban_Jasa_Menejemen_Tindakan_Ralan()+"','Beban Jasa Menejemen Tindakan Ralan','"+ttlmenejemen+"','0'","debet=debet+'"+(ttlmenejemen)+"'","kd_rek='"+akuntindakanralan.getBeban_Jasa_Menejemen_Tindakan_Ralan()+"'")==false){
+                            sukses=false;
+                        }       
+                        if(Sequel.menyimpantf("tampjurnal","'"+akuntindakanralan.getUtang_Jasa_Menejemen_Tindakan_Ralan()+"','Utang Jasa Menejemen Tindakan Ralan','0','"+ttlmenejemen+"'","kredit=kredit+'"+(ttlmenejemen)+"'","kd_rek='"+akuntindakanralan.getUtang_Jasa_Menejemen_Tindakan_Ralan()+"'")==false){
+                            sukses=false;
+                        }                            
                     }
-                    sukses=jur.simpanJurnal(NoRawat.getText(),"U","TINDAKAN RAWAT JALAN PASIEN "+NoRawat.getText()+" DIPOSTING OLEH "+akses.getkode());    
+                    if(sukses==true){
+                        sukses=jur.simpanJurnal(NoRawat.getText(),"U","TINDAKAN RAWAT JALAN PASIEN "+NoRawat.getText()+" DIPOSTING OLEH "+akses.getkode()); 
+                    }   
                 }
 
                 if(sukses==true){
@@ -782,14 +738,24 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
                 if(sukses==true){
                     Sequel.queryu("delete from tampjurnal");    
                     if(ttljual>0){
-                        Sequel.menyimpan("tampjurnal","'"+Suspen_Piutang_Obat_Ralan+"','Suspen Piutang Obat Ralan','"+ttljual+"','0'","Rekening");    
-                        Sequel.menyimpan("tampjurnal","'"+Obat_Ralan+"','Pendapatan Obat Rawat Jalan','0','"+ttljual+"'","Rekening");                              
+                        if(Sequel.menyimpantf("tampjurnal","'"+akunobatralan.getSuspen_Piutang_Obat_Ralan()+"','Suspen Piutang Obat Ralan','"+ttljual+"','0'","Rekening")==false){
+                            sukses=false;
+                        }    
+                        if(Sequel.menyimpantf("tampjurnal","'"+akunobatralan.getObat_Ralan()+"','Pendapatan Obat Rawat Jalan','0','"+ttljual+"'","Rekening")==false){
+                            sukses=false;
+                        }                              
                     }
                     if(ttlhpp>0){
-                        Sequel.menyimpan("tampjurnal","'"+HPP_Obat_Rawat_Jalan+"','HPP Persediaan Obat Rawat Jalan','"+ttlhpp+"','0'","Rekening");    
-                        Sequel.menyimpan("tampjurnal","'"+Persediaan_Obat_Rawat_Jalan+"','Persediaan Obat Rawat Jalan','0','"+ttlhpp+"'","Rekening");                              
+                        if(Sequel.menyimpantf("tampjurnal","'"+akunobatralan.getHPP_Obat_Rawat_Jalan()+"','HPP Persediaan Obat Rawat Jalan','"+ttlhpp+"','0'","Rekening")==false){
+                            sukses=false;
+                        }    
+                        if(Sequel.menyimpantf("tampjurnal","'"+akunobatralan.getPersediaan_Obat_Rawat_Jalan()+"','Persediaan Obat Rawat Jalan','0','"+ttlhpp+"'","Rekening")==false){
+                            sukses=false;
+                        }                              
                     }
-                    sukses=jur.simpanJurnal(NoRawat.getText(),"U","PEMBERIAN OBAT RAWAT JALAN PASIEN, DIPOSTING OLEH "+akses.getkode());     
+                    if(sukses==true){
+                        sukses=jur.simpanJurnal(NoRawat.getText(),"U","PEMBERIAN OBAT RAWAT JALAN PASIEN, DIPOSTING OLEH "+akses.getkode()); 
+                    }    
                 }
 
                 if(sukses==true){
@@ -829,7 +795,7 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
 
     private void BtnAllPeriksaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllPeriksaActionPerformed
         TCariTindakan.setText("");
-        tampiltindakan();
+        runBackground(() ->tampiltindakan());
     }//GEN-LAST:event_BtnAllPeriksaActionPerformed
 
     private void BtnAllPeriksaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllPeriksaKeyPressed
@@ -844,13 +810,13 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             tbObat.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            tampilobat();
+            runBackground(() ->tampilobat());
         }
     }//GEN-LAST:event_TCariObatKeyPressed
 
     private void BtnAllBhpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllBhpActionPerformed
         TCariObat.setText("");
-        tampilobat();
+        runBackground(() ->tampilobat());
     }//GEN-LAST:event_BtnAllBhpActionPerformed
 
     private void BtnAllBhpKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllBhpKeyPressed
@@ -888,11 +854,11 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
                         TCariObat.requestFocus();
                     }else if(i==9){
                         if(tbObat.getValueAt(tbObat.getSelectedRow(),i).toString().equals("0")) {
-                            tbObat.setValueAt(embalase,tbObat.getSelectedRow(),i);
+                            tbObat.setValueAt(embalasetuslah.getEmbalase(),tbObat.getSelectedRow(),i);
                         }
                     }else if(i==10){
                         if(tbObat.getValueAt(tbObat.getSelectedRow(),i).toString().equals("0")) {
-                            tbObat.setValueAt(tuslah,tbObat.getSelectedRow(),i);
+                            tbObat.setValueAt(embalasetuslah.getTuslah(),tbObat.getSelectedRow(),i);
                         }
                         TCariObat.setText("");
                         TCariObat.requestFocus();
@@ -918,7 +884,7 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             tbTindakan.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_ENTER){
-            tampiltindakan();
+            runBackground(() ->tampiltindakan());
         }
     }//GEN-LAST:event_TCariTindakanKeyPressed
 
@@ -960,10 +926,66 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
         TCariObat.setText("");
         TCariTindakan.setText("");
         Valid.tabelKosong(TabModeTindakan);
-        Valid.tabelKosong(tabModeObat);        
-        embalase=Sequel.cariIsiAngka("select embalase_per_obat from set_embalase");
-        tuslah=Sequel.cariIsiAngka("select tuslah_per_obat from set_embalase");
+        Valid.tabelKosong(tabModeObat);    
+        
+        if(embalasetuslah.getEmbalase() == null){
+            embalasetuslah.SetEmbalaseTuslah();
+        }
+        
         NoRawat.requestFocus();
+        
+        if(akuntindakanralan.getSuspen_Piutang_Tindakan_Ralan().equals("")){
+            akuntindakanralan.SetAkunTindakanRalan();
+        }
+        
+        if(akunobatralan.getSuspen_Piutang_Obat_Ralan().equals("")){
+            akunobatralan.SetAkunObatRalan();
+        }
+        
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCariTindakan.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCariTindakan.getText().length()>2){
+                        runBackground(() ->tampiltindakan());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCariTindakan.getText().length()>2){
+                        runBackground(() ->tampiltindakan());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCariTindakan.getText().length()>2){
+                        runBackground(() ->tampiltindakan());
+                    }
+                }
+            });
+            TCariObat.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCariObat.getText().length()>2){
+                        runBackground(() ->tampilobat());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCariObat.getText().length()>2){
+                        runBackground(() ->tampilobat());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCariObat.getText().length()>2){
+                        runBackground(() ->tampilobat());
+                    }if(TCariObat.getText().length()>2){
+                        runBackground(() ->tampilobat());
+                    }
+                }
+            });
+        } 
     }//GEN-LAST:event_formWindowOpened
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
@@ -971,12 +993,12 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
             Valid.textKosong(NoRawat,"Pasien");
         }else{
             DlgRawatJalan dlgrwjl2=new DlgRawatJalan(null,false);
-            dlgrwjl2.isCek();
             dlgrwjl2.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
             dlgrwjl2.setLocationRelativeTo(internalFrame1);
             dlgrwjl2.SetPoli(kd_poli);
             dlgrwjl2.SetPj(kd_pj);
-            dlgrwjl2.setNoRm(NoRawat.getText(),new Date(),new Date());    
+            dlgrwjl2.setNoRm(NoRawat.getText(),new Date(),new Date()); 
+            dlgrwjl2.isCek();   
             dlgrwjl2.setVisible(true);
         }
     }//GEN-LAST:event_BtnCariActionPerformed
@@ -1119,7 +1141,7 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
                     " jns_perawatan.status='1' and jns_perawatan.nm_perawatan like ? or "+
                     " jns_perawatan.status='1' and kategori_perawatan.nm_kategori like ? order by jns_perawatan.nm_perawatan "); 
             try {
-                if(poli_ralan.equals("Yes")&&cara_bayar_ralan.equals("Yes")){
+                if(tarifralan.getPoliRalan().equals("Yes")&&tarifralan.getCaraBayarRalan().equals("Yes")){
                     pstindakan.setString(1,kd_pj.trim());
                     pstindakan.setString(2,kd_poli.trim());
                     pstindakan.setString(3,"%"+TCariTindakan.getText().trim()+"%");
@@ -1130,7 +1152,7 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
                     pstindakan.setString(8,kd_poli.trim());
                     pstindakan.setString(9,"%"+TCariTindakan.getText().trim()+"%");
                     rstindakan=pstindakan.executeQuery();
-                }else if(poli_ralan.equals("No")&&cara_bayar_ralan.equals("Yes")){
+                }else if(tarifralan.getPoliRalan().equals("No")&&tarifralan.getCaraBayarRalan().equals("Yes")){
                     pstindakan2.setString(1,kd_pj.trim());
                     pstindakan2.setString(2,"%"+TCariTindakan.getText().trim()+"%");
                     pstindakan2.setString(3,kd_pj.trim());
@@ -1138,7 +1160,7 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
                     pstindakan2.setString(5,kd_pj.trim());
                     pstindakan2.setString(6,"%"+TCariTindakan.getText().trim()+"%");
                     rstindakan=pstindakan2.executeQuery();
-                }else if(poli_ralan.equals("Yes")&&cara_bayar_ralan.equals("No")){
+                }else if(tarifralan.getPoliRalan().equals("Yes")&&tarifralan.getCaraBayarRalan().equals("No")){
                     pstindakan3.setString(1,kd_poli.trim());
                     pstindakan3.setString(2,"%"+TCariTindakan.getText().trim()+"%");
                     pstindakan3.setString(3,kd_poli.trim());
@@ -1146,7 +1168,7 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
                     pstindakan3.setString(5,kd_poli.trim());
                     pstindakan3.setString(6,"%"+TCariTindakan.getText().trim()+"%");
                     rstindakan=pstindakan3.executeQuery();
-                }else if(poli_ralan.equals("No")&&cara_bayar_ralan.equals("No")){
+                }else if(tarifralan.getPoliRalan().equals("No")&&tarifralan.getCaraBayarRalan().equals("No")){
                     pstindakan4.setString(1,"%"+TCariTindakan.getText().trim()+"%");
                     pstindakan4.setString(2,"%"+TCariTindakan.getText().trim()+"%");
                     pstindakan4.setString(3,"%"+TCariTindakan.getText().trim()+"%");
@@ -1199,33 +1221,13 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
         this.norm=Sequel.cariIsi("select reg_periksa.no_rkm_medis from reg_periksa where reg_periksa.no_rawat=?",norwt);
         kenaikan=Sequel.cariIsiAngka("select (hargajual/100) from set_harga_obat_ralan where kd_pj=?",this.kd_pj);
         TCariTindakan.requestFocus();
-        try {
-            psset_tarif=koneksi.prepareStatement("select * from set_tarif");
-            try {
-                rsset_tarif=psset_tarif.executeQuery();
-                if(rsset_tarif.next()){
-                    poli_ralan=rsset_tarif.getString("poli_ralan");
-                    cara_bayar_ralan=rsset_tarif.getString("cara_bayar_ralan");
-                }else{
-                    poli_ralan="Yes";
-                    cara_bayar_ralan="Yes";
-                }  
-            } catch (Exception e) {
-                System.out.println("Notifikasi : "+e);
-            } finally{
-                if(rsset_tarif!=null){
-                    rsset_tarif.close();
-                }
-                if(psset_tarif!=null){
-                    psset_tarif.close();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        } 
+        
         bangsal=Sequel.cariIsi("select kd_bangsal from set_depo_ralan where kd_poli=?",Sequel.cariIsi("select reg_periksa.kd_poli from reg_periksa where reg_periksa.no_rawat=?",norwt));
         if(bangsal.equals("")){
-            bangsal=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1");
+            if(lokasidepoutama.getDepoDefault().equals("")){
+                lokasidepoutama.SetLokasiDepoUtama();
+            }
+            bangsal=lokasidepoutama.getDepoDefault();
         }
     }
     
@@ -1547,6 +1549,38 @@ public final class DlgBarcodeRalan extends javax.swing.JDialog {
                 }                                       
              } 
         }
+    }
+    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+    
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
     }
 
 }

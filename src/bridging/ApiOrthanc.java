@@ -148,6 +148,34 @@ public class ApiOrthanc {
         return root;
     }
     
+    public JsonNode AmbilJpg2(String Series){
+        System.out.println("Percobaan Mengambil Gambar JPG : "+Series+", Series : "+Series);
+        try{
+            headers = new HttpHeaders();
+            System.out.println("Auth : "+authEncrypt);
+            headers.add("Authorization", "Basic "+authEncrypt);
+            requestEntity = new HttpEntity(headers);
+            System.out.println("URL : "+koneksiDB.URLORTHANC()+":"+koneksiDB.PORTORTHANC()+"/series/"+Series);
+            requestJson=getRest().exchange(koneksiDB.URLORTHANC()+":"+koneksiDB.PORTORTHANC()+"/series/"+Series, HttpMethod.GET, requestEntity, String.class).getBody();
+            System.out.println("Result JSON : "+requestJson);
+            root = mapper.readTree(requestJson);
+            for(JsonNode list:root.path("Instances")){
+                 headers = new HttpHeaders();
+                 headers.add("Authorization", "Basic "+authEncrypt);
+                 headers.add("Accept","image/jpeg");
+                 headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
+                 headers.setAccept(Collections.singletonList(MediaType.IMAGE_JPEG));
+                 HttpEntity<String> entity = new HttpEntity<>(headers);
+                 ResponseEntity<byte[]> response = getRest().exchange(koneksiDB.URLORTHANC()+":"+koneksiDB.PORTORTHANC()+"/instances/"+list.asText()+"/preview", HttpMethod.GET, entity, byte[].class);
+                 Files.write(Paths.get("./gambarradiologi/"+Series+".jpg"),response.getBody());
+            }
+        }catch(Exception e){
+            System.out.println("Notifikasi : "+e);
+            JOptionPane.showMessageDialog(null,"Gagal mengambil Gambar JPG dari Orthanc, silahkan hubungi administrator ..!!");
+        }
+        return root;
+    }
+    
     public JsonNode AmbilBmp(String NoRawat,String Series){
         System.out.println("Percobaan Mengambil Gambar BMP : "+NoRawat+", Series : "+Series);
         try{
@@ -209,6 +237,52 @@ public class ApiOrthanc {
             JOptionPane.showMessageDialog(null,"Gagal mengambil Gambar DCM dari Orthanc, silahkan hubungi administrator ..!!");
         }
         return root;
+    }
+    
+    public boolean UbahAccession(String studyId, String accessionBaru){
+        System.out.println("Modify AccessionNumber Study : " + studyId);
+        try{
+            headers = new HttpHeaders();
+            headers.add("Authorization", "Basic " + authEncrypt);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            requestJson = "{" +
+                                "\"Replace\": {" +
+                                    "\"AccessionNumber\": \""+accessionBaru+"\"" +
+                                "}," +
+                                "\"KeepSource\": false"+
+                            "}";
+            System.out.println("Request JSON : " + requestJson);
+            requestEntity = new HttpEntity(requestJson, headers);
+            System.out.println("URL : "+koneksiDB.URLORTHANC()+":"+koneksiDB.PORTORTHANC()+"/studies/"+studyId+"/modify");
+            String response = getRest().exchange(koneksiDB.URLORTHANC()+":"+koneksiDB.PORTORTHANC()+"/studies/"+studyId+"/modify",HttpMethod.POST,requestEntity, String.class).getBody();
+            System.out.println("Response : " + response);
+            return true;
+        }catch(Exception e){
+            System.out.println("Notifikasi : " + e);
+            JOptionPane.showMessageDialog(null,"Gagal mengubah Accession Number di Orthanc..!!");
+            return false;
+        }
+    }
+    
+    public boolean kirimKeModality(String studyId){
+        System.out.println("Kirim Study ke Modality : " + studyId);
+        try{
+            headers = new HttpHeaders();
+            headers.add("Authorization", "Basic " + authEncrypt);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            requestJson = "[\"" + studyId + "\"]";
+            requestEntity = new HttpEntity(requestJson, headers);
+            System.out.println("URL : " + koneksiDB.URLORTHANC()+":"+koneksiDB.PORTORTHANC()+"/modalities/DICOMROUTER/store");
+            System.out.println("Request JSON : " + requestJson);
+            String response = getRest().exchange(koneksiDB.URLORTHANC()+":"+koneksiDB.PORTORTHANC()+"/modalities/DICOMROUTER/store",HttpMethod.POST,requestEntity,String.class).getBody();
+            System.out.println("Response : " + response);
+            JOptionPane.showMessageDialog(null,"Proses kirim ke Modality selesai..!!");
+            return true;
+        }catch(Exception e){
+            System.out.println("Notifikasi : " + e);
+            JOptionPane.showMessageDialog(null,"Gagal kirim ke Modality..!!");
+            return false;
+        }
     }
     
     public RestTemplate getRest() throws NoSuchAlgorithmException, KeyManagementException {

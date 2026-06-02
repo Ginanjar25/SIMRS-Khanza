@@ -25,8 +25,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -36,30 +41,40 @@ import javax.swing.table.TableColumn;
  */
 public final class DlgRl38 extends javax.swing.JDialog {
     private final DefaultTableModel tabMode;
-    private Connection koneksi=koneksiDB.condb();
-    private sekuel Sequel=new sekuel();
-    private validasi Valid=new validasi();
-    private PreparedStatement pstindakan,pstindakan2;
-    private ResultSet rstindakan,rstindakan2;
-    private int i=0,a=0,ttl=0, ttlL = 0, ttlP = 0, ttlBPJS=0, ttlUMUM=0,ttlAsuransi=0;   
-    /** Creates new form DlgLhtBiaya
+    private Connection koneksi = koneksiDB.condb();
+    private sekuel Sequel = new sekuel();
+    private validasi Valid = new validasi();
+    private PreparedStatement pstindakan, pstindakan2;
+    private ResultSet rstindakan, rstindakan2;
+    private int i = 0, a = 0, ttl = 0, ttlL = 0, ttlP = 0, ttlBPJS = 0, ttlUMUM = 0, ttlAsuransi = 0;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
+
+    /**
+     * Creates new form DlgLhtBiaya
+     * 
      * @param parent
-     * @param modal */
+     * @param modal
+     */
     public DlgRl38(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        this.setLocation(8,1);
-        setSize(885,674);
+        this.setLocation(8, 1);
+        setSize(885, 674);
 
-        Object[] rowRwJlDr={"No.","Jenis Kegiatan","Jumlah", "Laki-Laki", "Perempuan", 
-            "Rata-Rata (Laki-Laki)", "Rata-Rata (Perempuan)", "BPJS", "UMUM", "ASURANSI",
-            "Rata-Rata (BPJS)", "Rata-Rata (UMUM)", "Rata-Rata (ASURANSI)"};
-        tabMode=new DefaultTableModel(null,rowRwJlDr){
-              @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
+        Object[] rowRwJlDr = { "No.", "Jenis Kegiatan", "Jumlah", "Laki-Laki", "Perempuan",
+                "Rata-Rata (Laki-Laki)", "Rata-Rata (Perempuan)", "BPJS", "UMUM", "ASURANSI",
+                "Rata-Rata (BPJS)", "Rata-Rata (UMUM)", "Rata-Rata (ASURANSI)" };
+        tabMode = new DefaultTableModel(null, rowRwJlDr) {
+            @Override
+            public boolean isCellEditable(int rowIndex, int colIndex) {
+                return false;
+            }
         };
         tbBangsal.setModel(tabMode);
-        //tbBangsal.setDefaultRenderer(Object.class, new WarnaTable(jPanel2.getBackground(),tbBangsal.getBackground()));
-        tbBangsal.setPreferredScrollableViewportSize(new Dimension(500,500));
+        // tbBangsal.setDefaultRenderer(Object.class, new
+        // WarnaTable(jPanel2.getBackground(),tbBangsal.getBackground()));
+        tbBangsal.setPreferredScrollableViewportSize(new Dimension(500, 500));
         tbBangsal.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         for (i = 0; i < 13; i++) {
@@ -84,70 +99,85 @@ public final class DlgRl38 extends javax.swing.JDialog {
                 column.setPreferredWidth(120);
             } else if (i == 9) {
                 column.setPreferredWidth(120);
-            }else if (i == 10) {
+            } else if (i == 10) {
                 column.setPreferredWidth(120);
-            }else if (i == 11) {
+            } else if (i == 11) {
                 column.setPreferredWidth(120);
-            }else if (i == 12) {
+            } else if (i == 12) {
                 column.setPreferredWidth(120);
             }
         }
         tbBangsal.setDefaultRenderer(Object.class, new WarnaTable());
 
-        TCari.setDocument(new batasInput((byte)100).getKata(TCari));
-                   
+        TCari.setDocument(new batasInput((byte) 100).getKata(TCari));
 
-        
-        try {            
-            pstindakan=koneksi.prepareStatement("select jns_perawatan_lab.nm_perawatan,count(jns_perawatan_lab.nm_perawatan),jns_perawatan_lab.kd_jenis_prw, \n" +
-                    "COUNT(CASE WHEN pasien.jk = 'L' THEN 1 END) AS jumlah_laki_laki,\n" +
-                    "COUNT(CASE WHEN pasien.jk = 'P' THEN 1 END) AS jumlah_perempuan,\n" +
-                    "ROUND((SUM(IF(pasien.jk = 'L', 1, 0)) / COUNT(periksa_lab.kd_jenis_prw)) * 100) AS persen_laki_laki,\n" +
-                    "ROUND((SUM(IF(pasien.jk = 'P', 1, 0)) / COUNT(periksa_lab.kd_jenis_prw)) * 100) AS persen_perempuan,\n" +
-                    "COUNT(CASE WHEN reg_periksa.kd_pj = 'BPJ' then 1 END) AS jumlah_bpjs,\n" +
-                    "COUNT(CASE WHEN reg_periksa.kd_pj = 'A09' then 1 END) AS jumlah_umum,\n" +
-                    "COUNT(CASE WHEN reg_periksa.kd_pj NOT IN ('A09','BPJ') then 1 END) AS jumlah_asuransi,\n" +
-                    "COUNT(CASE WHEN reg_periksa.kd_pj = 'BPJ' then 1 END) AS jumlah_bpjs,\n" +
-                    "COUNT(CASE WHEN reg_periksa.kd_pj = 'A09' then 1 END) AS jumlah_umum,\n" +
-                    "COUNT(CASE WHEN reg_periksa.kd_pj NOT IN ('A09','BPJ') then 1 END) AS jumlah_asuransi,\n" +
-                    "ROUND((SUM(IF(reg_periksa.kd_pj = 'BPJ', 1, 0)) / count(periksa_lab.kd_jenis_prw)) * 100) AS persen_bpjs,\n" +
-                    "ROUND((SUM(IF(reg_periksa.kd_pj = 'A09', 1, 0)) / count(periksa_lab.kd_jenis_prw)) * 100) AS persen_umum,\n" +
-                    "ROUND((SUM(IF(reg_periksa.kd_pj NOT IN ('BPJ','A09'), 1, 0)) / count(periksa_lab.kd_jenis_prw)) * 100) AS persen_asuransi\n" +
-                    "from periksa_lab " +
-                    "inner join jns_perawatan_lab on periksa_lab.kd_jenis_prw=jns_perawatan_lab.kd_jenis_prw \n" +
-                    "INNER JOIN reg_periksa ON reg_periksa.no_rawat = periksa_lab.no_rawat\n" +
-                    "INNER JOIN pasien ON pasien.no_rkm_medis = reg_periksa.no_rkm_medis "+
-                    "where periksa_lab.tgl_periksa between ? and ? and jns_perawatan_lab.nm_perawatan like ? group by jns_perawatan_lab.nm_perawatan ");
-            pstindakan2=koneksi.prepareStatement("select template_laboratorium.Pemeriksaan,count(template_laboratorium.Pemeriksaan),\n" +
-                    "COUNT(CASE WHEN pasien.jk = 'L' THEN 1 END) AS jumlah_laki_laki,\n" +
-                    "COUNT(CASE WHEN pasien.jk = 'P' THEN 1 END) AS jumlah_perempuan,\n" +
-                    "COUNT(CASE WHEN reg_periksa.kd_pj = \"BPJ\" then 1 END) AS jumlah_bpjs,\n" +
-                    "COUNT(CASE WHEN reg_periksa.kd_pj = \"A09\" then 1 END) AS jumlah_umum,\n" +
-                    "ROUND((SUM(IF(pasien.jk = 'L', 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_laki_laki,\n" +
-                    "ROUND((SUM(IF(pasien.jk = 'P', 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_perempuan,\n" +
-                    "COUNT(CASE WHEN reg_periksa.kd_pj = 'BPJ' then 1 END) AS jumlah_bpjs,\n" +
-                    "COUNT(CASE WHEN reg_periksa.kd_pj = 'A09' then 1 END) AS jumlah_umum,\n" +
-                    "COUNT(CASE WHEN reg_periksa.kd_pj NOT IN ('A09','BPJ') then 1 END) AS jumlah_asuransi,\n" +
-                    "ROUND((SUM(IF(reg_periksa.kd_pj = 'BPJ', 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_bpjs,\n" +
-                    "ROUND((SUM(IF(reg_periksa.kd_pj = 'A09', 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_umum,\n" +
-                    "ROUND((SUM(IF(reg_periksa.kd_pj NOT IN ('BPJ','A09'), 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_asuransi\n" +
-                    "from detail_periksa_lab \n" +
-                    "inner join template_laboratorium on detail_periksa_lab.id_template=template_laboratorium.id_template \n" +
-                    "INNER JOIN reg_periksa ON reg_periksa.no_rawat = detail_periksa_lab.no_rawat\n" +
-                    "INNER JOIN pasien ON pasien.no_rkm_medis = reg_periksa.no_rkm_medis "+
-                    "where detail_periksa_lab.tgl_periksa between ? and ? and template_laboratorium.Pemeriksaan like ? and template_laboratorium.kd_jenis_prw=? group by template_laboratorium.Pemeriksaan ");
+        try {
+            pstindakan = koneksi.prepareStatement(
+                    "select jns_perawatan_lab.nm_perawatan,count(jns_perawatan_lab.nm_perawatan),jns_perawatan_lab.kd_jenis_prw, \n"
+                            +
+                            "COUNT(CASE WHEN pasien.jk = 'L' THEN 1 END) AS jumlah_laki_laki,\n" +
+                            "COUNT(CASE WHEN pasien.jk = 'P' THEN 1 END) AS jumlah_perempuan,\n" +
+                            "ROUND((SUM(IF(pasien.jk = 'L', 1, 0)) / COUNT(periksa_lab.kd_jenis_prw)) * 100) AS persen_laki_laki,\n"
+                            +
+                            "ROUND((SUM(IF(pasien.jk = 'P', 1, 0)) / COUNT(periksa_lab.kd_jenis_prw)) * 100) AS persen_perempuan,\n"
+                            +
+                            "COUNT(CASE WHEN reg_periksa.kd_pj = 'BPJ' then 1 END) AS jumlah_bpjs,\n" +
+                            "COUNT(CASE WHEN reg_periksa.kd_pj = 'A09' then 1 END) AS jumlah_umum,\n" +
+                            "COUNT(CASE WHEN reg_periksa.kd_pj NOT IN ('A09','BPJ') then 1 END) AS jumlah_asuransi,\n" +
+                            "COUNT(CASE WHEN reg_periksa.kd_pj = 'BPJ' then 1 END) AS jumlah_bpjs,\n" +
+                            "COUNT(CASE WHEN reg_periksa.kd_pj = 'A09' then 1 END) AS jumlah_umum,\n" +
+                            "COUNT(CASE WHEN reg_periksa.kd_pj NOT IN ('A09','BPJ') then 1 END) AS jumlah_asuransi,\n" +
+                            "ROUND((SUM(IF(reg_periksa.kd_pj = 'BPJ', 1, 0)) / count(periksa_lab.kd_jenis_prw)) * 100) AS persen_bpjs,\n"
+                            +
+                            "ROUND((SUM(IF(reg_periksa.kd_pj = 'A09', 1, 0)) / count(periksa_lab.kd_jenis_prw)) * 100) AS persen_umum,\n"
+                            +
+                            "ROUND((SUM(IF(reg_periksa.kd_pj NOT IN ('BPJ','A09'), 1, 0)) / count(periksa_lab.kd_jenis_prw)) * 100) AS persen_asuransi\n"
+                            +
+                            "from periksa_lab " +
+                            "inner join jns_perawatan_lab on periksa_lab.kd_jenis_prw=jns_perawatan_lab.kd_jenis_prw \n"
+                            +
+                            "INNER JOIN reg_periksa ON reg_periksa.no_rawat = periksa_lab.no_rawat\n" +
+                            "INNER JOIN pasien ON pasien.no_rkm_medis = reg_periksa.no_rkm_medis " +
+                            "where periksa_lab.tgl_periksa between ? and ? and jns_perawatan_lab.nm_perawatan like ? group by jns_perawatan_lab.nm_perawatan ");
+            pstindakan2 = koneksi.prepareStatement(
+                    "select template_laboratorium.Pemeriksaan,count(template_laboratorium.Pemeriksaan),\n" +
+                            "COUNT(CASE WHEN pasien.jk = 'L' THEN 1 END) AS jumlah_laki_laki,\n" +
+                            "COUNT(CASE WHEN pasien.jk = 'P' THEN 1 END) AS jumlah_perempuan,\n" +
+                            "COUNT(CASE WHEN reg_periksa.kd_pj = \"BPJ\" then 1 END) AS jumlah_bpjs,\n" +
+                            "COUNT(CASE WHEN reg_periksa.kd_pj = \"A09\" then 1 END) AS jumlah_umum,\n" +
+                            "ROUND((SUM(IF(pasien.jk = 'L', 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_laki_laki,\n"
+                            +
+                            "ROUND((SUM(IF(pasien.jk = 'P', 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_perempuan,\n"
+                            +
+                            "COUNT(CASE WHEN reg_periksa.kd_pj = 'BPJ' then 1 END) AS jumlah_bpjs,\n" +
+                            "COUNT(CASE WHEN reg_periksa.kd_pj = 'A09' then 1 END) AS jumlah_umum,\n" +
+                            "COUNT(CASE WHEN reg_periksa.kd_pj NOT IN ('A09','BPJ') then 1 END) AS jumlah_asuransi,\n" +
+                            "ROUND((SUM(IF(reg_periksa.kd_pj = 'BPJ', 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_bpjs,\n"
+                            +
+                            "ROUND((SUM(IF(reg_periksa.kd_pj = 'A09', 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_umum,\n"
+                            +
+                            "ROUND((SUM(IF(reg_periksa.kd_pj NOT IN ('BPJ','A09'), 1, 0)) / count(template_laboratorium.Pemeriksaan)) * 100) AS persen_asuransi\n"
+                            +
+                            "from detail_periksa_lab \n" +
+                            "inner join template_laboratorium on detail_periksa_lab.id_template=template_laboratorium.id_template \n"
+                            +
+                            "INNER JOIN reg_periksa ON reg_periksa.no_rawat = detail_periksa_lab.no_rawat\n" +
+                            "INNER JOIN pasien ON pasien.no_rkm_medis = reg_periksa.no_rkm_medis " +
+                            "where detail_periksa_lab.tgl_periksa between ? and ? and template_laboratorium.Pemeriksaan like ? and template_laboratorium.kd_jenis_prw=? group by template_laboratorium.Pemeriksaan ");
         } catch (Exception e) {
             System.out.println(e);
         }
-    }    
+    }
 
-    /** This method is called from within the constructor to
+    /**
+     * This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
      * always regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         internalFrame1 = new widget.InternalFrame();
@@ -170,15 +200,16 @@ public final class DlgRl38 extends javax.swing.JDialog {
         setUndecorated(true);
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowActivated(java.awt.event.WindowEvent evt) {
-                formWindowActivated(evt);
-            }
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
             }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ RL 3.8 Kegiatan Laboratorium ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)),
+                "::[ RL 3.8 Kegiatan Laboratorium ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+                javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11),
+                new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -310,115 +341,134 @@ public final class DlgRl38 extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
+    private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnPrintActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        if(tabMode.getRowCount()==0){
-            JOptionPane.showMessageDialog(null,"Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
-            //TCari.requestFocus();
-        }else if(tabMode.getRowCount()!=0){
-            
-            Map<String, Object> param = new HashMap<>();         
-            param.put("namars",akses.getnamars());
-            param.put("alamatrs",akses.getalamatrs());
-            param.put("kotars",akses.getkabupatenrs());
-            param.put("propinsirs",akses.getpropinsirs());
-            param.put("kontakrs",akses.getkontakrs());
-            param.put("emailrs",akses.getemailrs());   
-            param.put("periode",Tgl1.getSelectedItem()+" s.d. "+Tgl2.getSelectedItem());   
-            param.put("tanggal",Tgl2.getDate());  
-            param.put("logo",Sequel.cariGambar("select setting.logo from setting"));  
-            Sequel.queryu("delete from temporary where temp37='"+akses.getalamatip()+"'");
-            for(int r=0;r<tabMode.getRowCount();r++){ 
-                if(!tbBangsal.getValueAt(r,0).toString().contains(">>")){
-                    Sequel.menyimpan("temporary","'"+r+"','"+
-                                    tabMode.getValueAt(r,0).toString()+"','"+
-                                    tabMode.getValueAt(r,1).toString()+"','"+
-                                    tabMode.getValueAt(r,2).toString()+"','"+
-                                    tabMode.getValueAt(r,3).toString()+"','"+
-                                    tabMode.getValueAt(r,4).toString()+"','"+
-                                    tabMode.getValueAt(r,5).toString()+"','"+
-                                    tabMode.getValueAt(r,6).toString()+"','"+
-                                    tabMode.getValueAt(r,7).toString()+"','"+
-                                    tabMode.getValueAt(r,8).toString()+"','"+
-                                    tabMode.getValueAt(r,9).toString()+"','"+
-                                    tabMode.getValueAt(r,10).toString()+"','"+
-                                    tabMode.getValueAt(r,11).toString()+"','"+
-                                    tabMode.getValueAt(r,12).toString()+"','','','','','','','','','','','','','','','','','','','','','','','','"+akses.getalamatip()+"'","Rekap Nota Pembayaran");
-                }                    
+        if (tabMode.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
+            // TCari.requestFocus();
+        } else if (tabMode.getRowCount() != 0) {
+
+            Map<String, Object> param = new HashMap<>();
+            param.put("namars", akses.getnamars());
+            param.put("alamatrs", akses.getalamatrs());
+            param.put("kotars", akses.getkabupatenrs());
+            param.put("propinsirs", akses.getpropinsirs());
+            param.put("kontakrs", akses.getkontakrs());
+            param.put("emailrs", akses.getemailrs());
+            param.put("periode", Tgl1.getSelectedItem() + " s.d. " + Tgl2.getSelectedItem());
+            param.put("tanggal", Tgl2.getDate());
+            param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
+            Sequel.queryu("delete from temporary where temp37='" + akses.getalamatip() + "'");
+            for (int r = 0; r < tabMode.getRowCount(); r++) {
+                if (!tbBangsal.getValueAt(r, 0).toString().contains(">>")) {
+                    Sequel.menyimpan("temporary", "'" + r + "','" +
+                            tabMode.getValueAt(r, 0).toString() + "','" +
+                            tabMode.getValueAt(r, 1).toString() + "','" +
+                            tabMode.getValueAt(r, 2).toString() + "','" +
+                            tabMode.getValueAt(r, 3).toString() + "','" +
+                            tabMode.getValueAt(r, 4).toString() + "','" +
+                            tabMode.getValueAt(r, 5).toString() + "','" +
+                            tabMode.getValueAt(r, 6).toString() + "','" +
+                            tabMode.getValueAt(r, 7).toString() + "','" +
+                            tabMode.getValueAt(r, 8).toString() + "','" +
+                            tabMode.getValueAt(r, 9).toString() + "','" +
+                            tabMode.getValueAt(r, 10).toString() + "','" +
+                            tabMode.getValueAt(r, 11).toString() + "','" +
+                            tabMode.getValueAt(r, 12).toString()
+                            + "','','','','','','','','','','','','','','','','','','','','','','','','"
+                            + akses.getalamatip() + "'", "Rekap Nota Pembayaran");
+                }
             }
-               
-            Valid.MyReportqry("rptRl38.jasper","report","::[ Formulir RL 3.8 ]::","select * from temporary where temporary.temp37='"+akses.getalamatip()+"' order by temporary.no",param);
+
+            Valid.MyReportqry("rptRl38.jasper", "report", "::[ Formulir RL 3.8 ]::",
+                    "select * from temporary where temporary.temp37='" + akses.getalamatip()
+                            + "' order by temporary.no",
+                    param);
         }
         this.setCursor(Cursor.getDefaultCursor());
-}//GEN-LAST:event_BtnPrintActionPerformed
+    }// GEN-LAST:event_BtnPrintActionPerformed
 
-    private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnPrintKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+    private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnPrintKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             BtnPrintActionPerformed(null);
-        }else{
-            //Valid.pindah(evt, BtnHapus, BtnAll);
         }
-}//GEN-LAST:event_BtnPrintKeyPressed
+    }// GEN-LAST:event_BtnPrintKeyPressed
 
-    private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
+    private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnKeluarActionPerformed
         dispose();
-}//GEN-LAST:event_BtnKeluarActionPerformed
+    }// GEN-LAST:event_BtnKeluarActionPerformed
 
-    private void BtnKeluarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnKeluarKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+    private void BtnKeluarKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnKeluarKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             dispose();
-        }else{Valid.pindah(evt,BtnKeluar,TCari);}
-}//GEN-LAST:event_BtnKeluarKeyPressed
+        } else {
+            Valid.pindah(evt, BtnKeluar, TCari);
+        }
+    }// GEN-LAST:event_BtnKeluarKeyPressed
 
-private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-       tampil();
-}//GEN-LAST:event_BtnCariActionPerformed
+    private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnCariActionPerformed
+        runBackground(() -> tampil());
+    }// GEN-LAST:event_BtnCariActionPerformed
 
-private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
-            tampil();
-            this.setCursor(Cursor.getDefaultCursor());
-        }else{
+    private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnCariKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
+            runBackground(() -> tampil());
+        } else {
             Valid.pindah(evt, TCari, BtnPrint);
         }
-}//GEN-LAST:event_BtnCariKeyPressed
+    }// GEN-LAST:event_BtnCariKeyPressed
 
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        tampil();
-    }//GEN-LAST:event_formWindowOpened
-
-    private void TCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCariKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+    private void TCariKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_TCariKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             BtnCariActionPerformed(null);
-        }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
+        } else if (evt.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
             BtnCari.requestFocus();
-        }else if(evt.getKeyCode()==KeyEvent.VK_PAGE_UP){
+        } else if (evt.getKeyCode() == KeyEvent.VK_PAGE_UP) {
             BtnKeluar.requestFocus();
         }
-    }//GEN-LAST:event_TCariKeyPressed
+    }// GEN-LAST:event_TCariKeyPressed
 
-    private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
-           TCari.setText("");
-           tampil();
-    }//GEN-LAST:event_BtnAllActionPerformed
+    private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnAllActionPerformed
+        TCari.setText("");
+        runBackground(() -> tampil());
+    }// GEN-LAST:event_BtnAllActionPerformed
 
-    private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+    private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnAllKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             BtnAllActionPerformed(null);
-        }else{
-            
         }
-    }//GEN-LAST:event_BtnAllKeyPressed
+    }// GEN-LAST:event_BtnAllKeyPressed
 
-    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        tampil();
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_formWindowOpened
+        if (koneksiDB.CARICEPAT().equals("aktif")) {
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if (TCari.getText().length() > 2) {
+                        runBackground(() -> tampil());
+                    }
+                }
 
-    }//GEN-LAST:event_formWindowActivated
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if (TCari.getText().length() > 2) {
+                        runBackground(() -> tampil());
+                    }
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if (TCari.getText().length() > 2) {
+                        runBackground(() -> tampil());
+                    }
+                }
+            });
+        }
+    }// GEN-LAST:event_formWindowOpened
 
     /**
-    * @param args the command line arguments
-    */
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> {
             DlgRl38 dialog = new DlgRl38(new javax.swing.JFrame(), true);
@@ -450,68 +500,151 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Table tbBangsal;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil(){        
-        try{   
-            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
-            Valid.tabelKosong(tabMode);   
-            pstindakan.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-            pstindakan.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-            pstindakan.setString(3,"%"+TCari.getText().trim()+"%");
-            rstindakan=pstindakan.executeQuery();
-            i=1;
-            ttl=0;
-            ttlL=0;
-            ttlP=0;
-            ttlBPJS=0;
-            ttlUMUM=0;
-            ttlAsuransi=0;
-            while(rstindakan.next()){
-                tabMode.addRow(new Object[]{
-                    i,rstindakan.getString(1),rstindakan.getInt(2), rstindakan.getInt("jumlah_laki_laki"), 
-                    rstindakan.getInt("jumlah_perempuan"), rstindakan.getInt("persen_laki_laki")+" %",rstindakan.getInt("persen_perempuan")+" %",
-                    rstindakan.getInt("jumlah_bpjs"), rstindakan.getInt("jumlah_umum"),rstindakan.getInt("jumlah_asuransi"),
-                    rstindakan.getInt("persen_bpjs")+" %", rstindakan.getInt("persen_umum")+" %",rstindakan.getInt("persen_asuransi")+" %"
-                });
-                pstindakan2.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                pstindakan2.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                pstindakan2.setString(3,"%"+TCari.getText().trim()+"%");
-                pstindakan2.setString(4,rstindakan.getString(3));
-                rstindakan2=pstindakan2.executeQuery();
-                a=1;
-                while(rstindakan2.next()){
-                    tabMode.addRow(new Object[]{
-                        i+"."+a,rstindakan2.getString(1),rstindakan2.getInt(2), rstindakan2.getInt("jumlah_laki_laki"), 
-                        rstindakan2.getInt("jumlah_perempuan"), rstindakan2.getInt("persen_laki_laki")+" %",rstindakan2.getInt("persen_perempuan")+" %",
-                         rstindakan2.getInt("jumlah_bpjs"), rstindakan2.getInt("jumlah_umum"),rstindakan2.getInt("jumlah_asuransi"),
-                    rstindakan2.getInt("persen_bpjs")+" %", rstindakan2.getInt("persen_umum")+" %",rstindakan2.getInt("persen_asuransi")+" %"
-                    });
-                    ttl=ttl+rstindakan2.getInt(2);
-                    ttlL=ttlL+rstindakan2.getInt("jumlah_laki_laki");
-                    ttlP=ttlP+rstindakan2.getInt("jumlah_perempuan");
-                    ttlBPJS=ttlBPJS+rstindakan2.getInt("jumlah_bpjs");
-                    ttlUMUM=ttlUMUM+rstindakan2.getInt("jumlah_umum");
-                    ttlAsuransi=ttlAsuransi+rstindakan2.getInt("jumlah_asuransi");
-                    a++;                    
+    private void tampil() {
+        try {
+            Valid.tabelKosong(tabMode);
+            pstindakan = koneksi.prepareStatement(
+                    "select jns_perawatan_lab.nm_perawatan,count(jns_perawatan_lab.nm_perawatan),jns_perawatan_lab.kd_jenis_prw from periksa_lab "
+                            +
+                            "inner join jns_perawatan_lab on periksa_lab.kd_jenis_prw=jns_perawatan_lab.kd_jenis_prw where periksa_lab.tgl_periksa between ? and ? "
+                            +
+                            (TCari.getText().trim().equals("") ? "" : "and jns_perawatan_lab.nm_perawatan like ? ")
+                            + "group by jns_perawatan_lab.nm_perawatan");
+            try {
+                pstindakan.setString(1, Valid.SetTgl(Tgl1.getSelectedItem() + ""));
+                pstindakan.setString(2, Valid.SetTgl(Tgl2.getSelectedItem() + ""));
+                if (!TCari.getText().trim().equals("")) {
+                    pstindakan.setString(3, "%" + TCari.getText().trim() + "%");
                 }
-                ttl=ttl+rstindakan.getInt(2);
-                ttlL=ttlL+rstindakan.getInt("jumlah_laki_laki");
-                ttlP=ttlP+rstindakan.getInt("jumlah_perempuan");
-                ttlBPJS=ttlBPJS+rstindakan.getInt("jumlah_bpjs");
-                ttlUMUM=ttlUMUM+rstindakan.getInt("jumlah_umum");
-                ttlAsuransi=ttlAsuransi+rstindakan.getInt("jumlah_asuransi");
-                i++;                    
+                rstindakan = pstindakan.executeQuery();
+                i = 1;
+                ttl = 0;
+                ttlL = 0;
+                ttlP = 0;
+                ttlBPJS = 0;
+                ttlUMUM = 0;
+                ttlAsuransi = 0;
+                while (rstindakan.next()) {
+                    tabMode.addRow(new Object[] {
+                            i, rstindakan.getString(1), rstindakan.getInt(2), rstindakan.getInt("jumlah_laki_laki"),
+                            rstindakan.getInt("jumlah_perempuan"), rstindakan.getInt("persen_laki_laki") + " %",
+                            rstindakan.getInt("persen_perempuan") + " %",
+                            rstindakan.getInt("jumlah_bpjs"), rstindakan.getInt("jumlah_umum"),
+                            rstindakan.getInt("jumlah_asuransi"),
+                            rstindakan.getInt("persen_bpjs") + " %", rstindakan.getInt("persen_umum") + " %",
+                            rstindakan.getInt("persen_asuransi") + " %"
+                    });
+                    pstindakan2 = koneksi.prepareStatement(
+                            "select template_laboratorium.Pemeriksaan,count(template_laboratorium.Pemeriksaan) from detail_periksa_lab "
+                                    +
+                                    "inner join template_laboratorium on detail_periksa_lab.id_template=template_laboratorium.id_template "
+                                    +
+                                    "where detail_periksa_lab.tgl_periksa between ? and ? and template_laboratorium.kd_jenis_prw=? "
+                                    +
+                                    (TCari.getText().trim().equals("") ? ""
+                                            : "and template_laboratorium.Pemeriksaan like ? ")
+                                    +
+                                    "group by template_laboratorium.Pemeriksaan ");
+                    try {
+                        pstindakan2.setString(1, Valid.SetTgl(Tgl1.getSelectedItem() + ""));
+                        pstindakan2.setString(2, Valid.SetTgl(Tgl2.getSelectedItem() + ""));
+                        pstindakan2.setString(3, rstindakan.getString(3));
+                        if (!TCari.getText().trim().equals("")) {
+                            pstindakan2.setString(4, "%" + TCari.getText().trim() + "%");
+                        }
+
+                        rstindakan2 = pstindakan2.executeQuery();
+                        a = 1;
+                        while (rstindakan2.next()) {
+                            tabMode.addRow(new Object[] {
+                                    i + "." + a, rstindakan2.getString(1), rstindakan2.getInt(2),
+                                    rstindakan2.getInt("jumlah_laki_laki"),
+                                    rstindakan2.getInt("jumlah_perempuan"),
+                                    rstindakan2.getInt("persen_laki_laki") + " %",
+                                    rstindakan2.getInt("persen_perempuan") + " %",
+                                    rstindakan2.getInt("jumlah_bpjs"), rstindakan2.getInt("jumlah_umum"),
+                                    rstindakan2.getInt("jumlah_asuransi"),
+                                    rstindakan2.getInt("persen_bpjs") + " %", rstindakan2.getInt("persen_umum") + " %",
+                                    rstindakan2.getInt("persen_asuransi") + " %"
+                            });
+                            ttl = ttl + rstindakan2.getInt(2);
+                            ttlL = ttlL + rstindakan2.getInt("jumlah_laki_laki");
+                            ttlP = ttlP + rstindakan2.getInt("jumlah_perempuan");
+                            ttlBPJS = ttlBPJS + rstindakan2.getInt("jumlah_bpjs");
+                            ttlUMUM = ttlUMUM + rstindakan2.getInt("jumlah_umum");
+                            ttlAsuransi = ttlAsuransi + rstindakan2.getInt("jumlah_asuransi");
+                            a++;
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    } finally {
+                        if (rstindakan2 != null) {
+                            rstindakan2.close();
+                        }
+                        if (pstindakan2 != null) {
+                            pstindakan2.close();
+                        }
+                    }
+                    ttl = ttl + rstindakan.getInt(2);
+                    ttlL = ttlL + rstindakan.getInt("jumlah_laki_laki");
+                    ttlP = ttlP + rstindakan.getInt("jumlah_perempuan");
+                    ttlBPJS = ttlBPJS + rstindakan.getInt("jumlah_bpjs");
+                    ttlUMUM = ttlUMUM + rstindakan.getInt("jumlah_umum");
+                    ttlAsuransi = ttlAsuransi + rstindakan.getInt("jumlah_asuransi");
+                    i++;
+                }
+                if (i > 1) {
+                    tabMode.addRow(new Object[] {
+                            "", "TOTAL", ttl, ttlL, ttlP, "", "", ttlBPJS, ttlUMUM, ttlAsuransi, "", "", ""
+                    });
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            } finally {
+                if (rstindakan != null) {
+                    rstindakan.close();
+                }
+                if (pstindakan != null) {
+                    pstindakan.close();
+                }
             }
-            
-            
-            if(i>1){
-                tabMode.addRow(new Object[]{
-                    "","TOTAL",ttl, ttlL, ttlP, "", "",ttlBPJS, ttlUMUM, ttlAsuransi, "", "",""
-                });
-            }
-            this.setCursor(Cursor.getDefaultCursor());
-        }catch(Exception e){
-            System.out.println("Notifikasi : "+e);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
         }
     }
 
+    private void runBackground(Runnable task) {
+        if (ceksukses)
+            return;
+        if (executor.isShutdown() || executor.isTerminated())
+            return;
+        if (!isDisplayable())
+            return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

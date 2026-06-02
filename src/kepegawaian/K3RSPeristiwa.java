@@ -31,9 +31,13 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -53,17 +57,11 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private PreparedStatement ps;
     private ResultSet rs;
     private int i=0;
-    private K3RSJenisPekerjaan jenispekerjaan=new K3RSJenisPekerjaan(null,false);
-    private K3RSLokasiKejadian lokasikejadian=new K3RSLokasiKejadian(null,false);
-    private K3RSPenyebab penyebab=new K3RSPenyebab(null,false);
-    private K3RSJenisCidera jeniscidera=new K3RSJenisCidera(null,false);
-    private K3RSJenisLuka jenisluka=new K3RSJenisLuka(null,false);
-    private K3RSBagianTubuh bagiantubuh=new K3RSBagianTubuh(null,false);
-    private K3RSDampakCidera dampakcidera=new K3RSDampakCidera(null,false);
-    private DlgCariPegawai pegawai=new DlgCariPegawai(null,false);
     private LocalDate birthday;
     private Period p;
 
@@ -193,335 +191,6 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         Catatan.setDocument(new batasInput((int)200).getKata(Catatan));
         Wewenang.setDocument(new batasInput((int)100).getKata(Wewenang));
         LT.setDocument(new batasInput((byte)10).getOnlyAngka(LT));
-        
-        if(koneksiDB.CARICEPAT().equals("aktif")){
-            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
-                @Override
-                public void insertUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void removeUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-                @Override
-                public void changedUpdate(DocumentEvent e) {
-                    if(TCari.getText().length()>2){
-                        tampil();
-                    }
-                }
-            });
-        }  
-        
-        jenispekerjaan.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(jenispekerjaan.getTable().getSelectedRow()!= -1){
-                    KdJenisPekerjaan.setText(jenispekerjaan.getTable().getValueAt(jenispekerjaan.getTable().getSelectedRow(),0).toString());
-                    NmJenisPekerjaan.setText(jenispekerjaan.getTable().getValueAt(jenispekerjaan.getTable().getSelectedRow(),1).toString());
-                }  
-                BtnJenisPekerjaan.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        jenispekerjaan.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    jenispekerjaan.dispose();
-                }                
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-        
-        lokasikejadian.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(lokasikejadian.getTable().getSelectedRow()!= -1){
-                    KdLokasiKejadian.setText(lokasikejadian.getTable().getValueAt(lokasikejadian.getTable().getSelectedRow(),0).toString());
-                    NmLokasiKejadian.setText(lokasikejadian.getTable().getValueAt(lokasikejadian.getTable().getSelectedRow(),1).toString());
-                }  
-                btnLokasiKejadian.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        lokasikejadian.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    lokasikejadian.dispose();
-                }                
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-        
-        penyebab.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(penyebab.getTable().getSelectedRow()!= -1){
-                    KdPenyebab.setText(penyebab.getTable().getValueAt(penyebab.getTable().getSelectedRow(),0).toString());
-                    NmPenyebab.setText(penyebab.getTable().getValueAt(penyebab.getTable().getSelectedRow(),1).toString());
-                }  
-                BtnPenyebab.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        penyebab.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    penyebab.dispose();
-                }                
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-        
-        jeniscidera.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(jeniscidera.getTable().getSelectedRow()!= -1){
-                    KdJenisCidera.setText(jeniscidera.getTable().getValueAt(jeniscidera.getTable().getSelectedRow(),0).toString());
-                    NmJenisCidera.setText(jeniscidera.getTable().getValueAt(jeniscidera.getTable().getSelectedRow(),1).toString());
-                }  
-                btnJenisCidera.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        jeniscidera.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    jeniscidera.dispose();
-                }                
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-        
-        jenisluka.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(jenisluka.getTable().getSelectedRow()!= -1){
-                    KdJenisLuka.setText(jenisluka.getTable().getValueAt(jenisluka.getTable().getSelectedRow(),0).toString());
-                    NmJenisLuka.setText(jenisluka.getTable().getValueAt(jenisluka.getTable().getSelectedRow(),1).toString());
-                }  
-                btnJenisLuka.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        jenisluka.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    jenisluka.dispose();
-                }                
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-        
-        bagiantubuh.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(bagiantubuh.getTable().getSelectedRow()!= -1){
-                    KdBagianTubuh.setText(bagiantubuh.getTable().getValueAt(bagiantubuh.getTable().getSelectedRow(),0).toString());
-                    NmBagianTubuh.setText(bagiantubuh.getTable().getValueAt(bagiantubuh.getTable().getSelectedRow(),1).toString());
-                }  
-                btnBagianTubuh.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        bagiantubuh.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    bagiantubuh.dispose();
-                }                
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-        
-        dampakcidera.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(dampakcidera.getTable().getSelectedRow()!= -1){
-                    KdDampak.setText(dampakcidera.getTable().getValueAt(dampakcidera.getTable().getSelectedRow(),0).toString());
-                    NmDampak.setText(dampakcidera.getTable().getValueAt(dampakcidera.getTable().getSelectedRow(),1).toString());
-                }  
-                BtnDampak.requestFocus();
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        dampakcidera.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    dampakcidera.dispose();
-                }                
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-        
-        pegawai.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(pegawai.getTable().getSelectedRow()!= -1){   
-                    if(i==1){
-                        NIKKorban.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),0).toString());
-                        NmKorban.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),1).toString());
-                        JK.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),2).toString().replaceAll("Wanita","P").replaceAll("Pria","L"));
-                        Jabatan.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),3).toString());
-                        Bidang.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),6).toString());
-                        Departemen.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),5).toString());
-                        Valid.SetTgl(TglLahir,pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),12).toString());
-                        TglInsidenItemStateChanged(null);
-                        btnKorban.requestFocus();
-                    } else if(i==2){
-                        NIKPelapor.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),0).toString());
-                        NmPelapor.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),1).toString());
-                        BidangPelapor.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),6).toString());
-                        DepartemenPelapor.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),5).toString());
-                        btnPelapor.requestFocus();
-                    } else if(i==3){
-                        NIKK3.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),0).toString());
-                        NmPetugasK3.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),1).toString());
-                    }  
-                }   
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
-        
-        pegawai.getTable().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_SPACE){
-                    pegawai.dispose();
-                }                
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
-        
     }
     
     /** This method is called from within the constructor to
@@ -686,7 +355,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         tbJnsPerawatan = new widget.Table();
 
         TglLahir.setForeground(new java.awt.Color(50, 70, 50));
-        TglLahir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-06-2019" }));
+        TglLahir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-02-2026" }));
         TglLahir.setDisplayFormat("dd-MM-yyyy");
         TglLahir.setName("TglLahir"); // NOI18N
         TglLahir.setOpaque(false);
@@ -695,7 +364,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikBatangPeristiwaK3PerTahun.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikBatangPeristiwaK3PerTahun.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikBatangPeristiwaK3PerTahun.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikBatangPeristiwaK3PerTahun.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerTahun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerTahun.setText("Grafik Batang Peristiwa K3 Per Tahun");
         ppGrafikBatangPeristiwaK3PerTahun.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -711,7 +380,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikPiePeristiwaK3PerTahun.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikPiePeristiwaK3PerTahun.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikPiePeristiwaK3PerTahun.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikPiePeristiwaK3PerTahun.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerTahun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerTahun.setText("Grafik Pie Peristiwa K3 Per Tahun");
         ppGrafikPiePeristiwaK3PerTahun.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -727,7 +396,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikBatangPeristiwaK3PerBulan.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikBatangPeristiwaK3PerBulan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikBatangPeristiwaK3PerBulan.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikBatangPeristiwaK3PerBulan.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerBulan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerBulan.setText("Grafik Batang Peristiwa K3 Per Bulan");
         ppGrafikBatangPeristiwaK3PerBulan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -743,7 +412,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikPiePeristiwaK3PerBulan.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikPiePeristiwaK3PerBulan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikPiePeristiwaK3PerBulan.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikPiePeristiwaK3PerBulan.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerBulan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerBulan.setText("Grafik Pie Peristiwa K3 Per Bulan");
         ppGrafikPiePeristiwaK3PerBulan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -759,7 +428,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikBatangPeristiwaK3PerTanggal.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikBatangPeristiwaK3PerTanggal.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikBatangPeristiwaK3PerTanggal.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikBatangPeristiwaK3PerTanggal.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerTanggal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerTanggal.setText("Grafik Batang Peristiwa K3 Per Tanggal");
         ppGrafikBatangPeristiwaK3PerTanggal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -775,7 +444,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikPiePeristiwaK3PerTanggal.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikPiePeristiwaK3PerTanggal.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikPiePeristiwaK3PerTanggal.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikPiePeristiwaK3PerTanggal.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerTanggal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerTanggal.setText("Grafik Pie Peristiwa K3 Per Tanggal");
         ppGrafikPiePeristiwaK3PerTanggal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -791,7 +460,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikBatangPeristiwaK3PerJenisCidera.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikBatangPeristiwaK3PerJenisCidera.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikBatangPeristiwaK3PerJenisCidera.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikBatangPeristiwaK3PerJenisCidera.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerJenisCidera.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerJenisCidera.setText("Grafik Batang Peristiwa K3 Per Jenis Cidera");
         ppGrafikBatangPeristiwaK3PerJenisCidera.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -807,7 +476,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikPiePeristiwaK3PerJenisCidera.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikPiePeristiwaK3PerJenisCidera.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikPiePeristiwaK3PerJenisCidera.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikPiePeristiwaK3PerJenisCidera.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerJenisCidera.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerJenisCidera.setText("Grafik Pie Peristiwa K3 Per Jenis Cidera");
         ppGrafikPiePeristiwaK3PerJenisCidera.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -823,7 +492,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikBatangPeristiwaK3PerPenyebab.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikBatangPeristiwaK3PerPenyebab.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikBatangPeristiwaK3PerPenyebab.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikBatangPeristiwaK3PerPenyebab.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerPenyebab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerPenyebab.setText("Grafik Batang Peristiwa K3 Per Penyebab Kecelakaan");
         ppGrafikBatangPeristiwaK3PerPenyebab.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -839,7 +508,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikPiePeristiwaK3PerPenyebab.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikPiePeristiwaK3PerPenyebab.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikPiePeristiwaK3PerPenyebab.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikPiePeristiwaK3PerPenyebab.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerPenyebab.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerPenyebab.setText("Grafik Pie Peristiwa K3 Per Penyebab Kecelakaan");
         ppGrafikPiePeristiwaK3PerPenyebab.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -855,7 +524,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikBatangPeristiwaK3PerJenisLuka.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikBatangPeristiwaK3PerJenisLuka.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikBatangPeristiwaK3PerJenisLuka.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikBatangPeristiwaK3PerJenisLuka.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerJenisLuka.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerJenisLuka.setText("Grafik Batang Peristiwa K3 Per Jenis Luka");
         ppGrafikBatangPeristiwaK3PerJenisLuka.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -871,7 +540,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikPiePeristiwaK3PerJenisLuka.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikPiePeristiwaK3PerJenisLuka.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikPiePeristiwaK3PerJenisLuka.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikPiePeristiwaK3PerJenisLuka.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerJenisLuka.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerJenisLuka.setText("Grafik Pie Peristiwa K3 Per Jenis Luka");
         ppGrafikPiePeristiwaK3PerJenisLuka.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -887,7 +556,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikBatangPeristiwaK3PerLokasiKejadian.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikBatangPeristiwaK3PerLokasiKejadian.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikBatangPeristiwaK3PerLokasiKejadian.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikBatangPeristiwaK3PerLokasiKejadian.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerLokasiKejadian.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerLokasiKejadian.setText("Grafik Batang Peristiwa K3 Per Lokasi Kejadian");
         ppGrafikBatangPeristiwaK3PerLokasiKejadian.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -903,7 +572,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikPiePeristiwaK3PerLokasiKejadian.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikPiePeristiwaK3PerLokasiKejadian.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikPiePeristiwaK3PerLokasiKejadian.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikPiePeristiwaK3PerLokasiKejadian.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerLokasiKejadian.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerLokasiKejadian.setText("Grafik Pie Peristiwa K3 Per Lokasi Kejadian");
         ppGrafikPiePeristiwaK3PerLokasiKejadian.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -919,7 +588,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikBatangPeristiwaK3PerDampakCidera.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikBatangPeristiwaK3PerDampakCidera.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikBatangPeristiwaK3PerDampakCidera.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikBatangPeristiwaK3PerDampakCidera.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerDampakCidera.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerDampakCidera.setText("Grafik Batang Peristiwa K3 Per Dampak Cidera");
         ppGrafikBatangPeristiwaK3PerDampakCidera.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -935,7 +604,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikPiePeristiwaK3PerDampakCidera.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikPiePeristiwaK3PerDampakCidera.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikPiePeristiwaK3PerDampakCidera.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikPiePeristiwaK3PerDampakCidera.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerDampakCidera.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerDampakCidera.setText("Grafik Pie Peristiwa K3 Per Dampak Cidera");
         ppGrafikPiePeristiwaK3PerDampakCidera.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -951,7 +620,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikBatangPeristiwaK3PerJenisPekerjaan.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikBatangPeristiwaK3PerJenisPekerjaan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikBatangPeristiwaK3PerJenisPekerjaan.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikBatangPeristiwaK3PerJenisPekerjaan.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerJenisPekerjaan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerJenisPekerjaan.setText("Grafik Batang Peristiwa K3 Per Jenis Pekerjaan");
         ppGrafikBatangPeristiwaK3PerJenisPekerjaan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -967,7 +636,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikPiePeristiwaK3PerJenisPekerjaan.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikPiePeristiwaK3PerJenisPekerjaan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikPiePeristiwaK3PerJenisPekerjaan.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikPiePeristiwaK3PerJenisPekerjaan.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerJenisPekerjaan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerJenisPekerjaan.setText("Grafik Pie Peristiwa K3 Per Jenis Pekerjaan");
         ppGrafikPiePeristiwaK3PerJenisPekerjaan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -983,7 +652,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikBatangPeristiwaK3PerBagianTubuh.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikBatangPeristiwaK3PerBagianTubuh.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikBatangPeristiwaK3PerBagianTubuh.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikBatangPeristiwaK3PerBagianTubuh.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikBatangPeristiwaK3PerBagianTubuh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikBatangPeristiwaK3PerBagianTubuh.setText("Grafik Batang Peristiwa K3 Per Bagian Tubuh");
         ppGrafikBatangPeristiwaK3PerBagianTubuh.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -999,7 +668,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
         ppGrafikPiePeristiwaK3PerBagianTubuh.setBackground(new java.awt.Color(255, 255, 254));
         ppGrafikPiePeristiwaK3PerBagianTubuh.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
-        ppGrafikPiePeristiwaK3PerBagianTubuh.setForeground(new java.awt.Color(50,50,50));
+        ppGrafikPiePeristiwaK3PerBagianTubuh.setForeground(new java.awt.Color(50, 50, 50));
         ppGrafikPiePeristiwaK3PerBagianTubuh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Create-Ticket24.png"))); // NOI18N
         ppGrafikPiePeristiwaK3PerBagianTubuh.setText("Grafik Pie Peristiwa K3 Per Bagian Tubuh");
         ppGrafikPiePeristiwaK3PerBagianTubuh.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -1020,9 +689,12 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
             }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
         });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Kejadian Kecelakaan Kerja ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50,50,50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Data Kejadian Kecelakaan Kerja ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -1172,7 +844,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jLabel58.setPreferredSize(new java.awt.Dimension(55, 23));
         panelGlass9.add(jLabel58);
 
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-06-2019" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -1185,7 +857,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jLabel59.setPreferredSize(new java.awt.Dimension(24, 23));
         panelGlass9.add(jLabel59);
 
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-06-2019" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -1239,7 +911,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         internalFrame1.add(jPanel3, java.awt.BorderLayout.PAGE_END);
 
         TabRawat.setBackground(new java.awt.Color(254, 255, 254));
-        TabRawat.setForeground(new java.awt.Color(50,50,50));
+        TabRawat.setForeground(new java.awt.Color(50, 50, 50));
         TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1283,7 +955,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jLabel13.setBounds(0, 60, 97, 23);
 
         TglInsiden.setForeground(new java.awt.Color(50, 70, 50));
-        TglInsiden.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-06-2019" }));
+        TglInsiden.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-02-2026" }));
         TglInsiden.setDisplayFormat("dd-MM-yyyy");
         TglInsiden.setName("TglInsiden"); // NOI18N
         TglInsiden.setOpaque(false);
@@ -1369,7 +1041,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jLabel16.setBounds(0, 120, 97, 23);
 
         TglPelaporan.setForeground(new java.awt.Color(50, 70, 50));
-        TglPelaporan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-06-2019" }));
+        TglPelaporan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-02-2026" }));
         TglPelaporan.setDisplayFormat("dd-MM-yyyy");
         TglPelaporan.setName("TglPelaporan"); // NOI18N
         TglPelaporan.setOpaque(false);
@@ -1961,7 +1633,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         jLabel41.setBounds(400, 410, 100, 23);
 
         Target.setForeground(new java.awt.Color(50, 70, 50));
-        Target.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "10-06-2019" }));
+        Target.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-02-2026" }));
         Target.setDisplayFormat("dd-MM-yyyy");
         Target.setName("Target"); // NOI18N
         Target.setOpaque(false);
@@ -2169,7 +1841,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         if(tbJnsPerawatan.getSelectedRow() > -1){
             Sequel.meghapus("k3rs_peristiwa","no_k3rs",tbJnsPerawatan.getValueAt(tbJnsPerawatan.getSelectedRow(),0).toString());
             emptTeks();
-            tampil();
+            runBackground(() ->tampil());
         }
 }//GEN-LAST:event_BtnHapusActionPerformed
 
@@ -2234,7 +1906,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
                     })==true){
                         emptTeks();
                         TabRawat.setSelectedIndex(1);
-                        tampil();
+                        runBackground(() ->tampil());
                 }
             }
         }
@@ -2301,7 +1973,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -2314,12 +1986,12 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
+        runBackground(() ->tampil());
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
-            tampil();
+            runBackground(() ->tampil());
             TCari.setText("");
         }else{
             Valid.pindah(evt, BtnPrint, BtnKeluar);
@@ -2352,7 +2024,7 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
 
     private void TabRawatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabRawatMouseClicked
         if(TabRawat.getSelectedIndex()==1){
-            tampil();
+            runBackground(() ->tampil());
         }
     }//GEN-LAST:event_TabRawatMouseClicked
 
@@ -2430,6 +2102,42 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
     }//GEN-LAST:event_KronologiKeyPressed
 
     private void BtnJenisPekerjaanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnJenisPekerjaanActionPerformed
+        K3RSJenisPekerjaan jenispekerjaan=new K3RSJenisPekerjaan(null,false);
+        jenispekerjaan.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(jenispekerjaan.getTable().getSelectedRow()!= -1){
+                    KdJenisPekerjaan.setText(jenispekerjaan.getTable().getValueAt(jenispekerjaan.getTable().getSelectedRow(),0).toString());
+                    NmJenisPekerjaan.setText(jenispekerjaan.getTable().getValueAt(jenispekerjaan.getTable().getSelectedRow(),1).toString());
+                }  
+                BtnJenisPekerjaan.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        jenispekerjaan.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    jenispekerjaan.dispose();
+                }                
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         jenispekerjaan.isCek();
         jenispekerjaan.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         jenispekerjaan.setLocationRelativeTo(internalFrame1);
@@ -2437,6 +2145,42 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnJenisPekerjaanActionPerformed
 
     private void btnLokasiKejadianActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLokasiKejadianActionPerformed
+        K3RSLokasiKejadian lokasikejadian=new K3RSLokasiKejadian(null,false);
+        lokasikejadian.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(lokasikejadian.getTable().getSelectedRow()!= -1){
+                    KdLokasiKejadian.setText(lokasikejadian.getTable().getValueAt(lokasikejadian.getTable().getSelectedRow(),0).toString());
+                    NmLokasiKejadian.setText(lokasikejadian.getTable().getValueAt(lokasikejadian.getTable().getSelectedRow(),1).toString());
+                }  
+                btnLokasiKejadian.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        lokasikejadian.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    lokasikejadian.dispose();
+                }                
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         lokasikejadian.isCek();
         lokasikejadian.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         lokasikejadian.setLocationRelativeTo(internalFrame1);
@@ -2444,6 +2188,42 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
     }//GEN-LAST:event_btnLokasiKejadianActionPerformed
 
     private void BtnPenyebabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPenyebabActionPerformed
+        K3RSPenyebab penyebab=new K3RSPenyebab(null,false);
+        penyebab.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(penyebab.getTable().getSelectedRow()!= -1){
+                    KdPenyebab.setText(penyebab.getTable().getValueAt(penyebab.getTable().getSelectedRow(),0).toString());
+                    NmPenyebab.setText(penyebab.getTable().getValueAt(penyebab.getTable().getSelectedRow(),1).toString());
+                }  
+                BtnPenyebab.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        penyebab.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    penyebab.dispose();
+                }                
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         penyebab.isCek();
         penyebab.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         penyebab.setLocationRelativeTo(internalFrame1);
@@ -2451,7 +2231,48 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnPenyebabActionPerformed
 
     private void btnKorbanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKorbanActionPerformed
-        i=1;
+        DlgCariPegawai pegawai=new DlgCariPegawai(null,false);
+        pegawai.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(pegawai.getTable().getSelectedRow()!= -1){   
+                    NIKKorban.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),0).toString());
+                    NmKorban.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),1).toString());
+                    JK.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),2).toString().replaceAll("Wanita","P").replaceAll("Pria","L"));
+                    Jabatan.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),3).toString());
+                    Bidang.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),6).toString());
+                    Departemen.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),5).toString());
+                    Valid.SetTgl(TglLahir,pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),12).toString());
+                    TglInsidenItemStateChanged(null);
+                    btnKorban.requestFocus();  
+                }   
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        pegawai.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    pegawai.dispose();
+                }                
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         pegawai.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         pegawai.setLocationRelativeTo(internalFrame1);
         pegawai.setAlwaysOnTop(false);
@@ -2489,6 +2310,42 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
     }//GEN-LAST:event_btnBagianTubuhKeyPressed
 
     private void btnJenisCideraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJenisCideraActionPerformed
+        K3RSJenisCidera jeniscidera=new K3RSJenisCidera(null,false);
+        jeniscidera.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(jeniscidera.getTable().getSelectedRow()!= -1){
+                    KdJenisCidera.setText(jeniscidera.getTable().getValueAt(jeniscidera.getTable().getSelectedRow(),0).toString());
+                    NmJenisCidera.setText(jeniscidera.getTable().getValueAt(jeniscidera.getTable().getSelectedRow(),1).toString());
+                }  
+                btnJenisCidera.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        jeniscidera.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    jeniscidera.dispose();
+                }                
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         jeniscidera.isCek();
         jeniscidera.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         jeniscidera.setLocationRelativeTo(internalFrame1);
@@ -2496,6 +2353,42 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
     }//GEN-LAST:event_btnJenisCideraActionPerformed
 
     private void btnJenisLukaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJenisLukaActionPerformed
+        K3RSJenisLuka jenisluka=new K3RSJenisLuka(null,false);
+        jenisluka.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(jenisluka.getTable().getSelectedRow()!= -1){
+                    KdJenisLuka.setText(jenisluka.getTable().getValueAt(jenisluka.getTable().getSelectedRow(),0).toString());
+                    NmJenisLuka.setText(jenisluka.getTable().getValueAt(jenisluka.getTable().getSelectedRow(),1).toString());
+                }  
+                btnJenisLuka.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        jenisluka.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    jenisluka.dispose();
+                }                
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         jenisluka.isCek();
         jenisluka.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         jenisluka.setLocationRelativeTo(internalFrame1);
@@ -2503,6 +2396,42 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
     }//GEN-LAST:event_btnJenisLukaActionPerformed
 
     private void btnBagianTubuhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBagianTubuhActionPerformed
+        K3RSBagianTubuh bagiantubuh=new K3RSBagianTubuh(null,false);
+        bagiantubuh.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(bagiantubuh.getTable().getSelectedRow()!= -1){
+                    KdBagianTubuh.setText(bagiantubuh.getTable().getValueAt(bagiantubuh.getTable().getSelectedRow(),0).toString());
+                    NmBagianTubuh.setText(bagiantubuh.getTable().getValueAt(bagiantubuh.getTable().getSelectedRow(),1).toString());
+                }  
+                btnBagianTubuh.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        bagiantubuh.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    bagiantubuh.dispose();
+                }                
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         bagiantubuh.isCek();
         bagiantubuh.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         bagiantubuh.setLocationRelativeTo(internalFrame1);
@@ -2526,6 +2455,42 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
     }//GEN-LAST:event_PekerjaanKeyPressed
 
     private void BtnDampakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDampakActionPerformed
+        K3RSDampakCidera dampakcidera=new K3RSDampakCidera(null,false);
+        dampakcidera.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(dampakcidera.getTable().getSelectedRow()!= -1){
+                    KdDampak.setText(dampakcidera.getTable().getValueAt(dampakcidera.getTable().getSelectedRow(),0).toString());
+                    NmDampak.setText(dampakcidera.getTable().getValueAt(dampakcidera.getTable().getSelectedRow(),1).toString());
+                }  
+                BtnDampak.requestFocus();
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        dampakcidera.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    dampakcidera.dispose();
+                }                
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         dampakcidera.isCek();
         dampakcidera.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         dampakcidera.setLocationRelativeTo(internalFrame1);
@@ -2545,7 +2510,44 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
     }//GEN-LAST:event_BarangBuktiKeyPressed
 
     private void btnPelaporActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPelaporActionPerformed
-        i=2;
+        DlgCariPegawai pegawai=new DlgCariPegawai(null,false);
+        pegawai.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(pegawai.getTable().getSelectedRow()!= -1){  
+                    NIKPelapor.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),0).toString());
+                    NmPelapor.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),1).toString());
+                    BidangPelapor.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),6).toString());
+                    DepartemenPelapor.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),5).toString());
+                    btnPelapor.requestFocus();
+                }   
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        pegawai.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    pegawai.dispose();
+                }                
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         pegawai.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         pegawai.setLocationRelativeTo(internalFrame1);
         pegawai.setAlwaysOnTop(false);
@@ -2577,7 +2579,41 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
     }//GEN-LAST:event_btnTIMK3KeyPressed
 
     private void btnTIMK3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTIMK3ActionPerformed
-        i=3;
+        DlgCariPegawai pegawai=new DlgCariPegawai(null,false);
+        pegawai.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if(pegawai.getTable().getSelectedRow()!= -1){   
+                    NIKK3.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),0).toString());
+                    NmPetugasK3.setText(pegawai.tbKamar.getValueAt(pegawai.tbKamar.getSelectedRow(),1).toString());
+                }   
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        pegawai.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                    pegawai.dispose();
+                }                
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
         pegawai.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         pegawai.setLocationRelativeTo(internalFrame1);
         pegawai.setAlwaysOnTop(false);
@@ -3094,6 +3130,31 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         cf.setVisible(true);  
     }//GEN-LAST:event_ppGrafikPiePeristiwaK3PerBagianTubuhActionPerformed
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if(koneksiDB.CARICEPAT().equals("aktif")){
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if(TCari.getText().length()>2){
+                        runBackground(() ->tampil());
+                    }
+                }
+            });
+        }
+    }//GEN-LAST:event_formWindowOpened
+
     /**
     * @param args the command line arguments
     */
@@ -3507,12 +3568,12 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
     
     public void isCek(){
         TabRawat.setSelectedIndex(1);
-        tampil();
+        runBackground(() ->tampil());
         if(akses.getjml2()>=1){
             NIKK3.setEditable(false);
             btnTIMK3.setEnabled(false);
             NIKK3.setText(akses.getkode());
-            NmPetugasK3.setText(pegawai.tampil3(NIKK3.getText()));
+            NmPetugasK3.setText(Sequel.CariPegawai(NIKK3.getText()));
         }   
         BtnSimpan.setEnabled(akses.getperistiwa_k3rs());
         BtnHapus.setEnabled(akses.getperistiwa_k3rs());
@@ -3520,7 +3581,35 @@ public final class K3RSPeristiwa extends javax.swing.JDialog {
         BtnPrint.setEnabled(akses.getperistiwa_k3rs());
     }
     
-    
+    private void runBackground(Runnable task) {
+        if (ceksukses) return;
+        if (executor.isShutdown() || executor.isTerminated()) return;
+        if (!isDisplayable()) return;
 
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
     
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
 }

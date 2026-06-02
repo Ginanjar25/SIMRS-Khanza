@@ -1,8 +1,8 @@
 <?php 
-    if(isset($_SESSION["ses_admin"])){
+    if(isset($_SESSION["ses_dokter"])){
         $halaman = isset($_GET["act"])?$_GET["act"]:NULL;
         if(!isset($_SESSION["nm_dokter"])){
-            $queryuser                      = @bukaquery2("select dokter.nm_dokter from dokter where dokter.kd_dokter='".validTeks4(encrypt_decrypt($_SESSION["ses_admin"],"d"),20)."'");
+            $queryuser                      = @bukaquery2("select dokter.nm_dokter from dokter where dokter.kd_dokter='".validTeks4(encrypt_decrypt($_SESSION["ses_dokter"],"d"),20)."'");
             while($rsqueryuser = mysqli_fetch_array($queryuser)) {
                 $_SESSION["nm_dokter"]      = $rsqueryuser["nm_dokter"];
             }
@@ -15,6 +15,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="robots" content="noindex,nofollow">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>Selamat Datang di Aplikasi E-Dokter <?=$_SESSION["nama_instansi"];?></title>
@@ -72,12 +73,13 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
-                    <li <?=$halaman=="Admin"?"class='active'":""?>>
+                    <li <?=$halaman=="Pasien"?"class='active'":""?>>
                         <a href="index.php?act=Pasien">
                             <i class="material-icons">assignment_ind</i>
                             <span>Daftar Pasien</span>
                         </a>
                     </li>
+                    <div id="datakonsul"></div>
                 </ul>
             </div>
             <!-- #Menu -->
@@ -125,6 +127,20 @@
     <script src="js/pages/index.js"></script>
     <script src="js/demo.js"></script>
     <script src="conf/validator.js" type="text/javascript"></script>
+    <script type="text/javascript"> 
+        function loadKonsul(){
+            fetch('pages/listdatakonsul.php')
+                .then(function(response){ return response.text(); })
+                .then(function(html){ 
+                    document.getElementById('datakonsul').innerHTML = html; 
+                });
+        }
+
+        window.onload = function(){
+            loadKonsul();
+            setInterval(loadKonsul, 600000);
+        }
+    </script>
 </body>
 </html>
 

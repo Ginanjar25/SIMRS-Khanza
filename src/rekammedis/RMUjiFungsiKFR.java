@@ -3,11 +3,11 @@
  * and open the template in the editor.
  */
 
- /*
- * DlgDataSkriningGiziLanjut.java
- * Kontribusi Haris Rochmatullah RS Bhayangkara Nganjuk
- * Created on 11 November 2020, 20:19:56
- */
+/*
+* DlgDataSkriningGiziLanjut.java
+* Kontribusi Haris Rochmatullah RS Bhayangkara Nganjuk
+* Created on 11 November 2020, 20:19:56
+*/
 package rekammedis;
 
 import fungsi.WarnaTable;
@@ -21,8 +21,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import static java.awt.image.ImageObserver.WIDTH;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,9 +34,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.WindowConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -62,6 +67,8 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
     public DlgCariDiagnosaICD10 diagnosa = new DlgCariDiagnosaICD10(null, false);
     public DlgCariDiagnosaICD10 diagnosa2 = new DlgCariDiagnosaICD10(null, false);
     public DlgCariDiagnosaICD9 diagnosa3 = new DlgCariDiagnosaICD9(null, false);
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
     private String finger = "";
 
     /**
@@ -73,12 +80,14 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
     public RMUjiFungsiKFR(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-//        this.setLocation(8, 1);
-//        setSize(628, 674);
+        // this.setLocation(8, 1);
+        // setSize(628, 674);
 
-        tabMode = new DefaultTableModel(null, new Object[]{
-            "No.Rawat", "No.R.M.", "Nama Pasien", "Umur", "JK", "Tgl.Lahir", "Tanggal Uji", "Diagnosis Fugsional", "Diagnosis Medis", "Hasil Yang Didapat", "Kesimpulan", "Rekomendasi", 
-            "Anamesa", "Pem Fisik dan Uji Fungsi", "Pem Penunjang", "Tata Laksana","Goal of Treatment", "Edukasi","Anjuran", "Evaluasi", "Susp Penyakit","Ket Susp Penyakit", "Kode Dokter", "Nama Dokter"
+        tabMode = new DefaultTableModel(null, new Object[] {
+                "No.Rawat", "No.R.M.", "Nama Pasien", "Umur", "JK", "Tgl.Lahir", "Tanggal Uji", "Diagnosis Fugsional",
+                "Diagnosis Medis", "Hasil Yang Didapat", "Kesimpulan", "Rekomendasi",
+                "Anamesa", "Pem Fisik dan Uji Fungsi", "Pem Penunjang", "Tata Laksana", "Goal of Treatment", "Edukasi",
+                "Anjuran", "Evaluasi", "Susp Penyakit", "Ket Susp Penyakit", "Kode Dokter", "Nama Dokter"
         }) {
             @Override
             public boolean isCellEditable(int rowIndex, int colIndex) {
@@ -87,7 +96,8 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         };
         tbObat.setModel(tabMode);
 
-        //tbObat.setDefaultRenderer(Object.class, new WarnaTable(panelJudul.getBackground(),tbObat.getBackground()));
+        // tbObat.setDefaultRenderer(Object.class, new
+        // WarnaTable(panelJudul.getBackground(),tbObat.getBackground()));
         tbObat.setPreferredScrollableViewportSize(new Dimension(500, 500));
         tbObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
@@ -117,15 +127,15 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
                 column.setPreferredWidth(150);
             } else if (i == 11) {
                 column.setPreferredWidth(150);
-            }  else if (i == 12) {
+            } else if (i == 12) {
                 column.setPreferredWidth(150);
             } else if (i == 13) {
                 column.setPreferredWidth(150);
-            }  else if (i == 14) {
+            } else if (i == 14) {
                 column.setPreferredWidth(150);
             } else if (i == 15) {
                 column.setPreferredWidth(150);
-            }  else if (i == 16) {
+            } else if (i == 16) {
                 column.setPreferredWidth(150);
             } else if (i == 17) {
                 column.setPreferredWidth(80);
@@ -142,7 +152,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             } else if (i == 23) {
                 column.setPreferredWidth(140);
             }
-            
+
         }
         tbObat.setDefaultRenderer(Object.class, new WarnaTable());
 
@@ -226,22 +236,32 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             @Override
             public void windowClosed(WindowEvent e) {
                 if (carikfr.getTable().getSelectedRow() != -1) {
-                    DiagnosisFungsional.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 5).toString());
-                    DiagnosisMedis.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 6).toString());
+                    DiagnosisFungsional
+                            .setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 5).toString());
+                    DiagnosisMedis
+                            .setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 6).toString());
                     Anamesa.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 8).toString());
-                    PemFisikUji.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 9).toString());
-                    PemPenunjang.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 10).toString());
-                    TataLaksana.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 11).toString());
-                    goalTreatment.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 12).toString());
+                    PemFisikUji
+                            .setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 9).toString());
+                    PemPenunjang
+                            .setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 10).toString());
+                    TataLaksana
+                            .setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 11).toString());
+                    goalTreatment
+                            .setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 12).toString());
                     Edukasi.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 13).toString());
                     Evaluasi.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 14).toString());
                     Anjuran.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 15).toString());
-                    SuspPeny.setSelectedItem(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 16).toString());
+                    SuspPeny.setSelectedItem(
+                            carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 16).toString());
                     SuspKet.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 17).toString());
-                    
-                    hasilDidapat.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 19).toString());
-                    rekomendasi.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 20).toString());
-                    kesimpulan.setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 21).toString());
+
+                    hasilDidapat
+                            .setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 19).toString());
+                    rekomendasi
+                            .setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 20).toString());
+                    kesimpulan
+                            .setText(carikfr.getTable().getValueAt(carikfr.getTable().getSelectedRow(), 21).toString());
                 }
                 KdDokter.requestFocus();
             }
@@ -262,7 +282,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             public void windowDeactivated(WindowEvent e) {
             }
         });
-        
+
         diagnosa.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {
@@ -276,7 +296,9 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             public void windowClosed(WindowEvent e) {
 
                 if (diagnosa.getTable().getSelectedRow() != -1) {
-                    DiagnosisMedis.setText(diagnosa.getTable().getValueAt(diagnosa.getTable().getSelectedRow(), 0).toString() + " " + diagnosa.getTable().getValueAt(diagnosa.getTable().getSelectedRow(), 1).toString());
+                    DiagnosisMedis.setText(diagnosa.getTable().getValueAt(diagnosa.getTable().getSelectedRow(), 0)
+                            .toString() + " "
+                            + diagnosa.getTable().getValueAt(diagnosa.getTable().getSelectedRow(), 1).toString());
                 }
 
             }
@@ -311,7 +333,9 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             public void windowClosed(WindowEvent e) {
 
                 if (diagnosa2.getTable().getSelectedRow() != -1) {
-                    DiagnosisFungsional.setText(diagnosa2.getTable().getValueAt(diagnosa2.getTable().getSelectedRow(), 0).toString() + " " + diagnosa2.getTable().getValueAt(diagnosa2.getTable().getSelectedRow(), 1).toString());
+                    DiagnosisFungsional.setText(diagnosa2.getTable()
+                            .getValueAt(diagnosa2.getTable().getSelectedRow(), 0).toString() + " "
+                            + diagnosa2.getTable().getValueAt(diagnosa2.getTable().getSelectedRow(), 1).toString());
                 }
 
             }
@@ -346,7 +370,9 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             public void windowClosed(WindowEvent e) {
 
                 if (diagnosa3.getTable().getSelectedRow() != -1) {
-                    TataLaksana.setText(diagnosa3.getTable().getValueAt(diagnosa3.getTable().getSelectedRow(), 0).toString() + " " + diagnosa3.getTable().getValueAt(diagnosa3.getTable().getSelectedRow(), 1).toString());
+                    TataLaksana.setText(diagnosa3.getTable().getValueAt(diagnosa3.getTable().getSelectedRow(), 0)
+                            .toString() + " "
+                            + diagnosa3.getTable().getValueAt(diagnosa3.getTable().getSelectedRow(), 1).toString());
                 }
 
             }
@@ -380,7 +406,8 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
@@ -425,7 +452,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         jLabel18 = new widget.Label();
         KdDokter = new widget.TextBox();
         NmDokter = new widget.TextBox();
-        btnPetugas = new widget.Button();
+        BtnDokter = new widget.Button();
         jLabel8 = new widget.Label();
         TglLahir = new widget.TextBox();
         jLabel12 = new widget.Label();
@@ -510,8 +537,17 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Uji Fungsi/Prosedur KFR ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)),
+                "::[ Uji Fungsi/Prosedur KFR ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+                javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11),
+                new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame1.setFont(new java.awt.Font("Tahoma", 2, 12)); // NOI18N
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
@@ -677,7 +713,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-06-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -691,7 +727,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-06-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -812,7 +848,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         TPasien.setBounds(336, 10, 240, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "03-06-2025" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -841,7 +877,8 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         FormInput.add(jLabel16);
         jLabel16.setBounds(0, 40, 75, 23);
 
-        Jam.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23" }));
+        Jam.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07",
+                "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23" }));
         Jam.setName("Jam"); // NOI18N
         Jam.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -851,7 +888,11 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         FormInput.add(Jam);
         Jam.setBounds(173, 40, 62, 23);
 
-        Menit.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59" }));
+        Menit.setModel(new javax.swing.DefaultComboBoxModel(
+                new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14",
+                        "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
+                        "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46",
+                        "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59" }));
         Menit.setName("Menit"); // NOI18N
         Menit.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -861,7 +902,11 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         FormInput.add(Menit);
         Menit.setBounds(238, 40, 62, 23);
 
-        Detik.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59" }));
+        Detik.setModel(new javax.swing.DefaultComboBoxModel(
+                new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14",
+                        "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30",
+                        "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46",
+                        "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59" }));
         Detik.setName("Detik"); // NOI18N
         Detik.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -901,22 +946,22 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         FormInput.add(NmDokter);
         NmDokter.setBounds(580, 40, 177, 23);
 
-        btnPetugas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
-        btnPetugas.setMnemonic('2');
-        btnPetugas.setToolTipText("ALt+2");
-        btnPetugas.setName("btnPetugas"); // NOI18N
-        btnPetugas.addActionListener(new java.awt.event.ActionListener() {
+        BtnDokter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        BtnDokter.setMnemonic('2');
+        BtnDokter.setToolTipText("ALt+2");
+        BtnDokter.setName("BtnDokter"); // NOI18N
+        BtnDokter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPetugasActionPerformed(evt);
+                BtnDokterActionPerformed(evt);
             }
         });
-        btnPetugas.addKeyListener(new java.awt.event.KeyAdapter() {
+        BtnDokter.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                btnPetugasKeyPressed(evt);
+                BtnDokterKeyPressed(evt);
             }
         });
-        FormInput.add(btnPetugas);
-        btnPetugas.setBounds(761, 40, 28, 23);
+        FormInput.add(BtnDokter);
+        BtnDokter.setBounds(761, 40, 28, 23);
 
         jLabel8.setText("Tgl.Lahir :");
         jLabel8.setName("jLabel8"); // NOI18N
@@ -1363,20 +1408,20 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNoRwKeyPressed
+    private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_TNoRwKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
             isRawat();
             isPsien();
         } else {
             Valid.pindah(evt, TCari, Tanggal);
         }
-}//GEN-LAST:event_TNoRwKeyPressed
+    }// GEN-LAST:event_TNoRwKeyPressed
 
-    private void TPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TPasienKeyPressed
+    private void TPasienKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_TPasienKeyPressed
         Valid.pindah(evt, TCari, BtnSimpan);
-}//GEN-LAST:event_TPasienKeyPressed
+    }// GEN-LAST:event_TPasienKeyPressed
 
-    private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+    private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnSimpanActionPerformed
         if (TNoRw.getText().trim().equals("") || TPasien.getText().trim().equals("")) {
             Valid.textKosong(TNoRw, "Pasien");
         } else if (KdDokter.getText().trim().equals("") || NmDokter.getText().trim().equals("")) {
@@ -1398,49 +1443,59 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         } else if (PemFisikUji.getText().trim().equals("")) {
             Valid.textKosong(PemFisikUji, "PemFisikUji");
         } else {
-            if (Sequel.menyimpantf("uji_fungsi_kfr", "?,?,?,?,?,?,?,?", "Data", 8, new String[]{
-                TNoRw.getText(), Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":" + Menit.getSelectedItem() + ":" + Detik.getSelectedItem(),
-                DiagnosisFungsional.getText(), DiagnosisMedis.getText(), hasilDidapat.getText(), kesimpulan.getText(), rekomendasi.getText(), KdDokter.getText()
+            if (Sequel.menyimpantf("uji_fungsi_kfr", "?,?,?,?,?,?,?,?", "Data", 8, new String[] {
+                    TNoRw.getText(),
+                    Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":"
+                            + Menit.getSelectedItem() + ":" + Detik.getSelectedItem(),
+                    DiagnosisFungsional.getText(), DiagnosisMedis.getText(), hasilDidapat.getText(),
+                    kesimpulan.getText(), rekomendasi.getText(), KdDokter.getText()
             }) == true) {
-                if(Sequel.menyimpantf("layanan_kfr", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Data", 16, new String[]{
-                    TNoRw.getText(), Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":" + Menit.getSelectedItem() + ":" + Detik.getSelectedItem(),
-                    Anamesa.getText(), PemFisikUji.getText(), DiagnosisMedis.getText(), DiagnosisFungsional.getText(), PemPenunjang.getText(), TataLaksana.getText(),
-                    goalTreatment.getText(), Anjuran.getText(), Edukasi.getText(), Evaluasi.getText(), SuspPeny.getSelectedItem().toString(), SuspKet.getText(), KdDokter.getText(), "1"
-                }) == true){
-                     Sequel.mengedit("layanan_kfr", "no_rawat='" + Sequel.cariIsi("SELECT layanan_kfr.no_rawat FROM layanan_kfr \n"
-                    + "INNER JOIN reg_periksa ON reg_periksa.no_rawat = layanan_kfr.no_rawat\n"
-                    + "WHERE reg_periksa.no_rkm_medis = ? AND layanan_kfr.`status`= '1' AND layanan_kfr.no_rawat !='"+ TNoRw.getText()+"'", TNoRM.getText()) + "'", "status='0'");
-                     tampil();
-                emptTeks();
+                if (Sequel.menyimpantf("layanan_kfr", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Data", 16, new String[] {
+                        TNoRw.getText(),
+                        Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":"
+                                + Menit.getSelectedItem() + ":" + Detik.getSelectedItem(),
+                        Anamesa.getText(), PemFisikUji.getText(), DiagnosisMedis.getText(),
+                        DiagnosisFungsional.getText(), PemPenunjang.getText(), TataLaksana.getText(),
+                        goalTreatment.getText(), Anjuran.getText(), Edukasi.getText(), Evaluasi.getText(),
+                        SuspPeny.getSelectedItem().toString(), SuspKet.getText(), KdDokter.getText(), "1"
+                }) == true) {
+                    Sequel.mengedit("layanan_kfr",
+                            "no_rawat='" + Sequel.cariIsi("SELECT layanan_kfr.no_rawat FROM layanan_kfr \n"
+                                    + "INNER JOIN reg_periksa ON reg_periksa.no_rawat = layanan_kfr.no_rawat\n"
+                                    + "WHERE reg_periksa.no_rkm_medis = ? AND layanan_kfr.`status`= '1' AND layanan_kfr.no_rawat !='"
+                                    + TNoRw.getText() + "'", TNoRM.getText()) + "'",
+                            "status='0'");
+                    tampil();
+                    emptTeks();
                 }
-               
+
             }
         }
-}//GEN-LAST:event_BtnSimpanActionPerformed
+    }// GEN-LAST:event_BtnSimpanActionPerformed
 
-    private void BtnSimpanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSimpanKeyPressed
+    private void BtnSimpanKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnSimpanKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             BtnSimpanActionPerformed(null);
         } else {
-            //Valid.pindah(evt,cmbSkor3,BtnBatal);
+            // Valid.pindah(evt,cmbSkor3,BtnBatal);
         }
-}//GEN-LAST:event_BtnSimpanKeyPressed
+    }// GEN-LAST:event_BtnSimpanKeyPressed
 
-    private void BtnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnBatalActionPerformed
+    private void BtnBatalActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnBatalActionPerformed
         emptTeks();
         ChkInput.setSelected(true);
         isForm();
-}//GEN-LAST:event_BtnBatalActionPerformed
+    }// GEN-LAST:event_BtnBatalActionPerformed
 
-    private void BtnBatalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnBatalKeyPressed
+    private void BtnBatalKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnBatalKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             emptTeks();
         } else {
             Valid.pindah(evt, BtnSimpan, BtnHapus);
         }
-}//GEN-LAST:event_BtnBatalKeyPressed
+    }// GEN-LAST:event_BtnBatalKeyPressed
 
-    private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
+    private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnHapusActionPerformed
         if (tbObat.getSelectedRow() != -1) {
             if (akses.getkode().equals("Admin Utama")) {
                 hapus();
@@ -1455,17 +1510,17 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(rootPane, "Silahkan anda pilih data terlebih dahulu..!!");
         }
 
-}//GEN-LAST:event_BtnHapusActionPerformed
+    }// GEN-LAST:event_BtnHapusActionPerformed
 
-    private void BtnHapusKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnHapusKeyPressed
+    private void BtnHapusKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnHapusKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             BtnHapusActionPerformed(null);
         } else {
             Valid.pindah(evt, BtnBatal, BtnEdit);
         }
-}//GEN-LAST:event_BtnHapusKeyPressed
+    }// GEN-LAST:event_BtnHapusKeyPressed
 
-    private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditActionPerformed
+    private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnEditActionPerformed
         if (TNoRw.getText().trim().equals("") || TPasien.getText().trim().equals("")) {
             Valid.textKosong(TNoRw, "Pasien");
         } else if (KdDokter.getText().trim().equals("") || NmDokter.getText().trim().equals("")) {
@@ -1480,7 +1535,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             Valid.textKosong(kesimpulan, "Kesimpulan");
         } else if (rekomendasi.getText().trim().equals("")) {
             Valid.textKosong(rekomendasi, "Rekomendasi");
-        }else if (Anamesa.getText().trim().equals("")) {
+        } else if (Anamesa.getText().trim().equals("")) {
             Valid.textKosong(Anamesa, "Anamesa");
         } else if (TataLaksana.getText().trim().equals("")) {
             Valid.textKosong(TataLaksana, "TataLaksana");
@@ -1501,30 +1556,29 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(rootPane, "Silahkan anda pilih data terlebih dahulu..!!");
             }
         }
-}//GEN-LAST:event_BtnEditActionPerformed
+    }// GEN-LAST:event_BtnEditActionPerformed
 
-    private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnEditKeyPressed
+    private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnEditKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             BtnEditActionPerformed(null);
         } else {
             Valid.pindah(evt, BtnHapus, BtnPrint);
         }
-}//GEN-LAST:event_BtnEditKeyPressed
+    }// GEN-LAST:event_BtnEditKeyPressed
 
-    private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
-        dokter.dispose();
+    private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnKeluarActionPerformed
         dispose();
-}//GEN-LAST:event_BtnKeluarActionPerformed
+    }// GEN-LAST:event_BtnKeluarActionPerformed
 
-    private void BtnKeluarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnKeluarKeyPressed
+    private void BtnKeluarKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnKeluarKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             BtnKeluarActionPerformed(null);
         } else {
             Valid.pindah(evt, BtnEdit, TCari);
         }
-}//GEN-LAST:event_BtnKeluarKeyPressed
+    }// GEN-LAST:event_BtnKeluarKeyPressed
 
-    private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPrintActionPerformed
+    private void BtnPrintActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnPrintActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         if (tabMode.getRowCount() == 0) {
             JOptionPane.showMessageDialog(null, "Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
@@ -1542,37 +1596,47 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             if (TCari.getText().trim().equals("")) {
                 Valid.MyReportqry("rptUjiFungsiKFR.jasper", "report", "::[ Data Uji Fugsi/Prosedur KFR ]::",
                         "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,"
-                        + "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat,"
-                        + "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir "
-                        + "from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat "
-                        + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
-                        + "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter where "
-                        + "uji_fungsi_kfr.tanggal between '" + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + " 00:00:00' and '" + Valid.SetTgl(DTPCari2.getSelectedItem() + "") + " 23:59:59' order by uji_fungsi_kfr.tanggal ", param);
+                                + "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat,"
+                                + "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir "
+                                + "from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat "
+                                + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+                                + "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter where "
+                                + "uji_fungsi_kfr.tanggal between '" + Valid.SetTgl(DTPCari1.getSelectedItem() + "")
+                                + " 00:00:00' and '" + Valid.SetTgl(DTPCari2.getSelectedItem() + "")
+                                + " 23:59:59' order by uji_fungsi_kfr.tanggal ",
+                        param);
             } else {
                 Valid.MyReportqry("rptUjiFungsiKFR.jasper", "report", "::[ Data Uji Fugsi/Prosedur KFR ]::",
                         "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,"
-                        + "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat,"
-                        + "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir "
-                        + "from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat "
-                        + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
-                        + "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter "
-                        + "where uji_fungsi_kfr.tanggal between '" + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + " 00:00:00' and '" + Valid.SetTgl(DTPCari2.getSelectedItem() + "") + " 23:59:59' and "
-                        + "(reg_periksa.no_rawat like '%" + TCari.getText().trim() + "%' or pasien.no_rkm_medis like '%" + TCari.getText().trim() + "%' or pasien.nm_pasien like '%" + TCari.getText().trim() + "%' or "
-                        + "uji_fungsi_kfr.kd_dokter like '%" + TCari.getText().trim() + "%' or dokter.nm_dokter like '%" + TCari.getText().trim() + "%') order by uji_fungsi_kfr.tanggal ", param);
+                                + "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat,"
+                                + "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir "
+                                + "from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat "
+                                + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+                                + "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter "
+                                + "where uji_fungsi_kfr.tanggal between '"
+                                + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + " 00:00:00' and '"
+                                + Valid.SetTgl(DTPCari2.getSelectedItem() + "") + " 23:59:59' and "
+                                + "(reg_periksa.no_rawat like '%" + TCari.getText().trim()
+                                + "%' or pasien.no_rkm_medis like '%" + TCari.getText().trim()
+                                + "%' or pasien.nm_pasien like '%" + TCari.getText().trim() + "%' or "
+                                + "uji_fungsi_kfr.kd_dokter like '%" + TCari.getText().trim()
+                                + "%' or dokter.nm_dokter like '%" + TCari.getText().trim()
+                                + "%') order by uji_fungsi_kfr.tanggal ",
+                        param);
             }
         }
         this.setCursor(Cursor.getDefaultCursor());
-}//GEN-LAST:event_BtnPrintActionPerformed
+    }// GEN-LAST:event_BtnPrintActionPerformed
 
-    private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnPrintKeyPressed
+    private void BtnPrintKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnPrintKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             BtnPrintActionPerformed(null);
         } else {
             Valid.pindah(evt, BtnEdit, BtnKeluar);
         }
-}//GEN-LAST:event_BtnPrintKeyPressed
+    }// GEN-LAST:event_BtnPrintKeyPressed
 
-    private void TCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TCariKeyPressed
+    private void TCariKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_TCariKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             BtnCariActionPerformed(null);
         } else if (evt.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
@@ -1580,109 +1644,110 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         } else if (evt.getKeyCode() == KeyEvent.VK_PAGE_UP) {
             BtnKeluar.requestFocus();
         }
-}//GEN-LAST:event_TCariKeyPressed
+    }// GEN-LAST:event_TCariKeyPressed
 
-    private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
-}//GEN-LAST:event_BtnCariActionPerformed
+    private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnCariActionPerformed
+        runBackground(() -> tampil());
+    }// GEN-LAST:event_BtnCariActionPerformed
 
-    private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
+    private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnCariKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
             BtnCariActionPerformed(null);
         } else {
             Valid.pindah(evt, TCari, BtnAll);
         }
-}//GEN-LAST:event_BtnCariKeyPressed
+    }// GEN-LAST:event_BtnCariKeyPressed
 
-    private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
+    private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnAllActionPerformed
         TCari.setText("");
-        tampil();
-}//GEN-LAST:event_BtnAllActionPerformed
+        runBackground(() -> tampil());
+    }// GEN-LAST:event_BtnAllActionPerformed
 
-    private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
+    private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnAllKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
-            tampil();
+            runBackground(() -> tampil());
             TCari.setText("");
         } else {
             Valid.pindah(evt, BtnCari, TPasien);
         }
-}//GEN-LAST:event_BtnAllKeyPressed
+    }// GEN-LAST:event_BtnAllKeyPressed
 
-    private void TanggalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TanggalKeyPressed
+    private void TanggalKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_TanggalKeyPressed
         Valid.pindah(evt, TCari, Jam);
-}//GEN-LAST:event_TanggalKeyPressed
+    }// GEN-LAST:event_TanggalKeyPressed
 
-    private void TNoRMKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNoRMKeyPressed
+    private void TNoRMKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_TNoRMKeyPressed
         // Valid.pindah(evt, TNm, BtnSimpan);
-}//GEN-LAST:event_TNoRMKeyPressed
+    }// GEN-LAST:event_TNoRMKeyPressed
 
-    private void tbObatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbObatMouseClicked
+    private void tbObatMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_tbObatMouseClicked
         if (tabMode.getRowCount() != 0) {
             try {
                 getData();
             } catch (java.lang.NullPointerException e) {
             }
         }
-}//GEN-LAST:event_tbObatMouseClicked
+    }// GEN-LAST:event_tbObatMouseClicked
 
-    private void tbObatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbObatKeyPressed
+    private void tbObatKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_tbObatKeyPressed
         if (tabMode.getRowCount() != 0) {
-            if ((evt.getKeyCode() == KeyEvent.VK_ENTER) || (evt.getKeyCode() == KeyEvent.VK_UP) || (evt.getKeyCode() == KeyEvent.VK_DOWN)) {
+            if ((evt.getKeyCode() == KeyEvent.VK_ENTER) || (evt.getKeyCode() == KeyEvent.VK_UP)
+                    || (evt.getKeyCode() == KeyEvent.VK_DOWN)) {
                 try {
                     getData();
                 } catch (java.lang.NullPointerException e) {
                 }
-            }else if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+            } else if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
                 try {
                     ChkInput.setSelected(true);
-                    isForm(); 
+                    isForm();
                     getData();
                 } catch (java.lang.NullPointerException e) {
                 }
             }
         }
-}//GEN-LAST:event_tbObatKeyPressed
+    }// GEN-LAST:event_tbObatKeyPressed
 
-    private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkInputActionPerformed
+    private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_ChkInputActionPerformed
         isForm();
-    }//GEN-LAST:event_ChkInputActionPerformed
+    }// GEN-LAST:event_ChkInputActionPerformed
 
-    private void JamKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JamKeyPressed
+    private void JamKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_JamKeyPressed
         Valid.pindah(evt, Tanggal, Menit);
-    }//GEN-LAST:event_JamKeyPressed
+    }// GEN-LAST:event_JamKeyPressed
 
-    private void MenitKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MenitKeyPressed
+    private void MenitKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_MenitKeyPressed
         Valid.pindah(evt, Jam, Detik);
-    }//GEN-LAST:event_MenitKeyPressed
+    }// GEN-LAST:event_MenitKeyPressed
 
-    private void DetikKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DetikKeyPressed
-        Valid.pindah(evt, Menit, btnPetugas);
-    }//GEN-LAST:event_DetikKeyPressed
+    private void DetikKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_DetikKeyPressed
+        Valid.pindah(evt, Menit, BtnDokter);
+    }// GEN-LAST:event_DetikKeyPressed
 
-    private void KdDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KdDokterKeyPressed
+    private void KdDokterKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_KdDokterKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
-            Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?", NmDokter, KdDokter.getText());
+            NmDokter.setText(Sequel.CariDokter(KdDokter.getText()));
         } else if (evt.getKeyCode() == KeyEvent.VK_PAGE_UP) {
             Detik.requestFocus();
         } else if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            //Alergi.requestFocus();
+            // Alergi.requestFocus();
         } else if (evt.getKeyCode() == KeyEvent.VK_UP) {
             btnPetugasActionPerformed(null);
         }
-    }//GEN-LAST:event_KdDokterKeyPressed
+    }// GEN-LAST:event_KdDokterKeyPressed
 
-    private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPetugasActionPerformed
+    private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnPetugasActionPerformed
         dokter.emptTeks();
         dokter.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
         dokter.setLocationRelativeTo(internalFrame1);
         dokter.setVisible(true);
-    }//GEN-LAST:event_btnPetugasActionPerformed
+    }// GEN-LAST:event_BtnDokterActionPerformed
 
-    private void btnPetugasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnPetugasKeyPressed
+    private void btnPetugasKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_btnPetugasKeyPressed
         Valid.pindah(evt, Detik, DiagnosisFungsional);
-    }//GEN-LAST:event_btnPetugasKeyPressed
+    }// GEN-LAST:event_btnPetugasKeyPressed
 
-    private void MnUjiFungsiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnUjiFungsiActionPerformed
+    private void MnUjiFungsiActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MnUjiFungsiActionPerformed
         if (tbObat.getSelectedRow() > -1) {
             Map<String, Object> param = new HashMap<>();
             param.put("namars", akses.getnamars());
@@ -1693,18 +1758,27 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             param.put("emailrs", akses.getemailrs());
             param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
             param.put("no_rawat", tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString());
-            param.put("alamatpasien", Sequel.cariIsi("SELECT CONCAT(ps.alamat, ', DS. ',kl.nm_kel, ', KEC. ',kc.nm_kec, ',',kb.nm_kab) FROM pasien ps " +
-                        "INNER JOIN kelurahan kl ON kl.kd_kel = ps.kd_kel " +
-                        "INNER JOIN kecamatan kc ON kc.kd_kec = ps.kd_kec " +
-                        "INNER JOIN kabupaten kb ON kb.kd_kab = ps.kd_kab " +
-                        "WHERE ps.no_rkm_medis = ?", tbObat.getValueAt(tbObat.getSelectedRow(), 1).toString()));
-            finger = Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?", tbObat.getValueAt(tbObat.getSelectedRow(), 22).toString());
-            param.put("finger", "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs() + "\nDitandatangani secara elektronik oleh " + tbObat.getValueAt(tbObat.getSelectedRow(), 23).toString() + "\nID " + (finger.equals("") ? tbObat.getValueAt(tbObat.getSelectedRow(), 22).toString() : finger) + "\n" + Tanggal.getSelectedItem());
-            List<String> reports = Arrays.asList( "rptCetakLayananKFR.jasper", "rptCetakUjiFungsiKFR.jasper");
-            
+            param.put("alamatpasien", Sequel.cariIsi(
+                    "SELECT CONCAT(ps.alamat, ', DS. ',kl.nm_kel, ', KEC. ',kc.nm_kec, ',',kb.nm_kab) FROM pasien ps " +
+                            "INNER JOIN kelurahan kl ON kl.kd_kel = ps.kd_kel " +
+                            "INNER JOIN kecamatan kc ON kc.kd_kec = ps.kd_kec " +
+                            "INNER JOIN kabupaten kb ON kb.kd_kab = ps.kd_kab " +
+                            "WHERE ps.no_rkm_medis = ?",
+                    tbObat.getValueAt(tbObat.getSelectedRow(), 1).toString()));
+            finger = Sequel.cariIsi(
+                    "select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",
+                    tbObat.getValueAt(tbObat.getSelectedRow(), 22).toString());
+            param.put("finger",
+                    "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs()
+                            + "\nDitandatangani secara elektronik oleh "
+                            + tbObat.getValueAt(tbObat.getSelectedRow(), 23).toString() + "\nID "
+                            + (finger.equals("") ? tbObat.getValueAt(tbObat.getSelectedRow(), 22).toString() : finger)
+                            + "\n" + Tanggal.getSelectedItem());
+            List<String> reports = Arrays.asList("rptCetakLayananKFR.jasper", "rptCetakUjiFungsiKFR.jasper");
+
             Valid.CombinedReports(reports, "report", "::[ Formulir/Lembar Uji Fungsi/Prosedur KFR ]::", param);
         }
-    }//GEN-LAST:event_MnUjiFungsiActionPerformed
+    }// GEN-LAST:event_MnUjiFungsiActionPerformed
 
     public void CetakPDFUjiFungsi(String norawat, String noRM) {
         String kodedokter = Sequel.cariIsi("SELECT\n"
@@ -1737,15 +1811,22 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         param.put("kontakrs", akses.getkontakrs());
         param.put("emailrs", akses.getemailrs());
         param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
-        finger = Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?", kodedokter);
-        param.put("finger", "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs() + "\nDitandatangani secara elektronik oleh " + namadokter + "\nID " + (finger.equals("") ? kodedokter : finger) + "\n" + tanggal);
+        finger = Sequel.cariIsi(
+                "select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",
+                kodedokter);
+        param.put("finger",
+                "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs()
+                        + "\nDitandatangani secara elektronik oleh " + namadokter + "\nID "
+                        + (finger.equals("") ? kodedokter : finger) + "\n" + tanggal);
         Valid.MyReportqry("rptCetakUjiFungsiKFR.jasper", "report", "::[ Formulir/Lembar Uji Fungsi/Prosedur KFR ]::",
                 "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,"
-                + "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat,"
-                + "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir, "
-                + "date_format(uji_fungsi_kfr.tanggal,'%d-%m-%Y') as periksa from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat "
-                + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
-                + "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter where reg_periksa.no_rawat='" + norawat + "'", param);
+                        + "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat,"
+                        + "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir, "
+                        + "date_format(uji_fungsi_kfr.tanggal,'%d-%m-%Y') as periksa from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat "
+                        + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+                        + "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter where reg_periksa.no_rawat='"
+                        + norawat + "'",
+                param);
     }
 
     public void CetakPDFUjiFungsiGabung(String norawat, String noRM, String norawatuntuknamafile) {
@@ -1779,42 +1860,56 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         param.put("kontakrs", akses.getkontakrs());
         param.put("emailrs", akses.getemailrs());
         param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
-        finger = Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?", kodedokter);
-        param.put("finger", "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs() + "\nDitandatangani secara elektronik oleh " + namadokter + "\nID " + (finger.equals("") ? kodedokter : finger) + "\n" + tanggal);
-//        Valid.MyReportqrypdfKlaim("rptCetakUjiFungsiKFR.jasper", "report", "4UJIFUNGSIKFR",
-//                "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,"
-//                + "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat,"
-//                + "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir, "
-//                + "date_format(uji_fungsi_kfr.tanggal,'%d-%m-%Y') as periksa from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat "
-//                + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
-//                + "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter where reg_periksa.no_rawat='" + norawat + "'", param, "hasilkompilasiklaim", norawatuntuknamafile);
+        finger = Sequel.cariIsi(
+                "select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",
+                kodedokter);
+        param.put("finger",
+                "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs()
+                        + "\nDitandatangani secara elektronik oleh " + namadokter + "\nID "
+                        + (finger.equals("") ? kodedokter : finger) + "\n" + tanggal);
+        // Valid.MyReportqrypdfKlaim("rptCetakUjiFungsiKFR.jasper", "report",
+        // "4UJIFUNGSIKFR",
+        // "select
+        // reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,"
+        // +
+        // "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat,"
+        // +
+        // "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y')
+        // as lahir, "
+        // + "date_format(uji_fungsi_kfr.tanggal,'%d-%m-%Y') as periksa from
+        // uji_fungsi_kfr inner join reg_periksa on
+        // uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat "
+        // + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+        // + "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter where
+        // reg_periksa.no_rawat='" + norawat + "'", param, "hasilkompilasiklaim",
+        // norawatuntuknamafile);
     }
 
-    private void DiagnosisFungsionalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DiagnosisFungsionalKeyPressed
+    private void DiagnosisFungsionalKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_DiagnosisFungsionalKeyPressed
         Valid.pindah(evt, btnPetugas, DiagnosisMedis);
-    }//GEN-LAST:event_DiagnosisFungsionalKeyPressed
+    }// GEN-LAST:event_DiagnosisFungsionalKeyPressed
 
-    private void JKKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JKKeyPressed
+    private void JKKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_JKKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_JKKeyPressed
+    }// GEN-LAST:event_JKKeyPressed
 
-    private void DiagnosisMedisKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DiagnosisMedisKeyPressed
+    private void DiagnosisMedisKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_DiagnosisMedisKeyPressed
         Valid.pindah(evt, DiagnosisFungsional, hasilDidapat);
-    }//GEN-LAST:event_DiagnosisMedisKeyPressed
+    }// GEN-LAST:event_DiagnosisMedisKeyPressed
 
-    private void hasilDidapatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_hasilDidapatKeyPressed
+    private void hasilDidapatKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_hasilDidapatKeyPressed
         Valid.pindah2(evt, DiagnosisMedis, kesimpulan);
-    }//GEN-LAST:event_hasilDidapatKeyPressed
+    }// GEN-LAST:event_hasilDidapatKeyPressed
 
-    private void kesimpulanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kesimpulanKeyPressed
+    private void kesimpulanKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_kesimpulanKeyPressed
         Valid.pindah2(evt, hasilDidapat, rekomendasi);
-    }//GEN-LAST:event_kesimpulanKeyPressed
+    }// GEN-LAST:event_kesimpulanKeyPressed
 
-    private void rekomendasiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rekomendasiKeyPressed
+    private void rekomendasiKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_rekomendasiKeyPressed
         Valid.pindah2(evt, kesimpulan, BtnSimpan);
-    }//GEN-LAST:event_rekomendasiKeyPressed
+    }// GEN-LAST:event_rekomendasiKeyPressed
 
-    private void BtnUjiKFRGet1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUjiKFRGet1ActionPerformed
+    private void BtnUjiKFRGet1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnUjiKFRGet1ActionPerformed
         if (TNoRw.getText().equals("") && TNoRM.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Pasien masih kosong...!!!");
         } else {
@@ -1824,31 +1919,39 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             carikfr.setLocationRelativeTo(internalFrame1);
             carikfr.setVisible(true);
         }
-    }//GEN-LAST:event_BtnUjiKFRGet1ActionPerformed
+    }// GEN-LAST:event_BtnUjiKFRGet1ActionPerformed
 
-    private void BtnUjiKFRGet1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnUjiKFRGet1KeyPressed
+    private void BtnUjiKFRGet1KeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnUjiKFRGet1KeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_BtnUjiKFRGet1KeyPressed
+    }// GEN-LAST:event_BtnUjiKFRGet1KeyPressed
 
-    private void BtnUjiKFRGet3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUjiKFRGet3ActionPerformed
+    private void BtnUjiKFRGet3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_BtnUjiKFRGet3ActionPerformed
         if (TNoRw.getText().equals("") && TNoRM.getText().equals("")) {
             JOptionPane.showMessageDialog(rootPane, "Pasien masih kosong...!!!");
         } else {
             try {
-                ps4 = koneksi.prepareStatement("SELECT uji_fungsi_kfr.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pegawai.nama, " +
-                        "pegawai.jbtn,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis, " +
-                        "uji_fungsi_kfr.hasil_didapat,uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter, " +
-                        "layanan_kfr.anamnesa, layanan_kfr.pemeriksaan_fisik_fungsi, layanan_kfr.diagnosa_medis, layanan_kfr.diagnosa_fungsi,layanan_kfr.pemeriksaan_penunjang, " +
-                        "layanan_kfr.tata_laksana_kfr, layanan_kfr.goal_treatment, layanan_kfr.edukasi, layanan_kfr.anjuran, layanan_kfr.evaluasi,layanan_kfr.suspek_penyakit, " +
-                        "layanan_kfr.ket_suspek_penyakit " +
-                        "FROM pasien INNER JOIN reg_periksa ON reg_periksa.no_rkm_medis = pasien.no_rkm_medis " +
-                        "INNER JOIN pegawai " +
-                        "INNER JOIN uji_fungsi_kfr ON reg_periksa.no_rawat = uji_fungsi_kfr.no_rawat " +
-                        "AND reg_periksa.no_rawat = uji_fungsi_kfr.no_rawat " +
-                        "AND pegawai.nik = uji_fungsi_kfr.kd_dokter " +
-                        "INNER JOIN layanan_kfr ON layanan_kfr.no_rawat = uji_fungsi_kfr.no_rawat " +
-                        "where uji_fungsi_kfr.kd_dokter='" + akses.getkode() + "' and reg_periksa.no_rkm_medis='" + TNoRM.getText() + "' and reg_periksa.no_rawat!='" + TNoRw.getText() + "'"+
-                        "order by uji_fungsi_kfr.tanggal desc LIMIT 1");
+                ps4 = koneksi.prepareStatement(
+                        "SELECT uji_fungsi_kfr.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,pegawai.nama, " +
+                                "pegawai.jbtn,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis, "
+                                +
+                                "uji_fungsi_kfr.hasil_didapat,uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter, "
+                                +
+                                "layanan_kfr.anamnesa, layanan_kfr.pemeriksaan_fisik_fungsi, layanan_kfr.diagnosa_medis, layanan_kfr.diagnosa_fungsi,layanan_kfr.pemeriksaan_penunjang, "
+                                +
+                                "layanan_kfr.tata_laksana_kfr, layanan_kfr.goal_treatment, layanan_kfr.edukasi, layanan_kfr.anjuran, layanan_kfr.evaluasi,layanan_kfr.suspek_penyakit, "
+                                +
+                                "layanan_kfr.ket_suspek_penyakit " +
+                                "FROM pasien INNER JOIN reg_periksa ON reg_periksa.no_rkm_medis = pasien.no_rkm_medis "
+                                +
+                                "INNER JOIN pegawai " +
+                                "INNER JOIN uji_fungsi_kfr ON reg_periksa.no_rawat = uji_fungsi_kfr.no_rawat " +
+                                "AND reg_periksa.no_rawat = uji_fungsi_kfr.no_rawat " +
+                                "AND pegawai.nik = uji_fungsi_kfr.kd_dokter " +
+                                "INNER JOIN layanan_kfr ON layanan_kfr.no_rawat = uji_fungsi_kfr.no_rawat " +
+                                "where uji_fungsi_kfr.kd_dokter='" + akses.getkode()
+                                + "' and reg_periksa.no_rkm_medis='" + TNoRM.getText() + "' and reg_periksa.no_rawat!='"
+                                + TNoRw.getText() + "'" +
+                                "order by uji_fungsi_kfr.tanggal desc LIMIT 1");
                 try {
                     rs = ps4.executeQuery();
                     while (rs.next()) {
@@ -1883,51 +1986,51 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
                 System.out.println("Notifikasi : " + e);
             }
         }
-    }//GEN-LAST:event_BtnUjiKFRGet3ActionPerformed
+    }// GEN-LAST:event_BtnUjiKFRGet3ActionPerformed
 
-    private void BtnUjiKFRGet3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnUjiKFRGet3KeyPressed
+    private void BtnUjiKFRGet3KeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_BtnUjiKFRGet3KeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_BtnUjiKFRGet3KeyPressed
+    }// GEN-LAST:event_BtnUjiKFRGet3KeyPressed
 
-    private void AnamesaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_AnamesaKeyPressed
+    private void AnamesaKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_AnamesaKeyPressed
         Valid.pindah(evt, btnPetugas, PemFisikUji);
-    }//GEN-LAST:event_AnamesaKeyPressed
+    }// GEN-LAST:event_AnamesaKeyPressed
 
-    private void PemFisikUjiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PemFisikUjiKeyPressed
+    private void PemFisikUjiKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_PemFisikUjiKeyPressed
         Valid.pindah(evt, Anamesa, TataLaksana);
-    }//GEN-LAST:event_PemFisikUjiKeyPressed
+    }// GEN-LAST:event_PemFisikUjiKeyPressed
 
-    private void TataLaksanaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TataLaksanaKeyPressed
+    private void TataLaksanaKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_TataLaksanaKeyPressed
         Valid.pindah2(evt, PemFisikUji, Anjuran);
-    }//GEN-LAST:event_TataLaksanaKeyPressed
+    }// GEN-LAST:event_TataLaksanaKeyPressed
 
-    private void AnjuranKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_AnjuranKeyPressed
+    private void AnjuranKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_AnjuranKeyPressed
         Valid.pindah2(evt, TataLaksana, Evaluasi);
-    }//GEN-LAST:event_AnjuranKeyPressed
+    }// GEN-LAST:event_AnjuranKeyPressed
 
-    private void EvaluasiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_EvaluasiKeyPressed
+    private void EvaluasiKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_EvaluasiKeyPressed
         Valid.pindah2(evt, Anjuran, BtnSimpan);
-    }//GEN-LAST:event_EvaluasiKeyPressed
+    }// GEN-LAST:event_EvaluasiKeyPressed
 
-    private void SuspKetKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SuspKetKeyPressed
+    private void SuspKetKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_SuspKetKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_SuspKetKeyPressed
+    }// GEN-LAST:event_SuspKetKeyPressed
 
-    private void PemPenunjangKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PemPenunjangKeyPressed
+    private void PemPenunjangKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_PemPenunjangKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_PemPenunjangKeyPressed
+    }// GEN-LAST:event_PemPenunjangKeyPressed
 
-    private void SuspPenyItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_SuspPenyItemStateChanged
+    private void SuspPenyItemStateChanged(java.awt.event.ItemEvent evt) {// GEN-FIRST:event_SuspPenyItemStateChanged
         if (SuspPeny.getSelectedItem().toString().equals("Ya")) {
             SuspKet.setEditable(true);
         }
-    }//GEN-LAST:event_SuspPenyItemStateChanged
+    }// GEN-LAST:event_SuspPenyItemStateChanged
 
-    private void SuspPenyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SuspPenyKeyPressed
+    private void SuspPenyKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_SuspPenyKeyPressed
 
-    }//GEN-LAST:event_SuspPenyKeyPressed
+    }// GEN-LAST:event_SuspPenyKeyPressed
 
-    private void btnDiagnosa2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiagnosa2ActionPerformed
+    private void btnDiagnosa2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnDiagnosa2ActionPerformed
         if (TNoRw.getText().trim().equals("")) {
             JOptionPane.showMessageDialog(rootPane, "Maaf, Silahkan anda pilih dulu pasien...!!!");
         } else {
@@ -1936,25 +2039,25 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             diagnosa3.isCek();
             diagnosa3.setVisible(true);
         }
-    }//GEN-LAST:event_btnDiagnosa2ActionPerformed
+    }// GEN-LAST:event_btnDiagnosa2ActionPerformed
 
-    private void btnDiagnosa2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnDiagnosa2KeyPressed
+    private void btnDiagnosa2KeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_btnDiagnosa2KeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnDiagnosa2KeyPressed
+    }// GEN-LAST:event_btnDiagnosa2KeyPressed
 
-    private void EdukasiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_EdukasiKeyPressed
+    private void EdukasiKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_EdukasiKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_EdukasiKeyPressed
+    }// GEN-LAST:event_EdukasiKeyPressed
 
-    private void goalTreatmentKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_goalTreatmentKeyPressed
+    private void goalTreatmentKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_goalTreatmentKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_goalTreatmentKeyPressed
+    }// GEN-LAST:event_goalTreatmentKeyPressed
 
-    private void btnDiagnosa1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnDiagnosa1KeyPressed
+    private void btnDiagnosa1KeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_btnDiagnosa1KeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnDiagnosa1KeyPressed
+    }// GEN-LAST:event_btnDiagnosa1KeyPressed
 
-    private void btnDiagnosa1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiagnosa1ActionPerformed
+    private void btnDiagnosa1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnDiagnosa1ActionPerformed
         if (TNoRw.getText().trim().equals("")) {
             JOptionPane.showMessageDialog(rootPane, "Maaf, Silahkan anda pilih dulu pasien...!!!");
         } else {
@@ -1963,13 +2066,13 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             diagnosa2.isCek();
             diagnosa2.setVisible(true);
         }
-    }//GEN-LAST:event_btnDiagnosa1ActionPerformed
+    }// GEN-LAST:event_btnDiagnosa1ActionPerformed
 
-    private void btnDiagnosaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnDiagnosaKeyPressed
+    private void btnDiagnosaKeyPressed(java.awt.event.KeyEvent evt) {// GEN-FIRST:event_btnDiagnosaKeyPressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnDiagnosaKeyPressed
+    }// GEN-LAST:event_btnDiagnosaKeyPressed
 
-    private void btnDiagnosaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiagnosaActionPerformed
+    private void btnDiagnosaActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnDiagnosaActionPerformed
         if (TNoRw.getText().trim().equals("")) {
             JOptionPane.showMessageDialog(rootPane, "Maaf, Silahkan anda pilih dulu pasien...!!!");
         } else {
@@ -1978,30 +2081,57 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             diagnosa.isCek();
             diagnosa.setVisible(true);
         }
-    }//GEN-LAST:event_btnDiagnosaActionPerformed
+    }// GEN-LAST:event_btnDiagnosaActionPerformed
 
-    private void MnProgramKFRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnProgramKFRActionPerformed
-        if(tabMode.getRowCount()==0){
-            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
-            //TNoReg.requestFocus();
-        }else if(TNoRw.getText().trim().equals("")){
-            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+    private void MnProgramKFRActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_MnProgramKFRActionPerformed
+        if (tabMode.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Maaf, table masih kosong...!!!!");
+            // TNoReg.requestFocus();
+        } else if (TNoRw.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
             tbObat.requestFocus();
-        }else{
-            if(tbObat.getSelectedRow()!= -1){
+        } else {
+            if (tbObat.getSelectedRow() != -1) {
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                RMProgramKFR form=new RMProgramKFR(null,false);
+                RMProgramKFR form = new RMProgramKFR(null, false);
                 form.isCek();
                 form.emptTeks();
-                form.setNoRm(TNoRw.getText(),DTPCari2.getDate());
+                form.setNoRm(TNoRw.getText(), DTPCari2.getDate());
                 form.setRefKFR(tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString());
-                form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                form.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
                 form.setLocationRelativeTo(internalFrame1);
                 form.setVisible(true);
                 this.setCursor(Cursor.getDefaultCursor());
             }
         }
-    }//GEN-LAST:event_MnProgramKFRActionPerformed
+    }// GEN-LAST:event_MnProgramKFRActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {// GEN-FIRST:event_formWindowOpened
+        if (koneksiDB.CARICEPAT().equals("aktif")) {
+            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    if (TCari.getText().length() > 2) {
+                        runBackground(() -> tampil());
+                    }
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    if (TCari.getText().length() > 2) {
+                        runBackground(() -> tampil());
+                    }
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    if (TCari.getText().length() > 2) {
+                        runBackground(() -> tampil());
+                    }
+                }
+            });
+        }
+    }// GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -2025,6 +2155,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
     private widget.Button BtnAll;
     private widget.Button BtnBatal;
     private widget.Button BtnCari;
+    private widget.Button BtnDokter;
     private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
@@ -2120,32 +2251,38 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         try {
             if (TCari.getText().trim().equals("")) {
                 ps = koneksi.prepareStatement(
-                        "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur, " +
-                        "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat, " +
-                        "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir, " +
-                        "layanan_kfr.anamnesa, layanan_kfr.pemeriksaan_fisik_fungsi, layanan_kfr.diagnosa_medis, layanan_kfr.diagnosa_fungsi,layanan_kfr.pemeriksaan_penunjang, " +
-                        "layanan_kfr.tata_laksana_kfr, layanan_kfr.goal_treatment, layanan_kfr.edukasi, layanan_kfr.anjuran, layanan_kfr.evaluasi,layanan_kfr.suspek_penyakit, " +
-                        "layanan_kfr.ket_suspek_penyakit " +
-                        "from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat " +
-                        "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
-                        "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter " +
-                        "INNER JOIN layanan_kfr ON layanan_kfr.no_rawat = uji_fungsi_kfr.no_rawat " +
-                        "where uji_fungsi_kfr.tanggal between ? and ? order by uji_fungsi_kfr.tanggal ");
+                        "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur, "
+                                +
+                                "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat, "
+                                +
+                                "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir, "
+                                +
+                                "layanan_kfr.anamnesa, layanan_kfr.pemeriksaan_fisik_fungsi, layanan_kfr.diagnosa_medis, layanan_kfr.diagnosa_fungsi,layanan_kfr.pemeriksaan_penunjang, "
+                                +
+                                "layanan_kfr.tata_laksana_kfr, layanan_kfr.goal_treatment, layanan_kfr.edukasi, layanan_kfr.anjuran, layanan_kfr.evaluasi,layanan_kfr.suspek_penyakit, "
+                                +
+                                "layanan_kfr.ket_suspek_penyakit " +
+                                "from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat "
+                                +
+                                "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
+                                "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter " +
+                                "INNER JOIN layanan_kfr ON layanan_kfr.no_rawat = uji_fungsi_kfr.no_rawat " +
+                                "where uji_fungsi_kfr.tanggal between ? and ? order by uji_fungsi_kfr.tanggal ");
             } else {
                 ps = koneksi.prepareStatement(
                         "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur,"
-                        + "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat,"
-                        + "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir, "
-                        + "layanan_kfr.anamnesa, layanan_kfr.pemeriksaan_fisik_fungsi, layanan_kfr.diagnosa_medis, layanan_kfr.diagnosa_fungsi,layanan_kfr.pemeriksaan_penunjang, " 
-                        + "layanan_kfr.tata_laksana_kfr, layanan_kfr.goal_treatment, layanan_kfr.edukasi, layanan_kfr.anjuran, layanan_kfr.evaluasi,layanan_kfr.suspek_penyakit, "
-                        + "layanan_kfr.ket_suspek_penyakit "
-                        + "from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat "
-                        + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
-                        + "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter "
-                        + "INNER JOIN layanan_kfr ON layanan_kfr.no_rawat = uji_fungsi_kfr.no_rawat "
-                        + "where uji_fungsi_kfr.tanggal between ? and ? and "
-                        + "(reg_periksa.no_rawat like ? or pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or uji_fungsi_kfr.kd_dokter like ? or dokter.nm_dokter like ?) "
-                        + "order by uji_fungsi_kfr.tanggal ");
+                                + "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat,"
+                                + "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir, "
+                                + "layanan_kfr.anamnesa, layanan_kfr.pemeriksaan_fisik_fungsi, layanan_kfr.diagnosa_medis, layanan_kfr.diagnosa_fungsi,layanan_kfr.pemeriksaan_penunjang, "
+                                + "layanan_kfr.tata_laksana_kfr, layanan_kfr.goal_treatment, layanan_kfr.edukasi, layanan_kfr.anjuran, layanan_kfr.evaluasi,layanan_kfr.suspek_penyakit, "
+                                + "layanan_kfr.ket_suspek_penyakit "
+                                + "from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat "
+                                + "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+                                + "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter "
+                                + "INNER JOIN layanan_kfr ON layanan_kfr.no_rawat = uji_fungsi_kfr.no_rawat "
+                                + "where uji_fungsi_kfr.tanggal between ? and ? and "
+                                + "(reg_periksa.no_rawat like ? or pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or uji_fungsi_kfr.kd_dokter like ? or dokter.nm_dokter like ?) "
+                                + "order by uji_fungsi_kfr.tanggal ");
             }
 
             try {
@@ -2164,15 +2301,18 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
 
                 rs = ps.executeQuery();
                 while (rs.next()) {
-                    tabMode.addRow(new String[]{
-                        rs.getString("no_rawat"), rs.getString("no_rkm_medis"), rs.getString("nm_pasien"),
-                        rs.getString("umurdaftar") + " " + rs.getString("sttsumur"), rs.getString("jk"),
-                        rs.getString("lahir"), rs.getString("tanggal"), rs.getString("diagnosis_fungsional"),
-                        rs.getString("diagnosis_medis"), rs.getString("hasil_didapat"), rs.getString("kesimpulan"),
-                        rs.getString("rekomedasi"), rs.getString("anamnesa"),rs.getString("pemeriksaan_fisik_fungsi"), 
-                        rs.getString("pemeriksaan_penunjang"),rs.getString("tata_laksana_kfr"), rs.getString("goal_treatment"),rs.getString("edukasi"),
-                        rs.getString("anjuran"), rs.getString("evaluasi"),rs.getString("suspek_penyakit"),rs.getString("ket_suspek_penyakit"),
-                        rs.getString("kd_dokter"), rs.getString("nm_dokter")
+                    tabMode.addRow(new Object[] {
+                            rs.getString("no_rawat"), rs.getString("no_rkm_medis"), rs.getString("nm_pasien"),
+                            rs.getString("umurdaftar") + " " + rs.getString("sttsumur"), rs.getString("jk"),
+                            rs.getString("lahir"), rs.getString("tanggal"), rs.getString("diagnosis_fungsional"),
+                            rs.getString("diagnosis_medis"), rs.getString("hasil_didapat"), rs.getString("kesimpulan"),
+                            rs.getString("rekomedasi"), rs.getString("anamnesa"),
+                            rs.getString("pemeriksaan_fisik_fungsi"),
+                            rs.getString("pemeriksaan_penunjang"), rs.getString("tata_laksana_kfr"),
+                            rs.getString("goal_treatment"), rs.getString("edukasi"),
+                            rs.getString("anjuran"), rs.getString("evaluasi"), rs.getString("suspek_penyakit"),
+                            rs.getString("ket_suspek_penyakit"),
+                            rs.getString("kd_dokter"), rs.getString("nm_dokter")
                     });
                 }
             } catch (Exception e) {
@@ -2197,7 +2337,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         hasilDidapat.setText("");
         kesimpulan.setText("");
         rekomendasi.setText("");
-        
+
         Anamesa.setText("");
         PemFisikUji.setText("");
         PemPenunjang.setText("");
@@ -2208,14 +2348,15 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         Evaluasi.setText("");
         SuspPeny.setSelectedItem("Tidak");
         SuspKet.setText("");
-            
-            
+
         DiagnosisFungsional.requestFocus();
     }
 
     private void getData() {
         if (tbObat.getSelectedRow() != -1) {
-            // "No.Rawat","No.R.M.","Nama Pasien","Umur","JK","Tgl.Lahir","Tanggal Uji","Diagnosis Fugsional","Diagnosis Medis","Hasil Yang Didapat","Kesimpulan","Rekomendasi","Kode Dokter","Nama Dokter"
+            // "No.Rawat","No.R.M.","Nama Pasien","Umur","JK","Tgl.Lahir","Tanggal
+            // Uji","Diagnosis Fugsional","Diagnosis Medis","Hasil Yang
+            // Didapat","Kesimpulan","Rekomendasi","Kode Dokter","Nama Dokter"
             TNoRw.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString());
             TNoRM.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 1).toString());
             TPasien.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 2).toString());
@@ -2226,7 +2367,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             hasilDidapat.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 9).toString());
             kesimpulan.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 10).toString());
             rekomendasi.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 11).toString());
-            
+
             Anamesa.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 12).toString());
             PemFisikUji.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 13).toString());
             PemPenunjang.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 14).toString());
@@ -2248,87 +2389,98 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
     }
 
     private void isRawat() {
-        Sequel.cariIsi("select reg_periksa.no_rkm_medis from reg_periksa where reg_periksa.no_rawat='" + TNoRw.getText() + "' ", TNoRM);
+        Sequel.cariIsi("select reg_periksa.no_rkm_medis from reg_periksa where reg_periksa.no_rawat='" + TNoRw.getText()
+                + "' ", TNoRM);
     }
 
     private void isPsien() {
-        Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis='" + TNoRM.getText() + "' ", TPasien);
+        Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis='" + TNoRM.getText() + "' ",
+                TPasien);
         Sequel.cariIsi("select pasien.jk from pasien where pasien.no_rkm_medis='" + TNoRM.getText() + "' ", JK);
-        Sequel.cariIsi("select date_format(pasien.tgl_lahir,'%d-%m-%Y') from pasien where pasien.no_rkm_medis=? ", TglLahir, TNoRM.getText());
+        Sequel.cariIsi("select date_format(pasien.tgl_lahir,'%d-%m-%Y') from pasien where pasien.no_rkm_medis=? ",
+                TglLahir, TNoRM.getText());
     }
 
     public void setNoRm(String norwt, Date tgl2) {
         TNoRw.setText(norwt);
         TCari.setText(norwt);
-        Sequel.cariIsi("select reg_periksa.tgl_registrasi from reg_periksa where reg_periksa.no_rawat='" + norwt + "'", DTPCari1);
+        Sequel.cariIsi("select reg_periksa.tgl_registrasi from reg_periksa where reg_periksa.no_rawat='" + norwt + "'",
+                DTPCari1);
         DTPCari2.setDate(tgl2);
         isRawat();
         isPsien();
         ChkInput.setSelected(false);
         isForm();
+        runBackground(() -> tampil());
         if (!NmDokter.getText().equals("")) {
-           isGetInitialData(norwt);
+            isGetInitialData(norwt);
         }
         tampil();
     }
-    
-    public void isGetInitialData(String norwt){
+
+    public void isGetInitialData(String norwt) {
         try {
-              ps=koneksi.prepareStatement(
-                    "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur, " +
-                    "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat, " +
-                    "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir, " +
-                    "layanan_kfr.anamnesa, layanan_kfr.pemeriksaan_fisik_fungsi, layanan_kfr.diagnosa_medis, layanan_kfr.diagnosa_fungsi,layanan_kfr.pemeriksaan_penunjang, " +
-                    "layanan_kfr.tata_laksana_kfr, layanan_kfr.goal_treatment, layanan_kfr.edukasi, layanan_kfr.anjuran, layanan_kfr.evaluasi,layanan_kfr.suspek_penyakit, " +
-                    "layanan_kfr.ket_suspek_penyakit " +
-                    "from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat " +
-                    "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
-                    "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter " +
-                    "INNER JOIN layanan_kfr ON layanan_kfr.no_rawat = uji_fungsi_kfr.no_rawat " +
-                    "WHERE layanan_kfr.no_rawat = ? AND layanan_kfr.kd_dokter = ?");
-              try {
-                ps.setString(1,norwt);
-                ps.setString(2,KdDokter.getText());
-                rs=ps.executeQuery();
-                  while (rs.next()) {
+            ps = koneksi.prepareStatement(
+                    "select reg_periksa.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,reg_periksa.umurdaftar,reg_periksa.sttsumur, "
+                            +
+                            "pasien.jk,uji_fungsi_kfr.tanggal,uji_fungsi_kfr.diagnosis_fungsional,uji_fungsi_kfr.diagnosis_medis,uji_fungsi_kfr.hasil_didapat, "
+                            +
+                            "uji_fungsi_kfr.kesimpulan,uji_fungsi_kfr.rekomedasi,uji_fungsi_kfr.kd_dokter,dokter.nm_dokter,date_format(pasien.tgl_lahir,'%d-%m-%Y') as lahir, "
+                            +
+                            "layanan_kfr.anamnesa, layanan_kfr.pemeriksaan_fisik_fungsi, layanan_kfr.diagnosa_medis, layanan_kfr.diagnosa_fungsi,layanan_kfr.pemeriksaan_penunjang, "
+                            +
+                            "layanan_kfr.tata_laksana_kfr, layanan_kfr.goal_treatment, layanan_kfr.edukasi, layanan_kfr.anjuran, layanan_kfr.evaluasi,layanan_kfr.suspek_penyakit, "
+                            +
+                            "layanan_kfr.ket_suspek_penyakit " +
+                            "from uji_fungsi_kfr inner join reg_periksa on uji_fungsi_kfr.no_rawat=reg_periksa.no_rawat "
+                            +
+                            "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
+                            "inner join dokter on uji_fungsi_kfr.kd_dokter=dokter.kd_dokter " +
+                            "INNER JOIN layanan_kfr ON layanan_kfr.no_rawat = uji_fungsi_kfr.no_rawat " +
+                            "WHERE layanan_kfr.no_rawat = ? AND layanan_kfr.kd_dokter = ?");
+            try {
+                ps.setString(1, norwt);
+                ps.setString(2, KdDokter.getText());
+                rs = ps.executeQuery();
+                while (rs.next()) {
 
-                      DiagnosisFungsional.setText(rs.getString("diagnosis_fungsional"));
-                      DiagnosisMedis.setText(rs.getString("diagnosis_medis"));
-                      hasilDidapat.setText(rs.getString("hasil_didapat"));
-                      kesimpulan.setText(rs.getString("kesimpulan"));
-                      rekomendasi.setText(rs.getString("rekomedasi"));
+                    DiagnosisFungsional.setText(rs.getString("diagnosis_fungsional"));
+                    DiagnosisMedis.setText(rs.getString("diagnosis_medis"));
+                    hasilDidapat.setText(rs.getString("hasil_didapat"));
+                    kesimpulan.setText(rs.getString("kesimpulan"));
+                    rekomendasi.setText(rs.getString("rekomedasi"));
 
-                      Anamesa.setText(rs.getString("anamnesa"));
-                      PemFisikUji.setText(rs.getString("pemeriksaan_fisik_fungsi"));
-                      PemPenunjang.setText(rs.getString("pemeriksaan_penunjang"));
-                      TataLaksana.setText(rs.getString("tata_laksana_kfr"));
-                      goalTreatment.setText(rs.getString("goal_treatment"));
-                      Edukasi.setText(rs.getString("edukasi"));
-                      Anjuran.setText(rs.getString("anjuran"));
-                      Evaluasi.setText(rs.getString("evaluasi"));
-                      SuspPeny.setSelectedItem(rs.getString("suspek_penyakit"));
-                      SuspKet.setText(rs.getString("ket_suspek_penyakit"));
-                  }
+                    Anamesa.setText(rs.getString("anamnesa"));
+                    PemFisikUji.setText(rs.getString("pemeriksaan_fisik_fungsi"));
+                    PemPenunjang.setText(rs.getString("pemeriksaan_penunjang"));
+                    TataLaksana.setText(rs.getString("tata_laksana_kfr"));
+                    goalTreatment.setText(rs.getString("goal_treatment"));
+                    Edukasi.setText(rs.getString("edukasi"));
+                    Anjuran.setText(rs.getString("anjuran"));
+                    Evaluasi.setText(rs.getString("evaluasi"));
+                    SuspPeny.setSelectedItem(rs.getString("suspek_penyakit"));
+                    SuspKet.setText(rs.getString("ket_suspek_penyakit"));
+                }
             } catch (Exception e) {
-                System.out.println("Notif : "+e);
-            } finally{
-                if(rs!=null){
+                System.out.println("Notif : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                if(ps!=null){
+                if (ps != null) {
                     ps.close();
                 }
             }
         } catch (Exception e) {
-             System.out.println("Notif : "+e);
+            System.out.println("Notif : " + e);
         }
     }
 
     private void isForm() {
         if (ChkInput.isSelected() == true) {
             ChkInput.setVisible(false);
-//            PanelInput.setPreferredSize(new Dimension(WIDTH,this.getHeight()-230));
-            PanelInput.setPreferredSize(new Dimension(WIDTH,this.getHeight()-122));
+            // PanelInput.setPreferredSize(new Dimension(WIDTH,this.getHeight()-230));
+            PanelInput.setPreferredSize(new Dimension(WIDTH, this.getHeight() - 122));
             FormInput.setVisible(true);
             ChkInput.setVisible(true);
         } else if (ChkInput.isSelected() == false) {
@@ -2346,9 +2498,9 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         BtnPrint.setEnabled(akses.getuji_fungsi_kfr());
         if (akses.getjml2() >= 1) {
             KdDokter.setEditable(false);
-            btnPetugas.setEnabled(false);
+            BtnDokter.setEnabled(false);
             KdDokter.setText(akses.getkode());
-            Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?", NmDokter, KdDokter.getText());
+            NmDokter.setText(Sequel.CariDokter(KdDokter.getText()));
             if (NmDokter.getText().equals("")) {
                 KdDokter.setText("");
                 JOptionPane.showMessageDialog(null, "User login bukan dokter...!!");
@@ -2400,7 +2552,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
                 String menit = nol_menit + Integer.toString(nilai_menit);
                 String detik = nol_detik + Integer.toString(nilai_detik);
                 // Menampilkan pada Layar
-                //tampil_jam.setText("  " + jam + " : " + menit + " : " + detik + "  ");
+                // tampil_jam.setText(" " + jam + " : " + menit + " : " + detik + " ");
                 Jam.setSelectedItem(jam);
                 Menit.setSelectedItem(menit);
                 Detik.setSelectedItem(detik);
@@ -2411,32 +2563,38 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
     }
 
     private void ganti() {
-        Sequel.mengedit("uji_fungsi_kfr", "no_rawat=?", "tanggal=?,diagnosis_fungsional=?,diagnosis_medis=?,hasil_didapat=?,kesimpulan=?,rekomedasi=?,kd_dokter=?", 8, new String[]{
-            Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":" + Menit.getSelectedItem() + ":" + Detik.getSelectedItem(),
-            DiagnosisFungsional.getText(), DiagnosisMedis.getText(), hasilDidapat.getText(), kesimpulan.getText(), rekomendasi.getText(), KdDokter.getText(),
-            TNoRw.getText()
-        });
-        
+        Sequel.mengedit("uji_fungsi_kfr", "no_rawat=?",
+                "tanggal=?,diagnosis_fungsional=?,diagnosis_medis=?,hasil_didapat=?,kesimpulan=?,rekomedasi=?,kd_dokter=?",
+                8, new String[] {
+                        Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":"
+                                + Menit.getSelectedItem() + ":" + Detik.getSelectedItem(),
+                        DiagnosisFungsional.getText(), DiagnosisMedis.getText(), hasilDidapat.getText(),
+                        kesimpulan.getText(), rekomendasi.getText(), KdDokter.getText(),
+                        TNoRw.getText()
+                });
+
         Sequel.mengedit("layanan_kfr", "no_rawat=?", "tanggal=?,anamnesa=?,pemeriksaan_fisik_fungsi=?,diagnosa_medis=?,"
                 + "diagnosa_fungsi=?,pemeriksaan_penunjang=?,tata_laksana_kfr=?,goal_treatment=?,anjuran=?,edukasi=?,evaluasi=?,"
-                + "suspek_penyakit=?,ket_suspek_penyakit=?, kd_dokter=?", 15, new String[]{
-            Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":" + Menit.getSelectedItem() + ":" + Detik.getSelectedItem(),
-            Anamesa.getText(),
-            PemFisikUji.getText(),
-            DiagnosisMedis.getText(),
-            DiagnosisFungsional.getText(),
-            PemPenunjang.getText(),
-            TataLaksana.getText(),
-            goalTreatment.getText(),
-            Anjuran.getText(),
-            Edukasi.getText(),
-            Evaluasi.getText(),
-            SuspPeny.getSelectedItem().toString(),
-            SuspKet.getText(),
-            KdDokter.getText(),
-            TNoRw.getText()
-        });
-        
+                + "suspek_penyakit=?,ket_suspek_penyakit=?, kd_dokter=?", 15,
+                new String[] {
+                        Valid.SetTgl(Tanggal.getSelectedItem() + "") + " " + Jam.getSelectedItem() + ":"
+                                + Menit.getSelectedItem() + ":" + Detik.getSelectedItem(),
+                        Anamesa.getText(),
+                        PemFisikUji.getText(),
+                        DiagnosisMedis.getText(),
+                        DiagnosisFungsional.getText(),
+                        PemPenunjang.getText(),
+                        TataLaksana.getText(),
+                        goalTreatment.getText(),
+                        Anjuran.getText(),
+                        Edukasi.getText(),
+                        Evaluasi.getText(),
+                        SuspPeny.getSelectedItem().toString(),
+                        SuspKet.getText(),
+                        KdDokter.getText(),
+                        TNoRw.getText()
+                });
+
         if (tabMode.getRowCount() != 0) {
             tampil();
         }
@@ -2444,15 +2602,18 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
     }
 
     private void hapus() {
-        if (Sequel.queryu2tf("delete from uji_fungsi_kfr where no_rawat=?", 1, new String[]{
-            tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString()
-        }) == true) {
-            if (Sequel.queryu2tf("delete from layanan_kfr where no_rawat=?", 1, new String[]{
+        if (Sequel.queryu2tf("delete from uji_fungsi_kfr where no_rawat=?", 1, new String[] {
                 tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString()
+        }) == true) {
+            if (Sequel.queryu2tf("delete from layanan_kfr where no_rawat=?", 1, new String[] {
+                    tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString()
             }) == true) {
-                Sequel.mengedit("layanan_kfr", "no_rawat='" + Sequel.cariIsi("SELECT layanan_kfr.no_rawat FROM layanan_kfr \n"
-                        + "INNER JOIN reg_periksa ON reg_periksa.no_rawat = layanan_kfr.no_rawat\n"
-                        + "WHERE reg_periksa.no_rkm_medis = ? AND layanan_kfr.`status`= '0' order by layanan_kfr.tanggal desc limit 1", TNoRM.getText()) + "'", "status='1'");
+                Sequel.mengedit("layanan_kfr",
+                        "no_rawat='" + Sequel.cariIsi("SELECT layanan_kfr.no_rawat FROM layanan_kfr \n"
+                                + "INNER JOIN reg_periksa ON reg_periksa.no_rawat = layanan_kfr.no_rawat\n"
+                                + "WHERE reg_periksa.no_rkm_medis = ? AND layanan_kfr.`status`= '0' order by layanan_kfr.tanggal desc limit 1",
+                                TNoRM.getText()) + "'",
+                        "status='1'");
                 tampil();
                 emptTeks();
             } else {
@@ -2472,9 +2633,51 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         param.put("kontakrs", akses.getkontakrs());
         param.put("emailrs", akses.getemailrs());
         param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
-        finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",tbObat.getValueAt(tbObat.getSelectedRow(),22).toString());
-        param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+tbObat.getValueAt(tbObat.getSelectedRow(),23).toString()+"\nID "+(finger.equals("")?tbObat.getValueAt(tbObat.getSelectedRow(),22).toString():finger)+"\n"+Valid.SetTgl3(Tanggal.getSelectedItem().toString())); 
-        Valid.MyReport("rptCetakUjiFungsiKFR.jasper", "report", "::[ Formulir/Lembar Uji Fungsi/Prosedur KFR ]::", param);
+        finger = Sequel.cariIsi(
+                "select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",
+                tbObat.getValueAt(tbObat.getSelectedRow(), 22).toString());
+        param.put("finger", "Dikeluarkan di " + akses.getnamars() + ", Kabupaten/Kota " + akses.getkabupatenrs()
+                + "\nDitandatangani secara elektronik oleh " + tbObat.getValueAt(tbObat.getSelectedRow(), 23).toString()
+                + "\nID " + (finger.equals("") ? tbObat.getValueAt(tbObat.getSelectedRow(), 22).toString() : finger)
+                + "\n" + Valid.SetTgl3(Tanggal.getSelectedItem().toString()));
+        Valid.MyReport("rptCetakUjiFungsiKFR.jasper", "report", "::[ Formulir/Lembar Uji Fungsi/Prosedur KFR ]::",
+                param);
 
     }
+
+    private void runBackground(Runnable task) {
+        if (ceksukses)
+            return;
+        if (executor.isShutdown() || executor.isTerminated())
+            return;
+        if (!isDisplayable())
+            return;
+
+        ceksukses = true;
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } finally {
+                    ceksukses = false;
+                    SwingUtilities.invokeLater(() -> {
+                        if (isDisplayable()) {
+                            setCursor(Cursor.getDefaultCursor());
+                        }
+                    });
+                }
+            });
+        } catch (RejectedExecutionException ex) {
+            ceksukses = false;
+        }
+    }
+
+    @Override
+    public void dispose() {
+        executor.shutdownNow();
+        super.dispose();
+    }
+
 }

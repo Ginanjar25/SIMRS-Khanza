@@ -12,13 +12,11 @@ import fungsi.koneksiDB;
 import fungsi.sekuel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Properties;
 import javax.swing.Timer;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -31,12 +29,14 @@ import org.springframework.http.MediaType;
  */
 public class frmUtama extends javax.swing.JFrame {
     private  Connection koneksi=koneksiDB.condb();
-    private  sekuel Sequel=new sekuel();
-    private  String requestJson,URL="",kodeppk=Sequel.cariIsi("select setting.kode_ppk from setting");
-    private  BPJSApiAplicare api=new BPJSApiAplicare();
+    private final sekuel Sequel=new sekuel();
+    private String requestJson,utc="";
+    private final String URL = "";
+    private final String kodeppk = Sequel.cariIsi("select setting.kode_ppk from setting");
+    private final BPJSApiAplicare api=new BPJSApiAplicare();
     private  HttpHeaders headers;
     private  HttpEntity requestEntity;
-    private  ObjectMapper mapper= new ObjectMapper();
+    private final  ObjectMapper mapper= new ObjectMapper();
     private  JsonNode root;
     private  JsonNode nameNode;
     private  PreparedStatement ps;
@@ -167,7 +167,7 @@ public class frmUtama extends javax.swing.JFrame {
                     TeksArea.setText("");
                 }
                 
-                if((nilai_jam%4==0)&&(detik.equals("01")&&menit.equals("01"))){
+                if((detik.equals("01")&&menit.equals("01"))){
                     try {
                         koneksi=koneksiDB.condb();
                         TeksArea.append("Memulai update aplicare\n");
@@ -185,8 +185,10 @@ public class frmUtama extends javax.swing.JFrame {
                                     headers = new HttpHeaders();
                                     headers.setContentType(MediaType.APPLICATION_JSON);
                                     headers.add("X-Cons-ID",koneksiDB.CONSIDAPIAPLICARE());
-                                    headers.add("X-Timestamp",String.valueOf(api.GetUTCdatetimeAsString()));            
-                                    headers.add("X-Signature",api.getHmac());
+                                    utc=String.valueOf(api.GetUTCdatetimeAsString());
+                                    headers.add("X-Timestamp",utc);
+                                    headers.add("X-Signature",api.getHmac(utc));
+                                    headers.add("user_key",koneksiDB.USERKEYAPIAPLICARE());
                                     requestJson ="{\"kodekelas\":\""+rs.getString("kode_kelas_aplicare")+"\", "+
                                                   "\"koderuang\":\""+rs.getString("kd_bangsal")+"\","+ 
                                                   "\"namaruang\":\""+rs.getString("nm_bangsal")+"\","+ 
