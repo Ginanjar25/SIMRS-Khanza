@@ -168,6 +168,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import rekammedis.RMProgramKFR;
 import java.awt.Component;
+import modif.RMRiwayatRadiologi;
+import modif.RMRiwayatBerkasDigital;
 
 /**
  *
@@ -1844,6 +1846,8 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         BtnPenilaianTambahanPerilakuKekerasan = new widget.Button();
         BtnPenilaianTambahanMelarikanDiri = new widget.Button();
         button4 = new widget.Button();
+        button5 = new widget.Button();
+        button6 = new widget.Button();
         TPotensiPRB = new widget.Label();
         //TCaraBayar = new widget.TextBox();
         cmbKategory = new widget.ComboBox();
@@ -2606,6 +2610,30 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         });
         panelGlass12.add(button4);
         button4.setBounds(910, 10, 170, 22);
+        
+        button5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        button5.setText("Riwyat Pemeriksaan Radiologi");
+        button5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        button5.setName("button5"); // NOI18N
+        button5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button5ActionPerformed(evt);
+            }
+        });
+        panelGlass12.add(button5);
+        button5.setBounds(910, 40, 230, 22);
+        
+        button6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        button6.setText("Riwyat Berkas Digital");
+        button6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        button6.setName("button6"); // NOI18N
+        button6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button6ActionPerformed(evt);
+            }
+        });
+        panelGlass12.add(button6);
+        button6.setBounds(910, 70, 180, 22);
 
         TSuhu.setFocusTraversalPolicyProvider(true);
         TSuhu.setName("TSuhu"); 
@@ -5720,6 +5748,34 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         }
     }
     
+    private void button5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No.Rawat");
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                RMRiwayatRadiologi resumeRad=new RMRiwayatRadiologi(null,true);
+                resumeRad.setNoRm(TNoRM.getText(),TPasien.getText());
+                resumeRad.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
+                resumeRad.setLocationRelativeTo(internalFrame1);
+                resumeRad.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());  
+        }
+    }
+    
+    private void button6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No.Rawat");
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                RMRiwayatBerkasDigital resumeBerkasDigital=new RMRiwayatBerkasDigital(null,true);
+                resumeBerkasDigital.setNoRm(TNoRM.getText(),TPasien.getText());
+                resumeBerkasDigital.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
+                resumeBerkasDigital.setLocationRelativeTo(internalFrame1);
+                resumeBerkasDigital.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());  
+        }
+    }
+        
     private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNoRwKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
             isRawat();
@@ -10454,7 +10510,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button BtnSkorBromagePascaAnestesi,BtnPenilaianPreInduksi,BtnHasilPemeriksaanUSGUrologi,BtnHasilPemeriksaanUSGGynecologi,BtnHasilPemeriksaanEKG,BtnPenatalaksanaanTerapiOkupasi,BtnPenilaianPsikolog,
                           BtnHasilPemeriksaanUSGNeonatus,BtnHasilEndoskopiFaringLaring,BtnHasilEndoskopiHidung,BtnHasilEndoskopiTelinga,BtnPenilaianPasienImunitasRendah,BtnCatatanKeseimbanganCairan,BtnCatatanObservasiCHBP,
                           BtnCatatanObservasiInduksiPersalinan,BtnPermintaanKonsultasiMedik;
-    private widget.Button button4;
+    private widget.Button button4, button5, button6;
     private widget.Label jLabelCaraBayar;
     private widget.Label TCaraBayar;
     //private widget.TextBox TCaraBayar;
