@@ -670,7 +670,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         try {
             FILTEROBATPENJAB = FILTEROBATPENJAB();
         } catch (Exception e) {
-             RESEPRAJALKEPLAN="no";
+             FILTEROBATPENJAB="no";
         }
         
     }    
@@ -2936,7 +2936,8 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         TPasien.setText(Pasien);
         KdDokter.setText(KodeDokter);
         NmDokter.setText(NamaDokter);
-        KdPj.setText(kodepj);
+//        KdPj.setText(kodepj);
+        KdPj.setText(Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?",norwt));
         TCari.requestFocus();
         this.status=status;
         SetHarga();
