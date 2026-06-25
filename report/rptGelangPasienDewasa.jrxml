@@ -22,7 +22,11 @@
 	<parameter name="logo" class="java.io.InputStream"/>
 	<parameter name="tanggal" class="java.lang.String"/>
 	<parameter name="kamar" class="java.lang.String"/>
+	<parameter name="kamar2" class="java.lang.String"/>
 	<parameter name="dpjp" class="java.lang.String"/>
+	<parameter name="penjab" class="java.lang.String"/>
+	<parameter name="kls_bpjs" class="java.lang.String"/>
+	<parameter name="no_rawat" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select pasien.no_rkm_medis, pasien.nm_pasien, pasien.no_ktp, pasien.jk,
 pasien.tmp_lahir, pasien.tgl_lahir,pasien.nm_ibu, concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat, pasien.gol_darah, pasien.pekerjaan,
@@ -102,23 +106,29 @@ and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab]]>
 	<title>
 		<band height="702">
 			<textField pattern="">
-				<reportElement mode="Opaque" x="23" y="207" width="12" height="96" uuid="e369b051-e906-489c-8ad8-8b65a267f84f"/>
+				<reportElement mode="Opaque" x="19" y="154" width="12" height="149" uuid="e369b051-e906-489c-8ad8-8b65a267f84f">
+					<property name="com.jaspersoft.studio.unit.height" value="mm"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA["No. RM : "+$F{no_rkm_medis}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["No. RM/NIK : "+$F{no_rkm_medis} + "/" + $F{no_ktp}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement mode="Opaque" x="9" y="168" width="15" height="135" uuid="c67a1c3a-d986-4f35-9ff2-dfb6917e98ae"/>
+				<reportElement mode="Opaque" x="8" y="123" width="12" height="180" uuid="c67a1c3a-d986-4f35-9ff2-dfb6917e98ae">
+					<property name="com.jaspersoft.studio.unit.width" value="mm"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nm_pasien}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nm_pasien}+" / "+$F{jk}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement mode="Opaque" x="36" y="207" width="13" height="96" uuid="4ccb836a-37c3-44a0-a17c-96622659fe41"/>
+				<reportElement mode="Opaque" x="31" y="220" width="12" height="83" uuid="4ccb836a-37c3-44a0-a17c-96622659fe41">
+					<property name="com.jaspersoft.studio.unit.width" value="mm"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -126,45 +136,55 @@ and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab]]>
 				<textFieldExpression><![CDATA["Tgl Lahir : "+$F{tgl_lahir}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement mode="Opaque" x="-3" y="88" width="13" height="184" uuid="a32c75ce-e006-41d5-ad56-dda1adb3bf49"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+				<reportElement mode="Opaque" x="-3" y="123" width="12" height="180" uuid="a32c75ce-e006-41d5-ad56-dda1adb3bf49">
+					<property name="com.jaspersoft.studio.unit.width" value="mm"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{namars}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement mode="Opaque" x="50" y="50" width="13" height="252" uuid="aa924d4c-f58b-443c-abd1-ea90eb810d87"/>
+				<reportElement mode="Opaque" x="53" y="20" width="12" height="283" uuid="aa924d4c-f58b-443c-abd1-ea90eb810d87">
+					<property name="com.jaspersoft.studio.unit.width" value="mm"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Alamat : "+$F{alamat}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{alamat}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement mode="Opaque" x="9" y="50" width="15" height="117" uuid="1b54132d-9625-4888-b520-b5d2a6386fcb"/>
-				<textElement verticalAlignment="Middle" rotation="Left">
+				<reportElement mode="Opaque" x="30" y="130" width="12" height="90" uuid="94882a31-8c9b-4e28-ac11-5ef95cc7813a">
+					<property name="com.jaspersoft.studio.unit.height" value="mm"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{no_ktp}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{penjab} + ($P{penjab}.equals("BPJS") ? " "+$P{kls_bpjs} : "")]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement mode="Opaque" x="23" y="50" width="15" height="117" uuid="94882a31-8c9b-4e28-ac11-5ef95cc7813a"/>
-				<textElement verticalAlignment="Middle" rotation="Left">
-					<font fontName="Tahoma" size="8" isBold="true"/>
-					<paragraph lineSpacing="Single"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{png_jawab}]]></textFieldExpression>
-			</textField>
-			<textField pattern="">
-				<reportElement mode="Opaque" x="37" y="50" width="15" height="116" uuid="dc5df5b7-3914-4a54-98ef-d1c44893f0db"/>
-				<textElement verticalAlignment="Middle" rotation="Left">
+				<reportElement mode="Opaque" x="42" y="130" width="12" height="173" uuid="dc5df5b7-3914-4a54-98ef-d1c44893f0db">
+					<property name="com.jaspersoft.studio.unit.width" value="mm"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{kamar}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{kamar2}]]></textFieldExpression>
 			</textField>
+			<componentElement>
+				<reportElement x="1" y="69" width="53" height="53" uuid="1b92dcc5-50f4-4b0d-9d10-3dc16b71c5ed">
+					<property name="com.jaspersoft.studio.unit.margin" value="mm"/>
+					<property name="com.jaspersoft.studio.unit.width" value="mm"/>
+					<property name="com.jaspersoft.studio.unit.height" value="mm"/>
+				</reportElement>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" margin="0" errorCorrectionLevel="M">
+					<jr:codeExpression><![CDATA["https://s.sirspw.com/"+$P{no_rawat}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
 		</band>
 	</title>
 </jasperReport>

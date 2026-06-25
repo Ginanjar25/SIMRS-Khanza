@@ -2613,7 +2613,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         button4.setBounds(910, 10, 170, 22);
         
         button5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
-        button5.setText("Riwyat Pemeriksaan Radiologi");
+        button5.setText("Riwayat Pemeriksaan Radiologi");
         button5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         button5.setName("button5"); // NOI18N
         button5.addActionListener(new java.awt.event.ActionListener() {
@@ -2625,7 +2625,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         button5.setBounds(910, 40, 230, 22);
         
         button6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
-        button6.setText("Riwyat Berkas Digital");
+        button6.setText("Riwayat Berkas Digital");
         button6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         button6.setName("button6"); // NOI18N
         button6.addActionListener(new java.awt.event.ActionListener() {

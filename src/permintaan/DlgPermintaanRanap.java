@@ -1814,6 +1814,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 param.put("tanggal", DTPTgl.getDate().toString());
                 param.put("kamar", KdKamar.getText() + " " + NmBangsal.getText());
                 param.put("kamar2", NmBangsal.getText());
+                param.put("no_rawat", NoRw.getText());
                 param.put("kls_bpjs", Sequel.cariIsi("select bsep.klsrawat FROM bridging_sep bsep WHERE bsep.no_rawat =? ", NoRw.getText()));
                 param.put("penjab", CaraBayar.getText());
                 param.put("dpjp", Sequel.cariIsi("select dokter.nm_dokter from dpjp_ranap inner join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter where dpjp_ranap.no_rawat=? ", NoRw.getText()));
