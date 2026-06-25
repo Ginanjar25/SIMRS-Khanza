@@ -1848,6 +1848,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         button4 = new widget.Button();
         button5 = new widget.Button();
         button6 = new widget.Button();
+        button7 = new widget.Button();
         TPotensiPRB = new widget.Label();
         //TCaraBayar = new widget.TextBox();
         cmbKategory = new widget.ComboBox();
@@ -2634,6 +2635,18 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         });
         panelGlass12.add(button6);
         button6.setBounds(910, 70, 180, 22);
+        
+         button7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+         button7.setText("Awal medis");
+         button7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+         button7.setName(" button7"); // NOI18N
+         button7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                 button7ActionPerformed(evt);
+            }
+        });
+        panelGlass12.add( button7);
+         button7.setBounds(910, 100, 130, 22);
 
         TSuhu.setFocusTraversalPolicyProvider(true);
         TSuhu.setName("TSuhu"); 
@@ -5772,6 +5785,63 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
                 resumeBerkasDigital.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
                 resumeBerkasDigital.setLocationRelativeTo(internalFrame1);
                 resumeBerkasDigital.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());  
+        }
+    }
+    
+    private void button7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No.Rawat");
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            String nm_poli = Sequel.cariIsi("select nm_poli from poliklinik where kd_poli=?", kode_poli);
+            switch (nm_poli.toUpperCase()) {
+                case "IGD":
+                    BtnAwalMedisIGDActionPerformed(evt);
+                    break;
+                case "POLI KANDUNGAN":
+                    BtnAwalMedisKandunganActionPerformed(evt);
+                    break;
+                case "POLI ANAK":
+                    BtnAwalMedisAnakActionPerformed(evt);
+                    break;
+                case "POLI THT":
+                    BtnAwalMedisTHTActionPerformed(evt);
+                    break;
+                case "POLI PSIKIATRI":
+                    BtnAwalMedisPsikiatriActionPerformed(evt);
+                    break;
+                case "POLI DALAM":
+                    BtnAwalMedisPenyakitDalamActionPerformed(evt);
+                    break;
+                case "POLI MATA":
+                    BtnAwalMedisMataActionPerformed(evt);
+                    break;
+                case "POLI SARAF":
+                    BtnAwalMedisNeurologiActionPerformed(evt);
+                    break;
+                case "POLI ORTHOPEDI":
+                    BtnAwalMedisOrthopediActionPerformed(evt);
+                    break;
+                case "POLI BEDAH":
+                    BtnAwalMedisBedahActionPerformed(evt);
+                    break;
+                case "POLI KULIT DAN KELAMIN":
+                    BtnAwalMedisKulitKelaminActionPerformed(evt);
+                    break;
+                case "POLI REHABILITASI MEDIK":
+                    BtnAwalMedisRehabMedikActionPerformed(evt);
+                    break;
+                case "POLI PARU":
+                    BtnAwalMedisParuActionPerformed(evt);
+                    break;
+                case "POLI UMUM":
+                    BtnAwalMedisActionPerformed(evt);
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null,"Form awal medis belum tersedia untuk "+nm_poli); 
+                    break;
+            }
             this.setCursor(Cursor.getDefaultCursor());  
         }
     }
@@ -10510,7 +10580,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button BtnSkorBromagePascaAnestesi,BtnPenilaianPreInduksi,BtnHasilPemeriksaanUSGUrologi,BtnHasilPemeriksaanUSGGynecologi,BtnHasilPemeriksaanEKG,BtnPenatalaksanaanTerapiOkupasi,BtnPenilaianPsikolog,
                           BtnHasilPemeriksaanUSGNeonatus,BtnHasilEndoskopiFaringLaring,BtnHasilEndoskopiHidung,BtnHasilEndoskopiTelinga,BtnPenilaianPasienImunitasRendah,BtnCatatanKeseimbanganCairan,BtnCatatanObservasiCHBP,
                           BtnCatatanObservasiInduksiPersalinan,BtnPermintaanKonsultasiMedik;
-    private widget.Button button4, button5, button6;
+    private widget.Button button4, button5, button6, button7;
     private widget.Label jLabelCaraBayar;
     private widget.Label TCaraBayar;
     //private widget.TextBox TCaraBayar;

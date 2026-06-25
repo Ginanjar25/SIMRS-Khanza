@@ -56,8 +56,8 @@ public final class DlgPelayananLab extends javax.swing.JDialog {
         setSize(885,674);
 
         tabMode=new DefaultTableModel(null,new Object[]{
-            "No.","No.RM","Nama Pasien","Dokter Perujuk","No.Order","Jam Permintaan","Jam Sampel",
-            "Jam Hasil","Permintaan-Sampel(m)","Sampel-Hasil(m)","Permintaan-Hasil(m)"
+            "No.","No.RM","Nama Pasien","Unit","No.Order","Jam Permintaan","Jam Sampel",
+            "Jam Hasil","Permintaan-Sampel(m)","Sampel-Hasil(m)","Permintaan-Hasil(m)","Reg/Cito","Status"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -66,7 +66,7 @@ public final class DlgPelayananLab extends javax.swing.JDialog {
         tbBangsal.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbBangsal.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 11; i++) {
+        for (i = 0; i < 13; i++) {
             TableColumn column = tbBangsal.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(35);
@@ -75,7 +75,7 @@ public final class DlgPelayananLab extends javax.swing.JDialog {
             }else if(i==2){
                 column.setPreferredWidth(185);
             }else if(i==3){
-                column.setPreferredWidth(185);
+                column.setPreferredWidth(85);
             }else if(i==4){
                 column.setPreferredWidth(110);
             }else if(i==5){
@@ -89,6 +89,10 @@ public final class DlgPelayananLab extends javax.swing.JDialog {
             }else if(i==9){
                 column.setPreferredWidth(110);
             }else if(i==10){
+                column.setPreferredWidth(110);
+            }else if(i==11){
+                column.setPreferredWidth(110);
+            }else if(i==12){
                 column.setPreferredWidth(110);
             }
         }
@@ -332,7 +336,9 @@ public final class DlgPelayananLab extends javax.swing.JDialog {
                     tabMode.getValueAt(r,7).toString()+"','"+
                     tabMode.getValueAt(r,8).toString()+"','"+
                     tabMode.getValueAt(r,9).toString()+"','"+
-                    tabMode.getValueAt(r,10).toString()+"','','','','','','','','','','','','','','','','','','','','','','','','','',''","Rekap Nota Pembayaran");
+                    tabMode.getValueAt(r,10).toString()+"','"+
+                    tabMode.getValueAt(r,11).toString()+"','"+
+                    tabMode.getValueAt(r,12).toString()+"','','','','','','','','','','','','','','','','','','','','','','','',''","Rekap Nota Pembayaran");
             }
                
             Valid.MyReport("rptPelayananLab.jasper","report","::[ Laporan Lama Pelayanan Laboratorium ]::",param);
@@ -472,8 +478,20 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 "permintaan_lab.jam_sampel,permintaan_lab.tgl_hasil,permintaan_lab.jam_hasil," +
                 "round((TIME_TO_SEC(concat(permintaan_lab.tgl_sampel,' ',permintaan_lab.jam_sampel))-TIME_TO_SEC(concat(permintaan_lab.tgl_permintaan,' ',permintaan_lab.jam_permintaan)))/60,2) as permintaansampel, " +
                 "round((TIME_TO_SEC(concat(permintaan_lab.tgl_hasil,' ',permintaan_lab.jam_hasil))-TIME_TO_SEC(concat(permintaan_lab.tgl_sampel,' ',permintaan_lab.jam_sampel)))/60,2) as sampelhasil, " +
-                "round((TIME_TO_SEC(concat(permintaan_lab.tgl_hasil,' ',permintaan_lab.jam_hasil))-TIME_TO_SEC(concat(permintaan_lab.tgl_permintaan,' ',permintaan_lab.jam_permintaan)))/60,2) as permintaanhasil " +
-                "from reg_periksa inner join dokter inner join pasien inner join permintaan_lab on reg_periksa.kd_dokter=dokter.kd_dokter " +
+                "round((TIME_TO_SEC(concat(permintaan_lab.tgl_hasil,' ',permintaan_lab.jam_hasil))-TIME_TO_SEC(concat(permintaan_lab.tgl_permintaan,' ',permintaan_lab.jam_permintaan)))/60,2) as permintaanhasil, " +
+                "pl.nm_poli, reg_periksa.status_lanjut, " +
+                "COALESCE((SELECT CASE WHEN ki.kd_kamar LIKE '%ICU%' THEN 'ICU'ELSE 'RANAP'END FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1), CASE WHEN pl.nm_poli LIKE '%IGD%' THEN 'IGD'ELSE 'RAJAL'END) AS unit, " +
+                "case when COALESCE((SELECT ki.kd_kamar FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1),pl.nm_poli) LIKE '%IGD%' OR " +
+                "COALESCE((SELECT ki.kd_kamar FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1),pl.nm_poli) LIKE '%ICU%' THEN 'CITO' ELSE 'REGULER' " +
+                "END AS stts, "+
+                "if( " +
+                    "case when COALESCE((SELECT ki.kd_kamar FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1),pl.nm_poli) LIKE '%IGD%' OR " +
+                    "			 COALESCE((SELECT ki.kd_kamar FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1),pl.nm_poli) LIKE '%ICU%' THEN 'CITO' ELSE 'REGULER' " +
+                    "END='CITO', " +
+                    "if(round((TIME_TO_SEC(concat(permintaan_lab.tgl_hasil,' ',permintaan_lab.jam_hasil))-TIME_TO_SEC(concat(permintaan_lab.tgl_permintaan,' ',permintaan_lab.jam_permintaan)))/60,2)<60,'Sesuai','Tidak Sesuai'), " +
+                    "if(round((TIME_TO_SEC(concat(permintaan_lab.tgl_hasil,' ',permintaan_lab.jam_hasil))-TIME_TO_SEC(concat(permintaan_lab.tgl_permintaan,' ',permintaan_lab.jam_permintaan)))/60,2)<120,'Sesuai','Tidak Sesuai')" +
+                 ") AS hasil "+
+                "from reg_periksa inner join dokter inner join pasien inner join permintaan_lab on reg_periksa.kd_dokter=dokter.kd_dokter INNER JOIN poliklinik pl ON pl.kd_poli = reg_periksa.kd_poli " +
                 "and reg_periksa.no_rkm_medis=pasien.no_rkm_medis and reg_periksa.no_rawat=permintaan_lab.no_rawat where "+
                 "permintaan_lab.tgl_sampel<>'0000-00-00' and permintaan_lab.tgl_hasil<>'0000-00-00' and permintaan_lab.tgl_permintaan between ? and ? and permintaan_lab.noorder like ? or " +
                 "permintaan_lab.tgl_sampel<>'0000-00-00' and permintaan_lab.tgl_hasil<>'0000-00-00' and permintaan_lab.tgl_permintaan between ? and ? and dokter.nm_dokter like ? or " +
@@ -497,10 +515,10 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 i=1;lamajam=0;lamajam2=0;lamajam3=0;
                 while(rs.next()){
                     tabMode.addRow(new Object[]{
-                        i,rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),
+                        i,rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("unit"),
                         rs.getString("noorder"),rs.getString("tgl_permintaan")+" "+rs.getString("jam_permintaan"),
                         rs.getString("tgl_sampel")+" "+rs.getString("jam_sampel"),rs.getString("tgl_hasil")+" "+rs.getString("jam_hasil"),
-                        rs.getString("permintaansampel"),rs.getString("sampelhasil"),rs.getString("permintaanhasil")
+                        rs.getString("permintaansampel"),rs.getString("sampelhasil"),rs.getString("permintaanhasil"),rs.getString("stts"),rs.getString("hasil")
                     });
                     i++;
                     lamajam=lamajam+rs.getDouble("permintaansampel");
@@ -545,22 +563,22 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 }    
                 if(lamajam>0){
                     tabMode.addRow(new Object[]{
-                        "","","Rata-rata (Menit)",": ","","","","",""+Valid.SetAngka6(lamajam/(i-1)),""+Valid.SetAngka6(lamajam2/(i-1)),""+Valid.SetAngka6(lamajam3/(i-1))
+                        "","","Rata-rata (Menit)",": ","","","","",""+Valid.SetAngka6(lamajam/(i-1)),""+Valid.SetAngka6(lamajam2/(i-1)),""+Valid.SetAngka6(lamajam3/(i-1)),"",""
                     });
                     tabMode.addRow(new Object[]{
-                        "","","0 - 15 Menit",": ","","","","",""+limabelas,""+limabelas2,""+limabelas3
+                        "","","0 - 15 Menit",": ","","","","",""+limabelas,""+limabelas2,""+limabelas3,"",""
                     });
                     tabMode.addRow(new Object[]{
-                        "","",">15 - <=30 Menit",": ","","","","",""+tigapuluh,""+tigapuluh2,""+tigapuluh3
+                        "","",">15 - <=30 Menit",": ","","","","",""+tigapuluh,""+tigapuluh2,""+tigapuluh3,"",""
                     });
                     tabMode.addRow(new Object[]{
-                        "","",">30 - <=60 Menit",": ","","","","",""+satujam,""+satujam2,""+satujam3
+                        "","",">30 - <=60 Menit",": ","","","","",""+satujam,""+satujam2,""+satujam3,"",""
                     });
                     tabMode.addRow(new Object[]{
-                        "","",">60 - <=120 Menit",": ","","","","",""+lebihsatujam,""+lebihsatujam2,""+lebihsatujam3
+                        "","",">60 - <=120 Menit",": ","","","","",""+lebihsatujam,""+lebihsatujam2,""+lebihsatujam3,"",""
                     });
                     tabMode.addRow(new Object[]{
-                        "","",">120 Menit",": ","","","","",""+lebihduajam,""+lebihduajam2,""+lebihduajam3
+                        "","",">120 Menit",": ","","","","",""+lebihduajam,""+lebihduajam2,""+lebihduajam3,"",""
                     });
                 }                    
             } catch (Exception e) {

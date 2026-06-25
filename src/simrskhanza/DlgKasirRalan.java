@@ -211,6 +211,7 @@ import rekammedis.RMProgramKFR;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import widget.DialogCatatanMedisKep;
 
 /**
  *
@@ -277,7 +278,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             "Poliklinik","Penanggung Jawab","Alamat P.J.","Hubungan P.J.",
             "Biaya Reg","Jenis Bayar","Status","No.Rawat","Tanggal",
             "Jam","No.Reg","Status Bayar","Stts Poli","Kd PJ","Kd Poli","No.Telp Pasien",
-            "No.Reg","Dokter Dituju","No.RM","Pasien","Jenis Bayar",
+            "No.Reg","Dokter Dituju","No.RM","Pasien","Jenis Bayar","Catatan",
             "Poliklinik","Kode Dokter","Penanggung Jawab","Alamat P.J.","Hubungan P.J.",
             "Biaya Reg","Status","No.Rawat","Tanggal",
             "Jam","Status Bayar","Stts Poli","Kd PJ","Kd Poli","No.Telp Pasien", "Terbit SKDP", "Resep", "Cetak Barcode"}){
@@ -288,7 +289,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         tbKasirRalan.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbKasirRalan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 43; i++) {
+        for (i = 0; i < 44; i++) {
             TableColumn column = tbKasirRalan.getColumnModel().getColumn(i);
             if(i==0){
                 column.setMinWidth(0);
@@ -363,42 +364,44 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             }else if(i==25){
                 column.setPreferredWidth(140);
             }else if(i==26){
-                column.setPreferredWidth(70);
+                column.setPreferredWidth(140);
             }else if(i==27){
-                column.setPreferredWidth(130);
-            }else if(i==28){
-                column.setPreferredWidth(160);
-            }else if(i==29){
-                column.setPreferredWidth(80);
-            }else if(i==30){
-                column.setPreferredWidth(60);
-            }else if(i==31){
-                column.setPreferredWidth(75);
-            }else if(i==32){
-                column.setPreferredWidth(105);
-            }else if(i==33){
-                column.setPreferredWidth(65);
-            }else if(i==34){
-                column.setPreferredWidth(55);
-            }else if(i==35){
                 column.setPreferredWidth(70);
+            }else if(i==28){
+                column.setPreferredWidth(130);
+            }else if(i==29){
+                column.setPreferredWidth(160);
+            }else if(i==30){
+                column.setPreferredWidth(80);
+            }else if(i==31){
+                column.setPreferredWidth(60);
+            }else if(i==32){
+                column.setPreferredWidth(75);
+            }else if(i==33){
+                column.setPreferredWidth(105);
+            }else if(i==34){
+                column.setPreferredWidth(65);
+            }else if(i==35){
+                column.setPreferredWidth(55);
             }else if(i==36){
-                column.setPreferredWidth(50);
+                column.setPreferredWidth(70);
             }else if(i==37){
-                column.setMinWidth(0);
-                column.setMaxWidth(0);
+                column.setPreferredWidth(50);
             }else if(i==38){
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
             }else if(i==39){
-                column.setPreferredWidth(95);
-            }
-            else if(i==40){
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+            }else if(i==40){
                 column.setPreferredWidth(95);
             }
             else if(i==41){
                 column.setPreferredWidth(95);
-            }else if(i==42){
+            }
+            else if(i==42){
+                column.setPreferredWidth(95);
+            }else if(i==43){
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
             }
@@ -7962,7 +7965,12 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                             normdipilih="";
                         }   
                     }
-                }               
+                }
+                if (tbKasirRalan.getSelectedColumn() == 25) {
+                    if (akses.gettindakan_ralan() == true) {
+                        DialogCatatanMedisKep.show(this, tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),25).toString());
+                    }
+                }
             }else if(evt.getClickCount()==2){
                 i=tbKasirRalan.getSelectedColumn();
                 if(i==0){
@@ -7997,9 +8005,9 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                     if(MnKamarInap.isEnabled()==true){
                         MnKamarInapActionPerformed(null);
                     }                    
+                    }                    
                 }
             }
-        }
 }//GEN-LAST:event_tbKasirRalanMouseClicked
 
     private void tbKasirRalanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbKasirRalanKeyPressed
@@ -15301,7 +15309,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,poliklinik.nm_poli, " +
                 "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts,penjab.png_jawab,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur, " +
                 "reg_periksa.status_bayar,reg_periksa.status_poli,reg_periksa.kd_pj,reg_periksa.kd_poli,pasien.no_tlp, CONCAT(penjab.png_jawab, ' ',COALESCE(bridging_sep.klsrawat, '')) AS cara_bayar, " +
-                "CASE WHEN skdp_exp.no_sep IS NOT NULL THEN 'Rujukan Habis' WHEN skdp.no_surat IS NULL THEN 'Belum' ELSE 'Sudah' END AS skdp, CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2, CASE WHEN antripoli1.`status` IS NULL OR antripoli1.`status` = '0' THEN 'Belum' ELSE 'Sudah' END AS cetak_barcode, pasien.jk " +(kasir?"":", if(ISNULL(resep_obat.no_resep),'-','Resep') AS resep_obat ")+
+                "CASE WHEN skdp_exp.no_sep IS NOT NULL THEN 'Rujukan Habis' WHEN skdp.no_surat IS NULL THEN 'Belum' ELSE 'Sudah' END AS skdp, CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2, CASE WHEN antripoli1.`status` IS NULL OR antripoli1.`status` = '0' THEN 'Belum' ELSE 'Sudah' END AS cetak_barcode, pasien.jk, if(isnull(awal_medis.no_rkm_medis),'', concat(DATE_FORMAT(awal_medis.tgl_registrasi, '%d-%m-%Y'),' \n')) as tgl_awal_medis, if(isnull(awal_medis.no_rkm_medis),'(-)','(+)') as cek_awal_medis, if(isnull(awal_keperawatan.no_rkm_medis),'(-)','(+)') as cek_awal_keperawatan " +(kasir?"":", if(ISNULL(resep_obat.no_resep),'-','Resep') AS resep_obat ")+
                 "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
                 "LEFT JOIN bridging_sep ON bridging_sep.no_rawat = reg_periksa.no_rawat " +
                 "LEFT JOIN bridging_surat_kontrol_bpjs skdp on skdp.no_sep = bridging_sep.no_sep " +
@@ -15310,7 +15318,9 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
                 "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj " +
                 "LEFT JOIN antripoli as antripoli1 ON antripoli1.no_rawat = reg_periksa.no_rawat " +
-                "LEFT JOIN bridging_surat_kontrol_exp skdp_exp ON skdp_exp.no_sep = bridging_sep.no_sep " +
+                "LEFT JOIN bridging_surat_kontrol_exp skdp_exp ON skdp_exp.no_sep = bridging_sep.no_sep " +                
+                "LEFT JOIN ("+getRekapAwalMedis()+") as awal_medis on awal_medis.no_rkm_medis = reg_periksa.no_rkm_medis and reg_periksa.kd_poli = awal_medis.kd_poli "+
+                "LEFT JOIN ("+getRekapAwalKeperawatan()+") as awal_keperawatan on awal_keperawatan.no_rkm_medis = reg_periksa.no_rkm_medis and reg_periksa.kd_poli = awal_keperawatan.kd_poli "+
                 (kasir?"":"LEFT JOIN antripoli on antripoli.no_rawat = reg_periksa.no_rawat LEFT JOIN ( SELECT resep_obat.no_rawat, resep_obat.jam_peresepan, resep_obat.no_resep FROM resep_obat GROUP BY resep_obat.no_rawat ) resep_obat ON resep_obat.no_rawat = reg_periksa.no_rawat ")+                
                 "where reg_periksa.tgl_registrasi BETWEEN ? and ? and reg_periksa.status_lanjut='Ralan'"+tampildiagnosa +
                 (semua?"and reg_periksa.stts != 'Batal'":"and reg_periksa.kd_pj like ? and poliklinik.nm_poli like ? and dokter.nm_dokter like ? "+(batal ? "and reg_periksa.stts = ? ": "and reg_periksa.stts like ? and reg_periksa.stts != 'Batal' ") +" and reg_periksa.status_bayar like ? and "+
@@ -15360,7 +15370,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                         rskasir.getString("png_jawab"),rskasir.getString(14),rskasir.getString("no_rawat"),rskasir.getString("tgl_registrasi"),
                         rskasir.getString("jam_reg"),rskasir.getString(1),rskasir.getString("status_bayar"),rskasir.getString("status_poli"),
                         rskasir.getString("kd_pj"),rskasir.getString("kd_poli"),rskasir.getString("no_tlp"),  
-                        rskasir.getString(1),rskasir.getString(6),rskasir.getString(7),rskasir.getString(8)+" ("+rskasir.getString("jk")+") ("+rskasir.getString("umur")+")",rskasir.getString("cara_bayar") + rskasir.getString("cara_bayar2"),
+                        rskasir.getString(1),rskasir.getString(6),rskasir.getString(7),rskasir.getString(8)+" ("+rskasir.getString("jk")+") ("+rskasir.getString("umur")+")",rskasir.getString("cara_bayar") + rskasir.getString("cara_bayar2"),rskasir.getString("tgl_awal_medis")+"M "+rskasir.getString("cek_awal_medis")+ " \nP "+rskasir.getString("cek_awal_keperawatan"),
                         rskasir.getString(9),rskasir.getString(5),rskasir.getString(10),rskasir.getString(11),rskasir.getString(12),Valid.SetAngka(rskasir.getDouble(13)),
                         rskasir.getString(14),rskasir.getString("no_rawat"),rskasir.getString("tgl_registrasi"), rskasir.getString("jam_reg"),rskasir.getString("status_bayar"),rskasir.getString("status_poli"),
                         rskasir.getString("kd_pj"),rskasir.getString("kd_poli"),rskasir.getString("no_tlp"), rskasir.getString("skdp"), (kasir?"":rskasir.getString("resep_obat")), rskasir.getString("cetak_barcode")
@@ -16640,6 +16650,64 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         MnMeninggal.setEnabled(status);
         MnPulangPaksa.setEnabled(status);
         jMenu7.setEnabled(status);
+    }
+    
+    private String getRekapAwalMedis() {
+        return "SELECT rekap_awal_medis.no_rawat, rekap_awal_medis.form, rp.tgl_registrasi, rp.no_rkm_medis, rp.kd_poli FROM "
+                + "( "
+                + "    SELECT pmr.no_rawat, 'umu' AS form FROM penilaian_medis_ralan pmr "
+                + "    UNION ALL "
+                + "    SELECT pmrk.no_rawat, 'obg' FROM penilaian_medis_ralan_kandungan pmrk "
+                + "    UNION ALL "
+                + "    SELECT pmra.no_rawat, 'ana' FROM penilaian_medis_ralan_anak pmra "
+                + "    UNION ALL "
+                + "    SELECT pmrt.no_rawat, 'tht' FROM penilaian_medis_ralan_tht pmrt "
+                + "    UNION ALL "
+                + "    SELECT pmrp.no_rawat, 'jiw' FROM penilaian_medis_ralan_psikiatrik pmrp "
+                + "    UNION ALL "
+                + "    SELECT pmrpd.no_rawat, 'int' FROM penilaian_medis_ralan_penyakit_dalam pmrpd "
+                + "    UNION ALL "
+                + "    SELECT pmrm.no_rawat, 'mat' FROM penilaian_medis_ralan_mata pmrm "
+                + "    UNION ALL "
+                + "    SELECT pmrn.no_rawat, 'sar' FROM penilaian_medis_ralan_neurologi pmrn "
+                + "    UNION ALL "
+                + "    SELECT pmro.no_rawat, 'ort' FROM penilaian_medis_ralan_orthopedi pmro "
+                + "    UNION ALL "
+                + "    SELECT pmrb.no_rawat, 'bed' FROM penilaian_medis_ralan_bedah pmrb "
+                + "    UNION ALL "
+                + "    SELECT pmrbm.no_rawat, 'bdm' FROM penilaian_medis_ralan_bedah_mulut pmrbm "
+                + "    UNION ALL "
+                + "    SELECT pmrg.no_rawat, 'ger' FROM penilaian_medis_ralan_geriatri pmrg "
+                + "    UNION ALL "
+                + "    SELECT pmrkk.no_rawat, 'klt' FROM penilaian_medis_ralan_kulitdankelamin pmrkk "
+                + "    UNION ALL "
+                + "    SELECT pmrpar.no_rawat, 'par' FROM penilaian_medis_ralan_paru pmrpar "
+                + "    UNION ALL "
+                + "    SELECT pmrrm.no_rawat, 'irm' FROM penilaian_medis_ralan_rehab_medik pmrrm "
+                + ") AS rekap_awal_medis "
+                + "JOIN reg_periksa rp ON rp.no_rawat = rekap_awal_medis.no_rawat "
+                + "WHERE rp.tgl_registrasi >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)";
+    }
+    
+    private String getRekapAwalKeperawatan() {
+        return "SELECT rekap_awal_kep.no_rawat, rekap_awal_kep.form, rp.tgl_registrasi, rp.no_rkm_medis, rp.kd_poli FROM "
+                + "( "
+                + "	SELECT pakr.no_rawat, 'umu' AS form FROM penilaian_awal_keperawatan_ralan pakr "
+                + "	UNION ALL "
+                + "	SELECT pakg.no_rawat, 'gig' FROM penilaian_awal_keperawatan_gigi pakg "
+                + "	UNION ALL "
+                + "	SELECT pakk.no_rawat, 'obg' FROM penilaian_awal_keperawatan_kebidanan pakk "
+                + "	UNION ALL "
+                + "	SELECT pakrb.no_rawat, 'ana' FROM penilaian_awal_keperawatan_ralan_bayi pakrb "
+                + "	UNION ALL "
+                + "	SELECT pakrp.no_rawat, 'jiw' FROM penilaian_awal_keperawatan_ralan_psikiatri pakrp "
+                + "	UNION ALL "
+                + "	SELECT pakrg.no_rawat, 'ger' FROM penilaian_awal_keperawatan_ralan_geriatri pakrg "
+                + "	UNION ALL "
+                + "	SELECT paki.no_rawat, 'igd' FROM penilaian_awal_keperawatan_igd paki "
+                + ") AS rekap_awal_kep "
+                + "JOIN reg_periksa rp ON rp.no_rawat = rekap_awal_kep.no_rawat "
+                + "WHERE rp.tgl_registrasi >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)";
     }
     
 }

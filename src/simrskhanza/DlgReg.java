@@ -228,6 +228,10 @@ import fungsi.APIInternalRSPW;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 import modif.DlgBatalPeriksa;
+import modif.BPJSAntrianOnline;
+import java.util.Properties;
+import java.io.FileInputStream;
+
 /**
  *
  * @author dosen
@@ -304,7 +308,7 @@ public final class DlgReg extends javax.swing.JDialog {
     private char[] VERTICAL_PRINT_POSITION = {ESC, 'J', '1'};
     private String jmlBookWeb = Sequel.cariIsi("SELECT COUNT(bp.no_booking) FROM booking_periksa bp WHERE bp.tanggal >= CURDATE() AND `status` = 'Belum Dibalas'");
     private String jmlBookReg = Sequel.cariIsi("SELECT COUNT(br.no_reg) FROM booking_registrasi br WHERE br.tanggal_periksa >= CURDATE() AND `status` = 'Belum'");
-    
+    private static final Properties prop = new Properties(); 
 
     /** Creates new form DlgReg
      * @param parent
@@ -15500,7 +15504,20 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             this.setCursor(Cursor.getDefaultCursor());
         }
     }
-     
+    
+    private void btnKirimAntrolBpjsActionPerformed(java.awt.event.ActionEvent evt) {
+        if (TPasien.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu pasien...!!!");
+        } else {
+            if (Sequel.cariIsi("select stts from reg_periksa where no_rawat = ?", TNoRw.getText()).equals("Belum")){
+                if (tbPetugas.getSelectedRow() != -1) {
+                    kirimAntrolBpjs();
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "Maaf, Pasien sudah selesai Periksa");
+            }
+        }
+    }
      
     private void MnPermintaanKonsultasiMedikActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnPermintaanInformasiObatActionPerformed
         if(tabMode.getRowCount()==0){
@@ -16096,6 +16113,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private javax.swing.JDialog WindowRujukan;
     private widget.InternalFrame internalFrame7;
     private widget.Button btnCetakLabelRajal;
+    private widget.Button btnKirimAntrolBpjs;
     
     private void tampil() {
         Valid.tabelKosong(tabMode);
@@ -17032,6 +17050,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             if(ChkTracker.isSelected()==true){
                 ctk();
             }
+            kirimAntrolBpjs();
             if(TabRawat.getSelectedIndex()==0){
 //                tabMode.addRow(new Object[] {
 //                    false,TNoReg.getText(),TNoRw.getText(),Valid.SetTgl(DTPReg.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),
@@ -17726,6 +17745,19 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         });
         
         panelGlass7.add(btnCetakLabelRajal);
+        
+        btnKirimAntrolBpjs = new widget.Button(); 
+        
+        btnKirimAntrolBpjs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
+        btnKirimAntrolBpjs.setText("Kirim Antrol BPJS");
+        btnKirimAntrolBpjs.setName("btnKirimAntrolBpjs"); // NOI18N
+        btnKirimAntrolBpjs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKirimAntrolBpjsActionPerformed(evt);
+            }
+        });
+        
+        panelGlass7.add(btnKirimAntrolBpjs);
     }
     
     private void ganti(){
@@ -17961,5 +17993,28 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
         }
         LCount.setText(""+tbPetugas.getRowCount());
+    }
+    
+    private void kirimAntrolBpjs() {
+        String ADDANTRIANAPIMOBILEJKNONREG="No";
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            ADDANTRIANAPIMOBILEJKNONREG = prop.getProperty("ADDANTRIANAPIMOBILEJKNONREG");
+        }  catch (Exception e) {
+            System.out.println( e);
+        }
+        
+        if (ADDANTRIANAPIMOBILEJKNONREG.equals("yes")) {
+            if ("BPJ".equals(kdpnj.getText()) && !"IGDK".equals(kdpoli.getText())) {
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                BPJSAntrianOnline antrol = new BPJSAntrianOnline(null, true);
+                akses.setform("DlgReg");
+                antrol.setSize(819, 258);
+                antrol.setLocationRelativeTo(internalFrame1);
+                antrol.setNoRm2(TNoRw.getText(), DTPReg.getDate(), kdpoli.getText(), TPoli.getText(), KdDokter.getText(), TNoReg.getText());
+                antrol.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
     }
 }
