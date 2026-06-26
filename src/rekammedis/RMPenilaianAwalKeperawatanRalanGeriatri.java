@@ -4274,7 +4274,7 @@ public final class RMPenilaianAwalKeperawatanRalanGeriatri extends javax.swing.J
                 public void windowDeactivated(WindowEvent e) {}
             });
 
-            soapterakhir.setNoRM(TNoRw.getText());
+            soapterakhir.setNoRM2(TNoRw.getText());
             soapterakhir.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
             soapterakhir.setLocationRelativeTo(internalFrame1);
             soapterakhir.setVisible(true);

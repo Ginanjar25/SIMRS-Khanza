@@ -51,7 +51,7 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
         }
         
         if (column == 20) {
-            Object cellValue = table.getValueAt(row, 42); // Get the value of the cell in column 42
+            Object cellValue = table.getValueAt(row, 43); // Get the value of the cell in column 42
             Object cellValue1 = table.getValueAt(row, 18); // Get the value of the cell in column 42
             if (cellValue != null) {
                 String cellString = cellValue.toString(); // Convert the value to a string
@@ -64,10 +64,10 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
         }
         
         // Kondisi khusus untuk kolom 23, logika ini menimpa pengaturan warna sebelumnya
-        if (column == 32) {
+        if (column == 33) {
             Object jenis_bayar = table.getValueAt(row, 24); // Nilai di kolom ke-24
-            Object status = table.getValueAt(row, 31);
-            Object skdp = table.getValueAt(row, 40);
+            Object status = table.getValueAt(row, 32);
+            Object skdp = table.getValueAt(row, 41);
 
             if (jenis_bayar != null) {
                 String jenis_bayarString = jenis_bayar.toString();
@@ -82,9 +82,9 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
         }
         
         // Kondisi khusus untuk kolom 41, (ada resep atau tidak)
-        if (column == 26) {
-            Object status = table.getValueAt(row, 31);
-            Object resep = table.getValueAt(row, 41);            
+        if (column == 27) {
+            Object status = table.getValueAt(row, 32);
+            Object resep = table.getValueAt(row, 42);            
             String statusString = status.toString();
             String resepString = resep.toString();
             if ("Sudah".equals(statusString) && "Resep".equals(resepString)) {

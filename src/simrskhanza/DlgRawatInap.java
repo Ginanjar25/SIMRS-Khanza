@@ -147,6 +147,8 @@ import fungsi.CheckPenjabMissmatch;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.awt.Component;
+import modif.RMRiwayatBerkasDigital;
+import modif.RMRiwayatRadiologi;
 
 /**
  *
@@ -1584,6 +1586,8 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         jLabelCaraBayar = new widget.Label();
         TCaraBayar = new widget.Label();
         btnIcare = new widget.Button();
+        btnRiwayatRadiologi = new widget.Button();
+        btnRiwayatBerkasDigital = new widget.Button();
         TPotensiPRB = new widget.Label();
         BtnLaporanOperasi = new widget.Button();
         
@@ -2428,6 +2432,30 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         });
         panelGlass12.add(btnIcare);
         btnIcare.setBounds(910, 10, 170, 22);
+        
+        btnRiwayatRadiologi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnRiwayatRadiologi.setText("Riwayat Pemeriksaan Radiologi");
+        btnRiwayatRadiologi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnRiwayatRadiologi.setName("btnRiwayatRadiologi"); // NOI18N
+        btnRiwayatRadiologi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRiwayatRadiologiActionPerformed(evt);
+            }
+        });
+        panelGlass12.add(btnRiwayatRadiologi);
+        btnRiwayatRadiologi.setBounds(910, 40, 230, 22);
+        
+        btnRiwayatBerkasDigital.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnRiwayatBerkasDigital.setText("Riwayat Berkas Digital");
+        btnRiwayatBerkasDigital.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnRiwayatBerkasDigital.setName("btnRiwayatBerkasDigital"); // NOI18N
+        btnRiwayatBerkasDigital.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRiwayatBerkasDigitalActionPerformed(evt);
+            }
+        });
+        panelGlass12.add(btnRiwayatBerkasDigital);
+        btnRiwayatBerkasDigital.setBounds(910, 70, 180, 22);
 
         jLabel8.setText("Subjek :");
         jLabel8.setName("jLabel8"); // NOI18N
@@ -8985,6 +9013,34 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
     }
     
+    private void btnRiwayatRadiologiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No.Rawat");
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                RMRiwayatRadiologi resumeRad=new RMRiwayatRadiologi(null,true);
+                resumeRad.setNoRm(TNoRM.getText(),TPasien.getText());
+                resumeRad.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
+                resumeRad.setLocationRelativeTo(internalFrame1);
+                resumeRad.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());  
+        }
+    }
+    
+    private void btnRiwayatBerkasDigitalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No.Rawat");
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                RMRiwayatBerkasDigital resumeBerkasDigital=new RMRiwayatBerkasDigital(null,true);
+                resumeBerkasDigital.setNoRm(TNoRM.getText(),TPasien.getText());
+                resumeBerkasDigital.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
+                resumeBerkasDigital.setLocationRelativeTo(internalFrame1);
+                resumeBerkasDigital.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());  
+        }
+    }
+    
     private void BtnLaporanOperasiActionPerformed(java.awt.event.ActionEvent evt) {
         if (TNoRw.getText().trim().equals("") || TPasien.getText().trim().equals("")) {
             Valid.textKosong(TNoRw, "No.Rawat");
@@ -9333,7 +9389,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                           BtnAwalKeperawatanNeonatus,BtnPenilaianPasienImunitasRendah,BtnCatatanKeseimbanganCairan,BtnCatatanObservasiCHBP,BtnCatatanObservasiInduksiPersalinan,BtnPermintaanKonsultasiMedik;
     private widget.Label jLabelCaraBayar;
     private widget.Label TCaraBayar;
-    private widget.Button btnIcare;
+    private widget.Button btnIcare,btnRiwayatRadiologi,btnRiwayatBerkasDigital;
     private widget.Label TPotensiPRB;
     private widget.Button BtnLaporanOperasi;
     

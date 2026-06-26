@@ -37,7 +37,7 @@ public final class RMCariDetailSOAP extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps;
     private ResultSet rs;
-    private String norm="",nip="",no_rawat="";
+    private String norm="",kd_dokter="",no_rawat="";
     private sekuel Sequel=new sekuel();
     private int z=0;
     /** Creates new form DlgPenyakit
@@ -49,8 +49,8 @@ public final class RMCariDetailSOAP extends javax.swing.JDialog {
         this.setLocation(10,2);
         setSize(656,250);
 
-        Object[] row={"Tanggal","Jam","Suhu","Tensi","Berat","Tinggi","RR","Nadi","SpO2", "GCS","Kesadaran",
-            "Subjek","Objek","Asesmen","Plan","Instruksi","Evaluasi","Dokter", "Poliklinik"};
+        Object[] row={"Tanggal Periksa","Petugas","Suhu","Tensi","Berat","Tinggi","RR","Nadi","SpO2", "GCS","Kesadaran",
+            "Subjek","Objek","Asesmen","Plan","Instruksi","Evaluasi", "Poliklinik"};
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -61,9 +61,9 @@ public final class RMCariDetailSOAP extends javax.swing.JDialog {
         for (z= 0; z < 18; z++) {
             TableColumn column = tbKamar.getColumnModel().getColumn(z);
             if(z==0){
-                column.setPreferredWidth(65);
+                column.setPreferredWidth(150);
             }else if(z==1){
-                column.setPreferredWidth(50);
+                column.setPreferredWidth(220);
             }else if(z==2){
                 column.setPreferredWidth(50);
             }else if(z==3){
@@ -105,19 +105,31 @@ public final class RMCariDetailSOAP extends javax.swing.JDialog {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
-                        tampil();
+                        if(kd_dokter.equals("")){
+                            tampil2();
+                        }else{
+                            tampil();
+                        }
                     }
                 }
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
-                        tampil();
+                        if(kd_dokter.equals("")){
+                            tampil2();
+                        }else{
+                            tampil();
+                        }
                     }
                 }
                 @Override
                 public void changedUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
-                        tampil();
+                        if(kd_dokter.equals("")){
+                            tampil2();
+                        }else{
+                            tampil();
+                        }
                     }
                 }
             });
@@ -295,7 +307,11 @@ public final class RMCariDetailSOAP extends javax.swing.JDialog {
 }//GEN-LAST:event_TCariKeyPressed
 
     private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
-        tampil();
+        if(kd_dokter.equals("")){
+            tampil2();
+        }else{
+            tampil();
+        }
 }//GEN-LAST:event_BtnCariActionPerformed
 
     private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -307,8 +323,12 @@ public final class RMCariDetailSOAP extends javax.swing.JDialog {
 }//GEN-LAST:event_BtnCariKeyPressed
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
-        TCari.setText("");
-        tampil();
+        if(kd_dokter.equals("")){
+            tampil2();
+        }else{
+            tampil();
+        }
+        
 }//GEN-LAST:event_BtnAllActionPerformed
 
     private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
@@ -399,10 +419,54 @@ public final class RMCariDetailSOAP extends javax.swing.JDialog {
                     rs=ps.executeQuery();
                     while(rs.next()){
                         tabMode.addRow(new String[] {
-                           rs.getString("tgl_perawatan"),rs.getString("jam_rawat"),rs.getString("suhu_tubuh"),rs.getString("tensi"),rs.getString("berat"),rs.getString("tinggi"),
+                           rs.getString("tgl_perawatan") +" "+rs.getString("jam_rawat"), rs.getString("nm_dokter"),rs.getString("suhu_tubuh"),rs.getString("tensi"),rs.getString("berat"),rs.getString("tinggi"),
                            rs.getString("respirasi"),rs.getString("nadi"),rs.getString("spo2"),rs.getString("gcs"),
                            rs.getString("kesadaran"),rs.getString("keluhan"),rs.getString("pemeriksaan"),rs.getString("penilaian"),rs.getString("rtl"),
-                           rs.getString("instruksi"),rs.getString("evaluasi"), rs.getString("nm_dokter"),rs.getString("nm_poli")
+                           rs.getString("instruksi"),rs.getString("evaluasi"),rs.getString("nm_poli")
+                        });
+                    }
+                }catch(Exception ex){
+                    System.out.println(ex);
+                }finally{
+                    if(rs!=null){
+                        rs.close();
+                    }
+                    if(ps!=null){
+                        ps.close();
+                    }
+                }
+            }catch(Exception e){
+                System.out.println("Notifikasi : "+e);
+            }
+        }
+        LCount.setText(""+tabMode.getRowCount());
+    }
+    
+    private void tampil2() {
+        Valid.tabelKosong(tabMode);
+        if(!TCari.getText().equals("")){
+            try{
+                ps=koneksi.prepareStatement(
+                        "SELECT pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat, pemeriksaan_ralan.suhu_tubuh, pemeriksaan_ralan.tensi, pemeriksaan_ralan.nadi, \n" +
+                        "pemeriksaan_ralan.respirasi, pemeriksaan_ralan.tinggi, pemeriksaan_ralan.berat, pemeriksaan_ralan.spo2, pemeriksaan_ralan.alergi,\n" +
+                        "pemeriksaan_ralan.gcs, pemeriksaan_ralan.kesadaran, pemeriksaan_ralan.keluhan,pemeriksaan_ralan.pemeriksaan,\n" +
+                        "pemeriksaan_ralan.penilaian,pemeriksaan_ralan.rtl,pemeriksaan_ralan.instruksi,pemeriksaan_ralan.evaluasi, \n" +
+                        "pegawai.nama, poliklinik.nm_poli\n" +
+                        "from pemeriksaan_ralan \n" +
+                        "inner join reg_periksa on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat\n" +
+                        "INNER JOIN pegawai ON pegawai.nik = pemeriksaan_ralan.nip\n" +
+                        "inner join poliklinik ON reg_periksa.kd_poli = poliklinik.kd_poli where \n" +
+                        "reg_periksa.no_rawat=? and reg_periksa.kd_poli=?");
+                try{
+                    ps.setString(1,TCari.getText());
+                    ps.setString(2,KdPoli.getText());
+                    rs=ps.executeQuery();
+                    while(rs.next()){
+                        tabMode.addRow(new String[] {
+                           rs.getString("tgl_perawatan") +" "+rs.getString("jam_rawat"), rs.getString("nama"),rs.getString("suhu_tubuh"),rs.getString("tensi"),rs.getString("berat"),rs.getString("tinggi"),
+                           rs.getString("respirasi"),rs.getString("nadi"),rs.getString("spo2"),rs.getString("gcs"),
+                           rs.getString("kesadaran"),rs.getString("keluhan"),rs.getString("pemeriksaan"),rs.getString("penilaian"),rs.getString("rtl"),
+                           rs.getString("instruksi"),rs.getString("evaluasi"),rs.getString("nm_poli")
                         });
                     }
                 }catch(Exception ex){
@@ -428,10 +492,20 @@ public final class RMCariDetailSOAP extends javax.swing.JDialog {
 
     public void setNoRM(String no_rawat) {
         this.no_rawat = no_rawat; // pastikan ada field ini
+        this.kd_dokter = akses.getkode();
         TCari.setText(no_rawat);
         Sequel.cariIsi("select kd_poli from reg_periksa where no_rawat=?",KdPoli,TCari.getText());
         Sequel.cariIsi("select nm_poli from poliklinik where kd_poli=?",TPoli,KdPoli.getText());
         tampil();
+    }
+    
+    public void setNoRM2(String no_rawat) {
+        this.no_rawat = no_rawat; // pastikan ada field ini
+        this.kd_dokter = "";
+        TCari.setText(no_rawat);
+        Sequel.cariIsi("select kd_poli from reg_periksa where no_rawat=?",KdPoli,TCari.getText());
+        Sequel.cariIsi("select nm_poli from poliklinik where kd_poli=?",TPoli,KdPoli.getText());
+        tampil2();
     }
 
     public JTable getTable(){
