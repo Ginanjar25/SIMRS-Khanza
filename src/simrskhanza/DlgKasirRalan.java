@@ -16686,7 +16686,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 + "    SELECT pmrrm.no_rawat, 'irm' FROM penilaian_medis_ralan_rehab_medik pmrrm "
                 + ") AS rekap_awal_medis "
                 + "JOIN reg_periksa rp ON rp.no_rawat = rekap_awal_medis.no_rawat "
-                + "WHERE rp.tgl_registrasi >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)";
+                + "WHERE rp.tgl_registrasi >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY rp.no_rkm_medis, rp.kd_poli";
     }
     
     private String getRekapAwalKeperawatan() {
@@ -16707,7 +16707,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 + "	SELECT paki.no_rawat, 'igd' FROM penilaian_awal_keperawatan_igd paki "
                 + ") AS rekap_awal_kep "
                 + "JOIN reg_periksa rp ON rp.no_rawat = rekap_awal_kep.no_rawat "
-                + "WHERE rp.tgl_registrasi >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)";
+                + "WHERE rp.tgl_registrasi >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY rp.no_rkm_medis, rp.kd_poli";
     }
     
 }

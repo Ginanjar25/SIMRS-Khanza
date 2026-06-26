@@ -17999,7 +17999,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         String ADDANTRIANAPIMOBILEJKNONREG="No";
         try {
             prop.loadFromXML(new FileInputStream("setting/database.xml"));
-            ADDANTRIANAPIMOBILEJKNONREG = prop.getProperty("ADDANTRIANAPIMOBILEJKNONREG");
+            ADDANTRIANAPIMOBILEJKNONREG = prop.getProperty("ADDANTRIANAPIMOBILEJKNONREG", "No");
         }  catch (Exception e) {
             System.out.println( e);
         }
