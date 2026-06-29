@@ -610,8 +610,9 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                     "reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.status_lanjut,penjab.png_jawab,"+
                     "reg_periksa.umurdaftar,reg_periksa.sttsumur "+
                     "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter "+
-                    "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
-                    "where reg_periksa.stts<>'Batal' and reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi desc limit 5");
+                    "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli inner join penjab on reg_periksa.kd_pj=penjab.kd_pj " +
+                    "INNER JOIN periksa_lab ON periksa_lab.no_rawat = reg_periksa.no_rawat "+
+                    "where reg_periksa.stts<>'Batal' and reg_periksa.no_rkm_medis=? GROUP BY reg_periksa.no_rawat order by reg_periksa.tgl_registrasi desc limit 5");
             }else if(R2.isSelected()==true){
                 ps=koneksi.prepareStatement(
                     "select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
@@ -621,7 +622,8 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                     "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter "+
                     "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli "+
                     "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
-                    "where reg_periksa.stts<>'Batal' and reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi");
+                    "INNER JOIN periksa_lab ON periksa_lab.no_rawat = reg_periksa.no_rawat "+
+                    "where reg_periksa.stts<>'Batal' and reg_periksa.no_rkm_medis=? GROUP BY reg_periksa.no_rawat order by reg_periksa.tgl_registrasi");
             }else if(R3.isSelected()==true){
                 ps=koneksi.prepareStatement(
                     "select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,"+
@@ -631,8 +633,9 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                     "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter "+
                     "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli "+
                     "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj "+
+                    "INNER JOIN periksa_lab ON periksa_lab.no_rawat = reg_periksa.no_rawat "+
                     "where reg_periksa.stts<>'Batal' and reg_periksa.no_rkm_medis=? and "+
-                    "reg_periksa.tgl_registrasi between ? and ? order by reg_periksa.tgl_registrasi");
+                    "reg_periksa.tgl_registrasi between ? and ? GROUP BY reg_periksa.no_rawat order by reg_periksa.tgl_registrasi");
             }
             try{
                 i=0;

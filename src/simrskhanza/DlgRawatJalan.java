@@ -170,6 +170,7 @@ import rekammedis.RMProgramKFR;
 import java.awt.Component;
 import modif.RMRiwayatRadiologi;
 import modif.RMRiwayatBerkasDigital;
+import modif.RMRiwayatLaboratorium;
 
 /**
  *
@@ -1849,6 +1850,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         button5 = new widget.Button();
         button6 = new widget.Button();
         button7 = new widget.Button();
+        btnRiwayatLaboratorium = new widget.Button();
         TPotensiPRB = new widget.Label();
         //TCaraBayar = new widget.TextBox();
         cmbKategory = new widget.ComboBox();
@@ -2624,6 +2626,18 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         panelGlass12.add(button5);
         button5.setBounds(910, 40, 230, 22);
         
+        btnRiwayatLaboratorium.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnRiwayatLaboratorium.setText("Riwayat Pemeriksaan Laboratorium");
+        btnRiwayatLaboratorium.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnRiwayatLaboratorium.setName("btnRiwayatLaboratorium"); // NOI18N
+        btnRiwayatLaboratorium.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+               btnRiwayatLaboratoriumActionPerformed(evt);
+            }
+        });
+        panelGlass12.add(btnRiwayatLaboratorium);
+        btnRiwayatLaboratorium.setBounds(910, 70, 260, 22);
+        
         button6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
         button6.setText("Riwayat Berkas Digital");
         button6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -2634,7 +2648,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
             }
         });
         panelGlass12.add(button6);
-        button6.setBounds(910, 70, 180, 22);
+        button6.setBounds(910, 100, 180, 22);
         
          button7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
          button7.setText("Awal medis");
@@ -2646,7 +2660,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
             }
         });
         panelGlass12.add( button7);
-         button7.setBounds(910, 100, 130, 22);
+         button7.setBounds(910, 130, 130, 22);
 
         TSuhu.setFocusTraversalPolicyProvider(true);
         TSuhu.setName("TSuhu"); 
@@ -5771,6 +5785,20 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
                 resumeRad.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
                 resumeRad.setLocationRelativeTo(internalFrame1);
                 resumeRad.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());  
+        }
+    }
+    
+    private void btnRiwayatLaboratoriumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No.Rawat");
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                RMRiwayatLaboratorium resumeLab=new RMRiwayatLaboratorium(null,true);
+                resumeLab.setNoRm(TNoRM.getText(),TPasien.getText());
+                resumeLab.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
+                resumeLab.setLocationRelativeTo(internalFrame1);
+                resumeLab.setVisible(true);
             this.setCursor(Cursor.getDefaultCursor());  
         }
     }
@@ -10580,7 +10608,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button BtnSkorBromagePascaAnestesi,BtnPenilaianPreInduksi,BtnHasilPemeriksaanUSGUrologi,BtnHasilPemeriksaanUSGGynecologi,BtnHasilPemeriksaanEKG,BtnPenatalaksanaanTerapiOkupasi,BtnPenilaianPsikolog,
                           BtnHasilPemeriksaanUSGNeonatus,BtnHasilEndoskopiFaringLaring,BtnHasilEndoskopiHidung,BtnHasilEndoskopiTelinga,BtnPenilaianPasienImunitasRendah,BtnCatatanKeseimbanganCairan,BtnCatatanObservasiCHBP,
                           BtnCatatanObservasiInduksiPersalinan,BtnPermintaanKonsultasiMedik;
-    private widget.Button button4, button5, button6, button7;
+    private widget.Button button4, button5, button6, button7, btnRiwayatLaboratorium;
     private widget.Label jLabelCaraBayar;
     private widget.Label TCaraBayar;
     //private widget.TextBox TCaraBayar;
