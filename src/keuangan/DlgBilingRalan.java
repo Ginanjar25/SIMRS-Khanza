@@ -1831,7 +1831,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         panelGlass1.add(jLabel4);
         jLabel4.setBounds(693, 11, 65, 23);
 
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-04-2026 10:45:24" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-06-2026 14:40:56" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -3483,7 +3483,9 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 //        if (!checkMismatch()) {
 //            return; // Keluar dari method jika ada mismatch
 //        }
-        
+        if (!checkPermintaanResep()) {
+            return; 
+        }
         try {
             pscekbilling = koneksi.prepareStatement(sqlpscekbilling);
             try {
@@ -6427,5 +6429,48 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         
         return true; // Tidak ada mismatch, return true
     }
+     
+    public boolean checkPermintaanResep() {
+        StringBuilder daftarResep = new StringBuilder();
+        int count = 0;
+        try {
+            psobatlangsung = koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,"
+                    + " dokter.nm_dokter,if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status "
+                    + " from resep_obat inner join dokter on resep_obat.kd_dokter=dokter.kd_dokter "
+                    + " where resep_obat.tgl_peresepan<>'0000-00-00' and resep_obat.status='ralan' and resep_obat.no_rawat=? order by resep_obat.tgl_perawatan desc,resep_obat.jam desc");
+            try {
+                psobatlangsung.setString(1, TNoRw.getText());
+                rscariobat = psobatlangsung.executeQuery();
+                while (rscariobat.next()) {
+                    count++;
+                    daftarResep.append(count).append(". ").append(rscariobat.getString("no_resep")).append(" - ").append(rscariobat.getString("nm_dokter")).append("\n");
+                }                
+                if (count >= 1) {
+                    StringBuilder pesan = new StringBuilder();
+                    pesan.append("PERINGATAN: Ditemukan ").append(count).append(" No. Resep belum Tervalidasi!\n\n");
+                    pesan.append("No Rawat: ").append(TNoRw.getText()).append("\n");
+                    pesan.append("Daftar Resep:\n");
+                    pesan.append("========================================\n");
+                    pesan.append(daftarResep.toString());
+                    pesan.append("\nSilahkan konfirmasi ke Farmasi terlebih dahulu !!!");
+
+                    javax.swing.JOptionPane.showMessageDialog(null, pesan.toString(), "Konfirmasi Resep Belum Tervalidasi", javax.swing.JOptionPane.WARNING_MESSAGE);
+                    return false; 
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : " + e);
+            } finally {
+                if (rscariobat != null) {
+                    rscariobat.close();
+                }
+                if (psobatlangsung != null) {
+                    psobatlangsung.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif : " + e);
+        }
+        return true;
+    } 
     
 }

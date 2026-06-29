@@ -1111,6 +1111,10 @@ public final class BPJSAntrianOnline extends javax.swing.JDialog {
                                 statusantrean = false;
                             }else if (nameNode.path("code").asText().equals("208") || nameNode.path("code").asText().equals("200")) { 
                                 statusantrean = true;
+                                if(nameNode.path("code").asText().equals("200")){
+                                    Sequel.menyimpan("referensi_antrean_online",
+                                    "'"+TNoRw.getText()+"','"+TNoRM.getText()+"','"+NoKartu.getText()+"','"+Valid.SetTgl(TanggalSEP.getSelectedItem()+"")+"','"+KdPoli.getText()+"','"+KdDPJP.getText()+"','"+jeniskunjungan+"','"+NoRujukan.getText()+"','"+NoSKDP.getText()+"','0000-00-00 00:00:00',now()");
+                                }
                             }
                         } catch (Exception e) {
                             statusantrean=false;
@@ -1165,6 +1169,10 @@ public final class BPJSAntrianOnline extends javax.swing.JDialog {
                                     statusantrean=false;
                                 }else if(nameNode.path("code").asText().equals("208") || nameNode.path("code").asText().equals("200")){
                                     statusantrean=true;
+                                    if (nameNode.path("code").asText().equals("200")) {
+                                        Sequel.menyimpan("referensi_antrean_online",
+                                        "'" + TNoRw.getText() + "','" + TNoRM.getText() + "','" + NoKartu.getText() + "','" + Valid.SetTgl(TanggalSEP.getSelectedItem() + "") + "','" + KdPoli.getText() + "','" + KdDPJP.getText() + "','" + jeniskunjungan + "','" + NoRujukan.getText() + "','" + NoSKDP.getText() + "','0000-00-00 00:00:00',now()");
+                                    }
                                 }
                             } catch (Exception e) {
                                 statusantrean=false;
