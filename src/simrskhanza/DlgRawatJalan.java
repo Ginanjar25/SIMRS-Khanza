@@ -5682,7 +5682,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         });
 
         BtnPenilaianTambahanBunuhDiri.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); 
-        BtnPenilaianTambahanBunuhDiri.setText("Tambahan Bunuh Diri");
+        BtnPenilaianTambahanBunuhDiri.setText("Tambahan Risiko Bunuh Diri");
         BtnPenilaianTambahanBunuhDiri.setFocusPainted(false);
         BtnPenilaianTambahanBunuhDiri.setFont(new java.awt.Font("Tahoma", 0, 11)); 
         BtnPenilaianTambahanBunuhDiri.setGlassColor(new java.awt.Color(255, 255, 255));
@@ -5698,7 +5698,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         });
 
         BtnPenilaianTambahanPerilakuKekerasan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); 
-        BtnPenilaianTambahanPerilakuKekerasan.setText("Tambahan Perilaku Kekerasan");
+        BtnPenilaianTambahanPerilakuKekerasan.setText("Tambahan Risiko Perilaku Kekerasan");
         BtnPenilaianTambahanPerilakuKekerasan.setFocusPainted(false);
         BtnPenilaianTambahanPerilakuKekerasan.setFont(new java.awt.Font("Tahoma", 0, 11)); 
         BtnPenilaianTambahanPerilakuKekerasan.setGlassColor(new java.awt.Color(255, 255, 255));
@@ -5714,7 +5714,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         });
 
         BtnPenilaianTambahanMelarikanDiri.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); 
-        BtnPenilaianTambahanMelarikanDiri.setText("Tambahan Melarikan Diri");
+        BtnPenilaianTambahanMelarikanDiri.setText("Tambahan Risiko Melarikan Diri");
         BtnPenilaianTambahanMelarikanDiri.setFocusPainted(false);
         BtnPenilaianTambahanMelarikanDiri.setFont(new java.awt.Font("Tahoma", 0, 11)); 
         BtnPenilaianTambahanMelarikanDiri.setGlassColor(new java.awt.Color(255, 255, 255));

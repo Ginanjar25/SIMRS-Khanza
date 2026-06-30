@@ -149,6 +149,7 @@ import java.util.List;
 import java.awt.Component;
 import modif.RMRiwayatBerkasDigital;
 import modif.RMRiwayatRadiologi;
+import modif.RMRiwayatLaboratorium;
 
 /**
  *
@@ -1587,6 +1588,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         TCaraBayar = new widget.Label();
         btnIcare = new widget.Button();
         btnRiwayatRadiologi = new widget.Button();
+        btnRiwayatLaboratorium = new widget.Button();
         btnRiwayatBerkasDigital = new widget.Button();
         TPotensiPRB = new widget.Label();
         BtnLaporanOperasi = new widget.Button();
@@ -2445,6 +2447,18 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         panelGlass12.add(btnRiwayatRadiologi);
         btnRiwayatRadiologi.setBounds(910, 40, 230, 22);
         
+        btnRiwayatLaboratorium.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnRiwayatLaboratorium.setText("Riwayat Pemeriksaan Laboratorium");
+        btnRiwayatLaboratorium.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnRiwayatLaboratorium.setName("btnRiwayatLaboratorium"); // NOI18N
+        btnRiwayatLaboratorium.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+               btnRiwayatLaboratoriumActionPerformed(evt);
+            }
+        });
+        panelGlass12.add(btnRiwayatLaboratorium);
+        btnRiwayatLaboratorium.setBounds(910, 70, 260, 22);
+        
         btnRiwayatBerkasDigital.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
         btnRiwayatBerkasDigital.setText("Riwayat Berkas Digital");
         btnRiwayatBerkasDigital.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -2455,7 +2469,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
             }
         });
         panelGlass12.add(btnRiwayatBerkasDigital);
-        btnRiwayatBerkasDigital.setBounds(910, 70, 180, 22);
+        btnRiwayatBerkasDigital.setBounds(910, 100, 180, 22);
 
         jLabel8.setText("Subjek :");
         jLabel8.setName("jLabel8"); // NOI18N
@@ -4889,7 +4903,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         });
 
         BtnPenilaianTambahanBunuhDiri.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
-        BtnPenilaianTambahanBunuhDiri.setText("Tambahan Bunuh Diri");
+        BtnPenilaianTambahanBunuhDiri.setText("Tambahan Risiko Bunuh Diri");
         BtnPenilaianTambahanBunuhDiri.setFocusPainted(false);
         BtnPenilaianTambahanBunuhDiri.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         BtnPenilaianTambahanBunuhDiri.setGlassColor(new java.awt.Color(255, 255, 255));
@@ -4905,7 +4919,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         });
 
         BtnPenilaianTambahanPerilakuKekerasan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
-        BtnPenilaianTambahanPerilakuKekerasan.setText("Tambahan Perilaku Kekerasan");
+        BtnPenilaianTambahanPerilakuKekerasan.setText("Tambahan Risiko Perilaku Kekerasan");
         BtnPenilaianTambahanPerilakuKekerasan.setFocusPainted(false);
         BtnPenilaianTambahanPerilakuKekerasan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         BtnPenilaianTambahanPerilakuKekerasan.setGlassColor(new java.awt.Color(255, 255, 255));
@@ -4921,7 +4935,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         });
 
         BtnPenilaianTambahanMelarikanDiri.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
-        BtnPenilaianTambahanMelarikanDiri.setText("Tambahan Melarikan Diri");
+        BtnPenilaianTambahanMelarikanDiri.setText("Tambahan Risiko Melarikan Diri");
         BtnPenilaianTambahanMelarikanDiri.setFocusPainted(false);
         BtnPenilaianTambahanMelarikanDiri.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         BtnPenilaianTambahanMelarikanDiri.setGlassColor(new java.awt.Color(255, 255, 255));
@@ -9027,6 +9041,20 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
     }
     
+    private void btnRiwayatLaboratoriumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No.Rawat");
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                RMRiwayatLaboratorium resumeLab=new RMRiwayatLaboratorium(null,true);
+                resumeLab.setNoRm(TNoRM.getText(),TPasien.getText());
+                resumeLab.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
+                resumeLab.setLocationRelativeTo(internalFrame1);
+                resumeLab.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());  
+        }
+    }
+    
     private void btnRiwayatBerkasDigitalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
             Valid.textKosong(TNoRw,"No.Rawat");
@@ -9389,7 +9417,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                           BtnAwalKeperawatanNeonatus,BtnPenilaianPasienImunitasRendah,BtnCatatanKeseimbanganCairan,BtnCatatanObservasiCHBP,BtnCatatanObservasiInduksiPersalinan,BtnPermintaanKonsultasiMedik;
     private widget.Label jLabelCaraBayar;
     private widget.Label TCaraBayar;
-    private widget.Button btnIcare,btnRiwayatRadiologi,btnRiwayatBerkasDigital;
+    private widget.Button btnIcare,btnRiwayatRadiologi,btnRiwayatBerkasDigital,btnRiwayatLaboratorium;
     private widget.Label TPotensiPRB;
     private widget.Button BtnLaporanOperasi;
     
