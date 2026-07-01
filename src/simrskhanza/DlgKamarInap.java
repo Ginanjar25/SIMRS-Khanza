@@ -18321,17 +18321,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement(
-                    "select kamar_inap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat,reg_periksa.p_jawab,reg_periksa.hubunganpj, pasien.jk, \n"
-                    + "CONCAT(penjab.png_jawab,CASE WHEN penjab.png_jawab = 'BPJS' THEN\n"
-                    + "      CONCAT(\n"
-                    + "        CASE \n"
-                    + "          WHEN bridging_sep.klsrawat IS NULL OR bridging_sep.klsrawat = '' THEN ' (SEP -)' ELSE CONCAT(' ', bridging_sep.klsrawat)\n"
-                    + "        END,\n"
-                    + "        CASE bridging_sep.klsnaik\n"
-                    + "          WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE ''\n"
-                    + "        END\n"
-                    + "      )\n"
-                    + "    ELSE '' END ) AS png_jawab,\n"
+                    "select kamar_inap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat,reg_periksa.p_jawab,reg_periksa.hubunganpj, pasien.jk, penjab.png_jawab,\n"
+                    +"CASE WHEN penjab.png_jawab = 'BPJS' THEN CONCAT(CASE WHEN bridging_sep.klsrawat IS NULL OR bridging_sep.klsrawat = '' THEN CONCAT(IFNULL(CASE WHEN pasien.nip LIKE '%#%' THEN SUBSTRING_INDEX(pasien.nip, '#', -1) ELSE NULL END, ''), ' (SEP -)') ELSE bridging_sep.klsrawat END) ELSE '' END AS kls, " 
+                    +"CASE WHEN penjab.png_jawab = 'BPJS' THEN CASE COALESCE(bridging_sep.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END ELSE '' END AS kls_naik, "               
                     + "CONCAT(bangsal.nm_bangsal, ' ', SUBSTRING_INDEX(kamar.kd_kamar, '-', -1)) AS kamar,kamar_inap.trf_kamar,kamar_inap.diagnosa_awal,kamar_inap.diagnosa_akhir,\n"
                     + "kamar_inap.tgl_masuk,kamar_inap.jam_masuk,if(kamar_inap.tgl_keluar='0000-00-00','',kamar_inap.tgl_keluar) as tgl_keluar,if(kamar_inap.jam_keluar='00:00:00','',kamar_inap.jam_keluar) as jam_keluar,\n"
                     + "kamar_inap.ttl_biaya,kamar_inap.stts_pulang,kamar_inap.lama,dokter.nm_dokter,kamar_inap.kd_kamar,reg_periksa.kd_pj,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,reg_periksa.status_bayar,\n"
@@ -18344,18 +18336,10 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     + "'Sudah', \n"
                     + "'Belum'\n"
                     + ") AS limit_tarif,(SELECT COALESCE(SUM(deposit.besar_deposit),0) FROM deposit WHERE deposit.no_rawat = kamar_inap.no_rawat) AS deposit, \n"
-                    + "CASE \n"
-                    + "  WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' \n"
-                    + "  ELSE CONCAT( ' - ', penjab_cara_bayar2.png_jawab,\n"
-                    + "      CASE WHEN penjab_cara_bayar2.png_jawab = 'BPJS' THEN\n"
-                    + "          CONCAT( \n"
-                    + "			   CASE WHEN bridging_sep.klsrawat IS NULL OR bridging_sep.klsrawat = '' THEN ' (SEP -)' ELSE CONCAT(' ', bridging_sep.klsrawat)\n"
-                    + "            END,\n"
-                    + "            CASE bridging_sep.klsnaik WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE ''\n"
-                    + "            END\n"
-                    + "          )\n"
-                    + "      ELSE '' END)\n"
-                    + "END AS cara_bayar2, IFNULL(catatan_reg.catatan, '') AS catatan, pasien.no_tlp, reg_periksa.tgl_registrasi, reg_periksa.jam_reg \n"
+                    + "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT( ' - ', penjab_cara_bayar2.png_jawab, " 
+                    + "CASE WHEN penjab_cara_bayar2.png_jawab = 'BPJS' THEN CONCAT(CASE WHEN bridging_sep.klsrawat IS NULL OR bridging_sep.klsrawat = '' THEN CONCAT(IFNULL( CASE WHEN pasien.nip LIKE '%#%' THEN SUBSTRING_INDEX(pasien.nip, '#', -1) ELSE NULL END, ''), ' (SEP -)') " 
+                    + "ELSE CONCAT(' ', bridging_sep.klsrawat) END, CASE COALESCE(bridging_sep.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END) ELSE '' END) END AS cara_bayar2, " 
+                    + "IFNULL(catatan_reg.catatan, '') AS catatan, pasien.no_tlp, reg_periksa.tgl_registrasi, reg_periksa.jam_reg \n"
                     + "from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis\n"
                     + "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = reg_periksa.no_rawat inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar\n"
                     + "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel\n"
@@ -18380,7 +18364,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                         rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")),rs.getString("stts_pulang"),
                         rs.getString("lama"),rs.getString("nm_dokter"),rs.getString("kd_kamar"),rs.getString("status_bayar"),rs.getString("agama"),
                         rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+" ("+rs.getString("jk")+") ("+rs.getString("umur")+")",rs.getString("nm_dokter"),
-                        rs.getString("alamat"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),rs.getString("catatan"),
+                        rs.getString("alamat"),rs.getString("png_jawab") + " " + rs.getString("kls")+ " " + rs.getString("kls_naik") +" "+ rs.getString("cara_bayar2"),rs.getString("catatan"),
                         rs.getString("kamar") + " (" + rs.getString("kelas") + ")",Valid.SetAngka(rs.getDouble("trf_kamar")),rs.getString("diagnosa_awal"),
                         rs.getString("diagnosa_akhir"),rs.getString("tgl_registrasi"),rs.getString("jam_reg"),rs.getString("tgl_keluar"),
                         rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")),Valid.SetAngka(rs.getDouble("tarif_inacbg")),Valid.SetAngka(rs.getDouble("tarif_naik")),

@@ -273,7 +273,7 @@ public class DlgPasien extends javax.swing.JDialog {
         tbPasienHint.setPreferredScrollableViewportSize(new Dimension(800, 800));
         tbPasienHint.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (z = 0; z < 47; z++) {
+        for (z = 0; z < 48; z++) {
             TableColumn column = tbPasienHint.getColumnModel().getColumn(z);
             if (z == 0) {
                 column.setPreferredWidth(20);
@@ -335,12 +335,12 @@ public class DlgPasien extends javax.swing.JDialog {
                 column.setPreferredWidth(120);
             } else if (z == 33) {
                 column.setPreferredWidth(120);
-            } else if ((z == 24) || (z == 26) || (z == 28) || (z == 32) || (z == 34) || (z == 35) || (z == 36) || (z == 37) || (z == 38) || (z == 39) || (z == 40) || (z == 41) || (z == 42) || (z == 43) || (z == 44)) {
+            } else if ((z == 24) || (z == 26) || (z == 28) || (z == 32) || (z == 34) || (z == 35) || (z == 36) || (z == 37) || (z == 38) || (z == 39) || (z == 40) || (z == 41) || (z == 42) || (z == 43) || (z == 44) || (z==47)) {
                 column.setMinWidth(100);
                 column.setMaxWidth(100);
             }else if (z == 45) {
                 column.setPreferredWidth(120);
-            } else if (z == 47) {
+            } else if (z == 46) {
                 column.setPreferredWidth(100);
             }
         }
@@ -2029,6 +2029,8 @@ public class DlgPasien extends javax.swing.JDialog {
         BtnPenjab1 = new widget.Button();
         jLabel47 = new widget.Label();
         TNoPeserta1 = new widget.TextBox();
+        jLabel48 = new widget.Label();
+        CMbKelasBPJS = new widget.ComboBox();
         internalFrame4 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbPasien = new widget.Table();
@@ -3612,7 +3614,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(jLabel13);
         jLabel13.setBounds(4, 102, 95, 23);
 
-        DTPLahir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-03-2025" }));
+        DTPLahir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "29-06-2026" }));
         DTPLahir.setDisplayFormat("dd-MM-yyyy");
         DTPLahir.setName("DTPLahir"); // NOI18N
         DTPLahir.setOpaque(false);
@@ -3749,7 +3751,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(TKtp);
         TKtp.setBounds(730, 170, 130, 23);
 
-        DTPDaftar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-03-2025" }));
+        DTPDaftar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "29-06-2026" }));
         DTPDaftar.setDisplayFormat("dd-MM-yyyy");
         DTPDaftar.setName("DTPDaftar"); // NOI18N
         DTPDaftar.setOpaque(false);
@@ -4578,7 +4580,7 @@ public class DlgPasien extends javax.swing.JDialog {
             }
         });
         FormInput.add(EMail);
-        EMail.setBounds(490, 110, 370, 23);
+        EMail.setBounds(490, 110, 180, 23);
 
         jLabel40.setText("NIP/NRP :");
         jLabel40.setName("jLabel40"); // NOI18N
@@ -4785,6 +4787,26 @@ public class DlgPasien extends javax.swing.JDialog {
         });
         FormInput.add(TNoPeserta1);
         TNoPeserta1.setBounds(760, 80, 100, 23);
+
+        jLabel48.setText("Kelas BPJS :");
+        jLabel48.setName("jLabel48"); // NOI18N
+        FormInput.add(jLabel48);
+        jLabel48.setBounds(680, 110, 70, 23);
+
+        CMbKelasBPJS.setModel(new javax.swing.DefaultComboBoxModel(new String[] { " ", "3", "2", "1" }));
+        CMbKelasBPJS.setName("CMbKelasBPJS"); // NOI18N
+        CMbKelasBPJS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CMbKelasBPJSActionPerformed(evt);
+            }
+        });
+        CMbKelasBPJS.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                CMbKelasBPJSKeyPressed(evt);
+            }
+        });
+        FormInput.add(CMbKelasBPJS);
+        CMbKelasBPJS.setBounds(760, 110, 60, 23);
 
         Scroll1.setViewportView(FormInput);
 
@@ -5232,6 +5254,11 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                     });
                 }
+                if(!CMbKelasBPJS.getSelectedItem().toString().equals("")){
+                     Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
+                        NIP.getText() + "#" + CMbKelasBPJS.getSelectedItem().toString(), TNo.getText()
+                    });
+                }
                 cekBayiBaruLahir();
                 emptTeks(); 
             }else{
@@ -5268,6 +5295,11 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         Sequel.menyimpan2("penjab_pasien", "?,?,?,?", "Data", 4, new String[]{
                             TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                         });
+                    }
+                    if(!CMbKelasBPJS.getSelectedItem().toString().equals("")){
+                        Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
+                           NIP.getText() + "#" + CMbKelasBPJS.getSelectedItem().toString(), TNo.getText()
+                       });
                     }
                     cekBayiBaruLahir();
                     emptTeks(); 
@@ -5306,6 +5338,11 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                 TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                             });
                         }
+                        if(!CMbKelasBPJS.getSelectedItem().toString().equals("")){
+                            Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
+                               NIP.getText() + "#" + CMbKelasBPJS.getSelectedItem().toString(), TNo.getText()
+                           });
+                        }
                         cekBayiBaruLahir();
                         emptTeks(); 
                     }else{
@@ -5343,6 +5380,11 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                     TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                                 });
                             }
+                            if(!CMbKelasBPJS.getSelectedItem().toString().equals("")){
+                                Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
+                                   NIP.getText() + "#" + CMbKelasBPJS.getSelectedItem().toString(), TNo.getText()
+                               });
+                            }
                             cekBayiBaruLahir();
                             emptTeks(); 
                         }else{
@@ -5379,6 +5421,11 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                     Sequel.menyimpan2("penjab_pasien", "?,?,?,?", "Data", 4, new String[]{
                                         TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                                     });
+                                }
+                                if(!CMbKelasBPJS.getSelectedItem().toString().equals("")){
+                                    Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
+                                       NIP.getText() + "#" + CMbKelasBPJS.getSelectedItem().toString(), TNo.getText()
+                                   });
                                 }
                                 cekBayiBaruLahir();
                                 emptTeks(); 
@@ -5625,6 +5672,12 @@ private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                 } else {
                     Sequel.mengedit2("penjab_pasien", "no_rm = ? and `order` = '2'", "kd_pj=?, no_kartu=?", 3, new String[]{
                         Kdpnj1.getText(), TNoPeserta1.getText(), TNo.getText()
+                    });
+                }
+                
+                if(!CMbKelasBPJS.getSelectedItem().toString().equals("")){
+                    Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
+                        NIP.getText() + "#" + CMbKelasBPJS.getSelectedItem().toString(), TNo.getText()
                     });
                 }
                 
@@ -7556,6 +7609,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
             TNoPeserta.setText(cekViaBPJS.noKartu);
             Pekerjaan.setText(cekViaBPJS.jenisPesertaketerangan);
             Valid.SetTgl(DTPLahir,cekViaBPJS.tglLahir);
+            CMbKelasBPJS.setSelectedItem(cekViaBPJS.hakKelaskode);
             DTPLahirItemStateChanged(null);
             this.setCursor(Cursor.getDefaultCursor());
         }   
@@ -7574,6 +7628,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
             TKtp.setText(cekViaBPJSKartu.nik);
             Pekerjaan.setText(cekViaBPJSKartu.jenisPesertaketerangan);
             Valid.SetTgl(DTPLahir,cekViaBPJSKartu.tglLahir);
+            CMbKelasBPJS.setSelectedItem(cekViaBPJSKartu.hakKelaskode);
             DTPLahirItemStateChanged(null);
             this.setCursor(Cursor.getDefaultCursor());
         }
@@ -9209,6 +9264,14 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
               this.setCursor(Cursor.getDefaultCursor());
         }
     }//GEN-LAST:event_ppPendaftaranBayiBtnPrintActionPerformed
+
+    private void CMbKelasBPJSKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CMbKelasBPJSKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CMbKelasBPJSKeyPressed
+
+    private void CMbKelasBPJSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CMbKelasBPJSActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CMbKelasBPJSActionPerformed
     
     
     /**
@@ -9298,6 +9361,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     private widget.Button BtnSimpan6;
     private widget.Button BtnSuku;
     private widget.ComboBox CMbGd;
+    private widget.ComboBox CMbKelasBPJS;
     private widget.ComboBox CMbPnd;
     private widget.TextBox Carialamat;
     private widget.TextBox Carialamat1;
@@ -9489,6 +9553,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     private widget.Label jLabel45;
     private widget.Label jLabel46;
     private widget.Label jLabel47;
+    private widget.Label jLabel48;
     private widget.Label jLabel6;
     private widget.Label jLabel7;
     private widget.Label jLabel8;
@@ -10747,6 +10812,22 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
                 TNoPeserta1.setText(tbPasien.getValueAt(tbPasien.getSelectedRow(),46).toString());
                 Valid.SetTgl(DTPLahir,tbPasien.getValueAt(tbPasien.getSelectedRow(),6).toString());
                 Valid.SetTgl(DTPDaftar,tbPasien.getValueAt(tbPasien.getSelectedRow(),13).toString()); 
+               
+                Object value = tbPasien.getValueAt(tbPasien.getSelectedRow(), 30);
+                if (value != null) {
+                    String data = value.toString().trim();
+                    String[] hasil = data.split("#", 2);
+                    NIP.setText(hasil[0].trim());
+                    if (hasil.length > 1) {
+                        CMbKelasBPJS.setSelectedItem(hasil[1].trim());
+                    } else {
+                        CMbKelasBPJS.setSelectedIndex(0); // atau CMbKelasBPJS.setSelectedItem("");
+                    }
+                } else {
+                    NIP.setText("");
+                    CMbKelasBPJS.setSelectedIndex(0); // atau setSelectedItem("")
+                }
+
                 panggilPhoto();
             } catch (Exception ex) {
             }   

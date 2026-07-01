@@ -12,6 +12,7 @@
 
 package simrskhanza;
 import bridging.BPJSCekDataIndukKecelakaan;
+import bridging.BPJSCekNIK;
 import bridging.BPJSCekReferensiPenyakit;
 import bridging.BPJSCekSuplesiJasaRaharja;
 import rekammedis.RMRiwayatPerawatan;
@@ -12353,53 +12354,35 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }else{
             stts = " and reg_periksa.stts = 'Batal' ";
         }
-        try{  
-            ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,\n" +
-                    "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli,\n" +
-                    "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar," +
-                    "CONCAT(penjab.png_jawab,CASE WHEN penjab.png_jawab = 'BPJS' AND reg_periksa.status_lanjut = 'Ralan' AND reg_periksa.stts != 'Batal' THEN\n" +
-                    "      CONCAT(\n" +
-                    "        CASE \n" +
-                    "          WHEN sep.klsrawat IS NULL OR sep.klsrawat = '' THEN ' (SEP -)' ELSE CONCAT(' ', sep.klsrawat)\n" +
-                    "        END,\n" +
-                    "        CASE sep.klsnaik\n" +
-                    "          WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE ''\n" +
-                    "        END\n" +
-                    "      )\n" +
-                    "    ELSE '' END ) AS png_jawab,\n" +
-                    "reg_periksa.stts,reg_periksa.kd_pj,reg_periksa.status_bayar, \n" +
-                    "if(ISNULL(fp.nokartu),'Belum','Sudah') AS fingerprint, if(ISNULL(side_db.readmisi_igd.no_rawat),'No','Yes') AS readmisi,\n" +
-                    "CASE \n" +
-                    "  WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' \n" +
-                    "  ELSE CONCAT( ' - ', penjab_cara_bayar2.png_jawab,\n" +
-                    "      CASE WHEN penjab_cara_bayar2.png_jawab = 'BPJS' AND reg_periksa.status_lanjut = 'Ralan' AND reg_periksa.stts != 'Batal' THEN \n" +
-                    "          CONCAT( \n" +
-                    "			   CASE WHEN sep.klsrawat IS NULL OR sep.klsrawat = '' THEN ' (SEP -)' ELSE CONCAT(' ', sep.klsrawat)\n" +
-                    "            END,\n" +
-                    "            CASE sep.klsnaik WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE ''\n" +
-                    "            END\n" +
-                    "          )\n" +
-                    "      ELSE '' END)\n" +
-                    "END AS cara_bayar2," +
-                    "if(ISNULL(penjab_reg.no_kartu),'',CONCAT(' - ', penjab_reg.no_kartu)) AS no_kartu2, \n" +
-                    "IFNULL(penjab_reg.kd_pj, '') AS kd_pj2, IFNULL(catatan_reg.catatan, '') AS catatan \n" +
-                    "from reg_periksa inner join dokter inner join pasien inner join poliklinik\n" +
-                    "on reg_periksa.kd_dokter=dokter.kd_dokter and reg_periksa.no_rkm_medis=pasien.no_rkm_medis \n" +
-                    "and reg_periksa.kd_poli=poliklinik.kd_poli \n" +
-                    "LEFT JOIN (\n" +
-                    "SELECT nokartu, MAX(tanggal) AS min_tanggal FROM side_db.fingerprint_bpjs GROUP BY nokartu) fp ON fp.nokartu = pasien.no_peserta AND fp.min_tanggal BETWEEN reg_periksa.tgl_registrasi AND DATE_ADD(reg_periksa.tgl_registrasi, INTERVAL CASE WHEN reg_periksa.status_lanjut = 'Ralan' THEN 1 ELSE 2 END DAY)\n" +
-                    "left join side_db.readmisi_igd on reg_periksa.no_rawat = side_db.readmisi_igd.no_rawat\n" +
-                    "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj\n" +
-                    "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
-                    "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj "+
-                    "LEFT JOIN ( select * from catatan_registrasi where status = '1') as catatan_reg on catatan_reg.no_rawat = reg_periksa.no_rawat " +
-                    "LEFT JOIN (select * from bridging_sep where jnspelayanan = 2 and catatan != '%MRS%') as sep ON sep.no_rawat = reg_periksa.no_rawat " +
-                   "where poliklinik.kd_poli='IGDK' and reg_periksa.tgl_registrasi between ? and ? "+
-                   (TCari.getText().trim().equals("")?"":"and (reg_periksa.no_reg like ? or reg_periksa.no_rawat like ? or reg_periksa.tgl_registrasi like ? or "+
-                   "reg_periksa.kd_dokter like ? or dokter.nm_dokter like ? or reg_periksa.no_rkm_medis like ? or "+
-                   "reg_periksa.stts_daftar like ? or pasien.nm_pasien like ? or poliklinik.nm_poli like ? or "+
-                   "reg_periksa.p_jawab like ? or reg_periksa.almt_pj like ? or reg_periksa.hubunganpj like ? or "+
-                   "penjab.png_jawab like ?) ")+terbitsep+stts+" order by reg_periksa.no_rawat "); 
+        try{
+            ps = koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg,\n"
+                    + "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli,\n"
+                    + "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,reg_periksa.status_lanjut,penjab.png_jawab,\n"
+                    + "CASE WHEN penjab.png_jawab = 'BPJS' THEN CONCAT(CASE WHEN sep.klsrawat IS NULL OR sep.klsrawat = '' THEN CONCAT(IFNULL(CASE WHEN pasien.nip LIKE '%#%' THEN SUBSTRING_INDEX(pasien.nip, '#', -1) ELSE NULL END, ''), ' (SEP -)') ELSE sep.klsrawat END) ELSE '' END AS kls,\n"
+                    + "CASE WHEN penjab.png_jawab = 'BPJS' THEN CASE COALESCE(sep.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END ELSE '' END AS kls_naik,\n"
+                    + "reg_periksa.stts,reg_periksa.kd_pj,reg_periksa.status_bayar,\n"
+                    + "if(ISNULL(fp.nokartu),'Belum','Sudah') AS fingerprint, if(ISNULL(side_db.readmisi_igd.no_rawat),'No','Yes') AS readmisi,\n"
+                    + "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT( ' - ', penjab_cara_bayar2.png_jawab,\n"
+                    + "CASE WHEN penjab_cara_bayar2.png_jawab = 'BPJS' THEN CONCAT(CASE WHEN sep.klsrawat IS NULL OR sep.klsrawat = '' THEN CONCAT(IFNULL( CASE WHEN pasien.nip LIKE '%#%' THEN SUBSTRING_INDEX(pasien.nip, '#', -1) ELSE NULL END, ''), ' (SEP -)')\n"
+                    + "ELSE CONCAT(' ', sep.klsrawat) END, CASE COALESCE(sep.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END) ELSE '' END) END AS cara_bayar2,\n"
+                    + "if(ISNULL(penjab_reg.no_kartu),'',CONCAT(' - ', penjab_reg.no_kartu)) AS no_kartu2, \n"
+                    + "IFNULL(penjab_reg.kd_pj, '') AS kd_pj2, IFNULL(catatan_reg.catatan, '') AS catatan \n"
+                    + "from reg_periksa inner join dokter inner join pasien inner join poliklinik\n"
+                    + "on reg_periksa.kd_dokter=dokter.kd_dokter and reg_periksa.no_rkm_medis=pasien.no_rkm_medis \n"
+                    + "and reg_periksa.kd_poli=poliklinik.kd_poli \n"
+                    + "LEFT JOIN (SELECT nokartu, MAX(tanggal) AS min_tanggal FROM side_db.fingerprint_bpjs GROUP BY nokartu) fp ON fp.nokartu = pasien.no_peserta AND fp.min_tanggal BETWEEN reg_periksa.tgl_registrasi AND DATE_ADD(reg_periksa.tgl_registrasi, INTERVAL CASE WHEN reg_periksa.status_lanjut = 'Ralan' THEN 1 ELSE 2 END DAY)\n"
+                    + "left join side_db.readmisi_igd on reg_periksa.no_rawat = side_db.readmisi_igd.no_rawat\n"
+                    + "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj\n"
+                    + "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n"
+                    + "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj \n"
+                    + "LEFT JOIN ( select * from catatan_registrasi where status = '1') as catatan_reg on catatan_reg.no_rawat = reg_periksa.no_rawat \n"
+                    + "LEFT JOIN bridging_sep sep ON sep.no_rawat = reg_periksa.no_rawat "
+                    + "where poliklinik.kd_poli='IGDK' and reg_periksa.tgl_registrasi between ? and ? "
+                    + (TCari.getText().trim().equals("") ? "" : "and (reg_periksa.no_reg like ? or reg_periksa.no_rawat like ? or reg_periksa.tgl_registrasi like ? or "
+                    + "reg_periksa.kd_dokter like ? or dokter.nm_dokter like ? or reg_periksa.no_rkm_medis like ? or "
+                    + "reg_periksa.stts_daftar like ? or pasien.nm_pasien like ? or poliklinik.nm_poli like ? or "
+                    + "reg_periksa.p_jawab like ? or reg_periksa.almt_pj like ? or reg_periksa.hubunganpj like ? or "
+                    + "penjab.png_jawab like ?) ") + terbitsep + stts + " order by reg_periksa.no_rawat ");
             try {
                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -12423,7 +12406,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     tabMode.addRow(new Object[] {
                         false,rs.getString("no_reg"),rs.getString("no_rawat"),rs.getString("tgl_registrasi"),rs.getString("jam_reg"),
                         rs.getString("kd_dokter"),rs.getString("nm_dokter"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("jk"),
-                        rs.getString("umur"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),rs.getString("catatan"),rs.getString("p_jawab"),rs.getString("almt_pj"),rs.getString("hubunganpj"),
+                        rs.getString("umur"),rs.getString("png_jawab")+ " " + rs.getString("kls")+ " " + rs.getString("cara_bayar2"),rs.getString("catatan"),rs.getString("p_jawab"),rs.getString("almt_pj"),rs.getString("hubunganpj"),
                         Valid.SetAngka(rs.getDouble("biaya_reg")),rs.getString("stts_daftar"),rs.getString("stts"),
                         rs.getString("kd_pj"),rs.getString("status_bayar"),rs.getString("fingerprint"),rs.getString("readmisi"), rs.getString("kd_pj2")
                     });
@@ -13411,6 +13394,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
 //                    TStatus.getText(),nmpnj.getText(),"Belum",kdpnj.getText(),"Belum Bayar"
 //                });
                 tampil();
+                saveKelasBPJS();
                 
                 emptTeks();
                 tampil();
@@ -13627,6 +13611,28 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             var = "no";
         }
         return var;
+    }
+    
+    private void saveKelasBPJS(){
+        String kelas_bpjs = "";
+        String SAVEKELASBPJS="No";
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            SAVEKELASBPJS = prop.getProperty("SAVEKELASBPJS", "No");
+        }  catch (Exception e) {
+            System.out.println( e);
+        }
+        
+        if (SAVEKELASBPJS.equals("yes")) {
+            if ("BPJ".equals(kdpnj.getText())) {
+                BPJSCekNIK cekViaBPJS=new BPJSCekNIK();
+                cekViaBPJS.tampil(Sequel.cariIsi("select no_ktp from pasien where no_rkm_medis = ?", TNoRM.getText()));
+                kelas_bpjs = cekViaBPJS.hakKelaskode;
+                Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
+                    Sequel.cariIsi("select nip from pasien where no_rkm_medis = ?", TNoRM.getText()) + "#" + kelas_bpjs, TNoRM.getText()
+                });
+            }
+        }
     }
     
 }
