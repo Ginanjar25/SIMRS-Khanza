@@ -7879,7 +7879,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             psobatlangsung = koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,"
                     + " dokter.nm_dokter,if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status "
                     + " from resep_obat inner join dokter on resep_obat.kd_dokter=dokter.kd_dokter "
-                    + " where resep_obat.tgl_peresepan<>'0000-00-00' and resep_obat.status='ranap' and resep_obat.no_rawat=? order by resep_obat.tgl_perawatan desc,resep_obat.jam desc");
+                    + " where resep_obat.tgl_perawatan='0000-00-00' and resep_obat.status='ranap' and resep_obat.no_rawat=? order by resep_obat.tgl_perawatan desc,resep_obat.jam desc");
             try {
                 psobatlangsung.setString(1, TNoRw.getText());
                 rscariobat = psobatlangsung.executeQuery();
