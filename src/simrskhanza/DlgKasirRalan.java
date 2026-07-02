@@ -16714,6 +16714,8 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 + "	SELECT pakrg.no_rawat, 'ger' FROM penilaian_awal_keperawatan_ralan_geriatri pakrg "
                 + "	UNION ALL "
                 + "	SELECT paki.no_rawat, 'igd' FROM penilaian_awal_keperawatan_igd paki "
+                + "     UNION ALL "
+                + "     SELECT paf.no_rawat, 'fis' FROM penilaian_fisioterapi paf "
                 + ") AS rekap_awal_kep "
                 + "JOIN reg_periksa rp ON rp.no_rawat = rekap_awal_kep.no_rawat "
                 + "WHERE rp.tgl_registrasi >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY rp.no_rkm_medis, rp.kd_poli";
