@@ -43,6 +43,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.Date;
@@ -56,6 +57,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
@@ -110,6 +112,7 @@ public class DlgPasien extends javax.swing.JDialog {
     private LocalDate today=LocalDate.now();
     private LocalDate birthday;
     private Period p;
+    private static final Properties props = new Properties(); 
 
     /** Creates new form DlgPas
      * @param parent
@@ -5254,11 +5257,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                     });
                 }
-                if(!CMbKelasBPJS.getSelectedItem().toString().equals("")){
-                     Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
-                        NIP.getText() + "#" + CMbKelasBPJS.getSelectedItem().toString(), TNo.getText()
-                    });
-                }
+                saveKelasBPJS();
                 cekBayiBaruLahir();
                 emptTeks(); 
             }else{
@@ -5296,11 +5295,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                             TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                         });
                     }
-                    if(!CMbKelasBPJS.getSelectedItem().toString().equals("")){
-                        Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
-                           NIP.getText() + "#" + CMbKelasBPJS.getSelectedItem().toString(), TNo.getText()
-                       });
-                    }
+                    saveKelasBPJS();
                     cekBayiBaruLahir();
                     emptTeks(); 
                 }else{
@@ -5338,11 +5333,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                 TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                             });
                         }
-                        if(!CMbKelasBPJS.getSelectedItem().toString().equals("")){
-                            Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
-                               NIP.getText() + "#" + CMbKelasBPJS.getSelectedItem().toString(), TNo.getText()
-                           });
-                        }
+                        saveKelasBPJS();
                         cekBayiBaruLahir();
                         emptTeks(); 
                     }else{
@@ -5380,11 +5371,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                     TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                                 });
                             }
-                            if(!CMbKelasBPJS.getSelectedItem().toString().equals("")){
-                                Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
-                                   NIP.getText() + "#" + CMbKelasBPJS.getSelectedItem().toString(), TNo.getText()
-                               });
-                            }
+                            saveKelasBPJS();
                             cekBayiBaruLahir();
                             emptTeks(); 
                         }else{
@@ -5422,11 +5409,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                         TNo.getText(), Kdpnj1.getText(), TNoPeserta1.getText(), "2"
                                     });
                                 }
-                                if(!CMbKelasBPJS.getSelectedItem().toString().equals("")){
-                                    Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
-                                       NIP.getText() + "#" + CMbKelasBPJS.getSelectedItem().toString(), TNo.getText()
-                                   });
-                                }
+                                saveKelasBPJS();
                                 cekBayiBaruLahir();
                                 emptTeks(); 
                             }else{
@@ -5675,12 +5658,6 @@ private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                     });
                 }
                 
-                if(!CMbKelasBPJS.getSelectedItem().toString().equals("")){
-                    Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
-                        NIP.getText() + "#" + CMbKelasBPJS.getSelectedItem().toString(), TNo.getText()
-                    });
-                }
-                
                 if(tbPasien.getSelectedRow()>-1){
                     tbPasien.setValueAt(TNo.getText(),tbPasien.getSelectedRow(), 1);
                     tbPasien.setValueAt(TNm.getText(),tbPasien.getSelectedRow(), 2);
@@ -5729,7 +5706,8 @@ private void BtnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                     tbPasien.setValueAt(TNoPeserta1.getText(),tbPasien.getSelectedRow(), 46);
                     tbPasien.setValueAt(Kdpnj1.getText(),tbPasien.getSelectedRow(), 47);
                 }
-                    
+                
+                saveKelasBPJS();
                 emptTeks();
                 TabRawat.setSelectedIndex(0);
             }
@@ -11323,6 +11301,24 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
               daftar_bayi.tampil();
               daftar_bayi.setVisible(true);
               this.setCursor(Cursor.getDefaultCursor());
+        }
+    }
+    
+    private void saveKelasBPJS() {
+        String kelas_bpjs = "";
+        String SAVEKELASBPJS = "no";
+
+        if (!CMbKelasBPJS.getSelectedItem().toString().equals("")) {
+            kelas_bpjs = CMbKelasBPJS.getSelectedItem().toString();
+            String nipLama = Sequel.cariIsi("select nip from pasien where no_rkm_medis = ?", TNo.getText());
+            String nipAsli = "";
+            if (nipLama != null && !nipLama.trim().isEmpty()) {
+                int idx = nipLama.indexOf('#');
+                nipAsli = (idx >= 0) ? nipLama.substring(0, idx) : nipLama;
+            }
+            String nipBaru = nipAsli.isEmpty() ? "#" + kelas_bpjs : nipAsli + "#" + kelas_bpjs;
+            Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{nipBaru, TNo.getText()}
+            );
         }
     }
 }

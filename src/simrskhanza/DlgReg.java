@@ -18021,24 +18021,31 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }
     }
     
-    private void saveKelasBPJS(){
+    private void saveKelasBPJS() {
         String kelas_bpjs = "";
-        String ADDANTRIANAPIMOBILEJKNONREG="No";
+        String SAVEKELASBPJS = "no";
+
         try {
             prop.loadFromXML(new FileInputStream("setting/database.xml"));
-            ADDANTRIANAPIMOBILEJKNONREG = prop.getProperty("ADDANTRIANAPIMOBILEJKNONREG", "No");
-        }  catch (Exception e) {
-            System.out.println( e);
+            SAVEKELASBPJS = prop.getProperty("SAVEKELASBPJS", "no");
+        } catch (Exception e) {
+            System.out.println(e);
         }
-        
-        if (ADDANTRIANAPIMOBILEJKNONREG.equals("yes")) {
+
+        if (SAVEKELASBPJS.equals("yes")) {
             if ("BPJ".equals(kdpnj.getText())) {
-                BPJSCekNIK cekViaBPJS=new BPJSCekNIK();
+                BPJSCekNIK cekViaBPJS = new BPJSCekNIK();
                 cekViaBPJS.tampil(Sequel.cariIsi("select no_ktp from pasien where no_rkm_medis = ?", TNoRM.getText()));
                 kelas_bpjs = cekViaBPJS.hakKelaskode;
-                Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{
-                    Sequel.cariIsi("select nip from pasien where no_rkm_medis = ?", TNoRM.getText()) + "#" + kelas_bpjs, TNoRM.getText()
-                });
+                String nipLama = Sequel.cariIsi("select nip from pasien where no_rkm_medis = ?",TNoRM.getText());
+                String nipAsli = "";
+                if (nipLama != null && !nipLama.trim().isEmpty()) {
+                    int idx = nipLama.indexOf('#');
+                    nipAsli = (idx >= 0) ? nipLama.substring(0, idx) : nipLama;
+                }
+                String nipBaru = nipAsli.isEmpty() ? "#" + kelas_bpjs : nipAsli + "#" + kelas_bpjs;
+                Sequel.mengedittf("pasien","no_rkm_medis = ?","nip=?",2,new String[]{nipBaru,TNoRM.getText()}
+                );
             }
         }
     }
