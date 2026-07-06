@@ -1,5 +1,7 @@
 package modif;
 
+import java.awt.Window;
+import java.awt.event.WindowEvent;
 import java.util.*;
 import javax.swing.*;
 
@@ -26,9 +28,21 @@ public class AutoClose {
                         showWarning("⚠️ Aplikasi akan otomatis ditutup 15 Menit lagi pada pukul 23:59.\nSilahkan segera simpan pekerjaan Anda.");
                     } else if (hour == 23 && minute == 55) {
                         showWarning("⚠️ Aplikasi akan otomatis ditutup 5 Menit lagi pada pukul 23:59.\nSilahkan simpan pekerjaan Anda sekarang.");
+                    } else if (hour == 23 && minute == 58) {
+                        showWarning("⚠️ Aplikasi akan otomatis ditutup 1 Menit lagi pada pukul 23:59.\nSilahkan simpan pekerjaan Anda sekarang.");
                     } else if (hour == 23 && minute == 59) {
 //                        showWarning("⚠️ Aplikasi ditutup.\nSilahkan jalankan ulang Aplikasi SIMRS Khanza.");
-                        System.exit(0);
+//                        System.exit(0);
+                        SwingUtilities.invokeLater(() -> {
+                            for (Window window : Window.getWindows()) {
+                                if (window.isDisplayable()) {
+                                   window.dispose();
+                                }
+                            }
+                            new javax.swing.Timer(5000, e -> {
+                                System.exit(0);
+                            }).start();
+                        });
                     }
 
                     // update menit terakhir supaya tidak muncul berkali-kali

@@ -144,12 +144,15 @@ import rekammedis.RMTransferPasienAntarRuang;
 import bridging.SatuSehatCariAllergy;
 import bridging.SatuSehatCariAllergyReaction;
 import fungsi.CheckPenjabMissmatch;
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.awt.Component;
+import javax.swing.JCheckBox;
 import modif.RMRiwayatBerkasDigital;
 import modif.RMRiwayatRadiologi;
 import modif.RMRiwayatLaboratorium;
+import widget.CheckBoxHeaderRenderer;
 
 /**
  *
@@ -157,7 +160,7 @@ import modif.RMRiwayatLaboratorium;
  */
 public final class DlgRawatInap extends javax.swing.JDialog {
     private final DefaultTableModel tabModeDr,tabModePr,tabModeDrPr,
-            tabModePemeriksaan,tabModeObstetri,tabModeGinekologi,TabModeAlergi;
+            tabModePemeriksaan,tabModeObstetri,tabModeGinekologi,TabModeAlergi,TabModeVerifikasiDPJP;
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
     private Jurnal jur=new Jurnal();
@@ -169,7 +172,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
     private SatuSehatCariAllergyReaction alergiReaction=new SatuSehatCariAllergyReaction(null,false);
     public  DlgCariPasien pasien=new DlgCariPasien(null,false);
     private RMCari5SOAPTerakhir soapterakhir=new RMCari5SOAPTerakhir(null,false);  
-    private PreparedStatement ps,ps2,ps3,ps4,ps5,psrekening,ps6,ps7;
+    private PreparedStatement ps,ps2,ps3,ps4,ps5,psrekening,ps6,ps7,psVerifDPJP;
     private ResultSet rs,rsrekening;
     private int i=0,tinggi=0;
     private boolean sukses=false;  
@@ -177,9 +180,10 @@ public final class DlgRawatInap extends javax.swing.JDialog {
     private String Suspen_Piutang_Tindakan_Ranap="",Tindakan_Ranap="",Beban_Jasa_Medik_Dokter_Tindakan_Ranap="",Utang_Jasa_Medik_Dokter_Tindakan_Ranap="",
             Beban_Jasa_Medik_Paramedis_Tindakan_Ranap="",Utang_Jasa_Medik_Paramedis_Tindakan_Ranap="",Beban_KSO_Tindakan_Ranap="",Utang_KSO_Tindakan_Ranap="",
             Beban_Jasa_Sarana_Tindakan_Ranap="",Utang_Jasa_Sarana_Tindakan_Ranap="",Beban_Jasa_Menejemen_Tindakan_Ranap="",Utang_Jasa_Menejemen_Tindakan_Ranap="",
-            HPP_BHP_Tindakan_Ranap="",Persediaan_BHP_Tindakan_Ranap="",kode_poli="",kamar="",jenisbayar="",TANGGALMUNDUR="yes";
+            HPP_BHP_Tindakan_Ranap="",Persediaan_BHP_Tindakan_Ranap="",kode_poli="",kamar="",jenisbayar="",TANGGALMUNDUR="yes", filterverifikasi="";
     private Date date = new Date();
     private SimpleDateFormat tanggalFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private JCheckBox headerCheckBox = new JCheckBox();
 
     /** Creates new form DlgRawatInap
      * @param parent
@@ -734,6 +738,96 @@ public final class DlgRawatInap extends javax.swing.JDialog {
             }
         }
         tbAlergi.setDefaultRenderer(Object.class, new WarnaTable());
+        
+        TabModeVerifikasiDPJP=new DefaultTableModel(null,new Object[]{
+            headerCheckBox,"No.Rawat","No.R.M.","Nama Pasien","Tgl.Rawat","Jam","Suhu(C)","Tensi","Nadi(/menit)",
+            "Respirasi(/menit)","Tinggi(Cm)","Berat(Kg)","SpO2(%)","GCS(E,V,M)","Kesadaran","Subjek","Objek","Alergi","Asesmen","Plan",
+            "Instruksi","Evaluasi","NIP","Dokter/Paramedis","Profesi/Jabatan"}){
+             @Override public boolean isCellEditable(int rowIndex, int colIndex){
+                boolean a = false;
+                if (colIndex==0) {
+                    a=true;
+                }
+                return a;
+             }
+             Class[] types = new Class[] {
+                 java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class,java.lang.Object.class,
+                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
+                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
+                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
+                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
+                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
+                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
+                 java.lang.Object.class
+             };
+             @Override
+             public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+             }
+        };
+        tbVerifikasiDPJP.setModel(TabModeVerifikasiDPJP);
+        CheckBoxHeaderRenderer headerRenderer = new CheckBoxHeaderRenderer();
+        TableColumn tc = tbVerifikasiDPJP.getColumnModel().getColumn(0);
+        tc.setHeaderRenderer(headerRenderer);
+
+        tbVerifikasiDPJP.setPreferredScrollableViewportSize(new Dimension(500,500));
+        tbVerifikasiDPJP.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        for (i = 0; i < 25; i++) {
+            TableColumn column = tbVerifikasiDPJP.getColumnModel().getColumn(i);
+            if(i==0){
+                column.setPreferredWidth(20);
+            }else if(i==1){
+                column.setPreferredWidth(105);
+            }else if(i==2){
+                column.setPreferredWidth(70);
+            }else if(i==3){
+                column.setPreferredWidth(150);
+            }else if(i==4){
+                column.setPreferredWidth(65);
+            }else if(i==5){
+                column.setPreferredWidth(50);
+            }else if(i==6){
+                column.setPreferredWidth(45);
+            }else if(i==7){
+                column.setPreferredWidth(60);
+            }else if(i==8){
+                column.setPreferredWidth(73);
+            }else if(i==9){
+                column.setPreferredWidth(90);
+            }else if(i==10){
+                column.setPreferredWidth(63);
+            }else if(i==11){
+                column.setPreferredWidth(57);
+            }else if(i==12){
+                column.setPreferredWidth(50);
+            }else if(i==13){
+                column.setPreferredWidth(64);
+            }else if(i==14){
+                column.setPreferredWidth(90);
+            }else if(i==15){
+                column.setPreferredWidth(180);
+            }else if(i==16){
+                column.setPreferredWidth(180);
+            }else if(i==17){
+                column.setPreferredWidth(130);
+            }else if(i==18){
+                column.setPreferredWidth(180);
+            }else if(i==19){
+                column.setPreferredWidth(180);
+            }else if(i==20){
+                column.setPreferredWidth(180);
+            }else if(i==21){
+                column.setPreferredWidth(180);
+            }else if(i==22){
+                column.setPreferredWidth(80);
+            }else if(i==23){
+                column.setPreferredWidth(150);
+            }else if(i==24){
+                column.setPreferredWidth(100);
+            }
+        }
+        tbVerifikasiDPJP.setDefaultRenderer(Object.class, new WarnaTable());
 
         kdptg.setDocument(new batasInput((byte) 20).getKata(kdptg));
         kdptg2.setDocument(new batasInput((byte) 20).getKata(kdptg2));
@@ -794,6 +888,8 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                             tampilPemeriksaanGinekologi();
                         }else if(TabRawat.getSelectedIndex()==6){
                             tampilAlergi();
+                        }else if(TabRawat.getSelectedIndex()==7){
+                            tampilVerifikasiDPJP();
                         }
                     }                        
                 }
@@ -814,6 +910,8 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                             tampilPemeriksaanGinekologi();
                         }else if(TabRawat.getSelectedIndex()==6){
                             tampilAlergi();
+                        }else if(TabRawat.getSelectedIndex()==7){
+                            tampilVerifikasiDPJP();
                         }
                     }
                 }
@@ -834,6 +932,8 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                             tampilPemeriksaanGinekologi();
                         }else if(TabRawat.getSelectedIndex()==6){
                             tampilAlergi();
+                        }else if(TabRawat.getSelectedIndex()==7){
+                            tampilVerifikasiDPJP();
                         }
                     }
                 }
@@ -1208,6 +1308,27 @@ public final class DlgRawatInap extends javax.swing.JDialog {
             }
         });
         
+        tbVerifikasiDPJP.getTableHeader().addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+
+                int col = tbVerifikasiDPJP.columnAtPoint(e.getPoint());
+
+                if (col == 0) {
+
+                    boolean checked = !headerRenderer.isSelected();
+                    headerRenderer.setSelected(checked);
+
+                    for (int i = 0; i < tbVerifikasiDPJP.getRowCount(); i++) {
+                        tbVerifikasiDPJP.setValueAt(checked, i, 0);
+                    }
+
+                    tbVerifikasiDPJP.getTableHeader().repaint();
+                    tbVerifikasiDPJP.repaint();
+                }
+            }
+        });
+        
         ChkInput.setSelected(false);
         isForm(); 
         ChkInput1.setSelected(false);
@@ -1215,8 +1336,11 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         ChkInput2.setSelected(false);
         isForm3(); 
         ChkInput3.setSelected(true);
-        isForm4(); 
+        isForm4();
+        ChkInputVerifikasiDPJP.setSelected(true);
+        isForm5(); 
         ChkAccor.setSelected(true);
+       
         isMenu();
         jam();
         
@@ -1622,6 +1746,60 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         tbAlergi = new widget.Table();
         cmbKategory = new widget.ComboBox();
         cmbSeverity = new widget.ComboBox();
+        
+        //FORM VERIFIKASI DPJP
+        internalFrameVerifikasiDPJP = new widget.InternalFrame();
+        tbVerifikasiDPJP = new widget.Table();
+        ScrollVerifikasiDPJP = new widget.ScrollPane();
+        PanelInputVerifikasiDPJP = new javax.swing.JPanel();
+        ChkInputVerifikasiDPJP = new widget.CekBox();
+        panelGlassVerifikasiDPJP = new widget.panelisi();
+        TAlergiVerifDPJP = new widget.TextBox();
+        TKdPetugasVerifDPJP = new widget.TextBox();
+        TNmPetugasVerifDPJP = new widget.TextBox();
+        TJabatanVerifDPJP = new widget.TextBox();
+        TSuhuVerifDPJP = new widget.TextBox();
+        TTensiVerifDPJP = new widget.TextBox();
+        TBeratVerifDPJP = new widget.TextBox();
+        TTinggiVerifDPJP = new widget.TextBox();
+        TRRVerifDPJP = new widget.TextBox();
+        TNadiVerifDPJP = new widget.TextBox();
+        TSPOVerifDPJP = new widget.TextBox();
+        TGCSVerifDPJP = new widget.TextBox();
+        cmbKesadaranVerifDPJP = new widget.ComboBox();
+        jLabelVerifDPJP = new widget.Label();
+        jLabelVerifDPJPSubjek = new widget.Label();
+        jLabelVerifDPJPObjek = new widget.Label();
+        jLabelVerifDPJPAsesmen = new widget.Label();
+        jLabelVerifDPJPPlan = new widget.Label();
+        jLabelVerifDPJPInstruksi = new widget.Label();
+        jLabelVerifDPJPEvaluasi = new widget.Label();
+        jLabelVerifDPJPPetugas = new widget.Label();
+        jLabelVerifDPJPJabatan = new widget.Label();
+        jLabelVerifDPJPSuhu = new widget.Label();
+        jLabelVerifDPJPTensi = new widget.Label();
+        jLabelVerifDPJPBerat = new widget.Label();
+        jLabelVerifDPJPTB = new widget.Label();
+        jLabelVerifDPJPRR = new widget.Label();
+        jLabelVerifDPJPNadi = new widget.Label();
+        jLabelVerifDPJPSPO = new widget.Label();
+        jLabelVerifDPJPGCS = new widget.Label();
+        jLabelVerifDPJPKesadaran = new widget.Label();
+        jLabelVerifDPJPFilter = new widget.Label();
+        scrollPaneVerifDPJP1 = new widget.ScrollPane();
+        scrollPaneVerifDPJP2 = new widget.ScrollPane();
+        scrollPaneVerifDPJP3 = new widget.ScrollPane();
+        scrollPaneVerifDPJP4 = new widget.ScrollPane();
+        scrollPaneVerifDPJP5 = new widget.ScrollPane();
+        scrollPaneVerifDPJP6 = new widget.ScrollPane();
+        TKeluhanVerifDPJP = new widget.TextArea();
+        TPemeriksaanVerifDPJP = new widget.TextArea();
+        TPenilaianVerifDPJP = new widget.TextArea();
+        TindakLanjutVerifDPJP = new widget.TextArea();
+        TEvaluasiVerifDPJP = new widget.TextArea();
+        TInstruksiVerifDPJP = new widget.TextArea();     
+        btnFilterSudahVerifikasi = new widget.Button();
+        btnFilterBelumVerifikasi = new widget.Button();
         
         BagianRS.setEditable(false);
         BagianRS.setText("0");
@@ -5176,6 +5354,417 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         Scroll12.setViewportView(tbAlergi);
         internalFrame9.add(Scroll12, java.awt.BorderLayout.CENTER);
         TabRawat.addTab("Alergi", internalFrame9);
+        
+        //Verifikasi DPJP FORM
+        
+        internalFrameVerifikasiDPJP.setBackground(new java.awt.Color(235, 255, 235));
+        internalFrameVerifikasiDPJP.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        internalFrameVerifikasiDPJP.setName("internalFrameVerifikasiDPJP"); // NOI18N
+        internalFrameVerifikasiDPJP.setLayout(new java.awt.BorderLayout(1, 1));
+
+        ScrollVerifikasiDPJP.setName("ScrollVerifikasiDPJP"); // NOI18N
+        ScrollVerifikasiDPJP.setOpaque(true);
+        
+        tbVerifikasiDPJP.setAutoCreateRowSorter(true);
+        tbVerifikasiDPJP.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
+        tbVerifikasiDPJP.setName("tbVerifikasiDPJP"); // NOI18N
+        tbVerifikasiDPJP.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbVerifikasiDPJPMouseClicked(evt);
+            }
+        });
+        tbVerifikasiDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+//                tbPemeriksaanKeyReleased(evt);
+            }
+        });
+        ScrollVerifikasiDPJP.setViewportView(tbVerifikasiDPJP);
+
+        internalFrameVerifikasiDPJP.add(ScrollVerifikasiDPJP, java.awt.BorderLayout.CENTER);
+        
+        PanelInputVerifikasiDPJP.setName("PanelInputVerifikasiDPJP"); // NOI18N
+        PanelInputVerifikasiDPJP.setOpaque(false);
+        PanelInputVerifikasiDPJP.setPreferredSize(new java.awt.Dimension(192, 273));
+        PanelInputVerifikasiDPJP.setLayout(new java.awt.BorderLayout(1, 1));
+
+        ChkInputVerifikasiDPJP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInputVerifikasiDPJP.setMnemonic('I');
+        ChkInputVerifikasiDPJP.setText(".: Input Data");
+        ChkInputVerifikasiDPJP.setToolTipText("Alt+I");
+        ChkInputVerifikasiDPJP.setBorderPainted(true);
+        ChkInputVerifikasiDPJP.setBorderPaintedFlat(true);
+        ChkInputVerifikasiDPJP.setFocusable(false);
+        ChkInputVerifikasiDPJP.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ChkInputVerifikasiDPJP.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ChkInputVerifikasiDPJP.setName("ChkInputVerifikasiDPJP"); // NOI18N
+        ChkInputVerifikasiDPJP.setPreferredSize(new java.awt.Dimension(192, 20));
+        ChkInputVerifikasiDPJP.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInputVerifikasiDPJP.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInputVerifikasiDPJP.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInputVerifikasiDPJP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChkInputVerifikasiDPJPActionPerformed(evt);
+            }
+        });
+        PanelInputVerifikasiDPJP.add(ChkInputVerifikasiDPJP, java.awt.BorderLayout.PAGE_END);
+        
+        panelGlassVerifikasiDPJP.setName("panelGlassVerifikasiDPJP"); // NOI18N
+        panelGlassVerifikasiDPJP.setPreferredSize(new java.awt.Dimension(44, 134));
+        panelGlassVerifikasiDPJP.setLayout(null);
+        
+        jLabelVerifDPJP.setText("Alergi :");
+        jLabelVerifDPJP.setName("jLabelVerifDPJP"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJP);
+        jLabelVerifDPJP.setBounds(450, 10, 90, 23);
+
+        TAlergiVerifDPJP.setHighlighter(null);
+        TAlergiVerifDPJP.setName("TAlergiVerifDPJP"); // NOI18N
+        TAlergiVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TAlergiKeyPressed(evt);
+            }
+        });
+        TAlergiVerifDPJP.setEditable(false);
+        panelGlassVerifikasiDPJP.add(TAlergiVerifDPJP);
+        TAlergiVerifDPJP.setBounds(543, 10, 360, 23);
+
+        scrollPaneVerifDPJP1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        scrollPaneVerifDPJP1.setName("scrollPaneVerifDPJP1"); // NOI18N
+        
+        jLabelVerifDPJPSubjek.setText("Subjek :");
+        jLabelVerifDPJPSubjek.setName("jLabelVerifDPJPSubjek"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPSubjek);
+        jLabelVerifDPJPSubjek.setBounds(0, 70, 70, 23);
+        
+        TKeluhanVerifDPJP.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        TKeluhanVerifDPJP.setColumns(20);
+        TKeluhanVerifDPJP.setRows(5);
+        TKeluhanVerifDPJP.setName("TKeluhanVerifDPJP"); // NOI18N
+        TKeluhanVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                TKeluhanVerifDPJPKeyPressed(evt);
+            }
+        });
+        scrollPaneVerifDPJP1.setViewportView(TKeluhanVerifDPJP);
+
+        panelGlassVerifikasiDPJP.add(scrollPaneVerifDPJP1);
+        scrollPaneVerifDPJP1.setBounds(73, 70, 360, 38);
+        
+        scrollPaneVerifDPJP2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        scrollPaneVerifDPJP2.setName("scrollPaneVerifDPJP1"); // NOI18N
+        
+        jLabelVerifDPJPObjek.setText("Objek :");
+        jLabelVerifDPJPObjek.setName("jLabelVerifDPJPObjek"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPObjek);
+        jLabelVerifDPJPObjek.setBounds(0, 115, 70, 23);
+
+        TPemeriksaanVerifDPJP.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        TPemeriksaanVerifDPJP.setColumns(20);
+        TPemeriksaanVerifDPJP.setRows(5);
+        TPemeriksaanVerifDPJP.setName("TPemeriksaanVerifDPJP"); // NOI18N
+        TPemeriksaanVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                TPemeriksaanVerifDPJPKeyPressed(evt);
+            }
+        });
+        scrollPaneVerifDPJP2.setViewportView(TPemeriksaanVerifDPJP);
+        panelGlassVerifikasiDPJP.add(scrollPaneVerifDPJP2);
+        scrollPaneVerifDPJP2.setBounds(73, 115, 360, 38);
+        
+        scrollPaneVerifDPJP3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        scrollPaneVerifDPJP3.setName("scrollPaneVerifDPJP3"); // NOI18N
+        
+        jLabelVerifDPJPAsesmen.setText("Asesmen :");
+        jLabelVerifDPJPAsesmen.setName("jLabelVerifDPJPAsesmen"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPAsesmen);
+        jLabelVerifDPJPAsesmen.setBounds(450, 40, 90, 23);
+        
+        TPenilaianVerifDPJP.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        TPenilaianVerifDPJP.setColumns(20);
+        TPenilaianVerifDPJP.setRows(5);
+        TPenilaianVerifDPJP.setName("TPenilaianVerifDPJP"); // NOI18N
+        TPenilaianVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                TPenilaianVerifDPJPKeyPressed(evt);
+            }
+        });
+        scrollPaneVerifDPJP3.setViewportView(TPenilaianVerifDPJP);
+        panelGlassVerifikasiDPJP.add(scrollPaneVerifDPJP3);
+        scrollPaneVerifDPJP3.setBounds(543, 40, 360, 38);
+        
+        scrollPaneVerifDPJP4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        scrollPaneVerifDPJP4.setName("scrollPaneVerifDPJP4"); // NOI18N
+        
+        jLabelVerifDPJPPlan.setText("Plan :");
+        jLabelVerifDPJPPlan.setName("jLabel26"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPPlan);
+        jLabelVerifDPJPPlan.setBounds(450, 85, 90, 23);
+        
+        TindakLanjutVerifDPJP.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        TindakLanjutVerifDPJP.setColumns(20);
+        TindakLanjutVerifDPJP.setRows(5);
+        TindakLanjutVerifDPJP.setName("TindakLanjutVerifDPJP"); // NOI18N
+        TindakLanjutVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                TindakLanjutVerifDPJPPressed(evt);
+            }
+        });
+        scrollPaneVerifDPJP4.setViewportView(TindakLanjutVerifDPJP);
+        panelGlassVerifikasiDPJP.add(scrollPaneVerifDPJP4);
+        scrollPaneVerifDPJP4.setBounds(543, 85, 360, 47);
+        
+        scrollPaneVerifDPJP5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        scrollPaneVerifDPJP5.setName("scrollPaneVerifDPJP5"); // NOI18N
+        
+        jLabelVerifDPJPInstruksi.setText("Instruksi :");
+        jLabelVerifDPJPInstruksi.setName("jLabelVerifDPJPInstruksi"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPInstruksi);
+        jLabelVerifDPJPInstruksi.setBounds(450, 139, 90, 23);
+        
+        TInstruksiVerifDPJP.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        TInstruksiVerifDPJP.setColumns(20);
+        TInstruksiVerifDPJP.setRows(5);
+        TInstruksiVerifDPJP.setName("TInstruksiVerifDPJP"); // NOI18N
+        TInstruksiVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                TInstruksiVerifDPJPKeyPressed(evt);
+            }
+        });
+        
+        scrollPaneVerifDPJP5.setViewportView(TInstruksiVerifDPJP);
+        panelGlassVerifikasiDPJP.add(scrollPaneVerifDPJP5);
+        scrollPaneVerifDPJP5.setBounds(543, 139, 360, 50);
+        
+        scrollPaneVerifDPJP6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        scrollPaneVerifDPJP6.setName("scrollPaneVerifDPJP6"); // NOI18N
+        
+        jLabelVerifDPJPEvaluasi.setText("Evaluasi :");
+        jLabelVerifDPJPEvaluasi.setName("jLabelVerifDPJPEvaluasi"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPEvaluasi);
+        jLabelVerifDPJPEvaluasi.setBounds(450, 196, 90, 23);
+        
+        TEvaluasiVerifDPJP.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        TEvaluasiVerifDPJP.setColumns(20);
+        TEvaluasiVerifDPJP.setRows(5);
+        TEvaluasiVerifDPJP.setName("TEvaluasiVerifDPJP"); // NOI18N
+        TEvaluasiVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//               TEvaluasiVerifDPJPKeyPressed(evt);
+            }
+        });
+        scrollPaneVerifDPJP6.setViewportView(TEvaluasiVerifDPJP);
+        panelGlassVerifikasiDPJP.add(scrollPaneVerifDPJP6);
+        scrollPaneVerifDPJP6.setBounds(543, 196, 360, 44);
+        
+        jLabelVerifDPJPPetugas.setText("Dilakukan :");
+        jLabelVerifDPJPPetugas.setName("jLabelVerifDPJPPetugas"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPPetugas);
+        jLabelVerifDPJPPetugas.setBounds(0, 10, 70, 23);
+
+        TKdPetugasVerifDPJP.setHighlighter(null);
+        TKdPetugasVerifDPJP.setName("TKdPetugasVerifDPJP"); // NOI18N
+        TKdPetugasVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                TKdPetugasVerifDPJPKeyPressed(evt);
+            }
+        });
+        panelGlassVerifikasiDPJP.add(TKdPetugasVerifDPJP);
+        TKdPetugasVerifDPJP.setBounds(73, 10, 115, 23);
+        
+        TNmPetugasVerifDPJP.setEditable(false);
+        TNmPetugasVerifDPJP.setHighlighter(null);
+        TNmPetugasVerifDPJP.setName("TNmPetugasVerifDPJP"); // NOI18N
+        panelGlassVerifikasiDPJP.add(TNmPetugasVerifDPJP);
+        TNmPetugasVerifDPJP.setBounds(190, 10, 212, 23);
+        
+        jLabelVerifDPJPJabatan.setText("Profesi / Jabatan / Departemen :");
+        jLabelVerifDPJPJabatan.setName("jLabelVerifDPJPJabatan"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPJabatan);
+        jLabelVerifDPJPJabatan.setBounds(0, 40, 190, 23);
+        
+        TJabatanVerifDPJP.setEditable(false);
+        TJabatanVerifDPJP.setHighlighter(null);
+        TJabatanVerifDPJP.setName("TJabatanVerifDPJP"); // NOI18N
+        panelGlassVerifikasiDPJP.add(TJabatanVerifDPJP);
+        TJabatanVerifDPJP.setBounds(193, 40, 209, 23);
+        
+        jLabelVerifDPJPSuhu.setText("Suhu (°C) :");
+        jLabelVerifDPJPSuhu.setName("jLabelVerifDPJPSuhu"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPSuhu);
+        jLabelVerifDPJPSuhu.setBounds(0, 160, 70, 23);
+
+        TSuhuVerifDPJP.setFocusTraversalPolicyProvider(true);
+        TSuhuVerifDPJP.setName("TSuhuVerifDPJP"); // NOI18N
+        TSuhuVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                TSuhuVerifDPJPKeyPressed(evt);
+            }
+        });
+        panelGlassVerifikasiDPJP.add(TSuhuVerifDPJP);
+        TSuhuVerifDPJP.setBounds(73, 160, 55, 23);
+        
+        jLabelVerifDPJPTensi.setText("Tensi (mmHg) :");
+        jLabelVerifDPJPTensi.setName("jLabelVerifDPJPTensi"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPTensi);
+        jLabelVerifDPJPTensi.setBounds(130, 160, 90, 23);
+
+        TTensiVerifDPJP.setHighlighter(null);
+        TTensiVerifDPJP.setName("TTensiVerifDPJP"); // NOI18N
+        TTensiVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                TTensiKeyPressed(evt);
+            }
+        });
+        panelGlassVerifikasiDPJP.add(TTensiVerifDPJP);
+        TTensiVerifDPJP.setBounds(223, 160, 74, 23);
+        
+        jLabelVerifDPJPBerat.setText("Berat (Kg) :");
+        jLabelVerifDPJPBerat.setName("jLabelVerifDPJPBerat"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPBerat);
+        jLabelVerifDPJPBerat.setBounds(296, 160, 79, 23);
+
+        TBeratVerifDPJP.setHighlighter(null);
+        TBeratVerifDPJP.setName("TBeratVerifDPJP"); // NOI18N
+        TBeratVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//               TBeratVerifDPJPKeyPressed(evt);
+            }
+        });
+        panelGlassVerifikasiDPJP.add(TBeratVerifDPJP);
+        TBeratVerifDPJP.setBounds(378, 160, 55, 23);
+        
+        jLabelVerifDPJPTB.setText("TB (Cm) :");
+        jLabelVerifDPJPTB.setName("jLabelVerifDPJPTB"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPTB);
+        jLabelVerifDPJPTB.setBounds(0, 190, 70, 23);
+
+        TTinggiVerifDPJP.setFocusTraversalPolicyProvider(true);
+        TTinggiVerifDPJP.setName("TTinggiVerifDPJP"); // NOI18N
+        TTinggiVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//               TTinggiVerifDPJPKeyPressed(evt);
+            }
+        });
+        panelGlassVerifikasiDPJP.add(TTinggiVerifDPJP);
+        TTinggiVerifDPJP.setBounds(73, 190, 55, 23);
+        
+        jLabelVerifDPJPRR.setText("RR (/menit) :");
+        jLabelVerifDPJPRR.setName("jLabelVerifDPJPRR"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPRR);
+        jLabelVerifDPJPRR.setBounds(130, 190, 90, 23);
+        
+        TRRVerifDPJP.setHighlighter(null);
+        TRRVerifDPJP.setName("TRRVerifDPJP"); // NOI18N
+        TRRVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                TRRVerifDPJPKeyPressed(evt);
+            }
+        });
+        panelGlassVerifikasiDPJP.add(TRRVerifDPJP);
+        TRRVerifDPJP.setBounds(223, 190, 55, 23);
+        
+        jLabelVerifDPJPNadi.setText("Nadi (/menit) :");
+        jLabelVerifDPJPNadi.setName("jLabelVerifDPJPNadi"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPNadi);
+        jLabelVerifDPJPNadi.setBounds(296, 190, 79, 23);
+        
+        TNadiVerifDPJP.setFocusTraversalPolicyProvider(true);
+        TNadiVerifDPJP.setName("TNadiVerifDPJP"); // NOI18N
+        TNadiVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                TNadiVerifDPJPKeyPressed(evt);
+            }
+        });
+        panelGlassVerifikasiDPJP.add(TNadiVerifDPJP);
+        TNadiVerifDPJP.setBounds(378, 190, 55, 23);
+        
+        jLabelVerifDPJPSPO.setText("SpO2 (%) :");
+        jLabelVerifDPJPSPO.setName("jLabelVerifDPJPSPO"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPSPO);
+        jLabelVerifDPJPSPO.setBounds(0, 220, 70, 23);
+
+        TSPOVerifDPJP.setFocusTraversalPolicyProvider(true);
+        TSPOVerifDPJP.setName("TSPOVerifDPJP"); // NOI18N
+        TSPOVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//               TSPOVerifDPJPKeyPressed(evt);
+            }
+        });
+        panelGlassVerifikasiDPJP.add(TSPOVerifDPJP);
+        TSPOVerifDPJP.setBounds(73, 220, 42, 23);
+        
+        jLabelVerifDPJPGCS.setText("GCS (E,V,M) :");
+        jLabelVerifDPJPGCS.setName("jLabelVerifDPJPGCS"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPGCS);
+        jLabelVerifDPJPGCS.setBounds(120, 220, 70, 23);
+
+        TGCSVerifDPJP.setFocusTraversalPolicyProvider(true);
+        TGCSVerifDPJP.setName("TGCSVerifDPJP"); // NOI18N
+        TGCSVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                TGCSVerifDPJPKeyPressed(evt);
+            }
+        });
+        panelGlassVerifikasiDPJP.add(TGCSVerifDPJP);
+        TGCSVerifDPJP.setBounds(193, 220, 42, 23);
+        
+        jLabelVerifDPJPKesadaran.setText("Kesadaran :");
+        jLabelVerifDPJPKesadaran.setName("jLabelVerifDPJPKesadaran"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPKesadaran);
+        jLabelVerifDPJPKesadaran.setBounds(234, 220, 70, 23);
+
+        cmbKesadaranVerifDPJP.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Compos Mentis", "Somnolence", "Sopor", "Coma","Apatis","Delirium" }));
+        cmbKesadaranVerifDPJP.setName("cmbKesadaranVerifDPJP"); // NOI18N
+        cmbKesadaranVerifDPJP.setPreferredSize(new java.awt.Dimension(62, 28));
+        cmbKesadaranVerifDPJP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+//                cmbKesadaranVerifDPJPKeyPressed(evt);
+            }
+        });
+        panelGlassVerifikasiDPJP.add(cmbKesadaranVerifDPJP);
+        cmbKesadaranVerifDPJP.setBounds(307, 220, 126, 23);
+      
+        ScrollVerifikasiDPJP.setViewportView(tbVerifikasiDPJP);
+        
+        PanelInputVerifikasiDPJP.add(panelGlassVerifikasiDPJP, java.awt.BorderLayout.CENTER);
+        
+        internalFrameVerifikasiDPJP.add(PanelInputVerifikasiDPJP, java.awt.BorderLayout.PAGE_START);
+        internalFrameVerifikasiDPJP.add(ScrollVerifikasiDPJP, java.awt.BorderLayout.CENTER);
+        TabRawat.addTab("Verifikasi DPJP", internalFrameVerifikasiDPJP);
+        
+        jLabelVerifDPJPFilter.setText("FILTER DATA :");
+        jLabelVerifDPJPFilter.setName("jLabelVerifDPJPFilter"); // NOI18N
+        panelGlassVerifikasiDPJP.add(jLabelVerifDPJPFilter);
+        jLabelVerifDPJPFilter.setBounds(910, 10, 80, 22);
+        
+        btnFilterSudahVerifikasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnFilterSudahVerifikasi.setForeground(new Color(50,50,50));
+        btnFilterSudahVerifikasi.setGlassColor(new Color(247, 183, 183));
+        btnFilterSudahVerifikasi.setText("Sudah Verifikasi");
+        btnFilterSudahVerifikasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnFilterSudahVerifikasi.setName("btnFilterSudahVerifikasi"); // NOI18N
+        btnFilterSudahVerifikasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFilterSudahVerifikasiActionPerformed(evt);
+            }
+        });
+        panelGlassVerifikasiDPJP.add(btnFilterSudahVerifikasi);
+        btnFilterSudahVerifikasi.setBounds(910, 40, 150, 25);
+        
+        btnFilterBelumVerifikasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnFilterBelumVerifikasi.setForeground(new Color(50,50,50));
+        btnFilterBelumVerifikasi.setGlassColor(new Color(247, 183, 183));
+        btnFilterBelumVerifikasi.setText("Belum Verifikasi");
+        btnFilterBelumVerifikasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnFilterBelumVerifikasi.setName("btnFilterBelumVerifikasi"); // NOI18N
+        btnFilterBelumVerifikasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+               btnFilterBelumVerifikasiActionPerformed(evt);
+            }
+        });
+        panelGlassVerifikasiDPJP.add(btnFilterBelumVerifikasi);
+        btnFilterBelumVerifikasi.setBounds(910, 70, 150, 25);
+        
 
         ScrollMenu.setViewportView(FormMenu);
 
@@ -5252,10 +5841,12 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         ChkInput1.setSelected(true);
         ChkInput2.setSelected(true);
         ChkInput3.setSelected(true);
+        ChkInputVerifikasiDPJP.setSelected(true);
         isForm(); 
         isForm2();
         isForm3();
         isForm4();
+        isForm5();
         TSuhu.setText("");
         TKdPrw.setText("");
         TNmPrw.setText("");
@@ -5981,6 +6572,86 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                             tgl+"and pemeriksaan_ginekologi_ranap.inspekulo_gine like '%"+TCari.getText().trim()+"%' "+
                             "order by pemeriksaan_ginekologi_ranap.no_rawat desc",param);
                 }   break;
+            case 7:
+                if (TabModeVerifikasiDPJP.getRowCount() == 0) {
+                    JOptionPane.showMessageDialog(null, "Maaf, data sudah habis. Tidak ada data yang bisa anda print...!!!!");
+                    BtnBatal.requestFocus();
+                } else if (TabModeVerifikasiDPJP.getRowCount() != 0) {
+                    Map<String, Object> param = new HashMap<>();
+                    String finger = "";
+                    param.put("namars", akses.getnamars());
+                    param.put("alamatrs", akses.getalamatrs());
+                    param.put("kotars", akses.getkabupatenrs());
+                    param.put("propinsirs", akses.getpropinsirs());
+                    param.put("kontakrs", akses.getkontakrs());
+                    param.put("emailrs", akses.getemailrs());
+                    param.put("logo", Sequel.cariGambar("select setting.logo from setting"));
+                    param.put("ruang",Sequel.cariIsi("select concat(kamar_inap.kd_kamar, ' ', bangsal.nm_bangsal) as ruang from kamar_inap inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal where kamar_inap.no_rawat = ?", TNoRw.getText()));
+                    param.put("diagnosa_awal", Sequel.cariIsi("select diagnosa_awal from kamar_inap where no_rawat = ?", TNoRw.getText()));
+                    param.put("alamat", Sequel.cariIsi("SELECT CONCAT(ps.alamat, ', DS. ',kl.nm_kel, ', KEC. ',kc.nm_kec, ',',kb.nm_kab) FROM pasien ps " +
+                                "INNER JOIN kelurahan kl ON kl.kd_kel = ps.kd_kel " +
+                                "INNER JOIN kecamatan kc ON kc.kd_kec = ps.kd_kec " +
+                                "INNER JOIN kabupaten kb ON kb.kd_kab = ps.kd_kab " +
+                                "WHERE ps.no_rkm_medis = ?", TNoRM.getText()));
+                    String pas = " reg_periksa.no_rawat like '%" + TNoRw.getText() + "%' AND ( pemeriksaan_ranap.nip = '"+Sequel.cariIsi("select kd_dokter from dpjp_ranap where no_rawat = ?", TNoRw.getText())+"' OR verifikasi_soap_dpjp.no_rawat IS NOT NULL) ";
+                    try {
+                        ps=koneksi.prepareStatement("select dpjp_ranap.kd_dokter,dokter.nm_dokter from dpjp_ranap inner join dokter on dpjp_ranap.kd_dokter=dokter.kd_dokter where dpjp_ranap.no_rawat=?");
+                        try {
+                            ps.setString(1,TNoRw.getText());
+                            rs=ps.executeQuery();
+                            i=2;
+                            while(rs.next()){
+                               if(i==2){
+                                   finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",rs.getString("kd_dokter"));
+                                   param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+rs.getString("nm_dokter")+"\nID "+(finger.equals("")?rs.getString("kd_dokter"):finger)+"\n"+DTPTgl.getSelectedItem());
+                                   param.put("namadokter",rs.getString("nm_dokter"));
+                                   param.put("sip_dokter",Sequel.cariIsi("select no_ijn_praktek from dokter where kd_dokter = ?", rs.getString("kd_dokter")));
+                               }
+                               if(i==3){
+                                   finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",rs.getString("kd_dokter"));
+                                   param.put("finger2","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+rs.getString("nm_dokter")+"\nID "+(finger.equals("")?rs.getString("kd_dokter"):finger)+"\n"+DTPTgl.getSelectedItem());
+                                   param.put("namadokter2",rs.getString("nm_dokter")); 
+                                   param.put("sip_dokter2",Sequel.cariIsi("select no_ijn_praktek from dokter where kd_dokter = ?", rs.getString("kd_dokter")));
+                               }
+                               i++;
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Notif : "+e);
+                        } finally{
+                            if(rs!=null){
+                                rs.close();
+                            }
+                            if(ps!=null){
+                                ps.close();
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Notif : "+e);
+                    }
+                    String tgl = " pemeriksaan_ranap.tgl_perawatan between '" + Valid.SetTgl(DTPCari1.getSelectedItem() + "") + "' and '" + Valid.SetTgl(DTPCari2.getSelectedItem() + "") + "' " + pas;
+                    Valid.MyReportqry("rptVerifikasiSOAPIEDPJP.jasper", "report", "::[ Data Verifikasi SOAPIE DPJP ]::",
+                            "SELECT pemeriksaan_ranap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,\n" +
+                            "pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.suhu_tubuh,pemeriksaan_ranap.tensi,\n" +
+                            "pemeriksaan_ranap.nadi,pemeriksaan_ranap.respirasi,pemeriksaan_ranap.tinggi,\n" +
+                            "pemeriksaan_ranap.berat,pemeriksaan_ranap.spo2,pemeriksaan_ranap.gcs,pemeriksaan_ranap.kesadaran,pemeriksaan_ranap.keluhan,\n" +
+                            "pemeriksaan_ranap.pemeriksaan,pemeriksaan_ranap.alergi,pemeriksaan_ranap.penilaian,pemeriksaan_ranap.rtl,\n" +
+                            "pemeriksaan_ranap.instruksi,pemeriksaan_ranap.evaluasi,pemeriksaan_ranap.nip,pegawai.nama,pegawai.jbtn,\n" +
+                            "CONCAT(DATE_FORMAT(pemeriksaan_ranap.tgl_perawatan,'%d-%m-%Y'),' ',TIME_FORMAT(pemeriksaan_ranap.jam_rawat,'%H:%i:%s')) AS tgljam,\n" +
+                            "IF(verifikasi_soap_dpjp.no_rawat IS NULL,FALSE,TRUE) AS verifikasi\n" +
+                            "FROM pasien\n" +
+                            "INNER JOIN reg_periksa ON reg_periksa.no_rkm_medis=pasien.no_rkm_medis\n" +
+                            "INNER JOIN pemeriksaan_ranap ON pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat\n" +
+                            "INNER JOIN pegawai ON pemeriksaan_ranap.nip=pegawai.nik\n" +
+                            "LEFT JOIN verifikasi_soap_dpjp ON verifikasi_soap_dpjp.no_rawat=pemeriksaan_ranap.no_rawat\n" +
+                            "AND verifikasi_soap_dpjp.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan\n" +
+                            "AND verifikasi_soap_dpjp.jam_rawat=pemeriksaan_ranap.jam_rawat\n" +
+                            "AND verifikasi_soap_dpjp.nip=pemeriksaan_ranap.nip where "
+                            + pas + "and (pemeriksaan_ranap.no_rawat like '%" + TCari.getText().trim() + "%' or reg_periksa.no_rkm_medis like '%" + TCari.getText().trim() + "%' or "
+                            + "pasien.nm_pasien like '%" + TCari.getText().trim() + "%' or pemeriksaan_ranap.alergi like '%" + TCari.getText().trim() + "%' or pemeriksaan_ranap.keluhan like '%" + TCari.getText().trim() + "%' or "
+                            + "pemeriksaan_ranap.penilaian like '%" + TCari.getText().trim() + "%' or pemeriksaan_ranap.rtl like '%" + TCari.getText().trim() + "%' or pemeriksaan_ranap.pemeriksaan like '%" + TCari.getText().trim() + "%' or "
+                            + "pegawai.nama like '%" + TCari.getText().trim() + "%') ORDER BY pemeriksaan_ranap.tgl_perawatan ASC, pemeriksaan_ranap.jam_rawat ASC ", param);
+                }
+                break;
             default:
                 break;
         }
@@ -6053,6 +6724,10 @@ public final class DlgRawatInap extends javax.swing.JDialog {
             case 6:
                 tampilAlergi();
                 break;
+            case 7:
+                filterverifikasi="None";
+                tampilVerifikasiDPJP();
+                break;
             default:
                 break;
         }
@@ -6098,6 +6773,10 @@ public final class DlgRawatInap extends javax.swing.JDialog {
                 break;
             case 6:
                 tampilAlergi();
+                break;
+            case 7:
+                filterverifikasi="None";
+                tampilVerifikasiDPJP();
                 break;
             default:
                 break;
@@ -7037,6 +7716,25 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             }
         }
     }//GEN-LAST:event_tbCatatanMouseClicked
+    
+    private void btnFilterSudahVerifikasiActionPerformed(java.awt.event.ActionEvent evt){//GEN-FIRST:event_btnFilterSudahVerifikasiActionPerformed
+        filterverifikasi="Sudah";
+        tampilVerifikasiDPJP();
+    }
+    
+    private void btnFilterBelumVerifikasiActionPerformed(java.awt.event.ActionEvent evt){//GEN-FIRST:event_btnFilterBelumVerifikasiActionPerformed
+        filterverifikasi="Belum";
+        tampilVerifikasiDPJP();
+    }
+    
+    private void tbVerifikasiDPJPMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbVerifikasiDPJPMouseClicked
+        if(TabModeVerifikasiDPJP.getRowCount()!=0){
+            try {
+                getDataVerifikasiDPJP();
+            } catch (java.lang.NullPointerException e) {
+            }
+        }
+    }//GEN-LAST:event_tbVerifikasiDPJPMouseClicked
 
     private void Scroll5KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Scroll5KeyPressed
         // TODO add your handling code here:
@@ -7049,6 +7747,10 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void ChkInput3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkInput3ActionPerformed
         isForm4();
     }//GEN-LAST:event_ChkInput3ActionPerformed
+    
+     private void ChkInputVerifikasiDPJPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkInputVerifikasiDPJPActionPerformed
+        isForm5();
+    }//GEN-LAST:event_ChkInputVerifikasiDPJPActionPerformed
 
     private void TInspeksiVulvaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TInspeksiVulvaKeyPressed
         Valid.pindah(evt,TInspeksi,TInspekuloGine);
@@ -9452,6 +10154,62 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.TextBox TCariMenu;
     private widget.Label jLabelCariMenu;
     
+    //VERIFIKASI DPJP FORM
+    private widget.InternalFrame internalFrameVerifikasiDPJP;
+    private widget.Table tbVerifikasiDPJP;
+    private widget.ScrollPane ScrollVerifikasiDPJP;
+    private javax.swing.JPanel PanelInputVerifikasiDPJP;
+    private widget.CekBox ChkInputVerifikasiDPJP;
+    private widget.panelisi panelGlassVerifikasiDPJP;
+    private widget.Label jLabelVerifDPJP;
+    private widget.Label jLabelVerifDPJPSubjek;
+    private widget.Label jLabelVerifDPJPObjek;
+    private widget.Label jLabelVerifDPJPAsesmen;
+    private widget.Label jLabelVerifDPJPPlan;
+    private widget.Label jLabelVerifDPJPInstruksi;
+    private widget.Label jLabelVerifDPJPEvaluasi;
+    private widget.Label jLabelVerifDPJPPetugas;
+    private widget.Label jLabelVerifDPJPJabatan;
+    private widget.Label jLabelVerifDPJPSuhu;
+    private widget.Label jLabelVerifDPJPTensi;
+    private widget.Label jLabelVerifDPJPBerat;
+    private widget.Label jLabelVerifDPJPTB;
+    private widget.Label jLabelVerifDPJPRR;
+    private widget.Label jLabelVerifDPJPNadi;
+    private widget.Label jLabelVerifDPJPSPO;
+    private widget.Label jLabelVerifDPJPGCS;
+    private widget.Label jLabelVerifDPJPKesadaran;
+    private widget.Label jLabelVerifDPJPFilter;
+    private widget.TextBox TAlergiVerifDPJP;
+    private widget.TextBox TKdPetugasVerifDPJP;
+    private widget.TextBox TNmPetugasVerifDPJP;
+    private widget.TextBox TJabatanVerifDPJP;
+    private widget.TextBox TSuhuVerifDPJP;
+    private widget.TextBox TTensiVerifDPJP;
+    private widget.TextBox TBeratVerifDPJP;
+    private widget.TextBox TTinggiVerifDPJP;
+    private widget.TextBox TRRVerifDPJP;
+    private widget.TextBox TNadiVerifDPJP;
+    private widget.TextBox TSPOVerifDPJP;
+    private widget.TextBox TGCSVerifDPJP;
+    private widget.ComboBox cmbKesadaranVerifDPJP;
+    private widget.ScrollPane scrollPaneVerifDPJP1;
+    private widget.ScrollPane scrollPaneVerifDPJP2;
+    private widget.ScrollPane scrollPaneVerifDPJP3;
+    private widget.ScrollPane scrollPaneVerifDPJP4;
+    private widget.ScrollPane scrollPaneVerifDPJP5;
+    private widget.ScrollPane scrollPaneVerifDPJP6;
+    private widget.TextArea TKeluhanVerifDPJP;
+    private widget.TextArea TPemeriksaanVerifDPJP;
+    private widget.TextArea TPenilaianVerifDPJP;
+    private widget.TextArea TindakLanjutVerifDPJP;
+    private widget.TextArea TEvaluasiVerifDPJP;
+    private widget.TextArea TInstruksiVerifDPJP;
+    private widget.Button btnFilterSudahVerifikasi;
+    private widget.Button btnFilterBelumVerifikasi;
+    
+    
+    
     public void tampilDr() {
         Valid.tabelKosong(tabModeDr);
         try{
@@ -9815,6 +10573,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         setCaraBayar(norwt);
         date = new Date();
         DTPTgl.setSelectedItem(tanggalFormat.format(date));
+        isForm5();
     }
     
     public void setKamar(String kamar) {
@@ -9854,7 +10613,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
             PanelInput1.setPreferredSize(new Dimension(WIDTH,273));
-            panelGlass12.setVisible(true);      
+            panelGlass12.setVisible(true);  
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           
             ChkInput.setVisible(false);            
@@ -10698,6 +11457,121 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
     }
     
+    private void tampilVerifikasiDPJP() {
+        TAlergi.setText(Sequel.cariIsi("SELECT GROUP_CONCAT(mal.display SEPARATOR ', ') AS alergi FROM alergi aa JOIN satu_sehat_ref_allergy mal ON mal.code = aa.alergi_code WHERE aa.no_rkm_medis=?",TNoRM.getText()));
+        Valid.tabelKosong(TabModeVerifikasiDPJP);
+        String sqlfilter = "";
+
+        switch (filterverifikasi) {
+            case "None":
+                sqlfilter = " and pemeriksaan_ranap.tgl_perawatan between '"
+                        + Valid.SetTgl(DTPCari1.getSelectedItem() + "")
+                        + "' and '"
+                        + Valid.SetTgl(DTPCari2.getSelectedItem() + "")+"' ";
+                break;
+            case "Belum":
+                sqlfilter = " and verifikasi_soap_dpjp.no_rawat IS NULL ";
+                break;
+            case "Sudah":
+                sqlfilter = " and verifikasi_soap_dpjp.no_rawat IS NOT NULL ";
+                break;
+        }
+        
+        String dpjp = Sequel.cariIsi("select kd_dokter from dpjp_ranap where no_rawat = ?", TNoRw.getText());
+        try{  
+            psVerifDPJP=koneksi.prepareStatement("select pemeriksaan_ranap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien," +
+                "pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.suhu_tubuh,pemeriksaan_ranap.tensi," +
+                "pemeriksaan_ranap.nadi,pemeriksaan_ranap.respirasi,pemeriksaan_ranap.tinggi," +
+                "pemeriksaan_ranap.berat,pemeriksaan_ranap.spo2,pemeriksaan_ranap.gcs,pemeriksaan_ranap.kesadaran,pemeriksaan_ranap.keluhan," +
+                "pemeriksaan_ranap.pemeriksaan,pemeriksaan_ranap.alergi,pemeriksaan_ranap.penilaian,pemeriksaan_ranap.rtl," +
+                "pemeriksaan_ranap.instruksi,pemeriksaan_ranap.evaluasi,pemeriksaan_ranap.nip,pegawai.nama,pegawai.jbtn, IF(verifikasi_soap_dpjp.no_rawat IS NULL, FALSE, TRUE) AS verifikasi " +
+                "from pasien inner join reg_periksa on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
+                "inner join pemeriksaan_ranap on pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat " +
+                "inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik " +
+                "LEFT JOIN verifikasi_soap_dpjp ON verifikasi_soap_dpjp.no_rawat = pemeriksaan_ranap.no_rawat " +
+                "AND verifikasi_soap_dpjp.tgl_perawatan = pemeriksaan_ranap.tgl_perawatan " +
+                "AND verifikasi_soap_dpjp.jam_rawat = pemeriksaan_ranap.jam_rawat " +
+                "AND verifikasi_soap_dpjp.nip = pemeriksaan_ranap.nip WHERE "+
+                "pemeriksaan_ranap.no_rawat = ? and pemeriksaan_ranap.nip <> ? "+sqlfilter+
+                (TCari.getText().trim().equals("")?"":" and (pemeriksaan_ranap.no_rawat like ? or reg_periksa.no_rkm_medis like ? or pasien.nm_pasien like ? or "+
+                "pemeriksaan_ranap.alergi like ? or pemeriksaan_ranap.keluhan like ? or pemeriksaan_ranap.penilaian like ? or "+
+                "pemeriksaan_ranap.rtl like ? or pemeriksaan_ranap.pemeriksaan like ? or pegawai.nama like ?)")+
+                "order by pemeriksaan_ranap.no_rawat,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat desc"); 
+            try{
+                psVerifDPJP.setString(1,TNoRw.getText());
+                psVerifDPJP.setString(2,dpjp);
+                if(!TCari.getText().trim().equals("")){
+                    psVerifDPJP.setString(3,"%"+TCari.getText().trim()+"%");
+                    psVerifDPJP.setString(4,"%"+TCari.getText().trim()+"%");
+                    psVerifDPJP.setString(5,"%"+TCari.getText().trim()+"%");
+                    psVerifDPJP.setString(6,"%"+TCari.getText().trim()+"%");
+                    psVerifDPJP.setString(7,"%"+TCari.getText().trim()+"%");
+                    psVerifDPJP.setString(8,"%"+TCari.getText().trim()+"%");
+                    psVerifDPJP.setString(9,"%"+TCari.getText().trim()+"%");
+                    psVerifDPJP.setString(10,"%"+TCari.getText().trim()+"%");
+                    psVerifDPJP.setString(11,"%"+TCari.getText().trim()+"%");
+                }
+                    
+                rs=psVerifDPJP.executeQuery();
+                while(rs.next()){
+                    TabModeVerifikasiDPJP.addRow(new Object[]{
+                        rs.getBoolean("verifikasi"),rs.getString(1),rs.getString(2),rs.getString(3),
+                        rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),
+                        rs.getString(8),rs.getString(9),rs.getString(10),rs.getString(11),
+                        rs.getString(12),rs.getString(13),rs.getString(14),rs.getString(15),
+                        rs.getString(16),rs.getString(17),rs.getString(18),rs.getString(19),
+                        rs.getString(20),rs.getString(21),rs.getString(22),rs.getString(23),
+                        rs.getString(24)
+                    });
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(psVerifDPJP!=null){
+                    psVerifDPJP.close();
+                }
+            }                  
+        }catch(Exception e){
+            System.out.println("Notifikasi : "+e);
+        }
+        LCount.setText(""+TabModeVerifikasiDPJP.getRowCount());
+    }
+
+    private void getDataVerifikasiDPJP() {
+        if(tbVerifikasiDPJP.getSelectedRow()!= -1){
+//            TNoRw.setText(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),1).toString());
+            TNoRM.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),2).toString());
+            TPasien.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),3).toString());             
+            TSuhuVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),6).toString()); 
+            TTensiVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),7).toString()); 
+            TNadiVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),8).toString()); 
+            TRRVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),9).toString()); 
+            TTinggiVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),10).toString()); 
+            TBeratVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),11).toString());  
+            TSPOVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),12).toString());  
+            TGCSVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),13).toString()); 
+            cmbKesadaranVerifDPJP.setSelectedItem(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),14).toString()); 
+            TKeluhanVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),15).toString()); 
+            TPemeriksaanVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),16).toString()); 
+            //TAlergi.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),17).toString()); 
+            TAlergiVerifDPJP.setText(Sequel.cariIsi("SELECT GROUP_CONCAT(mal.display SEPARATOR ', ') AS alergi FROM alergi aa JOIN satu_sehat_ref_allergy mal ON mal.code = aa.alergi_code WHERE aa.no_rkm_medis=?",TNoRM.getText()));
+            TPenilaianVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),18).toString()); 
+            TindakLanjutVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),19).toString()); 
+            TInstruksiVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),20).toString());  
+            TEvaluasiVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),21).toString()); 
+            TKdPetugasVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),22).toString()); 
+            TNmPetugasVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),23).toString()); 
+            TJabatanVerifDPJP.setText(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),24).toString()); 
+            cmbJam.setSelectedItem(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),5).toString().substring(0,2));
+            cmbMnt.setSelectedItem(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),5).toString().substring(3,5));
+            cmbDtk.setSelectedItem(tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),5).toString().substring(6,8));
+//            Valid.SetTgl(DTPTgl,tbVerifikasiDPJP.getValueAt(tbVerifikasiDPJP.getSelectedRow(),4).toString());
+        }
+    }
+    
     private void isForm3(){
         if(ChkInput2.isSelected()==true){
             ChkInput2.setVisible(false);
@@ -10723,6 +11597,22 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             PanelInput4.setPreferredSize(new Dimension(WIDTH,20));
             panelGlass16.setVisible(false);      
             ChkInput3.setVisible(true);
+        }
+    }
+    
+    private void isForm5(){
+        headerCheckBox.setSelected(false);
+        tbVerifikasiDPJP.getTableHeader().repaint();
+        if(ChkInputVerifikasiDPJP.isSelected()==true){
+            ChkInputVerifikasiDPJP.setVisible(false);
+            PanelInputVerifikasiDPJP.setPreferredSize(new Dimension(WIDTH,273));
+            panelGlassVerifikasiDPJP.setVisible(true);      
+            ChkInputVerifikasiDPJP.setVisible(true);
+        }else if(ChkInputVerifikasiDPJP.isSelected()==false){           
+            ChkInputVerifikasiDPJP.setVisible(false);            
+            PanelInputVerifikasiDPJP.setPreferredSize(new Dimension(WIDTH,20));
+            panelGlassVerifikasiDPJP.setVisible(false);      
+            ChkInputVerifikasiDPJP.setVisible(true);
         }
     }
     
@@ -11452,6 +12342,29 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     } else {
                         JOptionPane.showMessageDialog(null, "Pilih Alergi");
                     }
+                }
+                break;
+            case 7 :
+                if(Sequel.cariIsi("select kd_dokter from dpjp_ranap where no_rawat = ?", TNoRw.getText()).equals(akses.getkode())){
+                    for(i=0;i<tbVerifikasiDPJP.getRowCount();i++){
+                        if(tbVerifikasiDPJP.getValueAt(i,0).toString().equals("true")){
+                            Sequel.menyimpanignore("verifikasi_soap_dpjp", "?,?,?,?,now()", 4, new String[]{
+                                tbVerifikasiDPJP.getValueAt(i,1).toString(), tbVerifikasiDPJP.getValueAt(i,4).toString(), 
+                                tbVerifikasiDPJP.getValueAt(i,5).toString(), tbVerifikasiDPJP.getValueAt(i,22).toString()
+                            });
+                            
+                        }else{
+                            Sequel.queryu("delete from verifikasi_soap_dpjp where no_rawat='" + tbVerifikasiDPJP.getValueAt(i, 1).toString()
+                                    + "' and tgl_perawatan='" + tbVerifikasiDPJP.getValueAt(i, 4).toString()
+                                    + "' and jam_rawat='" + tbVerifikasiDPJP.getValueAt(i, 5).toString()
+                                    + "' and nip='" + tbVerifikasiDPJP.getValueAt(i, 22).toString() + "' ");
+                        }
+                    }
+                    JOptionPane.showMessageDialog(null, "Verifikasi SOAPIE Selesai !");
+                    filterverifikasi="Sudah";
+                    tampilVerifikasiDPJP();
+                }else{
+                     JOptionPane.showMessageDialog(null, "Maaf, Verifikasi SOAPIE Hanya Bisa Dilakukan Oleh DPJP Spesialis !");
                 }
                 break;
             default:
