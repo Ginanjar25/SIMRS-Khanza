@@ -8146,7 +8146,7 @@ private void MnBillingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                 billing.setLocationRelativeTo(internalFrame1);
                                 billing.setVisible(true);
                                 billing.checkMismatch();
-                                billing.checkPermintaanResep();
+                                billing.checkPermintaan();
                             }
                         }else{
                             if(akses.getbilling_ralan()==true){
@@ -8160,7 +8160,7 @@ private void MnBillingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                             billing.setLocationRelativeTo(internalFrame1);
                             billing.setVisible(true);
                             billing.checkMismatch();
-                            billing.checkPermintaanResep();
+                            billing.checkPermintaan();
                         }
                     }catch(Exception ex){
                         System.out.println("Notifikasi : "+ex);

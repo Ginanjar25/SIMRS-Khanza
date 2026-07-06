@@ -3483,7 +3483,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 //        if (!checkMismatch()) {
 //            return; // Keluar dari method jika ada mismatch
 //        }
-        if (!checkPermintaanResep()) {
+        if (!checkPermintaan()) {
             return; 
         }
         try {
@@ -6430,35 +6430,32 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         return true; // Tidak ada mismatch, return true
     }
      
-    public boolean checkPermintaanResep() {
-        StringBuilder daftarResep = new StringBuilder();
-        int count = 0;
+    public boolean checkPermintaan() {
+        StringBuilder daftarPermintaan = new StringBuilder();
+        int totalCount = 0;
+        String noRawat = TNoRw.getText();
+
+        // ================== 1. CEK RESEP OBAT ==================
         try {
             psobatlangsung = koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,"
                     + " dokter.nm_dokter,if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status "
                     + " from resep_obat inner join dokter on resep_obat.kd_dokter=dokter.kd_dokter "
                     + " where resep_obat.tgl_perawatan='0000-00-00' and resep_obat.status='ralan' and resep_obat.no_rawat=? order by resep_obat.tgl_perawatan desc,resep_obat.jam desc");
             try {
-                psobatlangsung.setString(1, TNoRw.getText());
+                psobatlangsung.setString(1, noRawat);
                 rscariobat = psobatlangsung.executeQuery();
+                int countResep = 0;
                 while (rscariobat.next()) {
-                    count++;
-                    daftarResep.append(count).append(". ").append(rscariobat.getString("no_resep")).append(" - ").append(rscariobat.getString("nm_dokter")).append("\n");
-                }                
-                if (count >= 1) {
-                    StringBuilder pesan = new StringBuilder();
-                    pesan.append("PERINGATAN: Ditemukan ").append(count).append(" No. Resep belum Tervalidasi!\n\n");
-                    pesan.append("No Rawat: ").append(TNoRw.getText()).append("\n");
-                    pesan.append("Daftar Resep:\n");
-                    pesan.append("========================================\n");
-                    pesan.append(daftarResep.toString());
-                    pesan.append("\nSilahkan konfirmasi ke Farmasi terlebih dahulu !!!");
-
-                    javax.swing.JOptionPane.showMessageDialog(null, pesan.toString(), "Konfirmasi Resep Belum Tervalidasi", javax.swing.JOptionPane.WARNING_MESSAGE);
-                    return false; 
+                    countResep++;
+                    if (countResep == 1) {
+                        daftarPermintaan.append("\n[ RESEP OBAT ]\n");
+                    }
+                    daftarPermintaan.append(countResep).append(". ").append(rscariobat.getString("no_resep"))
+                            .append(" - ").append(rscariobat.getString("nm_dokter")).append("\n");
                 }
+                totalCount += countResep;
             } catch (Exception e) {
-                System.out.println("Notif : " + e);
+                System.out.println("Notif Cek Resep : " + e);
             } finally {
                 if (rscariobat != null) {
                     rscariobat.close();
@@ -6468,9 +6465,94 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 }
             }
         } catch (Exception e) {
-            System.out.println("Notif : " + e);
+            System.out.println("Notif (PS Resep) : " + e);
         }
+
+        // ================== 2. CEK LABORATORIUM ==================
+        try {
+            pscarilab = koneksi.prepareStatement("select permintaan_lab.noorder,permintaan_lab.tgl_permintaan,"
+                    + "if(permintaan_lab.jam_permintaan='00:00:00','',permintaan_lab.jam_permintaan) as jam_permintaan,"
+                    + "if(permintaan_lab.tgl_hasil='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,"
+                    + "dokter.nm_dokter from permintaan_lab inner join dokter on permintaan_lab.dokter_perujuk=dokter.kd_dokter "
+                    + "where permintaan_lab.no_rawat=? and permintaan_lab.tgl_hasil='0000-00-00' and permintaan_lab.status='ralan' order by permintaan_lab.tgl_permintaan,permintaan_lab.jam_permintaan desc");
+            java.sql.ResultSet rsLab = null; // Dideklarasikan sementara agar tidak error
+            try {
+                pscarilab.setString(1, noRawat);
+                rsLab = pscarilab.executeQuery();
+                int countLab = 0;
+                while (rsLab.next()) {
+                    countLab++;
+                    if (countLab == 1) {
+                        daftarPermintaan.append("\n[ LABORATORIUM ]\n");
+                    }
+                    daftarPermintaan.append(countLab).append(". ").append(rsLab.getString("noorder"))
+                            .append(" - ").append(rsLab.getString("nm_dokter")).append("\n");
+                }
+                totalCount += countLab;
+            } catch (Exception e) {
+                System.out.println("Notif Cek Lab : " + e);
+            } finally {
+                if (rsLab != null) {
+                    rsLab.close();
+                }
+                if (pscarilab != null) {
+                    pscarilab.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif (PS Lab) : " + e);
+        }
+
+        // ================== 3. CEK RADIOLOGI ==================
+        try {
+            pscariradiologi = koneksi.prepareStatement("select permintaan_radiologi.noorder,permintaan_radiologi.tgl_permintaan,"
+                    + "if(permintaan_radiologi.jam_permintaan='00:00:00','',permintaan_radiologi.jam_permintaan) as jam_permintaan,"
+                    + "if(permintaan_radiologi.tgl_hasil='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,"
+                    + "dokter.nm_dokter from permintaan_radiologi inner join dokter on permintaan_radiologi.dokter_perujuk=dokter.kd_dokter "
+                    + "where permintaan_radiologi.no_rawat=? and permintaan_radiologi.tgl_hasil='0000-00-00' and permintaan_radiologi.status='ralan' order by permintaan_radiologi.tgl_permintaan,permintaan_radiologi.jam_permintaan desc");
+            java.sql.ResultSet rsRad = null; // Dideklarasikan sementara agar tidak error
+            try {
+                pscariradiologi.setString(1, noRawat);
+                rsRad = pscariradiologi.executeQuery();
+                int countRad = 0;
+                while (rsRad.next()) {
+                    countRad++;
+                    if (countRad == 1) {
+                        daftarPermintaan.append("\n[ RADIOLOGI ]\n");
+                    }
+                    daftarPermintaan.append(countRad).append(". ").append(rsRad.getString("noorder"))
+                            .append(" - ").append(rsRad.getString("nm_dokter")).append("\n");
+                }
+                totalCount += countRad;
+            } catch (Exception e) {
+                System.out.println("Notif Cek Rad : " + e);
+            } finally {
+                if (rsRad != null) {
+                    rsRad.close();
+                }
+                if (pscariradiologi != null) {
+                    pscariradiologi.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif (PS Rad) : " + e);
+        }
+
+        // ================== 4. PENGECEKAN AKHIR & PESAN ==================
+        if (totalCount >= 1) {
+            StringBuilder pesan = new StringBuilder();
+            pesan.append("PERINGATAN: Ditemukan ").append(totalCount).append(" Permintaan Belum Terlayani/Tervalidasi!\n\n");
+            pesan.append("No Rawat: ").append(noRawat).append("\n");
+            pesan.append("========================================\n");
+            pesan.append(daftarPermintaan.toString());
+            pesan.append("========================================\n\n");
+            pesan.append("Silahkan konfirmasi ke unit terkait terlebih dahulu !!!");
+
+            javax.swing.JOptionPane.showMessageDialog(null, pesan.toString(), "Konfirmasi Permintaan Tertunda", javax.swing.JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
         return true;
-    } 
+    }
     
 }
