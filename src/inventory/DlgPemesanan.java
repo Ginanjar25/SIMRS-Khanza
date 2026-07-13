@@ -960,6 +960,14 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                 }
             }
         }
+        
+        jml = tbDokter.getRowCount();
+        for (i = 0; i < jml; i++) {
+            if ((Valid.SetAngka(tbDokter.getValueAt(i, 0).toString()) > 0) && (Valid.SetAngka(tbDokter.getValueAt(7, 0).toString()) == 0)) {
+                JOptionPane.showMessageDialog(null,"Harga Tidak Boleh 0"); 
+                return;
+            }
+        }
             
         if(NoFaktur.getText().trim().equals("")){
             Valid.textKosong(NoFaktur,"No.Faktur");
@@ -1879,6 +1887,9 @@ private void btnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }
     
     private void setKonversi(int baris){        
+        if(Valid.SetAngka(tbDokter.getValueAt(baris,0).toString())>0 && Valid.SetAngka(tbDokter.getValueAt(baris,7).toString()) == 0){
+          JOptionPane.showMessageDialog(null,"Harga Tidak Boleh 0");  
+        }else{
         try {
             if(hargadasar.equals("Harga Beli")){
                 if(Valid.SetAngka(tbDokter.getValueAt(baris,0).toString())>0){
@@ -2658,5 +2669,8 @@ private void btnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         } catch (Exception e) {
             tbDokter.setValueAt("",baris,0);
         }
+        
+      }
     }
+    
 }

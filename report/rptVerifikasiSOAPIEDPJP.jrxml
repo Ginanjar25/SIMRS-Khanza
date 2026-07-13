@@ -558,7 +558,7 @@
 				<textFieldExpression><![CDATA[$F{nama} + " / " + $F{jbtn}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" mode="Transparent" x="146" y="1" width="308" height="97" uuid="a71fa073-495c-4377-a866-0a005fa2d90e"/>
+				<reportElement positionType="Float" mode="Transparent" x="146" y="1" width="308" height="95" uuid="a71fa073-495c-4377-a866-0a005fa2d90e"/>
 				<textElement textAlignment="Justified" verticalAlignment="Top">
 					<font fontName="Times New Roman" size="10" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -596,4 +596,14 @@
 			</line>
 		</band>
 	</detail>
+	<summary>
+		<band height="1">
+			<line>
+				<reportElement x="1" y="0" width="556" height="1" uuid="231df997-e990-45aa-b4e0-3fc26d3b1f17"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+	</summary>
 </jasperReport>
