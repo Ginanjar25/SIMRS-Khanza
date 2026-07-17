@@ -1211,6 +1211,8 @@ public final class DlgIGD extends javax.swing.JDialog {
         jLabelNoRwRanap = new widget.Label();
         TNoRwRanap = new widget.TextBox();
         TNoRmRanap = new widget.TextBox();
+        
+        MnGelangPasienDewasa = new javax.swing.JMenuItem();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
         
@@ -5813,6 +5815,22 @@ public final class DlgIGD extends javax.swing.JDialog {
         BtnDokterRanap.setBounds(450, 90, 28, 23);
 
         WindowDiagnosaMasuk.getContentPane().add(internalFrameDiagnosa, java.awt.BorderLayout.CENTER);
+        
+        MnGelangPasienDewasa.setBackground(new java.awt.Color(255, 255, 254));
+        MnGelangPasienDewasa.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnGelangPasienDewasa.setForeground(new java.awt.Color(50, 50, 50));
+        MnGelangPasienDewasa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnGelangPasienDewasa.setText("Gelang Pasien Dewasa");
+        MnGelangPasienDewasa.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnGelangPasienDewasa.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnGelangPasienDewasa.setName("MnGelangPasienDewasa"); // NOI18N
+        MnGelangPasienDewasa.setPreferredSize(new java.awt.Dimension(200, 26));
+        MnGelangPasienDewasa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnGelangPasienDewasaActionPerformed(evt);
+            }
+        });
+        MnGelang.add(MnGelangPasienDewasa);
         
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -11955,6 +11973,46 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             }
         }
     }//GEN-LAST:event_MnDepositActionPerformed
+    
+    private void MnGelangPasienDewasaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnGelangPasienDewasaActionPerformed
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, data pasien sudah habis...!!!!");
+            TCari.requestFocus();
+        }else if(TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu data pada table...!!!");
+            tbPetugas.requestFocus();
+        }else{     
+            if(tbPetugas.getSelectedRow()>-1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                Map<String, Object> param = new HashMap<>();                 
+                param.put("namars",akses.getnamars());
+                param.put("alamatrs",akses.getalamatrs());
+                param.put("kotars",akses.getkabupatenrs());
+                param.put("propinsirs",akses.getpropinsirs());
+                param.put("kontakrs",akses.getkontakrs());
+                param.put("emailrs",akses.getemailrs());  
+                param.put("tanggal",tbPetugas.getValueAt(tbPetugas.getSelectedRow(),3).toString());    
+                param.put("kamar","POLIKLINIK IGD");
+                param.put("kamar2","POLIKLINIK IGD");
+                param.put("no_rawat", TNoRw.getText());
+                param.put("kls_bpjs", "");
+                param.put("penjab", tbPetugas.getValueAt(tbPetugas.getSelectedRow(),11).toString());
+                param.put("dpjp",Sequel.cariIsi("select dokter.nm_dokter from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter where reg_periksa.no_rawat=? ",TNoRw.getText()));
+                param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
+                Valid.MyReportqry("rptGelangPasienDewasa.jasper","report","::[ Gelang Pasien ]::","select pasien.no_rkm_medis, pasien.nm_pasien, pasien.no_ktp, pasien.jk, "+
+                       "pasien.tmp_lahir, pasien.tgl_lahir,pasien.nm_ibu, concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat, pasien.gol_darah, pasien.pekerjaan,"+
+                       "pasien.stts_nikah,pasien.agama,pasien.tgl_daftar,pasien.no_tlp,pasien.umur,"+
+                       "pasien.pnd, pasien.keluarga, pasien.namakeluarga,penjab.png_jawab,pasien.pekerjaanpj,"+
+                       "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamatpj from pasien "+
+                       "inner join kelurahan inner join kecamatan inner join kabupaten "+
+                       "inner join penjab on pasien.kd_pj=penjab.kd_pj and pasien.kd_kel=kelurahan.kd_kel "+
+                       "and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab  where pasien.no_rkm_medis='"+TNoRM.getText()+"' ",param);
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+    }//GEN-LAST:event_MnGelangPasienDewasaActionPerformed
+        
+        
     /**
     * @data args the command line arguments
     */
@@ -12346,6 +12404,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Label jLabelNoRwRanap;
     private widget.TextBox TNoRwRanap;
     private widget.TextBox TNoRmRanap;
+    private javax.swing.JMenuItem MnGelangPasienDewasa;
      
     private void tampil() {
         Valid.tabelKosong(tabMode);   

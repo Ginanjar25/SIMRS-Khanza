@@ -232,7 +232,6 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
         TglLahir = new widget.TextBox();
         jSeparator2 = new javax.swing.JSeparator();
         PanelWall = new usu.widget.glass.PanelGlass();
-        jSeparator9 = new javax.swing.JSeparator();
         Nyeri = new widget.ComboBox();
         jLabel80 = new widget.Label();
         Provokes = new widget.ComboBox();
@@ -446,7 +445,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-10-2023" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-07-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -460,7 +459,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-10-2023" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-07-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -521,7 +520,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
 
         PanelInput.setName("PanelInput"); // NOI18N
         PanelInput.setOpaque(false);
-        PanelInput.setPreferredSize(new java.awt.Dimension(192, 276));
+        PanelInput.setPreferredSize(new java.awt.Dimension(192, 490));
         PanelInput.setLayout(new java.awt.BorderLayout(1, 1));
 
         ChkInput.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
@@ -551,7 +550,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
         FormInput.setBackground(new java.awt.Color(250, 255, 245));
         FormInput.setBorder(null);
         FormInput.setName("FormInput"); // NOI18N
-        FormInput.setPreferredSize(new java.awt.Dimension(130, 223));
+        FormInput.setPreferredSize(new java.awt.Dimension(130, 440));
         FormInput.setLayout(null);
 
         jLabel4.setText("No.Rawat :");
@@ -581,7 +580,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
         TPasien.setBounds(336, 10, 310, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-10-2023" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-07-2026" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy");
         Tanggal.setName("Tanggal"); // NOI18N
         Tanggal.setOpaque(false);
@@ -699,23 +698,16 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
         FormInput.add(jSeparator2);
         jSeparator2.setBounds(0, 70, 830, 1);
 
+        PanelWall.setAlpha(0.1F);
         PanelWall.setBackground(new java.awt.Color(29, 29, 29));
-        PanelWall.setBackgroundImage(new javax.swing.ImageIcon(getClass().getResource("/picture/nyeri.png"))); // NOI18N
+        PanelWall.setBackgroundImage(new javax.swing.ImageIcon(getClass().getResource("/picture/skala_nyeri.png"))); // NOI18N
         PanelWall.setBackgroundImageType(usu.widget.constan.BackgroundConstan.BACKGROUND_IMAGE_STRECT);
         PanelWall.setPreferredSize(new java.awt.Dimension(200, 200));
         PanelWall.setRound(false);
         PanelWall.setWarna(new java.awt.Color(110, 110, 110));
         PanelWall.setLayout(null);
         FormInput.add(PanelWall);
-        PanelWall.setBounds(5, 80, 330, 160);
-
-        jSeparator9.setBackground(new java.awt.Color(239, 244, 234));
-        jSeparator9.setForeground(new java.awt.Color(239, 244, 234));
-        jSeparator9.setOrientation(javax.swing.SwingConstants.VERTICAL);
-        jSeparator9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(239, 244, 234)));
-        jSeparator9.setName("jSeparator9"); // NOI18N
-        FormInput.add(jSeparator9);
-        jSeparator9.setBounds(335, 75, 1, 172);
+        PanelWall.setBounds(10, 70, 890, 290);
 
         Nyeri.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Tidak Ada Nyeri", "Nyeri Akut", "Nyeri Kronis" }));
         Nyeri.setName("Nyeri"); // NOI18N
@@ -725,12 +717,12 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
             }
         });
         FormInput.add(Nyeri);
-        Nyeri.setBounds(345, 80, 130, 23);
+        Nyeri.setBounds(10, 370, 130, 23);
 
         jLabel80.setText("Penyebab :");
         jLabel80.setName("jLabel80"); // NOI18N
         FormInput.add(jLabel80);
-        jLabel80.setBounds(480, 80, 60, 23);
+        jLabel80.setBounds(150, 370, 60, 23);
 
         Provokes.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Proses Penyakit", "Benturan", "Lain-lain", "-" }));
         Provokes.setName("Provokes"); // NOI18N
@@ -740,7 +732,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
             }
         });
         FormInput.add(Provokes);
-        Provokes.setBounds(544, 80, 130, 23);
+        Provokes.setBounds(210, 370, 130, 23);
 
         KetProvokes.setFocusTraversalPolicyProvider(true);
         KetProvokes.setName("KetProvokes"); // NOI18N
@@ -750,13 +742,13 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
             }
         });
         FormInput.add(KetProvokes);
-        KetProvokes.setBounds(678, 80, 146, 23);
+        KetProvokes.setBounds(350, 370, 146, 23);
 
         jLabel81.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel81.setText("Kualitas");
         jLabel81.setName("jLabel81"); // NOI18N
         FormInput.add(jLabel81);
-        jLabel81.setBounds(345, 110, 60, 23);
+        jLabel81.setBounds(10, 400, 60, 23);
 
         Quality.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Seperti Tertusuk", "Berdenyut", "Teriris", "Tertindih", "Tertiban", "Lain-lain", "-" }));
         Quality.setName("Quality"); // NOI18N
@@ -766,7 +758,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
             }
         });
         FormInput.add(Quality);
-        Quality.setBounds(397, 110, 140, 23);
+        Quality.setBounds(60, 400, 140, 23);
 
         KetQuality.setFocusTraversalPolicyProvider(true);
         KetQuality.setName("KetQuality"); // NOI18N
@@ -776,18 +768,18 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
             }
         });
         FormInput.add(KetQuality);
-        KetQuality.setBounds(541, 110, 283, 23);
+        KetQuality.setBounds(210, 400, 283, 23);
 
         jLabel82.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel82.setText("Wilayah :");
         jLabel82.setName("jLabel82"); // NOI18N
         FormInput.add(jLabel82);
-        jLabel82.setBounds(345, 140, 55, 23);
+        jLabel82.setBounds(10, 430, 55, 23);
 
         jLabel83.setText("Lokasi :");
         jLabel83.setName("jLabel83"); // NOI18N
         FormInput.add(jLabel83);
-        jLabel83.setBounds(359, 160, 60, 23);
+        jLabel83.setBounds(40, 430, 60, 23);
 
         Lokasi.setFocusTraversalPolicyProvider(true);
         Lokasi.setName("Lokasi"); // NOI18N
@@ -797,12 +789,12 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
             }
         });
         FormInput.add(Lokasi);
-        Lokasi.setBounds(423, 160, 225, 23);
+        Lokasi.setBounds(100, 430, 225, 23);
 
         jLabel67.setText("Menyebar :");
         jLabel67.setName("jLabel67"); // NOI18N
         FormInput.add(jLabel67);
-        jLabel67.setBounds(661, 160, 79, 23);
+        jLabel67.setBounds(330, 430, 79, 23);
 
         Menyebar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Tidak", "Ya" }));
         Menyebar.setName("Menyebar"); // NOI18N
@@ -812,34 +804,39 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
             }
         });
         FormInput.add(Menyebar);
-        Menyebar.setBounds(744, 160, 80, 23);
+        Menyebar.setBounds(410, 430, 80, 23);
 
         jLabel88.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel88.setText("Severity :");
         jLabel88.setName("jLabel88"); // NOI18N
         FormInput.add(jLabel88);
-        jLabel88.setBounds(345, 190, 55, 23);
+        jLabel88.setBounds(510, 370, 55, 23);
 
         jLabel85.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel85.setText("Skala Nyeri");
         jLabel85.setName("jLabel85"); // NOI18N
         FormInput.add(jLabel85);
-        jLabel85.setBounds(390, 190, 70, 23);
+        jLabel85.setBounds(560, 370, 70, 23);
 
         SkalaNyeri.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
         SkalaNyeri.setName("SkalaNyeri"); // NOI18N
+        SkalaNyeri.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SkalaNyeriActionPerformed(evt);
+            }
+        });
         SkalaNyeri.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 SkalaNyeriKeyPressed(evt);
             }
         });
         FormInput.add(SkalaNyeri);
-        SkalaNyeri.setBounds(457, 190, 70, 23);
+        SkalaNyeri.setBounds(630, 370, 70, 23);
 
         jLabel87.setText("Waktu / Durasi :");
         jLabel87.setName("jLabel87"); // NOI18N
         FormInput.add(jLabel87);
-        jLabel87.setBounds(597, 190, 90, 23);
+        jLabel87.setBounds(700, 370, 90, 23);
 
         Durasi.setFocusTraversalPolicyProvider(true);
         Durasi.setName("Durasi"); // NOI18N
@@ -849,19 +846,19 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
             }
         });
         FormInput.add(Durasi);
-        Durasi.setBounds(691, 190, 95, 23);
+        Durasi.setBounds(790, 370, 80, 23);
 
         jLabel84.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel84.setText("Menit");
         jLabel84.setName("jLabel84"); // NOI18N
         FormInput.add(jLabel84);
-        jLabel84.setBounds(789, 190, 35, 23);
+        jLabel84.setBounds(880, 370, 35, 23);
 
         jLabel89.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel89.setText("Nyeri Hilang Bila");
+        jLabel89.setText("Nyeri Hilang Bila :");
         jLabel89.setName("jLabel89"); // NOI18N
         FormInput.add(jLabel89);
-        jLabel89.setBounds(345, 220, 110, 23);
+        jLabel89.setBounds(500, 400, 90, 23);
 
         NyeriHilang.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Istirahat", "Medengar Musik", "Minum Obat", "-" }));
         NyeriHilang.setName("NyeriHilang"); // NOI18N
@@ -871,7 +868,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
             }
         });
         FormInput.add(NyeriHilang);
-        NyeriHilang.setBounds(436, 220, 130, 23);
+        NyeriHilang.setBounds(590, 400, 80, 23);
 
         KetNyeri.setFocusTraversalPolicyProvider(true);
         KetNyeri.setName("KetNyeri"); // NOI18N
@@ -881,17 +878,17 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
             }
         });
         FormInput.add(KetNyeri);
-        KetNyeri.setBounds(570, 220, 254, 23);
+        KetNyeri.setBounds(680, 400, 230, 23);
 
         jLabel86.setText(":");
         jLabel86.setName("jLabel86"); // NOI18N
         FormInput.add(jLabel86);
-        jLabel86.setBounds(352, 110, 40, 23);
+        jLabel86.setBounds(20, 400, 40, 23);
 
         jLabel90.setText(":");
         jLabel90.setName("jLabel90"); // NOI18N
         FormInput.add(jLabel90);
-        jLabel90.setBounds(345, 220, 87, 23);
+        jLabel90.setBounds(10, 490, 87, 23);
 
         scrollInput.setViewportView(FormInput);
 
@@ -1234,6 +1231,10 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
         Valid.pindah(evt,NyeriHilang,BtnSimpan);
     }//GEN-LAST:event_KetNyeriKeyPressed
 
+    private void SkalaNyeriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SkalaNyeriActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_SkalaNyeriActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1317,7 +1318,6 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JSeparator jSeparator9;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
     private widget.ScrollPane scrollInput;
@@ -1473,7 +1473,7 @@ public final class RMPenilaianUlangNyeri extends javax.swing.JDialog {
     private void isForm(){
         if(ChkInput.isSelected()==true){
             ChkInput.setVisible(false);
-            PanelInput.setPreferredSize(new Dimension(WIDTH,276));
+            PanelInput.setPreferredSize(new Dimension(WIDTH,490));
             FormInput.setVisible(true);      
             ChkInput.setVisible(true);
         }else if(ChkInput.isSelected()==false){           

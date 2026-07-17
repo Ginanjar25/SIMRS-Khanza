@@ -66,7 +66,7 @@ import simrskhanza.DlgTagihanOperasi;
  * @author perpustakaan
  */
 public class DlgBilingRanap extends javax.swing.JDialog {
-    private final DefaultTableModel tabModeRwJlDr,tabModeTambahan,tabModePotongan,tabModeKamIn,tabModeAkunBayar,tabModeAkunPiutang,tabModeLab,tabModeRad,tabModeApotek;
+    private final DefaultTableModel tabModeRwJlDr,tabModeTambahan,tabModePotongan,tabModeKamIn,tabModeAkunBayar,tabModeAkunPiutang,tabModeLab,tabModeRad,tabModeApotek,tabModeDetailPindahKamar;
     public DlgPemberianObat beriobat=new DlgPemberianObat(null,false);
     public DlgRawatInap rawatinap=new DlgRawatInap(null,false);
     public DlgDeposit deposit=new DlgDeposit(null,false);
@@ -564,6 +564,45 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         }
         tbApotek.setDefaultRenderer(Object.class, new WarnaTable());
         
+         //ubah lama inap
+        Object[] rowUbahDetailPindahKamar={"P","Kode Kamar","Nama Kamar","Tgl.Masuk","Jam Masuk","Tgl.Billing","Tarif", "Titip", "Status Kamar"};
+        tabModeDetailPindahKamar=new DefaultTableModel(null,rowUbahDetailPindahKamar){
+             @Override public boolean isCellEditable(int rowIndex, int colIndex){
+                 boolean a = false;
+                 if ((colIndex==0) || (colIndex==6) || (colIndex==7) || (colIndex==8)) {
+                      a=true;
+                 }
+                 return a;
+             }
+              
+             Class[] types = new Class[] {
+                java.lang.Boolean.class,java.lang.Object.class,
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+             };
+             @Override
+             public Class getColumnClass(int columnIndex) {
+                  return types [columnIndex];
+             }
+        };
+        tbUbahDetailPindahKamar.setModel(tabModeDetailPindahKamar);
+
+        tbUbahDetailPindahKamar.setPreferredScrollableViewportSize(new Dimension(800,800));
+        tbUbahDetailPindahKamar.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        
+        for (i = 0; i < 9; i++) {
+            TableColumn column = tbUbahDetailPindahKamar.getColumnModel().getColumn(i);
+            if(i==0){
+                column.setPreferredWidth(40);
+            }else if(i==2){
+                column.setPreferredWidth(250);
+            }else{
+                column.setPreferredWidth(80);
+            }
+        }
+
+        tbUbahDetailPindahKamar.setDefaultRenderer(Object.class, new WarnaTable());
+        
         beriobat.dlgobt.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {}
@@ -844,6 +883,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         MnCariRadiologi1 = new javax.swing.JMenuItem();
         MnGabungNota = new javax.swing.JMenuItem();
         MnHapusTagihan = new javax.swing.JMenuItem();
+        MnUbahDetailPindahKamar = new javax.swing.JMenuItem();
         WindowInput = new javax.swing.JDialog();
         internalFrame2 = new widget.InternalFrame();
         TotalObat = new widget.TextBox();
@@ -896,6 +936,17 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         ppBersihkanPiutang = new javax.swing.JMenuItem();
         PopupBayar = new javax.swing.JPopupMenu();
         ppBersihkanBayar = new javax.swing.JMenuItem();
+        WindowInput7 = new javax.swing.JDialog();
+        internalFrame8 = new widget.InternalFrame();
+        scrollPane10 = new widget.ScrollPane();
+        tbUbahDetailPindahKamar = new widget.Table();
+        panelisi4 = new widget.panelisi();
+        label19 = new widget.Label();
+        norawatubdetailpindahkamar = new widget.TextBox();
+        label20 = new widget.Label();
+        BtnSimpanUbahDetailPindahKamar = new widget.Button();
+        BtnHapusUbahDetailPindahKamar = new widget.Button();
+        BtnKeluarUbahDetailPindahKamar = new widget.Button();
         internalFrame1 = new widget.InternalFrame();
         panelGlass1 = new widget.panelisi();
         jLabel3 = new widget.Label();
@@ -1559,6 +1610,22 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         });
         jPopupMenu1.add(MnHapusTagihan);
 
+        MnUbahDetailPindahKamar.setBackground(new java.awt.Color(255, 255, 254));
+        MnUbahDetailPindahKamar.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnUbahDetailPindahKamar.setForeground(new java.awt.Color(50, 50, 50));
+        MnUbahDetailPindahKamar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnUbahDetailPindahKamar.setText("Ubah Detail Pindah Kamar");
+        MnUbahDetailPindahKamar.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnUbahDetailPindahKamar.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnUbahDetailPindahKamar.setName("MnUbahDetailPindahKamar"); // NOI18N
+        MnUbahDetailPindahKamar.setPreferredSize(new java.awt.Dimension(250, 28));
+        MnUbahDetailPindahKamar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnUbahDetailPindahKamarActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(MnUbahDetailPindahKamar);
+
         WindowInput.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         WindowInput.setName("WindowInput"); // NOI18N
         WindowInput.setUndecorated(true);
@@ -2029,6 +2096,96 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         });
         PopupBayar.add(ppBersihkanBayar);
 
+        WindowInput7.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        WindowInput7.setName("WindowInput7"); // NOI18N
+        WindowInput7.setUndecorated(true);
+        WindowInput7.setResizable(false);
+
+        internalFrame8.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Ubah Manual Lama Inap ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
+        internalFrame8.setName("internalFrame8"); // NOI18N
+        internalFrame8.setLayout(new java.awt.BorderLayout(1, 1));
+
+        scrollPane10.setName("scrollPane10"); // NOI18N
+        scrollPane10.setOpaque(true);
+
+        tbUbahDetailPindahKamar.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        tbUbahDetailPindahKamar.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
+        tbUbahDetailPindahKamar.setName("tbUbahDetailPindahKamar"); // NOI18N
+        scrollPane10.setViewportView(tbUbahDetailPindahKamar);
+
+        internalFrame8.add(scrollPane10, java.awt.BorderLayout.CENTER);
+
+        panelisi4.setName("panelisi4"); // NOI18N
+        panelisi4.setPreferredSize(new java.awt.Dimension(100, 56));
+        panelisi4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 9));
+
+        label19.setText("No.Rawat :");
+        label19.setName("label19"); // NOI18N
+        label19.setPreferredSize(new java.awt.Dimension(60, 23));
+        panelisi4.add(label19);
+
+        norawatubdetailpindahkamar.setEditable(false);
+        norawatubdetailpindahkamar.setName("norawatubdetailpindahkamar"); // NOI18N
+        norawatubdetailpindahkamar.setPreferredSize(new java.awt.Dimension(200, 23));
+        panelisi4.add(norawatubdetailpindahkamar);
+
+        label20.setName("label20"); // NOI18N
+        label20.setPreferredSize(new java.awt.Dimension(50, 23));
+        panelisi4.add(label20);
+
+        BtnSimpanUbahDetailPindahKamar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
+        BtnSimpanUbahDetailPindahKamar.setMnemonic('S');
+        BtnSimpanUbahDetailPindahKamar.setText("Simpan");
+        BtnSimpanUbahDetailPindahKamar.setToolTipText("Alt+S");
+        BtnSimpanUbahDetailPindahKamar.setName("BtnSimpanUbahDetailPindahKamar"); // NOI18N
+        BtnSimpanUbahDetailPindahKamar.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnSimpanUbahDetailPindahKamar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSimpanUbahDetailPindahKamarActionPerformed(evt);
+            }
+        });
+        panelisi4.add(BtnSimpanUbahDetailPindahKamar);
+
+        BtnHapusUbahDetailPindahKamar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/stop_f2.png"))); // NOI18N
+        BtnHapusUbahDetailPindahKamar.setMnemonic('S');
+        BtnHapusUbahDetailPindahKamar.setText("Hapus");
+        BtnHapusUbahDetailPindahKamar.setToolTipText("Alt+S");
+        BtnHapusUbahDetailPindahKamar.setName("BtnHapusUbahDetailPindahKamar"); // NOI18N
+        BtnHapusUbahDetailPindahKamar.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnHapusUbahDetailPindahKamar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnHapusUbahDetailPindahKamarActionPerformed(evt);
+            }
+        });
+        panelisi4.add(BtnHapusUbahDetailPindahKamar);
+
+        BtnKeluarUbahDetailPindahKamar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/exit.png"))); // NOI18N
+        BtnKeluarUbahDetailPindahKamar.setMnemonic('K');
+        BtnKeluarUbahDetailPindahKamar.setText("Keluar");
+        BtnKeluarUbahDetailPindahKamar.setToolTipText("Alt+K");
+        BtnKeluarUbahDetailPindahKamar.setName("BtnKeluarUbahDetailPindahKamar"); // NOI18N
+        BtnKeluarUbahDetailPindahKamar.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnKeluarUbahDetailPindahKamar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnKeluarUbahDetailPindahKamarActionPerformed(evt);
+            }
+        });
+        panelisi4.add(BtnKeluarUbahDetailPindahKamar);
+
+        internalFrame8.add(panelisi4, java.awt.BorderLayout.PAGE_END);
+
+        WindowInput7.getContentPane().add(internalFrame8, java.awt.BorderLayout.CENTER);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
@@ -2128,7 +2285,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         panelGlass1.add(jLabel4);
         jLabel4.setBounds(693, 11, 65, 23);
 
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-11-2025 08:43:47" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "15-07-2026 11:21:21" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -3632,6 +3789,9 @@ private void MnPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
 private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
         isRawat();
+       if (!checkPermintaan()) {
+            return; 
+        }
 }//GEN-LAST:event_BtnCariActionPerformed
 
 private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnCariKeyPressed
@@ -4773,7 +4933,63 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_MnGabungNotaActionPerformed
 
+    private void BtnSimpanUbahDetailPindahKamarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanUbahDetailPindahKamarActionPerformed
+        if (norawatubdetailpindahkamar.getText().trim().equals("") || (tbUbahDetailPindahKamar.getRowCount() <= 0)) {
+            Valid.textKosong(norawatubdetailpindahkamar, "Data");
+        } else {
+            for (i = 0; i < tbUbahDetailPindahKamar.getRowCount(); i++) {
+                if (Boolean.TRUE.equals(tbUbahDetailPindahKamar.getValueAt(i, 0))) {
+                    Sequel.mengedit(
+                            "side_db.detail_pindah_kamar",
+                            "no_rawat='" + norawatubdetailpindahkamar.getText() + "' "
+                            + "AND kd_kamar='" + tbUbahDetailPindahKamar.getValueAt(i, 1).toString() + "' "
+                            + "AND tgl_masuk='" + tbUbahDetailPindahKamar.getValueAt(i, 3).toString() + "' "
+                            + "AND jam_masuk='" + tbUbahDetailPindahKamar.getValueAt(i, 4).toString() + "' "
+                            + "AND tgl_billing='" + tbUbahDetailPindahKamar.getValueAt(i, 5).toString() + "'",
+                            "tarif='" + Valid.SetAngka(tbUbahDetailPindahKamar.getValueAt(i, 6).toString()) + "',"
+                            + "titip='" + tbUbahDetailPindahKamar.getValueAt(i, 7).toString() + "',"
+                            + "status_kamar='" + tbUbahDetailPindahKamar.getValueAt(i, 8).toString() + "'"
+                    );
 
+                }
+            }
+           tampilUbahDetailPindahKamar(norawatubdetailpindahkamar.getText());
+        }
+    }//GEN-LAST:event_BtnSimpanUbahDetailPindahKamarActionPerformed
+
+    private void BtnKeluarUbahDetailPindahKamarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarUbahDetailPindahKamarActionPerformed
+        WindowInput7.dispose();
+    }//GEN-LAST:event_BtnKeluarUbahDetailPindahKamarActionPerformed
+
+    private void MnUbahDetailPindahKamarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnUbahDetailPindahKamarActionPerformed
+         if(Sequel.cariRegistrasi(TNoRw.getText())>0){
+            JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi, data tidak boleh dihapus.\nSilahkan hubungi bagian kasir/keuangan ..!!");
+            BtnNota.requestFocus();
+        }else{
+            norawatubdetailpindahkamar.setText(TNoRw.getText());
+            tampilUbahDetailPindahKamar(norawatubdetailpindahkamar.getText());
+            WindowInput7.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            WindowInput7.setLocationRelativeTo(internalFrame1);
+            WindowInput7.setAlwaysOnTop(false);
+            WindowInput7.setVisible(true);
+        }            
+    }//GEN-LAST:event_MnUbahDetailPindahKamarActionPerformed
+
+    private void BtnHapusUbahDetailPindahKamarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusUbahDetailPindahKamarActionPerformed
+         for (i = 0; i < tbUbahDetailPindahKamar.getRowCount(); i++) {
+            if (Boolean.TRUE.equals(tbUbahDetailPindahKamar.getValueAt(i, 0))) {
+                Sequel.queryu(
+                    "DELETE FROM side_db.detail_pindah_kamar " +
+                    "WHERE no_rawat='" + norawatubdetailpindahkamar.getText() + "' " +
+                    "AND kd_kamar='" + tbUbahDetailPindahKamar.getValueAt(i, 1).toString() + "' " +
+                    "AND tgl_masuk='" + tbUbahDetailPindahKamar.getValueAt(i, 3).toString() + "' " +
+                    "AND jam_masuk='" + tbUbahDetailPindahKamar.getValueAt(i, 4).toString() + "' " +
+                    "AND tgl_billing='" + tbUbahDetailPindahKamar.getValueAt(i, 5).toString() + "'"
+                );
+            }
+        }
+        tampilUbahDetailPindahKamar(norawatubdetailpindahkamar.getText());
+    }//GEN-LAST:event_BtnHapusUbahDetailPindahKamarActionPerformed
 
     /**
     * @param args the command line arguments
@@ -4801,9 +5017,11 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button BtnCloseIn4;
     private widget.Button BtnHapus;
     private widget.Button BtnHapusPotongan;
+    private widget.Button BtnHapusUbahDetailPindahKamar;
     private widget.Button BtnKeluar;
     private widget.Button BtnKeluar1;
     private widget.Button BtnKeluarPotongan;
+    private widget.Button BtnKeluarUbahDetailPindahKamar;
     private widget.Button BtnKeluarUbahLama;
     private widget.Button BtnNota;
     private widget.Button BtnSeek2;
@@ -4812,6 +5030,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button BtnSimpan3;
     private widget.Button BtnSimpan4;
     private widget.Button BtnSimpanPotongan;
+    private widget.Button BtnSimpanUbahDetailPindahKamar;
     private widget.Button BtnSimpanUbahLama;
     private widget.Button BtnTambah;
     private widget.Button BtnTambahPotongan;
@@ -4857,6 +5076,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private javax.swing.JMenuItem MnTagihanOperasi;
     private javax.swing.JMenuItem MnTambahan;
     private javax.swing.JMenuItem MnTambahan1;
+    private javax.swing.JMenuItem MnUbahDetailPindahKamar;
     private javax.swing.JMenuItem MnUbahLamaInap;
     private widget.Label NKLabel;
     private widget.Label NoSEPLabel;
@@ -4881,6 +5101,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private javax.swing.JDialog WindowInput4;
     private javax.swing.JDialog WindowInput5;
     private javax.swing.JDialog WindowInput6;
+    private javax.swing.JDialog WindowInput7;
     private widget.Button btnCariPiutang;
     private widget.Button btnPenjab;
     private widget.CekBox chkRalan;
@@ -4891,6 +5112,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.InternalFrame internalFrame5;
     private widget.InternalFrame internalFrame6;
     private widget.InternalFrame internalFrame7;
+    private widget.InternalFrame internalFrame8;
     private widget.Label jLabel13;
     private widget.Label jLabel15;
     private widget.Label jLabel17;
@@ -4906,10 +5128,13 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Label label16;
     private widget.Label label17;
     private widget.Label label18;
+    private widget.Label label19;
+    private widget.Label label20;
     private widget.TextBox nmpenjab;
     private widget.TextBox norawatpotongan;
     private widget.TextBox norawattambahan;
     private widget.TextBox norawatubahlama;
+    private widget.TextBox norawatubdetailpindahkamar;
     private widget.panelisi panelBayar;
     private widget.panelisi panelGlass1;
     private widget.panelisi panelGlass2;
@@ -4918,9 +5143,11 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.panelisi panelisi1;
     private widget.panelisi panelisi2;
     private widget.panelisi panelisi3;
+    private widget.panelisi panelisi4;
     private javax.swing.JMenuItem ppBersihkanBayar;
     private javax.swing.JMenuItem ppBersihkanPiutang;
     private widget.ScrollPane scrollPane1;
+    private widget.ScrollPane scrollPane10;
     private widget.ScrollPane scrollPane2;
     private widget.ScrollPane scrollPane3;
     private widget.ScrollPane scrollPane4;
@@ -4937,6 +5164,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Table tbPotongan;
     private widget.Table tbRadiologi;
     private widget.Table tbTambahan;
+    private widget.Table tbUbahDetailPindahKamar;
     private widget.Table tbUbahLama;
     // End of variables declaration//GEN-END:variables
 
@@ -5969,6 +6197,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 BtnNota.setVisible(false);
             }            
         }
+        MnUbahDetailPindahKamar.setEnabled(akses.gethapus_nota_salah());
     }
     
     public void isKembali(){
@@ -6890,7 +7119,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             System.out.println("Notifikasi : "+e);
         }            
     }
-    
+        
     private void tampilAkunBankJateng() { 
         try{      
              file=new File("./cache/akunbankjateng.iyem");
@@ -7995,5 +8224,41 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
 
         return true;
+    }
+    
+    public void tampilUbahDetailPindahKamar(String NoRawat) {
+        norawatubdetailpindahkamar.setText(NoRawat);
+        Valid.tabelKosong(tabModeDetailPindahKamar);
+        try{   
+            pskamarin=koneksi.prepareStatement("SELECT ki.no_rawat, ki.kd_kamar, b.nm_bangsal ,ki.tgl_masuk, ki.jam_masuk, ki.tgl_billing, ki.tarif, ki.titip, ki.status_kamar \n" +
+            "FROM side_db.detail_pindah_kamar ki \n" +
+            "inner join kamar k ON k.kd_kamar = ki.kd_kamar \n" +
+            "INNER JOIN bangsal b ON b.kd_bangsal = k.kd_bangsal\n" +
+            "WHERE ki.no_rawat = ? ");
+            try {
+                pskamarin.setString(1,norawatubdetailpindahkamar.getText());
+                rskamarin=pskamarin.executeQuery();
+                while(rskamarin.next()){
+                    tabModeDetailPindahKamar.addRow(new Object[]{false,
+                        rskamarin.getString("kd_kamar"),rskamarin.getString("nm_bangsal"),
+                        rskamarin.getString("tgl_masuk"),rskamarin.getString("jam_masuk"),
+                        rskamarin.getString("tgl_billing"),rskamarin.getString("tarif"), 
+                        rskamarin.getString("titip"), rskamarin.getString("status_kamar")
+                    });
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : "+e);
+            } finally{
+                if(rskamarin!=null){
+                    rskamarin.close();
+                }
+                if(pskamarin!=null){
+                    pskamarin.close();
+                }
+            }        
+            //rs.close();
+        }catch(Exception e){
+            System.out.println("Notifikasi : "+e);
+        }            
     }
 }

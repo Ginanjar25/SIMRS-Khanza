@@ -1487,6 +1487,7 @@ public final class DlgReg extends javax.swing.JDialog {
         Scroll1 = new widget.ScrollPane();
         tbPetugas2 = new widget.Table();
         R1 = new widget.RadioButton();
+        MnGelangPasienDewasa = new javax.swing.JMenuItem();
        
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
@@ -15618,6 +15619,44 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             }
         }        
     }
+    
+    private void MnGelangPasienDewasaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnGelangPasienDewasaActionPerformed
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, data pasien sudah habis...!!!!");
+            TCari.requestFocus();
+        }else if(TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu data pada table...!!!");
+            tbPetugas.requestFocus();
+        }else{     
+            if(tbPetugas.getSelectedRow()>-1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                Map<String, Object> param = new HashMap<>();                 
+                param.put("namars",akses.getnamars());
+                param.put("alamatrs",akses.getalamatrs());
+                param.put("kotars",akses.getkabupatenrs());
+                param.put("propinsirs",akses.getpropinsirs());
+                param.put("kontakrs",akses.getkontakrs());
+                param.put("emailrs",akses.getemailrs());  
+                param.put("tanggal",tbPetugas.getValueAt(tbPetugas.getSelectedRow(),3).toString());    
+                param.put("kamar",tbPetugas.getValueAt(tbPetugas.getSelectedRow(),11).toString());
+                param.put("kamar2",tbPetugas.getValueAt(tbPetugas.getSelectedRow(),11).toString());
+                param.put("no_rawat", TNoRw.getText());
+                param.put("kls_bpjs", "");
+                param.put("penjab", tbPetugas.getValueAt(tbPetugas.getSelectedRow(),12).toString());
+                param.put("dpjp",Sequel.cariIsi("select dokter.nm_dokter from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter where reg_periksa.no_rawat=? ",TNoRw.getText()));
+                param.put("logo",Sequel.cariGambar("select setting.logo from setting")); 
+                Valid.MyReportqry("rptGelangPasienDewasa.jasper","report","::[ Gelang Pasien ]::","select pasien.no_rkm_medis, pasien.nm_pasien, pasien.no_ktp, pasien.jk, "+
+                       "pasien.tmp_lahir, pasien.tgl_lahir,pasien.nm_ibu, concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat, pasien.gol_darah, pasien.pekerjaan,"+
+                       "pasien.stts_nikah,pasien.agama,pasien.tgl_daftar,pasien.no_tlp,pasien.umur,"+
+                       "pasien.pnd, pasien.keluarga, pasien.namakeluarga,penjab.png_jawab,pasien.pekerjaanpj,"+
+                       "concat(pasien.alamatpj,', ',pasien.kelurahanpj,', ',pasien.kecamatanpj,', ',pasien.kabupatenpj) as alamatpj from pasien "+
+                       "inner join kelurahan inner join kecamatan inner join kabupaten "+
+                       "inner join penjab on pasien.kd_pj=penjab.kd_pj and pasien.kd_kel=kelurahan.kd_kel "+
+                       "and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab  where pasien.no_rkm_medis='"+TNoRM.getText()+"' ",param);
+                this.setCursor(Cursor.getDefaultCursor());
+            }
+        }
+    }//GEN-LAST:event_MnGelangPasienDewasaActionPerformed
     /**
     * @param args the command line arguments
     */
@@ -16115,6 +16154,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.InternalFrame internalFrame7;
     private widget.Button btnCetakLabelRajal;
     private widget.Button btnKirimAntrolBpjs;
+    private javax.swing.JMenuItem MnGelangPasienDewasa;
     
     private void tampil() {
         Valid.tabelKosong(tabMode);
@@ -17761,6 +17801,24 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         });
         
         panelGlass7.add(btnKirimAntrolBpjs);
+        
+        MnGelangPasienDewasa.setBackground(new java.awt.Color(255, 255, 254));
+        MnGelangPasienDewasa.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnGelangPasienDewasa.setForeground(new java.awt.Color(50, 50, 50));
+        MnGelangPasienDewasa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnGelangPasienDewasa.setText("Gelang Pasien Dewasa");
+        MnGelangPasienDewasa.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnGelangPasienDewasa.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnGelangPasienDewasa.setName("MnGelangPasienDewasa"); // NOI18N
+        MnGelangPasienDewasa.setPreferredSize(new java.awt.Dimension(200, 26));
+        MnGelangPasienDewasa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnGelangPasienDewasaActionPerformed(evt);
+            }
+        });
+        MnLabel.add(MnGelangPasienDewasa);
+        
+        
     }
     
     private void ganti(){

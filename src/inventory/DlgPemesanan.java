@@ -963,7 +963,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         
         jml = tbDokter.getRowCount();
         for (i = 0; i < jml; i++) {
-            if ((Valid.SetAngka(tbDokter.getValueAt(i, 0).toString()) > 0) && (Valid.SetAngka(tbDokter.getValueAt(7, 0).toString()) == 0)) {
+            if ((Valid.SetAngka(tbDokter.getValueAt(i, 0).toString()) > 0) && (Valid.SetAngka(tbDokter.getValueAt(i, 7).toString()) == 0)) {
                 JOptionPane.showMessageDialog(null,"Harga Tidak Boleh 0"); 
                 return;
             }

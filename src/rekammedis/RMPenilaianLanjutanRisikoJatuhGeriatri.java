@@ -1367,7 +1367,7 @@ public final class RMPenilaianLanjutanRisikoJatuhGeriatri extends javax.swing.JD
         jLabel261.setBounds(34, 390, 20, 23);
 
         jLabel262.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel262.setText("Usia 70 Tahun Ke Atas");
+        jLabel262.setText("Usia 60 Tahun Ke Atas");
         jLabel262.setName("jLabel262"); // NOI18N
         FormInput.add(jLabel262);
         jLabel262.setBounds(52, 390, 500, 23);
