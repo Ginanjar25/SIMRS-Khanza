@@ -1801,7 +1801,19 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             tampil();
                         } 
                     }else{
-                        JOptionPane.showMessageDialog(null,"Maaf, Sudah dilakukan pengambilan sampel...!!!!");
+                        if (Sequel.cariIsi("SELECT EXISTS(SELECT 1 FROM periksa_lab INNER JOIN permintaan_lab ON permintaan_lab.no_rawat = periksa_lab.no_rawat\n"
+                                + " AND permintaan_lab.tgl_hasil = periksa_lab.tgl_periksa\n"
+                                + " AND permintaan_lab.jam_hasil = periksa_lab.jam  WHERE permintaan_lab.noorder = ? LIMIT 1) AS sudah_periksa", NoPermintaan).equals("1")) {
+                            JOptionPane.showMessageDialog(null, "Maaf, Tidak boleh dihapus karena sudah dilakukan pemeriksaan, silahkan hapus hasil pemeriksaan terlebih dahulu !!");
+                        } else {
+                            int reply = JOptionPane.showConfirmDialog(rootPane, "Permintaan Lab ini sudah dilakukan pengambilan sampel. "
+                                    + "Apakah anda yakin ingin menghapus permintaan ini ?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
+                            if (reply == JOptionPane.YES_OPTION) {
+                                Sequel.meghapus("permintaan_lab", "noorder", NoPermintaan);
+                                TeksKosong();
+                                tampil3();
+                            }
+                        }
                     }  
                 }
             }else{            
@@ -1829,7 +1841,20 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             tampil3();
                         } 
                     }else{
-                        JOptionPane.showMessageDialog(null,"Maaf, Sudah dilakukan pengambilan sampel...!!!!");
+                          if (Sequel.cariIsi("SELECT EXISTS(SELECT 1 FROM periksa_lab INNER JOIN permintaan_lab ON permintaan_lab.no_rawat = periksa_lab.no_rawat\n"
+                                + " AND permintaan_lab.tgl_hasil = periksa_lab.tgl_periksa\n"
+                                + " AND permintaan_lab.jam_hasil = periksa_lab.jam  WHERE permintaan_lab.noorder = ? LIMIT 1) AS sudah_periksa", NoPermintaan).equals("1")) {
+                            JOptionPane.showMessageDialog(null, "Maaf, Tidak boleh dihapus karena sudah dilakukan pemeriksaan, silahkan hapus hasil pemeriksaan terlebih dahulu !!");
+                        } else {
+                            int reply = JOptionPane.showConfirmDialog(rootPane, "Permintaan Lab ini sudah dilakukan pengambilan sampel. "
+                                    + "Apakah anda yakin ingin menghapus permintaan ini ?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
+                            if (reply == JOptionPane.YES_OPTION) {
+                                Sequel.meghapus("permintaan_lab", "noorder", NoPermintaan);
+                                TeksKosong();
+                                tampil3();
+                            }
+                        }
+//                        JOptionPane.showMessageDialog(null,"Maaf, Sudah dilakukan pengambilan sampel...!!!!");
                     }  
                 }
             }else{            

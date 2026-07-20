@@ -2519,7 +2519,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         if (Sequel.menyimpantf("pemeriksaan_ralan", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Pemeriksaan Ralan", 21, new String[]{
             TNoRw.getText(), Valid.SetTgl(TglAsuhan.getSelectedItem() + ""), TglAsuhan.getSelectedItem().toString().substring(11, 19), Suhu.getText(), TD.getText(), Nadi.getText(),
             RR.getText(), TB.getText(), BB.getText(), SPO.getText(), GCS.getText(), Kesadaran.getSelectedItem().toString().equals("Koma") ? "Coma" : Kesadaran.getSelectedItem().toString(),
-            KeluhanUtama.getText(), pemeriksaan, Alergi.getText(), "-", "-", "-", "-", "-", KdDokter.getText()
+            KeluhanUtama.getText(), pemeriksaan, Alergi.getText(), "-", Tatalaksana.getText(), Diagnosis.getText(), "-", "-", KdDokter.getText()
         }) == true) {
             emptTeks();
         }
@@ -2530,7 +2530,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         String pemeriksaan = "IGD : " + "Ket Fisik : " + KetFisik.getText() + ", Ket Lokalis : " + KetLokalis.getText() + ", TENSI : " + TD.getText() + ", SUHU : " + Suhu.getText() + ", NADI : " + Nadi.getText() + ", GCS : " + GCS.getText() + ", TB : " + TB.getText() + ", BB : " + BB.getText() + ", spo : " + SPO.getText() + ", RESPIRASI : " + RR.getText();
         if (Sequel.mengedittf("pemeriksaan_ralan", "no_rawat=? and tgl_perawatan = ? and jam_rawat = ? and nip = ?", "tgl_perawatan = ?,jam_rawat = ?, suhu_tubuh=?,tensi=?,nadi=?,respirasi=?,tinggi=?,berat=?,spo2=?,gcs=?,kesadaran=?,keluhan=?,pemeriksaan=?,alergi=?,lingkar_perut=?,rtl=?,penilaian=?,instruksi=?,evaluasi=?", 23, new String[]{
             Valid.SetTgl(TglAsuhan.getSelectedItem()+""), TglAsuhan.getSelectedItem().toString().substring(11,19), Suhu.getText(), TD.getText(), Nadi.getText(), RR.getText(), TB.getText(), BB.getText(), SPO.getText(), GCS.getText(), Kesadaran.getSelectedItem().toString().equals("Koma") ? "Coma" : Kesadaran.getSelectedItem().toString(),
-            keluhan, pemeriksaan, Alergi.getText(), "-", "-", "-", "-", "-", 
+            keluhan, pemeriksaan, Alergi.getText(), "-", Tatalaksana.getText(), Diagnosis.getText(), "-", "-", 
             tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString(), tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString().substring(0, 10),
             tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString().substring(11, 19), tbObat.getValueAt(tbObat.getSelectedRow(), 5).toString()
         }) == true) {
