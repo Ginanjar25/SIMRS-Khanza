@@ -17542,7 +17542,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                                            "<td align='center'>").append(rs2.getString("penilaian_jatuhsydney_nilai10")).append("</td>").append(
                                                        "</tr>").append(
                                                        "<tr>").append(
-                                                           "<td>11. Usia 70 Tahun Ke Atas</td>").append(
+                                                           "<td>11. Usia 60 Tahun Ke Atas</td>").append(
                                                            "<td align='center'>").append(rs2.getString("penilaian_jatuhsydney_skala11")).append("</td>").append(
                                                            "<td align='center'>").append(rs2.getString("penilaian_jatuhsydney_nilai11")).append("</td>").append(
                                                        "</tr>").append(
@@ -22749,7 +22749,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                     "<td valign='top' align='center' valign='middle'>").append(rs2.getString("penilaian_jatuh_nilai10")).append("</td>").append(
                                  "</tr>").append(
                                  "<tr>").append(
-                                    "<td valign='top' align='justify' valign='middle'>11. Usia 70 Tahun Ke Atas</td>").append(
+                                    "<td valign='top' align='justify' valign='middle'>11. Usia 60 Tahun Ke Atas</td>").append(
                                     "<td valign='top' align='center' valign='middle'>").append(rs2.getString("penilaian_jatuh_skala11")).append("</td>").append(
                                     "<td valign='top' align='center' valign='middle'>").append(rs2.getString("penilaian_jatuh_nilai11")).append("</td>").append(
                                  "</tr>").append(

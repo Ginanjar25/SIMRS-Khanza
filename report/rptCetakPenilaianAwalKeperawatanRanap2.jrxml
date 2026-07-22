@@ -1546,7 +1546,7 @@
 					<font fontName="Tahoma" size="8" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Usia 70 Tahun Ke Atas]]></text>
+				<text><![CDATA[Usia 60 Tahun Ke Atas]]></text>
 			</staticText>
 			<textField>
 				<reportElement mode="Transparent" x="300" y="284" width="185" height="11" uuid="1efe4d43-bcb6-49a2-a30a-a2cfe9bf50f7">
