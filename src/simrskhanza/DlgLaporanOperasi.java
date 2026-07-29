@@ -68,7 +68,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
         Object[] row2={
         "No. Rawat","No. RM","Nama","Tanggal Operasi","Selesai","Nama Operasi","Diagnosa Pre-Op","Diagnosa Post-Op",
         "Jaringan Insisi","PA","Laporan","kd Dok","Dokter","Komplikasi","Perdarahan", 
-        "Jumlah Perdarahan", "No Implan", "Kd Assisten","Nama Assisten"};
+        "Jumlah Perdarahan", "No Implan", "Kd Assisten","Nama Assisten","Tanggal Penulisan"};
         
         tabMode2=new DefaultTableModel(null,row2){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){
@@ -83,7 +83,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,
                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class,
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -98,7 +98,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
         tbObat.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 19; i++) {
+        for (i = 0; i < 20; i++) {
             TableColumn column = tbObat.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(200);
@@ -273,6 +273,8 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
         Jumlah = new widget.TextBox();
         jLabel14 = new widget.Label();
         NoRegImplan = new widget.TextBox();
+        label13 = new widget.Label();
+        tglPenulisan = new widget.Tanggal();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         Scroll = new widget.ScrollPane();
@@ -489,7 +491,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
         label11.setName("label11"); // NOI18N
         label11.setPreferredSize(new java.awt.Dimension(70, 23));
         FormInput.add(label11);
-        label11.setBounds(10, 70, 120, 23);
+        label11.setBounds(10, 100, 120, 23);
 
         tgl.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         tgl.setName("tgl"); // NOI18N
@@ -499,7 +501,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(tgl);
-        tgl.setBounds(150, 70, 150, 23);
+        tgl.setBounds(150, 100, 150, 23);
 
         jLabel3.setText("Tgl. Lahir");
         jLabel3.setName("jLabel3"); // NOI18N
@@ -527,7 +529,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
         label12.setName("label12"); // NOI18N
         label12.setPreferredSize(new java.awt.Dimension(70, 23));
         FormInput.add(label12);
-        label12.setBounds(10, 100, 120, 23);
+        label12.setBounds(10, 130, 120, 23);
 
         tgl2.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         tgl2.setName("tgl2"); // NOI18N
@@ -537,7 +539,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(tgl2);
-        tgl2.setBounds(150, 100, 150, 23);
+        tgl2.setBounds(150, 130, 150, 23);
 
         PreOp.setHighlighter(null);
         PreOp.setName("PreOp"); // NOI18N
@@ -587,7 +589,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
         jLabel9.setText("Dikirim Pemeriksaan PA :");
         jLabel9.setName("jLabel9"); // NOI18N
         FormInput.add(jLabel9);
-        jLabel9.setBounds(10, 130, 120, 23);
+        jLabel9.setBounds(10, 160, 120, 23);
 
         DikirimPA.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ya", "Tidak" }));
         DikirimPA.setName("DikirimPA"); // NOI18N
@@ -597,7 +599,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(DikirimPA);
-        DikirimPA.setBounds(150, 130, 150, 23);
+        DikirimPA.setBounds(150, 160, 150, 23);
 
         scrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         scrollPane2.setName("scrollPane2"); // NOI18N
@@ -610,12 +612,12 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
         scrollPane2.setViewportView(Laporan);
 
         FormInput.add(scrollPane2);
-        scrollPane2.setBounds(140, 220, 720, 360);
+        scrollPane2.setBounds(140, 260, 720, 360);
 
         jLabel10.setText("Laporan Operasi :");
         jLabel10.setName("jLabel10"); // NOI18N
         FormInput.add(jLabel10);
-        jLabel10.setBounds(30, 220, 101, 14);
+        jLabel10.setBounds(30, 260, 101, 14);
 
         btnTemplate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
         btnTemplate.setMnemonic('2');
@@ -629,7 +631,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(btnTemplate);
-        btnTemplate.setBounds(30, 240, 100, 23);
+        btnTemplate.setBounds(30, 280, 100, 23);
 
         TPasien.setEditable(false);
         TPasien.setHighlighter(null);
@@ -758,17 +760,17 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(Komplikasi);
-        Komplikasi.setBounds(150, 160, 150, 23);
+        Komplikasi.setBounds(150, 190, 150, 23);
 
         jLabel12.setText("Komplikasi :");
         jLabel12.setName("jLabel12"); // NOI18N
         FormInput.add(jLabel12);
-        jLabel12.setBounds(10, 160, 120, 23);
+        jLabel12.setBounds(10, 190, 120, 23);
 
         jLabel13.setText("Perdarahan :");
         jLabel13.setName("jLabel13"); // NOI18N
         FormInput.add(jLabel13);
-        jLabel13.setBounds(10, 190, 120, 23);
+        jLabel13.setBounds(10, 220, 120, 23);
 
         Perdarahan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ya", "Tidak" }));
         Perdarahan.setSelectedIndex(1);
@@ -789,7 +791,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(Perdarahan);
-        Perdarahan.setBounds(150, 190, 80, 23);
+        Perdarahan.setBounds(150, 220, 80, 23);
 
         Jumlah.setEditable(false);
         Jumlah.setName("Jumlah"); // NOI18N
@@ -800,7 +802,7 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
             }
         });
         FormInput.add(Jumlah);
-        Jumlah.setBounds(240, 190, 70, 23);
+        Jumlah.setBounds(240, 220, 70, 23);
 
         jLabel14.setText("No. Reg Implan :");
         jLabel14.setName("jLabel14"); // NOI18N
@@ -816,6 +818,22 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
         });
         FormInput.add(NoRegImplan);
         NoRegImplan.setBounds(580, 190, 280, 23);
+
+        label13.setText("Tanggal Jam Penulisan :");
+        label13.setName("label13"); // NOI18N
+        label13.setPreferredSize(new java.awt.Dimension(70, 23));
+        FormInput.add(label13);
+        label13.setBounds(0, 70, 130, 23);
+
+        tglPenulisan.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
+        tglPenulisan.setName("tglPenulisan"); // NOI18N
+        tglPenulisan.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tglPenulisanKeyPressed(evt);
+            }
+        });
+        FormInput.add(tglPenulisan);
+        tglPenulisan.setBounds(150, 70, 150, 23);
 
         scrollPane1.setViewportView(FormInput);
 
@@ -1005,7 +1023,7 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
                 sukses=true; 
                 if(sukses==true){
                     if(!Laporan.getText().equals("")){
-                        if(Sequel.menyimpantf2("laporan_operasi","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","laporan operasi",15,new String[]{
+                        if(Sequel.menyimpantf2("laporan_operasi","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","laporan operasi",16,new String[]{
                                 TNoRw.getText(),
                                 Valid.SetTgl(tgl.getSelectedItem()+"")+" "+tgl.getSelectedItem().toString().substring(11,19),
                                 NamaOperasi.getText(),
@@ -1020,7 +1038,8 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
                                 Perdarahan.getSelectedItem().toString(),
                                 Jumlah.getText(),
                                 NoRegImplan.getText(),
-                                kdAssisten.getText()
+                                kdAssisten.getText(),
+                                Valid.SetTgl(tglPenulisan.getSelectedItem()+"")+" "+tglPenulisan.getSelectedItem().toString().substring(11,19),
                             })==false){
                             sukses=false;
                         }
@@ -1167,7 +1186,7 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
                             "',selesaioperasi='" + Valid.SetTgl(tgl2.getSelectedItem()+"")+" "+tgl2.getSelectedItem().toString().substring(11,19) + 
                             "', laporan_operasi='" + Laporan.getText() + "', kd_dokter='" + kdoperator1.getText() + "', permintaan_pa='" + DikirimPA.getSelectedItem().toString() +
                             "', komplikasi='" + Komplikasi.getSelectedItem().toString() +"', perdarahan='" + Perdarahan.getSelectedItem().toString() +"', jumlah_perdarahan='" + Jumlah.getText() + 
-                            "', no_implan='" + NoRegImplan.getText() + "', kd_petugas='" + kdAssisten.getText() + "' "
+                            "', no_implan='" + NoRegImplan.getText() + "', kd_petugas='" + kdAssisten.getText() + "', penulisanlaporan='" + Valid.SetTgl(tglPenulisan.getSelectedItem()+"")+" "+tglPenulisan.getSelectedItem().toString().substring(11,19) + "' "
                     );
                     tampil2();
                     emptTeks();
@@ -1365,6 +1384,10 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
         }
     }//GEN-LAST:event_PerdarahanItemStateChanged
 
+    private void tglPenulisanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tglPenulisanKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tglPenulisanKeyPressed
+
     /**
     * @param args the command line arguments
     */
@@ -1433,6 +1456,7 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
     private widget.Label label10;
     private widget.Label label11;
     private widget.Label label12;
+    private widget.Label label13;
     private widget.Label label14;
     private widget.Label labelOperator2;
     private widget.TextBox nmAssisten;
@@ -1443,6 +1467,7 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
     private widget.Table tbObat;
     private widget.Tanggal tgl;
     private widget.Tanggal tgl2;
+    private widget.Tanggal tglPenulisan;
     // End of variables declaration//GEN-END:variables
 
     private void tampil() {  
@@ -1457,7 +1482,7 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
                     "lo.diagnosa_preop, lo.diagnosa_postop, \n" +
                     "lo.jaringan_dieksekusi, lo.selesaioperasi, lo.permintaan_pa, lo.laporan_operasi, lo.kd_dokter, dr.nm_dokter, \n" +
                     "lo.nama_operasi, lo.komplikasi, lo.perdarahan,\n" +
-                    "lo.jumlah_perdarahan, lo.no_implan, lo.kd_petugas, p.nama \n" +
+                    "lo.jumlah_perdarahan, lo.no_implan, lo.kd_petugas, p.nama, lo.penulisanlaporan \n" +
                     "FROM laporan_operasi lo\n" +
                     "JOIN reg_periksa rp ON rp.no_rawat = lo.no_rawat\n" +
                     "JOIN pasien ps ON ps.no_rkm_medis = rp.no_rkm_medis\n" +
@@ -1488,6 +1513,7 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
                                    rs.getString("no_implan"),
                                    rs.getString("kd_petugas"),
                                    rs.getString("nama"),
+                                   rs.getString("penulisanlaporan"),
                     });
                 }
             }catch(SQLException e){
@@ -1525,6 +1551,7 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
             NoRegImplan.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 16).toString());
             kdAssisten.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 17).toString());
             nmAssisten.setText(tbObat.getValueAt(tbObat.getSelectedRow(), 18).toString());
+            Valid.SetTgl2(tglPenulisan,tbObat.getValueAt(tbObat.getSelectedRow(),19).toString());
         }
     }
     

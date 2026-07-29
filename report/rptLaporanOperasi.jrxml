@@ -61,6 +61,7 @@
      laporan_operasi.selesaioperasi,
      laporan_operasi.permintaan_pa,
      laporan_operasi.laporan_operasi,
+     laporan_operasi.penulisanlaporan,
      ( SELECT nm_dokter FROM dokter WHERE dokter.kd_dokter = operasi.operator1 ) as operator1,
      ( SELECT nm_dokter FROM dokter WHERE dokter.kd_dokter = operasi.operator2 ) as operator2,
      ( SELECT nm_dokter FROM dokter WHERE dokter.kd_dokter = operasi.operator3 ) as operator3,
@@ -241,6 +242,9 @@
 		<property name="com.jaspersoft.studio.field.tree.path" value="laporan_operasi"/>
 	</field>
 	<field name="asisten_operasi" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="asisten_operasi"/>
+	</field>
+	<field name="penulisanlaporan" class="java.sql.Timestamp">
 		<property name="com.jaspersoft.studio.field.label" value="asisten_operasi"/>
 	</field>
 	<background>
@@ -1037,7 +1041,7 @@
 				<text><![CDATA[Tanggal & Waktu ]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH:mm:ss" isBlankWhenNull="true">
-				<reportElement x="100" y="308" width="157" height="10" uuid="42972538-de24-4eb8-bb80-9688c776aca4">
+				<reportElement x="100" y="308" width="89" height="10" uuid="42972538-de24-4eb8-bb80-9688c776aca4">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
@@ -1592,6 +1596,36 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{no_implan}]]></textFieldExpression>
 			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH:mm:ss" isBlankWhenNull="true">
+				<reportElement x="282" y="308" width="109" height="10" uuid="f2ab8190-5359-4f84-a961-df2f5d7e918b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Tahoma" size="8" isItalic="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{penulisanlaporan}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="273" y="308" width="5" height="10" uuid="c6a87ef5-81b6-453e-9ac3-8f714b9aa0c0">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="308" width="70" height="10" uuid="8b6e061c-c096-47bf-8bdf-da3d47c8c1f5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Tahoma" size="8" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Penulisan Laporan]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<columnFooter>
