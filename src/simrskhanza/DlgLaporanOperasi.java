@@ -955,10 +955,7 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
             Valid.textKosong(NamaOperasi,"Nama Operasi");
         }
         else{            
-            if(Sequel.cariRegistrasi(TNoRw.getText())>0){
-                JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi, data tidak boleh dihapus.\nSilahkan hubungi bagian kasir/keuangan ..!!");                
-            }else{
-                
+                           
                 Map<String, String> reportMap = new HashMap<>();                
                 try{    
                     psobat=koneksi.prepareStatement("SELECT op.no_rawat, op.tgl_operasi, op.kode_paket, po.nm_perawatan "
@@ -1062,7 +1059,6 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
                     Sequel.RollBack();
                 }
                 Sequel.AutoComitTrue();
-            }
         }
     }//GEN-LAST:event_BtnSimpanActionPerformed
 

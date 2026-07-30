@@ -1471,6 +1471,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             Valid.textKosong(btnKamar, "Kamar/Bangsal");
         } else if (Diagnosa.getText().trim().equals("")) {
             Valid.textKosong(Diagnosa, "Diagnosa");
+        } else if(Sequel.cariInteger("select count(no_rawat) from kamar_inap where no_rawat = ?", NoRw.getText()) > 0){
+            JOptionPane.showMessageDialog(null,"Permintaan tidak dapat di ubah, Pasien sudah masuk kamar inap !");
         }else {
             if (tbObat.getSelectedRow() > -1) {
                 String titip_kamar = "-";

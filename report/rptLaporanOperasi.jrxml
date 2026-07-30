@@ -998,7 +998,7 @@
 					<font fontName="Tahoma" size="8" isBold="false" isItalic="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{asistenoperator1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{asisten_operasi}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="303" y="320" width="5" height="10" uuid="32d95bf3-c15e-4a52-82f8-52c2dd578ad9">
