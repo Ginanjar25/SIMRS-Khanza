@@ -243,7 +243,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             "Ttl.Biaya","Stts.Pulang","Lama","Dokter P.J.","Kamar","Status Bayar","Agama",
             "Nomer RM","Nama Pasien","DPJP","Alamat Pasien","Jenis Bayar","Catatan","Kamar","Tarif Kamar",
             "Diagnosa Awal","Diagnosa Akhir","Tgl.Registrasi","Jam Registrasi","Tgl.Keluar","Jam Keluar",
-            "Tarif RS","Tarif INACBG","Selisih Pasien","INACBG Total","Deposit","Stts.Pulang","Lama","Kamar","Status Bayar", "Limit Tarif", "No.Telp"
+            "Tarif RS","Tarif INACBG","Selisih Pasien","INACBG Total","Deposit","Stts.Pulang","Lama","Kamar","Status Bayar", "Limit Tarif", "No.Telp", "SKDP POST RI"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -253,7 +253,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         tbKamIn.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbKamIn.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 47; i++) {
+        for (i = 0; i < 48; i++) {
             TableColumn column = tbKamIn.getColumnModel().getColumn(i);
             if(i==0){ //"No.Rawat"
                 column.setMinWidth(0);
@@ -375,6 +375,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 column.setMaxWidth(0);
             }else if(i==46){//"Status Bayar"
                 column.setPreferredWidth(100);
+            }else if(i==47){//"Terbit SKDP",
+//                column.setPreferredWidth(70);
+               column.setPreferredWidth(100);
             }
         }
 //        tbKamIn.setDefaultRenderer(Object.class, new WarnaTable());
@@ -6356,7 +6359,10 @@ public class DlgKamarInap extends javax.swing.JDialog {
                  JOptionPane.showMessageDialog(null,"Maaf, pasien ini sudah pulang pada tanggal "+TOut.getText()+" ...!!!");
                  emptTeks();
                  tbKamIn.requestFocus();
-        }else if((TOut.getText().length()==0)&&(norawat.getText().length()>0)){
+        }else if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),6).toString().equals("BPJS") && tbKamIn.getValueAt(tbKamIn.getSelectedRow(),47).toString().equals("Belum") && !billing.checkSKDPPostRI(Sequel.cariIsi("SELECT bse.no_sep FROM bridging_sep bse WHERE bse.no_rawat =?", norawat.getText()))){
+             System.out.println("Maaf, pasien ini belum terbit SKDP POST RI !!!");
+        }
+            else if((TOut.getText().length()==0)&&(norawat.getText().length()>0)){
                 norawat.setEditable(false);
                 kdkamar.setEditable(false);
                 i=1;
@@ -7469,6 +7475,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                     billing.setVisible(true);
                                     billing.checkMismatch();
                                     billing.checkPermintaan();
+                                    billing.checkSKDPPostRI(Sequel.cariIsi("SELECT bse.no_sep FROM bridging_sep bse WHERE bse.no_rawat =?", norawat.getText()));
                                 }
                             }else{
                                 bangsal=Sequel.cariIsi("select set_depo_ranap.kd_depo from set_depo_ranap where set_depo_ranap.kd_bangsal=?",Sequel.cariIsi("select kamar.kd_bangsal from kamar where kamar.kd_kamar=?",kdkamar.getText()));
@@ -7492,6 +7499,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 billing.setVisible(true);
                                 billing.checkMismatch();
                                 billing.checkPermintaan();
+                                billing.checkSKDPPostRI(Sequel.cariIsi("SELECT bse.no_sep FROM bridging_sep bse WHERE bse.no_rawat =?", norawat.getText()));
                             }
                         } catch (Exception e) {
                             System.out.println("Notifikasi : "+e);
@@ -18339,7 +18347,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     + "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT( ' - ', penjab_cara_bayar2.png_jawab, " 
                     + "CASE WHEN penjab_cara_bayar2.png_jawab = 'BPJS' THEN CONCAT(CASE WHEN bridging_sep.klsrawat IS NULL OR bridging_sep.klsrawat = '' THEN CONCAT(IFNULL( CASE WHEN pasien.nip LIKE '%#%' THEN SUBSTRING_INDEX(pasien.nip, '#', -1) ELSE NULL END, ''), ' (SEP -)') " 
                     + "ELSE CONCAT(' ', bridging_sep.klsrawat) END, CASE COALESCE(bridging_sep.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END) ELSE '' END) END AS cara_bayar2, " 
-                    + "IFNULL(catatan_reg.catatan, '') AS catatan, pasien.no_tlp, reg_periksa.tgl_registrasi, reg_periksa.jam_reg \n"
+                    + "IFNULL(catatan_reg.catatan, '') AS catatan, pasien.no_tlp, reg_periksa.tgl_registrasi, reg_periksa.jam_reg,CASE WHEN penjab.png_jawab = 'BPJS' THEN IF(bridging_surat_kontrol_bpjs.no_surat IS NULL, 'Belum', 'Sudah') ELSE '-' END AS skdp_postri \n"
                     + "from kamar_inap inner join reg_periksa on kamar_inap.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis\n"
                     + "INNER JOIN dpjp_ranap ON dpjp_ranap.no_rawat = reg_periksa.no_rawat inner join kamar on kamar_inap.kd_kamar=kamar.kd_kamar\n"
                     + "inner join bangsal on kamar.kd_bangsal=bangsal.kd_bangsal inner join kelurahan on pasien.kd_kel=kelurahan.kd_kel\n"
@@ -18352,6 +18360,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     + "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n"
                     + "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj \n"
                     + "LEFT JOIN ( select * from catatan_registrasi where status = '1') as catatan_reg on catatan_reg.no_rawat = reg_periksa.no_rawat \n"
+                    + "LEFT JOIN bridging_surat_kontrol_bpjs ON bridging_surat_kontrol_bpjs.no_sep = bridging_sep.no_sep \n"
                     + (namadokter.equals("")?"where "+key+" "+order:"inner join dpjp_ranap on dpjp_ranap.no_rawat=reg_periksa.no_rawat where dpjp_ranap.kd_dokter='"+namadokter+"' and "+key+" "+order));
             try {
                 rs=ps.executeQuery();
@@ -18369,7 +18378,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                         rs.getString("diagnosa_akhir"),rs.getString("tgl_registrasi"),rs.getString("jam_reg"),rs.getString("tgl_keluar"),
                         rs.getString("jam_keluar"),Valid.SetAngka(rs.getDouble("tarif")),Valid.SetAngka(rs.getDouble("tarif_inacbg")),Valid.SetAngka(rs.getDouble("tarif_naik")),
                         Valid.SetAngka(rs.getDouble("selisih_tarif")),Valid.SetAngka(rs.getDouble("deposit")), rs.getString("stts_pulang"),
-                        rs.getString("lama"),rs.getString("kd_kamar"),rs.getString("status_bayar"),rs.getString("limit_tarif"),rs.getString("no_tlp") 
+                        rs.getString("lama"),rs.getString("kd_kamar"),rs.getString("status_bayar"),rs.getString("limit_tarif"),rs.getString("no_tlp"), rs.getString("skdp_postri") 
                     });
                     psanak=koneksi.prepareStatement(
                         "select pasien.no_rkm_medis,pasien.nm_pasien,ranap_gabung.no_rawat2,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.no_peserta, "+
@@ -18389,7 +18398,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 rs.getString("lama"),rs.getString("nm_dokter"),rs.getString("kd_kamar"),rs.getString("status_bayar")
                                 
                                 ,"","",rs2.getString("no_rkm_medis")+" - "+rs2.getString("nm_pasien")+" ("+rs2.getString("umur")+")",rs2.getString("nm_dokter"),
-                                "","","","","","","",rs2.getString("tgl_registrasi"),rs2.getString("jam_reg"),"","","","","", "","", "","","","",""
+                                "","","","","","","",rs2.getString("tgl_registrasi"),rs2.getString("jam_reg"),"","","","","", "","", "","","","","","","-"
                             });
                         }
                     }catch(Exception ex){

@@ -66,7 +66,10 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import java.awt.Component;
+import java.text.SimpleDateFormat;
 import javax.swing.event.DocumentEvent;
+import javax.swing.event.HyperlinkListener;
+import modif.GenerateQR;
 
 
 /**
@@ -145,6 +148,7 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
         LoadHTMLPiutang.setEditorKit(kit);
         LoadHTMLRetensi.setEditorKit(kit);
         LoadHTMLPRMRJ.setEditorKit(kit);
+        LoadHTMLCPPT.setEditorKit(kit);
         StyleSheet styleSheet = kit.getStyleSheet();
         styleSheet.addRule(".isi td{border-right: 1px solid #e2e7dd;font: 8.5px tahoma;height:12px;border-bottom: 1px solid #e2e7dd;background: #ffffff;color:#323232;}.isi a{text-decoration:none;color:#8b9b95;padding:0 0 0 0px;font-family: Tahoma;font-size: 8.5px;border: white;}");
         Document doc = kit.createDefaultDocument();
@@ -221,7 +225,49 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
                 }
             }
         });
-        
+
+        LoadHTMLCPPT.setDocument(doc);
+        LoadHTMLCPPT.setEditable(false);
+        LoadHTMLCPPT.addHyperlinkListener(new HyperlinkListener() {
+            @Override
+            public void hyperlinkUpdate(HyperlinkEvent e) {
+                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    try {
+                        String url = e.getDescription();
+                        if (url.startsWith("verifikasi://")) {
+                            String[] p = url.substring("verifikasi://".length()).split("\\|");
+                            if (p.length == 6) {
+                                String jenisRawat = p[0];
+                                String jenisCPPT = p[1];
+                                String noRawat = p[2];
+                                String tglPerawatan = p[3];
+                                String jamRawat = p[4];
+                                String nip = p[5];
+                                verifikasiCPPT(jenisRawat,jenisCPPT,noRawat,tglPerawatan,jamRawat,nip);
+                            }
+                            return;
+                        }else if(url.startsWith("hapusverifikasi://")){
+                             String[] p = url.substring("hapusverifikasi://".length()).split("\\|");
+                            if (p.length == 6) {
+                                String jenisRawat = p[0];
+                                String jenisCPPT = p[1];
+                                String noRawat = p[2];
+                                String tglPerawatan = p[3];
+                                String jamRawat = p[4];
+                                String nip = p[5];
+                                hapusVerifikasiCPPT(jenisRawat,jenisCPPT,noRawat,tglPerawatan,jamRawat,nip);
+                            }
+                            return;
+                        }else {
+                            Desktop.getDesktop().browse(new URI(url));
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
         ChkAccor.setSelected(false);
         isMenu();
         TCariMenu.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
@@ -501,6 +547,8 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
         LoadHTMLRetensi = new widget.editorpane();
         Scroll6 = new widget.ScrollPane();
         LoadHTMLPRMRJ = new widget.editorpane();
+        Scroll7 = new widget.ScrollPane();
+        LoadHTMLCPPT = new widget.editorpane();
         PanelInput = new javax.swing.JPanel();
         ChkInput = new widget.CekBox();
         FormInput = new widget.panelisi();
@@ -2489,6 +2537,16 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
 
         TabRawat.addTab("PRMRJ", Scroll6);
 
+        Scroll7.setBorder(null);
+        Scroll7.setName("Scroll7"); // NOI18N
+        Scroll7.setOpaque(true);
+
+        LoadHTMLCPPT.setBorder(null);
+        LoadHTMLCPPT.setName("LoadHTMLCPPT"); // NOI18N
+        Scroll7.setViewportView(LoadHTMLCPPT);
+
+        TabRawat.addTab("CPPT", Scroll7);
+
         internalFrame1.add(TabRawat, java.awt.BorderLayout.CENTER);
 
         PanelInput.setBackground(new java.awt.Color(255, 255, 255));
@@ -2697,11 +2755,13 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
+        GenerateQR.clearCache();        
         dispose();
 }//GEN-LAST:event_BtnKeluarActionPerformed
 
     private void BtnKeluarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnKeluarKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+            GenerateQR.clearCache();
             dispose();
         }else{Valid.pindah(evt,Tgl1,NoRM);}
 }//GEN-LAST:event_BtnKeluarKeyPressed
@@ -2951,6 +3011,25 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                             @Override
                             protected Void doInBackground() throws Exception {
                                 tampilPRMRJ();
+                                return null;
+                            }
+
+                            @Override
+                            protected void done() {
+                                ceksukses = false;
+                            }
+                        }.execute();
+                    }
+                    break;
+                  case 7:
+                    esign=false;
+                    sertisign=false;
+                    if(ceksukses==false){
+                        ceksukses=true;
+                        new SwingWorker<Void, Void>() {
+                            @Override
+                            protected Void doInBackground() throws Exception {
+                                tampilCPPT();
                                 return null;
                             }
 
@@ -3890,6 +3969,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
+                    GenerateQR.clearCache();
                     System.exit(0);
                 }
             });
@@ -3921,6 +4001,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     private widget.TextBox GD;
     private widget.TextBox IbuKandung;
     private widget.TextBox Jk;
+    private widget.editorpane LoadHTMLCPPT;
     private widget.editorpane LoadHTMLPRMRJ;
     private widget.editorpane LoadHTMLPembelian;
     private widget.editorpane LoadHTMLPiutang;
@@ -3949,6 +4030,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
     private widget.ScrollPane Scroll4;
     private widget.ScrollPane Scroll5;
     private widget.ScrollPane Scroll6;
+    private widget.ScrollPane Scroll7;
     private widget.ScrollPane ScrollMenu;
     private widget.TextBox StatusNikah;
     private widget.TextBox TCariMenu;
@@ -34057,6 +34139,440 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         } 
     }
      
+    private synchronized void tampilCPPT() {
+        try {
+            htmlContent = new StringBuilder();
+            htmlContent.append("<tr class='isi'>").
+                    append("<td valign='middle' bgcolor='#FFFAF8' align='center' width='5%'>Tgl.Reg</td>").
+                    append("<td valign='middle' bgcolor='#FFFAF8' align='center' width='8%'>No.Rawat</td>").
+                    append("<td valign='middle' bgcolor='#FFFAF8' align='center' width='84%'>CPPT (Catatan Perkembangan Pasien Terintegrasi)</td>").
+                    append("</tr>");
+            if (R1.isSelected() == true) {
+                ps = koneksi.prepareStatement(
+                        "select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.status_lanjut "
+                        + "from reg_periksa where reg_periksa.stts<>'Batal' and reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi desc limit 5");
+            } else if (R2.isSelected() == true) {
+                ps = koneksi.prepareStatement(
+                        "select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.status_lanjut "
+                        + "from reg_periksa where reg_periksa.stts<>'Batal' and reg_periksa.no_rkm_medis=? order by reg_periksa.tgl_registrasi");
+            } else if (R3.isSelected() == true) {
+                ps = koneksi.prepareStatement(
+                        "select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.status_lanjut "
+                        + "from reg_periksa where reg_periksa.stts<>'Batal' and reg_periksa.no_rkm_medis=? and "
+                        + "reg_periksa.tgl_registrasi between ? and ? order by reg_periksa.tgl_registrasi");
+            } else if (R4.isSelected() == true) {
+                ps = koneksi.prepareStatement(
+                        "select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.status_lanjut "
+                        + "from reg_periksa where reg_periksa.stts<>'Batal' and reg_periksa.no_rkm_medis=? and reg_periksa.no_rawat=?");
+            }
+            try {
+                if (R1.isSelected() == true) {
+                    ps.setString(1, NoRM.getText().trim());
+                } else if (R2.isSelected() == true) {
+                    ps.setString(1, NoRM.getText().trim());
+                } else if (R3.isSelected() == true) {
+                    ps.setString(1, NoRM.getText().trim());
+                    ps.setString(2, Valid.SetTgl(Tgl1.getSelectedItem() + ""));
+                    ps.setString(3, Valid.SetTgl(Tgl2.getSelectedItem() + ""));
+                } else if (R4.isSelected() == true) {
+                    ps.setString(1, NoRM.getText().trim());
+                    ps.setString(2, NoRawat.getText().trim());
+                }
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    String kd_dpjp = Sequel.cariIsi("select kd_dokter from dpjp_ranap where no_rawat=?",rs.getString("no_rawat"));
+                    kd_dpjp = kd_dpjp == null ? "" : kd_dpjp;
+                    String nm_dpjp = Sequel.cariIsi("select nm_dokter from dokter where kd_dokter=?",kd_dpjp);
+                    nm_dpjp = nm_dpjp == null ? "" : nm_dpjp;
+                    htmlContent.append("<tr class='isi'>").
+                            append("<td valign='top' align='center'>").append(rs.getString("tgl_registrasi")).append("</td>").
+                            append("<td valign='top' align='center'>").append(rs.getString("no_rawat")).append("</td>").
+                            append("<td valign='top' align='center'>").
+                            append("<table width='100%' border='0' align='center' cellpadding='2px' cellspacing='0'>");
+                    try {
+                        // Query gabungan SOAP (pemeriksaan_ralan) + SBAR (sbar_tbak_ralan), diurutkan berdasarkan tanggal & jam
+                        rs2 = koneksi.prepareStatement(
+                                "SELECT 'SOAP' AS jenis,pemeriksaan_ralan.no_rawat, reg_periksa.no_rkm_medis, pasien.nm_pasien," +
+                                "pemeriksaan_ralan.tgl_perawatan, pemeriksaan_ralan.jam_rawat, pemeriksaan_ralan.suhu_tubuh, pemeriksaan_ralan.tensi, " +
+                                "pemeriksaan_ralan.nadi, pemeriksaan_ralan.respirasi,pemeriksaan_ralan.tinggi, pemeriksaan_ralan.berat, pemeriksaan_ralan.spo2, " +
+                                "pemeriksaan_ralan.gcs,pemeriksaan_ralan.kesadaran, pemeriksaan_ralan.keluhan, pemeriksaan_ralan.pemeriksaan, pemeriksaan_ralan.alergi," +
+                                "pemeriksaan_ralan.penilaian, pemeriksaan_ralan.rtl, pemeriksaan_ralan.instruksi, pemeriksaan_ralan.evaluasi,'' AS situation, '' AS background, " +
+                                "'' AS assessment, '' AS recommendation, '' AS advice, pemeriksaan_ralan.nip, pegawai.nama, pegawai.jbtn, " +
+                                "IF(verifikasi_soap_dpjp.no_rawat IS NULL, FALSE, TRUE) AS verifikasi, '' AS kd_dokter, verifikasi_soap_dpjp.tgl_verifikasi " +
+                                "FROM pasien " +
+                                "INNER JOIN reg_periksa ON reg_periksa.no_rkm_medis = pasien.no_rkm_medis " +
+                                "INNER JOIN pemeriksaan_ralan ON pemeriksaan_ralan.no_rawat = reg_periksa.no_rawat " +
+                                "INNER JOIN pegawai ON pemeriksaan_ralan.nip = pegawai.nik " +
+                                "LEFT JOIN verifikasi_soap_dpjp ON verifikasi_soap_dpjp.no_rawat = pemeriksaan_ralan.no_rawat " +
+                                "AND verifikasi_soap_dpjp.tgl_perawatan = pemeriksaan_ralan.tgl_perawatan " +
+                                "AND verifikasi_soap_dpjp.jam_rawat = pemeriksaan_ralan.jam_rawat " +
+                                "AND verifikasi_soap_dpjp.nip = pemeriksaan_ralan.nip " +
+                                "WHERE pemeriksaan_ralan.no_rawat='" + rs.getString("no_rawat") + "' " +
+                                "UNION ALL " +
+                                "SELECT 'SBAR' AS jenis,sbar_tbak_ralan.no_rawat, reg_periksa.no_rkm_medis, pasien.nm_pasien,sbar_tbak_ralan.tgl_perawatan, sbar_tbak_ralan.jam_rawat," +
+                                "'', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', sbar_tbak_ralan.situation, sbar_tbak_ralan.background, sbar_tbak_ralan.assessment," +
+                                "sbar_tbak_ralan.recommendation, sbar_tbak_ralan.advice,sbar_tbak_ralan.nip, pegawai.nama, pegawai.jbtn, " +
+                                "IF(sbar_tbak_ralan.verifikasi_dpjp = 'Sudah', TRUE, FALSE) AS verifikasi, sbar_tbak_ralan.kd_dokter, sbar_tbak_ralan.tgl_verifikasi " +
+                                "FROM sbar_tbak_ralan " +
+                                "INNER JOIN reg_periksa ON reg_periksa.no_rawat = sbar_tbak_ralan.no_rawat " +
+                                "INNER JOIN pasien ON pasien.no_rkm_medis = reg_periksa.no_rkm_medis " +
+                                "INNER JOIN pegawai ON pegawai.nik = sbar_tbak_ralan.nip " +
+                                "WHERE sbar_tbak_ralan.no_rawat='" + rs.getString("no_rawat") + "' " +
+                                "ORDER BY tgl_perawatan, jam_rawat").executeQuery();
+                        if (rs2.next()) {
+                            htmlContent.append("<tr class='isi'>").
+                                    append("<td valign='middle' bgcolor='#FFFFF8' align='center' width='7%'>Status</td>").
+                                    append("<td valign='middle' bgcolor='#FFFFF8' align='center' width='7%'>Tanggal</td>").
+                                    append("<td valign='middle' bgcolor='#FFFFF8' align='center' width='13%'>Profesional Pemberi Asuhan</td>").
+                                    append("<td valign='middle' bgcolor='#FFFFF8' align='center' width='35%'>Hasil Asesmen dan Pemberian Pelayanan <br> "
+                                            + "(Tulis dengan format SOAP/ADIME/SBAR, disertai dengan Sasaran, Tulis Nama,<br>beri paraf pada akhir catatan)</td>").
+                                    append("<td valign='middle' bgcolor='#FFFFF8' align='center' width='25%'>Instruksi PPA <br>Termasuk Pasca Bedah <br>(Instruksi ditulis dengan rinci dan jelas)</td>").
+                                    append("<td valign='middle' bgcolor='#FFFFF8' align='center' width='13%'>Review & Verifikasi DPJP <br>(Tulis Nama, beri Paraf, Tgl, Jam) <br>(DPJP harus membaca/mereview seluruh <br>Rencana Asuhan)</td>").
+                                    append("</tr>");
+                            do {
+                                String jenis = rs2.getString("jenis");
+                                htmlContent.append("<tr class='isi'>")
+                                        // Status
+                                        .append("<td align='center'>Ralan</td>")
+                                        // Tanggal
+                                        .append("<td align='center'>")
+                                        .append(rs2.getString("tgl_perawatan"))
+                                        .append("<br>")
+                                        .append(rs2.getString("jam_rawat"))
+                                        .append("</td>")
+                                        // Profesional Pemberi Asuhan
+                                        .append("<td align='center'>")
+                                        .append(rs2.getString("nama"))
+                                        .append("<br>")
+                                        .append(rs2.getString("jbtn"))
+                                        .append("</td>")
+                                        // Hasil Asesmen
+                                        .append("<td align='left'>");
+
+                                if (jenis.equals("SOAP")) {
+                                    htmlContent.append("<b>S :</b> ")
+                                            .append(rs2.getString("keluhan").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append("<br><b>O :</b> ")
+                                            .append(rs2.getString("pemeriksaan").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append(rs2.getString("alergi").equals("") ? "" : "<br>Alergi : " + rs2.getString("alergi"))
+                                            .append(rs2.getString("suhu_tubuh").equals("") ? "" : "<br>Suhu : " + rs2.getString("suhu_tubuh"))
+                                            .append(rs2.getString("tensi").equals("") ? "" : "<br>TD : " + rs2.getString("tensi"))
+                                            .append(rs2.getString("nadi").equals("") ? "" : "<br>Nadi : " + rs2.getString("nadi"))
+                                            .append(rs2.getString("respirasi").equals("") ? "" : "<br>RR : " + rs2.getString("respirasi"))
+                                            .append(rs2.getString("spo2").equals("") ? "" : "<br>SpO₂ : " + rs2.getString("spo2"))
+                                            .append(rs2.getString("gcs").equals("") ? "" : "<br>GCS : " + rs2.getString("gcs"))
+                                            .append(rs2.getString("kesadaran").equals("") ? "" : "<br>Kesadaran : " + rs2.getString("kesadaran"))
+                                            .append("<br><b>A :</b> ")
+                                            .append(rs2.getString("penilaian").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append("<br><b>P :</b> ")
+                                            .append(rs2.getString("rtl").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+                                } else if (jenis.equals("SBAR")) {
+                                    htmlContent.append("<b>S :</b> ")
+                                            .append(rs2.getString("situation").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append("<br><b>B :</b> ")
+                                            .append(rs2.getString("background").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append("<br><b>A :</b> ")
+                                            .append(rs2.getString("assessment").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append("<br><b>R :</b> ")
+                                            .append(rs2.getString("recommendation").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+                                }
+
+                                htmlContent.append("</td>")
+                                        .append("<td align='left'>");
+
+                                if (jenis.equals("SOAP")) {
+                                    htmlContent.append("<b>I :</b> ").append(rs2.getString("instruksi").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                               .append(rs2.getString("evaluasi").equals("") ? "" : "<br><br><b>E :</b><br>"
+                                                    + rs2.getString("evaluasi").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+                                } else if (jenis.equals("SBAR")) {
+                                    htmlContent.append("<b>Advice Dokter:</b><br>")
+                                                .append(rs2.getString("advice").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+                                } 
+
+                                htmlContent.append("</td>").append("<td align='center'>");
+
+                                if (rs2.getBoolean("verifikasi")) {
+                                    String tgl_verifikasi = rs2.getString("tgl_verifikasi").substring(0, 10)+ " "+ rs2.getString("tgl_verifikasi").substring(11, 19);
+                                    String isiQR =
+                                        "Dikeluarkan di RUMAH SAKIT PUTRA WASPADA, Kabupaten/Kota Tulungagung\n" +
+                                        "Ditandatangani secara elektronik oleh " + nm_dpjp + "\n" +
+                                        "ID " + kd_dpjp + "\n" +tgl_verifikasi;
+
+                                    String qr = GenerateQR.generateFile(isiQR, 120, 120);
+
+                                    htmlContent.append("<div style='text-align:center'>")
+                                               .append("<img width='180' height='180' src='")
+                                               .append(qr)
+                                               .append("'><br>")
+                                               .append("<b>")
+                                               .append(nm_dpjp)
+                                               .append("</b><br>")
+                                               .append(tgl_verifikasi)
+                                               .append("<br>")
+                                               .append("<a href='hapusverifikasi://")
+                                               .append("RALAN").append("|")
+                                               .append(rs2.getString("jenis")).append("|")
+                                               .append(rs2.getString("no_rawat")).append("|")
+                                               .append(rs2.getString("tgl_perawatan")).append("|")
+                                               .append(rs2.getString("jam_rawat")).append("|")
+                                               .append(rs2.getString("nip"))
+                                               .append("' style='display:inline-block;border:none;padding:6px 14px;background:#dc3545;"
+                                                    + "color:#FFFFFF;font-weight:bold;font-family:Arial,sans-serif;font-size:12px;"
+                                                    + "border-radius:6px;text-decoration:none;box-shadow:1px 1px 3px rgba(0,0,0,0.3);'>"
+                                                    + "Hapus Verifikasi</a>")
+                                               .append("</div>");
+                                } else {
+                                    htmlContent.append("<a href='verifikasi://")
+                                    .append("RALAN").append("|")               // atau RALAN
+                                    .append(rs2.getString("jenis")).append("|")
+                                    .append(rs2.getString("no_rawat")).append("|")
+                                    .append(rs2.getString("tgl_perawatan")).append("|")
+                                    .append(rs2.getString("jam_rawat")).append("|")
+                                    .append(rs2.getString("nip"))
+                                    .append("' style='display:inline-block;border:none;padding:6px 14px;background:#28a745;"
+                                        + "color:#FFFFFF;font-weight:bold;font-family:Arial,sans-serif;font-size:12px;"
+                                        + "border-radius:6px;text-decoration:none;box-shadow:1px 1px 3px rgba(0,0,0,0.3);'>"
+                                        + "Verifikasi</a>");
+                                }
+
+                                htmlContent.append("</td>")
+                                        .append("</tr>");
+                            } while (rs2.next());
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Notifikasi : " + e);
+                    } finally {
+                        if (rs2 != null) {
+                            rs2.close();
+                        }
+                    }
+
+                    try {
+                        // Query gabungan SOAP (pemeriksaan_ralan) + SBAR (sbar_tbak_ralan), diurutkan berdasarkan tanggal & jam
+                        rs2 = koneksi.prepareStatement(
+                                "SELECT 'SOAP' AS jenis,pemeriksaan_ranap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,"
+                                + "pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.suhu_tubuh,pemeriksaan_ranap.tensi,pemeriksaan_ranap.nadi,pemeriksaan_ranap.respirasi,"
+                                + "pemeriksaan_ranap.tinggi,pemeriksaan_ranap.berat,pemeriksaan_ranap.spo2,pemeriksaan_ranap.gcs,pemeriksaan_ranap.kesadaran,pemeriksaan_ranap.keluhan,pemeriksaan_ranap.pemeriksaan,pemeriksaan_ranap.alergi,"
+                                + "pemeriksaan_ranap.penilaian,pemeriksaan_ranap.rtl,pemeriksaan_ranap.instruksi,pemeriksaan_ranap.evaluasi,"
+                                + "'' AS situation,'' AS background,'' AS assessment,'' AS recommendation,'' AS advice,"
+                                + "'' AS diagnosis,'' AS intervensi,'' AS monitoring,"
+                                + "pemeriksaan_ranap.nip,pegawai.nama,pegawai.jbtn,"
+                                + "IF(verifikasi_soap_dpjp.no_rawat IS NULL,FALSE,TRUE) AS verifikasi,"
+                                + "'' AS kd_dokter,verifikasi_soap_dpjp.tgl_verifikasi "
+                                + "FROM pasien "
+                                + "INNER JOIN reg_periksa ON reg_periksa.no_rkm_medis=pasien.no_rkm_medis "
+                                + "INNER JOIN pemeriksaan_ranap ON pemeriksaan_ranap.no_rawat=reg_periksa.no_rawat "
+                                + "INNER JOIN pegawai ON pemeriksaan_ranap.nip=pegawai.nik "
+                                + "LEFT JOIN verifikasi_soap_dpjp ON verifikasi_soap_dpjp.no_rawat=pemeriksaan_ranap.no_rawat "
+                                + "AND verifikasi_soap_dpjp.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan "
+                                + "AND verifikasi_soap_dpjp.jam_rawat=pemeriksaan_ranap.jam_rawat "
+                                + "AND verifikasi_soap_dpjp.nip=pemeriksaan_ranap.nip "
+                                + "WHERE pemeriksaan_ranap.no_rawat='" + rs.getString("no_rawat") + "' AND pegawai.jbtn not like '%gizi%' "
+                                + "UNION ALL "
+                                + "SELECT 'SBAR' AS jenis,sbar_tbak_ranap.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,"
+                                + "sbar_tbak_ranap.tgl_perawatan,sbar_tbak_ranap.jam_rawat,"
+                                + "'','','','','','','','','','','','','','','','',"
+                                + "sbar_tbak_ranap.situation,sbar_tbak_ranap.background,sbar_tbak_ranap.assessment,sbar_tbak_ranap.recommendation,sbar_tbak_ranap.advice,"
+                                + "'' AS diagnosis,'' AS intervensi,'' AS monitoring,"
+                                + "sbar_tbak_ranap.nip,pegawai.nama,pegawai.jbtn,"
+                                + "IF(sbar_tbak_ranap.verifikasi_dpjp='Sudah',TRUE,FALSE) AS verifikasi,"
+                                + "sbar_tbak_ranap.kd_dokter,sbar_tbak_ranap.tgl_verifikasi "
+                                + "FROM sbar_tbak_ranap "
+                                + "INNER JOIN reg_periksa ON reg_periksa.no_rawat=sbar_tbak_ranap.no_rawat "
+                                + "INNER JOIN pasien ON pasien.no_rkm_medis=reg_periksa.no_rkm_medis "
+                                + "INNER JOIN pegawai ON pegawai.nik=sbar_tbak_ranap.nip "
+                                + "WHERE sbar_tbak_ranap.no_rawat='" + rs.getString("no_rawat") + "' "
+                                + "UNION ALL "
+                                + "SELECT 'ADIME' AS jenis,catatan_adime_gizi.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,"
+                                + "DATE(catatan_adime_gizi.tanggal),TIME(catatan_adime_gizi.tanggal),"
+                                + "'','','','','','','','','','','','','','',"
+                                + "catatan_adime_gizi.instruksi,catatan_adime_gizi.evaluasi,"
+                                + "'' AS situation,'' AS background,catatan_adime_gizi.asesmen AS assessment,'' AS recommendation,'' AS advice,"
+                                + "catatan_adime_gizi.diagnosis,catatan_adime_gizi.intervensi,catatan_adime_gizi.monitoring,"
+                                + "catatan_adime_gizi.nip,pegawai.nama,pegawai.jbtn,"
+                                + "IF(verifikasi_soap_dpjp.no_rawat IS NULL,FALSE,TRUE) AS verifikasi,"
+                                + "'' AS kd_dokter,verifikasi_soap_dpjp.tgl_verifikasi "
+                                + "FROM catatan_adime_gizi "
+                                + "INNER JOIN reg_periksa ON reg_periksa.no_rawat=catatan_adime_gizi.no_rawat "
+                                + "INNER JOIN pasien ON pasien.no_rkm_medis=reg_periksa.no_rkm_medis "
+                                + "INNER JOIN pegawai ON pegawai.nik=catatan_adime_gizi.nip "
+                                + "LEFT JOIN pemeriksaan_ranap ON pemeriksaan_ranap.no_rawat=catatan_adime_gizi.no_rawat "
+                                + "AND pemeriksaan_ranap.tgl_perawatan=DATE(catatan_adime_gizi.tanggal) "
+                                + "AND pemeriksaan_ranap.jam_rawat=TIME(catatan_adime_gizi.tanggal) "
+                                + "AND pemeriksaan_ranap.nip=catatan_adime_gizi.nip "
+                                + "LEFT JOIN verifikasi_soap_dpjp ON verifikasi_soap_dpjp.no_rawat=pemeriksaan_ranap.no_rawat "
+                                + "AND verifikasi_soap_dpjp.tgl_perawatan=pemeriksaan_ranap.tgl_perawatan "
+                                + "AND verifikasi_soap_dpjp.jam_rawat=pemeriksaan_ranap.jam_rawat "
+                                + "AND verifikasi_soap_dpjp.nip=pemeriksaan_ranap.nip "
+                                + "WHERE catatan_adime_gizi.no_rawat='" + rs.getString("no_rawat") + "' "
+                                + "ORDER BY tgl_perawatan,jam_rawat,FIELD(jenis,'SOAP','ADIME','SBAR')"
+                        ).executeQuery();
+                        if (rs2.next()) {
+                            htmlContent.append("<tr class='isi'>").
+                                    append("<td valign='middle' bgcolor='#FFFFF8' align='center' width='7%'>Status</td>").
+                                    append("<td valign='middle' bgcolor='#FFFFF8' align='center' width='7%'>Tanggal</td>").
+                                    append("<td valign='middle' bgcolor='#FFFFF8' align='center' width='13%'>Profesional Pemberi Asuhan</td>").
+                                    append("<td valign='middle' bgcolor='#FFFFF8' align='center' width='35%'>Hasil Asesmen dan Pemberian Pelayanan <br> "
+                                            + "(Tulis dengan format SOAP/ADIME/SBAR, disertai dengan Sasaran, Tulis Nama,<br>beri paraf pada akhir catatan)</td>").
+                                    append("<td valign='middle' bgcolor='#FFFFF8' align='center' width='25%'>Instruksi PPA <br>Termasuk Pasca Bedah <br>(Instruksi ditulis dengan rinci dan jelas)</td>").
+                                    append("<td valign='middle' bgcolor='#FFFFF8' align='center' width='13%'>Review & Verifikasi DPJP <br>(Tulis Nama, beri Paraf, Tgl, Jam) <br>(DPJP harus membaca/mereview seluruh <br>Rencana Asuhan)</td>").
+                                    append("</tr>");
+                            do {
+                                String jenis = rs2.getString("jenis");
+                                htmlContent.append("<tr class='isi'>")
+                                        // Status
+                                        .append("<td align='center'>Ranap</td>")
+                                        // Tanggal
+                                        .append("<td align='center'>")
+                                        .append(rs2.getString("tgl_perawatan"))
+                                        .append("<br>")
+                                        .append(rs2.getString("jam_rawat"))
+                                        .append("</td>")
+                                        // Profesional Pemberi Asuhan
+                                        .append("<td align='center'>")
+                                        .append(rs2.getString("nama"))
+                                        .append("<br>")
+                                        .append(rs2.getString("jbtn"))
+                                        .append("</td>")
+                                        // Hasil Asesmen
+                                        .append("<td align='left'>");
+
+                                if (jenis.equals("SOAP")) {
+                                    htmlContent.append("<b>S :</b> ")
+                                            .append(rs2.getString("keluhan").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append("<br><b>O :</b> ")
+                                            .append(rs2.getString("pemeriksaan").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append(rs2.getString("alergi").equals("") ? "" : "<br>Alergi : " + rs2.getString("alergi"))
+                                            .append(rs2.getString("suhu_tubuh").equals("") ? "" : "<br>Suhu : " + rs2.getString("suhu_tubuh"))
+                                            .append(rs2.getString("tensi").equals("") ? "" : "<br>TD : " + rs2.getString("tensi"))
+                                            .append(rs2.getString("nadi").equals("") ? "" : "<br>Nadi : " + rs2.getString("nadi"))
+                                            .append(rs2.getString("respirasi").equals("") ? "" : "<br>RR : " + rs2.getString("respirasi"))
+                                            .append(rs2.getString("spo2").equals("") ? "" : "<br>SpO₂ : " + rs2.getString("spo2"))
+                                            .append(rs2.getString("gcs").equals("") ? "" : "<br>GCS : " + rs2.getString("gcs"))
+                                            .append(rs2.getString("kesadaran").equals("") ? "" : "<br>Kesadaran : " + rs2.getString("kesadaran"))
+                                            .append("<br><b>A :</b> ")
+                                            .append(rs2.getString("penilaian").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append("<br><b>P :</b> ")
+                                            .append(rs2.getString("rtl").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+                                } else if (jenis.equals("SBAR")) {
+                                    htmlContent.append("<b>S :</b> ")
+                                            .append(rs2.getString("situation").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append("<br><b>B :</b> ")
+                                            .append(rs2.getString("background").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append("<br><b>A :</b> ")
+                                            .append(rs2.getString("assessment").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append("<br><b>R :</b> ")
+                                            .append(rs2.getString("recommendation").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+                                } else if (jenis.equals("ADIME")) {
+                                    htmlContent.append("<b>A :</b> ")
+                                            .append(rs2.getString("assessment").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append("<br><b>D :</b> ")
+                                            .append(rs2.getString("diagnosis").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append("<br><b>I :</b> ")
+                                            .append(rs2.getString("intervensi").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append("<br><b>M :</b> ")
+                                            .append(rs2.getString("monitoring").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+                                }
+
+                                htmlContent.append("</td>")
+                                        .append("<td align='left'>");
+
+                                if (jenis.equals("SOAP")) {
+                                    htmlContent.append("<b>I :</b> ").append(rs2.getString("instruksi").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append(rs2.getString("evaluasi").equals("") ? "" : "<br><br><b>E :</b><br>"
+                                                    + rs2.getString("evaluasi").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+                                } else if (jenis.equals("SBAR")) {
+                                    htmlContent.append("<b>Advice Dokter:</b><br>")
+                                            .append(rs2.getString("advice").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+                                } else if (jenis.equals("ADIME")) {
+                                    htmlContent.append("<b>E :</b><br>")
+                                            .append(rs2.getString("evaluasi").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"))
+                                            .append(rs2.getString("instruksi").equals("") ? "" : "<br><br><b>I :</b><br>"
+                                                    + rs2.getString("instruksi").replaceAll("(\r\n|\r|\n|\n\r)", "<br>"));
+                                }
+
+                                htmlContent.append("</td>").append("<td align='center'>");
+
+                                if (rs2.getBoolean("verifikasi")) {
+                                    String tgl_verifikasi =rs2.getString("tgl_verifikasi").substring(0, 10)+ " "+ rs2.getString("tgl_verifikasi").substring(11, 19);
+                                    String isiQR =
+                                        "Dikeluarkan di RUMAH SAKIT PUTRA WASPADA, Kabupaten/Kota Tulungagung\n" +
+                                        "Ditandatangani secara elektronik oleh " + nm_dpjp + "\n" +
+                                        "ID " + kd_dpjp + "\n" +tgl_verifikasi;
+                                    String qr = GenerateQR.generateFile(isiQR, 120, 120);
+                                    htmlContent.append("<div style='text-align:center'>")
+                                               .append("<img width='180' height='180' src='")
+                                               .append(qr)
+                                               .append("'><br>")
+                                               .append("<b>")
+                                               .append(nm_dpjp)
+                                               .append("</b><br>")
+                                               .append(tgl_verifikasi)
+                                               .append("<br>")
+                                               .append("<a href='hapusverifikasi://")
+                                               .append("RANAP").append("|")
+                                               .append(rs2.getString("jenis")).append("|")
+                                               .append(rs2.getString("no_rawat")).append("|")
+                                               .append(rs2.getString("tgl_perawatan")).append("|")
+                                               .append(rs2.getString("jam_rawat")).append("|")
+                                               .append(rs2.getString("nip"))
+                                               .append("' style='display:inline-block;border:none;padding:6px 14px;background:#dc3545;"
+                                                    + "color:#FFFFFF;font-weight:bold;font-family:Arial,sans-serif;font-size:12px;"
+                                                    + "border-radius:6px;text-decoration:none;box-shadow:1px 1px 3px rgba(0,0,0,0.3);'>"
+                                                    + "Hapus Verifikasi</a>")
+                                               .append("</div>");
+                                } else {
+                                  htmlContent.append("<a href='verifikasi://")
+                                    .append("RANAP").append("|")               // atau RALAN
+                                    .append(rs2.getString("jenis")).append("|")
+                                    .append(rs2.getString("no_rawat")).append("|")
+                                    .append(rs2.getString("tgl_perawatan")).append("|")
+                                    .append(rs2.getString("jam_rawat")).append("|")
+                                    .append(rs2.getString("nip"))
+                                    .append("' style='display:inline-block;border:none;padding:6px 14px;background:#28a745;"
+                                        + "color:#FFFFFF;font-weight:bold;font-family:Arial,sans-serif;font-size:12px;"
+                                        + "border-radius:6px;text-decoration:none;box-shadow:1px 1px 3px rgba(0,0,0,0.3);'>"
+                                        + "Verifikasi</a>");
+                                }
+
+                                htmlContent.append("</td>")
+                                        .append("</tr>");
+                            } while (rs2.next());
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Notifikasi : " + e);
+                    } finally {
+                        if (rs2 != null) {
+                            rs2.close();
+                        }
+                    }
+                    htmlContent.append("</table>").
+                            append("</td>").
+                            append("</tr>");
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : " + e);
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+
+            LoadHTMLCPPT.setText(
+                    "<html>"
+                    + "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>"
+                    + htmlContent.toString()
+                    + "</table>"
+                    + "</html>");
+            htmlContent = null;
+        } catch (Exception e) {
+            System.out.println("Notif SOAPI : " + e);
+        }
+    }
+     
     public void isCek() {
         tinggi = 0;
         for (Component comp : FormMenu.getComponents()) {
@@ -34095,5 +34611,48 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         FormMenu.setPreferredSize(new Dimension(255, (tinggi+200)));
         FormMenu.revalidate();
         FormMenu.repaint();
+    }
+    
+    public void setFormVerifCPPT() {
+        TabRawat.setSelectedIndex(7);
+        tampilCPPT();
+    }
+    
+    private void verifikasiCPPT(String jenisRawat, String jenisCPPT, String noRawat, String tglPerawatan, String jamRawat, String nip) {
+        if (!akses.getkode().equals(Sequel.cariIsi("select kd_dokter from dpjp_ranap where no_rawat=?", noRawat))) {
+            JOptionPane.showMessageDialog(null, "Verifikasi CPPT hanya boleh dilakukan olh DPJP Spesialis !!");
+        } else {
+            if (jenisCPPT.equals("SBAR")) {
+                if (jenisRawat.equals("RALAN")) {
+                    Sequel.mengedit("sbar_tbak_ralan", "no_rawat = ? and tgl_perawatan=? and jam_rawat = ? and nip = ? ", "tgl_verifikasi = now() ", 4, new String[]{noRawat, tglPerawatan, jamRawat, nip});
+                } else {
+                    Sequel.mengedit("sbar_tbak_ranap", "no_rawat = ? and tgl_perawatan=? and jam_rawat = ? and nip = ? ", "tgl_verifikasi = now() ", 4, new String[]{noRawat, tglPerawatan, jamRawat, nip});
+                }
+            } else {
+                Sequel.menyimpanignore("verifikasi_soap_dpjp", "?,?,?,?,now()", 4, new String[]{
+                    noRawat, tglPerawatan, jamRawat, nip
+                });
+            }
+            
+            tampilCPPT();
+        }
+    }
+    
+    private void hapusVerifikasiCPPT(String jenisRawat, String jenisCPPT, String noRawat, String tglPerawatan, String jamRawat, String nip) {
+        if (!akses.getkode().equals(Sequel.cariIsi("select kd_dokter from dpjp_ranap where no_rawat=?", noRawat))) {
+            JOptionPane.showMessageDialog(null, "Hapus Verifikasi CPPT hanya boleh dilakukan olh DPJP Spesialis !!");
+        } else {
+            if (jenisCPPT.equals("SBAR")) {
+                if (jenisRawat.equals("RALAN")) {
+                    Sequel.mengedit("sbar_tbak_ralan", "no_rawat = ? and tgl_perawatan=? and jam_rawat = ? and nip = ? ", "tgl_verifikasi = '0000-00-00 00:00:00' ", 4, new String[]{noRawat, tglPerawatan, jamRawat, nip});
+                } else {
+                    Sequel.mengedit("sbar_tbak_ranap", "no_rawat = ? and tgl_perawatan=? and jam_rawat = ? and nip = ? ", "tgl_verifikasi = '0000-00-00 00:00:00' ", 4, new String[]{noRawat, tglPerawatan, jamRawat, nip});
+                }
+            } else {
+                Sequel.queryu("delete from verifikasi_soap_dpjp where no_rawat='" + noRawat + "' and tgl_perawatan='" + tglPerawatan+ "' and jam_rawat='" + jamRawat+ "' and nip='" + nip + "' ");
+            }
+            
+            tampilCPPT();
+        }
     }
 }

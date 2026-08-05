@@ -333,6 +333,9 @@ public class DlgReturBeli extends javax.swing.JDialog {
         NoBatch = new widget.TextBox();
         label22 = new widget.Label();
         Kadaluwarsa = new widget.TextBox();
+        scrollPane3 = new widget.ScrollPane();
+        Alasan = new widget.TextArea();
+        label28 = new widget.Label();
         panelisiBeli = new widget.panelisi();
         label15 = new widget.Label();
         NoRetur = new widget.TextBox();
@@ -365,480 +368,505 @@ public class DlgReturBeli extends javax.swing.JDialog {
                 formWindowOpened(evt);
             }
         });
+        getContentPane().setLayout(new java.awt.BorderLayout());
 
-        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Transaksi Retur Obat, Alkes & BHP Medis Ke Suplier ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N
-        internalFrame1.setName("internalFrame1"); // NOI18N
-        internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
+        internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(240, 245, 235)), "::[ Transaksi Retur Obat, Alkes & BHP Medis Ke Suplier ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 50, 50))); // NOI18N);
+    internalFrame1.setName("internalFrame1"); // NOI18N
+    internalFrame1.setLayout(new java.awt.BorderLayout(1, 1));
 
-        scrollPane1.setName("scrollPane1"); // NOI18N
-        scrollPane1.setOpaque(true);
+    scrollPane1.setName("scrollPane1"); // NOI18N
+    scrollPane1.setOpaque(true);
 
-        tbDokter.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {},
-                {},
-                {},
-                {}
-            },
-            new String [] {
+    tbDokter.setModel(new javax.swing.table.DefaultTableModel(
+        new Object [][] {
+            {},
+            {},
+            {},
+            {}
+        },
+        new String [] {
 
-            }
-        ));
-        tbDokter.setName("tbDokter"); // NOI18N
-        tbDokter.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tbDokterMouseClicked(evt);
-            }
-        });
-        tbDokter.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                tbDokterKeyPressed(evt);
-            }
-        });
-        scrollPane1.setViewportView(tbDokter);
+        }
+    ));
+    tbDokter.setName("tbDokter"); // NOI18N
+    tbDokter.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            tbDokterMouseClicked(evt);
+        }
+    });
+    tbDokter.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            tbDokterKeyPressed(evt);
+        }
+    });
+    scrollPane1.setViewportView(tbDokter);
 
-        internalFrame1.add(scrollPane1, java.awt.BorderLayout.CENTER);
+    internalFrame1.add(scrollPane1, java.awt.BorderLayout.CENTER);
 
-        jPanel1.setName("jPanel1"); // NOI18N
-        jPanel1.setOpaque(false);
-        jPanel1.setPreferredSize(new java.awt.Dimension(816, 130));
-        jPanel1.setLayout(new java.awt.BorderLayout(1, 1));
+    jPanel1.setName("jPanel1"); // NOI18N
+    jPanel1.setOpaque(false);
+    jPanel1.setPreferredSize(new java.awt.Dimension(816, 130));
+    jPanel1.setLayout(new java.awt.BorderLayout(1, 1));
 
-        panelisi1.setName("panelisi1"); // NOI18N
-        panelisi1.setPreferredSize(new java.awt.Dimension(100, 56));
-        panelisi1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 9));
+    panelisi1.setName("panelisi1"); // NOI18N
+    panelisi1.setPreferredSize(new java.awt.Dimension(100, 56));
+    panelisi1.setLayout(new java.awt.FlowLayout(0, 5, 9));
 
-        BtnTambah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/add-file-16x16.png"))); // NOI18N
-        BtnTambah.setMnemonic('T');
-        BtnTambah.setText("Tambah");
-        BtnTambah.setToolTipText("Alt+T");
-        BtnTambah.setName("BtnTambah"); // NOI18N
-        BtnTambah.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnTambah.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnTambahActionPerformed(evt);
-            }
-        });
-        BtnTambah.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnTambahKeyPressed(evt);
-            }
-        });
-        panelisi1.add(BtnTambah);
+    BtnTambah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/add-file-16x16.png"))); // NOI18N
+    BtnTambah.setMnemonic('T');
+    BtnTambah.setText("Tambah");
+    BtnTambah.setToolTipText("Alt+T");
+    BtnTambah.setName("BtnTambah"); // NOI18N
+    BtnTambah.setPreferredSize(new java.awt.Dimension(100, 30));
+    BtnTambah.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            BtnTambahActionPerformed(evt);
+        }
+    });
+    BtnTambah.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            BtnTambahKeyPressed(evt);
+        }
+    });
+    panelisi1.add(BtnTambah);
 
-        BtnHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/stop_f2.png"))); // NOI18N
-        BtnHapus.setMnemonic('H');
-        BtnHapus.setText("Hapus");
-        BtnHapus.setToolTipText("Alt+H");
-        BtnHapus.setName("BtnHapus"); // NOI18N
-        BtnHapus.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnHapus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnHapusActionPerformed(evt);
-            }
-        });
-        BtnHapus.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnHapusKeyPressed(evt);
-            }
-        });
-        panelisi1.add(BtnHapus);
+    BtnHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/stop_f2.png"))); // NOI18N
+    BtnHapus.setMnemonic('H');
+    BtnHapus.setText("Hapus");
+    BtnHapus.setToolTipText("Alt+H");
+    BtnHapus.setName("BtnHapus"); // NOI18N
+    BtnHapus.setPreferredSize(new java.awt.Dimension(100, 30));
+    BtnHapus.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            BtnHapusActionPerformed(evt);
+        }
+    });
+    BtnHapus.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            BtnHapusKeyPressed(evt);
+        }
+    });
+    panelisi1.add(BtnHapus);
 
-        label9.setText("Total :");
-        label9.setName("label9"); // NOI18N
-        label9.setPreferredSize(new java.awt.Dimension(45, 23));
-        panelisi1.add(label9);
+    label9.setText("Total :");
+    label9.setName("label9"); // NOI18N
+    label9.setPreferredSize(new java.awt.Dimension(45, 23));
+    panelisi1.add(label9);
 
-        LTotal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        LTotal.setText("0");
-        LTotal.setName("LTotal"); // NOI18N
-        LTotal.setPreferredSize(new java.awt.Dimension(100, 23));
-        panelisi1.add(LTotal);
+    LTotal.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+    LTotal.setText("0");
+    LTotal.setName("LTotal"); // NOI18N
+    LTotal.setPreferredSize(new java.awt.Dimension(100, 23));
+    panelisi1.add(LTotal);
 
-        BtnSimpan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
-        BtnSimpan.setMnemonic('S');
-        BtnSimpan.setText("Simpan");
-        BtnSimpan.setToolTipText("Alt+S");
-        BtnSimpan.setName("BtnSimpan"); // NOI18N
-        BtnSimpan.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnSimpan.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnSimpanActionPerformed(evt);
-            }
-        });
-        BtnSimpan.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnSimpanKeyPressed(evt);
-            }
-        });
-        panelisi1.add(BtnSimpan);
+    BtnSimpan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
+    BtnSimpan.setMnemonic('S');
+    BtnSimpan.setText("Simpan");
+    BtnSimpan.setToolTipText("Alt+S");
+    BtnSimpan.setName("BtnSimpan"); // NOI18N
+    BtnSimpan.setPreferredSize(new java.awt.Dimension(100, 30));
+    BtnSimpan.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            BtnSimpanActionPerformed(evt);
+        }
+    });
+    BtnSimpan.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            BtnSimpanKeyPressed(evt);
+        }
+    });
+    panelisi1.add(BtnSimpan);
 
-        BtnBatal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Cancel-2-16x16.png"))); // NOI18N
-        BtnBatal.setMnemonic('B');
-        BtnBatal.setText("Clear");
-        BtnBatal.setToolTipText("Alt+B");
-        BtnBatal.setName("BtnBatal"); // NOI18N
-        BtnBatal.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnBatal.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnBatalActionPerformed(evt);
-            }
-        });
-        BtnBatal.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnBatalKeyPressed(evt);
-            }
-        });
-        panelisi1.add(BtnBatal);
+    BtnBatal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Cancel-2-16x16.png"))); // NOI18N
+    BtnBatal.setMnemonic('B');
+    BtnBatal.setText("Clear");
+    BtnBatal.setToolTipText("Alt+B");
+    BtnBatal.setName("BtnBatal"); // NOI18N
+    BtnBatal.setPreferredSize(new java.awt.Dimension(100, 30));
+    BtnBatal.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            BtnBatalActionPerformed(evt);
+        }
+    });
+    BtnBatal.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            BtnBatalKeyPressed(evt);
+        }
+    });
+    panelisi1.add(BtnBatal);
 
-        BtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
-        BtnCari.setMnemonic('E');
-        BtnCari.setText("Cari");
-        BtnCari.setToolTipText("Alt+E");
-        BtnCari.setName("BtnCari"); // NOI18N
-        BtnCari.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnCari.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnCariActionPerformed(evt);
-            }
-        });
-        BtnCari.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnCariKeyPressed(evt);
-            }
-        });
-        panelisi1.add(BtnCari);
+    BtnCari.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
+    BtnCari.setMnemonic('E');
+    BtnCari.setText("Cari");
+    BtnCari.setToolTipText("Alt+E");
+    BtnCari.setName("BtnCari"); // NOI18N
+    BtnCari.setPreferredSize(new java.awt.Dimension(100, 30));
+    BtnCari.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            BtnCariActionPerformed(evt);
+        }
+    });
+    BtnCari.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            BtnCariKeyPressed(evt);
+        }
+    });
+    panelisi1.add(BtnCari);
 
-        BtnKeluar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/exit.png"))); // NOI18N
-        BtnKeluar.setMnemonic('K');
-        BtnKeluar.setText("Keluar");
-        BtnKeluar.setToolTipText("Alt+K");
-        BtnKeluar.setName("BtnKeluar"); // NOI18N
-        BtnKeluar.setPreferredSize(new java.awt.Dimension(100, 30));
-        BtnKeluar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnKeluarActionPerformed(evt);
-            }
-        });
-        BtnKeluar.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                BtnKeluarKeyPressed(evt);
-            }
-        });
-        panelisi1.add(BtnKeluar);
+    BtnKeluar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/exit.png"))); // NOI18N
+    BtnKeluar.setMnemonic('K');
+    BtnKeluar.setText("Keluar");
+    BtnKeluar.setToolTipText("Alt+K");
+    BtnKeluar.setName("BtnKeluar"); // NOI18N
+    BtnKeluar.setPreferredSize(new java.awt.Dimension(100, 30));
+    BtnKeluar.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            BtnKeluarActionPerformed(evt);
+        }
+    });
+    BtnKeluar.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            BtnKeluarKeyPressed(evt);
+        }
+    });
+    panelisi1.add(BtnKeluar);
 
-        jPanel1.add(panelisi1, java.awt.BorderLayout.PAGE_END);
+    jPanel1.add(panelisi1, java.awt.BorderLayout.PAGE_END);
 
-        panelisi4.setName("panelisi4"); // NOI18N
-        panelisi4.setPreferredSize(new java.awt.Dimension(100, 44));
-        panelisi4.setLayout(null);
+    panelisi4.setName("panelisi4"); // NOI18N
+    panelisi4.setPreferredSize(new java.awt.Dimension(100, 44));
+    panelisi4.setLayout(null);
 
-        label25.setText("SubTotal :");
-        label25.setName("label25"); // NOI18N
-        label25.setPreferredSize(new java.awt.Dimension(70, 23));
-        panelisi4.add(label25);
-        label25.setBounds(572, 40, 80, 23);
+    label25.setText("SubTotal :");
+    label25.setName("label25"); // NOI18N
+    label25.setPreferredSize(new java.awt.Dimension(70, 23));
+    panelisi4.add(label25);
+    label25.setBounds(572, 40, 80, 23);
 
-        Subtotal.setEditable(false);
-        Subtotal.setName("Subtotal"); // NOI18N
-        Subtotal.setPreferredSize(new java.awt.Dimension(80, 23));
-        panelisi4.add(Subtotal);
-        Subtotal.setBounds(656, 40, 117, 23);
+    Subtotal.setEditable(false);
+    Subtotal.setName("Subtotal"); // NOI18N
+    Subtotal.setPreferredSize(new java.awt.Dimension(80, 23));
+    panelisi4.add(Subtotal);
+    Subtotal.setBounds(656, 40, 117, 23);
 
-        label27.setText("Hrga.Retur :");
-        label27.setName("label27"); // NOI18N
-        label27.setPreferredSize(new java.awt.Dimension(70, 23));
-        panelisi4.add(label27);
-        label27.setBounds(572, 10, 80, 23);
+    label27.setText("Hrga.Retur :");
+    label27.setName("label27"); // NOI18N
+    label27.setPreferredSize(new java.awt.Dimension(70, 23));
+    panelisi4.add(label27);
+    label27.setBounds(572, 10, 80, 23);
 
-        Hargaretur.setName("Hargaretur"); // NOI18N
-        Hargaretur.setPreferredSize(new java.awt.Dimension(80, 23));
-        Hargaretur.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                HargareturKeyPressed(evt);
-            }
-        });
-        panelisi4.add(Hargaretur);
-        Hargaretur.setBounds(656, 10, 117, 23);
+    Hargaretur.setName("Hargaretur"); // NOI18N
+    Hargaretur.setPreferredSize(new java.awt.Dimension(80, 23));
+    Hargaretur.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            HargareturKeyPressed(evt);
+        }
+    });
+    panelisi4.add(Hargaretur);
+    Hargaretur.setBounds(656, 10, 117, 23);
 
-        BtnBrg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
-        BtnBrg.setMnemonic('3');
-        BtnBrg.setToolTipText("Alt+3");
-        BtnBrg.setName("BtnBrg"); // NOI18N
-        BtnBrg.setPreferredSize(new java.awt.Dimension(28, 23));
-        BtnBrg.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnBrgActionPerformed(evt);
-            }
-        });
-        panelisi4.add(BtnBrg);
-        BtnBrg.setBounds(526, 10, 28, 23);
+    BtnBrg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+    BtnBrg.setMnemonic('3');
+    BtnBrg.setToolTipText("Alt+3");
+    BtnBrg.setName("BtnBrg"); // NOI18N
+    BtnBrg.setPreferredSize(new java.awt.Dimension(28, 23));
+    BtnBrg.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            BtnBrgActionPerformed(evt);
+        }
+    });
+    panelisi4.add(BtnBrg);
+    BtnBrg.setBounds(526, 10, 28, 23);
 
-        BtnKnv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
-        BtnKnv.setMnemonic('4');
-        BtnKnv.setToolTipText("Alt+4");
-        BtnKnv.setName("BtnKnv"); // NOI18N
-        BtnKnv.setPreferredSize(new java.awt.Dimension(28, 23));
-        BtnKnv.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnKnvActionPerformed(evt);
-            }
-        });
-        panelisi4.add(BtnKnv);
-        BtnKnv.setBounds(526, 40, 28, 23);
+    BtnKnv.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+    BtnKnv.setMnemonic('4');
+    BtnKnv.setToolTipText("Alt+4");
+    BtnKnv.setName("BtnKnv"); // NOI18N
+    BtnKnv.setPreferredSize(new java.awt.Dimension(28, 23));
+    BtnKnv.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            BtnKnvActionPerformed(evt);
+        }
+    });
+    panelisi4.add(BtnKnv);
+    BtnKnv.setBounds(526, 40, 28, 23);
 
-        satuanretur.setName("satuanretur"); // NOI18N
-        satuanretur.setPreferredSize(new java.awt.Dimension(80, 23));
-        satuanretur.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                satuanreturKeyPressed(evt);
-            }
-        });
-        panelisi4.add(satuanretur);
-        satuanretur.setBounds(471, 40, 53, 23);
+    satuanretur.setName("satuanretur"); // NOI18N
+    satuanretur.setPreferredSize(new java.awt.Dimension(80, 23));
+    satuanretur.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            satuanreturKeyPressed(evt);
+        }
+    });
+    panelisi4.add(satuanretur);
+    satuanretur.setBounds(471, 40, 53, 23);
 
-        Jmlretur.setName("Jmlretur"); // NOI18N
-        Jmlretur.setPreferredSize(new java.awt.Dimension(80, 23));
-        Jmlretur.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                JmlreturKeyPressed(evt);
-            }
-        });
-        panelisi4.add(Jmlretur);
-        Jmlretur.setBounds(414, 40, 55, 23);
+    Jmlretur.setName("Jmlretur"); // NOI18N
+    Jmlretur.setPreferredSize(new java.awt.Dimension(80, 23));
+    Jmlretur.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            JmlreturKeyPressed(evt);
+        }
+    });
+    panelisi4.add(Jmlretur);
+    Jmlretur.setBounds(414, 40, 55, 23);
 
-        label26.setText("Jml.Retur :");
-        label26.setName("label26"); // NOI18N
-        label26.setPreferredSize(new java.awt.Dimension(70, 23));
-        panelisi4.add(label26);
-        label26.setBounds(340, 40, 70, 23);
+    label26.setText("Jml.Retur :");
+    label26.setName("label26"); // NOI18N
+    label26.setPreferredSize(new java.awt.Dimension(70, 23));
+    panelisi4.add(label26);
+    label26.setBounds(340, 40, 70, 23);
 
-        label17.setText("Barang :");
-        label17.setName("label17"); // NOI18N
-        label17.setPreferredSize(new java.awt.Dimension(70, 23));
-        panelisi4.add(label17);
-        label17.setBounds(0, 10, 63, 23);
+    label17.setText("Barang :");
+    label17.setName("label17"); // NOI18N
+    label17.setPreferredSize(new java.awt.Dimension(70, 23));
+    panelisi4.add(label17);
+    label17.setBounds(0, 10, 63, 23);
 
-        Kdbar.setName("Kdbar"); // NOI18N
-        Kdbar.setPreferredSize(new java.awt.Dimension(80, 23));
-        Kdbar.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                KdbarKeyPressed(evt);
-            }
-        });
-        panelisi4.add(Kdbar);
-        Kdbar.setBounds(67, 10, 100, 23);
+    Kdbar.setName("Kdbar"); // NOI18N
+    Kdbar.setPreferredSize(new java.awt.Dimension(80, 23));
+    Kdbar.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            KdbarKeyPressed(evt);
+        }
+    });
+    panelisi4.add(Kdbar);
+    Kdbar.setBounds(67, 10, 100, 23);
 
-        nmbar.setEditable(false);
-        nmbar.setName("nmbar"); // NOI18N
-        nmbar.setPreferredSize(new java.awt.Dimension(207, 23));
-        panelisi4.add(nmbar);
-        nmbar.setBounds(169, 10, 300, 23);
+    nmbar.setEditable(false);
+    nmbar.setName("nmbar"); // NOI18N
+    nmbar.setPreferredSize(new java.awt.Dimension(207, 23));
+    panelisi4.add(nmbar);
+    nmbar.setBounds(169, 10, 300, 23);
 
-        Satuanbar.setEditable(false);
-        Satuanbar.setName("Satuanbar"); // NOI18N
-        Satuanbar.setPreferredSize(new java.awt.Dimension(80, 23));
-        panelisi4.add(Satuanbar);
-        Satuanbar.setBounds(471, 10, 53, 23);
+    Satuanbar.setEditable(false);
+    Satuanbar.setName("Satuanbar"); // NOI18N
+    Satuanbar.setPreferredSize(new java.awt.Dimension(80, 23));
+    panelisi4.add(Satuanbar);
+    Satuanbar.setBounds(471, 10, 53, 23);
 
-        label21.setText("No.Batch :");
-        label21.setName("label21"); // NOI18N
-        label21.setPreferredSize(new java.awt.Dimension(70, 23));
-        panelisi4.add(label21);
-        label21.setBounds(0, 40, 63, 23);
+    label21.setText("No.Batch :");
+    label21.setName("label21"); // NOI18N
+    label21.setPreferredSize(new java.awt.Dimension(70, 23));
+    panelisi4.add(label21);
+    label21.setBounds(0, 40, 63, 23);
 
-        NoBatch.setName("NoBatch"); // NOI18N
-        NoBatch.setPreferredSize(new java.awt.Dimension(80, 23));
-        NoBatch.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                NoBatchKeyPressed(evt);
-            }
-        });
-        panelisi4.add(NoBatch);
-        NoBatch.setBounds(67, 40, 100, 23);
+    NoBatch.setName("NoBatch"); // NOI18N
+    NoBatch.setPreferredSize(new java.awt.Dimension(80, 23));
+    NoBatch.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            NoBatchKeyPressed(evt);
+        }
+    });
+    panelisi4.add(NoBatch);
+    NoBatch.setBounds(67, 40, 100, 23);
 
-        label22.setText("Kadaluwarsa :");
-        label22.setName("label22"); // NOI18N
-        label22.setPreferredSize(new java.awt.Dimension(70, 23));
-        panelisi4.add(label22);
-        label22.setBounds(170, 40, 80, 23);
+    label22.setText("Kadaluwarsa :");
+    label22.setName("label22"); // NOI18N
+    label22.setPreferredSize(new java.awt.Dimension(70, 23));
+    panelisi4.add(label22);
+    label22.setBounds(170, 40, 80, 23);
 
-        Kadaluwarsa.setName("Kadaluwarsa"); // NOI18N
-        Kadaluwarsa.setPreferredSize(new java.awt.Dimension(80, 23));
-        Kadaluwarsa.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                KadaluwarsaKeyPressed(evt);
-            }
-        });
-        panelisi4.add(Kadaluwarsa);
-        Kadaluwarsa.setBounds(254, 40, 90, 23);
+    Kadaluwarsa.setName("Kadaluwarsa"); // NOI18N
+    Kadaluwarsa.setPreferredSize(new java.awt.Dimension(80, 23));
+    Kadaluwarsa.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            KadaluwarsaKeyPressed(evt);
+        }
+    });
+    panelisi4.add(Kadaluwarsa);
+    Kadaluwarsa.setBounds(254, 40, 90, 23);
 
-        jPanel1.add(panelisi4, java.awt.BorderLayout.CENTER);
+    scrollPane3.setBorder(javax.swing.BorderFactory.createLineBorder(null));
+    scrollPane3.setName("scrollPane3"); // NOI18N
 
-        internalFrame1.add(jPanel1, java.awt.BorderLayout.PAGE_END);
+    Alasan.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+    Alasan.setColumns(20);
+    Alasan.setRows(5);
+    Alasan.setName("Alasan"); // NOI18N
+    Alasan.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            AlasanKeyPressed(evt);
+        }
+    });
+    scrollPane3.setViewportView(Alasan);
 
-        panelisiBeli.setName("panelisiBeli"); // NOI18N
-        panelisiBeli.setPreferredSize(new java.awt.Dimension(100, 103));
-        panelisiBeli.setLayout(null);
+    panelisi4.add(scrollPane3);
+    scrollPane3.setBounds(785, 25, 230, 42);
 
-        label15.setText("No.Retur :");
-        label15.setName("label15"); // NOI18N
-        label15.setPreferredSize(new java.awt.Dimension(60, 23));
-        panelisiBeli.add(label15);
-        label15.setBounds(0, 10, 75, 23);
+    label28.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+    label28.setText("Alasan Retur :");
+    label28.setName("label28"); // NOI18N
+    label28.setPreferredSize(new java.awt.Dimension(70, 23));
+    panelisi4.add(label28);
+    label28.setBounds(790, 0, 90, 23);
 
-        NoRetur.setName("NoRetur"); // NOI18N
-        NoRetur.setPreferredSize(new java.awt.Dimension(207, 23));
-        NoRetur.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                NoReturKeyPressed(evt);
-            }
-        });
-        panelisiBeli.add(NoRetur);
-        NoRetur.setBounds(79, 10, 210, 23);
+    jPanel1.add(panelisi4, java.awt.BorderLayout.CENTER);
 
-        label18.setText("No.Faktur :");
-        label18.setName("label18"); // NOI18N
-        label18.setPreferredSize(new java.awt.Dimension(60, 23));
-        panelisiBeli.add(label18);
-        label18.setBounds(0, 40, 75, 23);
+    internalFrame1.add(jPanel1, java.awt.BorderLayout.PAGE_END);
 
-        NoFaktur.setName("NoFaktur"); // NOI18N
-        NoFaktur.setPreferredSize(new java.awt.Dimension(207, 23));
-        NoFaktur.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                NoFakturKeyPressed(evt);
-            }
-        });
-        panelisiBeli.add(NoFaktur);
-        NoFaktur.setBounds(79, 40, 210, 23);
+    panelisiBeli.setName("panelisiBeli"); // NOI18N
+    panelisiBeli.setPreferredSize(new java.awt.Dimension(100, 103));
+    panelisiBeli.setLayout(null);
 
-        label13.setText("Petugas :");
-        label13.setName("label13"); // NOI18N
-        label13.setPreferredSize(new java.awt.Dimension(70, 23));
-        panelisiBeli.add(label13);
-        label13.setBounds(310, 40, 100, 23);
+    label15.setText("No.Retur :");
+    label15.setName("label15"); // NOI18N
+    label15.setPreferredSize(new java.awt.Dimension(60, 23));
+    panelisiBeli.add(label15);
+    label15.setBounds(0, 10, 75, 23);
 
-        Kdptg.setName("Kdptg"); // NOI18N
-        Kdptg.setPreferredSize(new java.awt.Dimension(80, 23));
-        Kdptg.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                KdptgKeyPressed(evt);
-            }
-        });
-        panelisiBeli.add(Kdptg);
-        Kdptg.setBounds(414, 40, 105, 23);
+    NoRetur.setName("NoRetur"); // NOI18N
+    NoRetur.setPreferredSize(new java.awt.Dimension(207, 23));
+    NoRetur.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            NoReturKeyPressed(evt);
+        }
+    });
+    panelisiBeli.add(NoRetur);
+    NoRetur.setBounds(79, 10, 210, 23);
 
-        Nmptg.setEditable(false);
-        Nmptg.setName("Nmptg"); // NOI18N
-        Nmptg.setPreferredSize(new java.awt.Dimension(207, 23));
-        panelisiBeli.add(Nmptg);
-        Nmptg.setBounds(521, 40, 220, 23);
+    label18.setText("No.Faktur :");
+    label18.setName("label18"); // NOI18N
+    label18.setPreferredSize(new java.awt.Dimension(60, 23));
+    panelisiBeli.add(label18);
+    label18.setBounds(0, 40, 75, 23);
 
-        BtnPtg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
-        BtnPtg.setMnemonic('2');
-        BtnPtg.setToolTipText("Alt+2");
-        BtnPtg.setName("BtnPtg"); // NOI18N
-        BtnPtg.setPreferredSize(new java.awt.Dimension(28, 23));
-        BtnPtg.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnPtgActionPerformed(evt);
-            }
-        });
-        panelisiBeli.add(BtnPtg);
-        BtnPtg.setBounds(744, 40, 28, 23);
+    NoFaktur.setName("NoFaktur"); // NOI18N
+    NoFaktur.setPreferredSize(new java.awt.Dimension(207, 23));
+    NoFaktur.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            NoFakturKeyPressed(evt);
+        }
+    });
+    panelisiBeli.add(NoFaktur);
+    NoFaktur.setBounds(79, 40, 210, 23);
 
-        label11.setText("Tanggal :");
-        label11.setName("label11"); // NOI18N
-        label11.setPreferredSize(new java.awt.Dimension(70, 23));
-        panelisiBeli.add(label11);
-        label11.setBounds(0, 70, 75, 23);
+    label13.setText("Petugas :");
+    label13.setName("label13"); // NOI18N
+    label13.setPreferredSize(new java.awt.Dimension(70, 23));
+    panelisiBeli.add(label13);
+    label13.setBounds(310, 40, 100, 23);
 
-        TglRetur.setDisplayFormat("dd-MM-yyyy");
-        TglRetur.setName("TglRetur"); // NOI18N
-        TglRetur.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                TglReturKeyPressed(evt);
-            }
-        });
-        panelisiBeli.add(TglRetur);
-        TglRetur.setBounds(79, 70, 110, 23);
+    Kdptg.setName("Kdptg"); // NOI18N
+    Kdptg.setPreferredSize(new java.awt.Dimension(80, 23));
+    Kdptg.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            KdptgKeyPressed(evt);
+        }
+    });
+    panelisiBeli.add(Kdptg);
+    Kdptg.setBounds(414, 40, 105, 23);
 
-        label16.setText("Supplier :");
-        label16.setName("label16"); // NOI18N
-        label16.setPreferredSize(new java.awt.Dimension(60, 23));
-        panelisiBeli.add(label16);
-        label16.setBounds(310, 10, 100, 23);
+    Nmptg.setEditable(false);
+    Nmptg.setName("Nmptg"); // NOI18N
+    Nmptg.setPreferredSize(new java.awt.Dimension(207, 23));
+    panelisiBeli.add(Nmptg);
+    Nmptg.setBounds(521, 40, 220, 23);
 
-        kdsup.setName("kdsup"); // NOI18N
-        kdsup.setPreferredSize(new java.awt.Dimension(80, 23));
-        kdsup.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                kdsupKeyPressed(evt);
-            }
-        });
-        panelisiBeli.add(kdsup);
-        kdsup.setBounds(414, 10, 105, 23);
+    BtnPtg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+    BtnPtg.setMnemonic('2');
+    BtnPtg.setToolTipText("Alt+2");
+    BtnPtg.setName("BtnPtg"); // NOI18N
+    BtnPtg.setPreferredSize(new java.awt.Dimension(28, 23));
+    BtnPtg.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            BtnPtgActionPerformed(evt);
+        }
+    });
+    panelisiBeli.add(BtnPtg);
+    BtnPtg.setBounds(744, 40, 28, 23);
 
-        nmsup.setEditable(false);
-        nmsup.setName("nmsup"); // NOI18N
-        nmsup.setPreferredSize(new java.awt.Dimension(207, 23));
-        panelisiBeli.add(nmsup);
-        nmsup.setBounds(521, 10, 220, 23);
+    label11.setText("Tanggal :");
+    label11.setName("label11"); // NOI18N
+    label11.setPreferredSize(new java.awt.Dimension(70, 23));
+    panelisiBeli.add(label11);
+    label11.setBounds(0, 70, 75, 23);
 
-        BtnSpl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
-        BtnSpl.setMnemonic('1');
-        BtnSpl.setToolTipText("Alt+1");
-        BtnSpl.setName("BtnSpl"); // NOI18N
-        BtnSpl.setPreferredSize(new java.awt.Dimension(28, 23));
-        BtnSpl.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnSplActionPerformed(evt);
-            }
-        });
-        panelisiBeli.add(BtnSpl);
-        BtnSpl.setBounds(744, 10, 28, 23);
+    TglRetur.setDisplayFormat("dd-MM-yyyy");
+    TglRetur.setName("TglRetur"); // NOI18N
+    TglRetur.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            TglReturKeyPressed(evt);
+        }
+    });
+    panelisiBeli.add(TglRetur);
+    TglRetur.setBounds(79, 70, 110, 23);
 
-        label32.setText("Lokasi :");
-        label32.setName("label32"); // NOI18N
-        label32.setPreferredSize(new java.awt.Dimension(70, 23));
-        panelisiBeli.add(label32);
-        label32.setBounds(310, 70, 100, 23);
+    label16.setText("Supplier :");
+    label16.setName("label16"); // NOI18N
+    label16.setPreferredSize(new java.awt.Dimension(60, 23));
+    panelisiBeli.add(label16);
+    label16.setBounds(310, 10, 100, 23);
 
-        kdgudang.setName("kdgudang"); // NOI18N
-        kdgudang.setPreferredSize(new java.awt.Dimension(80, 23));
-        kdgudang.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                kdgudangKeyPressed(evt);
-            }
-        });
-        panelisiBeli.add(kdgudang);
-        kdgudang.setBounds(414, 70, 105, 23);
+    kdsup.setName("kdsup"); // NOI18N
+    kdsup.setPreferredSize(new java.awt.Dimension(80, 23));
+    kdsup.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            kdsupKeyPressed(evt);
+        }
+    });
+    panelisiBeli.add(kdsup);
+    kdsup.setBounds(414, 10, 105, 23);
 
-        nmgudang.setEditable(false);
-        nmgudang.setName("nmgudang"); // NOI18N
-        nmgudang.setPreferredSize(new java.awt.Dimension(207, 23));
-        panelisiBeli.add(nmgudang);
-        nmgudang.setBounds(521, 70, 220, 23);
+    nmsup.setEditable(false);
+    nmsup.setName("nmsup"); // NOI18N
+    nmsup.setPreferredSize(new java.awt.Dimension(207, 23));
+    panelisiBeli.add(nmsup);
+    nmsup.setBounds(521, 10, 220, 23);
 
-        BtnGudang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
-        BtnGudang.setMnemonic('2');
-        BtnGudang.setToolTipText("Alt+2");
-        BtnGudang.setName("BtnGudang"); // NOI18N
-        BtnGudang.setPreferredSize(new java.awt.Dimension(28, 23));
-        BtnGudang.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnGudangActionPerformed(evt);
-            }
-        });
-        panelisiBeli.add(BtnGudang);
-        BtnGudang.setBounds(744, 70, 28, 23);
+    BtnSpl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+    BtnSpl.setMnemonic('1');
+    BtnSpl.setToolTipText("Alt+1");
+    BtnSpl.setName("BtnSpl"); // NOI18N
+    BtnSpl.setPreferredSize(new java.awt.Dimension(28, 23));
+    BtnSpl.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            BtnSplActionPerformed(evt);
+        }
+    });
+    panelisiBeli.add(BtnSpl);
+    BtnSpl.setBounds(744, 10, 28, 23);
 
-        internalFrame1.add(panelisiBeli, java.awt.BorderLayout.PAGE_START);
+    label32.setText("Lokasi :");
+    label32.setName("label32"); // NOI18N
+    label32.setPreferredSize(new java.awt.Dimension(70, 23));
+    panelisiBeli.add(label32);
+    label32.setBounds(310, 70, 100, 23);
 
-        getContentPane().add(internalFrame1, java.awt.BorderLayout.CENTER);
+    kdgudang.setName("kdgudang"); // NOI18N
+    kdgudang.setPreferredSize(new java.awt.Dimension(80, 23));
+    kdgudang.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            kdgudangKeyPressed(evt);
+        }
+    });
+    panelisiBeli.add(kdgudang);
+    kdgudang.setBounds(414, 70, 105, 23);
 
-        pack();
+    nmgudang.setEditable(false);
+    nmgudang.setName("nmgudang"); // NOI18N
+    nmgudang.setPreferredSize(new java.awt.Dimension(207, 23));
+    panelisiBeli.add(nmgudang);
+    nmgudang.setBounds(521, 70, 220, 23);
+
+    BtnGudang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+    BtnGudang.setMnemonic('2');
+    BtnGudang.setToolTipText("Alt+2");
+    BtnGudang.setName("BtnGudang"); // NOI18N
+    BtnGudang.setPreferredSize(new java.awt.Dimension(28, 23));
+    BtnGudang.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            BtnGudangActionPerformed(evt);
+        }
+    });
+    panelisiBeli.add(BtnGudang);
+    BtnGudang.setBounds(744, 70, 28, 23);
+
+    internalFrame1.add(panelisiBeli, java.awt.BorderLayout.PAGE_START);
+
+    getContentPane().add(internalFrame1, java.awt.BorderLayout.CENTER);
+
+    pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void tbDokterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbDokterMouseClicked
@@ -1028,11 +1056,11 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             if (reply == JOptionPane.YES_OPTION) {
                 Sequel.AutoComitFalse();
                 sukses=true;
-                if(Sequel.menyimpantf2("returbeli","'"+NoRetur.getText()+"','"+Valid.SetTgl(TglRetur.getSelectedItem()+"")+"','"+Kdptg.getText()+"','"+kdsup.getText()+"','"+kdgudang.getText()+"'","data")==true){
+                if(Sequel.menyimpantf2("returbeli","'"+NoRetur.getText()+"','"+Valid.SetTgl(TglRetur.getSelectedItem()+"")+"','"+Kdptg.getText()+"','"+kdsup.getText()+"','"+kdgudang.getText()+"','"+Alasan.getText()+"'","data")==true){
                     simpan();
                 }else{
                     autonomer();
-                    if(Sequel.menyimpantf2("returbeli","'"+NoRetur.getText()+"','"+Valid.SetTgl(TglRetur.getSelectedItem()+"")+"','"+Kdptg.getText()+"','"+kdsup.getText()+"','"+kdgudang.getText()+"'","data")==true){
+                    if(Sequel.menyimpantf2("returbeli","'"+NoRetur.getText()+"','"+Valid.SetTgl(TglRetur.getSelectedItem()+"")+"','"+Kdptg.getText()+"','"+kdsup.getText()+"','"+kdgudang.getText()+"','"+Alasan.getText()+"'","data")==true){
                         simpan();
                     }else{
                         autonomer();
@@ -1238,6 +1266,10 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         // TODO add your handling code here:
     }//GEN-LAST:event_KadaluwarsaKeyPressed
 
+    private void AlasanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_AlasanKeyPressed
+        Valid.pindah2(evt,Hargaretur,Kdbar);
+    }//GEN-LAST:event_AlasanKeyPressed
+
     /**
     * @param args the command line arguments
     */
@@ -1255,6 +1287,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private widget.TextArea Alasan;
     private widget.Button BtnBatal;
     private widget.Button BtnBrg;
     private widget.Button BtnCari;
@@ -1295,6 +1328,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private widget.Label label25;
     private widget.Label label26;
     private widget.Label label27;
+    private widget.Label label28;
     private widget.Label label32;
     private widget.Label label9;
     private widget.TextBox nmbar;
@@ -1305,6 +1339,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private widget.panelisi panelisiBeli;
     private widget.TextBox satuanretur;
     private widget.ScrollPane scrollPane1;
+    private widget.ScrollPane scrollPane3;
     private widget.Table tbDokter;
     // End of variables declaration//GEN-END:variables
 

@@ -49,9 +49,11 @@ import simrskhanza.DlgRawatInap;
 import simrskhanza.DlgRawatJalan;
 import inventory.DlgResepPulang;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.List;
+import java.util.Properties;
 import modif.DlgGabungNota;
 import modif.Eklaim.EklaimBridgingAPI;
 import simrskhanza.DlgCariCaraBayar;
@@ -240,6 +242,8 @@ public class DlgBilingRanap extends javax.swing.JDialog {
     private JsonNode root;
     private JsonNode response;
     private FileReader myObj;
+    private static final Properties prop = new Properties();
+    private static String var = "";
 
     /** Creates new form DlgBiling
      * @param parent
@@ -3789,7 +3793,7 @@ private void MnPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
 private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
         isRawat();
-       if (!checkPermintaan()) {
+       if (!checkPermintaan() || !checkSKDPPostRI(TNoSEP.getText())) {
             return; 
         }
 }//GEN-LAST:event_BtnCariActionPerformed
@@ -3806,7 +3810,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
 //        if (!checkMismatch()) {
 //            return; // Keluar dari method jika ada mismatch
 //        }
-        if (!checkPermintaan()) {
+        if (!checkPermintaan() || !checkSKDPPostRI(TNoSEP.getText())) {
             return; 
         }
         try {
@@ -8224,6 +8228,29 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
 
         return true;
+    }
+    
+    public boolean checkSKDPPostRI(String no_sep) {
+        
+        String LOCKEDSKDP = "no";
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            LOCKEDSKDP = prop.getProperty("LOCKEDSKDP", "no");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        if(LOCKEDSKDP.equals("no")){
+            return true;
+        }
+        
+       if(!no_sep.equals("")){
+           if(Sequel.cariInteger("select count(no_surat) from bridging_surat_kontrol_bpjs where no_sep = ?", no_sep) == 0){
+               JOptionPane.showMessageDialog(null, "SKDP Post RI belum terbit !!", "Konfirmasi Mismatch Penjab", JOptionPane.WARNING_MESSAGE);
+               return false;
+           }
+        }
+       return true;
     }
     
     public void tampilUbahDetailPindahKamar(String NoRawat) {

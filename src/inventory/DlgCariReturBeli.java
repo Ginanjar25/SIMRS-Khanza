@@ -70,7 +70,8 @@ public class DlgCariReturBeli extends javax.swing.JDialog {
                     "Satuan",
                     "Harga Retur(Rp)",
                     "Jml",
-                    "SubTotal(Rp)"};
+                    "SubTotal(Rp)",
+                    "Alasan"};
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -79,7 +80,7 @@ public class DlgCariReturBeli extends javax.swing.JDialog {
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < 11; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(90);
@@ -101,6 +102,8 @@ public class DlgCariReturBeli extends javax.swing.JDialog {
                 column.setPreferredWidth(30);
             }else if(i==9){
                 column.setPreferredWidth(100);
+            }else if(i==10){
+                column.setPreferredWidth(260);
             }
         }
         tbDokter.setDefaultRenderer(Object.class, new WarnaTable());
@@ -983,7 +986,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         Valid.tabelKosong(tabMode);
         try{
             ps=koneksi.prepareStatement("select returbeli.no_retur_beli,returbeli.tgl_retur, "+
-                    "returbeli.nip,petugas.nama,returbeli.kode_suplier,datasuplier.nama_suplier,bangsal.nm_bangsal "+
+                    "returbeli.nip,petugas.nama,returbeli.kode_suplier,datasuplier.nama_suplier,bangsal.nm_bangsal, returbeli.alasan "+
                     " from returbeli inner join petugas inner join bangsal  "+
                     " inner join detreturbeli inner join databarang inner join kodesatuan inner join datasuplier "+
                     " on detreturbeli.kode_brng=databarang.kode_brng "+
@@ -1011,7 +1014,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                 while(rs.next()){
                     tabMode.addRow(new Object[]{
                         rs.getString(1),rs.getString(2),rs.getString(3)+", "+rs.getString(4),
-                        rs.getString(5)+", "+rs.getString(6),"Retur Beli : ","di "+rs.getString(7),"","","",""
+                        rs.getString(5)+", "+rs.getString(6),"Retur Beli : ","di "+rs.getString(7),"","","","",rs.getString("alasan") 
                     });
                     ps2=koneksi.prepareStatement("select detreturbeli.no_faktur,detreturbeli.kode_brng,databarang.nama_brng, "+
                             "detreturbeli.kode_sat,kodesatuan.satuan,detreturbeli.h_retur,detreturbeli.jml_retur, "+
@@ -1035,11 +1038,11 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                                 "","","",no+". No.B "+rs2.getString("no_batch"),
                                 rs2.getString(1),rs2.getString(2)+", "+rs2.getString(3),
                                 rs2.getString(4)+", "+rs2.getString(5),Valid.SetAngka(rs2.getDouble(6)),
-                                rs2.getString(7),Valid.SetAngka(rs2.getDouble(8))
+                                rs2.getString(7),Valid.SetAngka(rs2.getDouble(8)), ""
                             });
                             no++;
                         }
-                        tabMode.addRow(new Object[]{"","","","","","","Total Retur :","","",Valid.SetAngka(subtotal)});                
+                        tabMode.addRow(new Object[]{"","","","","","","Total Retur :","","",Valid.SetAngka(subtotal),""});                
                     } catch (Exception e) {
                         System.out.println("Notif Detail Retur : "+e);
                     } finally{

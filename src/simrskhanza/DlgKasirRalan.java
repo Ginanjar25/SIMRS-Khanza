@@ -15313,7 +15313,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 "reg_periksa.status_bayar,reg_periksa.status_poli,reg_periksa.kd_pj,reg_periksa.kd_poli,pasien.no_tlp, " +
                 "CASE WHEN penjab.png_jawab = 'BPJS' THEN CONCAT(CASE WHEN bridging_sep.klsrawat IS NULL OR bridging_sep.klsrawat = '' THEN CONCAT(IFNULL(CASE WHEN pasien.nip LIKE '%#%' THEN SUBSTRING_INDEX(pasien.nip, '#', -1) ELSE NULL END, ''), ' (SEP -)') ELSE bridging_sep.klsrawat END) ELSE '' END AS kls, " +
                 "CASE WHEN penjab.png_jawab = 'BPJS' THEN CASE COALESCE(bridging_sep.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END ELSE '' END AS kls_naik, " +
-                "CASE WHEN skdp_exp.no_sep IS NOT NULL THEN 'Rujukan Habis' WHEN skdp.no_surat IS NULL THEN 'Belum' ELSE 'Sudah' END AS skdp, " +
+                "CASE  WHEN sep_ri.jnspelayanan = '1' THEN 'Post RI' WHEN bridging_srb_bpjs.no_sep IS NOT NULL THEN 'PRB' WHEN skdp_exp.no_sep IS NOT NULL THEN 'Rujukan Habis' WHEN skdp.no_surat IS NULL THEN 'Belum' ELSE 'Sudah' END AS skdp, " +
                 "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT( ' - ', penjab_cara_bayar2.png_jawab, " +
                 "CASE WHEN penjab_cara_bayar2.png_jawab = 'BPJS' THEN CONCAT(CASE WHEN bridging_sep.klsrawat IS NULL OR bridging_sep.klsrawat = '' THEN CONCAT(IFNULL( CASE WHEN pasien.nip LIKE '%#%' THEN SUBSTRING_INDEX(pasien.nip, '#', -1) ELSE NULL END, ''), ' (SEP -)') " +
                 "ELSE CONCAT(' ', bridging_sep.klsrawat) END, CASE COALESCE(bridging_sep.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END) ELSE '' END) END AS cara_bayar2, " +
@@ -15327,7 +15327,10 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
                 "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj " +
                 "LEFT JOIN antripoli as antripoli1 ON antripoli1.no_rawat = reg_periksa.no_rawat " +
-                "LEFT JOIN bridging_surat_kontrol_exp skdp_exp ON skdp_exp.no_sep = bridging_sep.no_sep " +                
+                "LEFT JOIN bridging_surat_kontrol_exp skdp_exp ON skdp_exp.no_sep = bridging_sep.no_sep "+ 
+                "LEFT JOIN bridging_srb_bpjs ON bridging_srb_bpjs.no_sep = bridging_sep.no_sep " +
+                "LEFT JOIN bridging_surat_kontrol_bpjs skdp_postri ON skdp_postri.no_surat = bridging_sep.noskdp " +
+                "LEFT JOIN bridging_sep sep_ri ON sep_ri.no_sep = skdp_postri.no_sep " +                
                 "LEFT JOIN ("+getRekapAwalMedis()+") as awal_medis on awal_medis.no_rkm_medis = reg_periksa.no_rkm_medis and reg_periksa.kd_poli = awal_medis.kd_poli "+
                 "LEFT JOIN ("+getRekapAwalKeperawatan()+") as awal_keperawatan on awal_keperawatan.no_rkm_medis = reg_periksa.no_rkm_medis and reg_periksa.kd_poli = awal_keperawatan.kd_poli "+
                 (kasir?"":"LEFT JOIN antripoli on antripoli.no_rawat = reg_periksa.no_rawat LEFT JOIN ( SELECT resep_obat.no_rawat, resep_obat.jam_peresepan, resep_obat.no_resep FROM resep_obat GROUP BY resep_obat.no_rawat ) resep_obat ON resep_obat.no_rawat = reg_periksa.no_rawat ")+                

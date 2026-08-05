@@ -29,6 +29,21 @@ public class WarnaTableKamarInap extends DefaultTableCellRenderer {
         if(table.getValueAt(row,6).toString().contains("BPJS") && table.getValueAt(row,45).toString().equals("Sudah")){
             component.setBackground(new Color(255, 184, 77));
         }
+        
+//         if (column == 22) {
+//            Object cellValue = table.getValueAt(row, 6); // Get the value of the cell in column 42
+//            Object cellValue1 = table.getValueAt(row, 47); // Get the value of the cell in column 42
+//            if (cellValue != null) {
+//                String cellString = cellValue.toString(); // Convert the value to a string
+//                String cellString1 = cellValue1.toString(); 
+//                if ("Belum".equals(cellString1) && "BPJS".equals(cellString)) {
+//                    component.setBackground(new Color(255, 255, 0)); // Warna lain untuk kondisi lainnya
+//                    component.setForeground(Color.BLACK);
+//                } 
+//            }
+//        }
+        
+        
         return component;
     }
 
