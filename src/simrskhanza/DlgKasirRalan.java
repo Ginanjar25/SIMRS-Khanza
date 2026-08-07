@@ -1001,6 +1001,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         MnDIrawat = new javax.swing.JMenuItem();
         MnMeninggal = new javax.swing.JMenuItem();
         MnPulangPaksa = new javax.swing.JMenuItem();
+        MnPrbBpjs = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
         MnStatusBaru = new javax.swing.JMenuItem();
         MnStatusLama = new javax.swing.JMenuItem();
@@ -4458,6 +4459,22 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             }
         });
         MnStatus.add(MnPulangPaksa);
+        
+        MnPrbBpjs.setBackground(new java.awt.Color(255, 255, 254));
+        MnPrbBpjs.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnPrbBpjs.setForeground(new java.awt.Color(50, 50, 50));
+        MnPrbBpjs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnPrbBpjs.setText("PRB Bpjs");
+        MnPrbBpjs.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnPrbBpjs.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnPrbBpjs.setName("MnPrbBpjs"); // NOI18N
+        MnPrbBpjs.setPreferredSize(new java.awt.Dimension(180, 26));
+        MnPrbBpjs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnPrbBpjsBtnPrintActionPerformed(evt);
+            }
+        });
+        MnStatus.add(MnPrbBpjs);
 
         jMenu7.setBackground(new java.awt.Color(255, 255, 254));
         jMenu7.setForeground(new java.awt.Color(50, 50, 50));
@@ -6882,7 +6899,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         jLabel12.setPreferredSize(new java.awt.Dimension(120, 23));
         panelGlass8.add(jLabel12);
 
-        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Semua", "Belum", "Sudah", "Batal", "Berkas Diterima", "Dirujuk", "Meninggal", "Dirawat", "Pulang Paksa" }));
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Semua", "Belum", "Sudah", "Batal", "Berkas Diterima", "Dirujuk", "Meninggal", "Dirawat", "Pulang Paksa","PRB" }));
         cmbStatus.setName("cmbStatus"); // NOI18N
         cmbStatus.setPreferredSize(new java.awt.Dimension(150, 23));
         panelGlass8.add(cmbStatus);
@@ -10809,6 +10826,23 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
 
         }
     }//GEN-LAST:event_MnPulangPaksaBtnPrintActionPerformed
+    
+    private void MnPrbBpjsBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnPrbBpjsBtnPrintActionPerformed
+        if(TNoRw.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No.Rawat");
+        } else {
+            if (Sequel.cariInteger("select count(kamar_inap.no_rawat) from kamar_inap where kamar_inap.no_rawat=?", TNoRw.getText()) > 0) {
+                JOptionPane.showMessageDialog(null, "Maaf, Pasien sudah masuk Kamar Inap. Gunakan billing Ranap..!!!");
+            } else if (!tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(), 9).toString().contains("BPJS")) {
+                JOptionPane.showMessageDialog(null, "Maaf, Cara Bayar Pasien Bukan BPJS..!!!");
+            } else {
+                Valid.editTable(tabModekasir, "reg_periksa", "no_rawat", TNoRw, "stts='PRB'");
+                if (tbKasirRalan.getSelectedRow() > -1) {
+                    tabModekasir.setValueAt("PRB", tbKasirRalan.getSelectedRow(), 10);
+                }
+            }
+        }
+    }//GEN-LAST:event_MnPrbBpjsBtnPrintActionPerformed
 
     private void MnJadwalOperasi1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnJadwalOperasi1ActionPerformed
         if(tabModekasir2.getRowCount()==0){
@@ -15100,6 +15134,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private javax.swing.JMenuItem MnPoliInternal;
     private javax.swing.JMenuItem MnPulangAtasPermintaanSendiri;
     private javax.swing.JMenuItem MnPulangPaksa;
+    private javax.swing.JMenuItem MnPrbBpjs;
     private javax.swing.JMenu MnRMCatatanMonitoring;
     private javax.swing.JMenu MnRMFarmasi;
     private javax.swing.JMenu MnRMHCU;

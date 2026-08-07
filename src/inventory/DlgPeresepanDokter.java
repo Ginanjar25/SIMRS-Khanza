@@ -1650,6 +1650,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnTambahActionPerformed
 
 private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        selesaiEditTabel();
         if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
             Valid.textKosong(TNoRw,"pasien");
         }else if(KdDokter.getText().trim().equals("")||NmDokter.getText().trim().equals("")){
@@ -6002,5 +6003,17 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             var = "no";
         }
         return var;
+    }
+     
+    private void selesaiEditTabel() {
+        if (tbResep.isEditing()) {
+            tbResep.getCellEditor().stopCellEditing();
+        }
+        if (tbObatResepRacikan.isEditing()) {
+            tbObatResepRacikan.getCellEditor().stopCellEditing();
+        }
+        if (tbObatResepRacikan2.isEditing()) {
+            tbObatResepRacikan2.getCellEditor().stopCellEditing();
+        }
     }
 }

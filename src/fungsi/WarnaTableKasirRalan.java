@@ -42,6 +42,10 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
                    table.getValueAt(row, 9).toString().contains("UMUM")) {
             component.setBackground(new Color(51 / 255f, 133 / 255f, 255 / 255f, 0.61f));
             component.setForeground(new Color(0, 0, 0));
+        } else if (table.getValueAt(row, 10).toString().equals("PRB") && 
+                   table.getValueAt(row, 9).toString().contains("BPJS")) {
+            component.setBackground(new Color(255 / 255f, 204 / 255f, 0f, 0.61f));
+            component.setForeground(new Color(0, 0, 0));
         }
         
         // Warna khusus untuk kolom 15
