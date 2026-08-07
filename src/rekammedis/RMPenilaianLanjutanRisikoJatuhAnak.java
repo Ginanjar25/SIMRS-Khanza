@@ -1631,6 +1631,7 @@ public final class RMPenilaianLanjutanRisikoJatuhAnak extends javax.swing.JDialo
         Saran.setText("");
         HasilSkrining.setText("");
         SkalaResiko1.requestFocus();
+        isTotalResikoJatuh();
     } 
 
     private void getData() {
@@ -1851,15 +1852,61 @@ public final class RMPenilaianLanjutanRisikoJatuhAnak extends javax.swing.JDialo
     
     private void isTotalResikoJatuh(){
         try {
-            NilaiResikoTotal.setText((Integer.parseInt(NilaiResiko1.getText())+Integer.parseInt(NilaiResiko2.getText())+Integer.parseInt(NilaiResiko3.getText())+Integer.parseInt(NilaiResiko4.getText())+Integer.parseInt(NilaiResiko5.getText())+Integer.parseInt(NilaiResiko6.getText())+Integer.parseInt(NilaiResiko7.getText()))+"");
-            if(Integer.parseInt(NilaiResikoTotal.getText())<12){
-                TingkatResiko.setText("Tingkat Resiko : Risiko Rendah (7-11), Tindakan : Intervensi pencegahan risiko jatuh standar");
-            }else if(Integer.parseInt(NilaiResikoTotal.getText())<7){
-                TingkatResiko.setText("Tingkat Resiko : Risiko Rendah (0-7), Tindakan : Intervensi pencegahan risiko jatuh standar");
+            NilaiResikoTotal.setText((Integer.parseInt(NilaiResiko1.getText())+Integer.parseInt(NilaiResiko2.getText())+Integer.parseInt(NilaiResiko3.getText())+Integer.parseInt(NilaiResiko4.getText())+Integer.parseInt(NilaiResiko5.getText())+Integer.parseInt(NilaiResiko6.getText()))+"");
+            if(Integer.parseInt(NilaiResikoTotal.getText())<8){
+                TingkatResiko.setText("Tingkat Resiko : Tidak Berisiko / Risiko Rendah (0-7), Tindakan : Intervensi pencegahan risiko jatuh standar");
+                HasilSkrining.setText("Tidak Berisiko / Resiko Jatuh Rendah");
+                Saran.setText(getSaranTindakan("Rendah"));
+            }else if(Integer.parseInt(NilaiResikoTotal.getText())<12){
+                TingkatResiko.setText("Tingkat Resiko : Risiko Sedang (8-11), Tindakan : Intervensi pencegahan risiko jatuh standar");
+                HasilSkrining.setText("Resiko Jatuh Sedang");
+                Saran.setText(getSaranTindakan("Sedang"));
+            }else if(Integer.parseInt(NilaiResikoTotal.getText())>=12){
+                TingkatResiko.setText("Tingkat Resiko : Risiko Tinggi (>11), Tindakan : Intervensi pencegahan risiko jatuh standar dan Intervensi risiko jatuh tinggi");
+                HasilSkrining.setText("Resiko Jatuh Tinggi");
+                Saran.setText(getSaranTindakan("Tinggi"));
             }
         } catch (Exception e) {
             NilaiResikoTotal.setText("0");
-            TingkatResiko.setText("Tingkat Resiko : Risiko Rendah (0-7), Tindakan : Intervensi pencegahan risiko jatuh standar");
+            TingkatResiko.setText("Tingkat Resiko : Tidak Berisiko / Risiko Rendah (0-7), Tindakan : Intervensi pencegahan risiko jatuh standar");
+            HasilSkrining.setText("Resiko Jatuh Rendah");
+            Saran.setText(getSaranTindakan("Rendah"));
         }
+    }
+    
+     private String getSaranTindakan(String tingkat_risiko) {
+        StringBuilder hasil = new StringBuilder();
+        int i = 1;
+
+        try {
+           ps = koneksi.prepareStatement(
+                    "SELECT tindakan FROM tindakan_resiko_jatuh "
+                    + "WHERE FIELD(tingkat_risiko,'Rendah','Sedang','Tinggi') <= FIELD(?,'Rendah','Sedang','Tinggi') "
+                    + "ORDER BY FIELD(tingkat_risiko,'Rendah','Sedang','Tinggi')"
+                );
+            try {
+                ps.setString(1, tingkat_risiko);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                   hasil.append(i++)
+                    .append(". ")
+                    .append(rs.getString("tindakan"))
+                    .append("\n");
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : " + e);
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif : " + e);
+        }
+
+        return hasil.toString();
     }
 }

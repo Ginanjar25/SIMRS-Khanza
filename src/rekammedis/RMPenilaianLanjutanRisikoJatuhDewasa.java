@@ -1642,6 +1642,7 @@ public final class RMPenilaianLanjutanRisikoJatuhDewasa extends javax.swing.JDia
         Saran.setText("");
         HasilSkrining.setText("");
         SkalaResiko1.requestFocus();
+        isTotalResikoJatuh();
     } 
 
     private void getData() {
@@ -1674,6 +1675,7 @@ public final class RMPenilaianLanjutanRisikoJatuhDewasa extends javax.swing.JDia
     }
     private void isRawat() {
          Sequel.cariIsi("select reg_periksa.no_rkm_medis from reg_periksa where reg_periksa.no_rawat='"+TNoRw.getText()+"' ",TNoRM);
+         isTotalResikoJatuh();
     }
 
     private void isPsien() {
@@ -1860,14 +1862,58 @@ public final class RMPenilaianLanjutanRisikoJatuhDewasa extends javax.swing.JDia
             NilaiResikoTotal.setText((Integer.parseInt(NilaiResiko1.getText())+Integer.parseInt(NilaiResiko2.getText())+Integer.parseInt(NilaiResiko3.getText())+Integer.parseInt(NilaiResiko4.getText())+Integer.parseInt(NilaiResiko5.getText())+Integer.parseInt(NilaiResiko6.getText()))+"");
             if(Integer.parseInt(NilaiResikoTotal.getText())<25){
                 TingkatResiko.setText("Tingkat Resiko : Risiko Rendah (0-24), Tindakan : Intervensi pencegahan risiko jatuh standar");
+                HasilSkrining.setText("Resiko Jatuh Rendah");
+                Saran.setText(getSaranTindakan("Rendah"));
             }else if(Integer.parseInt(NilaiResikoTotal.getText())<45){
                 TingkatResiko.setText("Tingkat Resiko : Risiko Sedang (25-44), Tindakan : Intervensi pencegahan risiko jatuh standar");
+                HasilSkrining.setText("Resiko Jatuh Sedang");
+                Saran.setText(getSaranTindakan("Sedang"));
             }else if(Integer.parseInt(NilaiResikoTotal.getText())>=45){
                 TingkatResiko.setText("Tingkat Resiko : Risiko Tinggi (> 45), Tindakan : Intervensi pencegahan risiko jatuh standar dan Intervensi risiko jatuh tinggi");
+                HasilSkrining.setText("Resiko Jatuh Tinggi");
+                Saran.setText(getSaranTindakan("Tinggi"));
             }
         } catch (Exception e) {
             NilaiResikoTotal.setText("0");
             TingkatResiko.setText("Tingkat Resiko : Risiko Rendah (0-24), Tindakan : Intervensi pencegahan risiko jatuh standar");
+            HasilSkrining.setText("Resiko Jatuh Rendah");
+            Saran.setText(getSaranTindakan("Rendah"));
         }
+    }
+    
+    private String getSaranTindakan(String tingkat_risiko) {
+        StringBuilder hasil = new StringBuilder();
+        int i = 1;
+
+        try {
+           ps = koneksi.prepareStatement(
+                    "SELECT tindakan FROM tindakan_resiko_jatuh "
+                    + "WHERE FIELD(tingkat_risiko,'Rendah','Sedang','Tinggi') <= FIELD(?,'Rendah','Sedang','Tinggi') "
+                    + "ORDER BY FIELD(tingkat_risiko,'Rendah','Sedang','Tinggi')"
+                );
+            try {
+                ps.setString(1, tingkat_risiko);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                   hasil.append(i++)
+                    .append(". ")
+                    .append(rs.getString("tindakan"))
+                    .append("\n");
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : " + e);
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif : " + e);
+        }
+
+        return hasil.toString();
     }
 }

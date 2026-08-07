@@ -11103,15 +11103,15 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     TPasien.setText(rs.getString("pasien"));
                     KdDok.setText(Sequel.cariIsi("select dpjp_ranap.kd_dokter from dpjp_ranap where dpjp_ranap.no_rawat=?",TNoRw.getText()));
                     KdDok4.setText(Sequel.cariIsi("select dpjp_ranap.kd_dokter from dpjp_ranap where dpjp_ranap.no_rawat=?",TNoRw.getText()));
-//                    TKdDPJPSBAR.setText(Sequel.cariIsi("select dpjp_ranap.kd_dokter from dpjp_ranap where dpjp_ranap.no_rawat=?",TNoRw.getText()));
+                    TKdDPJPSBAR.setText(Sequel.cariIsi("select dpjp_ranap.kd_dokter from dpjp_ranap where dpjp_ranap.no_rawat=?",TNoRw.getText()));
                     if(KdDok.getText().equals("")){
                         KdDok.setText(rs.getString("kd_dokter"));
                         KdDok4.setText(rs.getString("kd_dokter"));
-//                        TKdDPJPSBAR.setText(rs.getString("kd_dokter"));
+                        TKdDPJPSBAR.setText(rs.getString("kd_dokter"));
                     }
                     TDokter.setText(perawatan.dokter.tampil3(KdDok.getText()));
                     TDokter4.setText(perawatan.dokter.tampil3(KdDok.getText()));
-//                    TNmDPJPSBAR.setText(perawatan.dokter.tampil3(TKdDPJPSBAR.getText()));
+                    TNmDPJPSBAR.setText(perawatan.dokter.tampil3(TKdDPJPSBAR.getText()));
                     TanggalRegistrasi.setText(rs.getString("tgl_registrasi")+" "+rs.getString("jam_reg"));
                 }
             } catch (Exception e) {
@@ -12201,7 +12201,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 if(rs!=null){
                     rs.close();
                 }
-                if(psVerifDPJP!=null){
+                if(psSBAR!=null){
                     psSBAR.close();
                 }
             }                  
