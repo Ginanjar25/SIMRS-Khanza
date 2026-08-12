@@ -134,6 +134,7 @@ public final class DlgPelayananLab extends javax.swing.JDialog {
     private void initComponents() {
 
         TKd = new widget.TextBox();
+        buttonGroup = new javax.swing.ButtonGroup();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbBangsal = new widget.Table();
@@ -142,11 +143,13 @@ public final class DlgPelayananLab extends javax.swing.JDialog {
         Tgl1 = new widget.Tanggal();
         label18 = new widget.Label();
         Tgl2 = new widget.Tanggal();
+        R2 = new widget.RadioButton();
+        R1 = new widget.RadioButton();
+        R3 = new widget.RadioButton();
         jLabel6 = new widget.Label();
         TCari = new widget.TextBox();
         BtnCari = new widget.Button();
         BtnAll = new widget.Button();
-        jLabel7 = new widget.Label();
         BtnPrint = new widget.Button();
         BtnKeluar = new widget.Button();
 
@@ -213,6 +216,34 @@ public final class DlgPelayananLab extends javax.swing.JDialog {
         Tgl2.setPreferredSize(new java.awt.Dimension(90, 23));
         panelGlass5.add(Tgl2);
 
+        R2.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.pink));
+        buttonGroup.add(R2);
+        R2.setSelected(true);
+        R2.setText("REGULER");
+        R2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        R2.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        R2.setName("R2"); // NOI18N
+        R2.setPreferredSize(new java.awt.Dimension(70, 23));
+        panelGlass5.add(R2);
+
+        R1.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.pink));
+        buttonGroup.add(R1);
+        R1.setText("CITO");
+        R1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        R1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        R1.setName("R1"); // NOI18N
+        R1.setPreferredSize(new java.awt.Dimension(60, 23));
+        panelGlass5.add(R1);
+
+        R3.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.pink));
+        buttonGroup.add(R3);
+        R3.setText("SEMUA");
+        R3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        R3.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        R3.setName("R3"); // NOI18N
+        R3.setPreferredSize(new java.awt.Dimension(60, 23));
+        panelGlass5.add(R3);
+
         jLabel6.setText("Key Word :");
         jLabel6.setName("jLabel6"); // NOI18N
         jLabel6.setPreferredSize(new java.awt.Dimension(60, 23));
@@ -260,10 +291,6 @@ public final class DlgPelayananLab extends javax.swing.JDialog {
             }
         });
         panelGlass5.add(BtnAll);
-
-        jLabel7.setName("jLabel7"); // NOI18N
-        jLabel7.setPreferredSize(new java.awt.Dimension(30, 23));
-        panelGlass5.add(jLabel7);
 
         BtnPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
         BtnPrint.setMnemonic('T');
@@ -451,149 +478,210 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button BtnCari;
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
+    private widget.RadioButton R1;
+    private widget.RadioButton R2;
+    private widget.RadioButton R3;
     private widget.ScrollPane Scroll;
     private widget.TextBox TCari;
     private widget.TextBox TKd;
     private widget.Tanggal Tgl1;
     private widget.Tanggal Tgl2;
+    private javax.swing.ButtonGroup buttonGroup;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel6;
-    private widget.Label jLabel7;
     private widget.Label label11;
     private widget.Label label18;
     private widget.panelisi panelGlass5;
     private widget.Table tbBangsal;
     // End of variables declaration//GEN-END:variables
 
-    public void tampil(){        
-        try{   
-            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)); 
-            Valid.tabelKosong(tabMode);   
-            limabelas=0;tigapuluh=0;satujam=0;lebihsatujam=0;lebihduajam=0;
-            limabelas2=0;tigapuluh2=0;satujam2=0;lebihsatujam2=0;lebihduajam2=0;
-            limabelas3=0;tigapuluh3=0;satujam3=0;lebihsatujam3=0;lebihduajam3=0;
-            ps=koneksi.prepareStatement(
-                "select reg_periksa.no_rkm_medis,pasien.nm_pasien,dokter.nm_dokter,permintaan_lab.noorder," +
-                "permintaan_lab.tgl_permintaan,permintaan_lab.jam_permintaan,permintaan_lab.tgl_sampel,"+
-                "permintaan_lab.jam_sampel,permintaan_lab.tgl_hasil,permintaan_lab.jam_hasil," +
-                "round((TIME_TO_SEC(concat(permintaan_lab.tgl_sampel,' ',permintaan_lab.jam_sampel))-TIME_TO_SEC(concat(permintaan_lab.tgl_permintaan,' ',permintaan_lab.jam_permintaan)))/60,2) as permintaansampel, " +
-                "round((TIME_TO_SEC(concat(permintaan_lab.tgl_hasil,' ',permintaan_lab.jam_hasil))-TIME_TO_SEC(concat(permintaan_lab.tgl_sampel,' ',permintaan_lab.jam_sampel)))/60,2) as sampelhasil, " +
-                "round((TIME_TO_SEC(concat(permintaan_lab.tgl_hasil,' ',permintaan_lab.jam_hasil))-TIME_TO_SEC(concat(permintaan_lab.tgl_permintaan,' ',permintaan_lab.jam_permintaan)))/60,2) as permintaanhasil, " +
-                "pl.nm_poli, reg_periksa.status_lanjut, " +
-                "COALESCE((SELECT CASE WHEN ki.kd_kamar LIKE '%ICU%' THEN 'ICU'ELSE 'RANAP'END FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1), CASE WHEN pl.nm_poli LIKE '%IGD%' THEN 'IGD'ELSE 'RAJAL'END) AS unit, " +
-                "case when COALESCE((SELECT ki.kd_kamar FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1),pl.nm_poli) LIKE '%IGD%' OR " +
-                "COALESCE((SELECT ki.kd_kamar FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1),pl.nm_poli) LIKE '%ICU%' THEN 'CITO' ELSE 'REGULER' " +
-                "END AS stts, "+
-                "if( " +
-                    "case when COALESCE((SELECT ki.kd_kamar FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1),pl.nm_poli) LIKE '%IGD%' OR " +
-                    "			 COALESCE((SELECT ki.kd_kamar FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1),pl.nm_poli) LIKE '%ICU%' THEN 'CITO' ELSE 'REGULER' " +
-                    "END='CITO', " +
-                    "if(round((TIME_TO_SEC(concat(permintaan_lab.tgl_hasil,' ',permintaan_lab.jam_hasil))-TIME_TO_SEC(concat(permintaan_lab.tgl_permintaan,' ',permintaan_lab.jam_permintaan)))/60,2)<60,'Sesuai','Tidak Sesuai'), " +
-                    "if(round((TIME_TO_SEC(concat(permintaan_lab.tgl_hasil,' ',permintaan_lab.jam_hasil))-TIME_TO_SEC(concat(permintaan_lab.tgl_permintaan,' ',permintaan_lab.jam_permintaan)))/60,2)<120,'Sesuai','Tidak Sesuai')" +
-                 ") AS hasil "+
-                "from reg_periksa inner join dokter inner join pasien inner join permintaan_lab on reg_periksa.kd_dokter=dokter.kd_dokter INNER JOIN poliklinik pl ON pl.kd_poli = reg_periksa.kd_poli " +
-                "and reg_periksa.no_rkm_medis=pasien.no_rkm_medis and reg_periksa.no_rawat=permintaan_lab.no_rawat where "+
-                "permintaan_lab.tgl_sampel<>'0000-00-00' and permintaan_lab.tgl_hasil<>'0000-00-00' and permintaan_lab.tgl_permintaan between ? and ? and permintaan_lab.noorder like ? or " +
-                "permintaan_lab.tgl_sampel<>'0000-00-00' and permintaan_lab.tgl_hasil<>'0000-00-00' and permintaan_lab.tgl_permintaan between ? and ? and dokter.nm_dokter like ? or " +
-                "permintaan_lab.tgl_sampel<>'0000-00-00' and permintaan_lab.tgl_hasil<>'0000-00-00' and permintaan_lab.tgl_permintaan between ? and ? and reg_periksa.no_rkm_medis like ? or " +
-                "permintaan_lab.tgl_sampel<>'0000-00-00' and permintaan_lab.tgl_hasil<>'0000-00-00' and permintaan_lab.tgl_permintaan between ? and ? and pasien.nm_pasien like ?  "+
-                "order by permintaan_lab.tgl_permintaan,permintaan_lab.jam_permintaan");
+    public void tampil() {
+        try {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            Valid.tabelKosong(tabMode);
+            limabelas = 0;
+            tigapuluh = 0;
+            satujam = 0;
+            lebihsatujam = 0;
+            lebihduajam = 0;
+            limabelas2 = 0;
+            tigapuluh2 = 0;
+            satujam2 = 0;
+            lebihsatujam2 = 0;
+            lebihduajam2 = 0;
+            limabelas3 = 0;
+            tigapuluh3 = 0;
+            satujam3 = 0;
+            lebihsatujam3 = 0;
+            lebihduajam3 = 0;
+
+            String filterStatus;
+            if(R1.isSelected()){
+                filterStatus = "CITO";
+            }else if(R2.isSelected()){
+                filterStatus = "REGULER";
+            }else{
+                filterStatus = "Semua"; // RbSemua atau default
+            }
+
+            ps = koneksi.prepareStatement(
+                    "select * from ( "
+                    + "select reg_periksa.no_rkm_medis,pasien.nm_pasien,dokter.nm_dokter,permintaan_lab.noorder,"
+                    + "permintaan_lab.tgl_permintaan,permintaan_lab.jam_permintaan,permintaan_lab.tgl_sampel,"
+                    + "permintaan_lab.jam_sampel,permintaan_lab.tgl_hasil,permintaan_lab.jam_hasil,"
+                    + "round((TIME_TO_SEC(concat(permintaan_lab.tgl_sampel,' ',permintaan_lab.jam_sampel))-TIME_TO_SEC(concat(permintaan_lab.tgl_permintaan,' ',permintaan_lab.jam_permintaan)))/60,2) as permintaansampel, "
+                    + "round((TIME_TO_SEC(concat(permintaan_lab.tgl_hasil,' ',permintaan_lab.jam_hasil))-TIME_TO_SEC(concat(permintaan_lab.tgl_sampel,' ',permintaan_lab.jam_sampel)))/60,2) as sampelhasil, "
+                    + "round((TIME_TO_SEC(concat(permintaan_lab.tgl_hasil,' ',permintaan_lab.jam_hasil))-TIME_TO_SEC(concat(permintaan_lab.tgl_permintaan,' ',permintaan_lab.jam_permintaan)))/60,2) as permintaanhasil, "
+                    + "pl.nm_poli, reg_periksa.status_lanjut, "
+                    + "COALESCE((SELECT CASE WHEN ki.kd_kamar LIKE '%ICU%' THEN 'ICU'ELSE 'RANAP'END FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1), CASE WHEN pl.nm_poli LIKE '%IGD%' THEN 'IGD'ELSE 'RAJAL'END) AS unit, "
+                    + "case when COALESCE((SELECT ki.kd_kamar FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1),pl.nm_poli) LIKE '%IGD%' OR "
+                    + "COALESCE((SELECT ki.kd_kamar FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1),pl.nm_poli) LIKE '%ICU%' THEN 'CITO' ELSE 'REGULER' "
+                    + "END AS stts, "
+                    + "if( "
+                    + "case when COALESCE((SELECT ki.kd_kamar FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1),pl.nm_poli) LIKE '%IGD%' OR "
+                    + "			 COALESCE((SELECT ki.kd_kamar FROM kamar_inap ki WHERE ki.no_rawat = reg_periksa.no_rawat AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1),pl.nm_poli) LIKE '%ICU%' THEN 'CITO' ELSE 'REGULER' "
+                    + "END='CITO', "
+                    + "if(round((TIME_TO_SEC(concat(permintaan_lab.tgl_hasil,' ',permintaan_lab.jam_hasil))-TIME_TO_SEC(concat(permintaan_lab.tgl_permintaan,' ',permintaan_lab.jam_permintaan)))/60,2)<60,'Sesuai','Tidak Sesuai'), "
+                    + "if(round((TIME_TO_SEC(concat(permintaan_lab.tgl_hasil,' ',permintaan_lab.jam_hasil))-TIME_TO_SEC(concat(permintaan_lab.tgl_permintaan,' ',permintaan_lab.jam_permintaan)))/60,2)<120,'Sesuai','Tidak Sesuai')"
+                    + ") AS hasil "
+                    + "from reg_periksa inner join dokter inner join pasien inner join permintaan_lab on reg_periksa.kd_dokter=dokter.kd_dokter INNER JOIN poliklinik pl ON pl.kd_poli = reg_periksa.kd_poli "
+                    + "and reg_periksa.no_rkm_medis=pasien.no_rkm_medis and reg_periksa.no_rawat=permintaan_lab.no_rawat where "
+                    + "permintaan_lab.tgl_sampel<>'0000-00-00' and permintaan_lab.tgl_hasil<>'0000-00-00' and permintaan_lab.tgl_permintaan between ? and ? and permintaan_lab.noorder like ? or "
+                    + "permintaan_lab.tgl_sampel<>'0000-00-00' and permintaan_lab.tgl_hasil<>'0000-00-00' and permintaan_lab.tgl_permintaan between ? and ? and dokter.nm_dokter like ? or "
+                    + "permintaan_lab.tgl_sampel<>'0000-00-00' and permintaan_lab.tgl_hasil<>'0000-00-00' and permintaan_lab.tgl_permintaan between ? and ? and reg_periksa.no_rkm_medis like ? or "
+                    + "permintaan_lab.tgl_sampel<>'0000-00-00' and permintaan_lab.tgl_hasil<>'0000-00-00' and permintaan_lab.tgl_permintaan between ? and ? and pasien.nm_pasien like ?  "
+                    + ") as tbl "
+                    + "where (? = 'Semua' OR tbl.stts = ?) "
+                    + "order by tbl.tgl_permintaan,tbl.jam_permintaan");
             try {
-                ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(3,"%"+TCari.getText().trim()+"%");
-                ps.setString(4,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(5,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(6,"%"+TCari.getText().trim()+"%");
-                ps.setString(7,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(8,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(9,"%"+TCari.getText().trim()+"%");
-                ps.setString(10,Valid.SetTgl(Tgl1.getSelectedItem()+""));
-                ps.setString(11,Valid.SetTgl(Tgl2.getSelectedItem()+""));
-                ps.setString(12,"%"+TCari.getText().trim()+"%");
-                rs=ps.executeQuery();
-                i=1;lamajam=0;lamajam2=0;lamajam3=0;
-                while(rs.next()){
+                ps.setString(1, Valid.SetTgl(Tgl1.getSelectedItem() + ""));
+                ps.setString(2, Valid.SetTgl(Tgl2.getSelectedItem() + ""));
+                ps.setString(3, "%" + TCari.getText().trim() + "%");
+                ps.setString(4, Valid.SetTgl(Tgl1.getSelectedItem() + ""));
+                ps.setString(5, Valid.SetTgl(Tgl2.getSelectedItem() + ""));
+                ps.setString(6, "%" + TCari.getText().trim() + "%");
+                ps.setString(7, Valid.SetTgl(Tgl1.getSelectedItem() + ""));
+                ps.setString(8, Valid.SetTgl(Tgl2.getSelectedItem() + ""));
+                ps.setString(9, "%" + TCari.getText().trim() + "%");
+                ps.setString(10, Valid.SetTgl(Tgl1.getSelectedItem() + ""));
+                ps.setString(11, Valid.SetTgl(Tgl2.getSelectedItem() + ""));
+                ps.setString(12, "%" + TCari.getText().trim() + "%");
+                ps.setString(13, filterStatus);
+                ps.setString(14, filterStatus);
+                rs = ps.executeQuery();
+                i = 1;
+                lamajam = 0;
+                lamajam2 = 0;
+                lamajam3 = 0;
+                int sesuaiCount = 0, tidakSesuaiCount = 0;
+                while (rs.next()) {
                     tabMode.addRow(new Object[]{
-                        i,rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("unit"),
-                        rs.getString("noorder"),rs.getString("tgl_permintaan")+" "+rs.getString("jam_permintaan"),
-                        rs.getString("tgl_sampel")+" "+rs.getString("jam_sampel"),rs.getString("tgl_hasil")+" "+rs.getString("jam_hasil"),
-                        rs.getString("permintaansampel"),rs.getString("sampelhasil"),rs.getString("permintaanhasil"),rs.getString("stts"),rs.getString("hasil")
+                        i, rs.getString("no_rkm_medis"), rs.getString("nm_pasien"), rs.getString("unit"),
+                        rs.getString("noorder"), rs.getString("tgl_permintaan") + " " + rs.getString("jam_permintaan"),
+                        rs.getString("tgl_sampel") + " " + rs.getString("jam_sampel"), rs.getString("tgl_hasil") + " " + rs.getString("jam_hasil"),
+                        rs.getString("permintaansampel"), rs.getString("sampelhasil"), rs.getString("permintaanhasil"), rs.getString("stts"), rs.getString("hasil")
                     });
                     i++;
-                    lamajam=lamajam+rs.getDouble("permintaansampel");
-                    if(rs.getDouble("permintaansampel")<=15){
+
+                    // hitung persentase Sesuai / Tidak Sesuai
+                    if ("Sesuai".equalsIgnoreCase(rs.getString("hasil"))) {
+                        sesuaiCount++;
+                    } else {
+                        tidakSesuaiCount++;
+                    }
+
+                    lamajam = lamajam + rs.getDouble("permintaansampel");
+                    if (rs.getDouble("permintaansampel") <= 15) {
                         limabelas++;
-                    }else if((rs.getDouble("permintaansampel")>15)&&(rs.getDouble("permintaansampel")<=30)){
+                    } else if ((rs.getDouble("permintaansampel") > 15) && (rs.getDouble("permintaansampel") <= 30)) {
                         tigapuluh++;
-                    }else if((rs.getDouble("permintaansampel")>30)&&(rs.getDouble("permintaansampel")<=60)){
+                    } else if ((rs.getDouble("permintaansampel") > 30) && (rs.getDouble("permintaansampel") <= 60)) {
                         satujam++;
-                    }else if((rs.getDouble("permintaansampel")>60) &&(rs.getDouble("permintaansampel")<=120)){
+                    } else if ((rs.getDouble("permintaansampel") > 60) && (rs.getDouble("permintaansampel") <= 120)) {
                         lebihsatujam++;
-                    }else if(rs.getDouble("permintaansampel")>120){
+                    } else if (rs.getDouble("permintaansampel") > 120) {
                         lebihduajam++;
                     }
-                    
-                    lamajam2=lamajam2+rs.getDouble("sampelhasil");
-                    if(rs.getDouble("sampelhasil")<=15){
+
+                    lamajam2 = lamajam2 + rs.getDouble("sampelhasil");
+                    if (rs.getDouble("sampelhasil") <= 15) {
                         limabelas2++;
-                    }else if((rs.getDouble("sampelhasil")>15)&&(rs.getDouble("sampelhasil")<=30)){
+                    } else if ((rs.getDouble("sampelhasil") > 15) && (rs.getDouble("sampelhasil") <= 30)) {
                         tigapuluh2++;
-                    }else if((rs.getDouble("sampelhasil")>30)&&(rs.getDouble("sampelhasil")<=60)){
+                    } else if ((rs.getDouble("sampelhasil") > 30) && (rs.getDouble("sampelhasil") <= 60)) {
                         satujam2++;
-                    }else if((rs.getDouble("sampelhasil")>60)&&(rs.getDouble("sampelhasil")<=120)){
+                    } else if ((rs.getDouble("sampelhasil") > 60) && (rs.getDouble("sampelhasil") <= 120)) {
                         lebihsatujam2++;
-                    }else if(rs.getDouble("sampelhasil")>120){
+                    } else if (rs.getDouble("sampelhasil") > 120) {
                         lebihduajam2++;
                     }
-                    
-                    lamajam3=lamajam3+rs.getDouble("permintaanhasil");
-                    if(rs.getDouble("permintaanhasil")<=15){
+
+                    lamajam3 = lamajam3 + rs.getDouble("permintaanhasil");
+                    if (rs.getDouble("permintaanhasil") <= 15) {
                         limabelas3++;
-                    }else if((rs.getDouble("permintaanhasil")>15)&&(rs.getDouble("permintaanhasil")<=30)){
+                    } else if ((rs.getDouble("permintaanhasil") > 15) && (rs.getDouble("permintaanhasil") <= 30)) {
                         tigapuluh3++;
-                    }else if((rs.getDouble("permintaanhasil")>30)&&(rs.getDouble("permintaanhasil")<=60)){
+                    } else if ((rs.getDouble("permintaanhasil") > 30) && (rs.getDouble("permintaanhasil") <= 60)) {
                         satujam3++;
-                    }else if((rs.getDouble("permintaanhasil")>60)&&(rs.getDouble("permintaanhasil")<=120)){
+                    } else if ((rs.getDouble("permintaanhasil") > 60) && (rs.getDouble("permintaanhasil") <= 120)) {
                         lebihsatujam3++;
-                    }else if(rs.getDouble("permintaanhasil")>120){
+                    } else if (rs.getDouble("permintaanhasil") > 120) {
                         lebihduajam3++;
                     }
-                    
-                }    
-                if(lamajam>0){
+
+                }
+                if (lamajam > 0) {
                     tabMode.addRow(new Object[]{
-                        "","","Rata-rata (Menit)",": ","","","","",""+Valid.SetAngka6(lamajam/(i-1)),""+Valid.SetAngka6(lamajam2/(i-1)),""+Valid.SetAngka6(lamajam3/(i-1)),"",""
+                        "", "", "Rata-rata (Menit)", ": ", "", "", "", "", "" + Valid.SetAngka6(lamajam / (i - 1)), "" + Valid.SetAngka6(lamajam2 / (i - 1)), "" + Valid.SetAngka6(lamajam3 / (i - 1)), "", ""
                     });
                     tabMode.addRow(new Object[]{
-                        "","","0 - 15 Menit",": ","","","","",""+limabelas,""+limabelas2,""+limabelas3,"",""
+                        "", "", "0 - 15 Menit", ": ", "", "", "", "", "" + limabelas, "" + limabelas2, "" + limabelas3, "", ""
                     });
                     tabMode.addRow(new Object[]{
-                        "","",">15 - <=30 Menit",": ","","","","",""+tigapuluh,""+tigapuluh2,""+tigapuluh3,"",""
+                        "", "", ">15 - <=30 Menit", ": ", "", "", "", "", "" + tigapuluh, "" + tigapuluh2, "" + tigapuluh3, "", ""
                     });
                     tabMode.addRow(new Object[]{
-                        "","",">30 - <=60 Menit",": ","","","","",""+satujam,""+satujam2,""+satujam3,"",""
+                        "", "", ">30 - <=60 Menit", ": ", "", "", "", "", "" + satujam, "" + satujam2, "" + satujam3, "", ""
                     });
                     tabMode.addRow(new Object[]{
-                        "","",">60 - <=120 Menit",": ","","","","",""+lebihsatujam,""+lebihsatujam2,""+lebihsatujam3,"",""
+                        "", "", ">60 - <=120 Menit", ": ", "", "", "", "", "" + lebihsatujam, "" + lebihsatujam2, "" + lebihsatujam3, "", ""
                     });
                     tabMode.addRow(new Object[]{
-                        "","",">120 Menit",": ","","","","",""+lebihduajam,""+lebihduajam2,""+lebihduajam3,"",""
+                        "", "", ">120 Menit", ": ", "", "", "", "", "" + lebihduajam, "" + lebihduajam2, "" + lebihduajam3, "", ""
                     });
-                }                    
+
+                    // baris persentase Sesuai / Tidak Sesuai
+                    int totalHasil = sesuaiCount + tidakSesuaiCount;
+                    if (totalHasil > 0) {
+                        double persenSesuai = (sesuaiCount * 100.0) / totalHasil;
+                        double persenTidakSesuai = (tidakSesuaiCount * 100.0) / totalHasil;
+                        tabMode.addRow(new Object[]{
+                            "", "", "Jumlah Sesuai", ": ", "", "", "", "", "", "", "", "", "" + sesuaiCount
+                        });
+                        tabMode.addRow(new Object[]{
+                            "", "", "Jumlah Tidak Sesuai", ": ", "", "", "", "", "", "", "", "", "" + tidakSesuaiCount
+                        });
+                        tabMode.addRow(new Object[]{
+                            "", "", "Persentase(%) Sesuai", ": ", "", "", "", "", "", "", "", "", Valid.SetAngka6(persenSesuai) + "%"
+                        });
+                        tabMode.addRow(new Object[]{
+                            "", "", "Persentase(%) Tidak Sesuai", ": ", "", "", "", "", "", "", "", "", Valid.SetAngka6(persenTidakSesuai) + "%"
+                        });
+                    }
+                }
             } catch (Exception e) {
-                System.out.println("Notif : "+e);
-            } finally{
-                if(rs!=null){
+                System.out.println("Notif : " + e);
+            } finally {
+                if (rs != null) {
                     rs.close();
                 }
-                if(ps!=null){
+                if (ps != null) {
                     ps.close();
                 }
             }
             this.setCursor(Cursor.getDefaultCursor());
-        }catch(Exception e){
-            System.out.println("Notifikasi : "+e);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
         }
     }
 
