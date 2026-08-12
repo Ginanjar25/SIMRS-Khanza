@@ -1823,6 +1823,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         btnRiwayatBerkasDigital = new widget.Button();
         TPotensiPRB = new widget.Label();
         BtnLaporanOperasi = new widget.Button();
+        btnVerifikasiCPPT = new widget.Button();
         
         //FORM ALERGI
         jLabel84 = new widget.Label();
@@ -2792,6 +2793,18 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         });
         panelGlass12.add(btnRiwayatBerkasDigital);
         btnRiwayatBerkasDigital.setBounds(910, 100, 180, 22);
+        
+        btnVerifikasiCPPT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnVerifikasiCPPT.setText("CPPT");
+        btnVerifikasiCPPT.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnVerifikasiCPPT.setName("btnVerifikasiCPPT"); // NOI18N
+        btnVerifikasiCPPT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerifikasiCPPTActionPerformed(evt);
+            }
+        });
+        panelGlass12.add(btnVerifikasiCPPT);
+        btnVerifikasiCPPT.setBounds(910, 130, 180, 22);
 
         jLabel8.setText("Subjek :");
         jLabel8.setName("jLabel8"); // NOI18N
@@ -10316,6 +10329,23 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             RMRiwayatPerawatan resume=new RMRiwayatPerawatan(null,true);
             resume.setNoRm(TNoRM.getText(),TPasien.getText());
+            resume.setNoRawat(TNoRw.getText());
+            resume.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
+            resume.setLocationRelativeTo(internalFrame1);
+            resume.setFormVerifCPPT();
+            resume.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }
+    
+    private void btnVerifikasiCPPTActionPerformed(java.awt.event.ActionEvent evt) {
+        if (TNoRw.getText().trim().equals("") || TPasien.getText().trim().equals("")) {
+            Valid.textKosong(TNoRw, "No.Rawat");
+        } else {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            RMRiwayatPerawatan resume=new RMRiwayatPerawatan(null,true);
+            resume.setNoRm(TNoRM.getText(),TPasien.getText());
+            resume.setNoRawat(TNoRw.getText());
             resume.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
             resume.setLocationRelativeTo(internalFrame1);
             resume.setFormVerifCPPT();
@@ -10658,7 +10688,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                           BtnAwalKeperawatanNeonatus,BtnPenilaianPasienImunitasRendah,BtnCatatanKeseimbanganCairan,BtnCatatanObservasiCHBP,BtnCatatanObservasiInduksiPersalinan,BtnPermintaanKonsultasiMedik;
     private widget.Label jLabelCaraBayar;
     private widget.Label TCaraBayar;
-    private widget.Button btnIcare,btnRiwayatRadiologi,btnRiwayatBerkasDigital,btnRiwayatLaboratorium;
+    private widget.Button btnIcare,btnRiwayatRadiologi,btnRiwayatBerkasDigital,btnRiwayatLaboratorium, btnVerifikasiCPPT;
     private widget.Label TPotensiPRB;
     private widget.Button BtnLaporanOperasi;
     

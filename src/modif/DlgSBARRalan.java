@@ -196,9 +196,11 @@ public class DlgSBARRalan extends javax.swing.JDialog {
             public void windowClosing(WindowEvent e) {}
             @Override
             public void windowClosed(WindowEvent e) {
-                TKdDPJPSBAR.setText(perawatan.dokter.getTable().getValueAt(perawatan.dokter.getTable().getSelectedRow(),0).toString());
-                TNmDPJPSBAR.setText(perawatan.dokter.getTable().getValueAt(perawatan.dokter.getTable().getSelectedRow(),1).toString());
-                TKdDPJPSBAR.requestFocus();
+                if(perawatan.dokter.getTable().getSelectedRow()!= -1){
+                    TKdDPJPSBAR.setText(perawatan.dokter.getTable().getValueAt(perawatan.dokter.getTable().getSelectedRow(),0).toString());
+                    TNmDPJPSBAR.setText(perawatan.dokter.getTable().getValueAt(perawatan.dokter.getTable().getSelectedRow(),1).toString());
+                    TKdDPJPSBAR.requestFocus();
+                }
             }
             @Override
             public void windowIconified(WindowEvent e) {}
