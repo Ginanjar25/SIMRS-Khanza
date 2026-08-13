@@ -5351,189 +5351,530 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                     
                     //menampilkan operasi/vk
                     if(chkOperasiVK.isSelected()==true){
-                        try{
-                            rs2=koneksi.prepareStatement(
-                                    "select operasi.tgl_operasi,operasi.jenis_anasthesi,operasi.operator1, operasi.operator2, operasi.operator3, operasi.asisten_operator1,"+
-                                    "operasi.asisten_operator2,operasi.asisten_operator3,operasi.biayaasisten_operator3, operasi.instrumen, operasi.dokter_anak, operasi.perawaat_resusitas, "+
-                                    "operasi.dokter_anestesi, operasi.asisten_anestesi, operasi.asisten_anestesi2,operasi.asisten_anestesi2, operasi.bidan, operasi.bidan2, operasi.bidan3, operasi.perawat_luar, operasi.omloop,"+
-                                    "operasi.omloop2,operasi.omloop3,operasi.omloop4,operasi.omloop5,operasi.dokter_pjanak,operasi.dokter_umum, "+
-                                    "operasi.kode_paket,paket_operasi.nm_perawatan, operasi.biayaoperator1, operasi.biayaoperator2, operasi.biayaoperator3, "+
-                                    "operasi.biayaasisten_operator1, operasi.biayaasisten_operator2, operasi.biayaasisten_operator3, operasi.biayainstrumen, "+
-                                    "operasi.biayadokter_anak, operasi.biayaperawaat_resusitas, operasi.biayadokter_anestesi, "+
-                                    "operasi.biayaasisten_anestesi,operasi.biayaasisten_anestesi2, operasi.biayabidan,operasi.biayabidan2,operasi.biayabidan3, operasi.biayaperawat_luar, operasi.biayaalat,"+
-                                    "operasi.biayasewaok,operasi.akomodasi,operasi.bagian_rs,operasi.biaya_omloop,operasi.biaya_omloop2,operasi.biaya_omloop3,operasi.biaya_omloop4,operasi.biaya_omloop5,"+
-                                    "operasi.biayasarpras,operasi.biaya_dokter_pjanak,operasi.biaya_dokter_umum,"+
-                                    "(operasi.biayaoperator1+operasi.biayaoperator2+operasi.biayaoperator3+"+
-                                    "operasi.biayaasisten_operator1+operasi.biayaasisten_operator2+operasi.biayaasisten_operator3+operasi.biayainstrumen+"+
-                                    "operasi.biayadokter_anak+operasi.biayaperawaat_resusitas+operasi.biayadokter_anestesi+"+
-                                    "operasi.biayaasisten_anestesi+operasi.biayaasisten_anestesi2+operasi.biayabidan+operasi.biayabidan2+operasi.biayabidan3+operasi.biayaperawat_luar+operasi.biayaalat+"+
-                                    "operasi.biayasewaok+operasi.akomodasi+operasi.bagian_rs+operasi.biaya_omloop+operasi.biaya_omloop2+operasi.biaya_omloop3+operasi.biaya_omloop4+operasi.biaya_omloop5+"+
-                                    "operasi.biayasarpras+operasi.biaya_dokter_pjanak+operasi.biaya_dokter_umum) as total "+
-                                    "from operasi inner join paket_operasi on operasi.kode_paket=paket_operasi.kode_paket "+
-                                    "where operasi.no_rawat='"+rs.getString("no_rawat")+"' order by operasi.tgl_operasi").executeQuery();
-                            if(rs2.next()){                                    
-                                htmlContent.append(  
-                                  "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>").append(
-                                    "<tr><td valign='top' colspan='4'>Operasi/VK</td><td valign='top' colspan='1' align='right'>:</td><td valign='top'></td></tr>").append(            
-                                    "<tr align='center'>").append(
-                                      "<td valign='top' width='4%' bgcolor='#FFFAF8'>No.</td>").append(
-                                      "<td valign='top' width='15%' bgcolor='#FFFAF8'>Tanggal</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Kode</td>").append(
-                                      "<td valign='top' width='51%' bgcolor='#FFFAF8'>Nama Tindakan</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Anastesi</td>").append(
-                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
-                                    "</tr>");
-                                w=1;
-                                do{
-                                    htmlContent.append(
-                                         "<tr>").append(
-                                            "<td valign='top' align='center'>").append(w).append("</td>").append(
-                                            "<td valign='top'>").append(rs2.getString("tgl_operasi")).append("</td>").append(
-                                            "<td valign='top'>").append(rs2.getString("kode_paket")).append("</td>").append(
-                                            "<td valign='top'>").append(rs2.getString("nm_perawatan")).append(" (");
-                                    if(rs2.getDouble("biayaoperator1")>0){
-                                        htmlContent.append("Operator 1 : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("operator1"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayaoperator2")>0){
-                                        htmlContent.append("Operator 2 : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("operator2"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayaoperator3")>0){
-                                        htmlContent.append("Operator 3 : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("operator3"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayaasisten_operator1")>0){
-                                        htmlContent.append("Asisten Operator 1 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("asisten_operator1"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayaasisten_operator2")>0){
-                                        htmlContent.append("Asisten Operator 2 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("asisten_operator2"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayaasisten_operator3")>0){
-                                        htmlContent.append("Asisten Operator 3 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("asisten_operator3"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayainstrumen")>0){
-                                        htmlContent.append("Instrumen : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("instrumen"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayadokter_anak")>0){
-                                        htmlContent.append("Dokter Anak : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("dokter_anak"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayaperawaat_resusitas")>0){
-                                        htmlContent.append("Perawat Resusitas : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("perawaat_resusitas"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayadokter_anestesi")>0){
-                                        htmlContent.append("Dokter Anestesi : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("dokter_anestesi"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayaasisten_anestesi")>0){
-                                        htmlContent.append("Asisten Anestesi : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("asisten_anestesi"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayaasisten_anestesi2")>0){
-                                        htmlContent.append("Asisten Anestesi 2 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("asisten_anestesi2"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayabidan")>0){
-                                        htmlContent.append("Bidan 1 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("bidan"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayabidan2")>0){
-                                        htmlContent.append("Bidan 2 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("bidan2"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayabidan3")>0){
-                                        htmlContent.append("Bidan 3 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("bidan3"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biayaperawat_luar")>0){
-                                        htmlContent.append("Perawat Luar : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("perawat_luar"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biaya_omloop")>0){
-                                        htmlContent.append("Onloop 1 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("omloop"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biaya_omloop2")>0){
-                                        htmlContent.append("Onloop 2 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("omloop2"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biaya_omloop3")>0){
-                                        htmlContent.append("Onloop 3 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("omloop3"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biaya_omloop4")>0){
-                                        htmlContent.append("Onloop 4 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("omloop4"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biaya_omloop5")>0){
-                                        htmlContent.append("Onloop 5 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("omloop5"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biaya_dokter_pjanak")>0){
-                                        htmlContent.append("Dokter Pj Anak : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("dokter_pjanak"))).append(", ");
-                                    }
-                                    if(rs2.getDouble("biaya_dokter_umum")>0){
-                                        htmlContent.append("Dokter Umum : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("dokter_umum"))).append(", ");
-                                    }
-                                    htmlContent.append(
-                                            ")</td>").append(
-                                            "<td valign='top'>").append(rs2.getString("jenis_anasthesi")).append("</td>").append(
-                                            "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("total"))).append("</td>").append(
-                                         "</tr>"); 
-                                    w++;
-                                    biayaperawatan=biayaperawatan+rs2.getDouble("total");
-                                }while(rs2.next());
+//                        try{
+//                            rs2=koneksi.prepareStatement(
+//                                    "select operasi.tgl_operasi,operasi.jenis_anasthesi,operasi.operator1, operasi.operator2, operasi.operator3, operasi.asisten_operator1,"+
+//                                    "operasi.asisten_operator2,operasi.asisten_operator3,operasi.biayaasisten_operator3, operasi.instrumen, operasi.dokter_anak, operasi.perawaat_resusitas, "+
+//                                    "operasi.dokter_anestesi, operasi.asisten_anestesi, operasi.asisten_anestesi2,operasi.asisten_anestesi2, operasi.bidan, operasi.bidan2, operasi.bidan3, operasi.perawat_luar, operasi.omloop,"+
+//                                    "operasi.omloop2,operasi.omloop3,operasi.omloop4,operasi.omloop5,operasi.dokter_pjanak,operasi.dokter_umum, "+
+//                                    "operasi.kode_paket,paket_operasi.nm_perawatan, operasi.biayaoperator1, operasi.biayaoperator2, operasi.biayaoperator3, "+
+//                                    "operasi.biayaasisten_operator1, operasi.biayaasisten_operator2, operasi.biayaasisten_operator3, operasi.biayainstrumen, "+
+//                                    "operasi.biayadokter_anak, operasi.biayaperawaat_resusitas, operasi.biayadokter_anestesi, "+
+//                                    "operasi.biayaasisten_anestesi,operasi.biayaasisten_anestesi2, operasi.biayabidan,operasi.biayabidan2,operasi.biayabidan3, operasi.biayaperawat_luar, operasi.biayaalat,"+
+//                                    "operasi.biayasewaok,operasi.akomodasi,operasi.bagian_rs,operasi.biaya_omloop,operasi.biaya_omloop2,operasi.biaya_omloop3,operasi.biaya_omloop4,operasi.biaya_omloop5,"+
+//                                    "operasi.biayasarpras,operasi.biaya_dokter_pjanak,operasi.biaya_dokter_umum,"+
+//                                    "(operasi.biayaoperator1+operasi.biayaoperator2+operasi.biayaoperator3+"+
+//                                    "operasi.biayaasisten_operator1+operasi.biayaasisten_operator2+operasi.biayaasisten_operator3+operasi.biayainstrumen+"+
+//                                    "operasi.biayadokter_anak+operasi.biayaperawaat_resusitas+operasi.biayadokter_anestesi+"+
+//                                    "operasi.biayaasisten_anestesi+operasi.biayaasisten_anestesi2+operasi.biayabidan+operasi.biayabidan2+operasi.biayabidan3+operasi.biayaperawat_luar+operasi.biayaalat+"+
+//                                    "operasi.biayasewaok+operasi.akomodasi+operasi.bagian_rs+operasi.biaya_omloop+operasi.biaya_omloop2+operasi.biaya_omloop3+operasi.biaya_omloop4+operasi.biaya_omloop5+"+
+//                                    "operasi.biayasarpras+operasi.biaya_dokter_pjanak+operasi.biaya_dokter_umum) as total "+
+//                                    "from operasi inner join paket_operasi on operasi.kode_paket=paket_operasi.kode_paket "+
+//                                    "where operasi.no_rawat='"+rs.getString("no_rawat")+"' order by operasi.tgl_operasi").executeQuery();
+//                            if(rs2.next()){                                    
+//                                htmlContent.append(  
+//                                  "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>").append(
+//                                    "<tr><td valign='top' colspan='4'>Operasi/VK</td><td valign='top' colspan='1' align='right'>:</td><td valign='top'></td></tr>").append(            
+//                                    "<tr align='center'>").append(
+//                                      "<td valign='top' width='4%' bgcolor='#FFFAF8'>No.</td>").append(
+//                                      "<td valign='top' width='15%' bgcolor='#FFFAF8'>Tanggal</td>").append(
+//                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Kode</td>").append(
+//                                      "<td valign='top' width='51%' bgcolor='#FFFAF8'>Nama Tindakan</td>").append(
+//                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Anastesi</td>").append(
+//                                      "<td valign='top' width='10%' bgcolor='#FFFAF8'>Biaya</td>").append(
+//                                    "</tr>");
+//                                w=1;
+//                                do{
+//                                    htmlContent.append(
+//                                         "<tr>").append(
+//                                            "<td valign='top' align='center'>").append(w).append("</td>").append(
+//                                            "<td valign='top'>").append(rs2.getString("tgl_operasi")).append("</td>").append(
+//                                            "<td valign='top'>").append(rs2.getString("kode_paket")).append("</td>").append(
+//                                            "<td valign='top'>").append(rs2.getString("nm_perawatan")).append(" (");
+//                                    if(rs2.getDouble("biayaoperator1")>0){
+//                                        htmlContent.append("Operator 1 : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("operator1"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayaoperator2")>0){
+//                                        htmlContent.append("Operator 2 : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("operator2"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayaoperator3")>0){
+//                                        htmlContent.append("Operator 3 : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("operator3"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayaasisten_operator1")>0){
+//                                        htmlContent.append("Asisten Operator 1 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("asisten_operator1"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayaasisten_operator2")>0){
+//                                        htmlContent.append("Asisten Operator 2 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("asisten_operator2"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayaasisten_operator3")>0){
+//                                        htmlContent.append("Asisten Operator 3 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("asisten_operator3"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayainstrumen")>0){
+//                                        htmlContent.append("Instrumen : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("instrumen"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayadokter_anak")>0){
+//                                        htmlContent.append("Dokter Anak : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("dokter_anak"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayaperawaat_resusitas")>0){
+//                                        htmlContent.append("Perawat Resusitas : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("perawaat_resusitas"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayadokter_anestesi")>0){
+//                                        htmlContent.append("Dokter Anestesi : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("dokter_anestesi"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayaasisten_anestesi")>0){
+//                                        htmlContent.append("Asisten Anestesi : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("asisten_anestesi"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayaasisten_anestesi2")>0){
+//                                        htmlContent.append("Asisten Anestesi 2 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("asisten_anestesi2"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayabidan")>0){
+//                                        htmlContent.append("Bidan 1 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("bidan"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayabidan2")>0){
+//                                        htmlContent.append("Bidan 2 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("bidan2"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayabidan3")>0){
+//                                        htmlContent.append("Bidan 3 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("bidan3"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biayaperawat_luar")>0){
+//                                        htmlContent.append("Perawat Luar : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("perawat_luar"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biaya_omloop")>0){
+//                                        htmlContent.append("Onloop 1 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("omloop"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biaya_omloop2")>0){
+//                                        htmlContent.append("Onloop 2 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("omloop2"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biaya_omloop3")>0){
+//                                        htmlContent.append("Onloop 3 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("omloop3"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biaya_omloop4")>0){
+//                                        htmlContent.append("Onloop 4 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("omloop4"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biaya_omloop5")>0){
+//                                        htmlContent.append("Onloop 5 : ").append(Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?",rs2.getString("omloop5"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biaya_dokter_pjanak")>0){
+//                                        htmlContent.append("Dokter Pj Anak : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("dokter_pjanak"))).append(", ");
+//                                    }
+//                                    if(rs2.getDouble("biaya_dokter_umum")>0){
+//                                        htmlContent.append("Dokter Umum : ").append(Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",rs2.getString("dokter_umum"))).append(", ");
+//                                    }
+//                                    htmlContent.append(
+//                                            ")</td>").append(
+//                                            "<td valign='top'>").append(rs2.getString("jenis_anasthesi")).append("</td>").append(
+//                                            "<td valign='top' align='right'>").append(Valid.SetAngka(rs2.getDouble("total"))).append("</td>").append(
+//                                         "</tr>"); 
+//                                    w++;
+//                                    biayaperawatan=biayaperawatan+rs2.getDouble("total");
+//                                }while(rs2.next());
+//                                htmlContent.append(
+//                                  "</table>");
+//                            }                                
+//                        } catch (Exception e) {
+//                            System.out.println("Notifikasi : "+e);
+//                        } finally{
+//                            if(rs2!=null){
+//                                rs2.close();
+//                            }
+//                        }
+//                       
+//                        try{
+//                            rs2=koneksi.prepareStatement(
+//                                    "select tanggal, diagnosa_preop, diagnosa_postop, jaringan_dieksekusi, selesaioperasi, permintaan_pa, laporan_operasi "+
+//                                    "from laporan_operasi where no_rawat='"+rs.getString("no_rawat")+"' group by no_rawat,tanggal order by tanggal").executeQuery();
+//                            if(rs2.next()){                                    
+//                                htmlContent.append(  
+//                                  "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>").append(
+//                                    "<tr><td valign='top' colspan='3'>Laporan Operasi :</td></tr>");
+//                                w=1;
+//                                do{
+//                                    htmlContent.append(
+//                                         "<tr>").append(
+//                                            "<td valign='top' width='4%' align='center'>").append(w).append("</td>").append(
+//                                            "<td valign='top' width='21%'>Mulai Operasi</td>").append(
+//                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("tanggal")).append("</td>").append(
+//                                         "</tr>").append(
+//                                         "<tr>").append(
+//                                            "<td valign='top' width='4%' align='center'></td>").append(
+//                                            "<td valign='top' width='21%'>Diagnosa Pre-operatif</td>").append(
+//                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("diagnosa_preop")).append("</td>").append(
+//                                         "</tr>").append(
+//                                         "<tr>").append(
+//                                            "<td valign='top' width='4%' align='center'></td>").append(
+//                                            "<td valign='top' width='21%'>Jaringan Yang di-Eksisi/-Insisi</td>").append(
+//                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("jaringan_dieksekusi")).append("</td>").append(
+//                                         "</tr>").append(
+//                                         "<tr>").append(
+//                                            "<td valign='top' width='4%' align='center'></td>").append(
+//                                            "<td valign='top' width='21%'>Diagnosa Post-operatif</td>").append(
+//                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("diagnosa_postop")).append("</td>").append(
+//                                         "</tr>").append(
+//                                         "<tr>").append(
+//                                            "<td valign='top' width='4%' align='center'></td>").append(
+//                                            "<td valign='top' width='21%'>Selesai Operasi</td>").append(
+//                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("selesaioperasi")).append("</td>").append(
+//                                         "</tr>").append(
+//                                         "<tr>").append(
+//                                            "<td valign='top' width='4%' align='center'></td>").append(
+//                                            "<td valign='top' width='21%'>Dikirim Untuk Pemeriksaan PA</td>").append(
+//                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("permintaan_pa")).append("</td>").append(
+//                                         "</tr>").append(
+//                                         "<tr>").append(
+//                                            "<td valign='top' width='4%' align='center'></td>").append(
+//                                            "<td valign='top' width='21%'>Laporan</td>").append(
+//                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("laporan_operasi").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>").append(
+//                                         "</tr>"); 
+//                                    w++;
+//                                }while(rs2.next());
+//                                htmlContent.append(
+//                                  "</table>");
+//                            }                                
+//                        } catch (Exception e) {
+//                            System.out.println("Notifikasi : "+e);
+//                        } finally{
+//                            if(rs2!=null){
+//                                rs2.close();
+//                            }
+//                        }
+                        String tgljamop = "";
+                        String kdOperator ="";
+                        try {
+                            rs2 = koneksi.prepareStatement(
+                                    "select operasi.tgl_operasi,operasi.jenis_anasthesi,operasi.operator1, operasi.operator2, operasi.operator3, operasi.asisten_operator1,"
+                                    + "operasi.asisten_operator2,operasi.asisten_operator3,operasi.biayaasisten_operator3, operasi.instrumen, operasi.dokter_anak, operasi.perawaat_resusitas, "
+                                    + "operasi.dokter_anestesi, operasi.asisten_anestesi, operasi.asisten_anestesi2,operasi.asisten_anestesi2, operasi.bidan, operasi.bidan2, operasi.bidan3, operasi.perawat_luar, operasi.omloop,"
+                                    + "operasi.omloop2,operasi.omloop3,operasi.omloop4,operasi.omloop5,operasi.dokter_pjanak,operasi.dokter_umum, "
+                                    + "operasi.kode_paket,paket_operasi.nm_perawatan, operasi.biayaoperator1, operasi.biayaoperator2, operasi.biayaoperator3, "
+                                    + "operasi.biayaasisten_operator1, operasi.biayaasisten_operator2, operasi.biayaasisten_operator3, operasi.biayainstrumen, "
+                                    + "operasi.biayadokter_anak, operasi.biayaperawaat_resusitas, operasi.biayadokter_anestesi, "
+                                    + "operasi.biayaasisten_anestesi,operasi.biayaasisten_anestesi2, operasi.biayabidan,operasi.biayabidan2,operasi.biayabidan3, operasi.biayaperawat_luar, operasi.biayaalat,"
+                                    + "operasi.biayasewaok,operasi.akomodasi,operasi.bagian_rs,operasi.biaya_omloop,operasi.biaya_omloop2,operasi.biaya_omloop3,operasi.biaya_omloop4,operasi.biaya_omloop5,"
+                                    + "operasi.biayasarpras,operasi.biaya_dokter_pjanak,operasi.biaya_dokter_umum,"
+                                    + "(operasi.biayaoperator1+operasi.biayaoperator2+operasi.biayaoperator3+"
+                                    + "operasi.biayaasisten_operator1+operasi.biayaasisten_operator2+operasi.biayaasisten_operator3+operasi.biayainstrumen+"
+                                    + "operasi.biayadokter_anak+operasi.biayaperawaat_resusitas+operasi.biayadokter_anestesi+"
+                                    + "operasi.biayaasisten_anestesi+operasi.biayaasisten_anestesi2+operasi.biayabidan+operasi.biayabidan2+operasi.biayabidan3+operasi.biayaperawat_luar+operasi.biayaalat+"
+                                    + "operasi.biayasewaok+operasi.akomodasi+operasi.bagian_rs+operasi.biaya_omloop+operasi.biaya_omloop2+operasi.biaya_omloop3+operasi.biaya_omloop4+operasi.biaya_omloop5+"
+                                    + "operasi.biayasarpras+operasi.biaya_dokter_pjanak+operasi.biaya_dokter_umum) as total "
+                                    + "from operasi inner join paket_operasi on operasi.kode_paket=paket_operasi.kode_paket "
+                                    + "where operasi.no_rawat='" + rs.getString("no_rawat") + "' order by operasi.tgl_operasi").executeQuery();
+                            if (rs2.next()) {
+                                tgljamop = rs2.getString("tgl_operasi");
                                 htmlContent.append(
-                                  "</table>");
-                            }                                
+                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>").append(
+                                                "<tr>").append(
+                                                "<td valign='top' colspan='6' style='font-size: 9px;'>Laporan Operasi :</td>").append(
+                                                "</tr></table>"
+                                        );
+                                w = 1;
+                                do {
+                                    biayaperawatan=biayaperawatan+rs2.getDouble("total");
+                                    kdOperator = rs2.getString("operator1");
+                                } while (rs2.next());
+                                
+                            }
                         } catch (Exception e) {
-                            System.out.println("Notifikasi : "+e);
-                        } finally{
-                            if(rs2!=null){
+                            System.out.println("Notifikasi : " + e);
+                        } finally {
+                            if (rs2 != null) {
                                 rs2.close();
                             }
                         }
-                       
-                        try{
-                            rs2=koneksi.prepareStatement(
-                                    "select tanggal, diagnosa_preop, diagnosa_postop, jaringan_dieksekusi, selesaioperasi, permintaan_pa, laporan_operasi "+
-                                    "from laporan_operasi where no_rawat='"+rs.getString("no_rawat")+"' group by no_rawat,tanggal order by tanggal").executeQuery();
-                            if(rs2.next()){                                    
-                                htmlContent.append(  
-                                  "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>").append(
-                                    "<tr><td valign='top' colspan='3'>Laporan Operasi :</td></tr>");
-                                w=1;
-                                do{
-                                    htmlContent.append(
-                                         "<tr>").append(
-                                            "<td valign='top' width='4%' align='center'>").append(w).append("</td>").append(
-                                            "<td valign='top' width='21%'>Mulai Operasi</td>").append(
-                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("tanggal")).append("</td>").append(
-                                         "</tr>").append(
-                                         "<tr>").append(
-                                            "<td valign='top' width='4%' align='center'></td>").append(
-                                            "<td valign='top' width='21%'>Diagnosa Pre-operatif</td>").append(
-                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("diagnosa_preop")).append("</td>").append(
-                                         "</tr>").append(
-                                         "<tr>").append(
-                                            "<td valign='top' width='4%' align='center'></td>").append(
-                                            "<td valign='top' width='21%'>Jaringan Yang di-Eksisi/-Insisi</td>").append(
-                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("jaringan_dieksekusi")).append("</td>").append(
-                                         "</tr>").append(
-                                         "<tr>").append(
-                                            "<td valign='top' width='4%' align='center'></td>").append(
-                                            "<td valign='top' width='21%'>Diagnosa Post-operatif</td>").append(
-                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("diagnosa_postop")).append("</td>").append(
-                                         "</tr>").append(
-                                         "<tr>").append(
-                                            "<td valign='top' width='4%' align='center'></td>").append(
-                                            "<td valign='top' width='21%'>Selesai Operasi</td>").append(
-                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("selesaioperasi")).append("</td>").append(
-                                         "</tr>").append(
-                                         "<tr>").append(
-                                            "<td valign='top' width='4%' align='center'></td>").append(
-                                            "<td valign='top' width='21%'>Dikirim Untuk Pemeriksaan PA</td>").append(
-                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("permintaan_pa")).append("</td>").append(
-                                         "</tr>").append(
-                                         "<tr>").append(
-                                            "<td valign='top' width='4%' align='center'></td>").append(
-                                            "<td valign='top' width='21%'>Laporan</td>").append(
-                                            "<td valign='top' width='75%'>:&nbsp;").append(rs2.getString("laporan_operasi").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>").append(
-                                         "</tr>"); 
-                                    w++;
-                                }while(rs2.next());
+                        
+                        //soap preop
+                        try {
+                            rs2 = koneksi.prepareStatement(
+                                    "select pemeriksaan_ranap.no_rawat,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.suhu_tubuh, " +
+                                    "    pemeriksaan_ranap.tensi,pemeriksaan_ranap.nadi,pemeriksaan_ranap.respirasi,pemeriksaan_ranap.tinggi,pemeriksaan_ranap.berat, " +
+                                    "    pemeriksaan_ranap.gcs,pemeriksaan_ranap.keluhan,pemeriksaan_ranap.pemeriksaan,pemeriksaan_ranap.alergi,pemeriksaan_ranap.rtl, " +
+                                    "    pemeriksaan_ranap.penilaian, pemeriksaan_ranap.nip " +
+                                    "    from pemeriksaan_ranap " +
+                                    "    where pemeriksaan_ranap.no_rawat='" + rs.getString("no_rawat") + "' " +
+                                    "    and concat(pemeriksaan_ranap.tgl_perawatan,' ',pemeriksaan_ranap.jam_rawat) <= '" + tgljamop + "' " +
+                                    "    order by pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat desc limit 1").executeQuery();
+                            if (rs2.next() && !kdOperator.equals("")) {
                                 htmlContent.append(
-                                  "</table>");
-                            }                                
+                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>").append(
+                                             "<tr>").append(
+                                                "<td valign='top' colspan='6' align='center' "
+                                                + "style='font-weight:bold; background:#d0d0d0; border:1px solid #000;'>"
+                                                + "PRE SURGICAL ASSESSMENT</td>").append(
+                                                "</tr>"
+                                        );
+                                
+                                htmlContent.append(
+                                     "<tr>").append( 
+                                            "<td valign='top' width='21%'>Tanggal</td>").append(
+                                            "<td valign='top' width='25%'>:&nbsp;").append(
+                                                rs2.getString("tgl_perawatan")).append(
+                                            "</td>").append(
+                                            "<td valign='top' width='10%'>Waktu</td>").append(
+                                            "<td valign='top' width='15%'>:&nbsp;").append(
+                                                rs2.getString("jam_rawat")).append( 
+                                            "</td>").append( 
+                                            "<td valign='top' width='10%'>Alergi</td>").append(
+                                            "<td valign='top' width='15%'>:&nbsp;</td>").append(
+                                        "</tr>").append(
+
+                                        "<tr>").append(
+                                            "<td valign='top' width='21%'>Dokter Bedah</td>").append(
+                                            "<td valign='top' colspan='5'>:&nbsp;").append(
+                                                 Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",kdOperator)).append(
+                                            "</td>").append( 
+                                        "</tr></table>");
+                                
+                                htmlContent.append(
+                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>").append(
+                                        "<tr>").append(
+                                                "<td valign='top' colspan='2'>").append(
+                                                "<b>Keluhan :</b><br>").append(
+                                                rs2.getString("keluhan")).append(
+                                                "<br><br>").append(
+                                                "<b>Pemeriksaan :</b><br>").append(
+                                                rs2.getString("pemeriksaan")).append(
+                                                "</td>").append(
+                                                "<td valign='top' colspan='2'>").append(
+                                                "<b>Penilaian :</b><br>").append(
+                                                rs2.getString("penilaian")).append(
+                                                "<br><br>").append(
+                                                "<b>Tindak Lanjut :</b><br>").append(
+                                                rs2.getString("rtl")).append(
+                                                "</td>").append(
+                                        "</tr>").append(
+                                        // ============================================================
+                                        // TANDA VITAL
+                                        // ============================================================
+                                        "<tr>").append(
+                                                "<td valign='top' width='21%'>Suhu Tubuh (C)</td>").append(
+                                                "<td valign='top' width='25%'>:&nbsp;").append(rs2.getString("suhu_tubuh")).append("</td>").append(
+                                                "<td valign='top' width='10%'>Nadi (/Mnt)</td>").append(
+                                                "<td valign='top' width='15%'>:&nbsp;").append(rs2.getString("nadi")).append("</td>").append(
+                                                
+                                        "</tr>").append(
+                                        "<tr>").append(
+                                                "<td valign='top' width='21%'>Tensi</td>").append(
+                                                "<td valign='top' width='25%'>:&nbsp;").append(rs2.getString("tensi")).append("</td>").append(
+                                                "<td valign='top' width='10%'>Respirasi (/Mnt)</td>").append(
+                                                "<td valign='top' width='15%'>:&nbsp;").append(rs2.getString("respirasi")).append("</td>").append(
+                                                
+                                        "</tr>").append(
+                                        "<tr>").append(
+                                                "<td valign='top' width='21%'>Tinggi(Cm)</td>").append(
+                                                "<td valign='top' width='25%'>:&nbsp;").append(rs2.getString("tinggi")).append("</td>").append(
+                                                "<td valign='top' width='10%'>GCS (E,V,M)</td>").append(
+                                                "<td valign='top' width='15%'>:&nbsp;").append(rs2.getString("gcs")).append("</td>").append(
+                                                
+                                        "</tr>").append(
+                                        "<tr>").append(
+                                                "<td valign='top' width='21%'>Berat(Kg)</td>").append(
+                                                "<td valign='top' width='25%'>:&nbsp;").append(rs2.getString("berat")).append("</td>").append(
+                                                "<td valign='top' colspan='2'></td>").append(
+                                        "</tr>").append(
+                                "</table>");
+                            }
                         } catch (Exception e) {
-                            System.out.println("Notifikasi : "+e);
-                        } finally{
-                            if(rs2!=null){
+                            System.out.println("Notifikasi : " + e);
+                        } finally {
+                            if (rs2 != null) {
+                                try {
+                                    rs2.close();
+                                } catch (Exception e) {
+                                    System.out.println("Notifikasi close rs2 : " + e);
+                                }
+                            }
+                        }
+                        
+                        //post Surgical
+                        try {
+                            rs2 = koneksi.prepareStatement(
+                                    "SELECT * FROM laporan_operasi aa\n"
+                                    + "JOIN operasi op ON op.no_rawat = aa.no_rawat AND aa.tanggal = op.tgl_operasi\n"
+                                    + "WHERE aa.no_rawat = '" + rs.getString("no_rawat") + "'").executeQuery();
+
+                            if (rs2.next()) {
+                                htmlContent.append(
+                                        "<table width='100%' border='0' align='center' cellpadding='3px' cellspacing='0' class='tbl_form'>").append(
+                                                "<tr>").append(
+                                                "<td valign='top' colspan='7' align='center' "
+                                                + "style='font-weight:bold; background:#d0d0d0; border:1px solid #000;'>"
+                                                + "POST SURGICAL ASSESSMENT</td>").append(
+                                                "</tr>"
+                                        );
+                                w = 1;
+                                do {
+                                    htmlContent.append(
+                                            "<tr>").append(
+                                                    "<td valign='top' width='20%'>Tanggal & Waktu</td>").append(
+                                                    "<td valign='top' width='2%' align='center'>:</td>").append(
+                                                    "<td valign='top' width='28%'>").append(
+                                                    rs2.getString("tanggal")).append("</td>").append(
+                                            "<td valign='top' width='17%'>Asisten Bedah</td>").append(
+                                                    "<td valign='top' width='2%' align='center'>:</td>").append(
+                                                    "<td valign='top' width='11%'>").append(
+                                                    Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?", rs2.getString("kd_petugas"))).append("</td>").append(
+                                            "<td valign='top' width='20%' rowspan='7' "
+                                            + "style='border-left:1px solid #000; text-align:center;'>").append(
+                                                    "<div style='margin-top:2px;'>Tipe/Jenis Anestesi</div>").append(
+                                                    "<div style='margin-top:4px;'>").append(
+                                                    rs2.getString("jenis_anasthesi")).append("</div>").append(
+                                            "<div style='margin-top:18px;'>Dikirim ke Pemeriksaan PA</div>").append(
+                                                    "<div style='margin-top:4px;'>").append(
+                                                    rs2.getString("permintaan_pa")).append("</div>").append(
+                                            "<div style='margin-top:18px;'>Tipe/Kategori Operasi</div>").append(
+                                                    "<div style='margin-top:4px;'>").append(
+                                                    rs2.getString("kategori")).append("</div>").append(
+                                            "<div style='margin-top:18px;'>Selesai Operasi</div>").append(
+                                                    "<div style='margin-top:4px;'>").append(
+                                                    rs2.getString("selesaioperasi")).append(
+                                            "</div>").append(
+                                                    "</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top'>Dokter Bedah</td>").append(
+                                                    "<td valign='top' align='center'>:</td>").append(
+                                                    "<td valign='top'>").append(
+                                                    Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?", rs2.getString("operator1"))).append(
+                                            "</td>").append(
+                                                    "<td valign='top'>Asisten Bedah 2</td>").append(
+                                                    "<td valign='top' align='center'>:</td>").append(
+                                                    "<td valign='top'>").append(
+                                                    Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?", rs2.getString("asisten_operator2"))).append(
+                                            "</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top'>Dokter Bedah 2</td>").append(
+                                                    "<td valign='top' align='center'>:</td>").append(
+                                                    "<td valign='top'>").append(
+                                                    Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?", rs2.getString("operator2"))).append(
+                                            "</td>").append(
+                                                    "<td valign='top'>Dokter Anestesi</td>").append(
+                                                    "<td valign='top' align='center'>:</td>").append(
+                                                    "<td valign='top'>").append(
+                                                    Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?", rs2.getString("dokter_anestesi"))).append(
+                                            "</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top'>Perawat resusitas</td>").append(
+                                                    "<td valign='top' align='center'>:</td>").append(
+                                                    "<td valign='top'>").append(
+                                                    Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?", rs2.getString("perawaat_resusitas"))).append(
+                                            "</td>").append(
+                                                    "<td valign='top'>Asisten Anestesi</td>").append(
+                                                    "<td valign='top' align='center'>:</td>").append(
+                                                    "<td valign='top'>").append(
+                                                    Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?", rs2.getString("asisten_anestesi"))).append(
+                                            "</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top'>Instrumen</td>").append(
+                                                    "<td valign='top' align='center'>:</td>").append(
+                                                    "<td valign='top'>").append(
+                                                    Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?", rs2.getString("instrumen"))).append(
+                                            "</td>").append(
+                                                    "<td valign='top'>Bidan</td>").append(
+                                                    "<td valign='top' align='center'>:</td>").append(
+                                                    "<td valign='top'>").append(
+                                                    Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?", rs2.getString("bidan"))).append(
+                                            "</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top'>Dokter Anak</td>").append(
+                                                    "<td valign='top' align='center'>:</td>").append(
+                                                    "<td valign='top'>").append(
+                                                    Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?", rs2.getString("dokter_anak"))).append(
+                                            "</td>").append(
+                                                    "<td valign='top'>Onloop</td>").append(
+                                                    "<td valign='top' align='center'>:</td>").append(
+                                                    "<td valign='top'>").append(
+                                                    Sequel.cariIsi("select petugas.nama from petugas where petugas.nip=?", rs2.getString("omloop"))).append(
+                                            "</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top'>Dokter Umum</td>").append(
+                                                    "<td valign='top' align='center'>:</td>").append(
+                                                    "<td valign='top'>").append(
+                                                    Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?", rs2.getString("dokter_umum"))).append(
+                                            "</td>").append(
+                                                    "<td valign='top'></td>").append(
+                                                    "<td valign='top'></td>").append(
+                                                    "<td valign='top'></td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top' colspan='7' "
+                                                    + "style='background:#d0d0d0;'>"
+                                                    + "Diagnosa Pre-Op / Pre Operation Diagnosis</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top' colspan='7'>").append(
+                                                    rs2.getString("diagnosa_preop")).append(
+                                            "</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top' colspan='7' "
+                                                    + "style='background:#d0d0d0;'>"
+                                                    + "Jaringan yang di-Eksisi/Insisi</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top' colspan='7'>").append(
+                                                    rs2.getString("jaringan_dieksekusi")).append(
+                                            "</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top' colspan='7' "
+                                                    + "style='background:#d0d0d0;'>"
+                                                    + "Diagnosa Post-Op / Post Operation Diagnosis</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top' colspan='7'>").append(
+                                                    rs2.getString("diagnosa_postop")).append(
+                                            "</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top' colspan='7' "
+                                                    + "style='background:#d0d0d0;'>Operasi</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                    "<td valign='top' colspan='7'>").append(
+                                                    "LSCS IUD CYTO").append(
+                                                    "</td>").append(
+                                                    "</tr>").append(
+                                                    "<tr>").append(
+                                                            
+                                                    "<td valign='top' colspan='7' align='center' "
+                                                    + "style='font-weight:bold; background:#d0d0d0; border:1px solid #000;'>"
+                                                    + "REPORT (PROCEDURES, SPECIFIC FINDINGS AND COMPLICATIONS)</td>").append(
+                                                    "</tr>").append(
+                                              "<tr>").append(
+                                                    "<td valign='top' colspan='6'>").append(
+                                                    rs2.getString("laporan_operasi")
+                                                            .replaceAll("(\r\n|\r|\n|\n\r)", "<br>")).append(
+                                                    "</td>");
+                                    
+                                                    kdOperator = kdOperator == null ? "" : kdOperator;
+                                                    String nm_dpjp = Sequel.cariIsi("select nm_dokter from dokter where kd_dokter=?", kdOperator);
+                                                    nm_dpjp = nm_dpjp == null ? "" : nm_dpjp;
+                                                    String isiQR
+                                                            = "Dikeluarkan di RUMAH SAKIT PUTRA WASPADA, Kabupaten/Kota Tulungagung\n"
+                                                            + "Ditandatangani secara elektronik oleh " + nm_dpjp + "\n"
+                                                            + "ID " + kdOperator + "\n" + rs2.getString("tanggal");
+                                                    String qr = GenerateQR.generateFile(isiQR, 120, 120);
+                                    htmlContent.append(
+                                            "<td valign='top' colspan='1' align='center'>").append(
+                                            "<img width='150' height='150' src='").append(qr).append("'><br>").append(
+                                            "<b>").append(nm_dpjp).append("</b><br>").append(
+                                            "</td>").append(
+                                            "</tr>");
+                                    w++;
+                                } while (rs2.next());
+                                htmlContent.append(
+                                        "</table>"
+                                );
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Notifikasi : " + e);
+                        } finally {
+                            if (rs2 != null) {
                                 rs2.close();
                             }
                         }
