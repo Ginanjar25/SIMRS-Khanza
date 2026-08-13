@@ -442,7 +442,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         tabModePemeriksaan=new DefaultTableModel(null,new Object[]{
             "P","No.Rawat","No.R.M.","Nama Pasien","Tgl.Rawat","Jam","Suhu(C)","Tensi","Nadi(/menit)",
             "Respirasi(/menit)","Tinggi(Cm)","Berat(Kg)","SpO2(%)","GCS(E,V,M)","Kesadaran","Subjek","Objek","Alergi",
-            "L.P.(Cm)","Plan","Asesmen","Instruksi","Evaluasi","NIP","Dokter/Paramedis","Profesi/Jabatan"}){
+            "L.P.(Cm)","Plan","Asesmen","Instruksi","Evaluasi","NIP","Dokter/Paramedis","Profesi/Jabatan", "Jabatan"}){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
                 if (colIndex==0) {
@@ -458,7 +458,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
-                 java.lang.Object.class, java.lang.Object.class
+                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -469,7 +469,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         tbPemeriksaan.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbPemeriksaan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 26; i++) {
+        for (i = 0; i < 27; i++) {
             TableColumn column = tbPemeriksaan.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(20);
@@ -523,6 +523,9 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
                 column.setPreferredWidth(150);
             }else if(i==25){
                 column.setPreferredWidth(100);
+            }else if(i==26){
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
             }
         }
         tbPemeriksaan.setDefaultRenderer(Object.class, new WarnaTable());
@@ -2723,7 +2726,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         scrollPane1.setViewportView(TKeluhan);
 
         panelGlass12.add(scrollPane1);
-        scrollPane1.setBounds(73, 70, 360, 38);
+        scrollPane1.setBounds(73, 70, 350, 38);
 
         jLabel28.setText("Asesmen :");
         jLabel28.setName("jLabel28"); 
@@ -2733,7 +2736,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         jLabel26.setText("Plan :");
         jLabel26.setName("jLabel26"); 
         panelGlass12.add(jLabel26);
-        jLabel26.setBounds(450, 85, 90, 23);
+        jLabel26.setBounds(360, 85, 180, 23);
 
         scrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         scrollPane2.setName("scrollPane2"); 
@@ -2750,7 +2753,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         scrollPane2.setViewportView(TPemeriksaan);
 
         panelGlass12.add(scrollPane2);
-        scrollPane2.setBounds(73, 115, 360, 38);
+        scrollPane2.setBounds(73, 115, 350, 38);
         
         
         button4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
@@ -12083,10 +12086,12 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     "pemeriksaan_ralan.nadi,pemeriksaan_ralan.respirasi,pemeriksaan_ralan.tinggi, " +
                     "pemeriksaan_ralan.berat,pemeriksaan_ralan.spo2,pemeriksaan_ralan.gcs,pemeriksaan_ralan.kesadaran,pemeriksaan_ralan.keluhan, " +
                     "pemeriksaan_ralan.pemeriksaan,pemeriksaan_ralan.alergi,pemeriksaan_ralan.lingkar_perut,pemeriksaan_ralan.rtl,"+
-                    "pemeriksaan_ralan.penilaian,pemeriksaan_ralan.instruksi,pemeriksaan_ralan.evaluasi,pemeriksaan_ralan.nip,pegawai.nama,pegawai.jbtn "+
+                    "pemeriksaan_ralan.penilaian,pemeriksaan_ralan.instruksi,pemeriksaan_ralan.evaluasi,pemeriksaan_ralan.nip,pegawai.nama,pegawai.jbtn,jabatan.nm_jbtn "+
                     "from pasien inner join reg_periksa on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join pemeriksaan_ralan on pemeriksaan_ralan.no_rawat=reg_periksa.no_rawat "+
-                    "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik where  "+
+                    "inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik "+
+                    "left join petugas on pemeriksaan_ralan.nip = petugas.nip " +
+                    "left join jabatan on petugas.kd_jbtn = jabatan.kd_jbtn where "+
                     "pemeriksaan_ralan.tgl_perawatan between ? and ? and reg_periksa.no_rkm_medis like ? and reg_periksa.kd_poli =? "+
                     (TCari.getText().trim().equals("")?"":"and (pemeriksaan_ralan.no_rawat like ? or reg_periksa.no_rkm_medis like ? or pasien.nm_pasien like ? or "+
                     "pemeriksaan_ralan.alergi like ? or pemeriksaan_ralan.keluhan like ? or pemeriksaan_ralan.penilaian like ? or "+
@@ -12115,7 +12120,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                         rs.getString(12),rs.getString(13),rs.getString(14),rs.getString(15),
                         rs.getString(16),rs.getString(17),rs.getString(18),rs.getString(19),
                         rs.getString(20),rs.getString(21),rs.getString(22),rs.getString(23),
-                        rs.getString(24),rs.getString(25)
+                        rs.getString(24),rs.getString(25),rs.getString(26)
                     });
                 }
             } catch (Exception e) {
@@ -12249,10 +12254,14 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             cmbMnt.setSelectedItem(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(), 5).toString().substring(3, 5));
             cmbDtk.setSelectedItem(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(), 5).toString().substring(6, 8));
 //            Valid.SetTgl(DTPTgl,tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),4).toString());
-            if (tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(), 24).toString().contains("Perawat")) {
-                jLabel28.setText("<html>Analisis/Diagnosa<br>Keperawatan : </html>");
+            if (tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(), 26).toString().toLowerCase().contains("perawat")) {
+                jLabel28.setText("<html>Analisis Keperawatan:</html>");
+                jLabel26.setText("<html>Perencanaan<br>(Rencana Intervensi):</html>");
+                jLabel53.setText("<html>Implementasi:</html>");
             } else {
                 jLabel28.setText("Asesmen :");
+                jLabel26.setText("Plan :");
+                jLabel53.setText("Instruksi :");
             }
         }
     }
@@ -14350,10 +14359,14 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     }
     
     private void tampilLabelAsesmen() {
-        if (Jabatan.getText().contains("Perawat")) {
+        if (Sequel.cariIsi("select jabatan.nm_jbtn from petugas inner join jabatan on jabatan.kd_jbtn = petugas.kd_jbtn where petugas.nip = ?",KdPeg.getText() ).contains("perawat")) {
             jLabel28.setText("<html>Analisis/Diagnosa<br>Keperawatan : </html>");
+            jLabel26.setText("<html>Perencanaan<br>(Rencana Intervensi) : </html>");
+            jLabel53.setText("<html>Implementasi : </html>");
         } else {
             jLabel28.setText("Asesmen :");
+            jLabel26.setText("Plan");
+            jLabel53.setText("Instruksi");
         }
     }
      
