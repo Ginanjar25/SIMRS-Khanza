@@ -11587,8 +11587,10 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                             "select pemeriksaan_ralan.tgl_perawatan,pemeriksaan_ralan.jam_rawat,pemeriksaan_ralan.suhu_tubuh,pemeriksaan_ralan.tensi,pemeriksaan_ralan.nadi,pemeriksaan_ralan.respirasi,"+
                             "pemeriksaan_ralan.tinggi,pemeriksaan_ralan.berat,pemeriksaan_ralan.spo2,pemeriksaan_ralan.gcs,pemeriksaan_ralan.kesadaran,pemeriksaan_ralan.keluhan, "+
                             "pemeriksaan_ralan.pemeriksaan,pemeriksaan_ralan.alergi,pemeriksaan_ralan.lingkar_perut,pemeriksaan_ralan.rtl,pemeriksaan_ralan.penilaian,"+
-                            "pemeriksaan_ralan.instruksi,pemeriksaan_ralan.evaluasi,pemeriksaan_ralan.nip,pegawai.nama,pegawai.jbtn, IF(verifikasi_soap_dpjp.no_rawat IS NULL, FALSE, TRUE) AS verifikasi, verifikasi_soap_dpjp.tgl_verifikasi " +
+                            "pemeriksaan_ralan.instruksi,pemeriksaan_ralan.evaluasi,pemeriksaan_ralan.nip,pegawai.nama,pegawai.jbtn, IF(verifikasi_soap_dpjp.no_rawat IS NULL, FALSE, TRUE) AS verifikasi, verifikasi_soap_dpjp.tgl_verifikasi,jabatan.nm_jbtn " +
                             "from pemeriksaan_ralan inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik " +
+                            "left join petugas on pemeriksaan_ralan.nip = petugas.nip " +
+                            "left join jabatan on petugas.kd_jbtn = jabatan.kd_jbtn" +
                             "LEFT JOIN verifikasi_soap_dpjp ON verifikasi_soap_dpjp.no_rawat = pemeriksaan_ralan.no_rawat " +
                             "AND verifikasi_soap_dpjp.tgl_perawatan = pemeriksaan_ralan.tgl_perawatan " +
                             "AND verifikasi_soap_dpjp.jam_rawat = pemeriksaan_ralan.jam_rawat " +
@@ -11677,21 +11679,21 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
  
                             if(!rs2.getString("penilaian").equals("")){
                                 asesmen.append("<tr>")
-                                       .append( rs2.getString("jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Analisa Keperawatan</td>" : "<td valign='top'>Asesmen</td>")
+                                       .append( rs2.getString("nm_jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Analisa Keperawatan</td>" : "<td valign='top'>Asesmen</td>")
                                        .append("<td valign='top'> : ").append(rs2.getString("penilaian").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>")
                                        .append("</tr>");
                             }
  
                             if(!rs2.getString("rtl").equals("")){
                                 asesmen.append("<tr>")
-                                       .append( rs2.getString("jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Perencanaan (Rencana Intervensi)</td>" : "<td valign='top'>Plan</td>")
+                                       .append( rs2.getString("nm_jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Perencanaan (Rencana Intervensi)</td>" : "<td valign='top'>Plan</td>")
                                        .append("<td valign='top'> : ").append(rs2.getString("rtl").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>")
                                        .append("</tr>");
                             }
  
                             if(!rs2.getString("instruksi").equals("")){
                                 asesmen.append("<tr>")
-                                       .append( rs2.getString("jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Implementasi</td>" : "<td valign='top'>Instruksi</td>")
+                                       .append( rs2.getString("nm_jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Implementasi</td>" : "<td valign='top'>Instruksi</td>")
                                        .append("<td valign='top'> : ").append(rs2.getString("instruksi").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>")
                                        .append("</tr>");
                             }
@@ -15640,8 +15642,10 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                     rs2=koneksi.prepareStatement(
                             "select pemeriksaan_ranap.suhu_tubuh,pemeriksaan_ranap.tensi,pemeriksaan_ranap.nadi,pemeriksaan_ranap.respirasi," +
                             "pemeriksaan_ranap.tinggi,pemeriksaan_ranap.berat,pemeriksaan_ranap.spo2,pemeriksaan_ranap.gcs,pemeriksaan_ranap.kesadaran,pemeriksaan_ranap.keluhan,pemeriksaan_ranap.penilaian,pemeriksaan_ranap.rtl," +
-                            "pemeriksaan_ranap.pemeriksaan,pemeriksaan_ranap.alergi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.nip,pegawai.nama,pegawai.jbtn,pemeriksaan_ranap.instruksi,pemeriksaan_ranap.evaluasi,pemeriksaan_ranap.no_rawat,IF(verifikasi_soap_dpjp.no_rawat IS NULL, FALSE, TRUE) AS verifikasi, verifikasi_soap_dpjp.tgl_verifikasi "+
+                            "pemeriksaan_ranap.pemeriksaan,pemeriksaan_ranap.alergi,pemeriksaan_ranap.tgl_perawatan,pemeriksaan_ranap.jam_rawat,pemeriksaan_ranap.nip,pegawai.nama,pegawai.jbtn,pemeriksaan_ranap.instruksi,pemeriksaan_ranap.evaluasi,pemeriksaan_ranap.no_rawat,IF(verifikasi_soap_dpjp.no_rawat IS NULL, FALSE, TRUE) AS verifikasi, verifikasi_soap_dpjp.tgl_verifikasi, jabatan.nm_jbtn "+
                             "from pemeriksaan_ranap inner join pegawai on pemeriksaan_ranap.nip=pegawai.nik " +
+                            "left join petugas on pemeriksaan_ranap.nip = petugas.nip " +
+                            "left join jabatan on petugas.kd_jbtn = jabatan.kd_jbtn "+
                             "LEFT JOIN verifikasi_soap_dpjp ON verifikasi_soap_dpjp.no_rawat = pemeriksaan_ranap.no_rawat " +
                             "AND verifikasi_soap_dpjp.tgl_perawatan = pemeriksaan_ranap.tgl_perawatan " +
                             "AND verifikasi_soap_dpjp.jam_rawat = pemeriksaan_ranap.jam_rawat " +
@@ -15730,21 +15734,21 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
  
                             if(!rs2.getString("penilaian").equals("")){
                                 asesmen.append("<tr>")
-                                       .append( rs2.getString("jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Analisa Keperawatan</td>" : "<td valign='top'>Asesmen</td>")
+                                       .append( rs2.getString("nm_jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Analisa Keperawatan</td>" : "<td valign='top'>Asesmen</td>")
                                        .append("<td valign='top'> : ").append(rs2.getString("penilaian").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>")
                                        .append("</tr>");
                             }
  
                             if(!rs2.getString("rtl").equals("")){
                                 asesmen.append("<tr>")
-                                       .append( rs2.getString("jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Perencanaan (Rencana Intervensi)</td>" : "<td valign='top'>Plan</td>")
+                                       .append( rs2.getString("nm_jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Perencanaan (Rencana Intervensi)</td>" : "<td valign='top'>Plan</td>")
                                        .append("<td valign='top'> : ").append(rs2.getString("rtl").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>")
                                        .append("</tr>");
                             }
  
                             if(!rs2.getString("instruksi").equals("")){
                                 asesmen.append("<tr>")
-                                       .append( rs2.getString("jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Implementasi</td>" : "<td valign='top'>Instruksi</td>")
+                                       .append( rs2.getString("nm_jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Implementasi</td>" : "<td valign='top'>Instruksi</td>")
                                        .append("<td valign='top'> : ").append(rs2.getString("instruksi").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>")
                                        .append("</tr>");
                             }
