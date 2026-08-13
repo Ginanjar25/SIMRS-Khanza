@@ -149,6 +149,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.awt.Component;
 import javax.swing.JCheckBox;
+import modif.DlgAnalisaKeperawatan;
 import modif.RMRiwayatBerkasDigital;
 import modif.RMRiwayatRadiologi;
 import modif.RMRiwayatLaboratorium;
@@ -1834,6 +1835,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         TPotensiPRB = new widget.Label();
         BtnLaporanOperasi = new widget.Button();
         btnVerifikasiCPPT = new widget.Button();
+        BtnSeekAnalisaKeperawatan = new widget.Button();
         
         //FORM ALERGI
         jLabel84 = new widget.Label();
@@ -2848,6 +2850,18 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         panelGlass12.add(jLabel37);
         jLabel37.setBounds(360, 40, 180, 23);
 
+        BtnSeekAnalisaKeperawatan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        BtnSeekAnalisaKeperawatan.setMnemonic('4');
+        BtnSeekAnalisaKeperawatan.setToolTipText("ALt+4");
+        BtnSeekAnalisaKeperawatan.setName("BtnSeekAnalisaKeperawatan"); // NOI18N
+        BtnSeekAnalisaKeperawatan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSeekAnalisaKeperawatanActionPerformed(evt);
+            }
+        });
+        panelGlass12.add(BtnSeekAnalisaKeperawatan);
+        BtnSeekAnalisaKeperawatan.setBounds(510, 60, 28, 23);
+        
         jLabel26.setText("Plan :");
         jLabel26.setName("jLabel26"); // NOI18N
         panelGlass12.add(jLabel26);
@@ -10369,6 +10383,142 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
     }
     
+    private void BtnSeekAnalisaKeperawatanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeekAnalisaKeperawatanActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        DlgAnalisaKeperawatan analisa = new DlgAnalisaKeperawatan(null, true);
+        analisa.setSize(internalFrame1.getWidth(), internalFrame1.getHeight());
+        analisa.setLocationRelativeTo(internalFrame1);
+        analisa.setVisible(true);
+        this.setCursor(Cursor.getDefaultCursor());
+        analisa.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                try {
+                    // ================= TPenilaian: Analisa + Etiologi (dikelompokkan) =================
+                    java.util.LinkedHashMap<String, String> analisaTerpilih = new java.util.LinkedHashMap<>();
+                    for (int r = 0; r < analisa.tbAnalisa.getRowCount(); r++) {
+                        if (analisa.tbAnalisa.getValueAt(r, 0).toString().equals("true")) {
+                            String kode = analisa.tbAnalisa.getValueAt(r, 1).toString();
+                            String nama = analisa.tbAnalisa.getValueAt(r, 2).toString();
+                            analisaTerpilih.put(kode, nama);
+                        }
+                    }
+
+                    java.util.List<String> kodeEtiologiTerpilih = new java.util.ArrayList<>();
+                    java.util.Map<String, String> teksEtiologi = new java.util.LinkedHashMap<>();
+                    for (int r = 0; r < analisa.tbEtiologi.getRowCount(); r++) {
+                        if (analisa.tbEtiologi.getValueAt(r, 0).toString().equals("true")) {
+                            String kode = analisa.tbEtiologi.getValueAt(r, 1).toString();
+                            String teks = analisa.tbEtiologi.getValueAt(r, 2).toString();
+                            kodeEtiologiTerpilih.add(kode);
+                            teksEtiologi.put(kode, teks);
+                        }
+                    }
+
+                    java.util.Map<String, java.util.List<String>> etiologiPerMasalah = new java.util.LinkedHashMap<>();
+                    for (String kode : analisaTerpilih.keySet()) {
+                        etiologiPerMasalah.put(kode, new java.util.ArrayList<>());
+                    }
+
+                    if (!kodeEtiologiTerpilih.isEmpty()) {
+                        StringBuilder ph = new StringBuilder();
+                        for (int k = 0; k < kodeEtiologiTerpilih.size(); k++) {
+                            ph.append(k == 0 ? "?" : ",?");
+                        }
+                        java.sql.PreparedStatement psCek = null;
+                        java.sql.ResultSet rsCek = null;
+                        try {
+                            psCek = koneksi.prepareStatement(
+                                    "select kode_masalah, kode_etiologi from master_etiologi_keperawatan where kode_etiologi in (" + ph + ")"
+                            );
+                            int p = 1;
+                            for (String kode : kodeEtiologiTerpilih) {
+                                psCek.setString(p++, kode);
+                            }
+                            rsCek = psCek.executeQuery();
+                            while (rsCek.next()) {
+                                String kodeMasalah = rsCek.getString("kode_masalah");
+                                String kodeEti = rsCek.getString("kode_etiologi");
+                                etiologiPerMasalah.computeIfAbsent(kodeMasalah, x -> new java.util.ArrayList<>())
+                                        .add(teksEtiologi.get(kodeEti));
+                            }
+                        } catch (Exception ex) {
+                            System.out.println("Notifikasi : " + ex);
+                        } finally {
+                            if (rsCek != null) {
+                                rsCek.close();
+                            }
+                            if (psCek != null) {
+                                psCek.close();
+                            }
+                        }
+                    }
+
+                    StringBuilder sbPenilaian = new StringBuilder();
+                    for (java.util.Map.Entry<String, String> entry : analisaTerpilih.entrySet()) {
+                        String kodeMasalah = entry.getKey();
+                        String namaMasalah = entry.getValue();
+                        sbPenilaian.append(namaMasalah).append(" :\n");
+                        java.util.List<String> daftarEtiologi = etiologiPerMasalah.get(kodeMasalah);
+                        if (daftarEtiologi != null) {
+                            for (String teks : daftarEtiologi) {
+                                sbPenilaian.append("- ").append(teks).append("\n");
+                            }
+                        }
+                    }
+                    TPenilaian.setText(sbPenilaian.toString().trim());
+
+                    // ================= TPlan: Rencana yang tercentang =================
+                    StringBuilder sbPlan = new StringBuilder();
+                    for (int r = 0; r < analisa.tbRencana.getRowCount(); r++) {
+                        if (analisa.tbRencana.getValueAt(r, 0).toString().equals("true")) {
+                            String teks = analisa.tbRencana.getValueAt(r, 2).toString();
+                            sbPlan.append("- ").append(teks).append("\n");
+                        }
+                    }
+                    TindakLanjut.setText(sbPlan.toString().trim());
+
+                    // ================= TInstruksi: Implementasi yang tercentang =================
+                    StringBuilder sbInstruksi = new StringBuilder();
+                    for (int r = 0; r < analisa.tbImplementasi.getRowCount(); r++) {
+                        if (analisa.tbImplementasi.getValueAt(r, 0).toString().equals("true")) {
+                            String teks = analisa.tbImplementasi.getValueAt(r, 2).toString();
+                            sbInstruksi.append("- ").append(teks).append("\n");
+                        }
+                    }
+                    TInstruksi.setText(sbInstruksi.toString().trim());
+
+                } catch (Exception ex) {
+                    System.out.println("Notifikasi : " + ex);
+                }
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+            }
+        });
+    }//GEN-LAST:event_BtnSeekAnalisaKeperawatanActionPerformed
+    
     /**
     * @param args the command line arguments
     */
@@ -10706,6 +10856,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button btnIcare,btnRiwayatRadiologi,btnRiwayatBerkasDigital,btnRiwayatLaboratorium, btnVerifikasiCPPT;
     private widget.Label TPotensiPRB;
     private widget.Button BtnLaporanOperasi;
+    private widget.Button BtnSeekAnalisaKeperawatan;
     
     //ALERGI FORM
     private widget.Button BtnSeekDokter4;
@@ -11823,10 +11974,12 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 jLabel37.setText("<html>Analisis Keperawatan:</html>");
                 jLabel26.setText("<html>Perencanaan<br>(Rencana Intervensi):</html>");
                 jLabel55.setText("<html>Implementasi:</html>");
+                BtnSeekAnalisaKeperawatan.setVisible(true);
             }else{
                 jLabel37.setText("Asesmen :");
                 jLabel26.setText("Plan :");
                 jLabel55.setText("Instruksi :");
+                BtnSeekAnalisaKeperawatan.setVisible(false);
             }
         }
     }
@@ -13525,10 +13678,12 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             jLabel37.setText("<html>Analisis Keperawatan : </html>");
             jLabel26.setText("<html>Perencanaan<br>(Rencana Intervensi) : </html>");
             jLabel55.setText("<html>Implementasi : </html>");
+            BtnSeekAnalisaKeperawatan.setVisible(true);
         } else {
             jLabel37.setText("Asesmen :");
             jLabel26.setText("Plan");
             jLabel55.setText("Instruksi");
+            BtnSeekAnalisaKeperawatan.setVisible(false);
         }
     }
 }
