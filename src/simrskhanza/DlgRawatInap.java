@@ -1490,6 +1490,12 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         } catch (Exception e) {
             System.out.println(e);
         }
+        TPenilaian.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                TPenilaianFocusGained(evt);
+            }
+        });
     }
     
     
@@ -2836,7 +2842,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         jLabel37.setText("Asesmen :");
         jLabel37.setName("jLabel37"); // NOI18N
         panelGlass12.add(jLabel37);
-        jLabel37.setBounds(450, 40, 90, 23);
+        jLabel37.setBounds(360, 40, 180, 23);
 
         jLabel26.setText("Plan :");
         jLabel26.setName("jLabel26"); // NOI18N
@@ -8665,6 +8671,10 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private void TPenilaianKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TPenilaianKeyPressed
         Valid.pindah2(evt,TAlergi,TindakLanjut);
     }//GEN-LAST:event_TPenilaianKeyPressed
+    
+    private void TPenilaianFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TPenilaianFocusGained
+        tampilLabelAsesmen();
+    }//GEN-LAST:event_TPenilaianFocusGained
 
     private void TindakLanjutKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TindakLanjutKeyPressed
         Valid.pindah2(evt,TPenilaian,TInstruksi);
@@ -11629,6 +11639,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             TKdPetugasSBAR.setText(akses.getkode());
             TNmPetugasSBAR.setText(pegawai.tampil3(TKdPetugasSBAR.getText()));
             Jabatan.setText(pegawai.tampilJbatan(KdPeg.getText()));
+            tampilLabelAsesmen();
         }
         
         if(TANGGALMUNDUR.equals("no")){
@@ -11801,6 +11812,11 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             cmbMnt.setSelectedItem(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),5).toString().substring(3,5));
             cmbDtk.setSelectedItem(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),5).toString().substring(6,8));
 //            Valid.SetTgl(DTPTgl,tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),4).toString());
+            if(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),24).toString().contains("Perawat")){
+                jLabel37.setText("<html>Analisis/Diagnosa<br>Keperawatan : </html>");
+            }else{
+                jLabel37.setText("Asesmen :");
+            }
         }
     }
     
@@ -13491,5 +13507,13 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
         
         return true; // Tidak ada mismatch, return true
+    }
+    
+    private void tampilLabelAsesmen() {
+        if (Jabatan.getText().contains("Perawat")) {
+            jLabel37.setText("<html>Analisis/Diagnosa<br>Keperawatan : </html>");
+        } else {
+            jLabel37.setText("Asesmen :");
+        }
     }
 }
