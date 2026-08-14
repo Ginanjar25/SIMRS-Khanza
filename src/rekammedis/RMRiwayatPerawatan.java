@@ -11931,7 +11931,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                             "pemeriksaan_ralan.instruksi,pemeriksaan_ralan.evaluasi,pemeriksaan_ralan.nip,pegawai.nama,pegawai.jbtn, IF(verifikasi_soap_dpjp.no_rawat IS NULL, FALSE, TRUE) AS verifikasi, verifikasi_soap_dpjp.tgl_verifikasi,jabatan.nm_jbtn " +
                             "from pemeriksaan_ralan inner join pegawai on pemeriksaan_ralan.nip=pegawai.nik " +
                             "left join petugas on pemeriksaan_ralan.nip = petugas.nip " +
-                            "left join jabatan on petugas.kd_jbtn = jabatan.kd_jbtn" +
+                            "left join jabatan on petugas.kd_jbtn = jabatan.kd_jbtn " +
                             "LEFT JOIN verifikasi_soap_dpjp ON verifikasi_soap_dpjp.no_rawat = pemeriksaan_ralan.no_rawat " +
                             "AND verifikasi_soap_dpjp.tgl_perawatan = pemeriksaan_ralan.tgl_perawatan " +
                             "AND verifikasi_soap_dpjp.jam_rawat = pemeriksaan_ralan.jam_rawat " +
@@ -11953,6 +11953,8 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                 append("</tr>");
                         w=1;
                         do{
+                            String nmJbtn = rs2.getString("nm_jbtn");
+                            nmJbtn = (nmJbtn == null) ? "" : nmJbtn.toLowerCase();
                             // ===== QR PPA =====
                             String isiQRPPA = "Dikeluarkan di RUMAH SAKIT PUTRA WASPADA, Kabupaten/Kota Tulungagung\n" +
                                         "Ditandatangani secara elektronik oleh " + rs2.getString("nama") + "\n" +
@@ -12020,21 +12022,21 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
  
                             if(!rs2.getString("penilaian").equals("")){
                                 asesmen.append("<tr>")
-                                       .append( rs2.getString("nm_jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Analisa Keperawatan</td>" : "<td valign='top'>Asesmen</td>")
+                                       .append( nmJbtn.contains("perawat") ? "<td valign='top'>Analisa Keperawatan</td>" : "<td valign='top'>Asesmen</td>")
                                        .append("<td valign='top'> : ").append(rs2.getString("penilaian").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>")
                                        .append("</tr>");
                             }
  
                             if(!rs2.getString("rtl").equals("")){
                                 asesmen.append("<tr>")
-                                       .append( rs2.getString("nm_jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Perencanaan (Rencana Intervensi)</td>" : "<td valign='top'>Plan</td>")
+                                       .append( nmJbtn.contains("perawat") ? "<td valign='top'>Perencanaan (Rencana Intervensi)</td>" : "<td valign='top'>Plan</td>")
                                        .append("<td valign='top'> : ").append(rs2.getString("rtl").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>")
                                        .append("</tr>");
                             }
  
                             if(!rs2.getString("instruksi").equals("")){
                                 asesmen.append("<tr>")
-                                       .append( rs2.getString("nm_jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Implementasi</td>" : "<td valign='top'>Instruksi</td>")
+                                       .append( nmJbtn.contains("perawat") ? "<td valign='top'>Implementasi</td>" : "<td valign='top'>Instruksi</td>")
                                        .append("<td valign='top'> : ").append(rs2.getString("instruksi").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>")
                                        .append("</tr>");
                             }
@@ -12100,7 +12102,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                             }
  
                             // ===== Satu baris utama: No | PPA | Asesmen(nested table) | Verifikasi =====
-                            htmlContent.append("<tr>")
+                            htmlContent.append("<tr class='isi'>")
                                        .append("<td valign='top' align='center'>").append(w).append("</td>")
                                        .append("<td valign='top' align='center'>")
                                             .append("<div style='text-align:center'>")
@@ -16008,6 +16010,8 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                 append("</tr>");
                         w=1;
                         do{
+                            String nmJbtn = rs2.getString("nm_jbtn");
+                            nmJbtn = (nmJbtn == null) ? "" : nmJbtn.toLowerCase();
                             // ===== QR PPA =====
                             String isiQRPPA = "Dikeluarkan di RUMAH SAKIT PUTRA WASPADA, Kabupaten/Kota Tulungagung\n" +
                                         "Ditandatangani secara elektronik oleh " + rs2.getString("nama") + "\n" +
@@ -16075,21 +16079,21 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
  
                             if(!rs2.getString("penilaian").equals("")){
                                 asesmen.append("<tr>")
-                                       .append( rs2.getString("nm_jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Analisa Keperawatan</td>" : "<td valign='top'>Asesmen</td>")
+                                       .append( nmJbtn.contains("perawat") ? "<td valign='top'>Analisa Keperawatan</td>" : "<td valign='top'>Asesmen</td>")
                                        .append("<td valign='top'> : ").append(rs2.getString("penilaian").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>")
                                        .append("</tr>");
                             }
  
                             if(!rs2.getString("rtl").equals("")){
                                 asesmen.append("<tr>")
-                                       .append( rs2.getString("nm_jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Perencanaan (Rencana Intervensi)</td>" : "<td valign='top'>Plan</td>")
+                                       .append( nmJbtn.contains("perawat") ? "<td valign='top'>Perencanaan (Rencana Intervensi)</td>" : "<td valign='top'>Plan</td>")
                                        .append("<td valign='top'> : ").append(rs2.getString("rtl").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>")
                                        .append("</tr>");
                             }
  
                             if(!rs2.getString("instruksi").equals("")){
                                 asesmen.append("<tr>")
-                                       .append( rs2.getString("nm_jbtn").toLowerCase().contains("perawat") ? "<td valign='top'>Implementasi</td>" : "<td valign='top'>Instruksi</td>")
+                                       .append( nmJbtn.contains("perawat") ? "<td valign='top'>Implementasi</td>" : "<td valign='top'>Instruksi</td>")
                                        .append("<td valign='top'> : ").append(rs2.getString("instruksi").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>")
                                        .append("</tr>");
                             }
@@ -16229,7 +16233,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                         "<td valign='top' align='center'></td>").append(
                                         "<td valign='top' align='center'></td>").append(
                                         "<td valign='top' colspan='2'>Situation</td>").append(
-                                        "<td valign='top' colspan='13'> : ").append(rs2.getString("situation").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>").append(
+                                        "<td valign='top' colspan='8'> : ").append(rs2.getString("situation").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>").append(
                                      "</tr>");
                             }
 
@@ -16239,7 +16243,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                         "<td valign='top' align='center'></td>").append(
                                         "<td valign='top' align='center'></td>").append(
                                         "<td valign='top' colspan='2'>Background</td>").append(
-                                        "<td valign='top' colspan='13'> : ").append(rs2.getString("background").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>").append(
+                                        "<td valign='top' colspan='8'> : ").append(rs2.getString("background").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>").append(
                                      "</tr>");
                             }
 
@@ -16249,7 +16253,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                         "<td valign='top' align='center'></td>").append(
                                         "<td valign='top' align='center'></td>").append(
                                         "<td valign='top' colspan='2'>Assessment</td>").append(
-                                        "<td valign='top' colspan='13'> : ").append(rs2.getString("assessment").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>").append(
+                                        "<td valign='top' colspan='8'> : ").append(rs2.getString("assessment").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>").append(
                                      "</tr>");
                             }
 
@@ -16259,7 +16263,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                         "<td valign='top' align='center'></td>").append(
                                         "<td valign='top' align='center'></td>").append(
                                         "<td valign='top' colspan='2'>Recommendation</td>").append(
-                                        "<td valign='top' colspan='13'> : ").append(rs2.getString("recommendation").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>").append(
+                                        "<td valign='top' colspan='8'> : ").append(rs2.getString("recommendation").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>").append(
                                      "</tr>");
                             }
 
@@ -16269,7 +16273,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                         "<td valign='top' align='center'></td>").append(
                                         "<td valign='top' align='center'></td>").append(
                                         "<td valign='top' colspan='2'>Advice Dokter</td>").append(
-                                        "<td valign='top' colspan='13'> : ").append(rs2.getString("advice").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>").append(
+                                        "<td valign='top' colspan='8'> : ").append(rs2.getString("advice").replaceAll("(\r\n|\r|\n|\n\r)","<br>")).append("</td>").append(
                                      "</tr>");
                             }
                             
@@ -16288,7 +16292,7 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                         .append("<td valign='top' align='center'></td>")
                                         .append("<td valign='top' align='center'></td>")
                                         .append("<td valign='top' colspan='2'>Verifikasi DPJP</td>")
-                                        .append("<td valign='top' colspan='13'>: ")
+                                        .append("<td valign='top' colspan='8'>: ")
                                         .append("<div style='text-align:center;'>")
                                         .append("<img width='200' height='200' src='")
                                         .append(qr)
