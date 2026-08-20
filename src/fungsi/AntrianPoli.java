@@ -253,14 +253,11 @@ public void kirimAntrianIGD(String kd_poli, String kd_dokter) {
         JSONObject jsonBody = new JSONObject();
         // Query to fetch doctor and schedule information
         ps = koneksi.prepareStatement(
-            "SELECT d.kd_dokter, d.nm_dokter, p.nm_poli, CURRENT_TIME() AS JamSekarang\n" +
+            "SELECT d.kd_dokter, d.nm_dokter,  CURRENT_TIME() AS JamSekarang\n" +
             "FROM dokter d \n" +
-            "LEFT JOIN jadwal j ON j.kd_dokter = d.kd_dokter \n" +
-            "INNER JOIN poliklinik p ON p.kd_poli = j.kd_poli \n" +
-            "WHERE j.kd_dokter = ? AND j.kd_poli = ? LIMIT 1"
+            "WHERE d.kd_dokter = ? LIMIT 1"
         );
         ps.setString(1, kd_dokter);
-        ps.setString(2, kd_poli);
         rs = ps.executeQuery();
 
         if (rs.next()) {
@@ -283,7 +280,7 @@ public void kirimAntrianIGD(String kd_poli, String kd_dokter) {
             jsonBody.put("kode_dokter", rs.getString("kd_dokter"));
             jsonBody.put("nama_dokter", rs.getString("nm_dokter"));
             jsonBody.put("jam_dokter", jamDokter);
-            jsonBody.put("nama_poli", rs.getString("nm_poli"));
+            jsonBody.put("nama_poli", "IGD");
         }
 
         ps = koneksi.prepareStatement(
