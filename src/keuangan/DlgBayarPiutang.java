@@ -965,7 +965,7 @@ public final class DlgBayarPiutang extends javax.swing.JDialog {
             sukses=true;
             if(Sequel.menyimpantf("bayar_piutang","?,?,?,?,?,?,?,?,?,?,?","Pembayaran",11,new String[]{
                     Valid.SetTgl(Tanggal.getSelectedItem()+""),Kdmem.getText(),Cicilan.getText(),
-                    Keterangan.getText(),NoRawat.getText(),koderekening,kontraakun,DiskonBayar.getText(),
+                    Keterangan.getText()+"|"+AkunBayar.getSelectedItem(),NoRawat.getText(),koderekening,kontraakun,DiskonBayar.getText(),
                     Diskon_Piutang,TidakTerbayar.getText(),Piutang_Tidak_Terbayar
                 })==true){
                     if(sisapiutang<=1){
