@@ -10468,7 +10468,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     for (java.util.Map.Entry<String, String> entry : analisaTerpilih.entrySet()) {
                         String kodeMasalah = entry.getKey();
                         String namaMasalah = entry.getValue();
-                        sbPenilaian.append(namaMasalah).append(" :\n");
+                        sbPenilaian.append(namaMasalah).append(" berhubungan dengan :\n");
                         java.util.List<String> daftarEtiologi = etiologiPerMasalah.get(kodeMasalah);
                         if (daftarEtiologi != null) {
                             for (String teks : daftarEtiologi) {
