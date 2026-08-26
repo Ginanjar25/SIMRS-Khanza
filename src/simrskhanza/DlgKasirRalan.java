@@ -8259,7 +8259,7 @@ private void MnDataRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                         MnRiwayatPerawatanICareNoKartuActionPerformed(null);
                     }
                     if(!getIPAntrian().isBlank()){
-                        antriPoli.kirimAntrean(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString(), tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),0).toString());
+                        antriPoli.kirimAntrean(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString(), tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),0).toString(), tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),20).toString(), tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),11).toString());
                     }
                     
                 } 

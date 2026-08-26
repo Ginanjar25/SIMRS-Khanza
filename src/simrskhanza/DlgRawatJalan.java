@@ -12406,7 +12406,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             cmbMnt.setSelectedItem(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(), 5).toString().substring(3, 5));
             cmbDtk.setSelectedItem(tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(), 5).toString().substring(6, 8));
 //            Valid.SetTgl(DTPTgl,tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(),4).toString());
-            if (tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(), 26).toString().toLowerCase().contains("perawat")) {
+            if (isJabatanKeperawatan( tbPemeriksaan.getValueAt(tbPemeriksaan.getSelectedRow(), 26).toString())) {
                 jLabel28.setText("<html>Analisis Keperawatan:</html>");
                 jLabel26.setText("<html>Perencanaan<br>(Rencana Intervensi):</html>");
                 jLabel53.setText("<html>Implementasi:</html>");
@@ -14513,7 +14513,8 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     }
     
     private void tampilLabelAsesmen() {
-        if (Sequel.cariIsi("select jabatan.nm_jbtn from petugas inner join jabatan on jabatan.kd_jbtn = petugas.kd_jbtn where petugas.nip = ?",KdPeg.getText()).toLowerCase().contains("perawat")) {
+        String jabatan = Sequel.cariIsi("select jabatan.nm_jbtn from petugas inner join jabatan on jabatan.kd_jbtn = petugas.kd_jbtn where petugas.nip = ?",KdPeg.getText()).toLowerCase();
+        if (isJabatanKeperawatan(jabatan)) {
             jLabel28.setText("<html>Analisis Keperawatan : </html>");
             jLabel26.setText("<html>Perencanaan<br>(Rencana Intervensi) : </html>");
             jLabel53.setText("<html>Implementasi : </html>");
@@ -14524,6 +14525,28 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             jLabel53.setText("Instruksi");
             BtnSeekAnalisaKeperawatan.setVisible(false);
         }
+    }
+    
+    private boolean isJabatanKeperawatan(String jabatan) {
+        if (jabatan == null) {
+            return false;
+        }
+
+        String[] daftarJabatan = {
+            "perawat",
+            "casemix",
+            "vaksinator"
+        };
+
+        jabatan = jabatan.toLowerCase();
+
+        for (String keyword : daftarJabatan) {
+            if (jabatan.contains(keyword)) {
+                return true;
+            }
+        }
+
+        return false;
     }
      
 }

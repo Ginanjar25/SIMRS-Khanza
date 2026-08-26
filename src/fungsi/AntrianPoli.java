@@ -43,7 +43,7 @@ public class AntrianPoli {
         }
     }
 
-public void kirimAntrean(String kd_poli, String kd_dokter) {
+public void kirimAntrean(String kd_poli, String kd_dokter, String no_reg, String no_rawat) {
     try {
         JSONObject jsonBody = new JSONObject();
 
@@ -79,35 +79,70 @@ public void kirimAntrean(String kd_poli, String kd_dokter) {
 
         JSONArray queueNumber = new JSONArray();
         JSONArray waitingList = new JSONArray();
+
+        String poliBpjs = "";
+
+        // Ambil poli_bpjs berdasarkan no_rawat parameter
         ps = koneksi.prepareStatement(
-            "SELECT ap.kd_dokter, ap.kd_poli, ap.status, ap.no_rawat, ap.no_antrian, " +
-            "DATE(NOW()) AS tanggal, CONCAT(ap.poli_bpjs, ' - ', ap.no_antrian) AS no_reg, " +
-            "ap.created_at, ap.updated_at, rp.stts " +
-            "FROM antripoli ap INNER JOIN reg_periksa rp ON rp.no_rawat = ap.no_rawat " +
-            "WHERE ap.kd_dokter = ? " +
-            "AND ap.kd_poli = ? AND ap.status != '2' " +
-            "AND DATE(ap.created_at) = DATE(NOW()) " +
-            "AND rp.stts = 'Belum' " +
-            "ORDER BY ap.no_antrian ASC LIMIT 4;"
+            "SELECT poli_bpjs " +
+            "FROM antripoli " +
+            "WHERE no_rawat = ? " +
+            "AND kd_dokter = ? " +
+            "AND kd_poli = ? " +
+            "LIMIT 1"
         );
-        ps.setString(1, kd_dokter);
-        ps.setString(2, kd_poli);
+        ps.setString(1, no_rawat);
+        ps.setString(2, kd_dokter);
+        ps.setString(3, kd_poli);
+
         rs = ps.executeQuery();
 
-        int count = 0;
-        while (rs.next()) {
-            JSONObject antrean = new JSONObject();
-            antrean.put("no_antrean", rs.getString("no_reg"));
-            antrean.put("no_rawat", rs.getString("no_rawat"));
-            if (count == 0) {
-                queueNumber.put(antrean);
-            } else {
-                waitingList.put(antrean);
-            }
-            count++;
+        if (rs.next()) {
+            poliBpjs = rs.getString("poli_bpjs");
         }
 
-        // Fill waitingList with "000" placeholders until it has 6 items
+        // Antrean utama menggunakan parameter
+        JSONObject antreanUtama = new JSONObject();
+        antreanUtama.put("no_antrean", poliBpjs + " - " + no_reg);
+        antreanUtama.put("no_rawat", no_rawat);
+
+        queueNumber.put(antreanUtama);
+
+
+        // Query waiting list
+        ps = koneksi.prepareStatement(
+            "SELECT ap.kd_dokter, ap.kd_poli, ap.status, ap.no_rawat, ap.no_antrian, " +
+            "DATE(NOW()) AS tanggal, " +
+            "CONCAT(ap.poli_bpjs, ' - ', ap.no_antrian) AS no_reg, " +
+            "ap.poli_bpjs, ap.created_at, ap.updated_at, rp.stts " +
+            "FROM antripoli ap " +
+            "INNER JOIN reg_periksa rp ON rp.no_rawat = ap.no_rawat " +
+            "WHERE ap.kd_dokter = ? " +
+            "AND ap.kd_poli = ? " +
+            "AND ap.status != '2' " +
+            "AND DATE(ap.created_at) = DATE(NOW()) " +
+            "AND rp.stts = 'Belum' " +
+            "AND ap.no_antrian != ? " +
+            "ORDER BY ap.no_antrian ASC " +
+            "LIMIT 3"
+        );
+
+        ps.setString(1, kd_dokter);
+        ps.setString(2, kd_poli);
+        ps.setString(3, no_reg);
+
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            JSONObject antrean = new JSONObject();
+
+            antrean.put("no_antrean", rs.getString("no_reg"));
+            antrean.put("no_rawat", rs.getString("no_rawat"));
+
+            waitingList.put(antrean);
+        }
+
+        // Isi 000 jika kurang dari 3
         while (waitingList.length() < 3) {
             JSONObject emptyAntrean = new JSONObject();
             emptyAntrean.put("no_antrean", "000");
