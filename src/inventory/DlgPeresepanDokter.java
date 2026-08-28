@@ -1587,7 +1587,8 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
                 getCekStok();
                 String poli = Sequel.cariIsi("select reg_periksa.kd_poli from reg_periksa where reg_periksa.no_rawat = ?", TNoRw.getText());
                 if(!poli.equals("IGDK") && KdPj.getText().equals("BPJ")){
-                    getCekPemeriksaanHBA1C();
+                    //getCekPemeriksaanHBA1C();
+                    getCekPemeriksaanLabPrasyarat();
                 }
             } catch (java.lang.NullPointerException e) {
             }
@@ -5284,6 +5285,65 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                             tbResep.changeSelection(tbResep.getSelectedRow(), 4, false, false);
                         } else {
                             JOptionPane.showMessageDialog(rootPane, "Hasil Pemeriksaan HBA1C \n" + hasil_hba1c);
+                            tbResep.changeSelection(tbResep.getSelectedRow(), 1, false, false);
+                            tbResep.editCellAt(tbResep.getSelectedRow(), 1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private void getCekPemeriksaanLabPrasyarat() {
+        if (tbResep.getSelectedRow() != -1) {
+            if (KdPj.getText().equals("BPJ")) {
+                if (tbResep.getSelectedColumn() == 1) {
+                    // Ambil nama obat dan ubah ke huruf kecil semua agar pengecekan lebih mudah
+                    String namaObat = tbResep.getValueAt(tbResep.getSelectedRow(), 4).toString().toLowerCase();
+                    String kandunganObat = tbResep.getValueAt(tbResep.getSelectedRow(), 6).toString().toLowerCase();
+
+                    // Variabel penampung aturan prasyarat lab
+                    String kdLab = "";
+                    String namaLab = "";
+                    double batasNilai = 0;
+                    int masaBerlakuHari = 180; // (6 bulan) 
+
+                    // 1. Tentukan Rule berdasarkan Nama Obat
+                    if (kandunganObat.contains("insulin")) {
+                        kdLab = "J000034";
+                        namaLab = "HBA1C";
+                        batasNilai = 9;
+                    } else if (namaObat.contains("fenofibrate")) {
+                        kdLab = "J000022";
+                        namaLab = "Trigliserid";
+                        batasNilai = 150;
+                    } else if (namaObat.contains("simvastatin") || namaObat.contains("atorvastatin")) {
+                        kdLab = "J000025";
+                        namaLab = "Kolesterol";
+                        batasNilai = 200;
+                    }
+
+                    // 2. Jika obat memiliki prasyarat lab (kdLab tidak kosong), jalankan Query
+                    if (!kdLab.isEmpty()) {
+                        String query = "SELECT CONCAT('Tanggal ',DATE_FORMAT(dpl.tgl_periksa,'%d-%m-%Y' ), ' Jam ', dpl.jam, '\\nDengan Hasil : ', dpl.nilai, ' \\nValid sampai tanggal : ',DATE_FORMAT(DATE_ADD(dpl.tgl_periksa, INTERVAL " + masaBerlakuHari + " DAY),'%d-%m-%Y' ), ' (',DATEDIFF(DATE_ADD(dpl.tgl_periksa, INTERVAL " + masaBerlakuHari + " DAY),CURDATE()),') Hari') AS hasil "
+                                + "FROM reg_periksa aa "
+                                + "JOIN detail_periksa_lab dpl ON dpl.no_rawat = aa.no_rawat AND dpl.kd_jenis_prw LIKE '%" + kdLab + "%' "
+                                + "WHERE aa.no_rkm_medis = '" + TPasien.getText().substring(0, 6) + "' AND aa.tgl_registrasi > DATE_SUB(CURDATE(), INTERVAL " + masaBerlakuHari + " DAY) "
+                                + "AND ( "
+                                + "    CASE "
+                                + "        WHEN dpl.nilai LIKE '>%' THEN CONVERT(SUBSTRING(dpl.nilai, 2), DECIMAL(10,2)) "
+                                + "        ELSE CONVERT(REPLACE(dpl.nilai, ',', '.'), DECIMAL(10,2)) "
+                                + "    END "
+                                + ") > " + batasNilai;
+
+                        String hasil_lab = Sequel.cariIsi(query);
+
+                        // 3. Evaluasi Hasil
+                        if (hasil_lab.isBlank()) {
+                            JOptionPane.showMessageDialog(rootPane, "Maaf, Pasien belum ada pemeriksaan " + namaLab + " dalam " + (masaBerlakuHari/30) + " bulan terakhir dengan hasil > " + batasNilai);
+                            tbResep.changeSelection(tbResep.getSelectedRow(), 4, false, false);
+                        } else {
+                            JOptionPane.showMessageDialog(rootPane, "Hasil Pemeriksaan " + namaLab + " \n" + hasil_lab);
                             tbResep.changeSelection(tbResep.getSelectedRow(), 1, false, false);
                             tbResep.editCellAt(tbResep.getSelectedRow(), 1);
                         }
