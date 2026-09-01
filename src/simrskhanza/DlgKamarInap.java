@@ -6712,6 +6712,25 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 }
                                 dlgrjk.tampil();
                                 dlgrjk.setVisible(true);
+                            }else{
+                                String tgl_pulang = CmbTahun.getSelectedItem() + "-"+ CmbBln.getSelectedItem() + "-"+ CmbTgl.getSelectedItem() + " "+ cmbJam.getSelectedItem() + ":"+ cmbMnt.getSelectedItem() + ":"+ cmbDtk.getSelectedItem();
+                                String statusPulangText = cmbStatus.getSelectedItem().toString();
+                                String status_pulang = "";
+                                if(statusPulangText.equals("Atas Persetujuan Dokter")) {
+                                    status_pulang = "1";
+                                } else if (statusPulangText.equals("Atas Permintaan Sendiri")) {
+                                    status_pulang = "3";
+                                } else if (statusPulangText.equals("Meninggal")) {
+                                    status_pulang = "4";
+                                } else if (statusPulangText.equals("Lain-lain")) {
+                                    status_pulang = "5";
+                                }else{
+                                    status_pulang = "1";
+                                }
+
+                                if (!status_pulang.equals("")) {
+                                    updateSEPPasienPulang(norawat.getText(),status_pulang,tgl_pulang);
+                                }
                             }
                         } catch (Exception e) {
                         }
@@ -19507,6 +19526,56 @@ public class DlgKamarInap extends javax.swing.JDialog {
 
         } catch (Exception e) {
             System.out.println(e);
+        }
+    }
+    
+    private void updateSEPPasienPulang(String no_rawat, String status_pulang, String tgl_pulang) {
+        String no_sep = Sequel.cariIsi("Select no_sep from bridging_sep where no_rawat = ?", no_rawat);
+        String user = akses.getkode().replace(" ", "").substring(0, 9);
+        if (!no_sep.equals("") || !no_sep.isEmpty()) {
+            try {
+                headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+                headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
+                utc = String.valueOf(api.GetUTCdatetimeAsString());
+                headers.add("X-Timestamp", utc);
+                headers.add("X-Signature", api.getHmac(utc));
+                headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
+                URL = link + "/SEP/2.0/updtglplg";
+                user = "RSPW" + user;
+                requestJson
+                        = "{"
+                        + "\"request\": {"
+                        + "\"t_sep\": {"
+                        + "\"noSep\": \"" + no_sep + "\","
+                        + "\"statusPulang\": \"" + status_pulang + "\","
+                        + "\"noSuratMeninggal\": \"\","
+                        + "\"tglMeninggal\": \"\","
+                        + "\"tglPulang\": \"" + tgl_pulang + "\","
+                        + "\"noLPManual\": \"\","
+                        + "\"user\": \"" + user + "\""
+                        + "}"
+                        + "}"
+                        + "}";
+                System.out.println("JSON : " + requestJson);
+                requestEntity = new HttpEntity(requestJson, headers);
+                root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.PUT, requestEntity, String.class).getBody());
+                nameNode = root.path("metaData");
+                System.out.println("code : " + nameNode.path("code").asText());
+                System.out.println("message : " + nameNode.path("message").asText());
+                if (nameNode.path("code").asText().equals("200")) {
+                    Sequel.mengedit("bridging_sep", "no_sep=?", "tglpulang=?", 2, new String[]{
+                        tgl_pulang, no_sep
+                    });
+                } else {
+                    JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
+                }
+            } catch (Exception ex) {
+                System.out.println("Notifikasi Bridging Simpan : " + ex);
+                if (ex.toString().contains("UnknownHostException")) {
+                    JOptionPane.showMessageDialog(null, "Koneksi ke server BPJS terputus...!");
+                }
+            }
         }
     }
 }
