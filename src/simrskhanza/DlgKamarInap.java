@@ -6716,21 +6716,24 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 String tgl_pulang = CmbTahun.getSelectedItem() + "-"+ CmbBln.getSelectedItem() + "-"+ CmbTgl.getSelectedItem() + " "+ cmbJam.getSelectedItem() + ":"+ cmbMnt.getSelectedItem() + ":"+ cmbDtk.getSelectedItem();
                                 String statusPulangText = cmbStatus.getSelectedItem().toString();
                                 String status_pulang = "";
-                                if(statusPulangText.equals("Atas Persetujuan Dokter")) {
-                                    status_pulang = "1";
-                                } else if (statusPulangText.equals("Atas Permintaan Sendiri")) {
-                                    status_pulang = "3";
-                                } else if (statusPulangText.equals("Meninggal")) {
-                                    status_pulang = "4";
-                                } else if (statusPulangText.equals("Lain-lain")) {
-                                    status_pulang = "5";
-                                }else{
-                                    status_pulang = "1";
-                                }
-
-                                if (!status_pulang.equals("")) {
-                                    updateSEPPasienPulang(norawat.getText(),status_pulang,tgl_pulang);
-                                }
+                                switch (statusPulangText) {
+                                     case "Atas Persetujuan Dokter":
+                                         status_pulang = "1";
+                                         break;
+                                     case "Atas Permintaan Sendiri":
+                                         status_pulang = "3";
+                                         break;
+                                     case "Meninggal":
+                                         status_pulang = "4";
+                                         break;
+                                     case "Lain-lain":
+                                         status_pulang = "5";
+                                         break;
+                                     default:
+                                         status_pulang = "1";
+                                         break;
+                                 }
+                                updateSEPPasienPulang(norawat.getText(),status_pulang,tgl_pulang);
                             }
                         } catch (Exception e) {
                         }
@@ -19530,9 +19533,11 @@ public class DlgKamarInap extends javax.swing.JDialog {
     }
     
     private void updateSEPPasienPulang(String no_rawat, String status_pulang, String tgl_pulang) {
-        String no_sep = Sequel.cariIsi("Select no_sep from bridging_sep where no_rawat = ?", no_rawat);
+        String no_sep = Sequel.cariIsi("select no_sep from bridging_sep where no_rawat = ?", no_rawat);
+        String tgl_sep_pulang = Sequel.cariIsi("select tglpulang from bridging_sep where no_sep = ?", no_sep);
         String user = akses.getkode().replace(" ", "").substring(0, 9);
-        if (!no_sep.equals("") || !no_sep.isEmpty()) {
+        
+        if (tgl_sep_pulang.equals("0000-00-00 00:00:00")) {
             try {
                 headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
