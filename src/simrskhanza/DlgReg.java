@@ -16795,6 +16795,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 CmbJam.setEnabled(false);
                 CmbMenit.setEnabled(false);
                 CmbDetik.setEnabled(false);
+                TBiaya.setEditable(false);
             }
         }
         
@@ -16831,6 +16832,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                CmbMenit.setEnabled(true);
                CmbDetik.setEnabled(true);
                MnStatus.setEnabled(true);
+               TBiaya.setEditable(true);
            }else{
                BtnHapus.setEnabled(false);
                DTPReg.setEditable(false);
@@ -16840,6 +16842,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                CmbMenit.setEnabled(false);
                CmbDetik.setEnabled(false);
                MnStatus.setEnabled(false);
+               TBiaya.setEditable(false);
            }
         }
     }
