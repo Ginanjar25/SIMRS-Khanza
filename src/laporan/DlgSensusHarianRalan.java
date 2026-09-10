@@ -68,7 +68,7 @@ public final class DlgSensusHarianRalan extends javax.swing.JDialog {
                 "No.","Nomor RM","Nama Pasien","Tgl.Lahir","Tgl.Daftar","Poliklinik","Dokter",
                 "J.K.","Rujukan Faskes Lain","Umur","Cara Bayar","Kecamatan","Diagnosa Utama",
                 "Diagnosa Tambahan","ICD X Utama","ICD X Tambahan","Tindakan","Hasil Akhir",
-                "Pengunjung","Jenis Kunjungan","Jenis Kasus"
+                "Pengunjung","Jenis Kunjungan","Jenis Kasus","Status"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -77,7 +77,7 @@ public final class DlgSensusHarianRalan extends javax.swing.JDialog {
         table.setPreferredScrollableViewportSize(new Dimension(500,500));
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 21; i++) {
+        for (i = 0; i < 22; i++) {
             TableColumn column = table.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(35);
@@ -121,6 +121,8 @@ public final class DlgSensusHarianRalan extends javax.swing.JDialog {
                 column.setPreferredWidth(85);
             }else if(i==20){
                 column.setPreferredWidth(65);
+            }else if(i==21){
+                column.setPreferredWidth(150);
             }
         }
         table.setDefaultRenderer(Object.class, new WarnaTable());
@@ -129,7 +131,7 @@ public final class DlgSensusHarianRalan extends javax.swing.JDialog {
                 "No.","Nomor RM","Nama Pasien","Tgl.Lahir","Tgl.Daftar","Poliklinik","Dokter",
                 "J.K.","Rujukan Faskes Lain","Umur","Cara Bayar","Kecamatan","Diagnosa Utama",
                 "Diagnosa Tambahan","ICD X Utama","ICD X Tambahan","Tindakan","Hasil Akhir",
-                "Pengunjung","Jenis Kunjungan","Jenis Kasus"
+                "Pengunjung","Jenis Kunjungan","Jenis Kasus","Status"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -138,7 +140,7 @@ public final class DlgSensusHarianRalan extends javax.swing.JDialog {
         table2.setPreferredScrollableViewportSize(new Dimension(500,500));
         table2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 21; i++) {
+        for (i = 0; i < 22; i++) {
             TableColumn column = table2.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(35);
@@ -182,6 +184,8 @@ public final class DlgSensusHarianRalan extends javax.swing.JDialog {
                 column.setPreferredWidth(85);
             }else if(i==20){
                 column.setPreferredWidth(65);
+            }else if(i==21){
+                column.setPreferredWidth(150);
             }
         }
         table2.setDefaultRenderer(Object.class, new WarnaTable());
@@ -1065,7 +1069,14 @@ public final class DlgSensusHarianRalan extends javax.swing.JDialog {
                        "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.tgl_lahir,"+
                        "pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli,"+
                        "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,"+
-                       "reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,kecamatan.nm_kec,kabupaten.nm_kab,reg_periksa.status_poli "+
+                       "reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,kecamatan.nm_kec,kabupaten.nm_kab,reg_periksa.status_poli, "+
+                       "case " +
+                       "    when reg_periksa.status_lanjut = 'Ralan' and reg_periksa.stts in ('Dirujuk')  " +
+                       "        then COALESCE((SELECT rj.rujuk_ke from rujuk rj WHERE rj.no_rawat = reg_periksa.no_rawat LIMIT 1),'-') " +
+                       "    when reg_periksa.status_lanjut = 'Ranap'  " +
+                       "        then COALESCE((SELECT b.nm_bangsal from kamar_inap ki inner join kamar k on ki.kd_kamar=k.kd_kamar inner join bangsal b on k.kd_bangsal=b.kd_bangsal WHERE ki.no_rawat = reg_periksa.no_rawat ORDER BY ki.tgl_masuk DESC, ki.jam_masuk DESC LIMIT 1),'-') " +
+                       "    else reg_periksa.status_lanjut " +
+                       "end as status_lanjut "+        
                        "from reg_periksa inner join dokter inner join pasien inner join poliklinik inner join penjab "+
                        "inner join kecamatan inner join kabupaten "+
                        "on reg_periksa.kd_dokter=dokter.kd_dokter and reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
@@ -1133,7 +1144,8 @@ public final class DlgSensusHarianRalan extends javax.swing.JDialog {
                         diagnosautama,diagnosasekunder,Sequel.cariIsi("select icd9.kode,icd9.deskripsi_panjang from icd9 inner join prosedur_pasien "+
                         "on icd9.kode=prosedur_pasien.kode where prosedur_pasien.no_rawat=? limit 1",rs.getString("no_rawat")),
                         rs.getString("stts"),rs.getString("stts_daftar"),rs.getString("status_poli"),
-                        Sequel.cariIsi("select status_penyakit from diagnosa_pasien where prioritas='1' and status='Ralan' and no_rawat=?",rs.getString("no_rawat"))
+                        Sequel.cariIsi("select status_penyakit from diagnosa_pasien where prioritas='1' and status='Ralan' and no_rawat=?",rs.getString("no_rawat")),
+                        rs.getString("status_lanjut")
                     });                    
                     i++;
                 }
@@ -1173,7 +1185,14 @@ public final class DlgSensusHarianRalan extends javax.swing.JDialog {
                        "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.tgl_lahir,"+
                        "pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli,"+
                        "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,"+
-                       "reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,kecamatan.nm_kec,kabupaten.nm_kab,reg_periksa.status_poli "+
+                       "reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,kecamatan.nm_kec,kabupaten.nm_kab,reg_periksa.status_poli, "+
+                       "case " +
+                       "    when reg_periksa.status_lanjut = 'Ralan' and reg_periksa.stts in ('Dirujuk')  " +
+                       "        then COALESCE((SELECT rj.rujuk_ke from rujuk rj WHERE rj.no_rawat = reg_periksa.no_rawat LIMIT 1),'-') " +
+                       "    when reg_periksa.status_lanjut = 'Ranap' " +
+                       "        then COALESCE((SELECT b.nm_bangsal from kamar_inap ki inner join kamar k on ki.kd_kamar=k.kd_kamar inner join bangsal b on k.kd_bangsal=b.kd_bangsal WHERE ki.no_rawat = reg_periksa.no_rawat ORDER BY ki.tgl_masuk DESC, ki.jam_masuk DESC LIMIT 1),'-') " +
+                       "    else reg_periksa.status_lanjut  " +
+                       "end as status_lanjut "+
                        "from reg_periksa inner join dokter inner join pasien inner join poliklinik inner join penjab "+
                        "inner join kecamatan inner join kabupaten "+
                        "on reg_periksa.kd_dokter=dokter.kd_dokter and reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
@@ -1241,7 +1260,8 @@ public final class DlgSensusHarianRalan extends javax.swing.JDialog {
                         diagnosautama,diagnosasekunder,Sequel.cariIsi("select icd9.kode,icd9.deskripsi_panjang from icd9 inner join prosedur_pasien "+
                         "on icd9.kode=prosedur_pasien.kode where prosedur_pasien.no_rawat=? limit 1",rs.getString("no_rawat")),
                         rs.getString("stts"),rs.getString("stts_daftar"),rs.getString("status_poli"),
-                        Sequel.cariIsi("select status_penyakit from diagnosa_pasien where prioritas='1' and status='Ralan' and no_rawat=?",rs.getString("no_rawat"))
+                        Sequel.cariIsi("select status_penyakit from diagnosa_pasien where prioritas='1' and status='Ralan' and no_rawat=?",rs.getString("no_rawat")),
+                        rs.getString("status_lanjut")
                     });                     
                     i++;
                 }

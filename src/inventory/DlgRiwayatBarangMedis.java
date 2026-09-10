@@ -50,7 +50,8 @@ public class DlgRiwayatBarangMedis extends javax.swing.JDialog {
 
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
+        KdGudang.setText("AP, AP2");
+        NmGudang.setText("Apotek, Depo Lt. 1");
         for (int i = 0; i < 14; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);
             if(i==0){
@@ -660,7 +661,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     "inner join bangsal inner join databarang on "+
                     "riwayat_barang_medis.kode_brng=databarang.kode_brng and "+
                     "riwayat_barang_medis.kd_bangsal=bangsal.kd_bangsal where "+
-                    "riwayat_barang_medis.tanggal between ? and ? and databarang.nama_brng like ? and bangsal.nm_bangsal like ? and "+
+                    "riwayat_barang_medis.tanggal between ? and ? and databarang.nama_brng like ? and bangsal.nm_bangsal REGEXP ? and "+
                     "(riwayat_barang_medis.kode_brng like ? or databarang.nama_brng like ? or riwayat_barang_medis.petugas like ? or "+
                     "bangsal.nm_bangsal like ? or riwayat_barang_medis.no_batch like ? or riwayat_barang_medis.no_faktur like ? or "+
                     "riwayat_barang_medis.kd_bangsal like ? or riwayat_barang_medis.status like ? or riwayat_barang_medis.keterangan like ? or "+
@@ -675,7 +676,12 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     ps.setString(1,Valid.SetTgl(Tgl1.getSelectedItem()+""));
                     ps.setString(2,Valid.SetTgl(Tgl2.getSelectedItem()+""));
                     ps.setString(3,"%"+nmbar.getText()+"%");
-                    ps.setString(4,"%"+NmGudang.getText()+"%");
+                    String gudang = NmGudang.getText().trim();
+                    if(gudang.equals("")){
+                        ps.setString(4, ".*");
+                    } else {
+                        ps.setString(4, gudang.replace(",", "|").replace(" ", "|"));
+                    }
                     ps.setString(5,"%"+TCari.getText().trim()+"%");
                     ps.setString(6,"%"+TCari.getText().trim()+"%");
                     ps.setString(7,"%"+TCari.getText().trim()+"%");
