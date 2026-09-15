@@ -88,8 +88,6 @@ public class APIInternalRSPW {
                 }
                 URL url = new URL(link);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setConnectTimeout(3000); // Timeout koneksi 2 detik
-                connection.setReadTimeout(3000);
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setDoOutput(true);
@@ -110,6 +108,7 @@ public class APIInternalRSPW {
                     }
                     // Parse JSON
                     JSONObject json = new JSONObject(response.toString());
+                    System.out.println("Cetak Label Rajal : " +json);
                     if (json.has("success") && json.getBoolean("success")) {
                         // Simpan ke DB
                         if (!Sequel.cariIsi("select status from antripoli where no_rawat=?", no_rawat).equals("2")) {
