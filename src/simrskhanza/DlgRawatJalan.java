@@ -11650,6 +11650,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         setCaraBayar(norwt);
         date = new Date();
         DTPTgl.setSelectedItem(tanggalFormat.format(date));
+        setPemeriksaanFisik();
     }
     
     private void isForm(){
@@ -14552,6 +14553,11 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
 
         return false;
+    }
+    
+    private void setPemeriksaanFisik() {
+        TTinggi.setText(Sequel.cariIsi("SELECT pmi.bb FROM penilaian_medis_igd pmi WHERE pmi.no_rawat =?", TNoRw.getText()));
+        TBerat.setText(Sequel.cariIsi("SELECT pmi.tb FROM penilaian_medis_igd pmi WHERE pmi.no_rawat =?", TNoRw.getText()));
     }
      
 }

@@ -34,6 +34,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -52,6 +56,9 @@ public final class BPJSCekReferensiPenyakit extends javax.swing.JDialog {
     private JsonNode root;
     private JsonNode nameNode;
     private JsonNode response;
+    private PreparedStatement ps;
+    private ResultSet rs;
+    private Connection koneksi=koneksiDB.condb();
         
     /** Creates new form DlgKamar
      * @param parent
@@ -383,25 +390,79 @@ public final class BPJSCekReferensiPenyakit extends javax.swing.JDialog {
                 if(response.path("diagnosa").isArray()){
                     i=1;
                     for(JsonNode list:response.path("diagnosa")){
+                        String kode = list.path("kode").asText();
+                        String nama = list.path("nama").asText().contains("-") ? list.path("nama").asText().split("-", 2)[1].trim() : list.path("nama").asText();
+                        
+                        simpanRefPenyakitBpjs(kode, nama);
+                        
                         tabMode.addRow(new Object[]{
-                            i+".",list.path("kode").asText(),list.path("nama").asText().contains("-") ? list.path("nama").asText().split("-", 2)[1].trim() : list.path("nama").asText()
+                            i+".",kode,nama
                         });
                         i++;
                     }
                 }
             }else {
-                JOptionPane.showMessageDialog(null,nameNode.path("message").asText());                
+                //JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
+                tampilDb(diagnosa);
             }  
         } catch (Exception ex) {
             System.out.println("Notifikasi : "+ex);
             if(ex.toString().contains("UnknownHostException")){
                 JOptionPane.showMessageDialog(rootPane,"Koneksi ke server BPJS terputus...!");
             }
+            tampilDb(diagnosa);
         }
     }   
     
     public JTable getTable(){
         return tbKamar;
+    }
+    
+    public void simpanRefPenyakitBpjs(String kode, String nama) {
+        try {
+            try (java.sql.PreparedStatement ps = koneksiDB.condb().prepareStatement(
+                    "INSERT INTO penyakit_bpjs (kd_penyakit, nm_penyakit) VALUES (?, ?) "
+                    + "ON DUPLICATE KEY UPDATE nm_penyakit = ?"
+            )) {
+                ps.setString(1, kode);
+                ps.setString(2, nama);
+                ps.setString(3, nama);
+                ps.executeUpdate();
+            }
+        } catch (Exception e) {
+            System.out.println("Notifikasi Penyimpanan Ref Diagnosa BPJS: " + e);
+        }
+    }
+    
+    public void tampilDb(String keyword) {
+        Valid.tabelKosong(tabMode);
+        try{
+            ps=koneksi.prepareStatement(
+                        "select kd_penyakit, nm_penyakit from penyakit_bpjs where kd_penyakit like ? or nm_penyakit like ?");
+            try {
+                ps.setString(1,"%"+keyword+"%");
+                ps.setString(2,"%"+keyword+"%");
+                rs=ps.executeQuery();
+                i = 1;
+                while(rs.next()){
+                    tabMode.addRow(new Object[]{
+                        i + ".", rs.getString("kd_penyakit"), rs.getString("nm_penyakit")
+                    });
+                    i++;
+                }
+            } catch (Exception e) {
+                System.out.println("Data : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+        }catch(SQLException e){
+            System.out.println("Notifikasi : "+e);
+        }
     }
  
 }
