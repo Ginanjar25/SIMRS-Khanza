@@ -14556,8 +14556,8 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     }
     
     private void setPemeriksaanFisik() {
-        TTinggi.setText(Sequel.cariIsi("SELECT pmi.bb FROM penilaian_medis_igd pmi WHERE pmi.no_rawat =?", TNoRw.getText()));
-        TBerat.setText(Sequel.cariIsi("SELECT pmi.tb FROM penilaian_medis_igd pmi WHERE pmi.no_rawat =?", TNoRw.getText()));
+        TTinggi.setText(Sequel.cariIsi("SELECT pmi.tb FROM penilaian_medis_igd pmi WHERE pmi.no_rawat =?", TNoRw.getText()));
+        TBerat.setText(Sequel.cariIsi("SELECT pmi.bb FROM penilaian_medis_igd pmi WHERE pmi.no_rawat =?", TNoRw.getText()));
     }
      
 }
