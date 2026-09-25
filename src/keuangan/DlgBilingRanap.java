@@ -62,6 +62,7 @@ import simrskhanza.DlgInputResepPulang;
 import simrskhanza.DlgPeriksaLaboratoriumMB;
 import simrskhanza.DlgPeriksaLaboratoriumPA;
 import simrskhanza.DlgTagihanOperasi;
+import modif.DlgCariTemplateTambahanBiaya;
 
 /**
  *
@@ -244,6 +245,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
     private FileReader myObj;
     private static final Properties prop = new Properties();
     private static String var = "";
+    DlgCariTemplateTambahanBiaya tambahbiaya=new DlgCariTemplateTambahanBiaya(null,false);
 
     /** Creates new form DlgBiling
      * @param parent
@@ -835,6 +837,43 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         } catch (Exception e) {
             System.out.println(e);
         }
+        
+        tambahbiaya.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                int selectedRow = tambahbiaya.getTable().getSelectedRow();
+                if (selectedRow != -1) {
+                    String kolom1 = tambahbiaya.getTable().getValueAt(selectedRow, 1).toString();
+                    String kolom2 = tambahbiaya.getTable().getValueAt(selectedRow, 2).toString();
+                    tabModeTambahan.addRow(new Object[]{kolom1, kolom2});
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        tambahbiaya.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    tambahbiaya.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
     }
    
     
@@ -906,6 +945,8 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         BtnSimpan3 = new widget.Button();
         BtnHapus = new widget.Button();
         BtnKeluar1 = new widget.Button();
+        panelisiAtas = new widget.panelisi();
+        BtnTambah1 = new widget.Button();
         WindowInput4 = new javax.swing.JDialog();
         internalFrame5 = new widget.InternalFrame();
         scrollPane2 = new widget.ScrollPane();
@@ -1811,6 +1852,25 @@ public class DlgBilingRanap extends javax.swing.JDialog {
 
         internalFrame4.add(panelisi1, java.awt.BorderLayout.PAGE_END);
 
+        panelisiAtas.setName("panelisiAtas"); // NOI18N
+        panelisiAtas.setPreferredSize(new java.awt.Dimension(100, 56));
+        panelisiAtas.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 9));
+
+        BtnTambah1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/add-file-16x16.png"))); // NOI18N
+        BtnTambah1.setMnemonic('T');
+        BtnTambah1.setText("Template Tambahan Biaya");
+        BtnTambah1.setToolTipText("Alt+T");
+        BtnTambah1.setName("BtnTambah1"); // NOI18N
+        BtnTambah1.setPreferredSize(new java.awt.Dimension(200, 30));
+        BtnTambah1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnTambah1ActionPerformed(evt);
+            }
+        });
+        panelisiAtas.add(BtnTambah1);
+
+        internalFrame4.add(panelisiAtas, java.awt.BorderLayout.PAGE_START);
+
         WindowInput3.getContentPane().add(internalFrame4, java.awt.BorderLayout.CENTER);
 
         WindowInput4.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -2289,7 +2349,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         panelGlass1.add(jLabel4);
         jLabel4.setBounds(693, 11, 65, 23);
 
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "15-07-2026 11:21:21" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "25-09-2026 12:49:14" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -3687,8 +3747,13 @@ private void BtnSimpan3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     }else{
         for(int r=0;r<tbTambahan.getRowCount();r++){
             if(Valid.SetAngka(tbTambahan.getValueAt(r,1).toString())>0){
-                Sequel.menyimpan("tambahan_biaya","'"+norawattambahan.getText()+"','"+tbTambahan.getValueAt(r,0).toString()+
+                if(!tbTambahan.getValueAt(r,0).toString().equals("")){
+                    Sequel.menyimpan("tambahan_biaya","'"+norawattambahan.getText()+"','"+tbTambahan.getValueAt(r,0).toString()+
                         "','"+tbTambahan.getValueAt(r,1).toString()+"'","Tambahan Biaya");
+                }else{
+                    JOptionPane.showMessageDialog(rootPane,"Terdapat nama tambahan Biaya belum diisi ..!!");
+                }
+                
             }
         }
         isRawat();
@@ -4995,6 +5060,23 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         tampilUbahDetailPindahKamar(norawatubdetailpindahkamar.getText());
     }//GEN-LAST:event_BtnHapusUbahDetailPindahKamarActionPerformed
 
+    private void BtnTambah1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTambah1ActionPerformed
+        if(TPasien.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Pasien belum dipilih...!!!");
+            TNoRw.requestFocus();
+        }else{
+            if(Sequel.cariRegistrasi(TNoRw.getText())>0){
+                JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi ..!!");
+            }else{
+                tambahbiaya.isCek();
+                tambahbiaya.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                tambahbiaya.setLocationRelativeTo(internalFrame1);
+                tambahbiaya.setAlwaysOnTop(false);
+                tambahbiaya.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_BtnTambah1ActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -5037,6 +5119,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button BtnSimpanUbahDetailPindahKamar;
     private widget.Button BtnSimpanUbahLama;
     private widget.Button BtnTambah;
+    private widget.Button BtnTambah1;
     private widget.Button BtnTambahPotongan;
     private widget.Button BtnView;
     private widget.CekBox ChkPiutang;
@@ -5148,6 +5231,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.panelisi panelisi2;
     private widget.panelisi panelisi3;
     private widget.panelisi panelisi4;
+    private widget.panelisi panelisiAtas;
     private javax.swing.JMenuItem ppBersihkanBayar;
     private javax.swing.JMenuItem ppBersihkanPiutang;
     private widget.ScrollPane scrollPane1;

@@ -48,6 +48,7 @@ import simrskhanza.DlgPeriksaLaboratoriumPA;
 import simrskhanza.DlgPeriksaRadiologi;
 import simrskhanza.DlgRawatJalan;
 import simrskhanza.DlgTagihanOperasi;
+import modif.DlgCariTemplateTambahanBiaya;
 
 /**
  *
@@ -65,6 +66,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
     public DlgCariDokter dokter=new DlgCariDokter(null,false);
     public DlgCariPoli poli=new DlgCariPoli(null,false);   
     public DlgCariCaraBayar penjab=new DlgCariCaraBayar(null,false);
+    DlgCariTemplateTambahanBiaya tambahbiaya=new DlgCariTemplateTambahanBiaya(null,false);
     private EklaimBridgingAPI eklaimApi = new EklaimBridgingAPI();
     private double ttl=0,y=0,subttl=0,ralanparamedis=0,piutang=0,itembayar=0,itempiutang=0, 
                    bayar=0,total=0,tamkur=0,detailjs=0,detailbhp=0,besarppn=0,tagihanppn=0,
@@ -695,6 +697,43 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         }
+        
+        tambahbiaya.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {}
+            @Override
+            public void windowClosed(WindowEvent e) {
+                int selectedRow = tambahbiaya.getTable().getSelectedRow();
+                if (selectedRow != -1) {
+                    String kolom1 = tambahbiaya.getTable().getValueAt(selectedRow, 1).toString();
+                    String kolom2 = tambahbiaya.getTable().getValueAt(selectedRow, 2).toString();
+                    tabModeTambahan.addRow(new Object[]{kolom1, kolom2});
+                }
+            }
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+        });
+        
+        tambahbiaya.getTable().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    tambahbiaya.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
     }
 
     
@@ -752,6 +791,8 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         BtnSimpan3 = new widget.Button();
         BtnHapus = new widget.Button();
         BtnKeluar1 = new widget.Button();
+        panelisiAtas = new widget.panelisi();
+        BtnTambah1 = new widget.Button();
         WindowGantiPoli = new javax.swing.JDialog();
         internalFrame5 = new widget.InternalFrame();
         BtnCloseIn4 = new widget.Button();
@@ -1480,6 +1521,25 @@ public class DlgBilingRalan extends javax.swing.JDialog {
 
         internalFrame4.add(panelisi1, java.awt.BorderLayout.PAGE_END);
 
+        panelisiAtas.setName("panelisiAtas"); // NOI18N
+        panelisiAtas.setPreferredSize(new java.awt.Dimension(100, 56));
+        panelisiAtas.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 9));
+
+        BtnTambah1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/add-file-16x16.png"))); // NOI18N
+        BtnTambah1.setMnemonic('T');
+        BtnTambah1.setText("Template Tambahan Biaya");
+        BtnTambah1.setToolTipText("Alt+T");
+        BtnTambah1.setName("BtnTambah1"); // NOI18N
+        BtnTambah1.setPreferredSize(new java.awt.Dimension(200, 30));
+        BtnTambah1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnTambah1ActionPerformed(evt);
+            }
+        });
+        panelisiAtas.add(BtnTambah1);
+
+        internalFrame4.add(panelisiAtas, java.awt.BorderLayout.PAGE_START);
+
         WindowTambahanBiaya.getContentPane().add(internalFrame4, java.awt.BorderLayout.CENTER);
 
         WindowGantiPoli.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -1831,7 +1891,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         panelGlass1.add(jLabel4);
         jLabel4.setBounds(693, 11, 65, 23);
 
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-06-2026 14:40:56" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "25-09-2026 12:50:19" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -3333,8 +3393,12 @@ private void BtnSimpan3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     }else{
         for(i=0;i<tbTambahan.getRowCount();i++){
             if(Valid.SetAngka(tbTambahan.getValueAt(i,1).toString())>0){
-                Sequel.menyimpan("tambahan_biaya","'"+norawat.getText()+"','"+tbTambahan.getValueAt(i,0).toString()+
+                if(!tbTambahan.getValueAt(i,0).toString().equals("")){
+                    Sequel.menyimpan("tambahan_biaya","'"+norawat.getText()+"','"+tbTambahan.getValueAt(i,0).toString()+
                         "','"+tbTambahan.getValueAt(i,1).toString()+"'","Tambahan Biaya");
+                }else{
+                   JOptionPane.showMessageDialog(rootPane,"Terdapat nama tambahan Biaya belum diisi ..!!");
+                }
             }
         }
         isRawat();
@@ -4125,6 +4189,23 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         BtnAllActionPerformed(null);
     }//GEN-LAST:event_MnFreeKarcisActionPerformed
 
+    private void BtnTambah1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTambah1ActionPerformed
+        if(TPasien.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Pasien belum dipilih...!!!");
+            TNoRw.requestFocus();
+        }else{
+            if(Sequel.cariRegistrasi(TNoRw.getText())>0){
+                JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi ..!!");
+            }else{ 
+                tambahbiaya.isCek();
+                tambahbiaya.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                tambahbiaya.setLocationRelativeTo(internalFrame1);
+                tambahbiaya.setAlwaysOnTop(false);
+                tambahbiaya.setVisible(true);
+            }            
+        }
+    }//GEN-LAST:event_BtnTambah1ActionPerformed
+
  
     /**
     * @param args the command line arguments
@@ -4166,6 +4247,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private widget.Button BtnSimpan5;
     private widget.Button BtnSimpanPotongan;
     private widget.Button BtnTambah;
+    private widget.Button BtnTambah1;
     private widget.Button BtnTambahPotongan;
     private widget.Button BtnView;
     private widget.Tanggal DTPTgl;
@@ -4265,6 +4347,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private widget.panelisi panelPermintaan;
     private widget.panelisi panelisi1;
     private widget.panelisi panelisi2;
+    private widget.panelisi panelisiAtas;
     private javax.swing.JMenuItem ppBersihkan;
     private javax.swing.JMenuItem ppBersihkan1;
     private widget.ScrollPane scrollPane1;
