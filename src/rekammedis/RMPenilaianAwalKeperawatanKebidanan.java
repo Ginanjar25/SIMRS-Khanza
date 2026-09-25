@@ -894,6 +894,7 @@ public final class RMPenilaianAwalKeperawatanKebidanan extends javax.swing.JDial
         jLabel169 = new widget.Label();
         scrollPane8 = new widget.ScrollPane();
         Masalah = new widget.TextArea();
+        BtnSoap = new widget.Button();
         internalFrame3 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -3496,6 +3497,24 @@ public final class RMPenilaianAwalKeperawatanKebidanan extends javax.swing.JDial
         FormInput.add(scrollPane8);
         scrollPane8.setBounds(10, 1610, 400, 143);
 
+        BtnSoap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        BtnSoap.setMnemonic('2');
+        BtnSoap.setToolTipText("Alt+2");
+        BtnSoap.setName("BtnSoap"); // NOI18N
+        BtnSoap.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnSoap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSoapActionPerformed(evt);
+            }
+        });
+        BtnSoap.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnSoapKeyPressed(evt);
+            }
+        });
+        FormInput.add(BtnSoap);
+        BtnSoap.setBounds(100, 405, 28, 23);
+
         scrollInput.setViewportView(FormInput);
 
         internalFrame2.add(scrollInput, java.awt.BorderLayout.CENTER);
@@ -5198,6 +5217,63 @@ public final class RMPenilaianAwalKeperawatanKebidanan extends javax.swing.JDial
         Valid.pindah2(evt,KetDokter,Tindakan);
     }//GEN-LAST:event_MasalahKeyPressed
 
+    private void BtnSoapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSoapActionPerformed
+        if(TPasien.getText().trim().equals("")||TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+            TCari.requestFocus();
+        }else if(KdPetugas.getText().trim().equals("")||NmPetugas.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu petugas/dokter pemberi asuhan...!!!");
+            TCari.requestFocus();
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            RMCariDetailSOAP soapterakhir=new RMCariDetailSOAP(null,false);
+
+            soapterakhir.addWindowListener(new WindowListener() {
+                @Override
+                public void windowOpened(WindowEvent e) {}
+                @Override
+                public void windowClosing(WindowEvent e) {}
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    if(soapterakhir.getTable().getSelectedRow()!= -1){
+                        Suhu.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 2).toString());
+                        TD.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 3).toString());
+                        BB.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 4).toString());
+                        TB.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 5).toString());
+                        RR.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 6).toString());
+                        Nadi.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 7).toString());
+                        //SPO.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 8).toString());
+                        GCS.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 9).toString());
+                        //Kesadaran.setSelectedItem(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 10).toString());
+                        KeluhanUtama.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 11).toString());
+                        //Kondisi.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 12).toString());
+                        //Diagnosis.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 13).toString());
+                        //Rencana.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 14).toString());
+                        //Instruksi.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 15).toString());
+                    }
+                }
+                @Override
+                public void windowIconified(WindowEvent e) {}
+                @Override
+                public void windowDeiconified(WindowEvent e) {}
+                @Override
+                public void windowActivated(WindowEvent e) {}
+                @Override
+                public void windowDeactivated(WindowEvent e) {}
+            });
+
+            soapterakhir.setNoRM2(TNoRw.getText());
+            soapterakhir.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            soapterakhir.setLocationRelativeTo(internalFrame1);
+            soapterakhir.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }//GEN-LAST:event_BtnSoapActionPerformed
+
+    private void BtnSoapKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSoapKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnSoapKeyPressed
+
     /**
     * @param args the command line arguments
     */
@@ -5240,6 +5316,7 @@ public final class RMPenilaianAwalKeperawatanKebidanan extends javax.swing.JDial
     private widget.Button BtnPrint1;
     private widget.Button BtnSimpan;
     private widget.Button BtnSimpanRiwayatKehamilan;
+    private widget.Button BtnSoap;
     private widget.Button BtnTambahMasalah;
     private widget.ComboBox CTG;
     private widget.TextBox CacatFisik;

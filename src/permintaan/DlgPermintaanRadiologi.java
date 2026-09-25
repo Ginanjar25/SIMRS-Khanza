@@ -1313,6 +1313,7 @@ private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         this.status=posisi;        
         isRawat();
         isPsien();
+        tampil();
         try {
             if(Valid.daysOld("./cache/permintaanradiologi.iyem")<3){
                 runBackground(() -> tampil2());
@@ -1326,6 +1327,7 @@ private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         this.status=posisi;
         isRawat();
         isPsien();
+        tampil();
         try {
             if(Valid.daysOld("./cache/permintaanradiologi.iyem")<3){
                 runBackground(() -> tampil2());
@@ -1334,7 +1336,7 @@ private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
         }
         KodePerujuk.setText(kddokter);
         NmPerujuk.setText(nmdokter);
-    }
+     }
     
     public void isCek(){        
         BtnSimpan.setEnabled(akses.getpermintaan_radiologi());

@@ -799,6 +799,14 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                 }
             }
         }
+        
+        jml = tbDokter.getRowCount();
+        for (i = 0; i < jml; i++) {
+            if ((Valid.SetAngka(tbDokter.getValueAt(i, 0).toString()) > 0) && (Valid.SetAngka(tbDokter.getValueAt(i, 7).toString()) == 0)) {
+                JOptionPane.showMessageDialog(null,"Harga Tidak Boleh 0"); 
+                return;
+            }
+        }
             
         if(NoFaktur.getText().trim().equals("")){
             Valid.textKosong(NoFaktur,"No.Faktur");
@@ -1519,7 +1527,7 @@ private void btnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             StringBuilder iyembuilder = new StringBuilder();
             ps=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng,databarang.kode_sat, databarang.h_beli, "+
                 " ifnull(date_format(databarang.expire,'%d-%m-%Y'),'00-00-0000'),databarang.kode_satbesar,databarang.isi, "+
-                " (databarang.h_beli*databarang.isi) as hargabesar from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
+                " round((databarang.h_beli*databarang.isi*100)/111) as hargabesar from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
                 " where databarang.status='1' order by databarang.nama_brng");
             try {
                 rs=ps.executeQuery();
@@ -1873,16 +1881,21 @@ private void btnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }
         if(akses.getobat()==true){
             if(tbDokter.getValueAt(i,5).toString().equals("true")){
-                Sequel.mengedit("databarang","kode_brng=?","expire=?,h_beli=?,ralan=?,kelas1=?,kelas2=?,kelas3=?,utama=?,vip=?,vvip=?,beliluar=?,jualbebas=?,karyawan=?,dasar=?",14,new String[]{
-                    Valid.SetTgl(tbDokter.getValueAt(i,6).toString()),tbDokter.getValueAt(i,24).toString(),tbDokter.getValueAt(i,14).toString(),tbDokter.getValueAt(i,15).toString(),tbDokter.getValueAt(i,16).toString(),tbDokter.getValueAt(i,17).toString(),
-                    tbDokter.getValueAt(i,18).toString(),tbDokter.getValueAt(i,19).toString(),tbDokter.getValueAt(i,20).toString(),tbDokter.getValueAt(i,21).toString(),tbDokter.getValueAt(i,22).toString(),tbDokter.getValueAt(i,23).toString(),
-                    tbDokter.getValueAt(i,27).toString(),tbDokter.getValueAt(i,2).toString()
-                });  
+                Sequel.mengedit("databarang","kode_brng=?","expire=?,h_beli=?,dasar=?,karyawan=?",5,new String[]{
+                    Valid.SetTgl(tbDokter.getValueAt(i,6).toString()),
+                    tbDokter.getValueAt(i,24).toString(), 
+                    tbDokter.getValueAt(i,27).toString(),
+                    tbDokter.getValueAt(i,27).toString(),
+                    tbDokter.getValueAt(i,2).toString()
+                });
             }
-        }  
+        }   
     }
     
     private void setKonversi(int baris){        
+        if(Valid.SetAngka(tbDokter.getValueAt(baris,0).toString())>0 && Valid.SetAngka(tbDokter.getValueAt(baris,7).toString()) == 0){
+          JOptionPane.showMessageDialog(null,"Harga Tidak Boleh 0");  
+        }else{
         try {
             if(hargadasar.equals("Harga Beli")){
                 if(Valid.SetAngka(tbDokter.getValueAt(baris,0).toString())>0){
@@ -2662,7 +2675,8 @@ private void btnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         } catch (Exception e) {
             tbDokter.setValueAt("",baris,0);
         }
-    }
+        
+      }
     
     private void LoadData(){
         tampil();
@@ -2677,8 +2691,11 @@ private void btnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         ceksukses = true;
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
+            
         try {
-            executor.submit(() -> {
+            
+            executor.submit((
+             -> {
                 try {
                     task.run();
                 } finally {
@@ -2700,4 +2717,5 @@ private void btnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         executor.shutdownNow();
         super.dispose();
     }
+    
 }

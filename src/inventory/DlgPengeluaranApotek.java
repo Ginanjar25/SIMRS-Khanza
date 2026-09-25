@@ -42,6 +42,9 @@ public class DlgPengeluaranApotek extends javax.swing.JDialog {
     private DlgCariBangsal bangsal;
     private DlgCariPetugas petugas;
     private DlgBarang barang;
+    private DlgCariPengeluaranApotek form=new DlgCariPengeluaranApotek(null,false);
+    private DlgCariPengeluaranApotek form2=new DlgCariPengeluaranApotek(null,false);
+    private int pilihan=0;
     private ResultSet rs,rsstok;
     private String[] kodebarang,nobatch,namabarang,kategori,satuan,nofaktur;
     private double[] harga,jumlah,total,stok;
@@ -118,7 +121,6 @@ public class DlgPengeluaranApotek extends javax.swing.JDialog {
         kdptg.setDocument(new batasInput((byte)20).getKata(kdptg));
         catatan.setDocument(new batasInput((int)200).getKata(catatan));   
         TCari.setDocument(new batasInput((int)100).getKata(TCari)); 
-        
         TCari.requestFocus();
         
         try {
@@ -170,6 +172,7 @@ public class DlgPengeluaranApotek extends javax.swing.JDialog {
         kdgudang = new widget.TextBox();
         nmgudang = new widget.TextBox();
         BtnGudang = new widget.Button();
+        BtnGudang1 = new widget.Button();
         panelisi1 = new widget.panelisi();
         label9 = new widget.Label();
         TCari = new widget.TextBox();
@@ -410,7 +413,20 @@ public class DlgPengeluaranApotek extends javax.swing.JDialog {
             }
         });
         panelisi3.add(BtnGudang);
-        BtnGudang.setBounds(774, 40, 28, 23);
+        BtnGudang.setBounds(770, 40, 28, 23);
+
+        BtnGudang1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        BtnGudang1.setMnemonic('2');
+        BtnGudang1.setToolTipText("Alt+2");
+        BtnGudang1.setName("BtnGudang1"); // NOI18N
+        BtnGudang1.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnGudang1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnGudang1ActionPerformed(evt);
+            }
+        });
+        panelisi3.add(BtnGudang1);
+        BtnGudang1.setBounds(330, 40, 28, 23);
 
         internalFrame1.add(panelisi3, java.awt.BorderLayout.PAGE_START);
 
@@ -999,6 +1015,52 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         } catch (Exception e) {
         }
     }//GEN-LAST:event_TglItemStateChanged
+           
+    private void BtnGudang1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnGudang1ActionPerformed
+        akses.setform("DlgPengeluaranApotek");
+        form2.bangsal.isCek();
+        form2.bangsal.emptTeks();
+        form2.bangsal.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        form2.bangsal.setLocationRelativeTo(internalFrame1);
+        form2.bangsal.setAlwaysOnTop(false);
+        form2.bangsal.setVisible(true);
+        form2.bangsal.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (akses.getform().equals("DlgPengeluaranApotek")) {
+                    if (form2.bangsal.getTable().getSelectedRow() != -1) {
+                        catatan.setText(form2.bangsal.getTable().getValueAt(form2.bangsal.getTable().getSelectedRow(), 1).toString());
+                        tampil();
+                    }
+                }
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+            }
+        });
+
+    }//GEN-LAST:event_BtnGudang1ActionPerformed
 
     /**
     * @param args the command line arguments
@@ -1020,6 +1082,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private widget.Button BtnCari;
     private widget.Button BtnCari1;
     private widget.Button BtnGudang;
+    private widget.Button BtnGudang1;
     private widget.Button BtnKeluar;
     private widget.Button BtnPtg;
     private widget.Button BtnSimpan;

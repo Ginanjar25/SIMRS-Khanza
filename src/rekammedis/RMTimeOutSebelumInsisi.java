@@ -75,7 +75,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
             "No.Rawat","No.RM","Nama Pasien","Tgl.Lahir","J.K.","Tanggal","SN/CN","Tindakan","Kode Dokter Bedah","Nama Dokter Bedah",
             "Kode Dokter Anest","Nama Dokter Anestesi","Verbal Identitas","Verbal Tindakan","Verbal Area Insisi","Penandaan Area Operasi",
             "Lama Operasi","Penayangan Radiologi","Penayangan CT Scan","Penayangan MRI","Pemberian Antibiotik","Nama Antibiotik Diberikan",
-            "Jam Pemberian","Antisipasi Kehilangan Darah","Ada Hal Khusus","Hal Khusus Yang Perlu Diperhatikan","Tgl.Steril","Petunjuk Sterilisasi",
+            "Jam Pemberian","Ketersediaan Impant","Antisipasi Kehilangan Darah","Ada Hal Khusus","Hal Khusus Yang Perlu Diperhatikan","Tgl.Steril","Petunjuk Sterilisasi",
             "Verifikasi Pre Operatif","NIP OK","Petugas Ruang OK"
         }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
@@ -86,7 +86,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         tbObat.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbObat.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 31; i++) {
+        for (i = 0; i < 32; i++) {
             TableColumn column = tbObat.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(105);
@@ -135,20 +135,22 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
             }else if(i==22){
                 column.setPreferredWidth(84);
             }else if(i==23){
-                column.setPreferredWidth(145);
+                column.setPreferredWidth(111); //
             }else if(i==24){
-                column.setPreferredWidth(83);
+                column.setPreferredWidth(145);
             }else if(i==25){
-                column.setPreferredWidth(181);
+                column.setPreferredWidth(83);
             }else if(i==26){
-                column.setPreferredWidth(60);
+                column.setPreferredWidth(181);
             }else if(i==27){
-                column.setPreferredWidth(100);
+                column.setPreferredWidth(60);
             }else if(i==28){
-                column.setPreferredWidth(117);
+                column.setPreferredWidth(100);
             }else if(i==29){
-                column.setPreferredWidth(90);
+                column.setPreferredWidth(117);
             }else if(i==30){
+                column.setPreferredWidth(90);
+            }else if(i==31){
                 column.setPreferredWidth(150);
             }
         }
@@ -302,6 +304,9 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         jLabel62 = new widget.Label();
         jLabel18 = new widget.Label();
         jLabel27 = new widget.Label();
+        KetersediaanImplant = new widget.ComboBox();
+        jLabel63 = new widget.Label();
+        jLabel64 = new widget.Label();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
@@ -602,7 +607,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         FormInput.setBackground(new java.awt.Color(250, 255, 245));
         FormInput.setBorder(null);
         FormInput.setName("FormInput"); // NOI18N
-        FormInput.setPreferredSize(new java.awt.Dimension(100, 383));
+        FormInput.setPreferredSize(new java.awt.Dimension(100, 483));
         FormInput.setLayout(null);
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -803,7 +808,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         jLabel26.setText("Perawat Kamar Operasi");
         jLabel26.setName("jLabel26"); // NOI18N
         FormInput.add(jLabel26);
-        jLabel26.setBounds(21, 350, 130, 23);
+        jLabel26.setBounds(20, 380, 130, 23);
 
         KdPetugas.setEditable(false);
         KdPetugas.setHighlighter(null);
@@ -857,14 +862,14 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         jSeparator3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(239, 244, 234)));
         jSeparator3.setName("jSeparator3"); // NOI18N
         FormInput.add(jSeparator3);
-        jSeparator3.setBounds(0, 340, 810, 1);
+        jSeparator3.setBounds(0, 370, 810, 1);
 
         jSeparator4.setBackground(new java.awt.Color(239, 244, 234));
         jSeparator4.setForeground(new java.awt.Color(239, 244, 234));
         jSeparator4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(239, 244, 234)));
         jSeparator4.setName("jSeparator4"); // NOI18N
         FormInput.add(jSeparator4);
-        jSeparator4.setBounds(0, 340, 810, 1);
+        jSeparator4.setBounds(0, 370, 810, 1);
 
         jLabel28.setText("Identitas :");
         jLabel28.setName("jLabel28"); // NOI18N
@@ -879,7 +884,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
             }
         });
         FormInput.add(AntisipisasiKehialnganDarah);
-        AntisipisasiKehialnganDarah.setBounds(356, 250, 433, 23);
+        AntisipisasiKehialnganDarah.setBounds(360, 280, 433, 23);
 
         jLabel53.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel53.setText("Penayangan Hasil Pemeriksaan Penunjang :");
@@ -1027,7 +1032,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         jLabel34.setText(":");
         jLabel34.setName("jLabel34"); // NOI18N
         FormInput.add(jLabel34);
-        jLabel34.setBounds(0, 280, 205, 23);
+        jLabel34.setBounds(0, 310, 205, 23);
 
         AdaHalKhusus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ada", "Tidak Ada" }));
         AdaHalKhusus.setName("AdaHalKhusus"); // NOI18N
@@ -1037,13 +1042,13 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
             }
         });
         FormInput.add(AdaHalKhusus);
-        AdaHalKhusus.setBounds(209, 280, 100, 23);
+        AdaHalKhusus.setBounds(210, 310, 100, 23);
 
         jLabel58.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel58.setText("Antisipasi Kehilangan Darah > 500 ml (7 ml/Kg BB Untuk Anak)");
         jLabel58.setName("jLabel58"); // NOI18N
         FormInput.add(jLabel58);
-        jLabel58.setBounds(40, 250, 320, 23);
+        jLabel58.setBounds(40, 280, 320, 23);
 
         NamaAntibiotikDIberikan.setHighlighter(null);
         NamaAntibiotikDIberikan.setName("NamaAntibiotikDIberikan"); // NOI18N
@@ -1058,7 +1063,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         jLabel59.setText(":");
         jLabel59.setName("jLabel59"); // NOI18N
         FormInput.add(jLabel59);
-        jLabel59.setBounds(337, 280, 30, 23);
+        jLabel59.setBounds(340, 310, 30, 23);
 
         HalKhususDiperhatikan.setHighlighter(null);
         HalKhususDiperhatikan.setName("HalKhususDiperhatikan"); // NOI18N
@@ -1068,13 +1073,13 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
             }
         });
         FormInput.add(HalKhususDiperhatikan);
-        HalKhususDiperhatikan.setBounds(371, 280, 418, 23);
+        HalKhususDiperhatikan.setBounds(370, 310, 418, 23);
 
         jLabel17.setText(":");
         jLabel17.setName("jLabel17"); // NOI18N
         jLabel17.setVerifyInputWhenFocusTarget(false);
         FormInput.add(jLabel17);
-        jLabel17.setBounds(0, 310, 115, 23);
+        jLabel17.setBounds(0, 340, 115, 23);
 
         TanggalSeteril.setForeground(new java.awt.Color(50, 70, 50));
         TanggalSeteril.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-02-2026" }));
@@ -1087,12 +1092,12 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
             }
         });
         FormInput.add(TanggalSeteril);
-        TanggalSeteril.setBounds(119, 310, 90, 23);
+        TanggalSeteril.setBounds(120, 340, 90, 23);
 
         jLabel36.setText("Petunjuk Sterilisasi Telah Dikonfirmasi :");
         jLabel36.setName("jLabel36"); // NOI18N
         FormInput.add(jLabel36);
-        jLabel36.setBounds(215, 310, 200, 23);
+        jLabel36.setBounds(220, 340, 200, 23);
 
         PetunjukSterilisasi.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ya", "Tidak" }));
         PetunjukSterilisasi.setName("PetunjukSterilisasi"); // NOI18N
@@ -1102,12 +1107,12 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
             }
         });
         FormInput.add(PetunjukSterilisasi);
-        PetunjukSterilisasi.setBounds(419, 310, 80, 23);
+        PetunjukSterilisasi.setBounds(420, 340, 80, 23);
 
         jLabel37.setText("Verifikasi Pre Operatif Telah Dilakukan :");
         jLabel37.setName("jLabel37"); // NOI18N
         FormInput.add(jLabel37);
-        jLabel37.setBounds(495, 310, 210, 23);
+        jLabel37.setBounds(500, 340, 210, 23);
 
         VerifikasiOperatif.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ya", "Tidak" }));
         VerifikasiOperatif.setName("VerifikasiOperatif"); // NOI18N
@@ -1117,7 +1122,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
             }
         });
         FormInput.add(VerifikasiOperatif);
-        VerifikasiOperatif.setBounds(709, 310, 80, 23);
+        VerifikasiOperatif.setBounds(710, 340, 80, 23);
 
         jLabel38.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel38.setText(", Jam Pemberian");
@@ -1140,31 +1145,52 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         jLabel61.setText(":");
         jLabel61.setName("jLabel61"); // NOI18N
         FormInput.add(jLabel61);
-        jLabel61.setBounds(2, 250, 350, 23);
+        jLabel61.setBounds(0, 280, 350, 23);
 
         jLabel40.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel40.setText("Hal Khusus Yang Perlu Perhatian");
         jLabel40.setName("jLabel40"); // NOI18N
         FormInput.add(jLabel40);
-        jLabel40.setBounds(40, 280, 170, 23);
+        jLabel40.setBounds(40, 310, 170, 23);
 
         jLabel62.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel62.setText(", Jika Ada");
         jLabel62.setName("jLabel62"); // NOI18N
         FormInput.add(jLabel62);
-        jLabel62.setBounds(313, 280, 60, 23);
+        jLabel62.setBounds(310, 310, 60, 23);
 
         jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel18.setText("Tanggal Steril");
         jLabel18.setName("jLabel18"); // NOI18N
         jLabel18.setVerifyInputWhenFocusTarget(false);
         FormInput.add(jLabel18);
-        jLabel18.setBounds(40, 310, 80, 23);
+        jLabel18.setBounds(40, 340, 80, 23);
 
         jLabel27.setText(":");
         jLabel27.setName("jLabel27"); // NOI18N
         FormInput.add(jLabel27);
-        jLabel27.setBounds(0, 350, 143, 23);
+        jLabel27.setBounds(0, 380, 143, 23);
+
+        KetersediaanImplant.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Tidak", "Ya" }));
+        KetersediaanImplant.setName("KetersediaanImplant"); // NOI18N
+        KetersediaanImplant.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                KetersediaanImplantKeyPressed(evt);
+            }
+        });
+        FormInput.add(KetersediaanImplant);
+        KetersediaanImplant.setBounds(160, 250, 80, 23);
+
+        jLabel63.setText(":");
+        jLabel63.setName("jLabel63"); // NOI18N
+        FormInput.add(jLabel63);
+        jLabel63.setBounds(90, 250, 60, 23);
+
+        jLabel64.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel64.setText("Ketersedian Implant");
+        jLabel64.setName("jLabel64"); // NOI18N
+        FormInput.add(jLabel64);
+        jLabel64.setBounds(40, 250, 170, 23);
 
         scrollInput.setViewportView(FormInput);
 
@@ -1202,11 +1228,11 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         }else if(SNCN.getText().trim().equals("")){
             Valid.textKosong(SNCN,"SN/CN");
         }else{
-            if(Sequel.menyimpantf("timeout_sebelum_insisi","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","Data",24,new String[]{
+            if(Sequel.menyimpantf("timeout_sebelum_insisi","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","Data",25,new String[]{
                 TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),SNCN.getText(),Tindakan.getText(),
                 KdDokter.getText(),KdDokter2.getText(),VerbalIdentitas.getSelectedItem().toString(),VerbalTindakan.getSelectedItem().toString(),
                 VerbalArea.getSelectedItem().toString(),AreaOperasi.getSelectedItem().toString(),PerkiraanLama.getText(),PenayanganRadiologi.getSelectedItem().toString(),
-                PenayanganCTScan.getSelectedItem().toString(),PenayanganMRI.getSelectedItem().toString(),PemberianAntibiotik.getSelectedItem().toString(),
+                PenayanganCTScan.getSelectedItem().toString(),PenayanganMRI.getSelectedItem().toString(),PemberianAntibiotik.getSelectedItem().toString(),KetersediaanImplant.getSelectedItem().toString(),
                 NamaAntibiotikDIberikan.getText(),JamPemberianAntibiotik.getText(),AntisipisasiKehialnganDarah.getText(),AdaHalKhusus.getSelectedItem().toString(),
                 HalKhususDiperhatikan.getText(),Valid.SetTgl(TanggalSeteril.getSelectedItem()+""),PetunjukSterilisasi.getSelectedItem().toString(),
                 VerifikasiOperatif.getSelectedItem().toString(),KdPetugas.getText()
@@ -1242,7 +1268,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
             if(akses.getkode().equals("Admin Utama")){
                 hapus();
             }else {
-                if(akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),10).toString())||akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),29).toString())){
+                if(akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),10).toString())||akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),30).toString())){
                     hapus();
                 }else{
                     JOptionPane.showMessageDialog(null,"User Login harus Petugas OK/Dokter Anestesi..!!");
@@ -1277,7 +1303,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
                 if(akses.getkode().equals("Admin Utama")){
                     ganti();
                 }else {
-                    if(akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),10).toString())||akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),29).toString())){
+                    if(akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),10).toString())||akses.getkode().equals(tbObat.getValueAt(tbObat.getSelectedRow(),30).toString())){
                         ganti();
                     }else{
                         JOptionPane.showMessageDialog(null,"User Login harus Petugas OK/Dokter Anestesi..!!");
@@ -1588,7 +1614,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
                     "timeout_sebelum_insisi.penayangan_mri,timeout_sebelum_insisi.antibiotik_profilaks,timeout_sebelum_insisi.nama_antibiotik,"+
                     "timeout_sebelum_insisi.jam_pemberian,timeout_sebelum_insisi.antisipasi_kehilangan_darah,timeout_sebelum_insisi.hal_khusus,"+
                     "timeout_sebelum_insisi.hal_khusus_diperhatikan,timeout_sebelum_insisi.tanggal_steril,timeout_sebelum_insisi.petujuk_sterilisasi,"+
-                    "timeout_sebelum_insisi.verifikasi_preoperatif,timeout_sebelum_insisi.nip_perawat_ok,petugas.nama "+
+                    "timeout_sebelum_insisi.verifikasi_preoperatif,timeout_sebelum_insisi.nip_perawat_ok,petugas.nama,timeout_sebelum_insisi.ketersediaan_implant "+
                     "from timeout_sebelum_insisi inner join reg_periksa on timeout_sebelum_insisi.no_rawat=reg_periksa.no_rawat "+
                     "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
                     "inner join dokter as dokterbedah on dokterbedah.kd_dokter=timeout_sebelum_insisi.kd_dokter_bedah "+
@@ -1780,6 +1806,10 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
         Valid.pindah(evt,PetunjukSterilisasi,BtnPetugas);
     }//GEN-LAST:event_VerifikasiOperatifKeyPressed
 
+    private void KetersediaanImplantKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KetersediaanImplantKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_KetersediaanImplantKeyPressed
+
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         if(koneksiDB.CARICEPAT().equals("aktif")){
             TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
@@ -1843,6 +1873,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
     private widget.TextBox HalKhususDiperhatikan;
     private widget.TextBox JamPemberianAntibiotik;
     private widget.TextBox KdDokter;
+    private widget.ComboBox KetersediaanImplant;
     private widget.TextBox KdDokter2;
     private widget.TextBox KdPetugas;
     private widget.Label LCount;
@@ -1914,6 +1945,8 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
     private widget.Label jLabel60;
     private widget.Label jLabel61;
     private widget.Label jLabel62;
+    private widget.Label jLabel63;
+    private widget.Label jLabel64;
     private widget.Label jLabel7;
     private widget.Label jLabel8;
     private javax.swing.JPanel jPanel3;
@@ -1939,7 +1972,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
                     "timeout_sebelum_insisi.verbal_tindakan,timeout_sebelum_insisi.verbal_area_insisi,timeout_sebelum_insisi.penandaan_area_operasi,"+
                     "timeout_sebelum_insisi.lama_operasi,timeout_sebelum_insisi.penayangan_radiologi,timeout_sebelum_insisi.penayangan_ctscan,"+
                     "timeout_sebelum_insisi.penayangan_mri,timeout_sebelum_insisi.antibiotik_profilaks,timeout_sebelum_insisi.nama_antibiotik,"+
-                    "timeout_sebelum_insisi.jam_pemberian,timeout_sebelum_insisi.antisipasi_kehilangan_darah,timeout_sebelum_insisi.hal_khusus,"+
+                    "timeout_sebelum_insisi.jam_pemberian,timeout_sebelum_insisi.ketersediaan_implant,timeout_sebelum_insisi.antisipasi_kehilangan_darah,timeout_sebelum_insisi.hal_khusus,"+
                     "timeout_sebelum_insisi.hal_khusus_diperhatikan,timeout_sebelum_insisi.tanggal_steril,timeout_sebelum_insisi.petujuk_sterilisasi,"+
                     "timeout_sebelum_insisi.verifikasi_preoperatif,timeout_sebelum_insisi.nip_perawat_ok,petugas.nama "+
                     "from timeout_sebelum_insisi inner join reg_periksa on timeout_sebelum_insisi.no_rawat=reg_periksa.no_rawat "+
@@ -1956,7 +1989,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
                     "timeout_sebelum_insisi.verbal_tindakan,timeout_sebelum_insisi.verbal_area_insisi,timeout_sebelum_insisi.penandaan_area_operasi,"+
                     "timeout_sebelum_insisi.lama_operasi,timeout_sebelum_insisi.penayangan_radiologi,timeout_sebelum_insisi.penayangan_ctscan,"+
                     "timeout_sebelum_insisi.penayangan_mri,timeout_sebelum_insisi.antibiotik_profilaks,timeout_sebelum_insisi.nama_antibiotik,"+
-                    "timeout_sebelum_insisi.jam_pemberian,timeout_sebelum_insisi.antisipasi_kehilangan_darah,timeout_sebelum_insisi.hal_khusus,"+
+                    "timeout_sebelum_insisi.jam_pemberian,timeout_sebelum_insisi.ketersediaan_implant,timeout_sebelum_insisi.antisipasi_kehilangan_darah,timeout_sebelum_insisi.hal_khusus,"+
                     "timeout_sebelum_insisi.hal_khusus_diperhatikan,timeout_sebelum_insisi.tanggal_steril,timeout_sebelum_insisi.petujuk_sterilisasi,"+
                     "timeout_sebelum_insisi.verifikasi_preoperatif,timeout_sebelum_insisi.nip_perawat_ok,petugas.nama "+
                     "from timeout_sebelum_insisi inner join reg_periksa on timeout_sebelum_insisi.no_rawat=reg_periksa.no_rawat "+
@@ -1992,7 +2025,7 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
                         rs.getString("kd_dokter_anestesi"),rs.getString("dokteranestesi"),rs.getString("verbal_identitas"),rs.getString("verbal_tindakan"),
                         rs.getString("verbal_area_insisi"),rs.getString("penandaan_area_operasi"),rs.getString("lama_operasi"),rs.getString("penayangan_radiologi"),
                         rs.getString("penayangan_ctscan"),rs.getString("penayangan_mri"),rs.getString("antibiotik_profilaks"),rs.getString("nama_antibiotik"),
-                        rs.getString("jam_pemberian"),rs.getString("antisipasi_kehilangan_darah"),rs.getString("hal_khusus"),rs.getString("hal_khusus_diperhatikan"),
+                        rs.getString("jam_pemberian"),rs.getString("ketersediaan_implant"),rs.getString("antisipasi_kehilangan_darah"),rs.getString("hal_khusus"),rs.getString("hal_khusus_diperhatikan"),
                         rs.getString("tanggal_steril"),rs.getString("petujuk_sterilisasi"),rs.getString("verifikasi_preoperatif"),rs.getString("nip_perawat_ok"),
                         rs.getString("nama")
                     });
@@ -2064,15 +2097,16 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
             PemberianAntibiotik.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),20).toString());
             NamaAntibiotikDIberikan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),21).toString());
             JamPemberianAntibiotik.setText(tbObat.getValueAt(tbObat.getSelectedRow(),22).toString());
-            AntisipisasiKehialnganDarah.setText(tbObat.getValueAt(tbObat.getSelectedRow(),23).toString());
-            AdaHalKhusus.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),24).toString());
-            HalKhususDiperhatikan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),25).toString());
-            PetunjukSterilisasi.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),27).toString());
-            VerifikasiOperatif.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),28).toString());
-            KdPetugas.setText(tbObat.getValueAt(tbObat.getSelectedRow(),29).toString());
-            NmPetugas.setText(tbObat.getValueAt(tbObat.getSelectedRow(),30).toString());
+            KetersediaanImplant.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),23).toString());
+            AntisipisasiKehialnganDarah.setText(tbObat.getValueAt(tbObat.getSelectedRow(),24).toString());
+            AdaHalKhusus.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),25).toString());
+            HalKhususDiperhatikan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),26).toString());
+            PetunjukSterilisasi.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),28).toString());
+            VerifikasiOperatif.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),29).toString());
+            KdPetugas.setText(tbObat.getValueAt(tbObat.getSelectedRow(),30).toString());
+            NmPetugas.setText(tbObat.getValueAt(tbObat.getSelectedRow(),31).toString());
             Valid.SetTgl2(Tanggal,tbObat.getValueAt(tbObat.getSelectedRow(),5).toString());
-            Valid.SetTgl(TanggalSeteril,tbObat.getValueAt(tbObat.getSelectedRow(),26).toString());
+            Valid.SetTgl(TanggalSeteril,tbObat.getValueAt(tbObat.getSelectedRow(),27).toString());
         }
     }
     private void isRawat() {
@@ -2139,13 +2173,13 @@ public final class RMTimeOutSebelumInsisi extends javax.swing.JDialog {
 
     private void ganti() {
         Sequel.mengedit("timeout_sebelum_insisi","no_rawat=? and tanggal=?","no_rawat=?,tanggal=?,sncn=?,tindakan=?,kd_dokter_bedah=?,kd_dokter_anestesi=?,verbal_identitas=?,verbal_tindakan=?,"+
-            "verbal_area_insisi=?,penandaan_area_operasi=?,lama_operasi=?,penayangan_radiologi=?,penayangan_ctscan=?,penayangan_mri=?,antibiotik_profilaks=?,nama_antibiotik=?,jam_pemberian=?,"+
-            "antisipasi_kehilangan_darah=?,hal_khusus=?,hal_khusus_diperhatikan=?,tanggal_steril=?,petujuk_sterilisasi=?,verifikasi_preoperatif=?,nip_perawat_ok=?",26,new String[]{
+            "verbal_area_insisi=?,penandaan_area_operasi=?,lama_operasi=?,penayangan_radiologi=?,penayangan_ctscan=?,penayangan_mri=?,antibiotik_profilaks=?,nama_antibiotik=?,jam_pemberian=?,ketersediaan_implant=?,"+
+            "antisipasi_kehilangan_darah=?,hal_khusus=?,hal_khusus_diperhatikan=?,tanggal_steril=?,petujuk_sterilisasi=?,verifikasi_preoperatif=?,nip_perawat_ok=?",27,new String[]{
                 TNoRw.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+"")+" "+Tanggal.getSelectedItem().toString().substring(11,19),SNCN.getText(),Tindakan.getText(),
                 KdDokter.getText(),KdDokter2.getText(),VerbalIdentitas.getSelectedItem().toString(),VerbalTindakan.getSelectedItem().toString(),
                 VerbalArea.getSelectedItem().toString(),AreaOperasi.getSelectedItem().toString(),PerkiraanLama.getText(),PenayanganRadiologi.getSelectedItem().toString(),
                 PenayanganCTScan.getSelectedItem().toString(),PenayanganMRI.getSelectedItem().toString(),PemberianAntibiotik.getSelectedItem().toString(),
-                NamaAntibiotikDIberikan.getText(),JamPemberianAntibiotik.getText(),AntisipisasiKehialnganDarah.getText(),AdaHalKhusus.getSelectedItem().toString(),
+                NamaAntibiotikDIberikan.getText(),JamPemberianAntibiotik.getText(),KetersediaanImplant.getSelectedItem().toString(),AntisipisasiKehialnganDarah.getText(),AdaHalKhusus.getSelectedItem().toString(),
                 HalKhususDiperhatikan.getText(),Valid.SetTgl(TanggalSeteril.getSelectedItem()+""),PetunjukSterilisasi.getSelectedItem().toString(),
                 VerifikasiOperatif.getSelectedItem().toString(),KdPetugas.getText(),tbObat.getValueAt(tbObat.getSelectedRow(),0).toString(),
                 tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()

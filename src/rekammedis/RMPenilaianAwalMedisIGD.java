@@ -40,6 +40,7 @@ import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 import kepegawaian.DlgCariDokter;
+import modif.DlgSBARRalan;
 
 
 /**
@@ -60,6 +61,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     private StringBuilder htmlContent;
     private String finger="";
     private String TANGGALMUNDUR="yes";
+    public  DlgSBARRalan sbar=new DlgSBARRalan(null,false);
     
     /** Creates new form DlgRujuk
      * @param parent
@@ -351,6 +353,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         jLabel82 = new widget.Label();
         scrollPane11 = new widget.ScrollPane();
         Laborat = new widget.TextArea();
+        BtnSBAR = new widget.Button();
         internalFrame3 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -974,7 +977,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         FormInput.add(jLabel39);
         jLabel39.setBounds(265, 260, 70, 23);
 
-        Keadaan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Sehat", "Sakit Ringan", "Sakit Sedang", "Sakit Berat" }));
+        Keadaan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-", "Sehat", "Sakit Ringan", "Sakit Sedang", "Sakit Berat" }));
         Keadaan.setName("Keadaan"); // NOI18N
         Keadaan.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -1276,7 +1279,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         label11.setBounds(380, 40, 52, 23);
 
         TglAsuhan.setForeground(new java.awt.Color(50, 70, 50));
-        TglAsuhan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-02-2026 15:39:27" }));
+        TglAsuhan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-08-2026 12:01:35" }));
         TglAsuhan.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TglAsuhan.setName("TglAsuhan"); // NOI18N
         TglAsuhan.setOpaque(false);
@@ -1357,6 +1360,27 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         FormInput.add(scrollPane11);
         scrollPane11.setBounds(594, 910, 260, 63);
 
+        BtnSBAR.setBackground(new java.awt.Color(51, 102, 255));
+        BtnSBAR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/tasksgroup.png"))); // NOI18N
+        BtnSBAR.setMnemonic('H');
+        BtnSBAR.setText("FORM SBAR");
+        BtnSBAR.setToolTipText("Alt+H");
+        BtnSBAR.setGlassColor(new java.awt.Color(0, 51, 255));
+        BtnSBAR.setName("BtnSBAR"); // NOI18N
+        BtnSBAR.setPreferredSize(new java.awt.Dimension(160, 30));
+        BtnSBAR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSBARActionPerformed(evt);
+            }
+        });
+        BtnSBAR.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnSBARKeyPressed(evt);
+            }
+        });
+        FormInput.add(BtnSBAR);
+        BtnSBAR.setBounds(870, 90, 130, 30);
+
         scrollInput.setViewportView(FormInput);
 
         internalFrame2.add(scrollInput, java.awt.BorderLayout.CENTER);
@@ -1398,7 +1422,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-02-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-08-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -1412,7 +1436,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-02-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-08-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -1495,6 +1519,8 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
             Valid.textKosong(RPD,"Riwayat Penyakit Dahulu");
         }else if(RPO.getText().trim().equals("")){
             Valid.textKosong(RPO,"Riwayat Pengunaan obat");
+        }else if(Keadaan.getSelectedItem().equals("-")){
+            Valid.textKosong(Keadaan, "Keadaan Umum");
         }else{
             if(akses.getkode().equals("Admin Utama")){
                 simpan();
@@ -1569,6 +1595,8 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
             Valid.textKosong(RPD,"Riwayat Penyakit Dahulu");
         }else if(RPO.getText().trim().equals("")){
             Valid.textKosong(RPO,"Riwayat Pengunaan obat");
+        }else if(Keadaan.getSelectedItem().equals("-")){
+            Valid.textKosong(Keadaan, "Keadaan Umum");
         }else{
             if(tbObat.getSelectedRow()>-1){
                 if(akses.getkode().equals("Admin Utama")){
@@ -2031,6 +2059,19 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         Valid.pindah2(evt,Radiologi,Diagnosis);
     }//GEN-LAST:event_LaboratKeyPressed
 
+    private void BtnSBARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSBARActionPerformed
+        sbar.setSize( internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        sbar.setLocationRelativeTo(internalFrame1);
+        sbar.setNoRm(TNoRw.getText(), new Date(), new Date());
+        sbar.tampil();
+//        sbar.setAlwaysOnTop(true);
+        sbar.setVisible(true);       
+    }//GEN-LAST:event_BtnSBARActionPerformed
+
+    private void BtnSBARKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSBARKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnSBARKeyPressed
+
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         if(koneksiDB.CARICEPAT().equals("aktif")){
             TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
@@ -2085,6 +2126,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
+    private widget.Button BtnSBAR;
     private widget.Button BtnSimpan;
     private widget.Tanggal DTPCari1;
     private widget.Tanggal DTPCari2;
@@ -2434,9 +2476,10 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
         if(Sequel.queryu2tf("delete from penilaian_medis_igd where no_rawat=?",1,new String[]{
             tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
         })==true){
-            tabMode.removeRow(tbObat.getSelectedRow());
-            LCount.setText(""+tabMode.getRowCount());
-            TabRawat.setSelectedIndex(1);
+//            tabMode.removeRow(tbObat.getSelectedRow());
+//            LCount.setText(""+tabMode.getRowCount());
+//            TabRawat.setSelectedIndex(1);
+              hapusSOAP();
         }else{
             JOptionPane.showMessageDialog(null,"Gagal menghapus..!!");
         }
@@ -2450,6 +2493,7 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                     Thoraks.getSelectedItem().toString(),Abdomen.getSelectedItem().toString(),Genital.getSelectedItem().toString(),Ekstremitas.getSelectedItem().toString(),KetFisik.getText(),KetLokalis.getText(),EKG.getText(),
                     Radiologi.getText(),Laborat.getText(),Diagnosis.getText(),Tatalaksana.getText(),tbObat.getValueAt(tbObat.getSelectedRow(),0).toString()
             })==true){
+               editSOAP();
                tbObat.setValueAt(TNoRw.getText(),tbObat.getSelectedRow(),0);
                tbObat.setValueAt(TNoRM.getText(),tbObat.getSelectedRow(),1);
                tbObat.setValueAt(TPasien.getText(),tbObat.getSelectedRow(),2);
@@ -2491,7 +2535,6 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                tbObat.setValueAt(Laborat.getText(),tbObat.getSelectedRow(),38);
                tbObat.setValueAt(Diagnosis.getText(),tbObat.getSelectedRow(),39);
                tbObat.setValueAt(Tatalaksana.getText(),tbObat.getSelectedRow(),40);
-               emptTeks();
                TabRawat.setSelectedIndex(1);
         }
     }
@@ -2512,10 +2555,48 @@ public final class RMPenilaianAwalMedisIGD extends javax.swing.JDialog {
                     Diagnosis.getText(),Tatalaksana.getText()
                 });
                 LCount.setText(""+tabMode.getRowCount());
-                emptTeks();
+                 Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Sudah'");
+                simpanSOAP();
+        }
+        Sequel.mengedit("antripoli","no_rawat = ?", "status=?, updated_at = now() ", 2, new String[]{"1", TNoRw.getText()});
+    }
+
+    private void simpanSOAP() {
+        String keluhan = "IGD : " + RPS.getText();
+        String pemeriksaan = "IGD : " + "Ket Fisik : " + KetFisik.getText() + ", Ket Lokalis : " + KetLokalis.getText() + ", TENSI : " + TD.getText() + ", SUHU : " + Suhu.getText() + ", NADI : " + Nadi.getText() + ", GCS : " + GCS.getText() + ", TB : " + TB.getText() + ", BB : " + BB.getText() + ", spo : " + SPO.getText() + ", RESPIRASI : " + RR.getText();
+        if (Sequel.menyimpantf("pemeriksaan_ralan", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Pemeriksaan Ralan", 21, new String[]{
+            TNoRw.getText(), Valid.SetTgl(TglAsuhan.getSelectedItem() + ""), TglAsuhan.getSelectedItem().toString().substring(11, 19), Suhu.getText(), TD.getText(), Nadi.getText(),
+            RR.getText(), TB.getText(), BB.getText(), SPO.getText(), GCS.getText(), Kesadaran.getSelectedItem().toString().equals("Koma") ? "Coma" : Kesadaran.getSelectedItem().toString(),
+            KeluhanUtama.getText(), pemeriksaan, Alergi.getText(), "-", Tatalaksana.getText(), Diagnosis.getText(), "-", "-", KdDokter.getText()
+        }) == true) {
+            emptTeks();
         }
     }
     
+    private void editSOAP() {
+        String keluhan = "IGD : " + RPS.getText();
+        String pemeriksaan = "IGD : " + "Ket Fisik : " + KetFisik.getText() + ", Ket Lokalis : " + KetLokalis.getText() + ", TENSI : " + TD.getText() + ", SUHU : " + Suhu.getText() + ", NADI : " + Nadi.getText() + ", GCS : " + GCS.getText() + ", TB : " + TB.getText() + ", BB : " + BB.getText() + ", spo : " + SPO.getText() + ", RESPIRASI : " + RR.getText();
+        if (Sequel.mengedittf("pemeriksaan_ralan", "no_rawat=? and tgl_perawatan = ? and jam_rawat = ? and nip = ?", "tgl_perawatan = ?,jam_rawat = ?, suhu_tubuh=?,tensi=?,nadi=?,respirasi=?,tinggi=?,berat=?,spo2=?,gcs=?,kesadaran=?,keluhan=?,pemeriksaan=?,alergi=?,lingkar_perut=?,rtl=?,penilaian=?,instruksi=?,evaluasi=?", 23, new String[]{
+            Valid.SetTgl(TglAsuhan.getSelectedItem()+""), TglAsuhan.getSelectedItem().toString().substring(11,19), Suhu.getText(), TD.getText(), Nadi.getText(), RR.getText(), TB.getText(), BB.getText(), SPO.getText(), GCS.getText(), Kesadaran.getSelectedItem().toString().equals("Koma") ? "Coma" : Kesadaran.getSelectedItem().toString(),
+            keluhan, pemeriksaan, Alergi.getText(), "-", Tatalaksana.getText(), Diagnosis.getText(), "-", "-", 
+            tbObat.getValueAt(tbObat.getSelectedRow(), 0).toString(), tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString().substring(0, 10),
+            tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString().substring(11, 19), tbObat.getValueAt(tbObat.getSelectedRow(), 5).toString()
+        }) == true) {
+            emptTeks();
+        }
+    }
+    
+    private void hapusSOAP(){
+        if(Sequel.queryu2tf("delete from pemeriksaan_ralan where no_rawat=? and tgl_perawatan = ? and jam_rawat = ? and nip = ?",4,new String[]{
+                tbObat.getValueAt(tbObat.getSelectedRow(),0).toString(),tbObat.getValueAt(tbObat.getSelectedRow(), 7).toString().substring(0, 10), 
+                    tbObat.getValueAt(tbObat.getSelectedRow(),7).toString().substring(11,19), tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()  
+            })==true){
+                tabMode.removeRow(tbObat.getSelectedRow());
+                LCount.setText(""+tabMode.getRowCount());
+                TabRawat.setSelectedIndex(1);
+            }
+    }
+
     private void runBackground(Runnable task) {
         if (ceksukses) return;
         if (executor.isShutdown() || executor.isTerminated()) return;

@@ -1467,7 +1467,7 @@ private void btnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             StringBuilder iyembuilder = new StringBuilder();
             ps=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng,databarang.kode_sat, databarang.h_beli, "+
                 " ifnull(date_format(databarang.expire,'%d-%m-%Y'),'00-00-0000'),databarang.kode_satbesar,databarang.isi, "+
-                " (databarang.h_beli*databarang.isi) as hargabesar from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
+                " (databarang.h_beli*databarang.isi) as hargabesar, round((databarang.h_beli*100)/111) from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
                 " where databarang.status='1' order by databarang.nama_brng");
             try {
                 rs=ps.executeQuery();

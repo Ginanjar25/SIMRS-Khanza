@@ -50,7 +50,7 @@ public class DlgPenjualan extends javax.swing.JDialog {
     private double ttl=0,ttlhpp=0,y=0,z=0,stokbarang=0,bayar=0,total=0,ppn=0,besarppn=0,ppnobat=0,besarppnobat=0,tagihanppn=0,ongkir=0;
     private int jml=0,i=0,row,kolom=0,reply,index;
     private String verifikasi_penjualan_di_kasir="",Penjualan_Obat="",HPP_Obat_Jual_Bebas="",Persediaan_Obat_Jual_Bebas="",DEPOAKTIFOBAT="",
-            status="Belum Dibayar",pilihanetiket="",hppfarmasi="",kode_akun_bayar="",tampilkan_ppnobat_ralan="",PPN_Keluaran="";
+            status="Belum Dibayar",pilihanetiket="",hppfarmasi="",kode_akun_bayar="",tampilkan_ppnobat_ralan="",PPN_Keluaran="",DEPOAKTIFOBAT="", kd_bangsal="";
     private PreparedStatement ps,psstok,pscaribatch;
     private ResultSet rs,rsstok;
     private WarnaTable2 warna=new WarnaTable2();
@@ -333,16 +333,37 @@ public class DlgPenjualan extends javax.swing.JDialog {
         }
         
         try {
-            aktifkanbatch = koneksiDB.AKTIFKANBATCHOBAT();
-            if(aktifkanbatch.equals("no")){
-                ppStok.setVisible(true);
-            }else{
-                ppStok.setVisible(false);
+            ps=koneksi.prepareStatement("select set_embalase.embalase_per_obat,set_embalase.tuslah_per_obat from set_embalase");
+            try {
+                rs=ps.executeQuery();
+                if(rs.next()){
+                    embalasen=rs.getDouble("embalase_per_obat");
+                    tuslahn=rs.getDouble("tuslah_per_obat");
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
             }
         } catch (Exception e) {
-            System.out.println("E : "+e);
-            aktifkanbatch = "no";
-            ppStok.setVisible(true);
+            System.out.println("Notif : "+e);
+        }
+        
+        try {
+            hppfarmasi=koneksiDB.HPPFARMASI();
+        } catch (Exception e) {
+            hppfarmasi="dasar";
+        }
+        
+        if(tampilkan_ppnobat_ralan.equals("Yes")){
+            PersenppnObat.setText("11");
+        }else{
+            PersenppnObat.setText("0");
         }
     }
     
@@ -828,6 +849,7 @@ public class DlgPenjualan extends javax.swing.JDialog {
         panelisi3.add(label14);
         label14.setBounds(426, 40, 60, 23);
 
+        kdmem.setToolTipText("");
         kdmem.setName("kdmem"); // NOI18N
         kdmem.setPreferredSize(new java.awt.Dimension(80, 23));
         kdmem.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1672,6 +1694,7 @@ private void NoNotaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_No
 private void kdmemKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdmemKeyPressed
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_PAGE_UP:
+                Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=?", nmmem,kdmem.getText());
                 Tgl.requestFocus();
                 break;
             case KeyEvent.VK_ENTER:
@@ -3924,6 +3947,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     
     public void isCek(){
         autoNomor();
+        isCek2();
         TCari.requestFocus();
         if(lokasidepoutama.getDepoDefault().equals("")){
             lokasidepoutama.SetLokasiDepoUtama();
@@ -3958,6 +3982,17 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }
             
         BtnGudang.setEnabled(akses.getakses_depo_obat());
+    }
+    
+    public void isCek2(){
+        String bangsaldefault=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1");
+        if(!DEPOAKTIFOBAT.equals("")){
+            kd_bangsal=DEPOAKTIFOBAT;
+        }else{
+            kd_bangsal=bangsaldefault;
+        }
+//        System.out.println("KOde Bangsal " + kd_bangsal);
+        kdgudang.setText(kd_bangsal); 
     }
     
     public void autoNomor(){

@@ -46,7 +46,7 @@ public class DlgReturJual extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private riwayatobat Trackobat=new riwayatobat();
     private String formvalid="";
-    private String aktifkanbatch="no",norawat="";
+    private String aktifkanbatch="no",norawat="", DEPOAKTIFOBAT="", kd_bangsal="";
     private boolean sukses=true;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
@@ -66,13 +66,13 @@ public class DlgReturJual extends javax.swing.JDialog {
         }
         
         tabMode=new DefaultTableModel(null,new Object[]{
-                "No.Nota","Kode Barang","Nama Barang","Satuan","Hrg.Retur(Rp)","Jml.Retur","Total Retur(Rp)","No.Batch","No.Faktur"
+                "No.Nota","Kode Barang","Nama Barang","Satuan","Hrg.Retur(Rp)","Jml.Retur","Total Retur(Rp)","No.Batch","No.Faktur", "Jml.Jual"
             }){           
             @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
             Class[] types = new Class[] {
                 java.lang.String.class,java.lang.String.class,java.lang.String.class,java.lang.String.class,
                 java.lang.Double.class,java.lang.Double.class,java.lang.Double.class,java.lang.String.class,
-                java.lang.String.class
+                java.lang.String.class, java.lang.Double.class
             };  
             @Override
             public Class getColumnClass(int columnIndex) {
@@ -84,7 +84,7 @@ public class DlgReturJual extends javax.swing.JDialog {
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 10; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(100);
@@ -104,6 +104,8 @@ public class DlgReturJual extends javax.swing.JDialog {
                 column.setPreferredWidth(70);
             }else if(i==8){
                 column.setPreferredWidth(100);
+            }else if(i==9){
+                column.setPreferredWidth(60);
             }
         }
         tbDokter.setDefaultRenderer(Object.class, new WarnaTable());
@@ -180,6 +182,8 @@ public class DlgReturJual extends javax.swing.JDialog {
         NoBatch = new widget.TextBox();
         NoFaktur = new widget.TextBox();
         label23 = new widget.Label();
+        JmlJual = new widget.TextBox();
+        label28 = new widget.Label();
         panelisiBeli = new widget.panelisi();
         label15 = new widget.Label();
         NoRetur = new widget.TextBox();
@@ -406,20 +410,21 @@ public class DlgReturJual extends javax.swing.JDialog {
         label25.setName("label25"); // NOI18N
         label25.setPreferredSize(new java.awt.Dimension(70, 23));
         panelisi4.add(label25);
-        label25.setBounds(592, 40, 80, 23);
+        label25.setBounds(640, 40, 60, 23);
 
         Subtotal.setEditable(false);
         Subtotal.setName("Subtotal"); // NOI18N
         Subtotal.setPreferredSize(new java.awt.Dimension(80, 23));
         panelisi4.add(Subtotal);
-        Subtotal.setBounds(676, 40, 100, 23);
+        Subtotal.setBounds(710, 40, 100, 23);
 
         label27.setText("Hrga.Retur :");
         label27.setName("label27"); // NOI18N
         label27.setPreferredSize(new java.awt.Dimension(70, 23));
         panelisi4.add(label27);
-        label27.setBounds(592, 10, 80, 23);
+        label27.setBounds(560, 10, 80, 23);
 
+        Hargaretur.setEditable(false);
         Hargaretur.setName("Hargaretur"); // NOI18N
         Hargaretur.setPreferredSize(new java.awt.Dimension(80, 23));
         Hargaretur.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -428,7 +433,7 @@ public class DlgReturJual extends javax.swing.JDialog {
             }
         });
         panelisi4.add(Hargaretur);
-        Hargaretur.setBounds(676, 10, 100, 23);
+        Hargaretur.setBounds(650, 10, 100, 23);
 
         label17.setText("Barang :");
         label17.setName("label17"); // NOI18N
@@ -436,6 +441,7 @@ public class DlgReturJual extends javax.swing.JDialog {
         panelisi4.add(label17);
         label17.setBounds(0, 10, 63, 23);
 
+        Kdbar.setEditable(false);
         Kdbar.setName("Kdbar"); // NOI18N
         Kdbar.setPreferredSize(new java.awt.Dimension(80, 23));
         Kdbar.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -473,13 +479,13 @@ public class DlgReturJual extends javax.swing.JDialog {
             }
         });
         panelisi4.add(Jmlretur);
-        Jmlretur.setBounds(524, 40, 50, 23);
+        Jmlretur.setBounds(590, 40, 50, 23);
 
         label26.setText("Jumlah Retur :");
         label26.setName("label26"); // NOI18N
         label26.setPreferredSize(new java.awt.Dimension(90, 23));
         panelisi4.add(label26);
-        label26.setBounds(440, 40, 80, 23);
+        label26.setBounds(500, 40, 80, 23);
 
         Satuanbar.setEditable(false);
         Satuanbar.setName("Satuanbar"); // NOI18N
@@ -493,6 +499,8 @@ public class DlgReturJual extends javax.swing.JDialog {
         panelisi4.add(label21);
         label21.setBounds(0, 40, 63, 23);
 
+        NoBatch.setEditable(false);
+        NoBatch.setEnabled(false);
         NoBatch.setName("NoBatch"); // NOI18N
         NoBatch.setPreferredSize(new java.awt.Dimension(80, 23));
         NoBatch.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -503,6 +511,8 @@ public class DlgReturJual extends javax.swing.JDialog {
         panelisi4.add(NoBatch);
         NoBatch.setBounds(67, 40, 100, 23);
 
+        NoFaktur.setEditable(false);
+        NoFaktur.setEnabled(false);
         NoFaktur.setName("NoFaktur"); // NOI18N
         NoFaktur.setPreferredSize(new java.awt.Dimension(80, 23));
         NoFaktur.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -511,13 +521,35 @@ public class DlgReturJual extends javax.swing.JDialog {
             }
         });
         panelisi4.add(NoFaktur);
-        NoFaktur.setBounds(244, 40, 140, 23);
+        NoFaktur.setBounds(220, 40, 140, 23);
 
         label23.setText("Faktur :");
         label23.setName("label23"); // NOI18N
         label23.setPreferredSize(new java.awt.Dimension(70, 23));
         panelisi4.add(label23);
-        label23.setBounds(170, 40, 70, 23);
+        label23.setBounds(140, 40, 70, 23);
+
+        JmlJual.setEditable(false);
+        JmlJual.setName("JmlJual"); // NOI18N
+        JmlJual.setPreferredSize(new java.awt.Dimension(80, 23));
+        JmlJual.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JmlJualActionPerformed(evt);
+            }
+        });
+        JmlJual.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                JmlJualKeyPressed(evt);
+            }
+        });
+        panelisi4.add(JmlJual);
+        JmlJual.setBounds(440, 40, 50, 23);
+
+        label28.setText("Jumlah Jual :");
+        label28.setName("label28"); // NOI18N
+        label28.setPreferredSize(new java.awt.Dimension(90, 23));
+        panelisi4.add(label28);
+        label28.setBounds(360, 40, 70, 23);
 
         jPanel1.add(panelisi4, java.awt.BorderLayout.CENTER);
 
@@ -535,6 +567,11 @@ public class DlgReturJual extends javax.swing.JDialog {
 
         NoRetur.setName("NoRetur"); // NOI18N
         NoRetur.setPreferredSize(new java.awt.Dimension(207, 23));
+        NoRetur.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NoReturActionPerformed(evt);
+            }
+        });
         NoRetur.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 NoReturKeyPressed(evt);
@@ -1241,6 +1278,18 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }
     }//GEN-LAST:event_NoFakturKeyPressed
 
+    private void NoReturActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NoReturActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_NoReturActionPerformed
+
+    private void JmlJualKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JmlJualKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JmlJualKeyPressed
+
+    private void JmlJualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JmlJualActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_JmlJualActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1270,6 +1319,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private widget.Button BtnTambah;
     private widget.TextBox Hargaretur;
     private widget.ComboBox Jenisjual;
+    private widget.TextBox JmlJual;
     private widget.TextBox Jmlretur;
     private widget.TextBox Kd2;
     private widget.TextBox Kdbar;
@@ -1300,6 +1350,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private widget.Label label25;
     private widget.Label label26;
     private widget.Label label27;
+    private widget.Label label28;
     private widget.Label label32;
     private widget.Label label9;
     private widget.TextBox nmbar;
@@ -1327,7 +1378,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         rs.getString(1),rs.getString(2),rs.getString(3),
                         rs.getString(4),rs.getDouble(7),
                         rs.getDouble(8),rs.getDouble(9),
-                        rs.getString(10),rs.getString(11)
+                        rs.getString(10),rs.getString(11), rs.getDouble(6)
                     });
                 }                 
                 LTotal.setText(Valid.SetAngka(ttlretur));
@@ -1356,6 +1407,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         Subtotal.setText("0");
         NoBatch.setText("");
         NoFaktur.setText("");
+        JmlJual.setText("");
         Kdbar.requestFocus();        
     }
 
@@ -1370,6 +1422,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
              Jmlretur.setText(tabMode.getValueAt(row,5).toString());
              NoBatch.setText(tabMode.getValueAt(row,7).toString());
              NoFaktur.setText(tabMode.getValueAt(row,8).toString());
+             JmlJual.setText(tabMode.getValueAt(row,9).toString());
              isHitung();
         }
     }
@@ -1386,9 +1439,16 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }            
     }
     
-    public void isCek(){  
+    public void isCek(){   
         autonomor();
-        if(lokasidepoutama.getDepoDefault().equals("")){
+        String bangsaldefault=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1");
+        if(!DEPOAKTIFOBAT.equals("")){
+            kd_bangsal=DEPOAKTIFOBAT;
+        }else{
+            kd_bangsal=bangsaldefault;
+        }
+        kdgudang.setText(kd_bangsal); 
+//        if(lokasidepoutama.getDepoDefault().equals("")){
             lokasidepoutama.SetLokasiDepoUtama();
         }
         kdgudang.setText(lokasidepoutama.getDepoDefault());
@@ -1407,12 +1467,76 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     
     public void setPasien(String norm,String norawat){
         kdmem.setText(norm);
+        
         this.norawat=norawat;
+        
+        String status = Sequel.cariIsi("SELECT status_lanjut FROM reg_periksa WHERE no_rawat = ?", norawat);
+        String kelas = Sequel.cariIsi("SELECT km.kelas FROM kamar_inap ki INNER JOIN kamar km ON km.kd_kamar = ki.kd_kamar WHERE ki.no_rawat = ? AND ki.stts_pulang != 'Pindah Kamar' LIMIT 1", norawat);
+        
+        if(!kelas.equals("")){
+            if (kelas.contains("VIP") || kelas.contains("VVIP")) {
+                kelas = kelas.replace("Kelas ", ""); // Menghapus "Kelas " dari string kelas
+            }else if(kelas.contains("Utama")){
+                kelas = "Utama/BPJS";
+            }
+        } else{
+            kelas = "Rawat Jalan";
+        }
+        Jenisjual.setSelectedItem(kelas);    
+        
+        if(Sequel.cariRegistrasi(norawat)>0){
+          if(!status.equals("Ralan")){
+               String no_nota = Sequel.cariIsi("SELECT nota_inap.no_nota FROM nota_inap WHERE nota_inap.no_rawat = ?", norawat);
+               NoNota.setText(no_nota);               
+          } else{
+              String no_nota = Sequel.cariIsi("SELECT nota_jalan.no_nota FROM nota_jalan WHERE nota_jalan.no_rawat = ?", norawat);
+              NoNota.setText(no_nota);
+          }
+        }
+        
         Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(returjual.no_retur_jual,2),signed)),0) from returjual where returjual.no_retur_jual like '%"+norawat+"%' ",norawat,2,NoRetur); 
         formvalid="No";
         Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=?",nmmem,kdmem.getText());
         kdgudang.setText(akses.getkdbangsal());
         nmgudang.setText(Sequel.CariBangsal(kdgudang.getText())); 
+        
+        if(Sequel.cariRegistrasi(norawat)>0){
+           Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_retur_jual,2),signed)),0) from returjual where no_retur_jual like '%"+norawat+"%' ","RJ"+norawat,2,NoRetur); 
+        }
+        else{
+           Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_retur_jual,2),signed)),0) from returjual where no_retur_jual like '%"+norawat+"%' ",norawat,2,NoRetur);
+        }
+        
+        formvalid="No";
+    }
+        
+    public void isCek2(String status, String NoRW){
+        autonomor();
+        String bangsaldefault=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1");
+        if(!DEPOAKTIFOBAT.equals("")){
+            kd_bangsal=DEPOAKTIFOBAT;
+        }else{
+            if(status.equals("ralan")){
+                kd_bangsal=Sequel.cariIsi("select set_depo_ralan.kd_bangsal from set_depo_ralan where set_depo_ralan.kd_poli=?",Sequel.cariIsi("select reg_periksa.kd_poli from reg_periksa where reg_periksa.no_rawat=?",NoRW));
+                if(kd_bangsal.equals("")){
+                    kd_bangsal=bangsaldefault;
+                }
+            }else if(status.equals("ranap")){
+                kd_bangsal=akses.getkdbangsal();
+            } 
+        }
+        kdgudang.setText(kd_bangsal); 
+        nmgudang.setText(bangsal.tampil3(kdgudang.getText())); 
+        if(akses.getjml2()>=1){
+            Kdptg.setEditable(false);
+            BtnPtg.setEnabled(false);
+            BtnSimpan.setEnabled(akses.getretur_dari_pembeli());
+            BtnTambah.setEnabled(akses.getretur_dari_pembeli());
+            BtnHapus.setEnabled(akses.getretur_dari_pembeli());
+            BtnBatal.setEnabled(akses.getretur_dari_pembeli());
+            Kdptg.setText(akses.getkode());
+            Nmptg.setText(form.petugas.tampil3(Kdptg.getText())); 
+        }
     }
     
     private void cariBatch() {
@@ -1465,12 +1589,19 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }
 
     private void autonomor() {
-        if(!formvalid.equals("No")){
-            Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(returjual.no_retur_jual,3),signed)),0) from returjual where returjual.tgl_retur='"+Valid.SetTgl(TglRetur.getSelectedItem()+"")+"' ",
+            if(!formvalid.equals("No")){
+                Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_retur_jual,3),signed)),0) from returjual where tgl_retur='"+Valid.SetTgl(TglRetur.getSelectedItem()+"")+"' ",
                 "RJ"+TglRetur.getSelectedItem().toString().substring(6,10)+TglRetur.getSelectedItem().toString().substring(3,5)+TglRetur.getSelectedItem().toString().substring(0,2),3,NoRetur); 
-        }else{
-            Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(returjual.no_retur_jual,2),signed)),0) from returjual where returjual.no_retur_jual like '%"+norawat+"%' ",norawat,2,NoRetur); 
-        }
+            }else{
+                if(Sequel.cariRegistrasi(norawat)>0){
+                    Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_retur_jual,2),signed)),0) from returjual where no_retur_jual like '%"+norawat+"%' ","RJ"+norawat,2,NoRetur); 
+                 }
+                 else{
+                    Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(no_retur_jual,2),signed)),0) from returjual where no_retur_jual like '%"+norawat+"%' ",norawat,2,NoRetur);
+                 }
+            }
+            
+        
     }
 
     private void simpan() {
@@ -1495,7 +1626,10 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                             Trackobat.catatRiwayat(rs.getString(2),rs.getDouble(6),0,"Retur Jual",akses.getkode(),kdgudang.getText(),"Simpan","","",NoRetur.getText()+" "+kdmem.getText()+" "+nmmem.getText());
                             Sequel.menyimpan("gudangbarang","'"+rs.getString(2)+"','"+kdgudang.getText()+"','"+rs.getString(6)+"','',''", 
                                    "stok=stok+'"+rs.getString(6)+"'","kode_brng='"+rs.getString(2)+"' and kd_bangsal='"+kdgudang.getText()+"' and no_batch='' and no_faktur=''");
-                        } 
+                            
+//                            formvalid = "Yes";
+//                            autonomor();
+                        }
                     }else{
                        sukses=false;
                     }                                 

@@ -1,0 +1,126 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package fungsi;
+
+import java.awt.Color;
+import java.awt.Component;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+
+/**
+ *
+ * @author Owner
+ */
+public class WarnaTableKasirRalan1 extends DefaultTableCellRenderer {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+        Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        if (row % 2 == 1){
+            component.setBackground(new Color(255,244,244));
+        }else{
+            component.setBackground(new Color(255,255,255));
+        } 
+        
+        if (column == 1) {
+            Object cellValue = table.getValueAt(row, 30); // Get the value of the cell in column 25
+            if (cellValue != null) {
+                String cellString = cellValue.toString(); // Convert the value to a string
+                if ("Belum".equals(cellString)) {
+                    component.setBackground(new Color(255, 255, 0)); // Warna lain untuk kondisi lainnya
+                    component.setForeground(Color.BLACK);
+                } 
+            }
+        }
+        
+        if (column == 2) {
+            Object cellValue = table.getValueAt(row, 25); // Get the value of the cell in column 25
+            if (cellValue != null) {
+                String cellString = cellValue.toString(); // Convert the value to a string
+                if ("JKN".equals(cellString)) {
+                    component.setBackground(new Color(0, 165, 82)); // Set background color for "JKN"
+                } else if ("WEB".equals(cellString)) {
+                    component.setBackground(new Color(51, 153, 255)); // Set background color for "WEB"
+                } else if ("ONSITE".equals(cellString)) {
+                    component.setBackground(new Color(153, 153, 153)); // Set background color for "WEB"
+                }
+            }
+        }
+        
+        if (column == 3) {
+            Object cellValue = table.getValueAt(row, 24); // Get the value of the cell in column 25
+            Object kdpj = table.getValueAt(row, 12);
+            if (cellValue != null) {
+                String cellString = cellValue.toString(); // Convert the value to a string
+                String StringKdpj = kdpj.toString();
+                if ("BRD".equals(cellString) && StringKdpj.contains("BPJS")) {
+                    component.setBackground(new Color(102, 204, 0)); // Set background color for "JKN"
+                }else if ("VCL".equals(cellString) && StringKdpj.contains("BPJS")) {
+                    component.setBackground(new Color(255, 204, 0)); // Set background color for "JKN"
+                }
+            }
+            
+            Object jenis_bayar = table.getValueAt(row, 12); // Nilai di kolom ke-24
+            Object status = table.getValueAt(row, 19);
+            Object skdp = table.getValueAt(row, 28);
+
+            if (jenis_bayar != null) {
+                String jenis_bayarString = jenis_bayar.toString();
+                String statusString = status.toString();
+                String skdpString = skdp.toString();
+
+                if (jenis_bayarString.contains("BPJS") && "Sudah".equals(statusString) && "Sudah".equals(skdpString)) {
+                    component.setBackground(new Color(0, 230, 230));
+                }
+            }
+        }
+        
+        if (column == 4) {
+            Object cellValue = table.getValueAt(row, 26); // Get the value of the cell in column 25
+            if (cellValue != null) {
+                String cellString = cellValue.toString(); // Convert the value to a string
+                if ("Belum".equals(cellString)) {
+                    component.setBackground(new Color(153, 153, 255)); // Set background color for "JKN"
+                }else if ("Checkin".equals(cellString)) {
+                    component.setBackground(new Color(0, 204, 204)); // Set background color for "JKN"
+                }else if ("Batal".equals(cellString)) {
+                    component.setBackground(new Color(255, 51, 51)); // Set background color for "JKN"
+                }
+            }
+        }
+        
+        if (column == 5) {
+            Object cellValue = table.getValueAt(row, 27); // Get the value of the cell in column 25
+            Object kdpj = table.getValueAt(row, 12);
+            if (cellValue != null) {
+                String cellString = cellValue.toString(); // Convert the value to a string
+                String StringKdpj = kdpj.toString();
+                if ("Sudah".equals(cellString) && StringKdpj.contains("BPJS")) {
+                    component.setBackground(new Color(192, 202, 51)); // Set background color for "JKN"
+                }else if ("Belum".equals(cellString) && StringKdpj.contains("BPJS")) {
+                    component.setBackground(new Color(255, 112, 67)); // Set background color for "JKN"
+                }
+            }
+        }
+        
+        if (column == 28) {
+            Object jenis_bayar = table.getValueAt(row, 12); // Nilai di kolom ke-24
+            Object status = table.getValueAt(row, 19);
+            Object skdp = table.getValueAt(row, 28);
+
+            if (jenis_bayar != null) {
+                String jenis_bayarString = jenis_bayar.toString();
+                String statusString = status.toString();
+                String skdpString = skdp.toString();
+
+                if (jenis_bayarString.contains("BPJS") && "Sudah".equals(statusString) && "Belum".equals(skdpString)) {
+                    component.setBackground(new Color(255, 255, 0)); // Warna lain untuk kondisi lainnya
+                    component.setForeground(Color.BLACK);
+                }
+            }
+        }
+        return component;
+    }
+
+}

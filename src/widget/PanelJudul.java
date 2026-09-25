@@ -24,7 +24,7 @@ public class PanelJudul extends JPanel{
     private final Color light = new Color(1F, 1F, 1F, 0.5F);
     private final Color dark = new Color(1F, 1F, 1F, 0.0F);
     private final Color black = new Color(30,30, 00);
-    private final Color warna = new Color(100,100, 0);
+    private final Color warna = new Color(0, 102, 255);
 
     public PanelJudul() {
         super();

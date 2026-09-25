@@ -815,12 +815,14 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         btnPrimerPetugas.setBounds(660, 40, 28, 23);
 
         jLabel28.setText("Plan/Keputusan :");
+        jLabel28.setEnabled(false);
         jLabel28.setName("jLabel28"); // NOI18N
         internalFrame8.add(jLabel28);
         jLabel28.setBounds(362, 10, 90, 23);
+        jLabel28.setVisible(false);
 
         PrimerTanggalTriase.setForeground(new java.awt.Color(50, 70, 50));
-        PrimerTanggalTriase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-08-2023 11:11:45" }));
+        PrimerTanggalTriase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-11-2024 16:43:50" }));
         PrimerTanggalTriase.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         PrimerTanggalTriase.setName("PrimerTanggalTriase"); // NOI18N
         PrimerTanggalTriase.setOpaque(false);
@@ -841,17 +843,21 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         PrimerResusitasi.setForeground(new java.awt.Color(170, 0, 0));
         PrimerResusitasi.setSelected(true);
         PrimerResusitasi.setText("Ruang Resusitasi");
+        PrimerResusitasi.setEnabled(false);
         PrimerResusitasi.setName("PrimerResusitasi"); // NOI18N
         PrimerResusitasi.setPreferredSize(new java.awt.Dimension(40, 20));
         internalFrame8.add(PrimerResusitasi);
         PrimerResusitasi.setBounds(456, 10, 120, 23);
+        PrimerResusitasi.setVisible(false);
 
         buttonGroup1.add(PrimerKritis);
         PrimerKritis.setForeground(new java.awt.Color(250, 0, 0));
         PrimerKritis.setText("Ruang Kritis");
+        PrimerKritis.setEnabled(false);
         PrimerKritis.setName("PrimerKritis"); // NOI18N
         internalFrame8.add(PrimerKritis);
         PrimerKritis.setBounds(590, 10, 100, 23);
+        PrimerKritis.setVisible(false);
 
         label14.setText("Catatan :");
         label14.setName("label14"); // NOI18N
@@ -1042,7 +1048,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         tbSkala1.setSelectionForeground(new java.awt.Color(0, 255, 0));
         Scroll3.setViewportView(tbSkala1);
 
-        TabSkala1dan2.addTab("Skala 1", Scroll3);
+        TabSkala1dan2.addTab("DOA (Death On Arrival)", Scroll3);
 
         Scroll4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 253)));
         Scroll4.setName("Scroll4"); // NOI18N
@@ -1053,7 +1059,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         tbSkala2.setSelectionForeground(new java.awt.Color(0, 255, 0));
         Scroll4.setViewportView(tbSkala2);
 
-        TabSkala1dan2.addTab("Skala 2", Scroll4);
+        TabSkala1dan2.addTab("Zona Merah", Scroll4);
 
         jPanel4.add(TabSkala1dan2, java.awt.BorderLayout.CENTER);
 
@@ -1245,9 +1251,10 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         jLabel37.setName("jLabel37"); // NOI18N
         internalFrame12.add(jLabel37);
         jLabel37.setBounds(362, 10, 90, 23);
+        jLabel37.setVisible(false);
 
         SekunderTanggalTriase.setForeground(new java.awt.Color(50, 70, 50));
-        SekunderTanggalTriase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-08-2023 11:11:46" }));
+        SekunderTanggalTriase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-11-2024 16:43:54" }));
         SekunderTanggalTriase.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         SekunderTanggalTriase.setName("SekunderTanggalTriase"); // NOI18N
         SekunderTanggalTriase.setOpaque(false);
@@ -1267,17 +1274,21 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         buttonGroup1.add(SekunderZonaKuning);
         SekunderZonaKuning.setForeground(new java.awt.Color(200, 200, 0));
         SekunderZonaKuning.setText("Zona Kuning");
+        SekunderZonaKuning.setEnabled(false);
         SekunderZonaKuning.setName("SekunderZonaKuning"); // NOI18N
         SekunderZonaKuning.setPreferredSize(new java.awt.Dimension(40, 20));
         internalFrame12.add(SekunderZonaKuning);
         SekunderZonaKuning.setBounds(456, 10, 120, 23);
+        SekunderZonaKuning.setVisible(false);
 
         buttonGroup1.add(SekunderZonaHijau);
         SekunderZonaHijau.setForeground(new java.awt.Color(0, 170, 0));
         SekunderZonaHijau.setText("Zona Hijau");
+        SekunderZonaHijau.setEnabled(false);
         SekunderZonaHijau.setName("SekunderZonaHijau"); // NOI18N
         internalFrame12.add(SekunderZonaHijau);
         SekunderZonaHijau.setBounds(590, 10, 100, 23);
+        SekunderZonaHijau.setVisible(false);
 
         label15.setText("Catatan :");
         label15.setName("label15"); // NOI18N
@@ -1467,7 +1478,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         tbSkala3.setSelectionForeground(new java.awt.Color(0, 255, 0));
         Scroll6.setViewportView(tbSkala3);
 
-        TabSkala3dan4dan5.addTab("Skala 3", Scroll6);
+        TabSkala3dan4dan5.addTab("Zona Kuning", Scroll6);
 
         Scroll7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 253)));
         Scroll7.setName("Scroll7"); // NOI18N
@@ -1478,7 +1489,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         tbSkala4.setSelectionForeground(new java.awt.Color(0, 255, 0));
         Scroll7.setViewportView(tbSkala4);
 
-        TabSkala3dan4dan5.addTab("Skala 4", Scroll7);
+        TabSkala3dan4dan5.addTab("Zona Hijau", Scroll7);
 
         Scroll8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 253)));
         Scroll8.setName("Scroll8"); // NOI18N
@@ -1489,7 +1500,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         tbSkala5.setSelectionForeground(new java.awt.Color(0, 255, 0));
         Scroll8.setViewportView(tbSkala5);
 
-        TabSkala3dan4dan5.addTab("Skala 5", Scroll8);
+        TabSkala3dan4dan5.addTab("Non-Emergency", Scroll8);
 
         jPanel6.add(TabSkala3dan4dan5, java.awt.BorderLayout.CENTER);
 
@@ -1541,7 +1552,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         jLabel18.setBounds(0, 40, 89, 23);
 
         TanggalKunjungan.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalKunjungan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-08-2023 11:11:47" }));
+        TanggalKunjungan.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-11-2024 16:43:54" }));
         TanggalKunjungan.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TanggalKunjungan.setName("TanggalKunjungan"); // NOI18N
         TanggalKunjungan.setOpaque(false);
@@ -1700,7 +1711,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-08-2023" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-11-2024" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -1714,7 +1725,7 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01-08-2023" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-11-2024" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -2041,9 +2052,9 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                             KeteranganKedatangan.getText(),KdKasus.getText(),PrimerTensi.getText(),PrimerNadi.getText(),PrimerRespirasi.getText(),PrimerSuhu.getText(),
                             PrimerSaturasi.getText(),PrimerNyeri.getText()
                         })==true){
-                        if(PrimerResusitasi.isSelected()==true){
+                        if(TabSkala1dan2.getSelectedIndex()==0){
                             keputusan="Ruang Resusitasi";
-                        }else if(PrimerKritis.isSelected()==true){
+                        }else if(TabSkala1dan2.getSelectedIndex()==1){
                             keputusan="Ruang Kritis";
                         }
                         if(Sequel.menyimpantf2("data_triase_igdprimer","?,?,?,?,?,?,?,'','','',''", 7,new String[]{
@@ -2137,9 +2148,11 @@ public final class RMTriaseIGD extends javax.swing.JDialog {
                             KeteranganKedatangan.getText(),KdKasus.getText(),SekunderTensi.getText(),SekunderNadi.getText(),SekunderRespirasi.getText(),SekunderSuhu.getText(),
                             SekunderSaturasi.getText(),SekunderNyeri.getText()
                         })==true){
-                        if(SekunderZonaKuning.isSelected()==true){
+                        if(TabSkala3dan4dan5.getSelectedIndex()==0){
                             keputusan="Zona Kuning";
-                        }else if(SekunderZonaHijau.isSelected()==true){
+                        }else if(TabSkala3dan4dan5.getSelectedIndex()==1){
+                            keputusan="Zona Hijau";
+                        }else if(TabSkala3dan4dan5.getSelectedIndex()==2){
                             keputusan="Zona Hijau";
                         }
                         if(Sequel.menyimpantf2("data_triase_igdsekunder","?,?,?,?,?,?", 6,new String[]{

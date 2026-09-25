@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.0.0  -->
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="595" pageHeight="842" columnWidth="536" leftMargin="39" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7435c0f7-de74-4940-ae33-c2370e46f8e7">
 	<property name="ireport.zoom" value="1.399522140629204"/>
 	<property name="ireport.x" value="0"/>
@@ -33,6 +33,8 @@
 	<parameter name="namadokter2" class="java.lang.String"/>
 	<parameter name="namadokter3" class="java.lang.String"/>
 	<parameter name="jamkeluar" class="java.lang.String"/>
+	<parameter name="sip_dokter2" class="java.lang.String"/>
+	<parameter name="sip_dokter3" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select reg_periksa.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,resume_pasien_ranap.kd_dokter,dokter.nm_dokter,reg_periksa.kd_dokter as kodepengirim,pengirim.nm_dokter as pengirim,
                     reg_periksa.tgl_registrasi,reg_periksa.jam_reg,resume_pasien_ranap.diagnosa_awal,resume_pasien_ranap.alasan,resume_pasien_ranap.keluhan_utama,resume_pasien_ranap.pemeriksaan_fisik,
@@ -43,7 +45,7 @@
                     resume_pasien_ranap.prosedur_sekunder2,resume_pasien_ranap.kd_prosedur_sekunder2,resume_pasien_ranap.prosedur_sekunder3,resume_pasien_ranap.kd_prosedur_sekunder3,resume_pasien_ranap.alergi,
                     resume_pasien_ranap.diet,resume_pasien_ranap.lab_belum,resume_pasien_ranap.edukasi,resume_pasien_ranap.cara_keluar,resume_pasien_ranap.ket_keluar,resume_pasien_ranap.keadaan,
                     resume_pasien_ranap.ket_keadaan,resume_pasien_ranap.dilanjutkan,resume_pasien_ranap.ket_dilanjutkan,resume_pasien_ranap.kontrol,resume_pasien_ranap.obat_pulang,reg_periksa.kd_pj,penjab.png_jawab,
-                    reg_periksa.umurdaftar,reg_periksa.sttsumur,pasien.pekerjaan,pasien.jk,pasien.tgl_lahir,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat
+                    reg_periksa.umurdaftar,reg_periksa.sttsumur,pasien.pekerjaan,pasien.jk,pasien.tgl_lahir,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat, dokter.no_ijn_praktek
                    
                     from resume_pasien_ranap inner join reg_periksa on resume_pasien_ranap.no_rawat=reg_periksa.no_rawat inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis 
                     inner join dokter on resume_pasien_ranap.kd_dokter=dokter.kd_dokter inner join dokter as pengirim on reg_periksa.kd_dokter=pengirim.kd_dokter 
@@ -353,6 +355,11 @@ where resume_pasien_ranap.no_rawat= $P{norawat}]]>
 	<field name="alamat" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="alamat"/>
 		<property name="com.jaspersoft.studio.field.label" value="alamat"/>
+	</field>
+	<field name="no_ijn_praktek" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="no_ijn_praktek"/>
+		<property name="com.jaspersoft.studio.field.label" value="no_ijn_praktek"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dokter"/>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -678,7 +685,7 @@ where resume_pasien_ranap.no_rawat= $P{norawat}]]>
 				<text><![CDATA[Jalannya Penyakit Selama Perawatan :]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="366" y="776" width="164" height="22" uuid="61481e35-032b-4bda-8774-c5fa08d79a61"/>
+				<reportElement positionType="Float" x="366" y="776" width="164" height="10" uuid="61481e35-032b-4bda-8774-c5fa08d79a61"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" size="8" isBold="false" isItalic="false" isUnderline="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -1717,7 +1724,7 @@ where resume_pasien_ranap.no_rawat= $P{norawat}]]>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="189" y="776" width="164" height="22" uuid="fae1507e-cf7f-423f-9d85-4c84604706d3">
+				<reportElement positionType="Float" x="189" y="776" width="164" height="10" uuid="fae1507e-cf7f-423f-9d85-4c84604706d3">
 					<printWhenExpression><![CDATA[(!$P{namadokter2}.toLowerCase().equals("") ? 
   Boolean.TRUE:Boolean.FALSE)]]></printWhenExpression>
 				</reportElement>
@@ -1749,7 +1756,7 @@ where resume_pasien_ranap.no_rawat= $P{norawat}]]>
 				</jr:QRCode>
 			</componentElement>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="7" y="776" width="164" height="22" uuid="8d9bd58a-1076-4fcb-a6c4-321344f19078">
+				<reportElement positionType="Float" x="7" y="776" width="164" height="10" uuid="8d9bd58a-1076-4fcb-a6c4-321344f19078">
 					<printWhenExpression><![CDATA[(!$P{namadokter3}.toLowerCase().equals("") ? 
   Boolean.TRUE:Boolean.FALSE)]]></printWhenExpression>
 				</reportElement>
@@ -1795,6 +1802,36 @@ where resume_pasien_ranap.no_rawat= $P{norawat}]]>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{jamkeluar}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="366" y="786" width="164" height="10" uuid="e787be51-0431-424e-affe-4e4ff938cfe1"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="8" isBold="false" isItalic="false" isUnderline="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(No.SIP " + $F{no_ijn_praktek} +")"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="189" y="786" width="164" height="10" uuid="ee231612-f74e-4149-9969-7cfd407d7439">
+					<printWhenExpression><![CDATA[(!$P{namadokter2}.toLowerCase().equals("") ? 
+  Boolean.TRUE:Boolean.FALSE)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="8" isBold="false" isItalic="false" isUnderline="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(No.SIP " + $P{sip_dokter2} +")"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="7" y="786" width="164" height="10" uuid="b9960e56-376a-4680-b15a-9b46cb2099fd">
+					<printWhenExpression><![CDATA[(!$P{namadokter3}.toLowerCase().equals("") ? 
+  Boolean.TRUE:Boolean.FALSE)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="8" isBold="false" isItalic="false" isUnderline="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(No.SIP " + $P{sip_dokter3} +")"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

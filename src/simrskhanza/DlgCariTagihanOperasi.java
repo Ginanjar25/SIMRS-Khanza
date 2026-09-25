@@ -124,6 +124,7 @@ public class DlgCariTagihanOperasi extends javax.swing.JDialog {
 
         Kd2 = new widget.TextBox();
         jPopupMenu1 = new javax.swing.JPopupMenu();
+        MnUbahTagihanOperasi = new javax.swing.JMenuItem();
         MnHapusObatOperasi = new javax.swing.JMenuItem();
         MnHapusTagihanOperasi = new javax.swing.JMenuItem();
         MnUbahOperatorPetugas = new javax.swing.JMenuItem();
@@ -278,6 +279,20 @@ public class DlgCariTagihanOperasi extends javax.swing.JDialog {
         Kd2.setPreferredSize(new java.awt.Dimension(207, 23));
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
+
+        MnUbahTagihanOperasi.setBackground(new java.awt.Color(255, 255, 254));
+        MnUbahTagihanOperasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnUbahTagihanOperasi.setForeground(new java.awt.Color(50, 50, 50));
+        MnUbahTagihanOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnUbahTagihanOperasi.setText("Ubah Tagihan Operasi");
+        MnUbahTagihanOperasi.setName("MnUbahTagihanOperasi"); // NOI18N
+        MnUbahTagihanOperasi.setPreferredSize(new java.awt.Dimension(220, 26));
+        MnUbahTagihanOperasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnUbahTagihanOperasiActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(MnUbahTagihanOperasi);
 
         MnHapusObatOperasi.setBackground(new java.awt.Color(255, 255, 254));
         MnHapusObatOperasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -3391,29 +3406,15 @@ private void MnHapusObatOperasiActionPerformed(java.awt.event.ActionEvent evt) {
     private void MnUbahLaporanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnUbahLaporanActionPerformed
         if(tbDokter.getSelectedRow()>-1){
             if(!tbDokter.getValueAt(tbDokter.getSelectedRow(),1).toString().equals("")){
-                try {
-                    rs2=koneksi.prepareStatement(
-                        "select laporan_operasi.diagnosa_preop,laporan_operasi.diagnosa_postop,laporan_operasi.jaringan_dieksekusi,laporan_operasi.selesaioperasi,laporan_operasi.permintaan_pa,"+
-                        "laporan_operasi.laporan_operasi,laporan_operasi.nomor_implan from laporan_operasi where laporan_operasi.no_rawat='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),1)+"' and "+
-                        "laporan_operasi.tanggal='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0)+"'").executeQuery();
-                    if(rs2.next()){
-                        PreOp.setText(rs2.getString("diagnosa_preop"));
-                        PostOp.setText(rs2.getString("diagnosa_postop"));
-                        Jaringan.setText(rs2.getString("jaringan_dieksekusi"));
-                        tgl2.setDate(rs2.getDate("selesaioperasi"));
-                        DikirimPA.setSelectedItem(rs2.getString("permintaan_pa"));
-                        NomorImplant.setText(rs2.getString("nomor_implan"));
-                        Laporan.setText(rs2.getString("laporan_operasi"));
-                    }
-                    if(rs2!=null){
-                        rs2.close();
-                    }
-                } catch (Exception e) {
-                    System.out.println("Notif : "+e);
-                } 
-                WindowLaporan.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-                WindowLaporan.setLocationRelativeTo(internalFrame1);
-                WindowLaporan.setVisible(true);
+                String  norm= Sequel.cariIsi("select no_rkm_medis from reg_periksa where no_rawat='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),1).toString() +"'");
+                String  nmpasien= Sequel.cariIsi("select nm_pasien from pasien where no_rkm_medis='"+norm +"'");
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                DlgLaporanOperasi dlgro = new DlgLaporanOperasi(null, false);
+                dlgro.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                dlgro.setLocationRelativeTo(internalFrame1);
+                dlgro.setNoRm(tbDokter.getValueAt(tbDokter.getSelectedRow(),1).toString(), norm + ", " + nmpasien, "Ranap");
+                dlgro.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
             }else{
                 JOptionPane.showMessageDialog(rootPane,"Silahkan pilih data, klik pada No.Rawat ..!!");
             } 
@@ -3535,6 +3536,15 @@ private void MnHapusObatOperasiActionPerformed(java.awt.event.ActionEvent evt) {
         template.setVisible(true);
     }//GEN-LAST:event_btnAmbilPhoto1ActionPerformed
 
+    private void MnUbahTagihanOperasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnUbahTagihanOperasiActionPerformed
+        DlgTagihanOperasi dlgro=new DlgTagihanOperasi(null,false);
+        dlgro.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        dlgro.setLocationRelativeTo(internalFrame1);
+        dlgro.setNoRmEdit(tbDokter.getValueAt(tbDokter.getSelectedRow(),1).toString(),tbDokter.getValueAt(tbDokter.getSelectedRow(),2).toString(),"Ranap",tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString() );  
+        dlgro.setVisible(true);
+//        dispose();   
+    }//GEN-LAST:event_MnUbahTagihanOperasiActionPerformed
+
     private void NomorImplantKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NomorImplantKeyPressed
         Valid.pindah(evt,DikirimPA,Laporan);
     }//GEN-LAST:event_NomorImplantKeyPressed
@@ -3582,6 +3592,7 @@ private void MnHapusObatOperasiActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JMenuItem MnLaporanOperasi;
     private javax.swing.JMenuItem MnUbahLaporan;
     private javax.swing.JMenuItem MnUbahOperatorPetugas;
+    private javax.swing.JMenuItem MnUbahTagihanOperasi;
     private widget.TextBox NoRawat;
     private widget.TextBox NomorImplant;
     private widget.TextBox PostOp;

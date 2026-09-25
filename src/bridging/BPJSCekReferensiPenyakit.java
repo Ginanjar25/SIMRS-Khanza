@@ -140,6 +140,16 @@ public final class BPJSCekReferensiPenyakit extends javax.swing.JDialog {
 
         tbKamar.setAutoCreateRowSorter(true);
         tbKamar.setName("tbKamar"); // NOI18N
+        tbKamar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbKamarMouseClicked(evt);
+            }
+        });
+        tbKamar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tbKamarKeyPressed(evt);
+            }
+        });
         Scroll.setViewportView(tbKamar);
 
         internalFrame1.add(Scroll, java.awt.BorderLayout.CENTER);
@@ -270,6 +280,8 @@ public final class BPJSCekReferensiPenyakit extends javax.swing.JDialog {
             BtnKeluar.requestFocus();
         }else if(evt.getKeyCode()==KeyEvent.VK_UP){
             BtnCariActionPerformed(null);
+        }else if(evt.getKeyCode() == KeyEvent.VK_SPACE) {
+            dispose();
         }
     }//GEN-LAST:event_diagnosaKeyPressed
 
@@ -313,6 +325,25 @@ public final class BPJSCekReferensiPenyakit extends javax.swing.JDialog {
             });
         } 
     }//GEN-LAST:event_formWindowOpened
+
+    private void tbKamarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbKamarKeyPressed
+        if(tabMode.getRowCount()!=0){
+            if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+                dispose();
+            }else if(evt.getKeyCode()==KeyEvent.VK_SHIFT){
+                diagnosa.setText("");
+                diagnosa.requestFocus();
+            }
+        }
+    }//GEN-LAST:event_tbKamarKeyPressed
+
+    private void tbKamarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbKamarMouseClicked
+       if(tabMode.getRowCount()!=0){
+            if(evt.getClickCount()==2){
+                dispose();
+            }
+        }
+    }//GEN-LAST:event_tbKamarMouseClicked
 
     /**
     * @param args the command line arguments
@@ -364,7 +395,7 @@ public final class BPJSCekReferensiPenyakit extends javax.swing.JDialog {
                     i=1;
                     for(JsonNode list:response.path("diagnosa")){
                         tabMode.addRow(new Object[]{
-                            i+".",list.path("kode").asText(),list.path("nama").asText()
+                            i+".",list.path("kode").asText(),list.path("nama").asText().contains("-") ? list.path("nama").asText().split("-", 2)[1].trim() : list.path("nama").asText()
                         });
                         i++;
                     }

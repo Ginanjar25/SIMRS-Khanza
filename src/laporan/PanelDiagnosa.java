@@ -5,6 +5,7 @@
  */
 package laporan;
 
+import fungsi.TarifInacbg;
 import fungsi.WarnaTable;
 import fungsi.batasInput;
 import fungsi.koneksiDB;
@@ -17,7 +18,10 @@ import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,7 +42,8 @@ public class PanelDiagnosa extends widget.panelisi {
     private Connection koneksi=koneksiDB.condb();
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
-    private PreparedStatement pspenyakit,psdiagnosapasien,psprosedur,pstindakanpasien;
+    private TarifInacbg tarifInacbg = new TarifInacbg();
+    private PreparedStatement pspenyakit,psdiagnosapasien,psprosedur,pstindakanpasien, pslist;
     private ResultSet rs;
     private int jml=0,i=0,index=0;
     private String[] kode,nama,ciripny,keterangan,kategori,cirium,kode2,panjang,pendek,validcode,accpdx,asterisk,im,urut,multy;
@@ -52,9 +57,8 @@ public class PanelDiagnosa extends widget.panelisi {
     public PanelDiagnosa() {
         initComponents();
         TabModeDiagnosaPasien=new DefaultTableModel(null,new Object[]{
-                "P","Tgl.Rawat","No.Rawat","No.R.M.","Nama Pasien","Kode","Nama Penyakit",
-                "Status","Kasus","Urut"
-            }){
+            "P","Tgl.Rawat","No.Rawat","No.R.M.","Nama Pasien","Kode","Nama Penyakit",
+            "Status","Kasus", "Prioritas"}){
             @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
                 if (colIndex==0) {
@@ -65,7 +69,7 @@ public class PanelDiagnosa extends widget.panelisi {
              Class[] types = new Class[] {
                 java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
-                java.lang.Object.class,java.lang.Object.class
+                java.lang.Object.class, java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -794,18 +798,16 @@ public class PanelDiagnosa extends widget.panelisi {
     private void tampil() {
         Valid.tabelKosong(TabModeDiagnosaPasien);
         try{            
-            psdiagnosapasien=koneksi.prepareStatement(
-                "select reg_periksa.tgl_registrasi,diagnosa_pasien.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,"+
-                "diagnosa_pasien.kd_penyakit,penyakit.nm_penyakit,diagnosa_pasien.status,diagnosa_pasien.status_penyakit,"+
-                "diagnosa_pasien.prioritas from diagnosa_pasien inner join reg_periksa on diagnosa_pasien.no_rawat=reg_periksa.no_rawat "+
-                "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
-                "inner join penyakit on diagnosa_pasien.kd_penyakit=penyakit.kd_penyakit "+
-                "where reg_periksa.tgl_registrasi between ? and ? "+(norm.trim().equals("")?"":"and reg_periksa.no_rkm_medis=? ")+
-                (keyword.trim().equals("")?"":"and (diagnosa_pasien.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
-                "pasien.nm_pasien like ? or diagnosa_pasien.kd_penyakit like ? or penyakit.nm_penyakit like ? or "+
-                "diagnosa_pasien.status_penyakit like ? or diagnosa_pasien.status like ?)")+
-                "order by reg_periksa.tgl_registrasi,diagnosa_pasien.prioritas "
-            );
+            psdiagnosapasien=koneksi.prepareStatement("select reg_periksa.tgl_registrasi,diagnosa_pasien.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,"+
+                    "diagnosa_pasien.kd_penyakit,penyakit.nm_penyakit, diagnosa_pasien.status,diagnosa_pasien.status_penyakit, diagnosa_pasien.prioritas "+
+                    "from diagnosa_pasien inner join reg_periksa on diagnosa_pasien.no_rawat=reg_periksa.no_rawat "+
+                    "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
+                    "inner join penyakit on diagnosa_pasien.kd_penyakit=penyakit.kd_penyakit "+
+                    "where reg_periksa.tgl_registrasi between ? and ? and reg_periksa.no_rkm_medis like ? "+
+                    (keyword.trim().equals("")?"":"and (diagnosa_pasien.no_rawat like ? or reg_periksa.no_rkm_medis like ? or "+
+                    "pasien.nm_pasien like ? or diagnosa_pasien.kd_penyakit like ? or penyakit.nm_penyakit like ? or "+
+                    "diagnosa_pasien.status_penyakit like ? or diagnosa_pasien.status like ?)")+
+                    "order by reg_periksa.tgl_registrasi,diagnosa_pasien.prioritas ");
             try {
                 i=3;
                 psdiagnosapasien.setString(1,tanggal1);
@@ -833,7 +835,7 @@ public class PanelDiagnosa extends widget.panelisi {
                 rs=psdiagnosapasien.executeQuery();
                 while(rs.next()){
                     TabModeDiagnosaPasien.addRow(new Object[]{
-                        false,rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9)
+                        false,rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8), rs.getString(9)
                     });
                 }            
             } catch (Exception e) {
@@ -1298,6 +1300,7 @@ public class PanelDiagnosa extends widget.panelisi {
                         Sequel.queryu2("delete from diagnosa_pasien where no_rawat=? and kd_penyakit=?",2,new String[]{
                             tbDiagnosaPasien.getValueAt(i,2).toString(),tbDiagnosaPasien.getValueAt(i,5).toString()
                         });
+                        reorderList(tbDiagnosaPasien.getValueAt(i,2).toString());
                     }
                 }
             }                     
@@ -1310,6 +1313,7 @@ public class PanelDiagnosa extends widget.panelisi {
                         Sequel.queryu2("delete from prosedur_pasien where no_rawat=? and kode=?",2,new String[]{
                             tbTindakanPasien.getValueAt(i,2).toString(),tbTindakanPasien.getValueAt(i,5).toString()
                         });
+                        reorderList(tbDiagnosaPasien.getValueAt(i,2).toString());
                     }
                 }
             }
@@ -1376,6 +1380,151 @@ public class PanelDiagnosa extends widget.panelisi {
             }
         }
         this.setCursor(Cursor.getDefaultCursor());
+    }
+    
+    public class DiagnosaPasienData {
+        private String noRawat;
+        private String kdPenyakit;
+        private String status;
+        private int prioritas;
+        private String statusPenyakit;
+
+        // Getters and setters for each field
+        public String getNoRawat() {
+            return noRawat;
+        }
+
+        public void setNoRawat(String noRawat) {
+            this.noRawat = noRawat;
+        }
+
+        public String getKdPenyakit() {
+            return kdPenyakit;
+        }
+
+        public void setKdPenyakit(String kdPenyakit) {
+            this.kdPenyakit = kdPenyakit;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public int getPrioritas() {
+            return prioritas;
+        }
+
+        public void setPrioritas(int prioritas) {
+            this.prioritas = prioritas;
+        }
+
+        public String getStatusPenyakit() {
+            return statusPenyakit;
+        }
+
+        public void setStatusPenyakit(String statusPenyakit) {
+            this.statusPenyakit = statusPenyakit;
+        }
+    }
+    
+    public void reorderList(String no_rawat) {
+        List<DiagnosaPasienData> diagnosaPasienList = new ArrayList<>();
+
+        try {
+            pslist = koneksi.prepareStatement("select * from diagnosa_pasien where no_rawat = ? ORDER BY prioritas");
+            pslist.setString(1, no_rawat);
+            rs = pslist.executeQuery();
+
+            // Langkah 1: Ambil data diagnosa dan simpan ke list
+            while (rs.next()) {
+                DiagnosaPasienData diagnosa = new DiagnosaPasienData();
+                diagnosa.setNoRawat(rs.getString("no_rawat"));
+                diagnosa.setKdPenyakit(rs.getString("kd_penyakit"));
+                diagnosa.setStatus(rs.getString("status"));
+                diagnosa.setPrioritas(rs.getInt("prioritas"));
+                diagnosa.setStatusPenyakit(rs.getString("status_penyakit"));
+
+                diagnosaPasienList.add(diagnosa);
+            }
+
+            // Langkah 2: Urutkan list berdasarkan prioritas
+            diagnosaPasienList.sort(Comparator.comparingInt(DiagnosaPasienData::getPrioritas));
+
+            // Langkah 3: Perbarui prioritas di list dan update ke database
+            for (int i = 0; i < diagnosaPasienList.size(); i++) {
+                DiagnosaPasienData diagnosa = diagnosaPasienList.get(i);
+                diagnosa.setPrioritas(i + 1);
+
+                // Update prioritas di database
+                PreparedStatement psUpdate = koneksi.prepareStatement(
+                    "UPDATE diagnosa_pasien SET prioritas = ? WHERE no_rawat = ? AND kd_penyakit = ?");
+                psUpdate.setInt(1, diagnosa.getPrioritas());
+                psUpdate.setString(2, diagnosa.getNoRawat());
+                psUpdate.setString(3, diagnosa.getKdPenyakit());
+                psUpdate.executeUpdate();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Handle exception appropriately
+        } finally {
+            // Close resources
+            if (rs != null) try { rs.close(); } catch (Exception e) { /* ignored */ }
+            if (pslist != null) try { pslist.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
+
+
+    public void simpanICDSementara() {
+        StringBuilder diagnosaBuilder = new StringBuilder();
+        StringBuilder prosedurBuilder = new StringBuilder();
+
+        try {
+            koneksi.setAutoCommit(false);
+
+            // Menyusun diagnosa
+            for (int i = 0; i < tbDiagnosa.getRowCount(); i++) {
+                if (tbDiagnosa.getValueAt(i, 0).toString().equals("true")) {
+                    if (diagnosaBuilder.length() > 0) {
+                        diagnosaBuilder.append("#");
+                    }
+                    diagnosaBuilder.append(tbDiagnosa.getValueAt(i, 1).toString());
+                }
+            }
+
+            // Menyusun prosedur
+            for (int i = 0; i < tbProsedur.getRowCount(); i++) {
+                if (tbProsedur.getValueAt(i, 0).toString().equals("true")) {
+                    if (prosedurBuilder.length() > 0) {
+                        prosedurBuilder.append("#");
+                    }
+                    prosedurBuilder.append(tbProsedur.getValueAt(i, 1).toString());
+                }
+            }
+
+//             Menyimpan ke database
+            Sequel.menyimpan("side_db.icd_sementara", "?,?,?", "Penyakit", 3, new String[]{
+                norawat, diagnosaBuilder.toString(), prosedurBuilder.toString()
+            });
+            
+            tarifInacbg.kirimICDGrouping(norawat, diagnosaBuilder.toString(), prosedurBuilder.toString());
+            
+            koneksi.setAutoCommit(true);
+
+            // Reset checkbox di tabel diagnosa dan prosedur
+            for (int i = 0; i < tbDiagnosa.getRowCount(); i++) {
+                tbDiagnosa.setValueAt(false, i, 0);
+            }
+            for (int i = 0; i < tbProsedur.getRowCount(); i++) {
+                tbProsedur.setValueAt(false, i, 0);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Maaf, gagal menyimpan data. Kemungkinan ada data diagnosa atau prosedur yang sama dimasukkan sebelumnya...!");
+        }
+        pilihTab();
     }
     
     private void runBackground(Runnable task) {

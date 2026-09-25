@@ -1442,20 +1442,27 @@ public final class sekuel {
     
     public boolean cekTanggal48jam(String tanggalmulai,String tanggalinputdata){
         bool=false;
-        try {
-            waktumulai = formattanggal.parse(tanggalmulai);
-            kegiatan = formattanggal.parse(tanggalinputdata);
-            bedawaktu = (kegiatan.getTime()-waktumulai.getTime())/1000;
-            if(bedawaktu>172800){
+        String jabatan = cariIsi("select kd_jbtn from petugas where nip = ?", akses.getkode());
+        
+        if (jabatan.equals("J005") || jabatan.equals("J024")){
+            bool=true;
+        }else{
+            try {
+                waktumulai = formattanggal.parse(tanggalmulai);
+                kegiatan = formattanggal.parse(tanggalinputdata);
+                bedawaktu = (kegiatan.getTime()-waktumulai.getTime())/1000;
+                if(bedawaktu>172800){
+                    bool=false;
+                    JOptionPane.showMessageDialog(null,"Maaf, perubahan data / penghapusan data tidak boleh lebih dari 2 x 24 jam !");
+                }else{
+                    bool=true;
+                }
+            } catch (Exception ex) {
                 bool=false;
-                JOptionPane.showMessageDialog(null,"Maaf, perubahan data / penghapusan data tidak boleh lebih dari 2 x 24 jam !");
-            }else{
-                bool=true;
+                System.out.println("Notif : "+ex);
             }
-        } catch (Exception ex) {
-            bool=false;
-            System.out.println("Notif : "+ex);
         }
+        
         return bool;
     }
     
@@ -2509,6 +2516,39 @@ public final class sekuel {
                 outChannel.close();
             }
             outFile.close();
+        }
+    }
+
+   
+    public void menyimpanJSON(String url, String request_json, String response, String user) {
+        PreparedStatement ps = null;
+        try {
+            // Query untuk insert ke trackerjson
+            String sql = "INSERT INTO trackerjson (date, url, request_json, response, user) VALUES (NOW(), ?, ?, ?, ?)";
+            ps = connect.prepareStatement(sql);
+
+            // Set nilai parameter
+            ps.setString(1, url);
+            ps.setString(2, request_json);
+            ps.setString(3, response);
+            ps.setString(4, user);
+
+            // Eksekusi query
+            ps.executeUpdate();
+
+            System.out.println("Log JSON berhasil disimpan untuk URL: " + url);
+
+        } catch (Exception e) {
+            System.out.println("Notifikasi (menyimpanJSON): " + e);
+        } finally {
+            // Tutup statement agar tidak ada memory leak
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (Exception ex) {
+                System.out.println("Notifikasi close ps: " + ex);
+            }
         }
     }
 

@@ -1120,6 +1120,7 @@ private void BtnHapusKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     
     public void SetNoRw(String norw){
         NoRawat.setText(norw);
+        TCari.setText(norw);
         runBackground(() ->tampil());
     }
     

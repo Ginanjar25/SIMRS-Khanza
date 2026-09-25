@@ -12,6 +12,7 @@
 	<parameter name="kotars" class="java.lang.String"/>
 	<parameter name="propinsirs" class="java.lang.String"/>
 	<parameter name="finger" class="java.lang.String"/>
+	<parameter name="sip_dokter" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select surat_cuti_hamil.no_surat,surat_cuti_hamil.no_rawat,reg_periksa.no_rkm_medis,pasien.nm_pasien,dokter.nm_dokter,
 pasien.pekerjaan,reg_periksa.tgl_registrasi,surat_cuti_hamil.keterangan_hamil,surat_cuti_hamil.terhitung_mulai, 
@@ -289,7 +290,7 @@ inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis inner join dok
 				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="120" y="491" width="255" height="21" uuid="b490a633-cceb-4cbe-a32c-68ee595ece55"/>
+				<reportElement x="120" y="486" width="255" height="21" uuid="b490a633-cceb-4cbe-a32c-68ee595ece55"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" size="12" isBold="false" isItalic="false" isUnderline="false"/>
 					<paragraph lineSpacing="Single"/>
@@ -304,6 +305,16 @@ inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis inner join dok
 					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
 				</jr:QRCode>
 			</componentElement>
+			<textField>
+				<reportElement x="120" y="508" width="255" height="22" uuid="24221712-64d2-4980-a280-743f2c020cf2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="12"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA["(No.SIP " + $P{sip_dokter} +")"]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 </jasperReport>

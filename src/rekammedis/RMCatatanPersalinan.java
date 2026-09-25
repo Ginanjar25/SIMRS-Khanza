@@ -1776,7 +1776,7 @@ public final class RMCatatanPersalinan extends javax.swing.JDialog {
                 if(akses.getkode().equals("Admin Utama")){
                     ganti();
                 }else{
-                    if(KdPetugas.getText().equals(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString())){
+                    if((akses.getkode().equals(KdDokter.getText())) || (akses.getkode().equals(NIP.getText()))){
                         if(Sequel.cekTanggal48jam(tbObat.getValueAt(tbObat.getSelectedRow(),9).toString(),Sequel.ambiltanggalsekarang())==true){
                             if(TanggalRegistrasi.getText().equals("")){
                                 TanggalRegistrasi.setText(Sequel.cariIsi("select concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));
@@ -2598,7 +2598,9 @@ public final class RMCatatanPersalinan extends javax.swing.JDialog {
             TglLahir.setText(tbObat.getValueAt(tbObat.getSelectedRow(),3).toString());
             Jk.setText(tbObat.getValueAt(tbObat.getSelectedRow(),4).toString()); 
             KdDokter.setText(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()); 
-            NmDokter.setText(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString()); 
+            NmDokter.setText(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());
+            NIP.setText(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString()); 
+            NmPetugas.setText(tbObat.getValueAt(tbObat.getSelectedRow(),8).toString());
             Catatan.setText(tbObat.getValueAt(tbObat.getSelectedRow(),11).toString());
             WaktuPersalinanKala1.setText(tbObat.getValueAt(tbObat.getSelectedRow(),12).toString());
             WaktuPersalinanKala2.setText(tbObat.getValueAt(tbObat.getSelectedRow(),13).toString());

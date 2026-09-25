@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.FileInputStream;
 import java.net.URI;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
@@ -46,7 +47,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Properties;
 /**
  *
  * @author dosen
@@ -68,6 +71,9 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
     private String link="",requestJson="",URL="",user="",URUTNOREG="",utc="",JADIKANBOOKINGSURATKONTROLAPIBPJS="no",kodedokter="",kodepoli="",noreg="";
     private ApiBPJS api=new ApiBPJS();
     private boolean status=false;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final Properties prop = new Properties();
+    private static String var = "";
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
 
@@ -230,9 +236,9 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         isForm();
         
         try {
-            user=akses.getkode().replace(" ","").substring(0,9);
+            user="RSPW"+akses.getkode().replace(" ","").substring(0,9);
         } catch (Exception e) {
-            user=akses.getkode();
+            user="RSPW"+akses.getkode();
         }
         
         try {
@@ -410,6 +416,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         jLabel65 = new widget.Label();
         jLabel66 = new widget.Label();
         Hamil = new widget.ComboBox();
+        BtnUnlockedSKDP = new widget.Button();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
@@ -665,7 +672,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         R1.setPreferredSize(new java.awt.Dimension(115, 23));
         panelCari.add(R1);
 
-        DTPTanggalSurat1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-02-2026" }));
+        DTPTanggalSurat1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-07-2026" }));
         DTPTanggalSurat1.setDisplayFormat("dd-MM-yyyy");
         DTPTanggalSurat1.setName("DTPTanggalSurat1"); // NOI18N
         DTPTanggalSurat1.setOpaque(false);
@@ -688,7 +695,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         jLabel22.setPreferredSize(new java.awt.Dimension(25, 23));
         panelCari.add(jLabel22);
 
-        DTPTanggalSurat2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-02-2026" }));
+        DTPTanggalSurat2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-07-2023" }));
         DTPTanggalSurat2.setDisplayFormat("dd-MM-yyyy");
         DTPTanggalSurat2.setName("DTPTanggalSurat2"); // NOI18N
         DTPTanggalSurat2.setOpaque(false);
@@ -714,7 +721,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         R2.setPreferredSize(new java.awt.Dimension(120, 23));
         panelCari.add(R2);
 
-        DTPTanggalKontrol1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-02-2026" }));
+        DTPTanggalKontrol1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-07-2026" }));
         DTPTanggalKontrol1.setDisplayFormat("dd-MM-yyyy");
         DTPTanggalKontrol1.setName("DTPTanggalKontrol1"); // NOI18N
         DTPTanggalKontrol1.setOpaque(false);
@@ -737,7 +744,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         jLabel25.setPreferredSize(new java.awt.Dimension(25, 23));
         panelCari.add(jLabel25);
 
-        DTPTanggalKontrol2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-02-2026" }));
+        DTPTanggalKontrol2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-07-2026" }));
         DTPTanggalKontrol2.setDisplayFormat("dd-MM-yyyy");
         DTPTanggalKontrol2.setName("DTPTanggalKontrol2"); // NOI18N
         DTPTanggalKontrol2.setOpaque(false);
@@ -794,7 +801,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         jLabel4.setText("No.SEP :");
         jLabel4.setName("jLabel4"); // NOI18N
         FormInput.add(jLabel4);
-        jLabel4.setBounds(232, 10, 50, 23);
+        jLabel4.setBounds(250, 10, 50, 23);
 
         NoRawat.setEditable(false);
         NoRawat.setHighlighter(null);
@@ -817,10 +824,11 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         NoSEP.setHighlighter(null);
         NoSEP.setName("NoSEP"); // NOI18N
         FormInput.add(NoSEP);
-        NoSEP.setBounds(286, 10, 150, 23);
+        NoSEP.setBounds(300, 10, 150, 23);
 
+        TanggalSurat.setEditable(false);
         TanggalSurat.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-02-2026" }));
+        TanggalSurat.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-07-2026" }));
         TanggalSurat.setDisplayFormat("dd-MM-yyyy");
         TanggalSurat.setName("TanggalSurat"); // NOI18N
         TanggalSurat.setOpaque(false);
@@ -900,7 +908,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         jLabel14.setBounds(491, 70, 100, 23);
 
         TanggalKontrol.setForeground(new java.awt.Color(50, 70, 50));
-        TanggalKontrol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "09-02-2026 05:08:45" }));
+        TanggalKontrol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-07-2026 08:48:49" }));
         TanggalKontrol.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         TanggalKontrol.setName("TanggalKontrol"); // NOI18N
         TanggalKontrol.setOpaque(false);
@@ -982,6 +990,23 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
         Diagnosa.setName("Diagnosa"); // NOI18N
         FormInput.add(Diagnosa);
         Diagnosa.setBounds(509, 10, 218, 23);
+
+        BtnUnlockedSKDP.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
+        BtnUnlockedSKDP.setMnemonic('2');
+        BtnUnlockedSKDP.setName("BtnUnlockedSKDP"); // NOI18N
+        BtnUnlockedSKDP.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnUnlockedSKDP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnUnlockedSKDPActionPerformed(evt);
+            }
+        });
+        BtnUnlockedSKDP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnUnlockedSKDPKeyPressed(evt);
+            }
+        });
+        FormInput.add(BtnUnlockedSKDP);
+        BtnUnlockedSKDP.setBounds(230, 10, 28, 23);
 
         jLabel18.setText("Status PRB :");
         jLabel18.setName("jLabel18"); // NOI18N
@@ -1456,6 +1481,19 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
             Valid.textKosong(KdDokter,"Dokter");
         }else if(NmPoli.getText().trim().equals("")||NmPoli.getText().trim().equals("")){
             Valid.textKosong(KdPoli,"Poli");
+        }else if(TanggalSurat.getSelectedItem().toString().trim().equals(TanggalKontrol.getSelectedItem().toString().substring(0, 10))){
+            JOptionPane.showMessageDialog(null,"Tanggal terbit surat kontrol tidak boleh sama dengan tanggal rencana kontrol");
+        }else if(!cekSkdpPoli(NoRM.getText(), NoSEP.getText(), TanggalKontrol.getSelectedItem().toString()).equals("")){  
+            String noSkdpPoli = cekSkdpPoli(NoRM.getText(), NoSEP.getText(), TanggalKontrol.getSelectedItem().toString());
+            String data = Sequel.cariIsi("SELECT CONCAT('Tanggal : ',skdp.tgl_rencana,'\nPoli : ', skdp.nm_poli_bpjs , '\nDokter : ', skdp.nm_dokter_bpjs) FROM bridging_surat_kontrol_bpjs skdp WHERE skdp.no_surat =?", noSkdpPoli);
+            JOptionPane.showMessageDialog(null,"Terdapat rencana kontrol poli\nNo SKDP : "
+                    + ""+noSkdpPoli+""
+                    + "\n"+data+" "
+                    + "\nRencana Kontrol POST Ranap tidak boleh lebih dari tanggal rencana kontrol Poli");
+        }else if(Sequel.cariInteger("select count(no_surat) from bridging_surat_kontrol_bpjs where no_sep = ?", NoSEP.getText()) > 0){
+              JOptionPane.showMessageDialog(null,"Sudah terdapat SKDP dengan tanggal rencana kontrol yg sama");
+        }else if(!CheckLockSkdp()){
+            System.out.println("Pembuatan SKDP dikunci karena tidak sesuai dengan tanggal terbit SEP");
         }else{
             try {
                 headers = new HttpHeaders();
@@ -1537,6 +1575,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
                 nameNode = root.path("metaData");
                 System.out.println("code : "+nameNode.path("code").asText());
                 System.out.println("message : "+nameNode.path("message").asText());
+//                Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),user});
                 if(nameNode.path("code").asText().equals("200")){
                     response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc)).path("noSuratKontrol");
                     if(Sequel.menyimpantf("bridging_surat_kontrol_bpjs","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Surat",45,new String[]{
@@ -1555,8 +1594,16 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
                                 JOptionPane.showMessageDialog(null,"Gagal menyimpan booking, silahkan hubungi administrator...!!!!");
                             }
                         }
+                         Sequel.meghapus("bridging_surat_kontrol_exp", "no_sep", NoSEP.getText());
                     }
                 }else{
+                    if(nameNode.path("message").asText().contains("Surat Rujukan ini Masa Berlaku Habis")){
+                        String keterangan = nameNode.path("message").asText();
+//                        response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc)).path("noSuratKontrol");
+                        Sequel.menyimpan("bridging_surat_kontrol_exp", "?,?,?,?,?,?,?,?,now(),'0000-00-00 00:00:00'", 8, new String[]{
+                            NoSEP.getText(),Valid.SetTgl(TanggalKontrol.getSelectedItem()+""),KdDokter.getText(),NmDokter.getText(),KdPoli.getText(),NmPoli.getText(),keterangan,user=akses.getkode()
+                        });
+                    }
                     JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
                 }   
             }catch (Exception ex) {
@@ -1795,6 +1842,10 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             Valid.textKosong(KdDokter,"Dokter");
         }else if(NmPoli.getText().trim().equals("")||NmPoli.getText().trim().equals("")){
             Valid.textKosong(KdPoli,"Poli");
+        }else if(TanggalSurat.getSelectedItem().toString().trim().equals(TanggalKontrol.getSelectedItem().toString().substring(0, 10))){
+            JOptionPane.showMessageDialog(null,"Tanggal terbit surat kontrol tidak boleh sama dengan tanggal rencana kontrol");
+        }else if(Sequel.cariInteger("select count(referensi_mobilejkn_bpjs.nomorreferensi) from referensi_mobilejkn_bpjs where  referensi_mobilejkn_bpjs.status != 'Batal' and referensi_mobilejkn_bpjs.nomorreferensi=?", NoSurat.getText())>0){
+            JOptionPane.showMessageDialog(null,"No. SKDP Sudah di gunakan untuk antrian Mobile JKN, Silhakan Batalkan dulu");
         }else{
             if(tbObat.getSelectedRow()!= -1){
                 try {
@@ -1879,6 +1930,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     nameNode = root.path("metaData");
                     System.out.println("code : "+nameNode.path("code").asText());
                     System.out.println("message : "+nameNode.path("message").asText());
+//                    Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),user});
                     if(nameNode.path("code").asText().equals("200")){
                         if(Sequel.mengedittf("bridging_surat_kontrol_bpjs","no_surat=?","tgl_surat=?,tgl_rencana=?,kd_dokter_bpjs=?,nm_dokter_bpjs=?,kd_poli_bpjs=?,nm_poli_bpjs=?,status_prb=?,HBA1C=?,GDP=?,GD2JPP=?,eGFR=?,TD_Sistolik=?,TD_Diastolik=?,LDL=?,"+
                                 "Rata_TD_Sistolik=?,Rata_TD_Diastolik=?,JantungKoroner=?,Stroke=?,VaskularPerifer=?,Aritmia=?,AtrialFibrilasi=?,NadiIstirahat=?,SesakNapas3Bulan=?,NyeriDada3Bulan=?,SesakNapasAktivitas=?,NyeriDadaAktivitas=?,"+
@@ -1894,8 +1946,16 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             })==true){
                             emptTeks();
                             runBackground(() ->tampil());
+                            Sequel.meghapus("bridging_surat_kontrol_exp", "no_sep", NoSEP.getText());
                         }
                     }else{
+                        if (nameNode.path("message").asText().contains("Surat Rujukan ini Masa Berlaku Habis")) {
+                            String keterangan = nameNode.path("message").asText();
+//                        response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc)).path("noSuratKontrol");
+                            Sequel.menyimpan("bridging_surat_kontrol_exp", "?,?,?,?,?,?,?,?,now(),'0000-00-00 00:00:00'", 8, new String[]{
+                                NoSEP.getText(), Valid.SetTgl(TanggalKontrol.getSelectedItem() + ""), KdDokter.getText(), NmDokter.getText(), KdPoli.getText(), NmPoli.getText(), keterangan, user = akses.getkode()
+                            });
+                        }
                         JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
                     }   
                 }catch (Exception ex) {
@@ -2032,6 +2092,25 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         R1.setSelected(true);
     }//GEN-LAST:event_DTPTanggalSurat2KeyPressed
 
+    private void BtnUnlockedSKDPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnUnlockedSKDPActionPerformed
+        String LOCKEDSKDP = "no";
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            LOCKEDSKDP = prop.getProperty("LOCKEDSKDP", "no");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        if (LOCKEDSKDP.equals("yes")) {
+            Sequel.mengedit("antripersetujuan", "no_rawat='"+NoRawat.getText()+"'", "no_pernyataan='unlocked'");
+            JOptionPane.showMessageDialog(null,"Sukses Unlocked SEP");
+        }
+    }//GEN-LAST:event_BtnUnlockedSKDPActionPerformed
+
+    private void BtnUnlockedSKDPKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnUnlockedSKDPKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BtnUnlockedSKDPKeyPressed
+
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         if(koneksiDB.CARICEPAT().equals("aktif")){
             TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
@@ -2088,6 +2167,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Button BtnPoli;
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
+    private widget.Button BtnUnlockedSKDP;
     private widget.CekBox ChkInput;
     private widget.Tanggal DTPTanggalKontrol1;
     private widget.Tanggal DTPTanggalKontrol2;
@@ -2479,10 +2559,13 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         JK.setText(jk.replaceAll("L","LAKI-LAKI").replaceAll("P","PEREMPUAN"));
         Diagnosa.setText(diagnosa);
         TCari.setText(nosep);
-        ChkInput.setSelected(true);
+        ChkInput.setSelected(true);       
         isForm();
         runBackground(() ->tampil());
+        CheckLockSkdp();
     }
+    
+    
     
     public void setNoRm(String norm) {
         TCari.setText(norm);
@@ -2517,6 +2600,15 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         BtnHapus.setEnabled(akses.getbpjs_surat_kontrol());
         BtnPrint.setEnabled(akses.getbpjs_surat_kontrol());
         BtnEdit.setEnabled(akses.getbpjs_surat_kontrol());
+        BtnUnlockedSKDP.setEnabled(false);
+        BtnUnlockedSKDP.setVisible(false);
+        
+        String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
+         
+        if(akses.getkode().equals("Admin Utama") || jabatan.equals("J005")){
+            BtnUnlockedSKDP.setEnabled(true);
+            BtnUnlockedSKDP.setVisible(true);
+        }
     }
 
     public JTable getTable(){
@@ -2571,14 +2663,17 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 	    headers.add("X-Signature",api.getHmac(utc));
             headers.add("user_key",koneksiDB.USERKEYAPIBPJS());
             URL = link+"/RencanaKontrol/Delete";
+//            user = "RSPW"+user;
             requestJson ="{\"request\":{\"t_suratkontrol\":{\"noSuratKontrol\":\""+NoSurat.getText()+"\",\"user\":\""+user+"\"}}}";            
             requestEntity = new HttpEntity(requestJson,headers);
             root = mapper.readTree(restTemplate.exchange(URL, HttpMethod.DELETE,requestEntity, String.class).getBody());
             nameNode = root.path("metaData");
             System.out.println("code : "+nameNode.path("code").asText());
             System.out.println("message : "+nameNode.path("message").asText());
+            Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),user});
             if(nameNode.path("code").asText().equals("200")){
                 Sequel.meghapus("bridging_surat_kontrol_bpjs","no_surat",NoSurat.getText());
+                Sequel.meghapus("bridging_surat_kontrol_exp", "no_sep", NoSEP.getText());
                 tabMode.removeRow(tbObat.getSelectedRow());
                 LCount.setText(""+tabMode.getRowCount());
                 emptTeks();
@@ -2630,6 +2725,77 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             
         return status;
     }
+    
+    private String cekSkdpPoli(String no_rm, String no_sep, String tgl) {
+        String skdpPoli = "";
+        String jnsSep = Sequel.cariIsi("SELECT bs.jnspelayanan FROM bridging_sep bs WHERE bs.no_sep = ?", no_sep);
+        if (!"1".equals(jnsSep)) {
+            return skdpPoli;
+        }
+        String noSkdp = Sequel.cariIsi(
+                "SELECT sk.no_surat FROM pasien ps "
+                + "JOIN bridging_sep bs ON bs.no_kartu = ps.no_peserta "
+                + "JOIN reg_periksa rp ON rp.no_rawat = bs.no_rawat "
+                + "LEFT JOIN bridging_surat_kontrol_bpjs sk ON sk.no_sep = bs.no_sep "
+                + "WHERE ps.no_rkm_medis = ? AND bs.jnspelayanan = '2' AND sk.tgl_rencana > CURDATE() "
+                + "ORDER BY rp.no_rawat DESC, bs.tglsep ASC LIMIT 1",
+                no_rm
+        );
+        if (noSkdp != null && !noSkdp.trim().isEmpty()) {
+            String tglSkdpStr = Sequel.cariIsi("SELECT skdp.tgl_rencana FROM bridging_surat_kontrol_bpjs skdp WHERE skdp.no_surat =?", noSkdp);
+            LocalDate tglSkdpPoli = LocalDate.parse(tglSkdpStr);
+            LocalDate tglSkdpPostRi = LocalDate.parse(tgl.substring(0, 10), formatter);
+            if (!tglSkdpPoli.isAfter(tglSkdpPostRi)){
+                skdpPoli = noSkdp;
+            }else{
+                skdpPoli = "";
+            }
+        } else {
+            skdpPoli = "";
+        }
+        return skdpPoli;
+    }
+    
+    private boolean CheckLockSkdp() {
+        
+        String LOCKEDSKDP = "no";
+        try {
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            LOCKEDSKDP = prop.getProperty("LOCKEDSKDP", "no");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        if(LOCKEDSKDP.equals("no")){
+            return true;
+        }
+        
+        if(Sequel.cariIsi("select jnspelayanan from bridging_sep where no_sep = ?", NoSEP.getText()).equals("1")){
+            return true;
+        }
+        
+        String tgl_sep = Sequel.cariIsi("select tglsep from bridging_sep where no_sep = ?", NoSEP.getText());
+        boolean sep_postri = Sequel.cariIsi("SELECT EXISTS( SELECT 1 FROM bridging_sep bs "
+                + "INNER JOIN bridging_surat_kontrol_bpjs skdp ON skdp.no_surat = bs.noskdp "
+                + "INNER JOIN bridging_sep bsi ON bsi.no_sep = skdp.no_sep "
+                + "INNER JOIN bridging_surat_pri_bpjs spri ON spri.no_surat = bsi.noskdp "
+                + "WHERE bs.no_sep = ?)", NoSEP.getText()).equals("1");
+        String locked_sep = Sequel.cariIsi("SELECT no_pernyataan FROM antripersetujuan bs WHERE bs.no_rawat = ?", NoRawat.getText());
+        if(locked_sep.equals("unlocked")){
+             return true;
+        }else if (!tgl_sep.equals(Valid.SetTgl(TanggalSurat.getSelectedItem() + "")) && !sep_postri) {
+            if (LOCKEDSKDP.equals("yes")) {
+                Sequel.menyimpan("antripersetujuan", "?,?", 2, new String[]{"locked", NoRawat.getText()});
+            }
+            JOptionPane.showMessageDialog(null, "Pembuatan SKDP tidak boleh berbeda dengan tanggal terbit SEP Rawat Jalan !!");
+            return false;
+        } else if (locked_sep.equals("locked") && LOCKEDSKDP.equals("yes")) {
+            JOptionPane.showMessageDialog(null, "Silahkan konfirmasi akses ke PIC terkait / Petugas IT !!");
+            return false;
+        }
+        return true;
+    }
+
     
     private void runBackground(Runnable task) {
         if (ceksukses) return;

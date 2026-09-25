@@ -1,0 +1,49 @@
+{
+  "poli": [
+    {
+      "no": "1.",
+      "kdUnit": "01",
+      "prb": "Diabetes Mellitus"
+    },
+    {
+      "no": "2.",
+      "kdUnit": "02",
+      "prb": "Hypertensi"
+    },
+    {
+      "no": "3.",
+      "kdUnit": "03",
+      "prb": "Asthma"
+    },
+    {
+      "no": "4.",
+      "kdUnit": "04",
+      "prb": "Penyakit Jantung"
+    },
+    {
+      "no": "5.",
+      "kdUnit": "05",
+      "prb": "PPOK (Penyakit Paru Obstruktif Kronik)"
+    },
+    {
+      "no": "6.",
+      "kdUnit": "06",
+      "prb": "Schizophrenia"
+    },
+    {
+      "no": "7.",
+      "kdUnit": "07",
+      "prb": "Stroke"
+    },
+    {
+      "no": "8.",
+      "kdUnit": "08",
+      "prb": "Epilepsi"
+    },
+    {
+      "no": "9.",
+      "kdUnit": "09",
+      "prb": "Systemic Lupus Erythematosus"
+    }
+  ]
+}

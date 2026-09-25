@@ -833,6 +833,8 @@ public class BPJSSPRI extends javax.swing.JDialog {
             Valid.textKosong(KdPoli,"Poli");
         }else if(Diagnosa.getText().trim().equals("")){
             Valid.textKosong(btnDiagnosa,"Diagnosa");
+        }else if(!KdDokter.getText().trim().equals(Sequel.cariIsi("SELECT mdp.kd_dokter_bpjs from dpjp_ranap dr JOIN maping_dokter_dpjpvclaim mdp ON mdp.kd_dokter = dr.kd_dokter WHERE dr.no_rawat =?",NoRawat.getText()))){
+            JOptionPane.showMessageDialog(null,"Dokter DPJP tidak sama dengam permintaan IGD");
         }else{
             try {
                 headers = new HttpHeaders();
@@ -1581,6 +1583,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         TCari.setText(nokartu);
         NoSEP.setText(nosep);
         ChkInput.setSelected(true);
+        Sequel.cariIsi("select diagnosa from permintaan_ranap where no_rawat = ?",Diagnosa, norawat);
         isForm();
         runBackground(() ->tampil());
     }
@@ -1596,6 +1599,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         ChkInput.setSelected(true);
         Diagnosa.setText(diagnosa);
         NoSEP.setText(nosep);
+        Sequel.cariIsi("select diagnosa from permintaan_ranap where no_rawat = ?",Diagnosa, norawat);
         isForm();
         runBackground(() ->tampil());
     }

@@ -52,6 +52,10 @@ import widget.Tanggal;
 import widget.TextArea;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
 import widget.TextBox;
 /**
  *
@@ -1531,4 +1535,160 @@ public final class validasi {
     public static int milliToDay(long milli) {
         return (int) ((double) milli / (1000 * 24 * 60 * 60));
     }
+    
+   public static String convertToRoman(int number) {
+        // Array untuk menyimpan angka Romawi dari 1 hingga 12
+        String[] romanNumerals = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"};
+        
+        // Mengembalikan angka Romawi yang sesuai dengan nomor bulan
+        if (number >= 1 && number <= 12) {
+            return romanNumerals[number - 1];
+        } else {
+            return "Invalid month"; // Menangani kasus di luar rentang bulan
+        }
+    }
+   
+    @SuppressWarnings("unchecked")
+    public void CombinedReports(List<String> reportNames, String dirName, String title, Map<String, Object> parameters) {
+        try {
+            JasperPrint combinedPrint = null;
+
+            for (String reportName : reportNames) {
+                String fullPath = System.getProperty("user.dir") + File.separator + dirName + File.separator + reportName;
+
+                File reportFile = new File(fullPath);
+                if (!reportFile.exists()) {
+                    System.out.println("File not found: " + fullPath);
+                    continue; // Skip ke file berikutnya
+                }
+
+                System.out.println("Found Report File at : " + fullPath);
+                JasperReport report = (JasperReport) JRLoader.loadObject(reportFile);
+                JasperPrint print = JasperFillManager.fillReport(report, parameters, connect);
+
+                if (combinedPrint == null) {
+                    combinedPrint = print;
+                } else {
+                    combinedPrint.getPages().addAll(print.getPages());
+                }
+            }
+
+            if (combinedPrint != null) {
+                JasperViewer jasperViewer = new JasperViewer(combinedPrint, false);
+                jasperViewer.setTitle(title);
+                Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+                jasperViewer.setSize(screen.width - 50, screen.height - 50);
+                jasperViewer.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
+                jasperViewer.setLocationRelativeTo(null);
+                jasperViewer.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Tidak ada laporan yang berhasil diproses.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Report can't be viewed because: " + e);
+            JOptionPane.showMessageDialog(null, "Report can't be viewed because: " + e.getMessage());
+        }
+    }
+
+//    public String singkatNama(String nama) {
+//        if (nama == null || nama.trim().isEmpty()) {
+//            return nama;
+//        }
+//
+//        // Tambahkan spasi setelah titik jika tidak ada (BY.NY. → BY. NY.)
+//        nama = nama.replaceAll("\\.(?=\\S)", ". ");
+//
+//        String[] words = nama.trim().split("\\s+");
+//
+//        List<String> prefix = new ArrayList<>();
+//        List<String> namaUtama = new ArrayList<>();
+//
+//        for (String w : words) {
+//            String clean = w.replace(".", "").toUpperCase();
+//
+//            if (clean.equals("BY")) {
+//                prefix.add("BY."); // prefix tetap dirapikan
+//            } else if (clean.equals("NY")) {
+//                prefix.add("NY.");
+//            } else {
+//                namaUtama.add(w); // tidak diubah
+//            }
+//        }
+//
+//        if (namaUtama.size() > 3) {
+//            List<String> hasil = new ArrayList<>();
+//
+//            // ambil apa adanya (tidak capitalize)
+//            hasil.add(namaUtama.get(0));
+//            hasil.add(namaUtama.get(1));
+//
+//            for (int i = 2; i < namaUtama.size(); i++) {
+//                String huruf = namaUtama.get(i)
+//                        .substring(0, 1)
+//                        .toUpperCase()
+//                        .replace(".", "");
+//                hasil.add(huruf + ".");
+//            }
+//
+//            String finalNama = String.join(" ", hasil);
+//
+//            if (!prefix.isEmpty()) {
+//                return String.join(" ", prefix) + " " + finalNama;
+//            }
+//
+//            return finalNama;
+//        }
+//
+//        // <= 3 kata → biarkan asli
+//        if (!prefix.isEmpty()) {
+//            return String.join(" ", prefix) + " " + String.join(" ", namaUtama);
+//        }
+//
+//        return String.join(" ", namaUtama);
+//    }
+    
+    public String singkatNama(String nama) {
+        if (nama == null || nama.trim().isEmpty()) {
+            return nama;
+        }
+
+        // Rapikan titik
+        nama = nama.replaceAll("\\.(?=[A-Z])", ". ");
+        nama = nama.trim().replaceAll("\\s+", " ");
+
+        String[] words = nama.split("\\s+");
+
+        List<String> hasil = new ArrayList<>();
+
+        for (String w : words) {
+            String clean = w.replace(".", "").toUpperCase();
+
+            // gelar/singkatan tetap
+            if (w.endsWith(".")) {
+                hasil.add(w);
+            } else {
+                hasil.add(w);
+            }
+        }
+
+        // jika lebih dari 3 kata
+        if (hasil.size() > 3) {
+
+            // singkat kata terakhir saja
+            int last = hasil.size() - 1;
+
+            String kataTerakhir = hasil.get(last);
+
+            if (!kataTerakhir.endsWith(".")) {
+                hasil.set(
+                        last,
+                        kataTerakhir.substring(0, 1).toUpperCase() + "."
+                );
+            }
+        }
+
+        return String.join(" ", hasil);
+    }
+
 }

@@ -4507,7 +4507,7 @@ public final class RMPenilaianAwalKeperawatanRanap extends javax.swing.JDialog {
         NilaiSydney10.setBounds(794, 2300, 60, 23);
 
         jLabel267.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel267.setText("11. Usia 70 Tahun Ke Atas");
+        jLabel267.setText("11. Usia 60 Tahun Ke Atas");
         jLabel267.setName("jLabel267"); // NOI18N
         FormInput.add(jLabel267);
         jLabel267.setBounds(64, 2330, 450, 23);

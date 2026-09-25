@@ -49,7 +49,7 @@ public class DlgPiutang extends javax.swing.JDialog {
     private double ttljual=0,stok,jumlah,ppnobat=0,besarppnobat=0,tagihanppn=0,ongkir=0,uangmuka=0,sisapiutang=0;
     private PreparedStatement ps;
     private ResultSet rs;
-    private String aktifkanbatch="no",pilihanetiket,hppfarmasi="",DEPOAKTIFOBAT="";
+    private String aktifkanbatch="no",pilihanetiket,hppfarmasi="",DEPOAKTIFOBAT="", kd_bangsal="";
     private boolean sukses=true;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
@@ -212,13 +212,13 @@ public class DlgPiutang extends javax.swing.JDialog {
         } catch (Exception e) {
             hppfarmasi="dasar";
         }
-        
         try {
             DEPOAKTIFOBAT = koneksiDB.DEPOAKTIFOBAT();
         } catch (Exception e) {
             System.out.println("E : "+e);
             DEPOAKTIFOBAT = "";
         }
+        
     }
 
     /** This method is called from within the constructor to
@@ -2034,8 +2034,8 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             BtnPtg.setEnabled(false);
             BtnSimpan.setEnabled(akses.getpiutang_obat());
             kdptg.setText(akses.getkode());
-            nmptg.setText(Sequel.CariPetugas(kdptg.getText()));
-            if(!DEPOAKTIFOBAT.equals("")){
+            nmptg.setText(form.petugas.tampil3(kdptg.getText()));
+            if (!DEPOAKTIFOBAT.equals("")) {
                 kdgudang.setText(DEPOAKTIFOBAT);
                 nmgudang.setText(Sequel.CariBangsal(DEPOAKTIFOBAT));
                 BtnGudang.setEnabled(false);

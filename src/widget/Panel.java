@@ -23,7 +23,8 @@ public class Panel extends JPanel {
     private static final long serialVersionUID = -1;
     private BufferedImage gradientImage;
     private final Color black = new Color(30,30,0);
-    private final Color warna = new Color(80,80,0);
+    private final Color warna = new Color(0, 102, 255);
+    private final Color warna2 = new Color(179, 209, 255);
 
     public Panel() {
         super();
