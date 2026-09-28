@@ -399,7 +399,7 @@ public final class DlgCariTemplateTambahanBiaya extends javax.swing.JDialog {
     }
     
     public void isCek(){        
-        BtnTambah.setEnabled(akses.getsuku_bangsa());
+        BtnTambah.setEnabled(akses.getbilling_ralan());
     }
     
     

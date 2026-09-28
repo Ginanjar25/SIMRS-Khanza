@@ -342,7 +342,7 @@ public class DlgTemplateTambahBiaya extends javax.swing.JDialog {
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
         if(Nama.getText().trim().equals("")){
-            Valid.textKosong(Nama,"Suku Bangsa");
+            Valid.textKosong(Nama,"Template tambahan biaya");
         }else{
             if(Sequel.meghapustf("template_tambahan_biaya","id_template",tbkecamatan.getValueAt(tbkecamatan.getSelectedRow(),0).toString())==true){
                 if(tbkecamatan.getSelectedRow()!= -1){
@@ -532,7 +532,7 @@ public class DlgTemplateTambahBiaya extends javax.swing.JDialog {
     }
     
     public void isCek(){
-        BtnSimpan.setEnabled(akses.getsuku_bangsa());
-        BtnHapus.setEnabled(akses.getsuku_bangsa());
+        BtnSimpan.setEnabled(akses.getbilling_ralan());
+        BtnHapus.setEnabled(akses.getbilling_ralan());
     }
 }
