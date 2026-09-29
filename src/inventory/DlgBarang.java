@@ -23,6 +23,7 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -54,7 +55,7 @@ public class DlgBarang extends javax.swing.JDialog {
     public  DlgCariCaraBayar penjab=new DlgCariCaraBayar(null,false);
     private double totalstok, stokgudang;
     private DlgCariSatuan satuan;
-    private DlgCariJenis jenis;
+    public DlgCariJenis jenis;
     private DlgCariKategori kategori;
     private DlgCariGolongan golongan;
     private DlgCariIndustriFarmasi industri;
@@ -2446,7 +2447,7 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         akses.setform("DlgBarang");
         penjab.setPilihan("1");
         penjab.isCek();
-        penjab.onCari();
+//        penjab.onCari();
         penjab.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
         penjab.setLocationRelativeTo(internalFrame1);
         penjab.setVisible(true);
@@ -2479,7 +2480,7 @@ private void KapasitasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
         });
         
         penjab.getTable().addKeyListener(new KeyListener() {
-             @Override
+            @Override
             public void keyTyped(KeyEvent e) {}
             @Override 
             public void keyPressed(KeyEvent e) {

@@ -185,32 +185,7 @@ public class DlgSBARRalan extends javax.swing.JDialog {
         
         ChkInput.setSelected(false);
         isForm();
-           
-        
         jam();
-        
-        perawatan.dokter.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {}
-            @Override
-            public void windowClosing(WindowEvent e) {}
-            @Override
-            public void windowClosed(WindowEvent e) {
-                if(perawatan.dokter.getTable().getSelectedRow()!= -1){
-                    TKdDPJPSBAR.setText(perawatan.dokter.getTable().getValueAt(perawatan.dokter.getTable().getSelectedRow(),0).toString());
-                    TNmDPJPSBAR.setText(perawatan.dokter.getTable().getValueAt(perawatan.dokter.getTable().getSelectedRow(),1).toString());
-                    TKdDPJPSBAR.requestFocus();
-                }
-            }
-            @Override
-            public void windowIconified(WindowEvent e) {}
-            @Override
-            public void windowDeiconified(WindowEvent e) {}
-            @Override
-            public void windowActivated(WindowEvent e) {}
-            @Override
-            public void windowDeactivated(WindowEvent e) {}
-        });
         
         tbSBAR.getTableHeader().addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -1026,11 +1001,46 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     private void BtnSeekDokterSBARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeekDokterSBARActionPerformed
         akses.setform("DlgIGD");
-        perawatan.dokter.isCek();
-        perawatan.dokter.setSize(internalFrameSBAR.getWidth()-20,internalFrameSBAR.getHeight()-20);
-        perawatan.dokter.setLocationRelativeTo(internalFrameSBAR);
-//        perawatan.dokter.setAlwaysOnTop(true);
-        perawatan.dokter.setVisible(true);
+        DlgCariDokter dokter = new DlgCariDokter(null, false);
+        dokter.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (dokter.getTable().getSelectedRow() != -1) {
+                    TKdDPJPSBAR.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(), 0).toString());
+                    TNmDPJPSBAR.setText(dokter.getTable().getValueAt(dokter.getTable().getSelectedRow(), 1).toString());
+                }
+                TKdDPJPSBAR.requestFocus();
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+            }
+        });
+        dokter.isCek();
+        dokter.setSize(internalFrameSBAR.getWidth() - 20, internalFrameSBAR.getHeight() - 20);
+        dokter.setLocationRelativeTo(internalFrameSBAR);
+        dokter.setAlwaysOnTop(false);
+        dokter.setVisible(true);
     }//GEN-LAST:event_BtnSeekDokterSBARActionPerformed
 
     private void TSituationSBARKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TSituationSBARKeyPressed
@@ -1330,7 +1340,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     if(TKdDPJPSBAR.getText().equals("")){
                         TKdDPJPSBAR.setText(rs.getString("kd_dokter"));
                     }
-                    TNmDPJPSBAR.setText(perawatan.dokter.tampil3(TKdDPJPSBAR.getText()));
+                    TNmDPJPSBAR.setText(Sequel.CariDokter(TKdDPJPSBAR.getText()));
                     TanggalRegistrasi.setText(rs.getString("tgl_registrasi")+" "+rs.getString("jam_reg"));
                 }
             } catch (Exception e) {

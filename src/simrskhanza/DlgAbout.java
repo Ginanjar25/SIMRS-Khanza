@@ -27,13 +27,6 @@ public class DlgAbout extends javax.swing.JDialog {
         initComponents();
         this.setLocation(10,10);
         setSize(465,515);
-        
-         try {
-            BuildVersion=koneksiDB.BUILDVERSION();
-        } catch (Exception e) {
-            BuildVersion="Default Version";
-        }
-        jLabel17.setText(BuildVersion);
     }
 
     /** This method is called from within the constructor to

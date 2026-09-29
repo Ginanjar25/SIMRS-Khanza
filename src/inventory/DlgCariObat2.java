@@ -476,19 +476,9 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
 
         KdPj.setHighlighter(null);
         KdPj.setName("KdPj"); // NOI18N
-        KdPj.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                KdPjKeyPressed(evt);
-            }
-        });
 
         kelas.setHighlighter(null);
         kelas.setName("kelas"); // NOI18N
-        kelas.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                kelasKeyPressed(evt);
-            }
-        });
 
         TNoRM.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         TNoRM.setHighlighter(null);
@@ -670,7 +660,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         jLabel5.setBounds(0, 40, 68, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-03-2026" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "18-03-2026" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -1684,13 +1674,14 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         }
     }//GEN-LAST:event_ChkNoResepItemStateChanged
 
-    private void KdPjKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KdPjKeyPressed
+    private void KdPjKeyPressed(java.awt.event.KeyEvent evt) {                                
         // TODO add your handling code here:
-    }//GEN-LAST:event_KdPjKeyPressed
+    }                               
+    // TODO add your handling code here:
 
-    private void kelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kelasKeyPressed
+    private void kelasKeyPressed(java.awt.event.KeyEvent evt) {                                 
         // TODO add your handling code here:
-    }//GEN-LAST:event_kelasKeyPressed
+    }                                
 
     private void ppStokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppStokActionPerformed
         if(kdgudang.getText().equals("")){
@@ -2043,14 +2034,6 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         ceksetok.setVisible(true);
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_ppStok1ActionPerformed
-
-    private void kelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kelasKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_kelasKeyPressed
-
-    private void KdPjKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KdPjKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_KdPjKeyPressed
 
     private void TAlergiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TAlergiActionPerformed
         // TODO add your handling code here:

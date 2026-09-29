@@ -1450,7 +1450,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         kdgudang.setText(kd_bangsal); 
 //        if(lokasidepoutama.getDepoDefault().equals("")){
             lokasidepoutama.SetLokasiDepoUtama();
-        }
+        
         kdgudang.setText(lokasidepoutama.getDepoDefault());
         nmgudang.setText(Sequel.CariBangsal(kdgudang.getText()));
         if(akses.getjml2()>=1){
@@ -1535,7 +1535,7 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             BtnHapus.setEnabled(akses.getretur_dari_pembeli());
             BtnBatal.setEnabled(akses.getretur_dari_pembeli());
             Kdptg.setText(akses.getkode());
-            Nmptg.setText(form.petugas.tampil3(Kdptg.getText())); 
+            Nmptg.setText(Sequel.CariPetugas(Kdptg.getText())); 
         }
     }
     

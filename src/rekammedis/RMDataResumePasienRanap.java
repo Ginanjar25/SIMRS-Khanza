@@ -3071,6 +3071,23 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                     }
 
                 }
+                @Override
+                public void windowOpened(WindowEvent e) {}
+
+                @Override
+                public void windowClosing(WindowEvent e) {}
+
+                @Override
+                public void windowIconified(WindowEvent e) {}
+
+                @Override
+                public void windowDeiconified(WindowEvent e) {}
+
+                @Override
+                public void windowActivated(WindowEvent e) {}
+
+                @Override
+                public void windowDeactivated(WindowEvent e) {}
             });
 
             diagnosa.setSize(internalFrame1.getWidth() - 40, internalFrame1.getHeight() - 40);
@@ -3093,6 +3110,24 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                     }
 
                 }
+
+                @Override
+                public void windowOpened(WindowEvent e) {}
+
+                @Override
+                public void windowClosing(WindowEvent e) {}
+
+                @Override
+                public void windowIconified(WindowEvent e) {}
+
+                @Override
+                public void windowDeiconified(WindowEvent e) {}
+
+                @Override
+                public void windowActivated(WindowEvent e) {}
+
+                @Override
+                public void windowDeactivated(WindowEvent e) {}
             });
             diagnosa2.setSize(internalFrame1.getWidth() - 40, internalFrame1.getHeight() - 40);
             diagnosa2.setLocationRelativeTo(internalFrame1);
@@ -3114,6 +3149,23 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                     }
 
                 }
+                @Override
+                public void windowOpened(WindowEvent e) {}
+
+                @Override
+                public void windowClosing(WindowEvent e) {}
+
+                @Override
+                public void windowIconified(WindowEvent e) {}
+
+                @Override
+                public void windowDeiconified(WindowEvent e) {}
+
+                @Override
+                public void windowActivated(WindowEvent e) {}
+
+                @Override
+                public void windowDeactivated(WindowEvent e) {}
             });
             diagnosa3.setSize(internalFrame1.getWidth() - 40, internalFrame1.getHeight() - 40);
             diagnosa3.setLocationRelativeTo(internalFrame1);
@@ -3134,6 +3186,23 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                         DiagnosaSekunder3.setText(diagnosa4.getTable().getValueAt(diagnosa4.getTable().getSelectedRow(), 1).toString());
                     }
                 }
+                @Override
+                public void windowOpened(WindowEvent e) {}
+
+                @Override
+                public void windowClosing(WindowEvent e) {}
+
+                @Override
+                public void windowIconified(WindowEvent e) {}
+
+                @Override
+                public void windowDeiconified(WindowEvent e) {}
+
+                @Override
+                public void windowActivated(WindowEvent e) {}
+
+                @Override
+                public void windowDeactivated(WindowEvent e) {}
             });
             diagnosa4.setSize(internalFrame1.getWidth() - 40, internalFrame1.getHeight() - 40);
             diagnosa4.setLocationRelativeTo(internalFrame1);
@@ -3154,6 +3223,23 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                         DiagnosaSekunder4.setText(diagnosa5.getTable().getValueAt(diagnosa5.getTable().getSelectedRow(), 1).toString());
                     }
                 }
+                @Override
+                public void windowOpened(WindowEvent e) {}
+
+                @Override
+                public void windowClosing(WindowEvent e) {}
+
+                @Override
+                public void windowIconified(WindowEvent e) {}
+
+                @Override
+                public void windowDeiconified(WindowEvent e) {}
+
+                @Override
+                public void windowActivated(WindowEvent e) {}
+
+                @Override
+                public void windowDeactivated(WindowEvent e) {}
             });
             diagnosa5.setSize(internalFrame1.getWidth() - 40, internalFrame1.getHeight() - 40);
             diagnosa5.setLocationRelativeTo(internalFrame1);
@@ -3174,6 +3260,23 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                         ProsedurUtama.setText(prosedur.getTable().getValueAt(prosedur.getTable().getSelectedRow(), 1).toString());
                     }
                 }
+                @Override
+                public void windowOpened(WindowEvent e) {}
+
+                @Override
+                public void windowClosing(WindowEvent e) {}
+
+                @Override
+                public void windowIconified(WindowEvent e) {}
+
+                @Override
+                public void windowDeiconified(WindowEvent e) {}
+
+                @Override
+                public void windowActivated(WindowEvent e) {}
+
+                @Override
+                public void windowDeactivated(WindowEvent e) {}
             });
             prosedur.setSize(internalFrame1.getWidth() - 40, internalFrame1.getHeight() - 40);
             prosedur.setLocationRelativeTo(internalFrame1);
@@ -3187,12 +3290,36 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(rootPane, "Maaf, Silahkan anda pilih dulu pasien...!!!");
         } else {
             prosedur2.addWindowListener(new WindowListener() {
-            @Override
-            public void windowClosed(WindowEvent e) {
+                @Override
+                public void windowClosed(WindowEvent e) {
                     if (prosedur2.getTable().getSelectedRow() != -1) {
                         KodeProsedurSekunder1.setText(prosedur2.getTable().getValueAt(prosedur2.getTable().getSelectedRow(), 0).toString());
                         ProsedurSekunder1.setText(prosedur2.getTable().getValueAt(prosedur2.getTable().getSelectedRow(), 1).toString());
                     }
+                }
+
+                @Override
+                public void windowOpened(WindowEvent e) {
+                }
+
+                @Override
+                public void windowClosing(WindowEvent e) {
+                }
+
+                @Override
+                public void windowIconified(WindowEvent e) {
+                }
+
+                @Override
+                public void windowDeiconified(WindowEvent e) {
+                }
+
+                @Override
+                public void windowActivated(WindowEvent e) {
+                }
+
+                @Override
+                public void windowDeactivated(WindowEvent e) {
                 }
             });
             prosedur2.setSize(internalFrame1.getWidth() - 40, internalFrame1.getHeight() - 40);
@@ -3214,6 +3341,24 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                         ProsedurSekunder2.setText(prosedur3.getTable().getValueAt(prosedur3.getTable().getSelectedRow(), 1).toString());
                     }
                 }
+                
+                @Override
+                public void windowOpened(WindowEvent e) {}
+
+                @Override
+                public void windowClosing(WindowEvent e) {}
+
+                @Override
+                public void windowIconified(WindowEvent e) {}
+
+                @Override
+                public void windowDeiconified(WindowEvent e) {}
+
+                @Override
+                public void windowActivated(WindowEvent e) {}
+
+                @Override
+                public void windowDeactivated(WindowEvent e) {}
             });
             prosedur3.setSize(internalFrame1.getWidth() - 40, internalFrame1.getHeight() - 40);
             prosedur3.setLocationRelativeTo(internalFrame1);
@@ -3234,6 +3379,23 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                         ProsedurSekunder3.setText(prosedur4.getTable().getValueAt(prosedur4.getTable().getSelectedRow(), 1).toString());
                     }
                 }
+                @Override
+                public void windowOpened(WindowEvent e) {}
+
+                @Override
+                public void windowClosing(WindowEvent e) {}
+
+                @Override
+                public void windowIconified(WindowEvent e) {}
+
+                @Override
+                public void windowDeiconified(WindowEvent e) {}
+
+                @Override
+                public void windowActivated(WindowEvent e) {}
+
+                @Override
+                public void windowDeactivated(WindowEvent e) {}
             });
             prosedur4.setSize(internalFrame1.getWidth() - 40, internalFrame1.getHeight() - 40);
             prosedur4.setLocationRelativeTo(internalFrame1);
@@ -4257,106 +4419,6 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
             System.out.println("Notif : "+e);
         } 
         runBackground(() ->tampil());
-    }
-    
-     public void setNoRm2(String norwt, Date tgl2) {
-        TNoRw.setText(norwt);
-        TCari.setText(norwt);
-        DTPCari2.setDate(tgl2);    
-        isRawat2();              
-        ChkInput.setSelected(true);
-        isForm();
-        CaraKeluar.requestFocus();
-        try {
-            ps=koneksi.prepareStatement(
-                    "select diagnosa_pasien.kd_penyakit,penyakit.nm_penyakit,diagnosa_pasien.prioritas "+
-                    "from diagnosa_pasien inner join penyakit on diagnosa_pasien.kd_penyakit=penyakit.kd_penyakit "+
-                    "where diagnosa_pasien.no_rawat=? order by diagnosa_pasien.prioritas ");
-            try {
-                ps.setString(1,norwt);
-                rs=ps.executeQuery();
-                while(rs.next()){
-                    if(rs.getInt("prioritas")==1){
-                        KodeDiagnosaUtama.setText(rs.getString("kd_penyakit"));
-                        DiagnosaUtama.setText(rs.getString("nm_penyakit"));
-                    }
-                    
-                    if(rs.getInt("prioritas")==2){
-                        KodeDiagnosaSekunder1.setText(rs.getString("kd_penyakit"));
-                        DiagnosaSekunder1.setText(rs.getString("nm_penyakit"));
-                    }
-                    
-                    if(rs.getInt("prioritas")==3){
-                        KodeDiagnosaSekunder2.setText(rs.getString("kd_penyakit"));
-                        DiagnosaSekunder2.setText(rs.getString("nm_penyakit"));
-                    }
-                    
-                    if(rs.getInt("prioritas")==4){
-                        KodeDiagnosaSekunder3.setText(rs.getString("kd_penyakit"));
-                        DiagnosaSekunder3.setText(rs.getString("nm_penyakit"));
-                    }
-                    
-                    if(rs.getInt("prioritas")==5){
-                        KodeDiagnosaSekunder4.setText(rs.getString("kd_penyakit"));
-                        DiagnosaSekunder4.setText(rs.getString("nm_penyakit"));
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("Notif : "+e);
-            } finally{
-                if(rs!=null){
-                    rs.close();
-                }
-                if(ps!=null){
-                    ps.close();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Notif : "+e);
-        } 
-        
-        try {
-            ps=koneksi.prepareStatement(
-                    "select prosedur_pasien.kode,icd9.deskripsi_panjang, prosedur_pasien.prioritas "+
-                    "from prosedur_pasien inner join icd9 on prosedur_pasien.kode=icd9.kode "+
-                    "where prosedur_pasien.no_rawat=? order by prosedur_pasien.prioritas ");
-            try {
-                ps.setString(1,norwt);
-                rs=ps.executeQuery();
-                while(rs.next()){
-                    if(rs.getInt("prioritas")==1){
-                        KodeProsedurUtama.setText(rs.getString("kode"));
-                        ProsedurUtama.setText(rs.getString("deskripsi_panjang"));
-                    }
-                    
-                    if(rs.getInt("prioritas")==2){
-                        KodeProsedurSekunder1.setText(rs.getString("kode"));
-                        ProsedurSekunder1.setText(rs.getString("deskripsi_panjang"));
-                    }
-                    
-                    if(rs.getInt("prioritas")==3){
-                        KodeProsedurSekunder2.setText(rs.getString("kode"));
-                        ProsedurSekunder2.setText(rs.getString("deskripsi_panjang"));
-                    }
-                    
-                    if(rs.getInt("prioritas")==4){
-                        KodeProsedurSekunder3.setText(rs.getString("kode"));
-                        ProsedurSekunder3.setText(rs.getString("deskripsi_panjang"));
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("Notif : "+e);
-            } finally{
-                if(rs!=null){
-                    rs.close();
-                }
-                if(ps!=null){
-                    ps.close();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Notif : "+e);
-        } 
     }
     
     private void isForm(){

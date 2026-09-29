@@ -50,7 +50,7 @@ public class DlgPenjualan extends javax.swing.JDialog {
     private double ttl=0,ttlhpp=0,y=0,z=0,stokbarang=0,bayar=0,total=0,ppn=0,besarppn=0,ppnobat=0,besarppnobat=0,tagihanppn=0,ongkir=0;
     private int jml=0,i=0,row,kolom=0,reply,index;
     private String verifikasi_penjualan_di_kasir="",Penjualan_Obat="",HPP_Obat_Jual_Bebas="",Persediaan_Obat_Jual_Bebas="",DEPOAKTIFOBAT="",
-            status="Belum Dibayar",pilihanetiket="",hppfarmasi="",kode_akun_bayar="",tampilkan_ppnobat_ralan="",PPN_Keluaran="",DEPOAKTIFOBAT="", kd_bangsal="";
+            status="Belum Dibayar",pilihanetiket="",hppfarmasi="",kode_akun_bayar="",tampilkan_ppnobat_ralan="",PPN_Keluaran="", kd_bangsal="";
     private PreparedStatement ps,psstok,pscaribatch;
     private ResultSet rs,rsstok;
     private WarnaTable2 warna=new WarnaTable2();
@@ -331,29 +331,7 @@ public class DlgPenjualan extends javax.swing.JDialog {
             System.out.println("E : "+e);
             DEPOAKTIFOBAT = "";
         }
-        
-        try {
-            ps=koneksi.prepareStatement("select set_embalase.embalase_per_obat,set_embalase.tuslah_per_obat from set_embalase");
-            try {
-                rs=ps.executeQuery();
-                if(rs.next()){
-                    embalasen=rs.getDouble("embalase_per_obat");
-                    tuslahn=rs.getDouble("tuslah_per_obat");
-                }
-            } catch (Exception e) {
-                System.out.println("Notif : "+e);
-            } finally{
-                if(rs!=null){
-                    rs.close();
-                }
-                if(ps!=null){
-                    ps.close();
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Notif : "+e);
-        }
-        
+                
         try {
             hppfarmasi=koneksiDB.HPPFARMASI();
         } catch (Exception e) {

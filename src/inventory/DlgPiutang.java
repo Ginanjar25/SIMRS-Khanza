@@ -2034,13 +2034,31 @@ private void BtnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             BtnPtg.setEnabled(false);
             BtnSimpan.setEnabled(akses.getpiutang_obat());
             kdptg.setText(akses.getkode());
-            nmptg.setText(form.petugas.tampil3(kdptg.getText()));
+            nmptg.setText(Sequel.CariPetugas(kdptg.getText()));
             if (!DEPOAKTIFOBAT.equals("")) {
                 kdgudang.setText(DEPOAKTIFOBAT);
                 nmgudang.setText(Sequel.CariBangsal(DEPOAKTIFOBAT));
                 BtnGudang.setEnabled(false);
             }
         }        
+    }
+    
+    public void isCek2(String status, String NoRW){
+        String bangsaldefault=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1");
+        if(!DEPOAKTIFOBAT.equals("")){
+            kd_bangsal=DEPOAKTIFOBAT;
+        }else{
+            if(status.equals("ralan")){
+                kd_bangsal=Sequel.cariIsi("select set_depo_ralan.kd_bangsal from set_depo_ralan where set_depo_ralan.kd_poli=?",Sequel.cariIsi("select reg_periksa.kd_poli from reg_periksa where reg_periksa.no_rawat=?",NoRW));
+                if(kd_bangsal.equals("")){
+                    kd_bangsal=bangsaldefault;
+                }
+            }else if(status.equals("ranap")){
+                kd_bangsal=akses.getkdbangsal();
+            } 
+        }
+//        System.out.println("KOde Bangsal " + kd_bangsal);
+        kdgudang.setText(kd_bangsal); 
     }
     
     

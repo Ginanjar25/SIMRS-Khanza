@@ -1234,7 +1234,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
 
-    private void tampil() {        
+    public void tampil() {        
         Valid.tabelKosong(tabMode);
         try{        
             ps=koneksi.prepareStatement(

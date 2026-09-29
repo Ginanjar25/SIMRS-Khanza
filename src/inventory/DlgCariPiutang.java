@@ -43,9 +43,9 @@ public class DlgCariPiutang extends javax.swing.JDialog {
     private Jurnal jur=new Jurnal();
     private riwayatobat Trackobat=new riwayatobat();
     private Connection koneksi=koneksiDB.condb();
-    private DlgCariPasien member;
-    private DlgCariPetugas petugas;
-    private DlgBarang barang;
+    public DlgCariPasien member;
+    public DlgCariPetugas petugas;
+    public DlgBarang barang;
     private DlgCariJenis jenis;
     private DecimalFormat df2 = new DecimalFormat("###,###,###,###,###,###,###");   
     private double ttljual=0,subttljual=0,ttldisc=0,subttldisc=0,ttlall=0,

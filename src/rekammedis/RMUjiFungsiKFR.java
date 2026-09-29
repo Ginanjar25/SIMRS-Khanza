@@ -23,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import static java.awt.image.ImageObserver.WIDTH;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -68,6 +69,8 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
     public DlgCariDiagnosaICD10 diagnosa2 = new DlgCariDiagnosaICD10(null, false);
     public DlgCariDiagnosaICD9 diagnosa3 = new DlgCariDiagnosaICD9(null, false);
     private String finger = "";
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private volatile boolean ceksukses = false;
 
     /**
      * Creates new form DlgRujuk
@@ -155,10 +158,9 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         KdDokter.setDocument(new batasInput((byte)20).getKata(KdDokter));
         DiagnosisFungsional.setDocument(new batasInput((int)50).getKata(DiagnosisFungsional));
         DiagnosisMedis.setDocument(new batasInput((int)50).getKata(DiagnosisMedis));
-        HasilYangDidapat.setDocument(new batasInput((int)100).getKata(HasilYangDidapat));
-        Kesimpulan.setDocument(new batasInput((int)100).getKata(Kesimpulan));
-        HasilYangDidapat.setDocument(new batasInput((int)100).getKata(HasilYangDidapat));
-        Rekomendasi.setDocument(new batasInput((int)100).getKata(Rekomendasi));
+        hasilDidapat.setDocument(new batasInput((int)100).getKata(hasilDidapat));
+        kesimpulan.setDocument(new batasInput((int)100).getKata(kesimpulan));
+        rekomendasi.setDocument(new batasInput((int)100).getKata(rekomendasi));
         TCari.setDocument(new batasInput((int)100).getKata(TCari));
         
         ChkInput.setSelected(false);
@@ -1658,6 +1660,24 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
                     }
                     KdDokter.requestFocus();
                 }
+
+                @Override
+                public void windowOpened(WindowEvent e) {}
+
+                @Override
+                public void windowClosing(WindowEvent e) {}
+
+                @Override
+                public void windowIconified(WindowEvent e) {}
+
+                @Override
+                public void windowDeiconified(WindowEvent e) {}
+
+                @Override
+                public void windowActivated(WindowEvent e) {}
+
+                @Override
+                public void windowDeactivated(WindowEvent e) {}
             });
             carikfr.setNoRawat(TNoRw.getText());
             carikfr.isCek(KdDokter.getText());
@@ -1731,7 +1751,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnUjiKFRGet3KeyPressed
 
     private void AnamesaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_AnamesaKeyPressed
-        Valid.pindah(evt, btnPetugas, PemFisikUji);
+//        Valid.pindah(evt, btnPetugas, PemFisikUji);
     }//GEN-LAST:event_AnamesaKeyPressed
 
     private void PemFisikUjiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_PemFisikUjiKeyPressed

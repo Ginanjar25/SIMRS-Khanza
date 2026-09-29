@@ -3980,7 +3980,26 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                     } 
                     NoRm.requestFocus();
             }
+
+              @Override
+              public void windowOpened(WindowEvent e) {}
+
+              @Override
+              public void windowClosing(WindowEvent e) {}
+
+              @Override
+              public void windowIconified(WindowEvent e) {}
+
+              @Override
+              public void windowDeiconified(WindowEvent e) {}
+
+              @Override
+              public void windowActivated(WindowEvent e) {}
+
+              @Override
+              public void windowDeactivated(WindowEvent e) {}
         });
+          
         pasien.getTable().addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -3988,6 +4007,11 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                     pasien.dispose();
                 }
             }
+            @Override
+            public void keyTyped(KeyEvent e) {}
+
+            @Override
+            public void keyReleased(KeyEvent e) {}
         });
         akses.setform("DlgIKBBayi");
         pasien.emptTeks();
@@ -4326,7 +4350,7 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private widget.Table tbDokter;
     // End of variables declaration//GEN-END:variables
 
-    private void tampil() {
+    public void tampil() {
         jkelcari=""; tglcari="";
         if(! cmbCrJk.getSelectedItem().toString().equals("SEMUA")){
             jkelcari=" pasien.jk='"+cmbCrJk.getSelectedItem().toString().substring(0,1)+"' and ";

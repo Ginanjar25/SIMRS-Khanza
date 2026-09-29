@@ -2677,10 +2677,11 @@ private void btnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }
         
       }
+    }
     
     private void LoadData(){
-        tampil();
-        tampil2();
+        runBackground(() ->tampil());
+        runBackground(() ->tampil2());
     }
     
     private void runBackground(Runnable task) {
@@ -2694,7 +2695,7 @@ private void btnGudangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             
         try {
             
-            executor.submit((
+            executor.submit(()
              -> {
                 try {
                     task.run();

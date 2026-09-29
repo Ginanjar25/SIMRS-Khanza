@@ -39,47 +39,54 @@ public class koneksiDB {
 
     public static Connection condb() {
         try {
+            // 1. Inisialisasi DataSource 1x saja
             if (!initialized.get()) {
                 synchronized (LOCK) {
                     if (!initialized.get()) {
                         initDataSource();
-                        reconnect();
                         initialized.set(true);
                     }
                 }
             }
 
-            long now = System.currentTimeMillis();
-            if (now - lastCheck > CHECK_INTERVAL) {
-                lastCheck = now;
-                if (!isConnectionAlive()) {
-                    synchronized (LOCK) {
-                        if (!isConnectionAlive()) {
-                            reconnect();
-                        }
-                    }
-                }
-            }
-            
+            // 2. Cek apakah koneksi null atau sudah tertutup
             if (connection == null || connection.isClosed()) {
                 synchronized (LOCK) {
                     if (connection == null || connection.isClosed()) {
                         reconnect();
                     }
                 }
+            } else {
+                // 3. Cek kesehatan koneksi secara berkala (Periodic Check)
+                long now = System.currentTimeMillis();
+                if (now - lastCheck > CHECK_INTERVAL) {
+                    synchronized (LOCK) {
+                        if (now - lastCheck > CHECK_INTERVAL) {
+                            lastCheck = now;
+                            if (!isConnectionAlive()) {
+                                reconnect();
+                            }
+                        }
+                    }
+                }
             }
-        }
-        catch (Exception e) {
-            Logger.getLogger(koneksiDB.class.getName()).log(Level.SEVERE, null, e);
+        } catch (Exception e) {
+            Logger.getLogger(koneksiDB.class.getName()).log(Level.SEVERE, "Gagal mendapatkan koneksi DB", e);
         }
         return connection;
     }
 
     private static void initDataSource() throws Exception {
-        try (FileInputStream fis =new FileInputStream("setting/database.xml")) {
+        try (FileInputStream fis = new FileInputStream("setting/database.xml")) {
             prop.loadFromXML(fis);
         }
-        dataSource.setURL("jdbc:mysql://"+EnkripsiAES.decrypt(prop.getProperty("HOST"))+":"+EnkripsiAES.decrypt(prop.getProperty("PORT"))+"/"+EnkripsiAES.decrypt(prop.getProperty("DATABASE"))+"?zeroDateTimeBehavior=convertToNull&tcpKeepAlive=true&connectTimeout=100000&socketTimeout=600000&maintainTimeStats=false&autoReconnect=true");
+        // Catatan: autoReconnect=true dihapus karena sering bikin masalah di Driver MySQL baru
+        String url = "jdbc:mysql://" + EnkripsiAES.decrypt(prop.getProperty("HOST")) + ":" 
+                   + EnkripsiAES.decrypt(prop.getProperty("PORT")) + "/" 
+                   + EnkripsiAES.decrypt(prop.getProperty("DATABASE")) 
+                   + "?zeroDateTimeBehavior=convertToNull&tcpKeepAlive=true&connectTimeout=10000&socketTimeout=300000&maintainTimeStats=false";
+        
+        dataSource.setURL(url);
         dataSource.setUser(EnkripsiAES.decrypt(prop.getProperty("USER")));
         dataSource.setPassword(EnkripsiAES.decrypt(prop.getProperty("PAS")));
         dataSource.setCachePreparedStatements(true);
@@ -88,13 +95,9 @@ public class koneksiDB {
 
     private static boolean isConnectionAlive() {
         try {
-            if (connection == null) return false;
-            if (connection.isClosed()) return false;
-            if (!connection.isValid(3)) return false;
-            try (Statement st=connection.createStatement()) {
-                st.executeQuery("SELECT 1");
-            }
-            return true;
+            if (connection == null || connection.isClosed()) return false;
+            // Gunakan isValid(2) bawaan JDBC driver, ini sudah cukup dan efisien
+            return connection.isValid(2); 
         } catch (Exception e) {
             return false;
         }
@@ -105,9 +108,10 @@ public class koneksiDB {
         int retries = 5;
         while (retries > 0) {
             try {
-                connection=dataSource.getConnection();
+                connection = dataSource.getConnection();
                 connection.setAutoCommit(true);
                 connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+                
                 System.out.println(
                     "  Koneksi Berhasil. Sorry bro loading, silahkan baca dulu.... \n\n"+
                     "	Software ini adalah Software Menejemen Rumah Sakit/Klinik/\n" +
@@ -117,23 +121,22 @@ public class koneksiDB {
                     "  software (Khanza.Soft Media). Bagi yang sengaja memperjualbelikan/\n"+
                     "  mengambil keuntangan dari softaware ini tanpa ijin, kami  sumpahi sial\n"+
                     "  1000 turunan, miskin sampai 500 turunan.\n"+
-                    "                                                                           \n"+
-                    "  #    ____  ___  __  __  ____   ____    _  __ _                              \n" +
+                    "                                                                            \n"+
+                    "  #    ____  ___  __  __  ____   ____    _  __ _                            \n" +
                     "  #   / ___||_ _||  \\/  ||  _ \\ / ___|  | |/ /| |__    __ _  _ __   ____ __ _ \n" +
                     "  #   \\___ \\ | | | |\\/| || |_) |\\___ \\  | ' / | '_ \\  / _` || '_ \\ |_  // _` |\n" +
                     "  #    ___) || | | |  | ||  _ <  ___) | | . \\ | | | || (_| || | | | / /| (_| |\n" +
                     "  #   |____/|___||_|  |_||_| \\_\\|____/  |_|\\_\\|_| |_| \\__,_||_| |_|/___|\\__,_|\n" +
-                    "  #                                                                           \n"+
-                    "                                                                           \n"+
+                    "                                                                            \n"+
+                    "                                                                            \n"+
                     "  Licensi yang dianut di software ini https://en.wikipedia.org/wiki/Aladdin_Free_Public_License \n"+
                     "  Informasi dan panduan bisa dicek di halaman https://github.com/mas-elkhanza/SIMRS-Khanza/wiki \n"+
                     "  Bagi yang ingin berdonasi untuk pengembangan aplikasi ini bisa ke BSI 1015369872 atas nama Windiarto\n"+
-                    "                                                                           "
-                );         
+                    "                                                                            "
+                );          
                 return;
             } catch (SQLException e) {
                 retries--;
-                JOptionPane.showMessageDialog(null,"Gagal koneksi ke database. Sisa percobaan : " + retries);
                 if (retries == 0) {
                     JOptionPane.showMessageDialog(null, "Koneksi ke database gagal. Silakan periksa koneksi jaringan atau konfigurasi database.");
                     throw new SQLException("Gagal koneksi ke database setelah beberapa percobaan.", e);
@@ -142,7 +145,7 @@ public class koneksiDB {
                     Thread.sleep(2000);
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
-                    throw new SQLException("Thread terinterupsi saat mencoba koneksi."+ie);
+                    throw new SQLException("Thread terinterupsi saat mencoba koneksi.", ie);
                 }
             }
         }
@@ -150,7 +153,7 @@ public class koneksiDB {
 
     public static void closeConnection() {
         try {
-            if (connection != null &&!connection.isClosed()) {
+            if (connection != null && !connection.isClosed()) {
                 connection.close();
             }
         } catch (SQLException e) {

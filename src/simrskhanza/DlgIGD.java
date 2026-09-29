@@ -283,7 +283,7 @@ public final class DlgIGD extends javax.swing.JDialog {
     private DlgKabupaten kab;
     private DlgKecamatan kec;
     private DlgKelurahan kel;
-    private DlgCariDokter dokter;
+//    private DlgCariDokter dokter;
     private DlgRawatJalan dlgrwjl;
     private ResultSet rs;
     private boolean ceksukses=false;
@@ -11865,6 +11865,24 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 }  
                 DiagnosaAwalSementara.requestFocus();
             }
+
+            @Override
+            public void windowOpened(WindowEvent e) {}
+
+            @Override
+            public void windowClosing(WindowEvent e) {}
+
+            @Override
+            public void windowIconified(WindowEvent e) {}
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+
+            @Override
+            public void windowActivated(WindowEvent e) {}
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
         });
         
         penyakitvclaim.addWindowListener(new WindowListener() {
@@ -11878,6 +11896,24 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 }  
                 DiagnosaAwalSementara.requestFocus();
             }
+
+            @Override
+            public void windowOpened(WindowEvent e) {}
+
+            @Override
+            public void windowClosing(WindowEvent e) {}
+
+            @Override
+            public void windowIconified(WindowEvent e) {}
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+
+            @Override
+            public void windowActivated(WindowEvent e) {}
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
         });
          
          if(Sequel.cariIsi("select kd_pj from reg_periksa where no_rawat = ?", TNoRw.getText()).equals("BPJ")){
@@ -11915,6 +11951,23 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     }
                 }
             }
+            @Override
+            public void windowOpened(WindowEvent e) {}
+
+            @Override
+            public void windowClosing(WindowEvent e) {}
+
+            @Override
+            public void windowIconified(WindowEvent e) {}
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+
+            @Override
+            public void windowActivated(WindowEvent e) {}
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
         });
         akses.setform("DlgIGD");
         dpjpRanap.emptTeks();
@@ -16064,6 +16117,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     
     private void btnPetugasActionPerformed(java.awt.event.ActionEvent evt) {    
         petugas.addWindowListener(new WindowListener() {
+            @Override
             public void windowClosed(WindowEvent e) {
                 if (ptg.equals("1")) {
                     KdPetugas1.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(), 0).toString());
@@ -16079,6 +16133,23 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     KdPetugas3.requestFocus();
                 }
             }
+            @Override
+            public void windowOpened(WindowEvent e) {}
+
+            @Override
+            public void windowClosing(WindowEvent e) {}
+
+            @Override
+            public void windowIconified(WindowEvent e) {}
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+
+            @Override
+            public void windowActivated(WindowEvent e) {}
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
         });
         petugas.emptTeks();
         petugas.isCek();

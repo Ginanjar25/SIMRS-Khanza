@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -2133,19 +2134,36 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             caribooking.setLocationRelativeTo(internalFrame1);
             caribooking.setVisible(true);   
             caribooking.addWindowListener(new WindowListener() {
-            
                 public void windowClosed(WindowEvent e) {
                     if (caribooking.getTable().getSelectedRow() != -1) { 
                         Valid.SetTgl(DTPTgl, caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(), 2).toString());
                         JamMulai.setSelectedItem(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(),3).toString().substring(0,2));
                         MenitMulai.setSelectedItem(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(),3).toString().substring(3,5));
                         DetikMulai.setSelectedItem(caribooking.getTable().getValueAt(caribooking .getTable().getSelectedRow(),3).toString().substring(6,8));
-                        JamSelesai.s et Se lectedItem(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(),4).toString().substring(0,2));
-                        MenitSelesai.setSelectedIte m(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(),4).toString().substring(3,5));
+                        JamSelesai.setSelectedItem(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(),4).toString().substring(0,2));
+                        MenitSelesai.setSelectedItem(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(),4).toString().substring(3,5));
                         DetikSelesai.setSelectedItem(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(),4).toString().substring(6,8));
-                        NmDokter.setText(c ariboo king.getTable().getValueAt(caribooking.getTable().getSelectedRow(), 8).toString());
+                        NmDokter.setText(caribooking.getTable().getValueAt(caribooking.getTable().getSelectedRow(), 8).toString());
                     }
                 }  
+
+                @Override
+                public void windowOpened(WindowEvent e) {}
+
+                @Override
+                public void windowClosing(WindowEvent e) {}
+
+                @Override
+                public void windowIconified(WindowEvent e) {}
+
+                @Override
+                public void windowDeiconified(WindowEvent e) {}
+
+                @Override
+                public void windowActivated(WindowEvent e) {}
+
+                @Override
+                public void windowDeactivated(WindowEvent e) {}
             });
         }
     }//GEN-LAST:event_BtnRiwayatBookingOperasiActionPerformed

@@ -5131,10 +5131,10 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private void panggilform() {
         if (obatralan == null || !obatralan.isDisplayable()) {
             obatralan=new DlgCariObat(null,false);
-            obatralan.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            obatralan.addWindowListener(new WindowAdapter() {
             obatralan.setNoResep(NoResep);
             Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','0','"+NoRawat+"')");
+            obatralan.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            obatralan.addWindowListener(new WindowAdapter() {
             @Override
                     public void windowClosed(WindowEvent e) {
                         TeksKosong();
@@ -5195,9 +5195,9 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         if (obatranap == null || !obatranap.isDisplayable()) {
             obatranap=new DlgCariObat2(null,false);
             obatranap.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            obatranap.addWindowListener(new WindowAdapter() {
             obatranap.setNoResep(NoResep);
             Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','0','"+NoRawat+"')");
+            obatranap.addWindowListener(new WindowAdapter() {
             @Override
                     public void windowClosed(WindowEvent e) {
                         TeksKosong();

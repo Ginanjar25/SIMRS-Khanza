@@ -43,7 +43,7 @@ public class DlgCariPengeluaranApotek extends javax.swing.JDialog {
     private int i=0,no=1;
     private DlgCariPetugas petugas;
     private DlgBarang barang;
-    private DlgCariBangsal bangsal;
+    public DlgCariBangsal bangsal;
     private DlgCariJenis jenis;
     private DecimalFormat df2 = new DecimalFormat("###,###,###,###,###,###,###");    
     private double ttl=0,subttl=0;

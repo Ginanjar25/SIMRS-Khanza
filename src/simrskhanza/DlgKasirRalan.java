@@ -177,10 +177,8 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
     private ResultSet rskasir,rsrekening,rs;
     private String aktifkanparsial="no",kamar_inap_kasir_ralan=Sequel.cariIsi("select set_jam_minimal.kamar_inap_kasir_ralan from set_jam_minimal"),caripenjab="",filter="no",bangsal=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1"),nonota="",
             namadokter="",namapoli="",order="reg_periksa.no_rawat desc",validasicatatan=Sequel.cariIsi("select set_validasi_catatan.tampilkan_catatan from set_validasi_catatan"),terbitsep="",tampildiagnosa="",finger="",norawatdipilih="",normdipilih="",
-            variabel="", Bridging_SEP = "", antrianKasir="", caripenjab="";
-    public DlgBilingRalan billing=new DlgBilingRalan(null,false);
-    private PreparedStatement psotomatis,psotomatis2,pskasir,pscaripiutang;
-    private ResultSet rskasir;
+            variabel="", Bridging_SEP = "", antrianKasir="";
+//    public DlgBilingRalan billing=new DlgBilingRalan(null,false);
     private DlgRawatJalan formrawatjalan;
     private DlgPeresepanDokter resepobat;
     private DlgCariPerawatanRalan dlgrwjl;
@@ -8042,7 +8040,7 @@ private void MnDataRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
                         formrawatjalan.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                         formrawatjalan.setLocationRelativeTo(internalFrame1);
-//                    }
+                    }
                     if (formrawatjalan == null) return;
                     if (!formrawatjalan.isVisible()) {
                         formrawatjalan.emptTeks();
@@ -8074,7 +8072,6 @@ private void MnDataRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
 private void TotalObatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TotalObatKeyPressed
         Valid.pindah(evt,BtnCloseIn,BtnSimpan);
-
 }//GEN-LAST:event_TotalObatKeyPressed
 
 private void BtnCloseInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCloseInActionPerformed

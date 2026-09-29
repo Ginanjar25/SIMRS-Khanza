@@ -1260,6 +1260,7 @@ public class frmUtama extends javax.swing.JFrame {
         initComponents();
         initKhanza();
         initKhanza2();
+        initKhanza3();
         setIconImage(new ImageIcon(super.getClass().getResource("/picture/yaski24.png")).getImage());
         
         this.setExtendedState(MAXIMIZED_BOTH);
@@ -10180,6 +10181,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
     private void btnToolIGDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnToolIGDActionPerformed
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         isTutup();
+        DlgIGD igd=new DlgIGD(this,false);
         igd.emptTeks();
         igd.isCek();
         igd.setSize(PanelUtama.getWidth(),PanelUtama.getHeight());
@@ -21801,8 +21803,6 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         aplikasi.setVisible(true);
         this.setCursor(Cursor.getDefaultCursor());
     }
-            
-    } 
     
     private void btnDataSasaranUsiaProduktifActionPerformed(java.awt.event.ActionEvent evt) {                                                        
         isTutup();
@@ -50179,16 +50179,517 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         btnKirimImageStudySatuSehat.setIconTextGap(0);
         btnKirimImageStudySatuSehat.setName("btnKirimImageStudySatuSehat"); 
         btnKirimImageStudySatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnKirimImageStudySatuSehat.addActionListener(this::btnKirimImageStudySatuSehatActionPerformed);
+        btnKirimImageStudySatuSehat.addActionListener(this::btnKirimImageStudySatuSehatActionPerformed); 
     }
     
-    private String getIPAntrian(){
-        String IPAddress = akses.getalamatip();
+    private void initKhanza2() {
+        btnHasilPemeriksaanECHOPediatrik = new widget.ButtonBig();
+        btnHasilPemeriksaanECHOPediatrik.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/2104702_beat_health_healthcare_heart_heartbeat_icon.png")));
+        btnHasilPemeriksaanECHOPediatrik.setText("Hasil Pemeriksaan ECHO Pediatrik");
+        btnHasilPemeriksaanECHOPediatrik.setIconTextGap(0);
+        btnHasilPemeriksaanECHOPediatrik.setName("btnHasilPemeriksaanECHOPediatrik"); 
+        btnHasilPemeriksaanECHOPediatrik.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnHasilPemeriksaanECHOPediatrik.addActionListener(this::btnHasilPemeriksaanECHOPediatrikActionPerformed);
         
-        String getIPAntrian = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", IPAddress);
+        btnMasterTemplateInformasiEdukasi = new widget.ButtonBig();
+        btnMasterTemplateInformasiEdukasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/11211459_whiteboard_canvas_education_school_classroom_icon.png")));
+        btnMasterTemplateInformasiEdukasi.setText("Master Template Informasi & Edukasi");
+        btnMasterTemplateInformasiEdukasi.setIconTextGap(0);
+        btnMasterTemplateInformasiEdukasi.setName("btnMasterTemplateInformasiEdukasi"); 
+        btnMasterTemplateInformasiEdukasi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMasterTemplateInformasiEdukasi.addActionListener(this::btnMasterTemplateInformasiEdukasiActionPerformed);
         
-        return getIPAntrian;
+        btnSkriningInstrumenESAT = new widget.ButtonBig();
+        btnSkriningInstrumenESAT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/6771568_book_education_learning_puzzle_school_icon.png"))); 
+        btnSkriningInstrumenESAT.setText("Skrining Instrumen ESAT");
+        btnSkriningInstrumenESAT.setIconTextGap(0);
+        btnSkriningInstrumenESAT.setName("btnSkriningInstrumenESAT");
+        btnSkriningInstrumenESAT.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSkriningInstrumenESAT.addActionListener(this::btnSkriningInstrumenESATActionPerformed);
         
+        btnLabKeslingPermintaanPengujianSampel = new widget.ButtonBig();
+        btnLabKeslingPermintaanPengujianSampel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/5269078_book_calendar_education_library_loan_icon.png"))); 
+        btnLabKeslingPermintaanPengujianSampel.setText("Permintaan Pengujian Sampel Lab Kesling");
+        btnLabKeslingPermintaanPengujianSampel.setIconTextGap(0);
+        btnLabKeslingPermintaanPengujianSampel.setName("btnLabKeslingPermintaanPengujianSampel");
+        btnLabKeslingPermintaanPengujianSampel.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnLabKeslingPermintaanPengujianSampel.addActionListener(this::btnLabKeslingPermintaanPengujianSampelActionPerformed);
+        
+        btnLabKeslingPengujianSampelTidakDapatDilayani = new widget.ButtonBig();
+        btnLabKeslingPengujianSampelTidakDapatDilayani.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/6088713_banned_closed_shop_sign_icon.png"))); 
+        btnLabKeslingPengujianSampelTidakDapatDilayani.setText("Sampel Pengujian Lab Kesling Tidak Dapat Dilayani");
+        btnLabKeslingPengujianSampelTidakDapatDilayani.setIconTextGap(0);
+        btnLabKeslingPengujianSampelTidakDapatDilayani.setName("btnLabKeslingPengujianSampelTidakDapatDilayani");
+        btnLabKeslingPengujianSampelTidakDapatDilayani.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnLabKeslingPengujianSampelTidakDapatDilayani.addActionListener(this::btnLabKeslingPengujianSampelTidakDapatDilayaniActionPerformed);
+        
+        btnLabKeslingPengujianSampelDapatDilayani = new widget.ButtonBig();
+        btnLabKeslingPengujianSampelDapatDilayani.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/4059950_and_architecture_book_buildings_business_icon.png"))); 
+        btnLabKeslingPengujianSampelDapatDilayani.setText("Sampel Pengujian Lab Kesling Dapat Dilayani");
+        btnLabKeslingPengujianSampelDapatDilayani.setIconTextGap(0);
+        btnLabKeslingPengujianSampelDapatDilayani.setName("btnLabKeslingPengujianSampelDapatDilayani");
+        btnLabKeslingPengujianSampelDapatDilayani.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnLabKeslingPengujianSampelDapatDilayani.addActionListener(this::btnLabKeslingPengujianSampelDapatDilayaniActionPerformed);
+        
+        btnLabKeslingPenugasanPengujianSampel = new widget.ButtonBig();
+        btnLabKeslingPenugasanPengujianSampel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/7038097_marketing_file_business_clipboard_data_icon.png"))); 
+        btnLabKeslingPenugasanPengujianSampel.setText("Data Penugasan Pengujian Sampel Lab Kesling");
+        btnLabKeslingPenugasanPengujianSampel.setIconTextGap(0);
+        btnLabKeslingPenugasanPengujianSampel.setName("btnLabKeslingPenugasanPengujianSampel");
+        btnLabKeslingPenugasanPengujianSampel.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnLabKeslingPenugasanPengujianSampel.addActionListener(this::btnLabKeslingPenugasanPengujianSampelActionPerformed);
+        
+        btnLabKeslingHasilPengujianSampel = new widget.ButtonBig();
+        btnLabKeslingHasilPengujianSampel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/6725462_archive_data_document_file_page_icon.png"))); 
+        btnLabKeslingHasilPengujianSampel.setText("Data Hasil Pengujian Sampel Lab Kesling");
+        btnLabKeslingHasilPengujianSampel.setIconTextGap(0);
+        btnLabKeslingHasilPengujianSampel.setName("btnLabKeslingHasilPengujianSampel");
+        btnLabKeslingHasilPengujianSampel.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnLabKeslingHasilPengujianSampel.addActionListener(this::btnLabKeslingHasilPengujianSampelActionPerformed);
+        
+        btnLabKeslingVerifikasiPengujianSampel = new widget.ButtonBig();
+        btnLabKeslingVerifikasiPengujianSampel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/4698583_document_file_paper_pen_text_icon.png"))); 
+        btnLabKeslingVerifikasiPengujianSampel.setText("Data Verifikasi Pengujian Sampel Lab Kesling");
+        btnLabKeslingVerifikasiPengujianSampel.setIconTextGap(0);
+        btnLabKeslingVerifikasiPengujianSampel.setName("btnLabKeslingVerifikasiPengujianSampel");
+        btnLabKeslingVerifikasiPengujianSampel.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnLabKeslingVerifikasiPengujianSampel.addActionListener(this::btnLabKeslingVerifikasiPengujianSampelActionPerformed);
+        
+        btnLabKeslingValidasiPengujianSampel = new widget.ButtonBig();
+        btnLabKeslingValidasiPengujianSampel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/paper_9683410.png"))); 
+        btnLabKeslingValidasiPengujianSampel.setText("Data Validasi Pengujian Sampel Lab Kesling");
+        btnLabKeslingValidasiPengujianSampel.setIconTextGap(0);
+        btnLabKeslingValidasiPengujianSampel.setName("btnLabKeslingValidasiPengujianSampel");
+        btnLabKeslingValidasiPengujianSampel.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnLabKeslingValidasiPengujianSampel.addActionListener(this::btnLabKeslingValidasiPengujianSampelActionPerformed);
+        
+        btnLabKeslingRekapPelayanan = new widget.ButtonBig();
+        btnLabKeslingRekapPelayanan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/85334_file_open_icon.png"))); 
+        btnLabKeslingRekapPelayanan.setText("Rekap Pelayanan Lab Kesling");
+        btnLabKeslingRekapPelayanan.setIconTextGap(0);
+        btnLabKeslingRekapPelayanan.setName("btnLabKeslingRekapPelayanan");
+        btnLabKeslingRekapPelayanan.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnLabKeslingRekapPelayanan.addActionListener(this::btnLabKeslingRekapPelayananActionPerformed);
+        
+        btnLabKeslingPembyaranPengujianSampel = new widget.ButtonBig();
+        btnLabKeslingPembyaranPengujianSampel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/money-bag_2953536-2.png"))); 
+        btnLabKeslingPembyaranPengujianSampel.setText("Pembayaran Pengujian Sampel Lab Kesling");
+        btnLabKeslingPembyaranPengujianSampel.setIconTextGap(0);
+        btnLabKeslingPembyaranPengujianSampel.setName("btnLabKeslingPembyaranPengujianSampel");
+        btnLabKeslingPembyaranPengujianSampel.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnLabKeslingPembyaranPengujianSampel.addActionListener(this::btnLabKeslingPembyaranPengujianSampelActionPerformed);
+        
+        btnLabKeslingRekapPembayaran = new widget.ButtonBig();
+        btnLabKeslingRekapPembayaran.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/money_536054-2.png"))); 
+        btnLabKeslingRekapPembayaran.setText("Rekap Pembayaran Lab Kesling");
+        btnLabKeslingRekapPembayaran.setIconTextGap(0);
+        btnLabKeslingRekapPembayaran.setName("btnLabKeslingRekapPembayaran");
+        btnLabKeslingRekapPembayaran.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnLabKeslingRekapPembayaran.addActionListener(this::btnLabKeslingRekapPembayaranActionPerformed);
+        
+        btnPenilaianAwalMedisRanapJantung = new widget.ButtonBig();
+        btnPenilaianAwalMedisRanapJantung.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/6217204_anatomy_heart_human_medical_organ_icon.png"))); 
+        btnPenilaianAwalMedisRanapJantung.setText("Awal Medis Ranap Jantung");
+        btnPenilaianAwalMedisRanapJantung.setIconTextGap(0);
+        btnPenilaianAwalMedisRanapJantung.setName("btnPenilaianAwalMedisRanapJantung");
+        btnPenilaianAwalMedisRanapJantung.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnPenilaianAwalMedisRanapJantung.addActionListener(this::btnPenilaianAwalMedisRanapJantungActionPerformed);
+        
+        btnSkriningCURB65 = new widget.ButtonBig();
+        btnSkriningCURB65.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/lungs_2811493.png"))); 
+        btnSkriningCURB65.setText("Skrining CURB-65");
+        btnSkriningCURB65.setIconTextGap(0);
+        btnSkriningCURB65.setName("btnSkriningCURB65");
+        btnSkriningCURB65.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSkriningCURB65.addActionListener(this::btnSkriningCURB65ActionPerformed);
+        
+        btnEEksekutif = new widget.ButtonBig();
+        btnEEksekutif.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/2169607_bar_chart_financial_graph_graphic_icon.png"))); 
+        btnEEksekutif.setText("Set E-Eksekutif");
+        btnEEksekutif.setIconTextGap(0);
+        btnEEksekutif.setName("btnEEksekutif"); 
+        btnEEksekutif.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnEEksekutif.addActionListener(this::btnEEksekutifActionPerformed);
+        
+        btnBPJSPotensiPRB = new widget.ButtonBig();
+        btnBPJSPotensiPRB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/vclaim.png")));
+        btnBPJSPotensiPRB.setText("Potensi PRB di VClaim");
+        btnBPJSPotensiPRB.setIconTextGap(0);
+        btnBPJSPotensiPRB.setName("btnBPJSPotensiPRB"); 
+        btnBPJSPotensiPRB.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnBPJSPotensiPRB.addActionListener(this::btnBPJSPotensiPRBActionPerformed);
+        
+        btnBPJSRiwayatPelayananObatApotek = new widget.ButtonBig();
+        btnBPJSRiwayatPelayananObatApotek.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs_apotek.png")));
+        btnBPJSRiwayatPelayananObatApotek.setText("Riwayat Pelayanan Obat Apotek BPJS");
+        btnBPJSRiwayatPelayananObatApotek.setIconTextGap(0);
+        btnBPJSRiwayatPelayananObatApotek.setName("btnBPJSRiwayatPelayananObatApotek"); 
+        btnBPJSRiwayatPelayananObatApotek.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnBPJSRiwayatPelayananObatApotek.addActionListener(this::btnBPJSRiwayatPelayananObatApotekActionPerformed);
+        
+        btnBPJSRekapPesertaPRBObatApotek = new widget.ButtonBig();
+        btnBPJSRekapPesertaPRBObatApotek.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs_apotek.png")));
+        btnBPJSRekapPesertaPRBObatApotek.setText("Rekap Peserta PRB Apotek BPJS");
+        btnBPJSRekapPesertaPRBObatApotek.setIconTextGap(0);
+        btnBPJSRekapPesertaPRBObatApotek.setName("btnBPJSRekapPesertaPRBObatApotek"); 
+        btnBPJSRekapPesertaPRBObatApotek.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnBPJSRekapPesertaPRBObatApotek.addActionListener(this::btnBPJSRekapPesertaPRBObatApotekActionPerformed);
+        
+        btnSkriningGiziKehamilan = new widget.ButtonBig();
+        btnSkriningGiziKehamilan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/meal_4814223.png"))); 
+        btnSkriningGiziKehamilan.setText("Skrining Gizi Kehamilan");
+        btnSkriningGiziKehamilan.setIconTextGap(0);
+        btnSkriningGiziKehamilan.setName("btnSkriningGiziKehamilan");
+        btnSkriningGiziKehamilan.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSkriningGiziKehamilan.addActionListener(this::btnSkriningGiziKehamilanActionPerformed);
+        
+        btnSuratSerahTerimaBarangAnggotaTubuh = new widget.ButtonBig();
+        btnSuratSerahTerimaBarangAnggotaTubuh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/file-manager.png"))); 
+        btnSuratSerahTerimaBarangAnggotaTubuh.setText("Serah Terima Anggota Tubuh/Barang");
+        btnSuratSerahTerimaBarangAnggotaTubuh.setIconTextGap(0);
+        btnSuratSerahTerimaBarangAnggotaTubuh.setName("btnSuratSerahTerimaBarangAnggotaTubuh");
+        btnSuratSerahTerimaBarangAnggotaTubuh.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSuratSerahTerimaBarangAnggotaTubuh.addActionListener(this::btnSuratSerahTerimaBarangAnggotaTubuhActionPerformed);
+        
+        btnSuratPermintaanBinrohtal = new widget.ButtonBig();
+        btnSuratPermintaanBinrohtal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/mental-health_18376031-2.png"))); 
+        btnSuratPermintaanBinrohtal.setText("Persetujuan Bimbingan Rohani & Mental");
+        btnSuratPermintaanBinrohtal.setIconTextGap(0);
+        btnSuratPermintaanBinrohtal.setName("btnSuratPermintaanBinrohtal");
+        btnSuratPermintaanBinrohtal.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSuratPermintaanBinrohtal.addActionListener(this::btnSuratPermintaanBinrohtalActionPerformed);
+        
+        btnSuratPermintaanPerlindunganDariKekerasan = new widget.ButtonBig();
+        btnSuratPermintaanPerlindunganDariKekerasan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/boxing_2043124.png"))); 
+        btnSuratPermintaanPerlindunganDariKekerasan.setText("Permintaan Perlindungan Diri Dari Kekerasan");
+        btnSuratPermintaanPerlindunganDariKekerasan.setIconTextGap(0);
+        btnSuratPermintaanPerlindunganDariKekerasan.setName("btnSuratPermintaanPerlindunganDariKekerasan");
+        btnSuratPermintaanPerlindunganDariKekerasan.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSuratPermintaanPerlindunganDariKekerasan.addActionListener(this::btnSuratPermintaanPerlindunganDariKekerasanActionPerformed);
+        
+        btnSuratPermohonanPrivasi = new widget.ButtonBig();
+        btnSuratPermohonanPrivasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/compliant_4252354.png"))); 
+        btnSuratPermohonanPrivasi.setText("Surat Permohonan Privasi");
+        btnSuratPermohonanPrivasi.setIconTextGap(0);
+        btnSuratPermohonanPrivasi.setName("btnSuratPermohonanPrivasi");
+        btnSuratPermohonanPrivasi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSuratPermohonanPrivasi.addActionListener(this::btnSuratPermohonanPrivasiActionPerformed);
+        
+        btnSuratPermintaanSecondOpinion = new widget.ButtonBig();
+        btnSuratPermintaanSecondOpinion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/conversation_3601377.png"))); 
+        btnSuratPermintaanSecondOpinion.setText("Surat Permintaan Second Opinion");
+        btnSuratPermintaanSecondOpinion.setIconTextGap(0);
+        btnSuratPermintaanSecondOpinion.setName("btnSuratPermintaanSecondOpinion");
+        btnSuratPermintaanSecondOpinion.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSuratPermintaanSecondOpinion.addActionListener(this::btnSuratPermintaanSecondOpinionActionPerformed);
+        
+        btnSuratPenolakanResusitasi = new widget.ButtonBig();
+        btnSuratPenolakanResusitasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/services_6007742.png"))); 
+        btnSuratPenolakanResusitasi.setText("Surat Penolakan Resusitasi");
+        btnSuratPenolakanResusitasi.setIconTextGap(0);
+        btnSuratPenolakanResusitasi.setName("btnSuratPenolakanResusitasi");
+        btnSuratPenolakanResusitasi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSuratPenolakanResusitasi.addActionListener(this::btnSuratPenolakanResusitasiActionPerformed);
+        
+        btnSuratPengajuanCutiPerawatan = new widget.ButtonBig();
+        btnSuratPengajuanCutiPerawatan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/writing_2593639.png"))); 
+        btnSuratPengajuanCutiPerawatan.setText("Surat Pegajuan Cuti Perawatan");
+        btnSuratPengajuanCutiPerawatan.setIconTextGap(0);
+        btnSuratPengajuanCutiPerawatan.setName("btnSuratPengajuanCutiPerawatan");
+        btnSuratPengajuanCutiPerawatan.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSuratPengajuanCutiPerawatan.addActionListener(this::btnSuratPengajuanCutiPerawatanActionPerformed);
+        
+        btnPCRAICRAJenisAktivitasProyek = new widget.ButtonBig();
+        btnPCRAICRAJenisAktivitasProyek.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/construction_12539761.png")));
+        btnPCRAICRAJenisAktivitasProyek.setText("Jenis Aktivitas Proyek PCRA");
+        btnPCRAICRAJenisAktivitasProyek.setIconTextGap(0);
+        btnPCRAICRAJenisAktivitasProyek.setName("btnPCRAICRAJenisAktivitasProyek"); 
+        btnPCRAICRAJenisAktivitasProyek.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnPCRAICRAJenisAktivitasProyek.addActionListener(this::btnPCRAICRAJenisAktivitasProyekActionPerformed);
+        
+        btnPCRAICRALokasiKelompokRisiko = new widget.ButtonBig();
+        btnPCRAICRALokasiKelompokRisiko.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/construction_16675584.png")));
+        btnPCRAICRALokasiKelompokRisiko.setText("Lokasi & Kelompok Risiko Area PCRA");
+        btnPCRAICRALokasiKelompokRisiko.setIconTextGap(0);
+        btnPCRAICRALokasiKelompokRisiko.setName("btnPCRAICRALokasiKelompokRisiko"); 
+        btnPCRAICRALokasiKelompokRisiko.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnPCRAICRALokasiKelompokRisiko.addActionListener(this::btnPCRAICRALokasiKelompokRisikoActionPerformed);
+        
+        btnPCRAICRAKelasRisikoPencegahan = new widget.ButtonBig();
+        btnPCRAICRAKelasRisikoPencegahan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/construction_13585266.png")));
+        btnPCRAICRAKelasRisikoPencegahan.setText("Kelas Risiko/Kelas Pencegahan PCRA");
+        btnPCRAICRAKelasRisikoPencegahan.setIconTextGap(0);
+        btnPCRAICRAKelasRisikoPencegahan.setName("btnPCRAICRAKelasRisikoPencegahan"); 
+        btnPCRAICRAKelasRisikoPencegahan.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnPCRAICRAKelasRisikoPencegahan.addActionListener(this::btnPCRAICRAKelasRisikoPencegahanActionPerformed);
+        
+        btnPCRAICRATindakanPengendalian = new widget.ButtonBig();
+        btnPCRAICRATindakanPengendalian.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/real-estate_3309891.png")));
+        btnPCRAICRATindakanPengendalian.setText("Tindakan Pengendalian PCRA");
+        btnPCRAICRATindakanPengendalian.setIconTextGap(0);
+        btnPCRAICRATindakanPengendalian.setName("btnPCRAICRATindakanPengendalian"); 
+        btnPCRAICRATindakanPengendalian.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnPCRAICRATindakanPengendalian.addActionListener(this::btnPCRAICRATindakanPengendalianActionPerformed);
+        
+        btnPCRAICRAIdentifikasiRisikoInfeksi = new widget.ButtonBig();
+        btnPCRAICRAIdentifikasiRisikoInfeksi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/virus_3182541.png")));
+        btnPCRAICRAIdentifikasiRisikoInfeksi.setText("Identifikasi Risiko Infeksi PCRA");
+        btnPCRAICRAIdentifikasiRisikoInfeksi.setIconTextGap(0);
+        btnPCRAICRAIdentifikasiRisikoInfeksi.setName("btnPCRAICRAIdentifikasiRisikoInfeksi"); 
+        btnPCRAICRAIdentifikasiRisikoInfeksi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnPCRAICRAIdentifikasiRisikoInfeksi.addActionListener(this::btnPCRAICRAIdentifikasiRisikoInfeksiActionPerformed);
+        
+        btnPCRAICRAIdentifikasiRisikoKeselamatan = new widget.ButtonBig();
+        btnPCRAICRAIdentifikasiRisikoKeselamatan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/project-management_2422121.png")));
+        btnPCRAICRAIdentifikasiRisikoKeselamatan.setText("Identifikasi Risiko Keselamatan PCRA");
+        btnPCRAICRAIdentifikasiRisikoKeselamatan.setIconTextGap(0);
+        btnPCRAICRAIdentifikasiRisikoKeselamatan.setName("btnPCRAICRAIdentifikasiRisikoKeselamatan"); 
+        btnPCRAICRAIdentifikasiRisikoKeselamatan.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnPCRAICRAIdentifikasiRisikoKeselamatan.addActionListener(this::btnPCRAICRAIdentifikasiRisikoKeselamatanActionPerformed);
+        
+        btnPCRAICRAIdentifikasiRisikoKebakaran = new widget.ButtonBig();
+        btnPCRAICRAIdentifikasiRisikoKebakaran.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/fire_2278480.png")));
+        btnPCRAICRAIdentifikasiRisikoKebakaran.setText("Identifikasi Risiko Kebakaran PCRA");
+        btnPCRAICRAIdentifikasiRisikoKebakaran.setIconTextGap(0);
+        btnPCRAICRAIdentifikasiRisikoKebakaran.setName("btnPCRAICRAIdentifikasiRisikoKebakaran"); 
+        btnPCRAICRAIdentifikasiRisikoKebakaran.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnPCRAICRAIdentifikasiRisikoKebakaran.addActionListener(this::btnPCRAICRAIdentifikasiRisikoKebakaranActionPerformed);
+        
+        btnPCRAICRAIdentifikasiRisikoUtilitas = new widget.ButtonBig();
+        btnPCRAICRAIdentifikasiRisikoUtilitas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/repair_3899458.png")));
+        btnPCRAICRAIdentifikasiRisikoUtilitas.setText("Identifikasi Risiko Utilitas PCRA");
+        btnPCRAICRAIdentifikasiRisikoUtilitas.setIconTextGap(0);
+        btnPCRAICRAIdentifikasiRisikoUtilitas.setName("btnPCRAICRAIdentifikasiRisikoUtilitas"); 
+        btnPCRAICRAIdentifikasiRisikoUtilitas.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnPCRAICRAIdentifikasiRisikoUtilitas.addActionListener(this::btnPCRAICRAIdentifikasiRisikoUtilitasActionPerformed);
+        
+        btnBPJSResepObatApotek = new widget.ButtonBig();
+        btnBPJSResepObatApotek.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs_apotek.png")));
+        btnBPJSResepObatApotek.setText("Resep Obat Apotek BPJS");
+        btnBPJSResepObatApotek.setIconTextGap(0);
+        btnBPJSResepObatApotek.setName("btnBPJSResepObatApotek"); 
+        btnBPJSResepObatApotek.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnBPJSResepObatApotek.addActionListener(this::btnBPJSResepObatApotekActionPerformed);
+        
+        btnObatApolApotekBPJS = new widget.ButtonBig();
+        btnObatApolApotekBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs_apotek.png")));
+        btnObatApolApotekBPJS.setText("Obat ApOL Apotek BPJS");
+        btnObatApolApotekBPJS.setIconTextGap(0);
+        btnObatApolApotekBPJS.setName("btnObatApolApotekBPJS"); 
+        btnObatApolApotekBPJS.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnObatApolApotekBPJS.addActionListener(this::btnObatApolApotekBPJSActionPerformed);
+        
+        btnPermintaanResepIterasiApotekBPJS = new widget.ButtonBig();
+        btnPermintaanResepIterasiApotekBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs_apotek.png")));
+        btnPermintaanResepIterasiApotekBPJS.setText("Permintaan Resep Iterasi Apotek BPJS");
+        btnPermintaanResepIterasiApotekBPJS.setIconTextGap(0);
+        btnPermintaanResepIterasiApotekBPJS.setName("btnPermintaanResepIterasiApotekBPJS"); 
+        btnPermintaanResepIterasiApotekBPJS.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnPermintaanResepIterasiApotekBPJS.addActionListener(this::btnPermintaanResepIterasiApotekBPJSActionPerformed);
+        
+        btnMappingProsedurSmartKlaimBPJS = new widget.ButtonBig();
+        btnMappingProsedurSmartKlaimBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs.png")));
+        btnMappingProsedurSmartKlaimBPJS.setText("Mapping Prosedur Smart Klaim BPJS");
+        btnMappingProsedurSmartKlaimBPJS.setIconTextGap(0);
+        btnMappingProsedurSmartKlaimBPJS.setName("btnMappingProsedurSmartKlaimBPJS"); 
+        btnMappingProsedurSmartKlaimBPJS.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMappingProsedurSmartKlaimBPJS.addActionListener(this::btnMappingProsedurSmartKlaimBPJSActionPerformed);
+        
+        btnMappingPenyakitSmartKlaimBPJS = new widget.ButtonBig();
+        btnMappingPenyakitSmartKlaimBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs.png")));
+        btnMappingPenyakitSmartKlaimBPJS.setText("Mapping Penyakit Smart Klaim BPJS");
+        btnMappingPenyakitSmartKlaimBPJS.setIconTextGap(0);
+        btnMappingPenyakitSmartKlaimBPJS.setName("btnMappingPenyakitSmartKlaimBPJS"); 
+        btnMappingPenyakitSmartKlaimBPJS.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMappingPenyakitSmartKlaimBPJS.addActionListener(this::btnMappingPenyakitSmartKlaimBPJSActionPerformed);
+        
+        btnKirimFHIRSmartKlaimBPJS = new widget.ButtonBig();
+        btnKirimFHIRSmartKlaimBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs.png")));
+        btnKirimFHIRSmartKlaimBPJS.setText("Kirim FHIR Smart Klaim BPJS");
+        btnKirimFHIRSmartKlaimBPJS.setIconTextGap(0);
+        btnKirimFHIRSmartKlaimBPJS.setName("btnKirimFHIRSmartKlaimBPJS"); 
+        btnKirimFHIRSmartKlaimBPJS.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnKirimFHIRSmartKlaimBPJS.addActionListener(this::btnKirimFHIRSmartKlaimBPJSActionPerformed);
+        
+        btnPCRAICRAPengkajianRisikoPraKonstruksi = new widget.ButtonBig();
+        btnPCRAICRAPengkajianRisikoPraKonstruksi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/crane_2515356.png")));
+        btnPCRAICRAPengkajianRisikoPraKonstruksi.setText("Pengkajian Risiko Pra Konstruksi/PCRA");
+        btnPCRAICRAPengkajianRisikoPraKonstruksi.setIconTextGap(0);
+        btnPCRAICRAPengkajianRisikoPraKonstruksi.setName("btnPCRAICRAPengkajianRisikoPraKonstruksi"); 
+        btnPCRAICRAPengkajianRisikoPraKonstruksi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnPCRAICRAPengkajianRisikoPraKonstruksi.addActionListener(this::btnPCRAICRAPengkajianRisikoPraKonstruksiActionPerformed);
+        
+        btnPCRAICRAPersyaratanHarusDipenuhi = new widget.ButtonBig();
+        btnPCRAICRAPersyaratanHarusDipenuhi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/hammer_10279817.png")));
+        btnPCRAICRAPersyaratanHarusDipenuhi.setText("Persyaratan Harus Dipenuhi PCRA");
+        btnPCRAICRAPersyaratanHarusDipenuhi.setIconTextGap(0);
+        btnPCRAICRAPersyaratanHarusDipenuhi.setName("btnPCRAICRAPersyaratanHarusDipenuhi"); 
+        btnPCRAICRAPersyaratanHarusDipenuhi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnPCRAICRAPersyaratanHarusDipenuhi.addActionListener(this::btnPCRAICRAPersyaratanHarusDipenuhiActionPerformed);
+        
+        btnKirimQRTelaahFarmasiSatuSehat = new widget.ButtonBig();
+        btnKirimQRTelaahFarmasiSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnKirimQRTelaahFarmasiSatuSehat.setText("Kirim Q.R. Telaah Farmasi Satu Sehat");
+        btnKirimQRTelaahFarmasiSatuSehat.setIconTextGap(0);
+        btnKirimQRTelaahFarmasiSatuSehat.setName("btnKirimQRTelaahFarmasiSatuSehat"); 
+        btnKirimQRTelaahFarmasiSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnKirimQRTelaahFarmasiSatuSehat.addActionListener(this::btnKirimQRTelaahFarmasiSatuSehatActionPerformed);
+        
+        btnKirimAllergiSatuSehat = new widget.ButtonBig();
+        btnKirimAllergiSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnKirimAllergiSatuSehat.setText("Kirim Allergy Intolerance Satu Sehat");
+        btnKirimAllergiSatuSehat.setIconTextGap(0);
+        btnKirimAllergiSatuSehat.setName("btnKirimAllergiSatuSehat"); 
+        btnKirimAllergiSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnKirimAllergiSatuSehat.addActionListener(this::btnKirimAllergiSatuSehatActionPerformed);
+        
+        btnKonsultasiPerawat = new widget.ButtonBig();
+        btnKonsultasiPerawat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/discuss_12922995.png"))); 
+        btnKonsultasiPerawat.setText("Konsultasi Perawat");
+        btnKonsultasiPerawat.setIconTextGap(0);
+        btnKonsultasiPerawat.setName("btnKonsultasiPerawat"); 
+        btnKonsultasiPerawat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnKonsultasiPerawat.addActionListener(this::btnKonsultasiPerawatActionPerformed);
+        
+        btnSuratKeteranganBerobat = new widget.ButtonBig();
+        btnSuratKeteranganBerobat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/register_11421976.png"))); 
+        btnSuratKeteranganBerobat.setText("Surat Keterangan Berobat");
+        btnSuratKeteranganBerobat.setIconTextGap(0);
+        btnSuratKeteranganBerobat.setName("btnSuratKeteranganBerobat");
+        btnSuratKeteranganBerobat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSuratKeteranganBerobat.addActionListener(this::btnSuratKeteranganBerobatActionPerformed);
+        
+        btnCatatanObservasiRuangOperasi = new widget.ButtonBig();
+        btnCatatanObservasiRuangOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/surgery-room_17774320.png"))); 
+        btnCatatanObservasiRuangOperasi.setText("Catatan Observasi Ruang Operasi");
+        btnCatatanObservasiRuangOperasi.setIconTextGap(0);
+        btnCatatanObservasiRuangOperasi.setName("btnCatatanObservasiRuangOperasi"); 
+        btnCatatanObservasiRuangOperasi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnCatatanObservasiRuangOperasi.addActionListener(this::btnCatatanObservasiRuangOperasiActionPerformed);
+        
+        btnHasilUSGAbdomen = new widget.ButtonBig();
+        btnHasilUSGAbdomen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/abs_3500353.png")));
+        btnHasilUSGAbdomen.setText("Hasil USG Abdomen");
+        btnHasilUSGAbdomen.setIconTextGap(0);
+        btnHasilUSGAbdomen.setName("btnHasilUSGAbdomen"); 
+        btnHasilUSGAbdomen.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnHasilUSGAbdomen.addActionListener(this::btnHasilUSGAbdomenActionPerformed);
+        
+        btnIntervensiNyeriFarmakologi = new widget.ButtonBig();
+        btnIntervensiNyeriFarmakologi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/vitamin_17348719.png")));
+        btnIntervensiNyeriFarmakologi.setText("Intervensi Nyeri Farmakologi");
+        btnIntervensiNyeriFarmakologi.setIconTextGap(0);
+        btnIntervensiNyeriFarmakologi.setName("btnIntervensiNyeriFarmakologi"); 
+        btnIntervensiNyeriFarmakologi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnIntervensiNyeriFarmakologi.addActionListener(this::btnIntervensiNyeriFarmakologiActionPerformed);
+        
+        btnIntervensiNyeriNonFarmakologi = new widget.ButtonBig();
+        btnIntervensiNyeriNonFarmakologi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/music_9881578.png")));
+        btnIntervensiNyeriNonFarmakologi.setText("Intervensi Nyeri Non Farmakologi");
+        btnIntervensiNyeriNonFarmakologi.setIconTextGap(0);
+        btnIntervensiNyeriNonFarmakologi.setName("btnIntervensiNyeriNonFarmakologi"); 
+        btnIntervensiNyeriNonFarmakologi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnIntervensiNyeriNonFarmakologi.addActionListener(this::btnIntervensiNyeriNonFarmakologiActionPerformed);
+        
+        btnChecklistKriteriaMasukIsolasi = new widget.ButtonBig();
+        btnChecklistKriteriaMasukIsolasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/isolation-2.png"))); 
+        btnChecklistKriteriaMasukIsolasi.setText("Check List Kriteria Masuk Isolasi");
+        btnChecklistKriteriaMasukIsolasi.setIconTextGap(0);
+        btnChecklistKriteriaMasukIsolasi.setName("btnChecklistKriteriaMasukIsolasi"); 
+        btnChecklistKriteriaMasukIsolasi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnChecklistKriteriaMasukIsolasi.addActionListener(this::btnChecklistKriteriaMasukIsolasiActionPerformed);
+        
+        btnChecklistKriteriaKeluarIsolasi = new widget.ButtonBig();
+        btnChecklistKriteriaKeluarIsolasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/isolation.png"))); 
+        btnChecklistKriteriaKeluarIsolasi.setText("Check List Kriteria Keluar Isolasi");
+        btnChecklistKriteriaKeluarIsolasi.setIconTextGap(0);
+        btnChecklistKriteriaKeluarIsolasi.setName("btnChecklistKriteriaKeluarIsolasi"); 
+        btnChecklistKriteriaKeluarIsolasi.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnChecklistKriteriaKeluarIsolasi.addActionListener(this::btnChecklistKriteriaKeluarIsolasiActionPerformed);
+        
+        btnMapingTarifTindakanRalanKPTLSatuSehat = new widget.ButtonBig();
+        btnMapingTarifTindakanRalanKPTLSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnMapingTarifTindakanRalanKPTLSatuSehat.setText("Mapping Tindakan Ralan KPTL Satu Sehat");
+        btnMapingTarifTindakanRalanKPTLSatuSehat.setIconTextGap(0);
+        btnMapingTarifTindakanRalanKPTLSatuSehat.setName("btnMapingTarifTindakanRalanKPTLSatuSehat"); 
+        btnMapingTarifTindakanRalanKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMapingTarifTindakanRalanKPTLSatuSehat.addActionListener(this::btnMapingTarifTindakanRalanKPTLSatuSehatActionPerformed);
+        
+        btnMapingTarifTindakanRanapKPTLSatuSehat = new widget.ButtonBig();
+        btnMapingTarifTindakanRanapKPTLSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnMapingTarifTindakanRanapKPTLSatuSehat.setText("Mapping Tindakan Ranap KPTL Satu Sehat");
+        btnMapingTarifTindakanRanapKPTLSatuSehat.setIconTextGap(0);
+        btnMapingTarifTindakanRanapKPTLSatuSehat.setName("btnMapingTarifTindakanRanapKPTLSatuSehat"); 
+        btnMapingTarifTindakanRanapKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMapingTarifTindakanRanapKPTLSatuSehat.addActionListener(this::btnMapingTarifTindakanRanapKPTLSatuSehatActionPerformed);
+        
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat = new widget.ButtonBig();
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setText("Mapping Tindakan Radiologi KPTL Satu Sehat");
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setIconTextGap(0);
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setName("btnMapingTarifTindakanRadiologiKPTLSatuSehat"); 
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMapingTarifTindakanRadiologiKPTLSatuSehat.addActionListener(this::btnMapingTarifTindakanRadiologiKPTLSatuSehatActionPerformed);
+        
+        btnMapingTarifTindakanLabKPTLSatuSehat = new widget.ButtonBig();
+        btnMapingTarifTindakanLabKPTLSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnMapingTarifTindakanLabKPTLSatuSehat.setText("Mapping Tindakan Lab KPTL Satu Sehat");
+        btnMapingTarifTindakanLabKPTLSatuSehat.setIconTextGap(0);
+        btnMapingTarifTindakanLabKPTLSatuSehat.setName("btnMapingTarifTindakanLabKPTLSatuSehat"); 
+        btnMapingTarifTindakanLabKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMapingTarifTindakanLabKPTLSatuSehat.addActionListener(this::btnMapingTarifTindakanLabKPTLSatuSehatActionPerformed);
+        
+        btnMapingTarifTindakanOperasiKPTLSatuSehat = new widget.ButtonBig();
+        btnMapingTarifTindakanOperasiKPTLSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnMapingTarifTindakanOperasiKPTLSatuSehat.setText("Mapping Tindakan Operasi KPTL Satu Sehat");
+        btnMapingTarifTindakanOperasiKPTLSatuSehat.setIconTextGap(0);
+        btnMapingTarifTindakanOperasiKPTLSatuSehat.setName("btnMapingTarifTindakanOperasiKPTLSatuSehat"); 
+        btnMapingTarifTindakanOperasiKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMapingTarifTindakanOperasiKPTLSatuSehat.addActionListener(this::btnMapingTarifTindakanOperasiKPTLSatuSehatActionPerformed);
+        
+        btnMapingTarifKamarKPTLSatuSehat = new widget.ButtonBig();
+        btnMapingTarifKamarKPTLSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnMapingTarifKamarKPTLSatuSehat.setText("Mapping Tarif Kamar KPTL Satu Sehat");
+        btnMapingTarifKamarKPTLSatuSehat.setIconTextGap(0);
+        btnMapingTarifKamarKPTLSatuSehat.setName("btnMapingTarifKamarKPTLSatuSehat"); 
+        btnMapingTarifKamarKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnMapingTarifKamarKPTLSatuSehat.addActionListener(this::btnMapingTarifKamarKPTLSatuSehatActionPerformed);
+        
+        btnBridgingTTESatuSehat = new widget.ButtonBig();
+        btnBridgingTTESatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnBridgingTTESatuSehat.setText("Bridging TTE Satu Sehat");
+        btnBridgingTTESatuSehat.setIconTextGap(0);
+        btnBridgingTTESatuSehat.setName("btnBridgingTTESatuSehat"); 
+        btnBridgingTTESatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnBridgingTTESatuSehat.addActionListener(this::btnBridgingTTESatuSehatActionPerformed);
+        
+        btnBridgingCompositionRMESatuSehat = new widget.ButtonBig();
+        btnBridgingCompositionRMESatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
+        btnBridgingCompositionRMESatuSehat.setText("Kirim Composition Satu Sehat");
+        btnBridgingCompositionRMESatuSehat.setIconTextGap(0);
+        btnBridgingCompositionRMESatuSehat.setName("btnBridgingCompositionRMESatuSehat"); 
+        btnBridgingCompositionRMESatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnBridgingCompositionRMESatuSehat.addActionListener(this::btnBridgingCompositionRMESatuSehatActionPerformed);
+        
+        btnRingkasanHutangVendorAsetInventaris = new widget.ButtonBig();
+        btnRingkasanHutangVendorAsetInventaris.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/9016847_cleaning_kitchen_covid-19_virus_pandemic_icon.png")));
+        btnRingkasanHutangVendorAsetInventaris.setText("Ringkasan Hutang Vendor Aset/Inventaris");
+        btnRingkasanHutangVendorAsetInventaris.setIconTextGap(0);
+        btnRingkasanHutangVendorAsetInventaris.setName("btnRingkasanHutangVendorAsetInventaris"); 
+        btnRingkasanHutangVendorAsetInventaris.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnRingkasanHutangVendorAsetInventaris.addActionListener(this::btnRingkasanHutangVendorAsetInventarisActionPerformed);
+        
+        btnRingkasanBebanHutangLain = new widget.ButtonBig();
+        btnRingkasanBebanHutangLain.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/debt_2780190.png")));
+        btnRingkasanBebanHutangLain.setText("Ringkasan Beban Hutang Lain");
+        btnRingkasanBebanHutangLain.setIconTextGap(0);
+        btnRingkasanBebanHutangLain.setName("btnRingkasanBebanHutangLain"); 
+        btnRingkasanBebanHutangLain.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnRingkasanBebanHutangLain.addActionListener(this::btnRingkasanBebanHutangLainActionPerformed);
+    }
+    
+    private void initKhanza3(){
+            
         btnDataSasaranUsiaProduktif = new widget.ButtonBig();
         btnDataSasaranUsiaProduktif.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/49607_product_report_sales_icon.png"))); 
         btnDataSasaranUsiaProduktif.setText("Data Sasaran Usia Produktif");
@@ -50845,510 +51346,10 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         btnPenilaianAwalMedisRalanUrologi.setPreferredSize(new java.awt.Dimension(200, 90));
         btnPenilaianAwalMedisRalanUrologi.addActionListener(this::btnPenilaianAwalMedisRalanUrologiActionPerformed);
     }
-    
-    private void initKhanza2() {
-        btnHasilPemeriksaanECHOPediatrik = new widget.ButtonBig();
-        btnHasilPemeriksaanECHOPediatrik.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/2104702_beat_health_healthcare_heart_heartbeat_icon.png")));
-        btnHasilPemeriksaanECHOPediatrik.setText("Hasil Pemeriksaan ECHO Pediatrik");
-        btnHasilPemeriksaanECHOPediatrik.setIconTextGap(0);
-        btnHasilPemeriksaanECHOPediatrik.setName("btnHasilPemeriksaanECHOPediatrik"); 
-        btnHasilPemeriksaanECHOPediatrik.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnHasilPemeriksaanECHOPediatrik.addActionListener(this::btnHasilPemeriksaanECHOPediatrikActionPerformed);
-        
-        btnMasterTemplateInformasiEdukasi = new widget.ButtonBig();
-        btnMasterTemplateInformasiEdukasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/11211459_whiteboard_canvas_education_school_classroom_icon.png")));
-        btnMasterTemplateInformasiEdukasi.setText("Master Template Informasi & Edukasi");
-        btnMasterTemplateInformasiEdukasi.setIconTextGap(0);
-        btnMasterTemplateInformasiEdukasi.setName("btnMasterTemplateInformasiEdukasi"); 
-        btnMasterTemplateInformasiEdukasi.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnMasterTemplateInformasiEdukasi.addActionListener(this::btnMasterTemplateInformasiEdukasiActionPerformed);
-        
-        btnSkriningInstrumenESAT = new widget.ButtonBig();
-        btnSkriningInstrumenESAT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/6771568_book_education_learning_puzzle_school_icon.png"))); 
-        btnSkriningInstrumenESAT.setText("Skrining Instrumen ESAT");
-        btnSkriningInstrumenESAT.setIconTextGap(0);
-        btnSkriningInstrumenESAT.setName("btnSkriningInstrumenESAT");
-        btnSkriningInstrumenESAT.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnSkriningInstrumenESAT.addActionListener(this::btnSkriningInstrumenESATActionPerformed);
-        
-        btnLabKeslingPermintaanPengujianSampel = new widget.ButtonBig();
-        btnLabKeslingPermintaanPengujianSampel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/5269078_book_calendar_education_library_loan_icon.png"))); 
-        btnLabKeslingPermintaanPengujianSampel.setText("Permintaan Pengujian Sampel Lab Kesling");
-        btnLabKeslingPermintaanPengujianSampel.setIconTextGap(0);
-        btnLabKeslingPermintaanPengujianSampel.setName("btnLabKeslingPermintaanPengujianSampel");
-        btnLabKeslingPermintaanPengujianSampel.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnLabKeslingPermintaanPengujianSampel.addActionListener(this::btnLabKeslingPermintaanPengujianSampelActionPerformed);
-        
-        btnLabKeslingPengujianSampelTidakDapatDilayani = new widget.ButtonBig();
-        btnLabKeslingPengujianSampelTidakDapatDilayani.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/6088713_banned_closed_shop_sign_icon.png"))); 
-        btnLabKeslingPengujianSampelTidakDapatDilayani.setText("Sampel Pengujian Lab Kesling Tidak Dapat Dilayani");
-        btnLabKeslingPengujianSampelTidakDapatDilayani.setIconTextGap(0);
-        btnLabKeslingPengujianSampelTidakDapatDilayani.setName("btnLabKeslingPengujianSampelTidakDapatDilayani");
-        btnLabKeslingPengujianSampelTidakDapatDilayani.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnLabKeslingPengujianSampelTidakDapatDilayani.addActionListener(this::btnLabKeslingPengujianSampelTidakDapatDilayaniActionPerformed);
-        
-        btnLabKeslingPengujianSampelDapatDilayani = new widget.ButtonBig();
-        btnLabKeslingPengujianSampelDapatDilayani.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/4059950_and_architecture_book_buildings_business_icon.png"))); 
-        btnLabKeslingPengujianSampelDapatDilayani.setText("Sampel Pengujian Lab Kesling Dapat Dilayani");
-        btnLabKeslingPengujianSampelDapatDilayani.setIconTextGap(0);
-        btnLabKeslingPengujianSampelDapatDilayani.setName("btnLabKeslingPengujianSampelDapatDilayani");
-        btnLabKeslingPengujianSampelDapatDilayani.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnLabKeslingPengujianSampelDapatDilayani.addActionListener(this::btnLabKeslingPengujianSampelDapatDilayaniActionPerformed);
-        
-        btnLabKeslingPenugasanPengujianSampel = new widget.ButtonBig();
-        btnLabKeslingPenugasanPengujianSampel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/7038097_marketing_file_business_clipboard_data_icon.png"))); 
-        btnLabKeslingPenugasanPengujianSampel.setText("Data Penugasan Pengujian Sampel Lab Kesling");
-        btnLabKeslingPenugasanPengujianSampel.setIconTextGap(0);
-        btnLabKeslingPenugasanPengujianSampel.setName("btnLabKeslingPenugasanPengujianSampel");
-        btnLabKeslingPenugasanPengujianSampel.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnLabKeslingPenugasanPengujianSampel.addActionListener(this::btnLabKeslingPenugasanPengujianSampelActionPerformed);
-        
-        btnLabKeslingHasilPengujianSampel = new widget.ButtonBig();
-        btnLabKeslingHasilPengujianSampel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/6725462_archive_data_document_file_page_icon.png"))); 
-        btnLabKeslingHasilPengujianSampel.setText("Data Hasil Pengujian Sampel Lab Kesling");
-        btnLabKeslingHasilPengujianSampel.setIconTextGap(0);
-        btnLabKeslingHasilPengujianSampel.setName("btnLabKeslingHasilPengujianSampel");
-        btnLabKeslingHasilPengujianSampel.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnLabKeslingHasilPengujianSampel.addActionListener(this::btnLabKeslingHasilPengujianSampelActionPerformed);
-        
-        btnLabKeslingVerifikasiPengujianSampel = new widget.ButtonBig();
-        btnLabKeslingVerifikasiPengujianSampel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/4698583_document_file_paper_pen_text_icon.png"))); 
-        btnLabKeslingVerifikasiPengujianSampel.setText("Data Verifikasi Pengujian Sampel Lab Kesling");
-        btnLabKeslingVerifikasiPengujianSampel.setIconTextGap(0);
-        btnLabKeslingVerifikasiPengujianSampel.setName("btnLabKeslingVerifikasiPengujianSampel");
-        btnLabKeslingVerifikasiPengujianSampel.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnLabKeslingVerifikasiPengujianSampel.addActionListener(this::btnLabKeslingVerifikasiPengujianSampelActionPerformed);
-        
-        btnLabKeslingValidasiPengujianSampel = new widget.ButtonBig();
-        btnLabKeslingValidasiPengujianSampel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/paper_9683410.png"))); 
-        btnLabKeslingValidasiPengujianSampel.setText("Data Validasi Pengujian Sampel Lab Kesling");
-        btnLabKeslingValidasiPengujianSampel.setIconTextGap(0);
-        btnLabKeslingValidasiPengujianSampel.setName("btnLabKeslingValidasiPengujianSampel");
-        btnLabKeslingValidasiPengujianSampel.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnLabKeslingValidasiPengujianSampel.addActionListener(this::btnLabKeslingValidasiPengujianSampelActionPerformed);
-        
-        btnLabKeslingRekapPelayanan = new widget.ButtonBig();
-        btnLabKeslingRekapPelayanan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/85334_file_open_icon.png"))); 
-        btnLabKeslingRekapPelayanan.setText("Rekap Pelayanan Lab Kesling");
-        btnLabKeslingRekapPelayanan.setIconTextGap(0);
-        btnLabKeslingRekapPelayanan.setName("btnLabKeslingRekapPelayanan");
-        btnLabKeslingRekapPelayanan.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnLabKeslingRekapPelayanan.addActionListener(this::btnLabKeslingRekapPelayananActionPerformed);
-        
-        btnLabKeslingPembyaranPengujianSampel = new widget.ButtonBig();
-        btnLabKeslingPembyaranPengujianSampel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/money-bag_2953536-2.png"))); 
-        btnLabKeslingPembyaranPengujianSampel.setText("Pembayaran Pengujian Sampel Lab Kesling");
-        btnLabKeslingPembyaranPengujianSampel.setIconTextGap(0);
-        btnLabKeslingPembyaranPengujianSampel.setName("btnLabKeslingPembyaranPengujianSampel");
-        btnLabKeslingPembyaranPengujianSampel.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnLabKeslingPembyaranPengujianSampel.addActionListener(this::btnLabKeslingPembyaranPengujianSampelActionPerformed);
-        
-        btnLabKeslingRekapPembayaran = new widget.ButtonBig();
-        btnLabKeslingRekapPembayaran.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/money_536054-2.png"))); 
-        btnLabKeslingRekapPembayaran.setText("Rekap Pembayaran Lab Kesling");
-        btnLabKeslingRekapPembayaran.setIconTextGap(0);
-        btnLabKeslingRekapPembayaran.setName("btnLabKeslingRekapPembayaran");
-        btnLabKeslingRekapPembayaran.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnLabKeslingRekapPembayaran.addActionListener(this::btnLabKeslingRekapPembayaranActionPerformed);
-        
-        btnPenilaianAwalMedisRanapJantung = new widget.ButtonBig();
-        btnPenilaianAwalMedisRanapJantung.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/6217204_anatomy_heart_human_medical_organ_icon.png"))); 
-        btnPenilaianAwalMedisRanapJantung.setText("Awal Medis Ranap Jantung");
-        btnPenilaianAwalMedisRanapJantung.setIconTextGap(0);
-        btnPenilaianAwalMedisRanapJantung.setName("btnPenilaianAwalMedisRanapJantung");
-        btnPenilaianAwalMedisRanapJantung.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnPenilaianAwalMedisRanapJantung.addActionListener(this::btnPenilaianAwalMedisRanapJantungActionPerformed);
-        
-        btnSkriningCURB65 = new widget.ButtonBig();
-        btnSkriningCURB65.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/lungs_2811493.png"))); 
-        btnSkriningCURB65.setText("Skrining CURB-65");
-        btnSkriningCURB65.setIconTextGap(0);
-        btnSkriningCURB65.setName("btnSkriningCURB65");
-        btnSkriningCURB65.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnSkriningCURB65.addActionListener(this::btnSkriningCURB65ActionPerformed);
-        
-        btnEEksekutif = new widget.ButtonBig();
-        btnEEksekutif.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/2169607_bar_chart_financial_graph_graphic_icon.png"))); 
-        btnEEksekutif.setText("Set E-Eksekutif");
-        btnEEksekutif.setIconTextGap(0);
-        btnEEksekutif.setName("btnEEksekutif"); 
-        btnEEksekutif.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnEEksekutif.addActionListener(this::btnEEksekutifActionPerformed);
-        
-        btnBPJSPotensiPRB = new widget.ButtonBig();
-        btnBPJSPotensiPRB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/vclaim.png")));
-        btnBPJSPotensiPRB.setText("Potensi PRB di VClaim");
-        btnBPJSPotensiPRB.setIconTextGap(0);
-        btnBPJSPotensiPRB.setName("btnBPJSPotensiPRB"); 
-        btnBPJSPotensiPRB.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnBPJSPotensiPRB.addActionListener(this::btnBPJSPotensiPRBActionPerformed);
-        
-        btnBPJSRiwayatPelayananObatApotek = new widget.ButtonBig();
-        btnBPJSRiwayatPelayananObatApotek.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs_apotek.png")));
-        btnBPJSRiwayatPelayananObatApotek.setText("Riwayat Pelayanan Obat Apotek BPJS");
-        btnBPJSRiwayatPelayananObatApotek.setIconTextGap(0);
-        btnBPJSRiwayatPelayananObatApotek.setName("btnBPJSRiwayatPelayananObatApotek"); 
-        btnBPJSRiwayatPelayananObatApotek.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnBPJSRiwayatPelayananObatApotek.addActionListener(this::btnBPJSRiwayatPelayananObatApotekActionPerformed);
-        
-        btnBPJSRekapPesertaPRBObatApotek = new widget.ButtonBig();
-        btnBPJSRekapPesertaPRBObatApotek.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs_apotek.png")));
-        btnBPJSRekapPesertaPRBObatApotek.setText("Rekap Peserta PRB Apotek BPJS");
-        btnBPJSRekapPesertaPRBObatApotek.setIconTextGap(0);
-        btnBPJSRekapPesertaPRBObatApotek.setName("btnBPJSRekapPesertaPRBObatApotek"); 
-        btnBPJSRekapPesertaPRBObatApotek.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnBPJSRekapPesertaPRBObatApotek.addActionListener(this::btnBPJSRekapPesertaPRBObatApotekActionPerformed);
-        
-        btnSkriningGiziKehamilan = new widget.ButtonBig();
-        btnSkriningGiziKehamilan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/meal_4814223.png"))); 
-        btnSkriningGiziKehamilan.setText("Skrining Gizi Kehamilan");
-        btnSkriningGiziKehamilan.setIconTextGap(0);
-        btnSkriningGiziKehamilan.setName("btnSkriningGiziKehamilan");
-        btnSkriningGiziKehamilan.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnSkriningGiziKehamilan.addActionListener(this::btnSkriningGiziKehamilanActionPerformed);
-        
-        btnSuratSerahTerimaBarangAnggotaTubuh = new widget.ButtonBig();
-        btnSuratSerahTerimaBarangAnggotaTubuh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/file-manager.png"))); 
-        btnSuratSerahTerimaBarangAnggotaTubuh.setText("Serah Terima Anggota Tubuh/Barang");
-        btnSuratSerahTerimaBarangAnggotaTubuh.setIconTextGap(0);
-        btnSuratSerahTerimaBarangAnggotaTubuh.setName("btnSuratSerahTerimaBarangAnggotaTubuh");
-        btnSuratSerahTerimaBarangAnggotaTubuh.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnSuratSerahTerimaBarangAnggotaTubuh.addActionListener(this::btnSuratSerahTerimaBarangAnggotaTubuhActionPerformed);
-        
-        btnSuratPermintaanBinrohtal = new widget.ButtonBig();
-        btnSuratPermintaanBinrohtal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/mental-health_18376031-2.png"))); 
-        btnSuratPermintaanBinrohtal.setText("Persetujuan Bimbingan Rohani & Mental");
-        btnSuratPermintaanBinrohtal.setIconTextGap(0);
-        btnSuratPermintaanBinrohtal.setName("btnSuratPermintaanBinrohtal");
-        btnSuratPermintaanBinrohtal.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnSuratPermintaanBinrohtal.addActionListener(this::btnSuratPermintaanBinrohtalActionPerformed);
-        
-        btnSuratPermintaanPerlindunganDariKekerasan = new widget.ButtonBig();
-        btnSuratPermintaanPerlindunganDariKekerasan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/boxing_2043124.png"))); 
-        btnSuratPermintaanPerlindunganDariKekerasan.setText("Permintaan Perlindungan Diri Dari Kekerasan");
-        btnSuratPermintaanPerlindunganDariKekerasan.setIconTextGap(0);
-        btnSuratPermintaanPerlindunganDariKekerasan.setName("btnSuratPermintaanPerlindunganDariKekerasan");
-        btnSuratPermintaanPerlindunganDariKekerasan.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnSuratPermintaanPerlindunganDariKekerasan.addActionListener(this::btnSuratPermintaanPerlindunganDariKekerasanActionPerformed);
-        
-        btnSuratPermohonanPrivasi = new widget.ButtonBig();
-        btnSuratPermohonanPrivasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/compliant_4252354.png"))); 
-        btnSuratPermohonanPrivasi.setText("Surat Permohonan Privasi");
-        btnSuratPermohonanPrivasi.setIconTextGap(0);
-        btnSuratPermohonanPrivasi.setName("btnSuratPermohonanPrivasi");
-        btnSuratPermohonanPrivasi.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnSuratPermohonanPrivasi.addActionListener(this::btnSuratPermohonanPrivasiActionPerformed);
-        
-        btnSuratPermintaanSecondOpinion = new widget.ButtonBig();
-        btnSuratPermintaanSecondOpinion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/conversation_3601377.png"))); 
-        btnSuratPermintaanSecondOpinion.setText("Surat Permintaan Second Opinion");
-        btnSuratPermintaanSecondOpinion.setIconTextGap(0);
-        btnSuratPermintaanSecondOpinion.setName("btnSuratPermintaanSecondOpinion");
-        btnSuratPermintaanSecondOpinion.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnSuratPermintaanSecondOpinion.addActionListener(this::btnSuratPermintaanSecondOpinionActionPerformed);
-        
-        btnSuratPenolakanResusitasi = new widget.ButtonBig();
-        btnSuratPenolakanResusitasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/services_6007742.png"))); 
-        btnSuratPenolakanResusitasi.setText("Surat Penolakan Resusitasi");
-        btnSuratPenolakanResusitasi.setIconTextGap(0);
-        btnSuratPenolakanResusitasi.setName("btnSuratPenolakanResusitasi");
-        btnSuratPenolakanResusitasi.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnSuratPenolakanResusitasi.addActionListener(this::btnSuratPenolakanResusitasiActionPerformed);
-        
-        btnSuratPengajuanCutiPerawatan = new widget.ButtonBig();
-        btnSuratPengajuanCutiPerawatan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/writing_2593639.png"))); 
-        btnSuratPengajuanCutiPerawatan.setText("Surat Pegajuan Cuti Perawatan");
-        btnSuratPengajuanCutiPerawatan.setIconTextGap(0);
-        btnSuratPengajuanCutiPerawatan.setName("btnSuratPengajuanCutiPerawatan");
-        btnSuratPengajuanCutiPerawatan.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnSuratPengajuanCutiPerawatan.addActionListener(this::btnSuratPengajuanCutiPerawatanActionPerformed);
-        
-        btnPCRAICRAJenisAktivitasProyek = new widget.ButtonBig();
-        btnPCRAICRAJenisAktivitasProyek.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/construction_12539761.png")));
-        btnPCRAICRAJenisAktivitasProyek.setText("Jenis Aktivitas Proyek PCRA");
-        btnPCRAICRAJenisAktivitasProyek.setIconTextGap(0);
-        btnPCRAICRAJenisAktivitasProyek.setName("btnPCRAICRAJenisAktivitasProyek"); 
-        btnPCRAICRAJenisAktivitasProyek.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnPCRAICRAJenisAktivitasProyek.addActionListener(this::btnPCRAICRAJenisAktivitasProyekActionPerformed);
-        
-        btnPCRAICRALokasiKelompokRisiko = new widget.ButtonBig();
-        btnPCRAICRALokasiKelompokRisiko.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/construction_16675584.png")));
-        btnPCRAICRALokasiKelompokRisiko.setText("Lokasi & Kelompok Risiko Area PCRA");
-        btnPCRAICRALokasiKelompokRisiko.setIconTextGap(0);
-        btnPCRAICRALokasiKelompokRisiko.setName("btnPCRAICRALokasiKelompokRisiko"); 
-        btnPCRAICRALokasiKelompokRisiko.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnPCRAICRALokasiKelompokRisiko.addActionListener(this::btnPCRAICRALokasiKelompokRisikoActionPerformed);
-        
-        btnPCRAICRAKelasRisikoPencegahan = new widget.ButtonBig();
-        btnPCRAICRAKelasRisikoPencegahan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/construction_13585266.png")));
-        btnPCRAICRAKelasRisikoPencegahan.setText("Kelas Risiko/Kelas Pencegahan PCRA");
-        btnPCRAICRAKelasRisikoPencegahan.setIconTextGap(0);
-        btnPCRAICRAKelasRisikoPencegahan.setName("btnPCRAICRAKelasRisikoPencegahan"); 
-        btnPCRAICRAKelasRisikoPencegahan.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnPCRAICRAKelasRisikoPencegahan.addActionListener(this::btnPCRAICRAKelasRisikoPencegahanActionPerformed);
-        
-        btnPCRAICRATindakanPengendalian = new widget.ButtonBig();
-        btnPCRAICRATindakanPengendalian.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/real-estate_3309891.png")));
-        btnPCRAICRATindakanPengendalian.setText("Tindakan Pengendalian PCRA");
-        btnPCRAICRATindakanPengendalian.setIconTextGap(0);
-        btnPCRAICRATindakanPengendalian.setName("btnPCRAICRATindakanPengendalian"); 
-        btnPCRAICRATindakanPengendalian.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnPCRAICRATindakanPengendalian.addActionListener(this::btnPCRAICRATindakanPengendalianActionPerformed);
-        
-        btnPCRAICRAIdentifikasiRisikoInfeksi = new widget.ButtonBig();
-        btnPCRAICRAIdentifikasiRisikoInfeksi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/virus_3182541.png")));
-        btnPCRAICRAIdentifikasiRisikoInfeksi.setText("Identifikasi Risiko Infeksi PCRA");
-        btnPCRAICRAIdentifikasiRisikoInfeksi.setIconTextGap(0);
-        btnPCRAICRAIdentifikasiRisikoInfeksi.setName("btnPCRAICRAIdentifikasiRisikoInfeksi"); 
-        btnPCRAICRAIdentifikasiRisikoInfeksi.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnPCRAICRAIdentifikasiRisikoInfeksi.addActionListener(this::btnPCRAICRAIdentifikasiRisikoInfeksiActionPerformed);
-        
-        btnPCRAICRAIdentifikasiRisikoKeselamatan = new widget.ButtonBig();
-        btnPCRAICRAIdentifikasiRisikoKeselamatan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/project-management_2422121.png")));
-        btnPCRAICRAIdentifikasiRisikoKeselamatan.setText("Identifikasi Risiko Keselamatan PCRA");
-        btnPCRAICRAIdentifikasiRisikoKeselamatan.setIconTextGap(0);
-        btnPCRAICRAIdentifikasiRisikoKeselamatan.setName("btnPCRAICRAIdentifikasiRisikoKeselamatan"); 
-        btnPCRAICRAIdentifikasiRisikoKeselamatan.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnPCRAICRAIdentifikasiRisikoKeselamatan.addActionListener(this::btnPCRAICRAIdentifikasiRisikoKeselamatanActionPerformed);
-        
-        btnPCRAICRAIdentifikasiRisikoKebakaran = new widget.ButtonBig();
-        btnPCRAICRAIdentifikasiRisikoKebakaran.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/fire_2278480.png")));
-        btnPCRAICRAIdentifikasiRisikoKebakaran.setText("Identifikasi Risiko Kebakaran PCRA");
-        btnPCRAICRAIdentifikasiRisikoKebakaran.setIconTextGap(0);
-        btnPCRAICRAIdentifikasiRisikoKebakaran.setName("btnPCRAICRAIdentifikasiRisikoKebakaran"); 
-        btnPCRAICRAIdentifikasiRisikoKebakaran.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnPCRAICRAIdentifikasiRisikoKebakaran.addActionListener(this::btnPCRAICRAIdentifikasiRisikoKebakaranActionPerformed);
-        
-        btnPCRAICRAIdentifikasiRisikoUtilitas = new widget.ButtonBig();
-        btnPCRAICRAIdentifikasiRisikoUtilitas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/repair_3899458.png")));
-        btnPCRAICRAIdentifikasiRisikoUtilitas.setText("Identifikasi Risiko Utilitas PCRA");
-        btnPCRAICRAIdentifikasiRisikoUtilitas.setIconTextGap(0);
-        btnPCRAICRAIdentifikasiRisikoUtilitas.setName("btnPCRAICRAIdentifikasiRisikoUtilitas"); 
-        btnPCRAICRAIdentifikasiRisikoUtilitas.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnPCRAICRAIdentifikasiRisikoUtilitas.addActionListener(this::btnPCRAICRAIdentifikasiRisikoUtilitasActionPerformed);
-        
-        btnBPJSResepObatApotek = new widget.ButtonBig();
-        btnBPJSResepObatApotek.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs_apotek.png")));
-        btnBPJSResepObatApotek.setText("Resep Obat Apotek BPJS");
-        btnBPJSResepObatApotek.setIconTextGap(0);
-        btnBPJSResepObatApotek.setName("btnBPJSResepObatApotek"); 
-        btnBPJSResepObatApotek.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnBPJSResepObatApotek.addActionListener(this::btnBPJSResepObatApotekActionPerformed);
-        
-        btnObatApolApotekBPJS = new widget.ButtonBig();
-        btnObatApolApotekBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs_apotek.png")));
-        btnObatApolApotekBPJS.setText("Obat ApOL Apotek BPJS");
-        btnObatApolApotekBPJS.setIconTextGap(0);
-        btnObatApolApotekBPJS.setName("btnObatApolApotekBPJS"); 
-        btnObatApolApotekBPJS.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnObatApolApotekBPJS.addActionListener(this::btnObatApolApotekBPJSActionPerformed);
-        
-        btnPermintaanResepIterasiApotekBPJS = new widget.ButtonBig();
-        btnPermintaanResepIterasiApotekBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs_apotek.png")));
-        btnPermintaanResepIterasiApotekBPJS.setText("Permintaan Resep Iterasi Apotek BPJS");
-        btnPermintaanResepIterasiApotekBPJS.setIconTextGap(0);
-        btnPermintaanResepIterasiApotekBPJS.setName("btnPermintaanResepIterasiApotekBPJS"); 
-        btnPermintaanResepIterasiApotekBPJS.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnPermintaanResepIterasiApotekBPJS.addActionListener(this::btnPermintaanResepIterasiApotekBPJSActionPerformed);
-        
-        btnMappingProsedurSmartKlaimBPJS = new widget.ButtonBig();
-        btnMappingProsedurSmartKlaimBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs.png")));
-        btnMappingProsedurSmartKlaimBPJS.setText("Mapping Prosedur Smart Klaim BPJS");
-        btnMappingProsedurSmartKlaimBPJS.setIconTextGap(0);
-        btnMappingProsedurSmartKlaimBPJS.setName("btnMappingProsedurSmartKlaimBPJS"); 
-        btnMappingProsedurSmartKlaimBPJS.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnMappingProsedurSmartKlaimBPJS.addActionListener(this::btnMappingProsedurSmartKlaimBPJSActionPerformed);
-        
-        btnMappingPenyakitSmartKlaimBPJS = new widget.ButtonBig();
-        btnMappingPenyakitSmartKlaimBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs.png")));
-        btnMappingPenyakitSmartKlaimBPJS.setText("Mapping Penyakit Smart Klaim BPJS");
-        btnMappingPenyakitSmartKlaimBPJS.setIconTextGap(0);
-        btnMappingPenyakitSmartKlaimBPJS.setName("btnMappingPenyakitSmartKlaimBPJS"); 
-        btnMappingPenyakitSmartKlaimBPJS.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnMappingPenyakitSmartKlaimBPJS.addActionListener(this::btnMappingPenyakitSmartKlaimBPJSActionPerformed);
-        
-        btnKirimFHIRSmartKlaimBPJS = new widget.ButtonBig();
-        btnKirimFHIRSmartKlaimBPJS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/bpjs.png")));
-        btnKirimFHIRSmartKlaimBPJS.setText("Kirim FHIR Smart Klaim BPJS");
-        btnKirimFHIRSmartKlaimBPJS.setIconTextGap(0);
-        btnKirimFHIRSmartKlaimBPJS.setName("btnKirimFHIRSmartKlaimBPJS"); 
-        btnKirimFHIRSmartKlaimBPJS.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnKirimFHIRSmartKlaimBPJS.addActionListener(this::btnKirimFHIRSmartKlaimBPJSActionPerformed);
-        
-        btnPCRAICRAPengkajianRisikoPraKonstruksi = new widget.ButtonBig();
-        btnPCRAICRAPengkajianRisikoPraKonstruksi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/crane_2515356.png")));
-        btnPCRAICRAPengkajianRisikoPraKonstruksi.setText("Pengkajian Risiko Pra Konstruksi/PCRA");
-        btnPCRAICRAPengkajianRisikoPraKonstruksi.setIconTextGap(0);
-        btnPCRAICRAPengkajianRisikoPraKonstruksi.setName("btnPCRAICRAPengkajianRisikoPraKonstruksi"); 
-        btnPCRAICRAPengkajianRisikoPraKonstruksi.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnPCRAICRAPengkajianRisikoPraKonstruksi.addActionListener(this::btnPCRAICRAPengkajianRisikoPraKonstruksiActionPerformed);
-        
-        btnPCRAICRAPersyaratanHarusDipenuhi = new widget.ButtonBig();
-        btnPCRAICRAPersyaratanHarusDipenuhi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/hammer_10279817.png")));
-        btnPCRAICRAPersyaratanHarusDipenuhi.setText("Persyaratan Harus Dipenuhi PCRA");
-        btnPCRAICRAPersyaratanHarusDipenuhi.setIconTextGap(0);
-        btnPCRAICRAPersyaratanHarusDipenuhi.setName("btnPCRAICRAPersyaratanHarusDipenuhi"); 
-        btnPCRAICRAPersyaratanHarusDipenuhi.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnPCRAICRAPersyaratanHarusDipenuhi.addActionListener(this::btnPCRAICRAPersyaratanHarusDipenuhiActionPerformed);
-        
-        btnKirimQRTelaahFarmasiSatuSehat = new widget.ButtonBig();
-        btnKirimQRTelaahFarmasiSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
-        btnKirimQRTelaahFarmasiSatuSehat.setText("Kirim Q.R. Telaah Farmasi Satu Sehat");
-        btnKirimQRTelaahFarmasiSatuSehat.setIconTextGap(0);
-        btnKirimQRTelaahFarmasiSatuSehat.setName("btnKirimQRTelaahFarmasiSatuSehat"); 
-        btnKirimQRTelaahFarmasiSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnKirimQRTelaahFarmasiSatuSehat.addActionListener(this::btnKirimQRTelaahFarmasiSatuSehatActionPerformed);
-        
-        btnKirimAllergiSatuSehat = new widget.ButtonBig();
-        btnKirimAllergiSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
-        btnKirimAllergiSatuSehat.setText("Kirim Allergy Intolerance Satu Sehat");
-        btnKirimAllergiSatuSehat.setIconTextGap(0);
-        btnKirimAllergiSatuSehat.setName("btnKirimAllergiSatuSehat"); 
-        btnKirimAllergiSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnKirimAllergiSatuSehat.addActionListener(this::btnKirimAllergiSatuSehatActionPerformed);
-        
-        btnKonsultasiPerawat = new widget.ButtonBig();
-        btnKonsultasiPerawat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/discuss_12922995.png"))); 
-        btnKonsultasiPerawat.setText("Konsultasi Perawat");
-        btnKonsultasiPerawat.setIconTextGap(0);
-        btnKonsultasiPerawat.setName("btnKonsultasiPerawat"); 
-        btnKonsultasiPerawat.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnKonsultasiPerawat.addActionListener(this::btnKonsultasiPerawatActionPerformed);
-        
-        btnSuratKeteranganBerobat = new widget.ButtonBig();
-        btnSuratKeteranganBerobat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/register_11421976.png"))); 
-        btnSuratKeteranganBerobat.setText("Surat Keterangan Berobat");
-        btnSuratKeteranganBerobat.setIconTextGap(0);
-        btnSuratKeteranganBerobat.setName("btnSuratKeteranganBerobat");
-        btnSuratKeteranganBerobat.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnSuratKeteranganBerobat.addActionListener(this::btnSuratKeteranganBerobatActionPerformed);
-        
-        btnCatatanObservasiRuangOperasi = new widget.ButtonBig();
-        btnCatatanObservasiRuangOperasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/surgery-room_17774320.png"))); 
-        btnCatatanObservasiRuangOperasi.setText("Catatan Observasi Ruang Operasi");
-        btnCatatanObservasiRuangOperasi.setIconTextGap(0);
-        btnCatatanObservasiRuangOperasi.setName("btnCatatanObservasiRuangOperasi"); 
-        btnCatatanObservasiRuangOperasi.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnCatatanObservasiRuangOperasi.addActionListener(this::btnCatatanObservasiRuangOperasiActionPerformed);
-        
-        btnHasilUSGAbdomen = new widget.ButtonBig();
-        btnHasilUSGAbdomen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/abs_3500353.png")));
-        btnHasilUSGAbdomen.setText("Hasil USG Abdomen");
-        btnHasilUSGAbdomen.setIconTextGap(0);
-        btnHasilUSGAbdomen.setName("btnHasilUSGAbdomen"); 
-        btnHasilUSGAbdomen.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnHasilUSGAbdomen.addActionListener(this::btnHasilUSGAbdomenActionPerformed);
-        
-        btnIntervensiNyeriFarmakologi = new widget.ButtonBig();
-        btnIntervensiNyeriFarmakologi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/vitamin_17348719.png")));
-        btnIntervensiNyeriFarmakologi.setText("Intervensi Nyeri Farmakologi");
-        btnIntervensiNyeriFarmakologi.setIconTextGap(0);
-        btnIntervensiNyeriFarmakologi.setName("btnIntervensiNyeriFarmakologi"); 
-        btnIntervensiNyeriFarmakologi.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnIntervensiNyeriFarmakologi.addActionListener(this::btnIntervensiNyeriFarmakologiActionPerformed);
-        
-        btnIntervensiNyeriNonFarmakologi = new widget.ButtonBig();
-        btnIntervensiNyeriNonFarmakologi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/music_9881578.png")));
-        btnIntervensiNyeriNonFarmakologi.setText("Intervensi Nyeri Non Farmakologi");
-        btnIntervensiNyeriNonFarmakologi.setIconTextGap(0);
-        btnIntervensiNyeriNonFarmakologi.setName("btnIntervensiNyeriNonFarmakologi"); 
-        btnIntervensiNyeriNonFarmakologi.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnIntervensiNyeriNonFarmakologi.addActionListener(this::btnIntervensiNyeriNonFarmakologiActionPerformed);
-        
-        btnChecklistKriteriaMasukIsolasi = new widget.ButtonBig();
-        btnChecklistKriteriaMasukIsolasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/isolation-2.png"))); 
-        btnChecklistKriteriaMasukIsolasi.setText("Check List Kriteria Masuk Isolasi");
-        btnChecklistKriteriaMasukIsolasi.setIconTextGap(0);
-        btnChecklistKriteriaMasukIsolasi.setName("btnChecklistKriteriaMasukIsolasi"); 
-        btnChecklistKriteriaMasukIsolasi.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnChecklistKriteriaMasukIsolasi.addActionListener(this::btnChecklistKriteriaMasukIsolasiActionPerformed);
-        
-        btnChecklistKriteriaKeluarIsolasi = new widget.ButtonBig();
-        btnChecklistKriteriaKeluarIsolasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/isolation.png"))); 
-        btnChecklistKriteriaKeluarIsolasi.setText("Check List Kriteria Keluar Isolasi");
-        btnChecklistKriteriaKeluarIsolasi.setIconTextGap(0);
-        btnChecklistKriteriaKeluarIsolasi.setName("btnChecklistKriteriaKeluarIsolasi"); 
-        btnChecklistKriteriaKeluarIsolasi.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnChecklistKriteriaKeluarIsolasi.addActionListener(this::btnChecklistKriteriaKeluarIsolasiActionPerformed);
-        
-        btnMapingTarifTindakanRalanKPTLSatuSehat = new widget.ButtonBig();
-        btnMapingTarifTindakanRalanKPTLSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
-        btnMapingTarifTindakanRalanKPTLSatuSehat.setText("Mapping Tindakan Ralan KPTL Satu Sehat");
-        btnMapingTarifTindakanRalanKPTLSatuSehat.setIconTextGap(0);
-        btnMapingTarifTindakanRalanKPTLSatuSehat.setName("btnMapingTarifTindakanRalanKPTLSatuSehat"); 
-        btnMapingTarifTindakanRalanKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnMapingTarifTindakanRalanKPTLSatuSehat.addActionListener(this::btnMapingTarifTindakanRalanKPTLSatuSehatActionPerformed);
-        
-        btnMapingTarifTindakanRanapKPTLSatuSehat = new widget.ButtonBig();
-        btnMapingTarifTindakanRanapKPTLSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
-        btnMapingTarifTindakanRanapKPTLSatuSehat.setText("Mapping Tindakan Ranap KPTL Satu Sehat");
-        btnMapingTarifTindakanRanapKPTLSatuSehat.setIconTextGap(0);
-        btnMapingTarifTindakanRanapKPTLSatuSehat.setName("btnMapingTarifTindakanRanapKPTLSatuSehat"); 
-        btnMapingTarifTindakanRanapKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnMapingTarifTindakanRanapKPTLSatuSehat.addActionListener(this::btnMapingTarifTindakanRanapKPTLSatuSehatActionPerformed);
-        
-        btnMapingTarifTindakanRadiologiKPTLSatuSehat = new widget.ButtonBig();
-        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
-        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setText("Mapping Tindakan Radiologi KPTL Satu Sehat");
-        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setIconTextGap(0);
-        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setName("btnMapingTarifTindakanRadiologiKPTLSatuSehat"); 
-        btnMapingTarifTindakanRadiologiKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnMapingTarifTindakanRadiologiKPTLSatuSehat.addActionListener(this::btnMapingTarifTindakanRadiologiKPTLSatuSehatActionPerformed);
-        
-        btnMapingTarifTindakanLabKPTLSatuSehat = new widget.ButtonBig();
-        btnMapingTarifTindakanLabKPTLSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
-        btnMapingTarifTindakanLabKPTLSatuSehat.setText("Mapping Tindakan Lab KPTL Satu Sehat");
-        btnMapingTarifTindakanLabKPTLSatuSehat.setIconTextGap(0);
-        btnMapingTarifTindakanLabKPTLSatuSehat.setName("btnMapingTarifTindakanLabKPTLSatuSehat"); 
-        btnMapingTarifTindakanLabKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnMapingTarifTindakanLabKPTLSatuSehat.addActionListener(this::btnMapingTarifTindakanLabKPTLSatuSehatActionPerformed);
-        
-        btnMapingTarifTindakanOperasiKPTLSatuSehat = new widget.ButtonBig();
-        btnMapingTarifTindakanOperasiKPTLSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
-        btnMapingTarifTindakanOperasiKPTLSatuSehat.setText("Mapping Tindakan Operasi KPTL Satu Sehat");
-        btnMapingTarifTindakanOperasiKPTLSatuSehat.setIconTextGap(0);
-        btnMapingTarifTindakanOperasiKPTLSatuSehat.setName("btnMapingTarifTindakanOperasiKPTLSatuSehat"); 
-        btnMapingTarifTindakanOperasiKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnMapingTarifTindakanOperasiKPTLSatuSehat.addActionListener(this::btnMapingTarifTindakanOperasiKPTLSatuSehatActionPerformed);
-        
-        btnMapingTarifKamarKPTLSatuSehat = new widget.ButtonBig();
-        btnMapingTarifKamarKPTLSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
-        btnMapingTarifKamarKPTLSatuSehat.setText("Mapping Tarif Kamar KPTL Satu Sehat");
-        btnMapingTarifKamarKPTLSatuSehat.setIconTextGap(0);
-        btnMapingTarifKamarKPTLSatuSehat.setName("btnMapingTarifKamarKPTLSatuSehat"); 
-        btnMapingTarifKamarKPTLSatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnMapingTarifKamarKPTLSatuSehat.addActionListener(this::btnMapingTarifKamarKPTLSatuSehatActionPerformed);
-        
-        btnBridgingTTESatuSehat = new widget.ButtonBig();
-        btnBridgingTTESatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
-        btnBridgingTTESatuSehat.setText("Bridging TTE Satu Sehat");
-        btnBridgingTTESatuSehat.setIconTextGap(0);
-        btnBridgingTTESatuSehat.setName("btnBridgingTTESatuSehat"); 
-        btnBridgingTTESatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnBridgingTTESatuSehat.addActionListener(this::btnBridgingTTESatuSehatActionPerformed);
-        
-        btnBridgingCompositionRMESatuSehat = new widget.ButtonBig();
-        btnBridgingCompositionRMESatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/satusehat.png")));
-        btnBridgingCompositionRMESatuSehat.setText("Kirim Composition Satu Sehat");
-        btnBridgingCompositionRMESatuSehat.setIconTextGap(0);
-        btnBridgingCompositionRMESatuSehat.setName("btnBridgingCompositionRMESatuSehat"); 
-        btnBridgingCompositionRMESatuSehat.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnBridgingCompositionRMESatuSehat.addActionListener(this::btnBridgingCompositionRMESatuSehatActionPerformed);
-        
-        btnRingkasanHutangVendorAsetInventaris = new widget.ButtonBig();
-        btnRingkasanHutangVendorAsetInventaris.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/9016847_cleaning_kitchen_covid-19_virus_pandemic_icon.png")));
-        btnRingkasanHutangVendorAsetInventaris.setText("Ringkasan Hutang Vendor Aset/Inventaris");
-        btnRingkasanHutangVendorAsetInventaris.setIconTextGap(0);
-        btnRingkasanHutangVendorAsetInventaris.setName("btnRingkasanHutangVendorAsetInventaris"); 
-        btnRingkasanHutangVendorAsetInventaris.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnRingkasanHutangVendorAsetInventaris.addActionListener(this::btnRingkasanHutangVendorAsetInventarisActionPerformed);
-        
-        btnRingkasanBebanHutangLain = new widget.ButtonBig();
-        btnRingkasanBebanHutangLain.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/debt_2780190.png")));
-        btnRingkasanBebanHutangLain.setText("Ringkasan Beban Hutang Lain");
-        btnRingkasanBebanHutangLain.setIconTextGap(0);
-        btnRingkasanBebanHutangLain.setName("btnRingkasanBebanHutangLain"); 
-        btnRingkasanBebanHutangLain.setPreferredSize(new java.awt.Dimension(200, 90));
-        btnRingkasanBebanHutangLain.addActionListener(this::btnRingkasanBebanHutangLainActionPerformed);
+
+    private String getIPAntrian(){
+      String IPAddress = akses.getalamatip();
+      String getIPAntrian = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", IPAddress);
+      return getIPAntrian;
     }
 }

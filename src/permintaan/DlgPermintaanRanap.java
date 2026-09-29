@@ -1875,7 +1875,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
              }
 
             @Override 
-            public void w indowDe activated(WindowEvent e) {
+            public void windowDeactivated(WindowEvent e) {
              }
         });
 
