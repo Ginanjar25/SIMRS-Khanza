@@ -501,6 +501,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         BtnObat23HariBPJS = new widget.Button();
         CetakResepObat = new widget.Button();
         CetakTelaahResep = new widget.Button();
+        ResetDoubleValidasi = new widget.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -537,7 +538,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         panelisi2.add(jLabel20);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-05-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "15-09-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
         DTPCari1.setOpaque(false);
@@ -551,7 +552,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         panelisi2.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "19-05-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "15-09-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
         DTPCari2.setOpaque(false);
@@ -1378,6 +1379,23 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
             }
         });
         FormMenu.add(CetakTelaahResep);
+
+        ResetDoubleValidasi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
+        ResetDoubleValidasi.setText("Reset Antrean Validasi");
+        ResetDoubleValidasi.setFocusPainted(false);
+        ResetDoubleValidasi.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ResetDoubleValidasi.setGlassColor(new java.awt.Color(255, 255, 255));
+        ResetDoubleValidasi.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ResetDoubleValidasi.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        ResetDoubleValidasi.setName("ResetDoubleValidasi"); // NOI18N
+        ResetDoubleValidasi.setPreferredSize(new java.awt.Dimension(135, 23));
+        ResetDoubleValidasi.setRoundRect(false);
+        ResetDoubleValidasi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ResetDoubleValidasiActionPerformed(evt);
+            }
+        });
+        FormMenu.add(ResetDoubleValidasi);
 
         ScrollMenu.setViewportView(FormMenu);
 
@@ -4359,6 +4377,10 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         }
     }//GEN-LAST:event_CetakTelaahResepActionPerformed
 
+    private void ResetDoubleValidasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResetDoubleValidasiActionPerformed
+        Sequel.queryu("delete from antriapotek3");
+    }//GEN-LAST:event_ResetDoubleValidasiActionPerformed
+
     private void BtnTelaahResepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTelaahResepActionPerformed
         if(TabPilihRawat.getSelectedIndex()==0){
             if(TabRawatJalan.getSelectedIndex()==0){
@@ -4560,6 +4582,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private widget.Label LCount;
     private widget.Label LCount1;
     private widget.PanelBiasa PanelAccor;
+    private widget.Button ResetDoubleValidasi;
     private widget.ScrollPane ScrollMenu;
     private widget.TextBox TCari;
     private javax.swing.JTabbedPane TabPilihRawat;
@@ -4868,6 +4891,14 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         BtnResepLuar.setEnabled(akses.getresep_luar()); 
         BtnObat23HariBPJS.setEnabled(akses.getbpjs_obat_23hari_apotek()); 
         BtnTelaahResep.setEnabled(akses.gettelaah_resep()); 
+        
+        String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode()); 
+        
+         if(jabatan.equals("J005") || akses.getkode().equals("Admin Utama")){
+            ResetDoubleValidasi.setEnabled(true);
+         }else{
+             ResetDoubleValidasi.setEnabled(false);
+         }
     }
     
     public void setCari(String cari){

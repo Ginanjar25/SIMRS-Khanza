@@ -6787,6 +6787,9 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
         MnCetakSuratCovid.setEnabled(akses.getsurat_keterangan_covid());
         ppBerkasDigital.setEnabled(akses.getberkas_digital_perawatan());  
         ppRiwayat.setEnabled(akses.getresume_pasien());   
+        
+        MnSaranKesan.setVisible(false);
+        MnSaranKesan.setEnabled(false);
     }
     
     public void setPasien(String pasien){

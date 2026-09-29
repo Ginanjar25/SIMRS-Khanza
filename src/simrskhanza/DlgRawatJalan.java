@@ -1952,6 +1952,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
 
         KdDok.setHighlighter(null);
         KdDok.setName("KdDok"); 
+        KdDok.setEditable(false);
         KdDok.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 KdDokKeyPressed(evt);
@@ -2044,6 +2045,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
 
         kdptg.setHighlighter(null);
         kdptg.setName("kdptg"); 
+        kdptg.setEditable(false);
         kdptg.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 kdptgKeyPressed(evt);
@@ -2137,6 +2139,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
 
         kdptg2.setHighlighter(null);
         kdptg2.setName("kdptg2"); 
+        kdptg2.setEditable(false);
         kdptg2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 kdptg2KeyPressed(evt);
@@ -2171,6 +2174,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
 
         KdDok2.setHighlighter(null);
         KdDok2.setName("KdDok2"); 
+        KdDok2.setEditable(false);
         KdDok2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 KdDok2KeyPressed(evt);
@@ -3576,6 +3580,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         //baris 1
         KdDok4.setHighlighter(null);
         KdDok4.setName("KdDok3"); 
+        KdDok4.setEditable(false);
         KdDok4.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 //KdDok3KeyPressed(evt);
@@ -3734,6 +3739,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         
         KdDok3.setHighlighter(null);
         KdDok3.setName("KdDok3"); 
+        KdDok3.setEditable(false);
         KdDok3.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 KdDok3KeyPressed(evt);
@@ -5979,10 +5985,9 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
             Valid.textKosong(TNoRw,"No.Rawat");
         }else{
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            DlgBookingRegistrasi bookingreg=new DlgBookingRegistrasi(null,true);
+            DlgBookingRegistrasi bookingreg=new DlgBookingRegistrasi(null,false);
             bookingreg.isCek();
-            bookingreg.TCari.requestFocus();
-            bookingreg.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+            bookingreg.setSize(internalFrame1.getWidth(),internalFrame1.getHeight());
             bookingreg.setLocationRelativeTo(internalFrame1);
             bookingreg.setVisible(true);
             this.setCursor(Cursor.getDefaultCursor());  
@@ -12760,6 +12765,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         setCaraBayar(norwt);
         date = new Date();
         DTPTgl.setSelectedItem(tanggalFormat.format(date));
+        setPemeriksaanFisik();
     }
     
     private void isForm(){
@@ -16863,6 +16869,11 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
 
         return false;
+    }
+    
+    private void setPemeriksaanFisik() {
+        TTinggi.setText(Sequel.cariIsi("SELECT pmi.tb FROM penilaian_medis_igd pmi WHERE pmi.no_rawat =?", TNoRw.getText()));
+        TBerat.setText(Sequel.cariIsi("SELECT pmi.bb FROM penilaian_medis_igd pmi WHERE pmi.no_rawat =?", TNoRw.getText()));
     }
      
     

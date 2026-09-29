@@ -97,6 +97,15 @@ public class WarnaTableKasirRalan extends DefaultTableCellRenderer {
             }            
         }
         
+        if (column == 41) {
+            Object skdp = table.getValueAt(row, 41);
+            String skdpString = skdp.toString();
+            if ("Rujukan Habis".equals(skdpString)) {
+                component.setBackground(new Color(255, 192, 203));
+                component.setForeground(Color.BLACK);
+            }            
+        }
+        
 //        if (column == 40) {
 //            Object jenis_bayar = table.getValueAt(row, 24); // Nilai di kolom ke-24
 //            Object status = table.getValueAt(row, 31);
