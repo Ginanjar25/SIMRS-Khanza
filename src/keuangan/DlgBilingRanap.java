@@ -866,7 +866,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         BtnNota = new widget.Button();
         BtnView = new widget.Button();
         BtnKeluar = new widget.Button();
-        TabRawat = new javax.swing.JTabbedPane();
+        TabRawat = new widget.TabPane();
         Scroll = new widget.ScrollPane();
         tbBilling = new widget.Table();
         scrollPane9 = new widget.ScrollPane();
@@ -5387,7 +5387,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     public widget.TextBox TNoRw;
     public widget.TextBox TNoSEP;
     private widget.TextBox TPasien;
-    private javax.swing.JTabbedPane TabRawat;
+    private widget.TabPane TabRawat;
     private widget.TextBox TagihanPPn;
     private widget.TextBox TotalObat;
     private widget.TextBox TtlSemua;
@@ -7930,6 +7930,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     psnota.setString(4,DTPTgl.getSelectedItem().toString().substring(11,19));
                     psnota.setDouble(5,uangdeposit);
                     psnota.executeUpdate();
+                    Sequel.SimpanTrack("insert into nota_inap values('"+TNoRw.getText()+"','"+no_nota+"','"+Valid.SetTgl(DTPTgl.getSelectedItem()+"")+"','"+DTPTgl.getSelectedItem().toString().substring(11,19)+"','"+uangdeposit+"')");
                 } catch (Exception e) {
                     no_nota=Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(nota_inap.no_nota,4),signed)),0) from nota_inap where nota_inap.tanggal='"+Valid.SetTgl(DTPTgl.getSelectedItem()+"").substring(0,10)+"' ",Valid.SetTgl(DTPTgl.getSelectedItem()+"").substring(0,10).replaceAll("-","/")+"/RI",4);
                     Sequel.meghapus("nota_inap","no_rawat",TNoRw.getText());               
@@ -7942,6 +7943,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                         psnota.setString(4,DTPTgl.getSelectedItem().toString().substring(11,19));
                         psnota.setDouble(5,uangdeposit);
                         psnota.executeUpdate();
+                        Sequel.SimpanTrack("insert into nota_inap values('"+TNoRw.getText()+"','"+no_nota+"','"+Valid.SetTgl(DTPTgl.getSelectedItem()+"")+"','"+DTPTgl.getSelectedItem().toString().substring(11,19)+"','"+uangdeposit+"')");
                     }  catch (Exception ex) {
                         System.out.println("Notifikasi Nota 2 : "+ex);
                     } finally{
@@ -7962,6 +7964,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     psnota.setString(4,DTPTgl.getSelectedItem().toString().substring(11,19));
                     psnota.setDouble(5,uangdeposit);
                     psnota.executeUpdate();
+                    Sequel.SimpanTrack("insert into nota_inap values('"+TNoRw.getText()+"','"+no_nota+"','"+Valid.SetTgl(DTPTgl.getSelectedItem()+"")+"','"+DTPTgl.getSelectedItem().toString().substring(11,19)+"','"+uangdeposit+"')");
                 }  catch (Exception ex) {
                     System.out.println("Notifikasi Nota 2 : "+ex);
                 } finally{

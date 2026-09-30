@@ -48,6 +48,8 @@ public final class DlgSetHargaObatRanap extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile boolean ceksukses = false;
+    private ResultSet rs;
+    private PreparedStatement ps;
 
     /** Creates new form DlgObatPenyakit
      * @param parent
@@ -654,29 +656,40 @@ private void hargaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_har
     private widget.Table tbObatPenyakit;
     // End of variables declaration//GEN-END:variables
 
-
     private void tampil() {
-        String sql="select set_harga_obat_ranap.kd_pj,penjab.png_jawab, set_harga_obat_ranap.hargajual, set_harga_obat_ranap.kelas "+
-                   "from set_harga_obat_ranap inner join penjab on set_harga_obat_ranap.kd_pj=penjab.kd_pj "+
-                   "where set_harga_obat_ranap.kd_pj like '%"+TCari.getText().trim()+"%' or "+
-                   "penjab.png_jawab like '%"+TCari.getText().trim()+"%' or "+
-                   "set_harga_obat_ranap.hargajual like '%"+TCari.getText().trim()+"%' order by penjab.png_jawab";
         Valid.tabelKosong(tabMode);
         try{
-            PreparedStatement ps=koneksi.prepareStatement(sql);
-            ResultSet rs=ps.executeQuery();
-            while(rs.next()){
-                String[] data={rs.getString(1),
-                               rs.getString(2),
-                               rs.getString(3),
-                               rs.getString(4)};
-                tabMode.addRow(data);
+            ps=koneksi.prepareStatement(
+                "select set_harga_obat_ranap.kd_pj,penjab.png_jawab,set_harga_obat_ranap.hargajual,set_harga_obat_ranap.kelas "+
+                "from set_harga_obat_ranap inner join penjab on set_harga_obat_ranap.kd_pj=penjab.kd_pj "+
+                (TCari.getText().trim().equals("")?"":"where set_harga_obat_ranap.kd_pj like ? or "+
+                "penjab.png_jawab like ? or set_harga_obat_ranap.hargajual like ? ")+"order by penjab.png_jawab"
+            );
+            try {
+                if(!TCari.getText().trim().equals("")){
+                    ps.setString(1,"%"+TCari.getText().trim()+"%");
+                    ps.setString(2,"%"+TCari.getText().trim()+"%");
+                    ps.setString(3,"%"+TCari.getText().trim()+"%");
+                }
+                rs=ps.executeQuery();
+                while(rs.next()){
+                    tabMode.addRow(new Object[]{
+                        rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4)
+                    });
+                 }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
             }
-        }catch(SQLException e){
+        }catch(Exception e){
             System.out.println("Notifikasi : "+e);
         }
-        int b=tabMode.getRowCount();
-        LCount.setText(""+b);
     }
 
     private void emptTeks() {

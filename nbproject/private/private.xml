@@ -26,11 +26,11 @@
         <group>
 <<<<<<< HEAD
             <file>file:/Users/windiartonugroho/Documents/Pekerjaan/SIMRSKhanza/src/bridging/SatuSehatKirimCompositionRME.java</file>
-            <file>file:/Users/windiartonugroho/Documents/Pekerjaan/SIMRSKhanza/src/keuangan/KeuanganRingkasanHutangVendorAsetInventaris.java</file>
-            <file>file:/Users/windiartonugroho/Documents/Pekerjaan/SIMRSKhanza/src/setting/DlgUpdateUser.java</file>
+            <file>file:/Users/windiartonugroho/Documents/Pekerjaan/SIMRSKhanza/.gitignore</file>
             <file>file:/Users/windiartonugroho/Documents/Pekerjaan/SIMRSKhanza/src/simrskhanza/frmUtama.java</file>
-            <file>file:/Users/windiartonugroho/Documents/Pekerjaan/SIMRSKhanza/src/setting/DlgUser.java</file>
+            <file>file:/Users/windiartonugroho/Documents/Pekerjaan/SIMRSKhanza/src/rekammedis/RMSkriningTOLAC.java</file>
             <file>file:/Users/windiartonugroho/Documents/Pekerjaan/SIMRSKhanza/src/fungsi/akses.java</file>
+<<<<<<< HEAD
             <file>file:/Users/windiartonugroho/Documents/Pekerjaan/SIMRSKhanza/src/rekammedis/RMRiwayatPerawatan.java</file>
             <file>file:/Users/windiartonugroho/Documents/Pekerjaan/SIMRSKhanza/src/rekammedis/RMTriaseIGD.java</file>
 =======
@@ -41,6 +41,10 @@
             <file>file:/C:/Development/Personal%20Project/KHANZA%20RSPW/src/simrskhanza/DlgPeriksaLaboratorium.java</file>
             <file>file:/C:/Development/Personal%20Project/KHANZA%20RSPW/src/inventory/DlgCariPiutangKary.java</file>
 >>>>>>> sync-dev
+=======
+            <file>file:/Users/windiartonugroho/Documents/Pekerjaan/SIMRSKhanza/src/fungsi/validasi.java</file>
+            <file>file:/Users/windiartonugroho/Documents/Pekerjaan/SIMRSKhanza/setting/database.xml</file>
+>>>>>>> master-latest
         </group>
     </open-files>
 </project-private>

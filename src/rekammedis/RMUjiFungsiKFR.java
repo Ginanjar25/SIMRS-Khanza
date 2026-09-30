@@ -2349,7 +2349,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null, "Gagal menghapus..!!");
         }
     }
-    
+
     public void UjiKFRPdf(String norawat, String norm) {
         Map<String, Object> param = new HashMap<>();
         param.put("namars", akses.getnamars());
@@ -2363,6 +2363,10 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
         param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+tbObat.getValueAt(tbObat.getSelectedRow(),23).toString()+"\nID "+(finger.equals("")?tbObat.getValueAt(tbObat.getSelectedRow(),22).toString():finger)+"\n"+Valid.SetTgl3(Tanggal.getSelectedItem().toString())); 
         Valid.MyReport("rptCetakUjiFungsiKFR.jasper", "report", "::[ Formulir/Lembar Uji Fungsi/Prosedur KFR ]::", param);
 
+    }
+    
+    public JTable getTable(){
+        return tbObat;
     }
     
     private void runBackground(Runnable task) {

@@ -442,7 +442,7 @@ public final class DlgCariObat extends javax.swing.JDialog {
         jLabelPRB = new widget.Label();
         TIter = new widget.TextBox();
         jLabelIter = new widget.Label();
-        TabRawat = new javax.swing.JTabbedPane();
+        TabRawat = new widget.TabPane();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
         jPanel3 = new javax.swing.JPanel();
@@ -748,7 +748,6 @@ public final class DlgCariObat extends javax.swing.JDialog {
         ChkNoResep.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         ChkNoResep.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         ChkNoResep.setName("ChkNoResep"); // NOI18N
-        ChkNoResep.setOpaque(false);
         ChkNoResep.setPreferredSize(new java.awt.Dimension(85, 23));
         ChkNoResep.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -765,10 +764,9 @@ public final class DlgCariObat extends javax.swing.JDialog {
         jLabel8.setBounds(4, 40, 65, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "17-03-2026" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "25-09-2026" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
-        DTPTgl.setOpaque(false);
         DTPTgl.setPreferredSize(new java.awt.Dimension(100, 23));
         DTPTgl.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -2219,7 +2217,7 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     private widget.TextBox TNoRw;
     private widget.TextBox TPRB;
     private widget.TextBox TPasien;
-    private javax.swing.JTabbedPane TabRawat;
+    private widget.TabPane TabRawat;
     private widget.TextBox Tanggal;
     private widget.ComboBox cmbDtk;
     private widget.ComboBox cmbJam;

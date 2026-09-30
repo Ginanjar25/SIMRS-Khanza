@@ -43,6 +43,7 @@ public class Jurnal {
                                     ps.setString(5,jenis);
                                     ps.setString(6,keterangan);
                                     ps.executeUpdate();
+                                    Sequel.SimpanTrack("insert into jurnal values('"+nojur+"','"+nobukti+"','"+rscek.getString("tanggal")+"','"+rscek.getString("jam")+"','"+jenis+"','"+keterangan+"')");
                                  } catch (Exception e) {
                                     sukses=false;
                                     System.out.println("Notifikasi : "+e);
@@ -64,6 +65,7 @@ public class Jurnal {
                                         ps.setString(5,jenis);
                                         ps.setString(6,keterangan);
                                         ps.executeUpdate();
+                                        Sequel.SimpanTrack("insert into jurnal values('"+nojur+"','"+nobukti+"','"+rscek.getString("tanggal")+"','"+rscek.getString("jam")+"','"+jenis+"','"+keterangan+"')");
                                      } catch (Exception e) {
                                         sukses=false;
                                         System.out.println("Notifikasi : "+e);
@@ -85,6 +87,7 @@ public class Jurnal {
                                                ps2.setString(3,rs.getString(3));
                                                ps2.setString(4,rs.getString(4));
                                                ps2.addBatch();
+                                               Sequel.SimpanTrack("insert into detailjurnal values('"+nojur+"','"+rs.getString(1)+"','"+rs.getString(3)+"','"+rs.getString(4)+"')");
                                            } catch (Exception e) {
                                                sukses=false;
                                                System.out.println("Notifikasi sub : "+e);

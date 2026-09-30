@@ -12,10 +12,12 @@
 
 package simrskhanza;
 
+import bridging.*;
 import bridging.AkunRekeningBankJabar;
 import bridging.AkunRekeningBankJateng;
 import bridging.AkunRekeningBankMandiri;
 import bridging.AkunRekeningBankPapua;
+import rekammedis.*;
 import rekammedis.RMRiwayatPerawatan;
 import setting.DlgPenelusuranLogin;
 import inventory.DlgObatPenyakit;
@@ -27,6 +29,7 @@ import permintaan.DlgBookingOperasi;
 import surat.SuratKontrol;
 import kepegawaian.DlgPenggajian;
 import laporan.DlgMutasiBerkas;
+import laporan.*;
 import laporan.DlgBerkasRawat;
 import laporan.DlgRetensi;
 import inventory.DlgResepObat;
@@ -112,34 +115,7 @@ import bridging.PCareCekFaskesThalasemia;
 import bridging.PCareCekReferensiDokter;
 import bridging.PCareCekReferensiKesadaran;
 import bridging.PCareCekReferensiKhusus;
-import bridging.PCareCekReferensiObat;
-import bridging.PCareCekReferensiPenyakit;
-import bridging.PCareCekReferensiPoli;
-import bridging.PCareCekReferensiProvider;
-import bridging.PCareCekReferensiSarana;
-import bridging.PCareCekReferensiSpesialis;
-import bridging.PCareCekReferensiStatusPulang;
-import bridging.PCareCekReferensiSubspesialis;
-import bridging.PCareCekReferensiTindakan;
-import bridging.PCareCekRujukan;
-import bridging.PCareClubProlanis;
-import bridging.PCareDataPemberianObat;
-import bridging.PCareDataPemberianTindakan;
-import bridging.PCareDataPendaftaran;
-import bridging.PCareKegiatanKelompok;
-import bridging.PCareMapingDokter;
-import bridging.PCareMapingObat;
-import bridging.PCareMapingPoli;
-import bridging.PCareMapingTindakanRalan;
-import bridging.PCareMapingTindakanRanap;
-import bridging.PCarePesertaKegiatanKelompok;
 import informasi.InformasiAnalisaKamin;
-import laporan.DlgDkkSurveilansRalan;
-import laporan.DlgFrekuensiPenyakitRanap;
-import laporan.DlgFrekuensiPenyakitRalan;
-import laporan.DlgDkkSurveilansRanap;
-import laporan.DlgDkkPenyakitTidakMenularRalan;
-import laporan.DlgDkkSurveilansPD3I;
 import setting.DlgVakum;
 import setting.DlgUser;
 import setting.DlgSetKamarInap;
@@ -272,14 +248,6 @@ import keuangan.DlgRHPaketBHP;
 import keuangan.DlgRekapPerShift;
 import keuangan.DlgRekening;
 import keuangan.DlgRekeningTahun;
-import bridging.ReklasifikasiRalan;
-import bridging.ReklasifikasiRanap;
-import bridging.SiranapKetersediaanKamar;
-import bridging.SisruteCekReferensiAlasanRujuk;
-import bridging.SisruteCekReferensiDiagnosa;
-import bridging.SisruteCekReferensiFaskes;
-import bridging.SisruteRujukanKeluar;
-import bridging.SisruteRujukanMasukan;
 import grafikanalisa.GrafikDemografiRegistrasi;
 import grafikanalisa.GrafikKejadianIKPPerBulan;
 import grafikanalisa.GrafikKejadianIKPPerDampak;
@@ -364,34 +332,6 @@ import keuangan.DlgRHMenejemen;
 import keuangan.DlgRekapPembayaranPerPoli;
 import keuangan.KeuanganRekapPoliAnak;
 import keuangan.KeuanganRincianPiutangPasien;
-import laporan.DlgBulananHAIs;
-import laporan.DlgCekEntryRalan;
-import laporan.DlgDkkPenyakitMenularRalan;
-import laporan.DlgDkkPenyakitMenularRanap;
-import laporan.DlgDkkPenyakitTidakMenularRanap;
-import laporan.DlgHarianHAIs;
-import laporan.DlgHitungALOS;
-import laporan.DlgHitungBOR;
-import laporan.DlgICD9;
-import laporan.DlgKunjunganRalan;
-import laporan.DlgKunjunganRanap;
-import laporan.DlgPelayananApotek;
-import laporan.DlgPelayananRalan;
-import laporan.DlgPembatalanPeriksaPerDokter;
-import laporan.DlgPenyakitPd3i;
-import laporan.DlgRL4A;
-import laporan.DlgRL4ASebab;
-import laporan.DlgRL4B;
-import laporan.DlgRL4BSebab;
-import laporan.DlgRl32;
-import laporan.DlgRl33;
-import laporan.DlgRl34;
-import laporan.DlgRl36;
-import laporan.DlgRl37;
-import laporan.DlgRl38;
-import laporan.DlgSensusHarianPoli;
-import laporan.DlgSensusHarianRalan;
-import laporan.frmPengaduan;
 import parkir.DlgParkirBarcode;
 import parkir.DlgParkirJenis;
 import parkir.DlgParkirMasuk;
@@ -418,11 +358,6 @@ import kepegawaian.DlgTemporaryPresensi;
 import keuangan.KeuanganBayarPemesananNonMedis;
 import keuangan.KeuanganHutangNonMedisBelumLunas;
 import keuangan.DlgPiutangPerAKunPiutang;
-import laporan.DlgAnggotaMiliterDirawat;
-import laporan.DlgDataInsidenKeselamatan;
-import laporan.DlgInsidenKeselamatan;
-import laporan.DlgPenyakitRanapPerCaraBayar;
-import laporan.DlgRanapPerRuang;
 import permintaan.DlgCariPermintaanRadiologi;
 import setting.DlgClosingKasir;
 import setting.DlgSetEmbalase;
@@ -436,91 +371,11 @@ import keuangan.DlgJnsPerawatanRalan;
 import keuangan.DlgPaymentPoint2;
 import keuangan.DlgPembayaranPerAKunBayar2;
 import keuangan.KeuanganSaldoAkunPerBulan;
-import laporan.DlgHAIsPerBangsal;
-import laporan.DlgJumlahMacamDiet;
-import laporan.DlgJumlahPorsiDiet;
-import laporan.DlgKunjunganLabRalan;
-import laporan.DlgKunjunganLabRanap;
-import laporan.DlgKunjunganRadRalan;
-import laporan.DlgKunjunganRadRanap;
-import laporan.DlgPelayananLab;
-import laporan.DlgPelayananRadiologi;
-import laporan.DlgPerujukLabPerTahun;
-import laporan.DlgPerujukRadiologiPerTahun;
-import laporan.DlgRekapLabPerTahun;
-import laporan.DlgRekapRadiologiPerTahun;
 import setting.DlgRunTeksApotek;
 import setting.DlgSetInputParsial;
 import kepegawaian.DlgJadwal;
 import inventory.DlgResepPulang;
 import keuangan.DlgPembayaranPerAKunBayar3;
-import bridging.DlgDataTB;
-import bridging.InhealthMapingDokter;
-import bridging.InhealthMapingPoli;
-import bridging.InhealthTagihan;
-import bridging.InhealthTindakanLaborat;
-import bridging.InhealthTindakanOperasi;
-import bridging.InhealthTindakanRadiologi;
-import bridging.InhealthTindakanRalan;
-import bridging.InhealthTindakanRanap;
-import bridging.CoronaPasien;
-import bridging.DutaParkingRekapKeluar;
-import bridging.ICareRiwayatPerawatan;
-import bridging.INACBGPerawatanCorona;
-import bridging.MandiriBankTujuanTransfer;
-import bridging.MandiriKodeTransaksiTujuanTransfer;
-import bridging.MandiriMetodePembayaran;
-import bridging.MobileJKNFKTPReferensiDokter;
-import bridging.MobileJKNFKTPReferensiPoli;
-import bridging.MobileJKNPembatalanPendaftaran;
-import bridging.MobileJKNReferensiPendaftaran;
-import bridging.PCareCekKartu;
-import bridging.PCareCekReferensiAlergi;
-import bridging.PCareCekReferensiPrognosa;
-import bridging.PCareCekReferensiTACC;
-import bridging.SatuSehatKirimAllergyIntolerance;
-import bridging.SatuSehatKirimCarePlan;
-import bridging.SatuSehatKirimClinicalImpression;
-import bridging.SatuSehatKirimCondition;
-import bridging.SatuSehatKirimDiagnosticReportLabMB;
-import bridging.SatuSehatKirimDiagnosticReportLabPK;
-import bridging.SatuSehatKirimDiagnosticReportRadiologi;
-import bridging.SatuSehatKirimDiet;
-import bridging.SatuSehatKirimEncounter;
-import bridging.SatuSehatKirimMedication;
-import bridging.SatuSehatKirimMedicationDispense;
-import bridging.SatuSehatKirimMedicationRequest;
-import bridging.SatuSehatKirimMedicationStatement;
-import bridging.SatuSehatKirimObservationLabMB;
-import bridging.SatuSehatKirimObservationLabPK;
-import bridging.SatuSehatKirimObservationRadiologi;
-import bridging.SatuSehatKirimObservationTTV;
-import bridging.SatuSehatKirimProcedure;
-import bridging.SatuSehatKirimQRTelaahFarmasi;
-import bridging.SatuSehatKirimServiceRequestLabMB;
-import bridging.SatuSehatKirimServiceRequestLabPK;
-import bridging.SatuSehatKirimServiceRequestRadiologi;
-import bridging.SatuSehatKirimSpecimenLabMB;
-import bridging.SatuSehatKirimSpecimenLabPK;
-import bridging.SatuSehatKirimSpecimenRadiologi;
-import bridging.SatuSehatKirimVaksin;
-import bridging.SatuSehatMapingLaborat;
-import bridging.SatuSehatMapingLokasi;
-import bridging.SatuSehatMapingObatAlkes;
-import bridging.SatuSehatMapingOrganisasi;
-import bridging.SatuSehatMapingRadiologi;
-import bridging.SatuSehatMapingTarifKamarKPTL;
-import bridging.SatuSehatMapingTindakanLaboratKPTL;
-import bridging.SatuSehatMapingTindakanOperasiKPTL;
-import bridging.SatuSehatMapingTindakanRadiologiKPTL;
-import bridging.SatuSehatMapingTindakanRalanKPTL;
-import bridging.SatuSehatMapingTindakanRanapKPTL;
-import bridging.SatuSehatMapingVaksin;
-import bridging.SatuSehatReferensiPasien;
-import bridging.SatuSehatReferensiPraktisi;
-import bridging.SmartKlaimBPJSKirimFHIR;
-import bridging.SmartKlaimBPJSMappingPenyakit;
-import bridging.SmartKlaimBPJSMappingProsedur;
 import dapur.DapurSuplier;
 import grafikanalisa.GrafikHemodialisaPerBulan;
 import grafikanalisa.GrafikHemodialisaPerTanggal;
@@ -765,7 +620,6 @@ import keuangan.KeuanganValidasiPenagihanPiutang;
 import keuangan.KeuanganValidasiTagihanAset;
 import keuangan.KeuanganValidasiTagihanNonMedis;
 import keuangan.KeuanganValidasiTagihanObatBHP;
-import laporan.DlgAnggotaPolriDirawat;
 import kepegawaian.DlgAuditKepatuhanAPD;
 import kepegawaian.DlgAuditPembuanganBendaTajam;
 import kepegawaian.DlgRuangAuditKepatuhan;
@@ -809,55 +663,6 @@ import keuangan.KeuanganRingkasanPiutangPerJensBayar;
 import keuangan.KeuanganTagihanDapur;
 import keuangan.KeuanganValidasiPersetujuanPengajuanBiaya;
 import keuangan.KeuanganValidasiTagihanDapur;
-import laporan.DlgBulananKlasifikasiPasienRanap;
-import laporan.DlgDaftarPasienRanap;
-import laporan.DlgDaftarPasienRanapPolri;
-import laporan.DlgDaftarPasienRanapTNI;
-import laporan.DlgDataKlasifikasiPasienRanap;
-import laporan.DlgDataSasaranUsiaLansia;
-import laporan.DlgDataSasaranUsiaProduktif;
-import laporan.DlgDemografiUmurKunjungan;
-import laporan.DlgDiagnosaPenyakit;
-import laporan.DlgDokterAsalPasienRanap;
-import laporan.DlgDosisRadiologi;
-import rekammedis.RMDataResumePasien;
-import laporan.DlgHarianHAIs2;
-import laporan.DlgHarianKlasifikasiPasienRanap;
-import laporan.DlgJumlahPengunjungRalanPolri;
-import laporan.DlgJumlahPengunjungRalanTNI;
-import laporan.DlgKIPPasienRalan;
-import laporan.DlgKIPPasienRanap;
-import laporan.DlgKepatuhanKelengkapanKeselamatanBedah;
-import laporan.DlgKlasifikasiPasienPerBangsal;
-import laporan.DlgLamaPelayananPasien;
-import laporan.DlgLaporanPenyakitPolri;
-import laporan.DlgLaporanPenyakitTNI;
-import laporan.DlgOperasiPerBulan;
-import laporan.DlgPelayananCSSD;
-import laporan.DlgPelayananLabMB;
-import laporan.DlgPelayananLabPA;
-import laporan.DlgPelayananOperasi;
-import laporan.DlgPelayananPoli;
-import laporan.DlgPemeriksaanFisikRalanPerPenyakit;
-import laporan.DlgPenyakit;
-import laporan.DlgPenyiapanRM;
-import laporan.DlgPoliAsalPasienRanap;
-import laporan.DlgRL13KetersediaanTempatTidur;
-import laporan.DlgRekapKunjungan;
-import laporan.DlgRekapMutasiBerkas;
-import laporan.DlgRekapPermintaanDiet;
-import laporan.LaporanTahunanPAM;
-import rekammedis.DlgSOAPRalanAggotaPolri;
-import laporan.DlgStatusDataRM;
-import laporan.LaporanBulananIRJ;
-import rekammedis.DlgSOAPPerawatan;
-import laporan.LaporanKedatanganPasienPerJam;
-import laporan.LaporanRegistrasiPoliPerTanggal;
-import laporan.LaporanRekapKunjunganRuangPerTahun;
-import laporan.LaporanRekapSkriningPernapasanRalanPerTahun;
-import laporan.LaporanSisaDietPasien;
-import laporan.LaporanTahunanIGD;
-import laporan.LaporanTahunanIRJ;
 import pcraicra.PCRAICRAIdentifikasiRisikoInfeksi;
 import pcraicra.PCRAICRAIdentifikasiRisikoKebakaran;
 import pcraicra.PCRAICRAIdentifikasiRisikoKeselamatan;
@@ -895,225 +700,6 @@ import perpustakaan.PerpustakaanPengaturanPeminjaman;
 import setting.WindowInputPassword;
 import perpustakaan.PerpustakaanRuang;
 import perpustakaan.PerpustakaanSirkulasi;
-import rekammedis.DlgSOAPRalanAggotaTNI;
-import rekammedis.DlgSOAPRanapAggotaPolri;
-import rekammedis.DlgSOAPRanapAggotaTNI;
-import rekammedis.RMHemodialisa;
-import rekammedis.MasterImunisasi;
-import rekammedis.MasterMasalahKeperawatan;
-import rekammedis.MasterMasalahKeperawatanAnak;
-import rekammedis.MasterMasalahKeperawatanGeriatri;
-import rekammedis.MasterMasalahKeperawatanGigi;
-import rekammedis.MasterMasalahKeperawatanIGD;
-import rekammedis.MasterMasalahKeperawatanMata;
-import rekammedis.MasterMasalahKeperawatanNeonatus;
-import rekammedis.MasterMasalahKeperawatanPsikiatri;
-import rekammedis.MasterRencanaKeperawatan;
-import rekammedis.MasterRencanaKeperawatanAnak;
-import rekammedis.MasterRencanaKeperawatanGeriatri;
-import rekammedis.MasterRencanaKeperawatanGigi;
-import rekammedis.MasterRencanaKeperawatanIGD;
-import rekammedis.MasterRencanaKeperawatanMata;
-import rekammedis.MasterRencanaKeperawatanNeonatus;
-import rekammedis.MasterRencanaKeperawatanPsikiatri;
-import rekammedis.MasterTemplateHasilRadiologi;
-import rekammedis.MasterTemplateInformasiEdukasi;
-import rekammedis.MasterTemplateLaporanOperasi;
-import rekammedis.MasterTemplatePemeriksaanDokter;
-import rekammedis.RMTriaseIGD;
-import rekammedis.MasterTriaseMacamKasus;
-import rekammedis.MasterTriasePemeriksaan;
-import rekammedis.MasterTriaseSkala1;
-import rekammedis.MasterTriaseSkala2;
-import rekammedis.MasterTriaseSkala3;
-import rekammedis.MasterTriaseSkala4;
-import rekammedis.MasterTriaseSkala5;
-import rekammedis.RMCariRekonsiliasiObat;
-import rekammedis.RMCatatanADIMEGizi;
-import rekammedis.RMCatatanAnastesiSedasi;
-import rekammedis.RMCatatanPengkajianPaskaOperasi;
-import rekammedis.RMCatatanPersalinan;
-import rekammedis.RMChecklistKesiapanAnestesi;
-import rekammedis.RMChecklistKriteriaKeluarHCU;
-import rekammedis.RMChecklistKriteriaKeluarICU;
-import rekammedis.RMChecklistKriteriaKeluarIsolasi;
-import rekammedis.RMChecklistKriteriaKeluarNICU;
-import rekammedis.RMChecklistKriteriaKeluarPICU;
-import rekammedis.RMChecklistKriteriaMasukHCU;
-import rekammedis.RMChecklistKriteriaMasukICU;
-import rekammedis.RMChecklistKriteriaMasukIsolasi;
-import rekammedis.RMChecklistKriteriaMasukNICU;
-import rekammedis.RMChecklistKriteriaMasukPICU;
-import rekammedis.RMChecklistPemberianFibrinolitik;
-import rekammedis.RMChecklistPostOperasi;
-import rekammedis.RMChecklistPreOperasi;
-import rekammedis.RMDataAsuhanGizi;
-import rekammedis.RMDataCatatanCairanHemodialisa;
-import rekammedis.RMDataCatatanCekGDS;
-import rekammedis.RMDataCatatanKeperawatanRalan;
-import rekammedis.RMDataCatatanKeperawatanRanap;
-import rekammedis.RMDataCatatanKeseimbanganCairan;
-import rekammedis.RMDataCatatanObservasiBayi;
-import rekammedis.RMDataCatatanObservasiCHBP;
-import rekammedis.RMDataCatatanObservasiHemodialisa;
-import rekammedis.RMDataCatatanObservasiIGD;
-import rekammedis.RMDataCatatanObservasiInduksiPersalinan;
-import rekammedis.RMDataCatatanObservasiRanap;
-import rekammedis.RMDataCatatanObservasiRanapKebidanan;
-import rekammedis.RMDataCatatanObservasiRanapPostPartum;
-import rekammedis.RMDataCatatanObservasiRestrainNonFarmakologi;
-import rekammedis.RMDataCatatanObservasiRuangOperasi;
-import rekammedis.RMDataCatatanObservasiVentilator;
-import rekammedis.RMDataFollowUpDBD;
-import rekammedis.RMDataIntervensiNyeriFarmakologi;
-import rekammedis.RMDataIntervensiNyeriNonFarmakologi;
-import rekammedis.RMDataMonitoringAsuhanGizi;
-import rekammedis.RMDataMonitoringReaksiTranfusi;
-import rekammedis.RMDataResumePasienRanap;
-import rekammedis.RMDataSkriningGiziKehamilan;
-import rekammedis.RMDataSkriningGiziLanjut;
-import rekammedis.RMDeteksiDiniCorona;
-import rekammedis.RMEdukasiPasienKeluargaRawatJalan;
-import rekammedis.RMHasilEndoskopiFaringLaring;
-import rekammedis.RMHasilEndoskopiHidung;
-import rekammedis.RMHasilEndoskopiTelinga;
-import rekammedis.RMHasilPemeriksaanEKG;
-import rekammedis.RMHasilPemeriksaanEcho;
-import rekammedis.RMHasilPemeriksaanEchoPediatrik;
-import rekammedis.RMHasilPemeriksaanOCT;
-import rekammedis.RMHasilPemeriksaanSlitLamp;
-import rekammedis.RMHasilPemeriksaanTreadmill;
-import rekammedis.RMHasilPemeriksaanUSG;
-import rekammedis.RMHasilPemeriksaanUSGAbdomen;
-import rekammedis.RMHasilPemeriksaanUSGGynecologi;
-import rekammedis.RMHasilPemeriksaanUSGNeonatus;
-import rekammedis.RMHasilPemeriksaanUSGUrologi;
-import rekammedis.RMHasilTindakanESWL;
-import rekammedis.RMKonselingFarmasi;
-import rekammedis.RMLaporanTindakan;
-import rekammedis.RMLayananKedokteranFisikRehabilitasi;
-import rekammedis.RMLayananProgramKFR;
-import rekammedis.RMMCU;
-import rekammedis.RMMasterKesimpulanAnjuranMCU;
-import rekammedis.RMMonitoringAldrettePascaAnestesi;
-import rekammedis.RMMonitoringBromagePascaAnestesi;
-import rekammedis.RMMonitoringStewardPascaAnestesi;
-import rekammedis.RMPelaksanaanInformasiEdukasi;
-import rekammedis.RMPemantauanMEOWS;
-import rekammedis.RMPemantauanPEWS;
-import rekammedis.RMPemantauanEWSD;
-import rekammedis.RMPemantauanEWSNeonatus;
-import rekammedis.RMPenatalaksanaanTerapiOkupasi;
-import rekammedis.RMPengkajianRestrain;
-import rekammedis.RMPenilaianAwalKeperawatanBayiAnak;
-import rekammedis.RMPenilaianAwalKeperawatanGigi;
-import rekammedis.RMPenilaianAwalKeperawatanIGD;
-import rekammedis.RMPenilaianAwalKeperawatanKebidanan;
-import rekammedis.RMPenilaianAwalKeperawatanKebidananRanap;
-import rekammedis.RMPenilaianAwalKeperawatanRalan;
-import rekammedis.RMPenilaianAwalKeperawatanRalanGeriatri;
-import rekammedis.RMPenilaianAwalKeperawatanRalanPsikiatri;
-import rekammedis.RMPenilaianAwalKeperawatanRanap;
-import rekammedis.RMPenilaianAwalKeperawatanRanapBayiAnak;
-import rekammedis.RMPenilaianAwalKeperawatanRanapNeonatus;
-import rekammedis.RMPenilaianAwalMedisHemodialisa;
-import rekammedis.RMPenilaianAwalMedisIGD;
-import rekammedis.RMPenilaianAwalMedisIGDPsikiatri;
-import rekammedis.RMPenilaianAwalMedisRalanAnak;
-import rekammedis.RMPenilaianAwalMedisRalanBedah;
-import rekammedis.RMPenilaianAwalMedisRalanBedahMulut;
-import rekammedis.RMPenilaianAwalMedisRalanDewasa;
-import rekammedis.RMPenilaianAwalMedisRalanGeriatri;
-import rekammedis.RMPenilaianAwalMedisRalanJantung;
-import rekammedis.RMPenilaianAwalMedisRalanKandungan;
-import rekammedis.RMPenilaianAwalMedisRalanKulitDanKelamin;
-import rekammedis.RMPenilaianAwalMedisRalanMata;
-import rekammedis.RMPenilaianAwalMedisRalanNeurologi;
-import rekammedis.RMPenilaianAwalMedisRalanOrthopedi;
-import rekammedis.RMPenilaianAwalMedisRalanParu;
-import rekammedis.RMPenilaianAwalMedisRalanPenyakitDalam;
-import rekammedis.RMPenilaianAwalMedisRalanPsikiatrik;
-import rekammedis.RMPenilaianAwalMedisRalanRehabMedik;
-import rekammedis.RMPenilaianAwalMedisRalanTHT;
-import rekammedis.RMPenilaianAwalMedisRalanUrologi;
-import rekammedis.RMPenilaianAwalMedisRanapDewasa;
-import rekammedis.RMPenilaianAwalMedisRanapJantung;
-import rekammedis.RMPenilaianAwalMedisRanapKandungan;
-import rekammedis.RMPenilaianAwalMedisRanapNeonatus;
-import rekammedis.RMPenilaianAwalMedisRanapPsikiatrik;
-import rekammedis.RMPenilaianBayiBaruLahir;
-import rekammedis.RMPenilaianDerajatDehidrasi;
-import rekammedis.RMPenilaianFisioterapi;
-import rekammedis.RMPenilaianKorbanKekerasan;
-import rekammedis.RMPenilaianLanjutanRisikoJatuhAnak;
-import rekammedis.RMPenilaianLanjutanRisikoJatuhDewasa;
-import rekammedis.RMPenilaianLanjutanRisikoJatuhGeriatri;
-import rekammedis.RMPenilaianLanjutanRisikoJatuhLansia;
-import rekammedis.RMPenilaianLanjutanRisikoJatuhPsikiatri;
-import rekammedis.RMPenilaianLanjutanSkriningFungsional;
-import rekammedis.RMPenilaianLevelKecemasanRanapAnak;
-import rekammedis.RMPenilaianPasienImunitasRendah;
-import rekammedis.RMPenilaianPasienKeracunan;
-import rekammedis.RMPenilaianPasienPenyakitMenular;
-import rekammedis.RMPenilaianPasienTerminal;
-import rekammedis.RMPenilaianPreAnastesi;
-import rekammedis.RMPenilaianPreInduksi;
-import rekammedis.RMPenilaianPreOperasi;
-import rekammedis.RMPenilaianPsikologi;
-import rekammedis.RMPenilaianPsikologiKlinis;
-import rekammedis.RMPenilaianRisikoDekubitus;
-import rekammedis.RMPenilaianRisikoJatuhNeonatus;
-import rekammedis.RMPenilaianTambahanBunuhDiri;
-import rekammedis.RMPenilaianTambahanGeriatri;
-import rekammedis.RMPenilaianTambahanMelarikanDiri;
-import rekammedis.RMPenilaianTambahanPerilakuKekerasan;
-import rekammedis.RMPenilaianTerapiWicara;
-import rekammedis.RMPenilaianUlangNyeri;
-import rekammedis.RMPerencanaanPemulangan;
-import rekammedis.RMRiwayatKamarPasien;
-import rekammedis.RMSKriningRawatJalan;
-import rekammedis.RMSignInSebelumAnastesi;
-import rekammedis.RMSignOutSebelumMenutupLuka;
-import rekammedis.RMSkriningAdiksiNikotin;
-import rekammedis.RMSkriningAnemia;
-import rekammedis.RMSkriningCURB65;
-import rekammedis.RMSkriningDiabetesMelitus;
-import rekammedis.RMSkriningFrailtySyndrome;
-import rekammedis.RMSkriningHipertensi;
-import rekammedis.RMSkriningIndraPendengaran;
-import rekammedis.RMSkriningInstrumenACRS;
-import rekammedis.RMSkriningInstrumenAMT;
-import rekammedis.RMSkriningInstrumenESAT;
-import rekammedis.RMSkriningInstrumenMentalEmosional;
-import rekammedis.RMSkriningInstrumenSDQ;
-import rekammedis.RMSkriningKankerKolorektal;
-import rekammedis.RMSkriningKekerasanPadaPerempuan;
-import rekammedis.RMSkriningKesehatanGigiMulutBalita;
-import rekammedis.RMSkriningKesehatanGigiMulutDewasa;
-import rekammedis.RMSkriningKesehatanGigiMulutLansia;
-import rekammedis.RMSkriningMPP;
-import rekammedis.RMSkriningMPPFormA;
-import rekammedis.RMSkriningMPPFormB;
-import rekammedis.RMSkriningMerokokUsiaSekolahRemaja;
-import rekammedis.RMSkriningNutrisiAnak;
-import rekammedis.RMSkriningNutrisiDewasa;
-import rekammedis.RMSkriningNutrisiLansia;
-import rekammedis.RMSkriningObesitas;
-import rekammedis.RMSkriningRisikoKankerParu;
-import rekammedis.RMSkriningKesehatanGigiMulutRemaja;
-import rekammedis.RMSkriningKesehatanPenglihatan;
-import rekammedis.RMSkriningPUMA;
-import rekammedis.RMSkriningPneumoniaSeverityIndex;
-import rekammedis.RMSkriningRisikoKankerPayudara;
-import rekammedis.RMSkriningRisikoKankerServiks;
-import rekammedis.RMSkriningSRQ;
-import rekammedis.RMSkriningTBC;
-import rekammedis.RMSkriningTalasemia;
-import rekammedis.RMTimeOutSebelumInsisi;
-import rekammedis.RMTransferPasienAntarRuang;
-import rekammedis.RMUjiFungsiKFR;
-import bridging.SatuSehatBridgingTTE;
-import bridging.SatuSehatKirimCompositionRME;
 import keuangan.KeuanganRingkasanBebanHutangLain;
 import keuangan.KeuanganRingkasanHutangVendorAsetInventaris;
 import setting.DlgEEksekutif;
@@ -1121,6 +707,7 @@ import setting.DlgJamDietPasien;
 import setting.DlgPasswordBPJS;
 import setting.DlgRuangOperasi;
 import setting.DlgSetHargaToko;
+import setting.DlgSetResepPerCaraBayar;
 import smsui.frmSmsView;
 import surat.MasterTemplatePersetujuanPenolakanTindakan;
 import surat.PengumumanEPasien;
@@ -1228,11 +815,16 @@ import ziscsr.ZISPengeluaranPenerimaDankes;
 import ziscsr.ZISPenghasilanPenerimaDankes;
 import ziscsr.ZISTernakPenerimaDankes;
 import ziscsr.ZISUkuranRumahPenerimaDankes;
+import java.awt.Frame;
+import java.awt.KeyboardFocusManager;
+import java.awt.Point;
+import java.awt.Window;
+import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
 import fungsi.AntrianPoli;
 import modif.DlgJadwalOperasi;
 import modif.Eklaim.EklaimBridgingTarif;
 import permintaan.DlgBookingKuota;
-import bridging.SatuSehatKirimImageStudyRadiologi;
 
 
 /**
@@ -1247,6 +839,9 @@ public class frmUtama extends javax.swing.JFrame {
     private final INACBGHybrid inacbgklaim=new INACBGHybrid(this,false);
     private final INACBGCariCoderNIK cariNIK=new INACBGCariCoderNIK(this,false);
     private static frmUtama myInstance;
+    private final java.util.List<Window> dialogTersembunyi = new java.util.ArrayList<>();
+    private final java.util.Map<Window, Point> posisiDialogModal = new java.util.HashMap<>();
+    private Window dialogAktifSebelumnya;
     private PreparedStatement ps;
     private ResultSet rs;
     private final Properties prop = new Properties();  
@@ -1912,8 +1507,8 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(100, 125, 90), 1, true), ":: Silahkan Anda Login ::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 2, 11), new java.awt.Color(50, 50, 50))); // NOI18N
         internalFrame3.setName("internalFrame3"); // NOI18N
         internalFrame3.setRequestFocusEnabled(false);
-        internalFrame3.setWarnaAtas(new java.awt.Color(205, 240, 205));
-        internalFrame3.setWarnaBawah(new java.awt.Color(245, 255, 245));
+        internalFrame3.setWarnaAtas(new java.awt.Color(199, 231, 199));
+        internalFrame3.setWarnaBawah(new java.awt.Color(235, 248, 235));
         internalFrame3.setLayout(null);
 
         panelGlass1.setBackground(java.awt.Color.red);
@@ -2073,7 +1668,6 @@ public class frmUtama extends javax.swing.JFrame {
         ChkInput.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkInput.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         ChkInput.setName("ChkInput"); // NOI18N
-        ChkInput.setOpaque(false);
         ChkInput.setPreferredSize(new java.awt.Dimension(25, 23));
         ChkInput.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
         ChkInput.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
@@ -2103,10 +1697,9 @@ public class frmUtama extends javax.swing.JFrame {
 
         tanggal.setEditable(false);
         tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "14/05/2026" }));
+        tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "24/09/2026" }));
         tanggal.setDisplayFormat("dd/MM/yyyy");
         tanggal.setName("tanggal"); // NOI18N
-        tanggal.setOpaque(false);
 
         btnDataPenjualan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/1485357971_desktop_computer.png"))); // NOI18N
         btnDataPenjualan.setText("Data Penjualan Obat & BHP");
@@ -7228,8 +6821,8 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame1.setName("internalFrame1"); // NOI18N
         internalFrame1.setPreferredSize(new java.awt.Dimension(40, 42));
         internalFrame1.setVerifyInputWhenFocusTarget(false);
-        internalFrame1.setWarnaAtas(new java.awt.Color(245, 255, 245));
-        internalFrame1.setWarnaBawah(new java.awt.Color(200, 235, 200));
+        internalFrame1.setWarnaAtas(new java.awt.Color(235, 248, 235));
+        internalFrame1.setWarnaBawah(new java.awt.Color(199, 231, 199));
         internalFrame1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 2));
 
         BtnMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/menu.png"))); // NOI18N
@@ -7466,8 +7059,8 @@ public class frmUtama extends javax.swing.JFrame {
         internalFrame4.setBorder(null);
         internalFrame4.setName("internalFrame4"); // NOI18N
         internalFrame4.setPreferredSize(new java.awt.Dimension(330, 25));
-        internalFrame4.setWarnaAtas(new java.awt.Color(205, 240, 205));
-        internalFrame4.setWarnaBawah(new java.awt.Color(245, 255, 245));
+        internalFrame4.setWarnaAtas(new java.awt.Color(199, 231, 199));
+        internalFrame4.setWarnaBawah(new java.awt.Color(235, 248, 235));
         internalFrame4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 1));
 
         lblStts.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -8676,8 +8269,12 @@ private void BtnToolRegActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 }//GEN-LAST:event_BtnToolRegActionPerformed
 
 private void formWindowStateChanged(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowStateChanged
-    if(this.getState()==1){
-        isTutup();
+    boolean tadinyaKecil = (evt.getOldState() & Frame.ICONIFIED) != 0;
+    boolean sekarangKecil = (evt.getNewState() & Frame.ICONIFIED) != 0;
+    if (!tadinyaKecil && sekarangKecil) {
+        sembunyikanDialog();
+    } else if (tadinyaKecil && !sekarangKecil) {
+        SwingUtilities.invokeLater(this::tampilkanDialog);
     }
 }//GEN-LAST:event_formWindowStateChanged
 
@@ -8933,7 +8530,6 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         isTutup();
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         DlgAdmin admin=new DlgAdmin(this,false);
-        admin.tampil();
         admin.emptTeks();
         admin.setSize(PanelUtama.getWidth(),PanelUtama.getHeight());
         admin.setLocationRelativeTo(PanelUtama);
@@ -23896,6 +23492,29 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         this.setCursor(Cursor.getDefaultCursor());
     }
     
+    private void btnSetResepPerCaraBayarActionPerformed(java.awt.event.ActionEvent evt) {   
+        isTutup();
+        DlgHome.dispose();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        DlgSetResepPerCaraBayar aplikasi=new DlgSetResepPerCaraBayar(this,false);
+        aplikasi.setSize(PanelUtama.getWidth(), PanelUtama.getHeight());
+        aplikasi.setLocationRelativeTo(PanelUtama);
+        aplikasi.setVisible(true);
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+    
+    private void btnSkriningTOLACActionPerformed(java.awt.event.ActionEvent evt) {                                                        
+        isTutup();
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        RMSkriningTOLAC form=new RMSkriningTOLAC(this,false);
+        form.isCek();
+        form.setSize(PanelUtama.getWidth(),PanelUtama.getHeight());
+        form.setLocationRelativeTo(PanelUtama);
+        form.setVisible(true);
+        DlgHome.dispose();
+        this.setCursor(Cursor.getDefaultCursor());
+    }
+    
     /**
     * @param args the command line arguments
     */
@@ -24621,7 +24240,8 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             btnSuratPermintaanBinrohtal,btnSuratPermintaanPerlindunganDariKekerasan,btnSuratPermohonanPrivasi,btnSuratPermintaanSecondOpinion,btnSuratKeteranganBerobat,btnSuratPenolakanResusitasi,btnCatatanObservasiRuangOperasi,
             btnHasilUSGAbdomen,btnIntervensiNyeriFarmakologi,btnIntervensiNyeriNonFarmakologi,btnSuratPengajuanCutiPerawatan,btnChecklistKriteriaMasukIsolasi,btnMapingTarifTindakanRalanKPTLSatuSehat,
             btnMapingTarifTindakanRanapKPTLSatuSehat,btnMapingTarifTindakanRadiologiKPTLSatuSehat,btnMapingTarifTindakanLabKPTLSatuSehat,btnMapingTarifTindakanOperasiKPTLSatuSehat,btnMapingTarifKamarKPTLSatuSehat,
-            btnChecklistKriteriaKeluarIsolasi,btnBridgingTTESatuSehat,btnBridgingCompositionRMESatuSehat,btnRingkasanHutangVendorAsetInventaris,btnRingkasanBebanHutangLain;
+            btnChecklistKriteriaKeluarIsolasi,btnBridgingTTESatuSehat,btnBridgingCompositionRMESatuSehat,btnRingkasanHutangVendorAsetInventaris,btnRingkasanBebanHutangLain,btnSetResepPerCaraBayar,
+            btnSkriningTOLAC;
     
     public void isWall(){
         try{            
@@ -29487,6 +29107,11 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                 jmlmenu++;
             }
             
+            if(akses.getskrining_tolac()==true){
+                Panelmenu.add(btnSkriningTOLAC);
+                jmlmenu++;
+            }
+            
             if(akses.getlaporan_tindakan()==true){
                 Panelmenu.add(btnLaporanTindakan);
                 jmlmenu++;
@@ -30816,6 +30441,11 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             
             if(akses.getruang_ok()==true){
                 Panelmenu.add(btnRuangOperasi);
+                jmlmenu++;
+            }
+            
+            if(akses.getset_resep_per_cara_bayar()==true){
+                Panelmenu.add(btnSetResepPerCaraBayar);
                 jmlmenu++;
             }
         }    
@@ -35530,6 +35160,11 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             jmlmenu++;
         }
         
+        if(akses.getskrining_tolac()==true){
+            Panelmenu.add(btnSkriningTOLAC);
+            jmlmenu++;
+        }
+        
         if(akses.getlaporan_tindakan()==true){
             Panelmenu.add(btnLaporanTindakan);
             jmlmenu++;
@@ -36846,6 +36481,11 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         
         if(akses.getruang_ok()==true){
             Panelmenu.add(btnRuangOperasi);
+            jmlmenu++;
+        }
+        
+        if(akses.getset_resep_per_cara_bayar()==true){
+            Panelmenu.add(btnSetResepPerCaraBayar);
             jmlmenu++;
         }
     }
@@ -43279,7 +42919,14 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                 Panelmenu.add(btnSkriningFrailtySyndrome);
                 jmlmenu++;
             }                
-        }       
+        }  
+        
+        if(akses.getskrining_tolac()==true){
+            if(btnSkriningTOLAC.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
+                Panelmenu.add(btnSkriningTOLAC);
+                jmlmenu++;
+            } 
+        }
         
         if(akses.getlaporan_tindakan()==true){
             if(btnLaporanTindakan.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
@@ -45313,6 +44960,61 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                 Panelmenu.add(btnKirimImageStudySatuSehat);
                 jmlmenu++;
         }
+        
+        if(akses.getset_resep_per_cara_bayar()==true){
+            if(btnSetResepPerCaraBayar.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
+                Panelmenu.add(btnSetResepPerCaraBayar);
+                jmlmenu++;
+            } 
+        }
+    }
+    
+    private void sembunyikanDialog() {
+        FlayMenu.setVisible(false);
+        if (!dialogTersembunyi.isEmpty()) {
+            return; 
+        }
+        
+        dialogAktifSebelumnya = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+        for (Window win : Window.getWindows()) {
+            if (!(win instanceof JDialog) || !win.isVisible()) {
+                continue;
+            }
+            
+            JDialog dlg = (JDialog) win;
+            if (dlg.isModal()) {
+                posisiDialogModal.put(dlg, dlg.getLocation());
+                dlg.setLocation(-20000, -20000);
+            } else {
+                dlg.setVisible(false);
+            }
+            dialogTersembunyi.add(dlg);
+        }
+    }
+    
+    private void tampilkanDialog() {
+        for (Window win : dialogTersembunyi) {
+            if (!win.isDisplayable()) {
+                continue; 
+            }
+            
+            Point asli = posisiDialogModal.get(win);
+            if (asli != null) {
+                win.setLocation(asli);
+            } else {
+                win.setVisible(true); 
+            }
+        }
+        
+        if (dialogAktifSebelumnya != null && dialogTersembunyi.contains(dialogAktifSebelumnya)
+                && dialogAktifSebelumnya.isDisplayable()) {
+            dialogAktifSebelumnya.toFront();
+            dialogAktifSebelumnya.requestFocus();
+        }
+        
+        dialogTersembunyi.clear();
+        posisiDialogModal.clear();
+        dialogAktifSebelumnya = null;
     }
 
     private void initKhanza() {
@@ -51345,6 +51047,23 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
         btnPenilaianAwalMedisRalanUrologi.setName("btnPenilaianAwalMedisRalanUrologi");
         btnPenilaianAwalMedisRalanUrologi.setPreferredSize(new java.awt.Dimension(200, 90));
         btnPenilaianAwalMedisRalanUrologi.addActionListener(this::btnPenilaianAwalMedisRalanUrologiActionPerformed);
+
+                
+        btnSetResepPerCaraBayar = new widget.ButtonBig();
+        btnSetResepPerCaraBayar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/medicament_18179836.png")));
+        btnSetResepPerCaraBayar.setText("Set Resep Per Cara Bayar");
+        btnSetResepPerCaraBayar.setIconTextGap(0);
+        btnSetResepPerCaraBayar.setName("btnSetResepPerCaraBayar"); 
+        btnSetResepPerCaraBayar.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSetResepPerCaraBayar.addActionListener(this::btnSetResepPerCaraBayarActionPerformed);
+        
+        btnSkriningTOLAC = new widget.ButtonBig();
+        btnSkriningTOLAC.setIcon(new javax.swing.ImageIcon(getClass().getResource("/48x48/pregnant-woman_14373989.png")));
+        btnSkriningTOLAC.setText("Skrining TOLAC");
+        btnSkriningTOLAC.setIconTextGap(0);
+        btnSkriningTOLAC.setName("btnSkriningTOLAC"); 
+        btnSkriningTOLAC.setPreferredSize(new java.awt.Dimension(200, 90));
+        btnSkriningTOLAC.addActionListener(this::btnSkriningTOLACActionPerformed);
     }
 
     private String getIPAntrian(){

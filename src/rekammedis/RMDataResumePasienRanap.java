@@ -864,10 +864,9 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-06-2025" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-09-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
-        DTPCari1.setOpaque(false);
         DTPCari1.setPreferredSize(new java.awt.Dimension(95, 23));
         panelGlass9.add(DTPCari1);
 
@@ -878,10 +877,9 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-06-2025" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-09-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
-        DTPCari2.setOpaque(false);
         DTPCari2.setPreferredSize(new java.awt.Dimension(95, 23));
         panelGlass9.add(DTPCari2);
 
@@ -1750,10 +1748,9 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         KetDilanjutkan.setBounds(236, 1081, 270, 23);
 
         Kontrol.setForeground(new java.awt.Color(50, 70, 50));
-        Kontrol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-06-2025 16:54:52" }));
+        Kontrol.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "11-09-2026 09:42:12" }));
         Kontrol.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         Kontrol.setName("Kontrol"); // NOI18N
-        Kontrol.setOpaque(false);
         Kontrol.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 KontrolKeyPressed(evt);
@@ -2610,7 +2607,6 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                 public void windowDeactivated(WindowEvent e) {}
             });
             carikeluhan.setNoRawat(TNoRw.getText());
-            carikeluhan.tampil();
             carikeluhan.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
             carikeluhan.setLocationRelativeTo(internalFrame1);
             carikeluhan.setVisible(true);
@@ -2800,7 +2796,6 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
                 public void windowDeactivated(WindowEvent e) {}
             });
             caripemeriksaan.setNoRawat(TNoRw.getText());
-            caripemeriksaan.tampil();
             caripemeriksaan.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
             caripemeriksaan.setLocationRelativeTo(internalFrame1);
             caripemeriksaan.setVisible(true);
@@ -4223,7 +4218,109 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         TNoRw.setText(norwt);
         TCari.setText(norwt);
         DTPCari2.setDate(tgl2);    
-        isRawat();              
+        isRawat();    
+        Alasan.setText(Sequel.cariIsi("select permintaan_ranap.alasan from permintaan_ranap where permintaan_ranap.no_rawat=?",norwt));
+        ChkInput.setSelected(true);
+        isForm();
+        CaraKeluar.requestFocus();
+        try {
+            ps=koneksi.prepareStatement(
+                    "select diagnosa_pasien.kd_penyakit,penyakit.nm_penyakit,diagnosa_pasien.prioritas "+
+                    "from diagnosa_pasien inner join penyakit on diagnosa_pasien.kd_penyakit=penyakit.kd_penyakit "+
+                    "where diagnosa_pasien.no_rawat=? and diagnosa_pasien.status='Ranap' order by diagnosa_pasien.prioritas ");
+            try {
+                ps.setString(1,norwt);
+                rs=ps.executeQuery();
+                while(rs.next()){
+                    if(rs.getInt("prioritas")==1){
+                        KodeDiagnosaUtama.setText(rs.getString("kd_penyakit"));
+                        DiagnosaUtama.setText(rs.getString("nm_penyakit"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==2){
+                        KodeDiagnosaSekunder1.setText(rs.getString("kd_penyakit"));
+                        DiagnosaSekunder1.setText(rs.getString("nm_penyakit"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==3){
+                        KodeDiagnosaSekunder2.setText(rs.getString("kd_penyakit"));
+                        DiagnosaSekunder2.setText(rs.getString("nm_penyakit"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==4){
+                        KodeDiagnosaSekunder3.setText(rs.getString("kd_penyakit"));
+                        DiagnosaSekunder3.setText(rs.getString("nm_penyakit"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==5){
+                        KodeDiagnosaSekunder4.setText(rs.getString("kd_penyakit"));
+                        DiagnosaSekunder4.setText(rs.getString("nm_penyakit"));
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif : "+e);
+        } 
+        
+        try {
+            ps=koneksi.prepareStatement(
+                    "select prosedur_pasien.kode,icd9.deskripsi_panjang, prosedur_pasien.prioritas "+
+                    "from prosedur_pasien inner join icd9 on prosedur_pasien.kode=icd9.kode "+
+                    "where prosedur_pasien.no_rawat=? order by prosedur_pasien.prioritas ");
+            try {
+                ps.setString(1,norwt);
+                rs=ps.executeQuery();
+                while(rs.next()){
+                    if(rs.getInt("prioritas")==1){
+                        KodeProsedurUtama.setText(rs.getString("kode"));
+                        ProsedurUtama.setText(rs.getString("deskripsi_panjang"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==2){
+                        KodeProsedurSekunder1.setText(rs.getString("kode"));
+                        ProsedurSekunder1.setText(rs.getString("deskripsi_panjang"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==3){
+                        KodeProsedurSekunder2.setText(rs.getString("kode"));
+                        ProsedurSekunder2.setText(rs.getString("deskripsi_panjang"));
+                    }
+                    
+                    if(rs.getInt("prioritas")==4){
+                        KodeProsedurSekunder3.setText(rs.getString("kode"));
+                        ProsedurSekunder3.setText(rs.getString("deskripsi_panjang"));
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Notif : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Notif : "+e);
+        } 
+        runBackground(() ->tampil());
+    }
+    
+     public void setNoRm2(String norwt, Date tgl2) {
+        TNoRw.setText(norwt);
+        TCari.setText(norwt);
+        DTPCari2.setDate(tgl2);    
+        isRawat2();              
         ChkInput.setSelected(true);
         isForm();
         CaraKeluar.requestFocus();

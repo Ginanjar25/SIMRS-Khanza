@@ -414,7 +414,7 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
         jLabelAlergi1 = new widget.Label();
         TIter = new widget.TextBox();
         jLabelAlergi2 = new widget.Label();
-        TabRawat = new javax.swing.JTabbedPane();
+        TabRawat = new widget.TabPane();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
         jPanel3 = new javax.swing.JPanel();
@@ -2132,7 +2132,7 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private widget.TextBox TPRB;
     private widget.TextBox TPasien;
     private widget.TextBox TPasien1;
-    private javax.swing.JTabbedPane TabRawat;
+    private widget.TabPane TabRawat;
     private widget.ComboBox cmbDtk;
     private widget.ComboBox cmbJam;
     private widget.ComboBox cmbMnt;

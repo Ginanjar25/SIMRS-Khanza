@@ -121,6 +121,123 @@ import rekammedis.RMHasilEndoskopiHidung;
 import rekammedis.RMHasilEndoskopiTelinga;
 import rekammedis.RMHasilPemeriksaanEKG;
 import rekammedis.RMHasilPemeriksaanEcho;
+import rekammedis.RMHasilPemeriksaanEchoPediatrik;
+import rekammedis.RMHasilPemeriksaanOCT;
+import rekammedis.RMHasilPemeriksaanSlitLamp;
+import rekammedis.RMHasilPemeriksaanTreadmill;
+import rekammedis.RMHasilPemeriksaanUSG;
+import rekammedis.RMHasilPemeriksaanUSGAbdomen;
+import rekammedis.RMHasilPemeriksaanUSGGynecologi;
+import rekammedis.RMHasilPemeriksaanUSGNeonatus;
+import rekammedis.RMHasilPemeriksaanUSGUrologi;
+import rekammedis.RMHasilTindakanESWL;
+import rekammedis.RMKonselingFarmasi;
+import rekammedis.RMLaporanTindakan;
+import rekammedis.RMLayananKedokteranFisikRehabilitasi;
+import rekammedis.RMMCU;
+import rekammedis.RMMonitoringAldrettePascaAnestesi;
+import rekammedis.RMMonitoringBromagePascaAnestesi;
+import rekammedis.RMMonitoringStewardPascaAnestesi;
+import rekammedis.RMPelaksanaanInformasiEdukasi;
+import rekammedis.RMPemantauanMEOWS;
+import rekammedis.RMPemantauanPEWS;
+import rekammedis.RMPemantauanEWSD;
+import rekammedis.RMPemantauanEWSNeonatus;
+import rekammedis.RMPenatalaksanaanTerapiOkupasi;
+import rekammedis.RMPengkajianRestrain;
+import rekammedis.RMPenilaianAwalKeperawatanBayiAnak;
+import rekammedis.RMPenilaianAwalKeperawatanGigi;
+import rekammedis.RMPenilaianAwalKeperawatanIGD;
+import rekammedis.RMPenilaianAwalKeperawatanKebidanan;
+import rekammedis.RMPenilaianAwalKeperawatanRalan;
+import rekammedis.RMPenilaianAwalKeperawatanRalanGeriatri;
+import rekammedis.RMPenilaianAwalKeperawatanRalanPsikiatri;
+import rekammedis.RMPenilaianAwalMedisIGD;
+import rekammedis.RMPenilaianAwalMedisRalanAnak;
+import rekammedis.RMPenilaianAwalMedisRalanBedah;
+import rekammedis.RMPenilaianAwalMedisRalanBedahMulut;
+import rekammedis.RMPenilaianAwalMedisRalanDewasa;
+import rekammedis.RMPenilaianAwalMedisRalanGeriatri;
+import rekammedis.RMPenilaianAwalMedisHemodialisa;
+import rekammedis.RMPenilaianAwalMedisIGDPsikiatri;
+import rekammedis.RMPenilaianAwalMedisRalanJantung;
+import rekammedis.RMPenilaianAwalMedisRalanKandungan;
+import rekammedis.RMPenilaianAwalMedisRalanKulitDanKelamin;
+import rekammedis.RMPenilaianAwalMedisRalanMata;
+import rekammedis.RMPenilaianAwalMedisRalanNeurologi;
+import rekammedis.RMPenilaianAwalMedisRalanOrthopedi;
+import rekammedis.RMPenilaianAwalMedisRalanParu;
+import rekammedis.RMPenilaianAwalMedisRalanPenyakitDalam;
+import rekammedis.RMPenilaianAwalMedisRalanPsikiatrik;
+import rekammedis.RMPenilaianAwalMedisRalanRehabMedik;
+import rekammedis.RMPenilaianAwalMedisRalanTHT;
+import rekammedis.RMPenilaianAwalMedisRalanUrologi;
+import rekammedis.RMPenilaianBayiBaruLahir;
+import rekammedis.RMPenilaianDerajatDehidrasi;
+import rekammedis.RMPenilaianFisioterapi;
+import rekammedis.RMPenilaianKorbanKekerasan;
+import rekammedis.RMPenilaianLanjutanRisikoJatuhAnak;
+import rekammedis.RMPenilaianLanjutanRisikoJatuhDewasa;
+import rekammedis.RMPenilaianLanjutanRisikoJatuhGeriatri;
+import rekammedis.RMPenilaianLanjutanRisikoJatuhLansia;
+import rekammedis.RMPenilaianLanjutanRisikoJatuhPsikiatri;
+import rekammedis.RMPenilaianLanjutanSkriningFungsional;
+import rekammedis.RMPenilaianPasienImunitasRendah;
+import rekammedis.RMPenilaianPasienKeracunan;
+import rekammedis.RMPenilaianPasienPenyakitMenular;
+import rekammedis.RMPenilaianPasienTerminal;
+import rekammedis.RMPenilaianPreAnastesi;
+import rekammedis.RMPenilaianPreInduksi;
+import rekammedis.RMPenilaianPreOperasi;
+import rekammedis.RMPenilaianPsikologi;
+import rekammedis.RMPenilaianPsikologiKlinis;
+import rekammedis.RMPenilaianRisikoJatuhNeonatus;
+import rekammedis.RMPenilaianTambahanBunuhDiri;
+import rekammedis.RMPenilaianTambahanGeriatri;
+import rekammedis.RMPenilaianTambahanMelarikanDiri;
+import rekammedis.RMPenilaianTambahanPerilakuKekerasan;
+import rekammedis.RMPenilaianTerapiWicara;
+import rekammedis.RMPenilaianUlangNyeri;
+import rekammedis.RMRekonsiliasiObat;
+import rekammedis.RMSignInSebelumAnastesi;
+import rekammedis.RMSignOutSebelumMenutupLuka;
+import rekammedis.RMSkriningAdiksiNikotin;
+import rekammedis.RMSkriningAnemia;
+import rekammedis.RMSkriningCURB65;
+import rekammedis.RMSkriningDiabetesMelitus;
+import rekammedis.RMSkriningFrailtySyndrome;
+import rekammedis.RMSkriningHipertensi;
+import rekammedis.RMSkriningIndraPendengaran;
+import rekammedis.RMSkriningInstrumenACRS;
+import rekammedis.RMSkriningInstrumenAMT;
+import rekammedis.RMSkriningInstrumenESAT;
+import rekammedis.RMSkriningInstrumenMentalEmosional;
+import rekammedis.RMSkriningInstrumenSDQ;
+import rekammedis.RMSkriningKankerKolorektal;
+import rekammedis.RMSkriningKekerasanPadaPerempuan;
+import rekammedis.RMSkriningKesehatanGigiMulutBalita;
+import rekammedis.RMSkriningKesehatanGigiMulutDewasa;
+import rekammedis.RMSkriningKesehatanGigiMulutLansia;
+import rekammedis.RMSkriningKesehatanGigiMulutRemaja;
+import rekammedis.RMSkriningKesehatanPenglihatan;
+import rekammedis.RMSkriningMerokokUsiaSekolahRemaja;
+import rekammedis.RMSkriningNutrisiAnak;
+import rekammedis.RMSkriningNutrisiDewasa;
+import rekammedis.RMSkriningNutrisiLansia;
+import rekammedis.RMSkriningObesitas;
+import rekammedis.RMSkriningPUMA;
+import rekammedis.RMSkriningPneumoniaSeverityIndex;
+import rekammedis.RMSkriningRisikoKankerParu;
+import rekammedis.RMSkriningRisikoKankerPayudara;
+import rekammedis.RMSkriningRisikoKankerServiks;
+import rekammedis.RMSkriningSRQ;
+import rekammedis.RMSkriningTBC;
+import rekammedis.RMSkriningTOLAC;
+import rekammedis.RMSkriningTalasemia;
+import rekammedis.RMTimeOutSebelumInsisi;
+import rekammedis.RMTransferPasienAntarRuang;
+import rekammedis.RMTriaseIGD;
+import rekammedis.RMUjiFungsiKFR;
 import surat.SuratBebasNarkoba;
 import surat.SuratBebasTato;
 import surat.SuratButaWarna;
@@ -912,7 +1029,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         cmbStatus = new widget.ComboBox();
         jLabel20 = new widget.Label();
         cmbStatusBayar = new widget.ComboBox();
-        TabRawat = new javax.swing.JTabbedPane();
+        TabRawat = new widget.TabPane();
         Scroll1 = new widget.ScrollPane();
         tbKasirRalan = new widget.Table();
         Scroll2 = new widget.ScrollPane();
@@ -12396,7 +12513,12 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         }else{
             if(tbKasirRalan.getSelectedRow()!= -1){
                 if(Sequel.cariRegistrasi(TNoRw.getText())>0){
-                    JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi..!!");
+                    int reply = JOptionPane.showConfirmDialog(rootPane,"Data billing sudah terverifikasi, apakah yakin mau digabung..??","Konfirmasi",JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        norawatdipilih=tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),11).toString();
+                        normdipilih=tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),2).toString();
+                        JOptionPane.showMessageDialog(rootPane,"Silahkan pilih No.Rawat yang mau digabung...!");
+                    }
                 }else{
                     norawatdipilih=tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),11).toString();
                     normdipilih=tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),2).toString();
@@ -16454,6 +16576,28 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         }
     }
     
+    private void MnSkriningTOLACActionPerformed(java.awt.event.ActionEvent evt) {
+        if(tabModekasir.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+            TCari.requestFocus();
+        }else if(TNoRw.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+            tbKasirRalan.requestFocus();
+        }else{
+            if(tbKasirRalan.getSelectedRow()!= -1){
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                RMSkriningTOLAC form=new RMSkriningTOLAC(null,false);
+                form.isCek();
+                form.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                form.setLocationRelativeTo(internalFrame1);
+                form.setVisible(true);
+                form.emptTeks();
+                form.setNoRm(TNoRw.getText(),DTPCari2.getDate());
+                this.setCursor(Cursor.getDefaultCursor());  
+            }                
+        }
+    }
+    
     /**
     * @param args the command line arguments
     */
@@ -16801,7 +16945,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private widget.TextBox TNoRw;
     private widget.TextBox TNoRwCari;
     private widget.TextBox TPasienCari;
-    private javax.swing.JTabbedPane TabRawat;
+    private widget.TabPane TabRawat;
     private widget.TextBox Tanggal;
     private widget.Tanggal TglSakit1;
     private widget.Tanggal TglSakit2;
@@ -16906,7 +17050,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                                   MnSkriningInstrumenMentalEmosional,MnCheckListKriteriaMasukNICU,MnCheckListKriteriaMasukPICU,MnSkriningInstrumenAMT,MnSkriningPneumoniaSeverityIndex,MnPenilaianAwalMedisRalanJantung,MnPenilaianAwalMedisRalanUrologi,
                                   MnHasilPemeriksaanTreadmill,MnHasilPemeriksaanECHOPediatrik,MnSkriningInstrumenESAT,MnSkriningCURB65,MnSkriningGiziKehamilan,MnSerahTerimaBarangAnggotaTubuh,MnPermintaanKonsultasiPerawat,
                                   MnPersetujuanBimbinganRohani,MnPermintaanPerlindunganDariKekerasan,MnSuratPermohonanPrivasi,MnSuratPermintaanSecondOpinion,MnCetakSuratKeteranganBerobat,MnSuratPenolakanResusitasi,MnCatatanObservasiRuangOperasi,
-                                  MnHasilPemeriksaanUSGAbdomen,MnIntervensiNyeriFarmakologi,MnIntervensiNyeriNonFarmakologi,MnPengajuanCutiPerawatanPasien,MnCheckListKriteriaMasukIsolasi;
+                                  MnHasilPemeriksaanUSGAbdomen,MnIntervensiNyeriFarmakologi,MnIntervensiNyeriNonFarmakologi,MnPengajuanCutiPerawatanPasien,MnCheckListKriteriaMasukIsolasi,MnSkriningTOLAC;
     private javax.swing.JMenu MnHasilUSG,MnHasilEndoskopi,MnRMSkrining,MnEdukasi,MnRehabMedik,MnRMSkriningRisikoKanker,MnRMSkriningKesehatanGigiMulut,MnSuratPersetujuan,MnSkriningInstrumen,MnSkriningParu;
     private javax.swing.JMenuItem MnLaporanOperasi;
     private javax.swing.JMenuItem ppResumePerawat;
@@ -17407,6 +17551,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         MnCatatanPengkajianPaskaOperasi.setEnabled(akses.getcatatan_pengkajian_paska_operasi());
         MnCatatanObservasiRuangOperasi.setEnabled(akses.getcatatan_observasi_ruang_ok());
         MnSkriningFrailtySyndrome.setEnabled(akses.getskrining_frailty_syndrome());
+        MnSkriningTOLAC.setEnabled(akses.getskrining_tolac());
         MnCatatanObservasiBayi.setEnabled(akses.getcatatan_observasi_bayi());
         MnCheckListKesiapanAnestesi.setEnabled(akses.getchecklist_kesiapan_anestesi());
         MnHasilPemeriksaanSlitLamp.setEnabled(akses.gethasil_pemeriksaan_slit_lamp());
@@ -19246,6 +19391,18 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         MnIntervensiNyeriNonFarmakologi.setPreferredSize(new java.awt.Dimension(210, 26));
         MnIntervensiNyeriNonFarmakologi.addActionListener(this::MnIntervensiNyeriNonFarmakologiActionPerformed);
         
+        MnSkriningTOLAC = new javax.swing.JMenuItem();
+        MnSkriningTOLAC.setBackground(new java.awt.Color(255, 255, 254));
+        MnSkriningTOLAC.setFont(new java.awt.Font("Tahoma", 0, 11));
+        MnSkriningTOLAC.setForeground(new java.awt.Color(50, 50, 50));
+        MnSkriningTOLAC.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); 
+        MnSkriningTOLAC.setText("Skrining TOLAC");
+        MnSkriningTOLAC.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnSkriningTOLAC.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnSkriningTOLAC.setName("MnSkriningTOLAC");
+        MnSkriningTOLAC.setPreferredSize(new java.awt.Dimension(260, 26));
+        MnSkriningTOLAC.addActionListener(this::MnSkriningTOLACActionPerformed);
+        
         MnHasilUSG = new javax.swing.JMenu();
         MnHasilUSG.setBackground(new java.awt.Color(255, 255, 254));
         MnHasilUSG.setForeground(new java.awt.Color(50, 50, 50));
@@ -19574,6 +19731,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         MnRMSkrining.add(MnSkriningKesehatanPenglihatan);
         MnRMSkrining.add(MnSkriningIndraPendengaran);
         MnRMSkrining.add(MnSkriningFrailtySyndrome);
+        MnRMSkrining.add(MnSkriningTOLAC);
         
         MnSkriningParu.add(MnSkriningTBC);
         MnSkriningParu.add(MnSkriningPUMA);

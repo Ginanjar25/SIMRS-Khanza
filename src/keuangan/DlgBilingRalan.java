@@ -634,7 +634,7 @@ public class DlgBilingRalan extends javax.swing.JDialog {
         TNaikKelas = new widget.TextBox();
         NoSEPLabel = new widget.Label();
         TNoSEP = new widget.TextBox();
-        TabRawat = new javax.swing.JTabbedPane();
+        TabRawat = new widget.TabPane();
         Scroll = new widget.ScrollPane();
         tbBilling = new widget.Table();
         scrollPane8 = new widget.ScrollPane();
@@ -4251,7 +4251,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     public widget.TextBox TNoRw;
     public widget.TextBox TNoSEP;
     private widget.TextBox TPasien;
-    private javax.swing.JTabbedPane TabRawat;
+    private widget.TabPane TabRawat;
     private widget.TextBox TagihanPPn;
     private widget.TextBox TotalObat;
     private widget.TextBox TtlSemua;
@@ -6119,6 +6119,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                     psnota.setString(3,Valid.SetTgl(DTPTgl.getSelectedItem()+""));
                     psnota.setString(4,DTPTgl.getSelectedItem().toString().substring(11,19));
                     psnota.executeUpdate();
+                    Sequel.SimpanTrack("insert into nota_jalan values('"+TNoRw.getText()+"','"+no_nota+"','"+Valid.SetTgl(DTPTgl.getSelectedItem()+"")+"','"+DTPTgl.getSelectedItem().toString().substring(11,19)+"')");
                 } catch (Exception e) {
                     nota_jalan=Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(nota_jalan.no_nota,4),signed)),0) from nota_jalan where nota_jalan.tanggal='"+Valid.SetTgl(DTPTgl.getSelectedItem()+"").substring(0,10)+"' ",Valid.SetTgl(DTPTgl.getSelectedItem()+"").substring(0,10).replaceAll("-","/")+"/RJ",4);
                     Sequel.meghapus("nota_jalan","no_rawat",TNoRw.getText());               
@@ -6129,6 +6130,7 @@ private void MnPeriksaLabActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                     psnota.setString(3,Valid.SetTgl(DTPTgl.getSelectedItem()+""));
                     psnota.setString(4,DTPTgl.getSelectedItem().toString().substring(11,19));
                     psnota.executeUpdate();
+                    Sequel.SimpanTrack("insert into nota_jalan values('"+TNoRw.getText()+"','"+no_nota+"','"+Valid.SetTgl(DTPTgl.getSelectedItem()+"")+"','"+DTPTgl.getSelectedItem().toString().substring(11,19)+"')");
                 } finally{
                     if(psnota != null){
                         psnota.close();

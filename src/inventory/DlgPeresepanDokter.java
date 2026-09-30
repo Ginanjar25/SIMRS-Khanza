@@ -24,6 +24,7 @@ import fungsi.akses;
 import fungsi.kodebpjs;
 import fungsi.ppnralan;
 import fungsi.lokasidepoutama;
+import fungsi.resepdokter;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -75,7 +76,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
     private DlgCariAturanPakai aturanpakai;
-    private PreparedStatement psresep,pscarikapasitas,psresepasuransi,ps2,ps;
+    private PreparedStatement psresep,pscarikapasitas,ps2,ps;
     private ResultSet rsobat,carikapasitas,rs2,rs;
     private double y=0,kenaikan=0,ttl=0,ppnobat=0,jumlahracik=0,persenracik=0,kapasitasracik=0,MAKSIMALNOMINALRESEPRAJAL=0;
     private int i=0,z=0,row2=0,r=0;
@@ -88,7 +89,8 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
     private WarnaTableResepRacikan warna3=new WarnaTableResepRacikan();
     private DlgCariMetodeRacik metoderacik=new DlgCariMetodeRacik(null,false);
     private String  pilihiterasi="", noracik="",aktifkanbatch="no",STOKKOSONGRESEP="no",qrystokkosong="",tampilkan_ppnobat_ralan="",status="",bangsal="",resep="",DEPOAKTIFOBAT="",
-            kamar="",norawatibu="",kelas,bangsaldefault=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1"),RESEPRAJALKEPLAN="no", FILTEROBATPENJAB="no", NOTIFMAKSIMALNOMINALRESEPRAJAL="no";
+            kamar="",norawatibu="",kelas,bangsaldefault=Sequel.cariIsi("select set_lokasi.kd_bangsal from set_lokasi limit 1"),RESEPRAJALKEPLAN="no", FILTEROBATPENJAB="no", NOTIFMAKSIMALNOMINALRESEPRAJAL="no",joinresepdokter="",
+            carabayarpasien="";
     private static final Properties prop = new Properties();
     private static String var = "";
     private widget.ComboBox metodeRacik = new widget.ComboBox();
@@ -112,8 +114,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         this.setLocation(10,2);
         setSize(656,250);
         tabModeResep=new DefaultTableModel(null,new Object[]{
-                "K","Jumlah","Aturan Pakai","Kode Barang","Nama Barang","Satuan",
-                "Komposisi","Harga(Rp)","Jenis Obat","I.F.","H.Beli","Stok", "Sub-Total", "Stok Gudang"
+                "K","Jumlah","Aturan Pakai","Kode Barang","Nama Barang","Satuan","Komposisi","Harga(Rp)","Jenis Obat","I.F.","H.Beli","Stok", "Sub-Total", "Stok Gudang"
             }){
             @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -230,8 +231,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         tbResep.setDefaultRenderer(Object.class,warna);
         
         tabModeResepRacikan=new DefaultTableModel(null,new Object[]{
-                "No","Nama Racikan","Kode Racik","Metode Racik","Jml.Racik",
-                "Aturan Pakai","Keterangan"
+                "No","Nama Racikan","Kode Racik","Metode Racik","Jml.Racik","Aturan Pakai","Keterangan"
             }){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = true;
@@ -580,6 +580,10 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         } catch (Exception e) {
             TANGGALMUNDUR="yes";
         }
+        
+        if(resepdokter.getResepPerCaraBayar().equals("")){
+            resepdokter.SetResepPerCaraBayar();
+        }
     }    
     
 
@@ -650,7 +654,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         rbNonPRB = new widget.RadioButton();
         rbPRB = new widget.RadioButton();
         jLabelPRB = new widget.Label();
-        TabRawat = new javax.swing.JTabbedPane();
+        TabRawat = new widget.TabPane();
         Scroll = new widget.ScrollPane();
         tbResep = new widget.Table();
         jPanel3 = new javax.swing.JPanel();
@@ -2612,7 +2616,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private widget.TextBox TCari;
     private widget.TextBox TNoRw;
     private widget.TextBox TPasien;
-    private javax.swing.JTabbedPane TabRawat;
+    private widget.TabPane TabRawat;
     private widget.Button btnDokter;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
@@ -3506,7 +3510,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                     if(STOKKOSONGRESEP.equals("no")){
                         qrystokkosong=" and gudangbarang.stok>0 ";
                     }
-                    psresepasuransi=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng,jenis.nama, databarang.kode_sat,(databarang.h_beli+(databarang.h_beli*?)) as harga,"+
+                    psresep=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng,jenis.nama, databarang.kode_sat,(databarang.h_beli+(databarang.h_beli*?)) as harga,"+
                         " databarang.letak_barang,industrifarmasi.nama_industri,databarang.h_beli,sum(gudangbarang.stok) as stok,resep_dokter.jml, resep_dokter.aturan_pakai "+
                         " from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
                         " inner join industrifarmasi on industrifarmasi.kode_industri=databarang.kode_industri "+
@@ -3520,7 +3524,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                     if(STOKKOSONGRESEP.equals("no")){
                         qrystokkosong=" and gudangbarang.stok>0 ";
                     }
-                    psresepasuransi=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng,jenis.nama, databarang.kode_sat,(databarang.h_beli+(databarang.h_beli*?)) as harga,"+
+                    psresep=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng,jenis.nama, databarang.kode_sat,(databarang.h_beli+(databarang.h_beli*?)) as harga,"+
                         " databarang.letak_barang,industrifarmasi.nama_industri,databarang.h_beli,gudangbarang.stok,resep_dokter.jml, resep_dokter.aturan_pakai "+
                         " from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
                         " inner join industrifarmasi on industrifarmasi.kode_industri=databarang.kode_industri "+
@@ -3531,10 +3535,10 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                         " resep_dokter.no_resep=? order by databarang.nama_brng");
                 }
                 try{
-                    psresepasuransi.setDouble(1,kenaikan);
-                    psresepasuransi.setString(2,bangsal);
-                    psresepasuransi.setString(3,no_resep);
-                    rsobat=psresepasuransi.executeQuery();
+                    psresep.setDouble(1,kenaikan);
+                    psresep.setString(2,bangsal);
+                    psresep.setString(3,no_resep);
+                    rsobat=psresep.executeQuery();
                     if(STOKKOSONGRESEP.equals("no")){
                         while(rsobat.next()){
                             if(rsobat.getDouble("jml")>rsobat.getDouble("stok")){
@@ -3568,8 +3572,8 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                         rsobat.close();
                     }
 
-                    if(psresepasuransi != null){
-                        psresepasuransi.close();
+                    if(psresep != null){
+                        psresep.close();
                     }
                 }                                   
             }else{    
@@ -4315,7 +4319,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
             copy=true;
             if(kenaikan>0){
                 if(aktifkanbatch.equals("yes")){
-                    psresepasuransi=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng,jenis.nama, databarang.kode_sat,(databarang.h_beli+(databarang.h_beli*?)) as harga,"+
+                    psresep=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng,jenis.nama, databarang.kode_sat,(databarang.h_beli+(databarang.h_beli*?)) as harga,"+
                         " databarang.letak_barang,industrifarmasi.nama_industri,databarang.h_beli,sum(gudangbarang.stok) as stok,resep_dokter.jml, resep_dokter.aturan_pakai "+
                         " from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
                         " inner join industrifarmasi on industrifarmasi.kode_industri=databarang.kode_industri "+
@@ -4325,7 +4329,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                         " where databarang.status='1' "+filter_obat()+qrystokkosong+" and gudangbarang.no_batch<>'' and gudangbarang.no_faktur<>'' and gudangbarang.kd_bangsal=? and "+
                         " resep_dokter.no_resep=? group by gudangbarang.kode_brng order by databarang.nama_brng");
                 }else{
-                    psresepasuransi=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng,jenis.nama, databarang.kode_sat,(databarang.h_beli+(databarang.h_beli*?)) as harga,"+
+                    psresep=koneksi.prepareStatement("select databarang.kode_brng, databarang.nama_brng,jenis.nama, databarang.kode_sat,(databarang.h_beli+(databarang.h_beli*?)) as harga,"+
                         " databarang.letak_barang,industrifarmasi.nama_industri,databarang.h_beli,gudangbarang.stok,resep_dokter.jml, resep_dokter.aturan_pakai "+
                         " from databarang inner join jenis on databarang.kdjns=jenis.kdjns "+
                         " inner join industrifarmasi on industrifarmasi.kode_industri=databarang.kode_industri "+
@@ -4337,10 +4341,10 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                 }
                 
                 try{
-                    psresepasuransi.setDouble(1,kenaikan);
-                    psresepasuransi.setString(2,bangsal);
-                    psresepasuransi.setString(3,no_resep);
-                    rsobat=psresepasuransi.executeQuery();
+                    psresep.setDouble(1,kenaikan);
+                    psresep.setString(2,bangsal);
+                    psresep.setString(3,no_resep);
+                    rsobat=psresep.executeQuery();
                     if(STOKKOSONGRESEP.equals("no")){
                         while(rsobat.next()){
                             if(rsobat.getDouble("jml")>rsobat.getDouble("stok")){
@@ -4374,8 +4378,8 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                         rsobat.close();
                     }
 
-                    if(psresepasuransi != null){
-                        psresepasuransi.close();
+                    if(psresep != null){
+                        psresep.close();
                     }
                 }                                   
             }else{    
