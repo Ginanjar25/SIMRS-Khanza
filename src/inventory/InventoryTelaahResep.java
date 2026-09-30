@@ -467,7 +467,6 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
         DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-08-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
-        DTPCari1.setOpaque(false);
         DTPCari1.setPreferredSize(new java.awt.Dimension(95, 23));
         panelGlass9.add(DTPCari1);
 
@@ -481,7 +480,6 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
         DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "02-08-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
-        DTPCari2.setOpaque(false);
         DTPCari2.setPreferredSize(new java.awt.Dimension(95, 23));
         panelGlass9.add(DTPCari2);
 
@@ -538,7 +536,6 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
         internalFrame1.add(jPanel3, java.awt.BorderLayout.PAGE_END);
 
         TabData.setBackground(new java.awt.Color(254, 255, 254));
-        TabData.setForeground(new java.awt.Color(50, 50, 50));
         TabData.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         TabData.setName("TabData"); // NOI18N
         TabData.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -2316,11 +2313,11 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
             dlgobt.tampilobat2(NoResep.getText());
             dlgobt.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
             dlgobt.setLocationRelativeTo(internalFrame1);
-            dlgobt.BtnAll.setEnabled(false);
-            dlgobt.BtnCari.setEnabled(false);
-            dlgobt.BtnSimpan.setEnabled(false);
-            dlgobt.BtnTambah.setEnabled(false);
-            dlgobt.TCari.setEnabled(false);
+//            dlgobt.BtnAll.setEnabled(false);
+//            dlgobt.BtnCari.setEnabled(false);
+//            dlgobt.BtnSimpan.setEnabled(false);
+//            dlgobt.BtnTambah.setEnabled(false);
+//            dlgobt.TCari.setEnabled(false);
 //            TeksKosong();
             dlgobt.setVisible(true);   
     }

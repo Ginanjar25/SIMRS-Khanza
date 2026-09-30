@@ -539,7 +539,6 @@ public final class BPJSAntrianOnline extends javax.swing.JDialog {
         btnRiwayatRujukan.setBounds(760, 70, 28, 23);
 
         NoTelp.setHighlighter(null);
-        NoTelp.setMaxLenth(13);
         NoTelp.setName("NoTelp"); // NOI18N
         NoTelp.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {

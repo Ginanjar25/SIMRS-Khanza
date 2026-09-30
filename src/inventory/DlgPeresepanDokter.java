@@ -76,7 +76,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
     private DlgCariAturanPakai aturanpakai;
-    private PreparedStatement psresep,pscarikapasitas,ps2,ps;
+    private PreparedStatement psresep,pscarikapasitas,ps2,ps, psresepasuransi;
     private ResultSet rsobat,carikapasitas,rs2,rs;
     private double y=0,kenaikan=0,ttl=0,ppnobat=0,jumlahracik=0,persenracik=0,kapasitasracik=0,MAKSIMALNOMINALRESEPRAJAL=0;
     private int i=0,z=0,row2=0,r=0;
@@ -1145,7 +1145,6 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         LTotalTagihan.setVisible(false);
 
         TAlergi.setHighlighter(null);
-        TAlergi.setMaxLenth(200);
         TAlergi.setName("TAlergi"); // NOI18N
         TAlergi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

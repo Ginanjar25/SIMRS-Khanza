@@ -855,7 +855,6 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
 
         TAlergi.setEditable(false);
         TAlergi.setHighlighter(null);
-        TAlergi.setMaxLenth(200);
         TAlergi.setName("TAlergi"); // NOI18N
         TAlergi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -872,7 +871,6 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
 
         TPRB.setEditable(false);
         TPRB.setHighlighter(null);
-        TPRB.setMaxLenth(200);
         TPRB.setName("TPRB"); // NOI18N
         TPRB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -889,7 +887,6 @@ public final class DlgCariObat2 extends javax.swing.JDialog {
 
         TIter.setEditable(false);
         TIter.setHighlighter(null);
-        TIter.setMaxLenth(200);
         TIter.setName("TIter"); // NOI18N
         TIter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
