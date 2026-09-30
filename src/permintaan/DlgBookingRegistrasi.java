@@ -1428,7 +1428,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                 String tanggal_now = dateFormat.format(now);                
                 String tanggal_periksa = TanggalPeriksa.getSelectedItem().toString().substring(0,10);
-                String cekRegis = Sequel.cariIsi("select no_rkm_medis from reg_periksa where no_rkm_medis = ? and tgl_registrasi = '"+tanggal_periksa+"'", tbObat.getValueAt(i,3).toString());
+                String cekRegis = Sequel.cariIsi("select no_rkm_medis from reg_periksa where no_rkm_medis = ? and tgl_registrasi = '"+tanggal_periksa+"' and kd_poli = '"+KdPoli.getText()+"' and kd_dokter='"+KdDokter.getText()+"'", tbObat.getValueAt(i,3).toString());
                 if(!tanggal_periksa.equals(tanggal_now)){
                     JOptionPane.showMessageDialog(null,"Maaf, Registrasi belum bisa dilakukan hari ini !");
                 }else if(!cekRegis.isBlank() || !cekRegis.isEmpty()){

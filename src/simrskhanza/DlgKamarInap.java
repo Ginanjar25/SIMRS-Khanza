@@ -211,7 +211,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private String now=dateFormat.format(date),kmr="",key="",tglmasuk,jammasuk,kd_pj,KUNCIDOKTERRANAP="",
             hariawal="",pilihancetak="",aktifkan_hapus_data_salah="",terbitsep="",namadokter="",validasicatatan=Sequel.cariIsi("select set_validasi_catatan.tampilkan_catatan from set_validasi_catatan");
     private PreparedStatement ps,pssetjam,pscaripiutang,psdiagnosa,psibu,psanak,pstarif,psdpjp,pscariumur, psinsertkamar, psupdatekamar, psrekapkamar, pstitip;
-    private ResultSet rs,rs2,rssetjam, rsrekapkamar, rstitip;;
+    private ResultSet rs,rs2,rssetjam, rsrekapkamar, rstitip;
     private int i,row=0;
     private double lama=0,persenbayi=0,hargakamar=0;
     private String gabungkan="",norawatgabung="",normgabung="",kamaryangdigabung="",dokterranap="",bangsal="",diagnosa_akhir="",namakamar="",umur="0",sttsumur="Th",order="order by bangsal.nm_bangsal,kamar_inap.tgl_masuk,kamar_inap.jam_masuk";
