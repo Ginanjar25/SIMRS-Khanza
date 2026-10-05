@@ -16,8 +16,8 @@ import javax.swing.text.Caret;
 public class editorpane extends JEditorPane {
     private static final long serialVersionUID = 2L;
 
-    static final Color AKSEN   = new Color(22, 160, 93);
-    static final Color GARIS   = new Color(239, 244, 234);   
+    static final Color AKSEN   = new Color(22, 31, 160);
+    static final Color GARIS   = new Color(234, 244, 243);   
     static final Color TEKS    = new Color(50, 50, 50);
 
     private static final Border PADDING         = new EmptyBorder(6, 8, 6, 8);

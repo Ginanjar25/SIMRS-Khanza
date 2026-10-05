@@ -17890,7 +17890,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private void tampil() {
         if(ceksukses==false){
             ceksukses=true;
-            Valid.tabelKosong(tabMode); 
+            Valid.tabelKosong(tabMode);
+            resetFilter();
             if(R1.isSelected()==false){
                 stts = " and reg_periksa.stts != 'Batal' ";
             }else{
@@ -17900,7 +17901,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 @Override
                 protected Void doInBackground() {
                     try {
-                        if(CrPoli.getText().trim().equals("")&&CrDokter.getText().equals("")&&TCari.getText().equals("")&&R1.isSelected()==false){
+                        if(CrPoli.getText().trim().equals("")&&CrDokter.getText().equals("")&&TCari.getText().trim().equals("")&&R1.isSelected()==false){
                             ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg, " +
                                 "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli, " +
                                 "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,reg_periksa.status_poli, " +
@@ -17953,7 +17954,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                         }
 
                         try{  
-                            if(CrPoli.getText().trim().equals("")&&CrDokter.getText().equals("")&&TCari.equals("")){
+                            if(CrPoli.getText().trim().equals("")&&CrDokter.getText().trim().equals("")&&TCari.getText().trim().equals("")){
                                 ps.setString(1,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                                 ps.setString(2,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
                             }else{

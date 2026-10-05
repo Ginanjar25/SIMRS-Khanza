@@ -26,14 +26,14 @@ import javax.swing.table.TableCellRenderer;
 public class Table extends JTable {
     private static final long serialVersionUID = 3L;
 
-    static final Color AKSEN        = new Color(22, 160, 93);    
-    static final Color PILIH_PASIF  = new Color(220, 234, 226);  
+    static final Color AKSEN        = new Color(146,209,255);    
+    static final Color PILIH_PASIF  = new Color(227,252,255);  
     static final Color ZEBRA        = new Color(245, 247, 246);  
-    static final Color LAPIS_CUSTOM = new Color(22, 160, 93, 28);
+    static final Color LAPIS_CUSTOM = new Color(117, 198, 255, 28);
     static final Color TEKS         = new Color(50, 50, 50);
     static final Color GARIS_BARIS  = new Color(228, 235, 230);  
     static final Color GARIS_KOLOM  = new Color(238, 242, 239);  
-    static final Color TEKS_PILIH   = new Color(14, 59, 36);     
+    static final Color TEKS_PILIH   = new Color(0,57,181);     
     static final int   TINGGI_HEADER = 22;
     static final int   ARC_PILIH     = 8;
 

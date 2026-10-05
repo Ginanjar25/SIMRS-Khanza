@@ -20,7 +20,7 @@ import javax.swing.text.View;
 
 public class TabPane extends JTabbedPane {
     private static final long serialVersionUID = 3L;
-    static final Color AKSEN = new Color(0x16A05D);
+    static final Color AKSEN = new Color(0x3232a8);
     private Color warnaAksen;
 
     public TabPane() {

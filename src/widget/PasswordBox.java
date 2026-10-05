@@ -26,11 +26,11 @@ import javax.swing.plaf.basic.BasicPasswordFieldUI;
 public class PasswordBox extends JPasswordField {
     private static final long serialVersionUID = 2L;
 
-    static final Color AKSEN    = new Color(0x3DDC84);                  
+    static final Color AKSEN    = new Color(0x3232a8);                  
     static final Color BORDER   = new Color(255, 255, 255, 150);
     static final Color HOVER    = new Color(255, 255, 255, 200);
-    static final Color IKON     = new Color(22, 160, 93);            
-    static final Color IKON_AKTIF = new Color(12, 110, 62);        
+    static final Color IKON     = new Color(22, 66, 160);            
+    static final Color IKON_AKTIF = new Color(12, 48, 110);        
     static final char  TITIK    = '•';
     static final int   RADIUS   = 6;
     static final int   LEBAR_IKON = 22;

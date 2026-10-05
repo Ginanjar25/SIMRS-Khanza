@@ -20,7 +20,7 @@ import javax.swing.plaf.basic.BasicTextFieldUI;
 
 public class TextBox extends JTextField {
     private static final long serialVersionUID = 2L;
-    static final Color AKSEN_DEFAULT = new Color(0x16A05D);
+    static final Color AKSEN_DEFAULT = new Color(0x3232a8);
     private Color warnaAksen;
     private Color warnaBorder;
     private Color warnaNonAktif;
@@ -31,7 +31,7 @@ public class TextBox extends JTextField {
     public TextBox() {
         super();
         warnaAksen = AKSEN_DEFAULT;
-        warnaBorder = new Color(0xA7B6AD);
+        warnaBorder = new Color(0xa7aeb6);
         warnaNonAktif = new Color(0xFAFCFB);  
         radius = 6;
 

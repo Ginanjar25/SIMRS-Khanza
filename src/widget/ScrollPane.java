@@ -20,8 +20,8 @@ public class ScrollPane extends JScrollPane {
 
     private static final long serialVersionUID = 2L;
 
-    static final Color AKSEN_DEFAULT = new Color(0x16A05D);
-    static final Color TRACK_DEFAULT = new Color(0xF6F9F7);
+    static final Color AKSEN_DEFAULT = new Color(0x3232a8);
+    static final Color TRACK_DEFAULT = new Color(0xf6f7f9);
 
     public ScrollPane() {
         super();

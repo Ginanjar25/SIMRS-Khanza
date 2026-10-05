@@ -29,14 +29,14 @@ import uz.ncipro.calendar.JDateTimePicker;
 
 public final class Tanggal extends JDateTimePicker {
     private static final long serialVersionUID = 2L;
-    private static final Color AKSEN     = new Color(0x16A05D);
-    private static final Color BORDER    = new Color(0xA7B6AD);
+    private static final Color AKSEN     = new Color(0x3232a8);
+    private static final Color BORDER    = new Color(0xa7aeb6);
     private static final Color NONAKTIF  = new Color(0xFAFCFB);
-    private static final Color PEMISAH   = new Color(0xD3DDD7);
-    private static final Color TINT      = new Color(0x16, 0xA0, 0x5D, 30);  
+    private static final Color PEMISAH   = new Color(0xd3ddd7);
+    private static final Color TINT      = new Color(0x05, 0x05, 0xA8, 30);  
     private static final Color BENING    = new Color(0, 0, 0, 0);            
     private static final Color LATAR_PANAH = Color.WHITE;
-    private static final Color TEKS      = new Color(0x1C2520);
+    private static final Color TEKS      = new Color(0x1c1d25);
     private static final int   RADIUS    = 6;
     private static final String KUNCI    = "widget.Tanggal.digayakan";
 
