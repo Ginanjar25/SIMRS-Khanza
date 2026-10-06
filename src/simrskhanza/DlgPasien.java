@@ -62,6 +62,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import modif.DlgGabungRM;
 import modif.DlgPendaftaranBayi;
 
 
@@ -1827,6 +1828,7 @@ public class DlgPasien extends javax.swing.JDialog {
         ppGabungRM = new javax.swing.JMenuItem();
         ppPasienCorona = new javax.swing.JMenuItem();
         ppPendaftaranBayi = new javax.swing.JMenuItem();
+        ppGabungDataPasien = new javax.swing.JMenuItem();
         buttonGroup1 = new javax.swing.ButtonGroup();
         Kd2 = new widget.TextBox();
         DlgDemografi = new javax.swing.JDialog();
@@ -2920,6 +2922,21 @@ public class DlgPasien extends javax.swing.JDialog {
         });
         jPopupMenu1.add(ppPendaftaranBayi);
 
+        ppGabungDataPasien.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppGabungDataPasien.setForeground(new java.awt.Color(50, 50, 50));
+        ppGabungDataPasien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppGabungDataPasien.setText("Gabungkan Data Pasien");
+        ppGabungDataPasien.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppGabungDataPasien.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppGabungDataPasien.setName("ppGabungDataPasien"); // NOI18N
+        ppGabungDataPasien.setPreferredSize(new java.awt.Dimension(220, 26));
+        ppGabungDataPasien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppGabungDataPasienBtnPrintActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(ppGabungDataPasien);
+
         Kd2.setName("Kd2"); // NOI18N
         Kd2.setPreferredSize(new java.awt.Dimension(207, 23));
 
@@ -3617,7 +3634,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(jLabel13);
         jLabel13.setBounds(4, 102, 95, 23);
 
-        DTPLahir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "29-06-2026" }));
+        DTPLahir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-10-2026" }));
         DTPLahir.setDisplayFormat("dd-MM-yyyy");
         DTPLahir.setName("DTPLahir"); // NOI18N
         DTPLahir.setOpaque(false);
@@ -3754,7 +3771,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(TKtp);
         TKtp.setBounds(730, 170, 130, 23);
 
-        DTPDaftar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "29-06-2026" }));
+        DTPDaftar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-10-2026" }));
         DTPDaftar.setDisplayFormat("dd-MM-yyyy");
         DTPDaftar.setName("DTPDaftar"); // NOI18N
         DTPDaftar.setOpaque(false);
@@ -9250,6 +9267,27 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     private void CMbKelasBPJSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CMbKelasBPJSActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_CMbKelasBPJSActionPerformed
+
+    private void ppGabungDataPasienBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppGabungDataPasienBtnPrintActionPerformed
+         if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+            TCari.requestFocus();
+        }else if(TNo.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien yang mau digabung data rekam medisnya...!!!");
+            TCari.requestFocus();
+        }else if(TNm.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien yang mau digabung data rekam medisnya...!!!");
+            TCari.requestFocus();
+        }else{
+            DlgGabungRM gabungrm=new DlgGabungRM(null,true);
+            gabungrm.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            gabungrm.setLocationRelativeTo(internalFrame1);
+            gabungrm.setNoRM(TNo.getText());
+            gabungrm.setVisible(true);
+            emptTeks();
+            pilihantampil();
+        }
+    }//GEN-LAST:event_ppGabungDataPasienBtnPrintActionPerformed
     
     
     /**
@@ -9574,6 +9612,7 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
     private javax.swing.JMenuItem ppCatatanPasien;
+    private javax.swing.JMenuItem ppGabungDataPasien;
     private javax.swing.JMenuItem ppGabungRM;
     private javax.swing.JMenuItem ppGrafikDemografi;
     private javax.swing.JMenuItem ppGrafikPerAgama;

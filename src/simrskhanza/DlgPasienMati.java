@@ -924,13 +924,16 @@ public class DlgPasienMati extends javax.swing.JDialog {
                 String noSep = Sequel.cariIsi("SELECT bs.no_sep FROM bridging_sep bs WHERE bs.no_rawat=?", no_rawat);
                 
                 if (!noSep.equals("")) {
-                    
-                    String sttsMeninggal = "", tglMeninggal = "", jamMeninggal = "", ksg = "";
-                    tglMeninggal = Valid.SetTgl(DTPTgl.getSelectedItem() + "");
-                    jamMeninggal = cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem();
-                    sttsMeninggal = "4";
-                    ksg = NoSKM.getText();
-                    System.out.println(noSep);
+
+                    int reply = JOptionPane.showConfirmDialog(rootPane, "Apakah anda ingin mengupdate Bridging Status Pulang di VCLAIM ??", "Konfirmasi", JOptionPane.YES_NO_OPTION);
+
+                    if (reply == JOptionPane.YES_OPTION) {
+                        String sttsMeninggal = "", tglMeninggal = "", jamMeninggal = "", ksg = "";
+                        tglMeninggal = Valid.SetTgl(DTPTgl.getSelectedItem() + "");
+                        jamMeninggal = cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem();
+                        sttsMeninggal = "4";
+                        ksg = NoSKM.getText();
+                        System.out.println(noSep);
                         try {
                             headers = new HttpHeaders();
                             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -964,12 +967,14 @@ public class DlgPasienMati extends javax.swing.JDialog {
                                 Sequel.mengedit("bridging_sep", "no_sep=?", "tglpulang=?", 2, new String[]{
                                     tglMeninggal + " " + jamMeninggal, noSep
                                 });
+                                System.out.println(nameNode.path("code").asText() + " BRIDGING STATUS PULANG DI VCLAIM BERHASIL");
+                                Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),akses.getkode()});
                             } else {
                                 Sequel.menyimpantf("trackersql", "now(),?,?", "trackersql", 2, new String[]{
                                     akses.getalamatip() + " " + nameNode.path("code").asText() + " " + nameNode.path("message").asText(), akses.getkode()
                                 });
-                                System.out.println(nameNode.path("code").asText() + " " + nameNode.path("message").asText());
-                                JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
+                                System.out.println(nameNode.path("code").asText() + " Gagal : " + nameNode.path("message").asText());
+                                Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),akses.getkode()});
                             }
                         } catch (Exception ex) {
                             System.out.println("Notifikasi Bridging Simpan : " + ex);
@@ -978,6 +983,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
                             }
                         }
                     }
+                }
 
                 tampil();
                 emptTeks();
