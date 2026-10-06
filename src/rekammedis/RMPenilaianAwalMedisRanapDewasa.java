@@ -1651,6 +1651,74 @@ public final class RMPenilaianAwalMedisRanapDewasa extends javax.swing.JDialog {
             Valid.textKosong(RPO,"Riwayat Pengunaan obat");
         }else if(Keadaan.getSelectedItem().equals("-")){
             Valid.textKosong(RPO,"Keadaan Umum Harus di isi");
+        }else if(TNoRw.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No. Rawat");
+        }else if(KdDokter.getText().trim().equals("")){
+            Valid.textKosong(KdDokter,"Kode Dokter");
+        }else if(Anamnesis.getSelectedItem().equals("-")){
+            Valid.textKosong(Anamnesis,"Anamnesis");
+        }else if(Anamnesis.getSelectedItem().toString().equals("Alloanamnesis") && Hubungan.getText().trim().equals("")){
+            Valid.textKosong(Hubungan,"Hubungan");
+        }else if(Alergi.getText().trim().equals("")){
+            Valid.textKosong(Alergi,"Alergi");
+        }else if(GCS.getText().trim().equals("")){
+            Valid.textKosong(GCS,"GCS");
+        }else if(Kesadaran.getSelectedItem().equals("-")){
+            Valid.textKosong(Kesadaran,"Kesadaran");
+        }else if(TD.getText().trim().equals("")){
+            Valid.textKosong(TD,"Tekanan Darah");
+        }else if(Nadi.getText().trim().equals("")){
+            Valid.textKosong(Nadi,"Nadi");
+        }else if(RR.getText().trim().equals("")){
+            Valid.textKosong(RR,"Respiration Rate");
+        }else if(Suhu.getText().trim().equals("")){
+            Valid.textKosong(Suhu,"Suhu Tubuh");
+        }else if(SPO.getText().trim().equals("")){
+            Valid.textKosong(SPO,"SPO2");
+        }else if(BB.getText().trim().equals("")){
+            Valid.textKosong(BB,"Berat Badan");
+        }else if(TB.getText().trim().equals("")){
+            Valid.textKosong(TB,"Tinggi Badan");
+        }else if(Kepala.getSelectedItem().equals("-")){
+            Valid.textKosong(Kepala,"Pemeriksaan Kepala");
+        }else if(Mata.getSelectedItem().equals("-")){
+            Valid.textKosong(Mata,"Pemeriksaan Mata");
+        }else if(Gigi.getSelectedItem().equals("-")){
+            Valid.textKosong(Gigi,"Pemeriksaan Gigi");
+        }else if(THT.getSelectedItem().equals("-")){
+            Valid.textKosong(THT,"Pemeriksaan THT");
+        }else if(Thoraks.getSelectedItem().equals("-")){
+            Valid.textKosong(Thoraks,"Pemeriksaan Thoraks");
+        }else if(Jantung.getSelectedItem().equals("-")){
+            Valid.textKosong(Jantung,"Pemeriksaan Jantung");
+        }else if(Paru.getSelectedItem().equals("-")){
+            Valid.textKosong(Paru,"Pemeriksaan Paru");
+        }else if(Abdomen.getSelectedItem().equals("-")){
+            Valid.textKosong(Abdomen,"Pemeriksaan Abdomen");
+        }else if(Genital.getSelectedItem().equals("-")){
+            Valid.textKosong(Genital,"Pemeriksaan Genital");
+        }else if(Ekstremitas.getSelectedItem().equals("-")){
+            Valid.textKosong(Ekstremitas,"Pemeriksaan Ekstremitas");
+        }else if(Kulit.getSelectedItem().equals("-")){
+            Valid.textKosong(Kulit,"Pemeriksaan Kulit");
+        }else if(KetFisik.getText().trim().equals("")){
+            Valid.textKosong(KetFisik,"Keterangan Fisik");
+        }else if(KetLokalis.getText().trim().equals("")){
+            Valid.textKosong(KetLokalis,"Status Lokalis");
+        }else if(Laborat.getText().trim().equals("")){
+            Valid.textKosong(Laborat,"Laboratorium");
+        }else if(Radiologi.getText().trim().equals("")){
+            Valid.textKosong(Radiologi,"Radiologi");
+        }else if(Penunjang.getText().trim().equals("")){
+            Valid.textKosong(Penunjang,"Pemeriksaan Penunjang Lainnya");
+        }else if(Diagnosis.getText().trim().equals("")){
+            Valid.textKosong(Diagnosis,"Diagnosis");
+        }else if(Tatalaksana.getText().trim().equals("")){
+            Valid.textKosong(Tatalaksana,"Tatalaksana");
+        }else if(Edukasi.getText().trim().equals("")){
+            Valid.textKosong(Edukasi,"Edukasi");
+        }else if(AlasanPenunjang.getText().trim().equals("")){
+            Valid.textKosong(AlasanPenunjang,"Alasan Penunjang");
         }else{
             if(Sequel.menyimpantf("penilaian_medis_ranap","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Rawat",41,new String[]{
                     TNoRw.getText(),Valid.SetTgl(TglAsuhan.getSelectedItem()+"")+" "+TglAsuhan.getSelectedItem().toString().substring(11,19),KdDokter.getText(),Anamnesis.getSelectedItem().toString(),Hubungan.getText(),
@@ -1723,6 +1791,74 @@ public final class RMPenilaianAwalMedisRanapDewasa extends javax.swing.JDialog {
             Valid.textKosong(RPD,"Riwayat Penyakit Dahulu");
         }else if(RPO.getText().trim().equals("")){
             Valid.textKosong(RPO,"Riwayat Pengunaan obat");
+        }else if(TNoRw.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No. Rawat");
+        }else if(KdDokter.getText().trim().equals("")){
+            Valid.textKosong(KdDokter,"Kode Dokter");
+        }else if(Anamnesis.getSelectedItem().equals("-")){
+            Valid.textKosong(Anamnesis,"Anamnesis");
+        }else if(Anamnesis.getSelectedItem().toString().equals("Alloanamnesis") && Hubungan.getText().trim().equals("")){
+            Valid.textKosong(Hubungan,"Hubungan");
+        }else if(Alergi.getText().trim().equals("")){
+            Valid.textKosong(Alergi,"Alergi");
+        }else if(GCS.getText().trim().equals("")){
+            Valid.textKosong(GCS,"GCS");
+        }else if(Kesadaran.getSelectedItem().equals("-")){
+            Valid.textKosong(Kesadaran,"Kesadaran");
+        }else if(TD.getText().trim().equals("")){
+            Valid.textKosong(TD,"Tekanan Darah");
+        }else if(Nadi.getText().trim().equals("")){
+            Valid.textKosong(Nadi,"Nadi");
+        }else if(RR.getText().trim().equals("")){
+            Valid.textKosong(RR,"Respiration Rate");
+        }else if(Suhu.getText().trim().equals("")){
+            Valid.textKosong(Suhu,"Suhu Tubuh");
+        }else if(SPO.getText().trim().equals("")){
+            Valid.textKosong(SPO,"SPO2");
+        }else if(BB.getText().trim().equals("")){
+            Valid.textKosong(BB,"Berat Badan");
+        }else if(TB.getText().trim().equals("")){
+            Valid.textKosong(TB,"Tinggi Badan");
+        }else if(Kepala.getSelectedItem().equals("-")){
+            Valid.textKosong(Kepala,"Pemeriksaan Kepala");
+        }else if(Mata.getSelectedItem().equals("-")){
+            Valid.textKosong(Mata,"Pemeriksaan Mata");
+        }else if(Gigi.getSelectedItem().equals("-")){
+            Valid.textKosong(Gigi,"Pemeriksaan Gigi");
+        }else if(THT.getSelectedItem().equals("-")){
+            Valid.textKosong(THT,"Pemeriksaan THT");
+        }else if(Thoraks.getSelectedItem().equals("-")){
+            Valid.textKosong(Thoraks,"Pemeriksaan Thoraks");
+        }else if(Jantung.getSelectedItem().equals("-")){
+            Valid.textKosong(Jantung,"Pemeriksaan Jantung");
+        }else if(Paru.getSelectedItem().equals("-")){
+            Valid.textKosong(Paru,"Pemeriksaan Paru");
+        }else if(Abdomen.getSelectedItem().equals("-")){
+            Valid.textKosong(Abdomen,"Pemeriksaan Abdomen");
+        }else if(Genital.getSelectedItem().equals("-")){
+            Valid.textKosong(Genital,"Pemeriksaan Genital");
+        }else if(Ekstremitas.getSelectedItem().equals("-")){
+            Valid.textKosong(Ekstremitas,"Pemeriksaan Ekstremitas");
+        }else if(Kulit.getSelectedItem().equals("-")){
+            Valid.textKosong(Kulit,"Pemeriksaan Kulit");
+        }else if(KetFisik.getText().trim().equals("")){
+            Valid.textKosong(KetFisik,"Keterangan Fisik");
+        }else if(KetLokalis.getText().trim().equals("")){
+            Valid.textKosong(KetLokalis,"Status Lokalis");
+        }else if(Laborat.getText().trim().equals("")){
+            Valid.textKosong(Laborat,"Laboratorium");
+        }else if(Radiologi.getText().trim().equals("")){
+            Valid.textKosong(Radiologi,"Radiologi");
+        }else if(Penunjang.getText().trim().equals("")){
+            Valid.textKosong(Penunjang,"Pemeriksaan Penunjang Lainnya");
+        }else if(Diagnosis.getText().trim().equals("")){
+            Valid.textKosong(Diagnosis,"Diagnosis");
+        }else if(Tatalaksana.getText().trim().equals("")){
+            Valid.textKosong(Tatalaksana,"Tatalaksana");
+        }else if(Edukasi.getText().trim().equals("")){
+            Valid.textKosong(Edukasi,"Edukasi");
+        }else if(AlasanPenunjang.getText().trim().equals("")){
+            Valid.textKosong(AlasanPenunjang,"Alasan Penunjang");
         }else{
             if(tbObat.getSelectedRow()>-1){
                 if(akses.getkode().equals("Admin Utama")){
