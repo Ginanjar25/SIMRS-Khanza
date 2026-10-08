@@ -968,14 +968,13 @@ public class DlgPasienMati extends javax.swing.JDialog {
                                     tglMeninggal + " " + jamMeninggal, noSep
                                 });
                                 System.out.println(nameNode.path("code").asText() + " BRIDGING STATUS PULANG DI VCLAIM BERHASIL");
-                                Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),akses.getkode()});
                             } else {
                                 Sequel.menyimpantf("trackersql", "now(),?,?", "trackersql", 2, new String[]{
                                     akses.getalamatip() + " " + nameNode.path("code").asText() + " " + nameNode.path("message").asText(), akses.getkode()
                                 });
                                 System.out.println(nameNode.path("code").asText() + " Gagal : " + nameNode.path("message").asText());
-                                Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),akses.getkode()});
                             }
+                            Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),akses.getkode()});
                         } catch (Exception ex) {
                             System.out.println("Notifikasi Bridging Simpan : " + ex);
                             if (ex.toString().contains("UnknownHostException")) {
