@@ -5200,6 +5200,9 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }else if((chkPolri.isSelected()==true)&&nmjabatanpolri.getText().trim().equals("")){
             Valid.textKosong(nmjabatanpolri,"Jabatan POLRI");
         }else{
+            if (!cekNikGanda()) {
+                return; 
+            }
             if(Kelurahan.isEditable()==true){
                 Sequel.queryu4("insert ignore into kelurahan values(?,?)",2,new String[]{"0",Kelurahan.getText()});
                 kdkel=kel.tampil3(Kelurahan.getText());
@@ -11359,5 +11362,90 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
             Sequel.mengedittf("pasien", "no_rkm_medis = ?", "nip=?", 2, new String[]{nipBaru, TNo.getText()}
             );
         }
+    }
+
+    private boolean cekNikGanda() {
+        String nik = TKtp.getText().trim();
+        if (!nik.equals("") && !nik.equals("-")) {
+            try {
+                ps = koneksi.prepareStatement("select no_rkm_medis, nm_pasien, alamat from pasien where no_ktp=? ORDER BY no_rkm_medis ASC");
+                try {
+                    ps.setString(1, nik);
+                    rs = ps.executeQuery();
+
+                    StringBuilder barisTabel = new StringBuilder();
+                    int jumlahData = 0;
+
+                    while (rs.next()) {
+                        jumlahData++;
+                        String existRM = rs.getString("no_rkm_medis");
+                        String existNama = rs.getString("nm_pasien");
+                        String existAlamat = rs.getString("alamat");
+
+                        // Ukuran padding diperkecil agar lebih padat
+                        barisTabel.append("<tr>")
+                                .append("<td style='padding: 3px; text-align: center; border: 1px solid #a9a9a9;'><b>").append(existRM).append("</b></td>")
+                                .append("<td style='padding: 3px; border: 1px solid #a9a9a9;'>").append(existNama).append("</td>")
+                                .append("<td style='padding: 3px; border: 1px solid #a9a9a9;'>").append(existAlamat).append("</td>")
+                                .append("</tr>");
+                    }
+
+                    if (jumlahData > 0) {
+                        StringBuilder htmlView = new StringBuilder();
+
+                        // FONT DIPERKECIL menjadi 10px dan fixed width di body dihapus
+                        htmlView.append("<html><body style='font-family: Tahoma, sans-serif; font-size: 8px; margin: 0; padding: 0;'>");
+                        htmlView.append("<h3 style='color: #d9534f; margin-top: 0; font-size: 10px;'>⚠️ Peringatan NIK Ganda!</h3>");
+                        htmlView.append("<p style='margin-top: 0;'>Ditemukan <b>").append(jumlahData).append("</b> pasien dengan NIK <b>").append(nik).append("</b>:</p>");
+
+                        // Proporsi tabel disesuaikan agar alamat mendapat porsi lebih besar
+                        htmlView.append("<table style='width: 100%; border-collapse: collapse; margin-bottom: 8px;'>");
+                        htmlView.append("<tr style='background-color: #e0e0e0;'>")
+                                .append("<th style='padding: 4px; border: 1px solid #a9a9a9; width: 18%;'>No. RM</th>")
+                                .append("<th style='padding: 4px; border: 1px solid #a9a9a9; text-align: left; width: 32%;'>Nama Pasien</th>")
+                                .append("<th style='padding: 4px; border: 1px solid #a9a9a9; text-align: left; width: 50%;'>Alamat</th>")
+                                .append("</tr>");
+
+                        htmlView.append(barisTabel.toString());
+                        htmlView.append("</table>");
+
+                        htmlView.append("<p style='margin-bottom: 0;'>Apakah Anda yakin ingin tetap menyimpan data ini sebagai <b>Pasien Baru</b>?</p>");
+                        htmlView.append("</body></html>");
+
+                        javax.swing.JEditorPane editorPane = new javax.swing.JEditorPane("text/html", htmlView.toString());
+                        editorPane.setEditable(false);
+                        editorPane.setOpaque(false);
+
+                        javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(editorPane);
+                        scrollPane.setPreferredSize(new java.awt.Dimension(500, 200)); // Ukuran pop-up sedikit di-pres
+                        scrollPane.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+
+                        // KUNCI UTAMA: Matikan scroll bar horizontal agar teks panjang otomatis turun ke bawah (wrap)
+                        scrollPane.setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+                        int konfirmasi = JOptionPane.showConfirmDialog(null,
+                                scrollPane,
+                                "Konfirmasi NIK Ganda",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.WARNING_MESSAGE);
+
+                        if (konfirmasi != JOptionPane.YES_OPTION) {
+                            TKtp.requestFocus();
+                            return false;
+                        }
+                    }
+                } finally {
+                    if (rs != null) {
+                        rs.close();
+                    }
+                    if (ps != null) {
+                        ps.close();
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi Cek NIK Ganda : " + e);
+            }
+        }
+        return true;
     }
 }
