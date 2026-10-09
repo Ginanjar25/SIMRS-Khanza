@@ -287,6 +287,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
         MnCetakSuratMati = new javax.swing.JMenuItem();
         MnCetakSuratMati1 = new javax.swing.JMenuItem();
         MnAngkutJenazah = new javax.swing.JMenuItem();
+        MnBridgingSEPPulang = new javax.swing.JMenuItem();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbMati = new widget.Table();
@@ -381,6 +382,20 @@ public class DlgPasienMati extends javax.swing.JDialog {
             }
         });
         jPopupMenu1.add(MnAngkutJenazah);
+
+        MnBridgingSEPPulang.setBackground(new java.awt.Color(255, 255, 254));
+        MnBridgingSEPPulang.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnBridgingSEPPulang.setForeground(java.awt.Color.darkGray);
+        MnBridgingSEPPulang.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnBridgingSEPPulang.setText("Bridging SEP Pulang");
+        MnBridgingSEPPulang.setName("MnBridgingSEPPulang"); // NOI18N
+        MnBridgingSEPPulang.setPreferredSize(new java.awt.Dimension(190, 28));
+        MnBridgingSEPPulang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnBridgingSEPPulangActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(MnBridgingSEPPulang);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -666,7 +681,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
 
         DTPTgl.setEditable(false);
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "04-09-2024" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-10-2026" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setName("DTPTgl"); // NOI18N
         DTPTgl.setOpaque(false);
@@ -915,77 +930,36 @@ public class DlgPasienMati extends javax.swing.JDialog {
         } else if (NmDokter.getText().trim().equals("")) {
             Valid.textKosong(BtnDokter, "Dokter DPJP");
         } else {
-            if (Sequel.menyimpantf("pasien_mati", "'" + Valid.SetTgl(DTPTgl.getSelectedItem() + "") + "','"
-                    + cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem() + "','"
-                    + TNoRM.getText() + "','" + TKtg.getText() + "#" + NoSKM.getText() + "','" + tmptmeninggal.getSelectedItem() + "','"
-                    + icd1.getText() + "','" + icd2.getText() + "','" + icd3.getText() + "','"
-                    + icd4.getText() + "','" + KdDokter.getText() + "'", "pasien") == true) {
-                //update SEP Meninggal jika sep ditemukan
-                String noSep = Sequel.cariIsi("SELECT bs.no_sep FROM bridging_sep bs WHERE bs.no_rawat=?", no_rawat);
-                
-                if (!noSep.equals("")) {
+            String pesanKonfirmasi = "Apakah Anda yakin ingin menyimpan data pasien meninggal berikut?\n\n"
+                    + "• No. RM          : " + TNoRM.getText() + "\n"
+                    + "• Nama Pasien     : " + TPasien.getText() + "\n"
+                    + "• Tgl / Jam       : " + Valid.SetTgl(DTPTgl.getSelectedItem() + "") + " "
+                    + cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem() + "\n"
+                    + "• Tempat Meninggal: " + tmptmeninggal.getSelectedItem() + "\n"
+                    + "• Keterangan      : " + TKtg.getText() + "\n"
+                    + "• No. Surat SKM   : " + NoSKM.getText() + "\n"
+                    + "• Dokter DPJP     : " + NmDokter.getText() + "\n"
+                    + "• Diagnosis (ICD) : " + icd1.getText() + " / " + icd2.getText() + " / " + icd3.getText() + " / " + icd4.getText() + "\n\n"
+                    + "Data ini juga akan memperbarui Status Pulang (Meninggal) di VCLAIM BPJS.";
 
-                    int reply = JOptionPane.showConfirmDialog(rootPane, "Apakah anda ingin mengupdate Bridging Status Pulang di VCLAIM ??", "Konfirmasi", JOptionPane.YES_NO_OPTION);
+            int reply = JOptionPane.showConfirmDialog(
+                    rootPane,
+                    pesanKonfirmasi,
+                    "Konfirmasi Simpan Data Pasien Meninggal",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
 
-                    if (reply == JOptionPane.YES_OPTION) {
-                        String sttsMeninggal = "", tglMeninggal = "", jamMeninggal = "", ksg = "";
-                        tglMeninggal = Valid.SetTgl(DTPTgl.getSelectedItem() + "");
-                        jamMeninggal = cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem();
-                        sttsMeninggal = "4";
-                        ksg = NoSKM.getText();
-                        System.out.println(noSep);
-                        try {
-                            headers = new HttpHeaders();
-                            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-                            headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
-                            utc = String.valueOf(api.GetUTCdatetimeAsString());
-                            headers.add("X-Timestamp", utc);
-                            headers.add("X-Signature", api.getHmac(utc));
-                            headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
-                            requestJson = "{"
-                                    + "\"request\":"
-                                    + "{"
-                                    + "\"t_sep\":"
-                                    + "{"
-                                    + "\"noSep\":\"" + noSep + "\","
-                                    + "\"statusPulang\":\"" + sttsMeninggal + "\","
-                                    + "\"noSuratMeninggal\":\"" + ksg + "\","
-                                    + "\"tglMeninggal\":\"" + tglMeninggal + "\","
-                                    + "\"tglPulang\":\"" + tglMeninggal + "\","
-                                    + "\"noLPManual\":\"" + ksg + "\","
-                                    + "\"user\":\"RSPW" + akses.getkode() + "\""
-                                    + "}"
-                                    + "}"
-                                    + "}";
-                            System.out.println("JSON : " + requestJson);
-                            requestEntity = new HttpEntity(requestJson, headers);
-                            root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.PUT, requestEntity, String.class).getBody());
-                            nameNode = root.path("metaData");
-                            System.out.println("code : " + nameNode.path("code").asText());
-                            System.out.println("message : " + nameNode.path("message").asText());
-                            if (nameNode.path("code").asText().equals("200")) {
-                                Sequel.mengedit("bridging_sep", "no_sep=?", "tglpulang=?", 2, new String[]{
-                                    tglMeninggal + " " + jamMeninggal, noSep
-                                });
-                                System.out.println(nameNode.path("code").asText() + " BRIDGING STATUS PULANG DI VCLAIM BERHASIL");
-                            } else {
-                                Sequel.menyimpantf("trackersql", "now(),?,?", "trackersql", 2, new String[]{
-                                    akses.getalamatip() + " " + nameNode.path("code").asText() + " " + nameNode.path("message").asText(), akses.getkode()
-                                });
-                                System.out.println(nameNode.path("code").asText() + " Gagal : " + nameNode.path("message").asText());
-                            }
-                            Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),akses.getkode()});
-                        } catch (Exception ex) {
-                            System.out.println("Notifikasi Bridging Simpan : " + ex);
-                            if (ex.toString().contains("UnknownHostException")) {
-                                JOptionPane.showMessageDialog(null, "Koneksi ke server BPJS terputus...!");
-                            }
-                        }
-                    }
+            if (reply == JOptionPane.YES_OPTION) {
+                if (Sequel.menyimpantf("pasien_mati", "'" + Valid.SetTgl(DTPTgl.getSelectedItem() + "") + "','"
+                        + cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem() + "','"
+                        + TNoRM.getText() + "','" + TKtg.getText() + "#" + NoSKM.getText() + "','" + tmptmeninggal.getSelectedItem() + "','"
+                        + icd1.getText() + "','" + icd2.getText() + "','" + icd3.getText() + "','"
+                        + icd4.getText() + "','" + KdDokter.getText() + "'", "pasien") == true) {
+                    updateSEPPasienPulang();
+                    tampil();
+                    emptTeks();
                 }
-
-                tampil();
-                emptTeks();
             }
         }
 }//GEN-LAST:event_BtnSimpanActionPerformed
@@ -1297,6 +1271,18 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
         // TODO add your handling code here:
     }//GEN-LAST:event_BtnEditKeyPressed
 
+    private void MnBridgingSEPPulangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnBridgingSEPPulangActionPerformed
+        if (TNoRM.getText().trim().equals("") || TPasien.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu pasien...!!!");
+        } else if (NoSKM.getText().trim().equals("")) {
+            Valid.textKosong(NoSKM, "No SKM");
+        } else if (NmDokter.getText().trim().equals("")) {
+            Valid.textKosong(BtnDokter, "Dokter DPJP");
+        } else {
+            updateSEPPasienPulang();
+        }
+    }//GEN-LAST:event_MnBridgingSEPPulangActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1330,6 +1316,7 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
     private widget.TextBox KdDokter;
     private widget.Label LCount;
     private javax.swing.JMenuItem MnAngkutJenazah;
+    private javax.swing.JMenuItem MnBridgingSEPPulang;
     private javax.swing.JMenuItem MnCetakSuratMati;
     private javax.swing.JMenuItem MnCetakSuratMati1;
     private widget.TextBox NmDokter;
@@ -1525,6 +1512,88 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
 
         // Mengembalikan string dengan format "MODAR#38/SKM/Bulan Roman/Tahun"
         return number + "/SKM/" + romanMonth + "/" + currentYear;
+    }
+
+    
+    private void updateSEPPasienPulang() {
+        String noSep = Sequel.cariIsi("SELECT bs.no_sep FROM bridging_sep bs WHERE bs.nomr=? ORDER BY bs.tglsep DESC LIMIT 1", TNoRM.getText());
+
+        if (!noSep.equals("")) {
+            String sttsMeninggal = "", tglMeninggal = "", jamMeninggal = "", ksg = "";
+            tglMeninggal = Valid.SetTgl(DTPTgl.getSelectedItem() + "");
+            jamMeninggal = cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem();
+            sttsMeninggal = "4";
+            ksg = NoSKM.getText();
+            String noLP = cariNoLPBridgingSEP(TNoRM.getText());
+            try {
+                headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+                headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
+                utc = String.valueOf(api.GetUTCdatetimeAsString());
+                headers.add("X-Timestamp", utc);
+                headers.add("X-Signature", api.getHmac(utc));
+                headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
+                requestJson = "{"
+                        + "\"request\":"
+                        + "{"
+                        + "\"t_sep\":"
+                        + "{"
+                        + "\"noSep\":\"" + noSep + "\","
+                        + "\"statusPulang\":\"" + sttsMeninggal + "\","
+                        + "\"noSuratMeninggal\":\"" + ksg + "\","
+                        + "\"tglMeninggal\":\"" + tglMeninggal + "\","
+                        + "\"tglPulang\":\"" + tglMeninggal + "\","
+                        + "\"noLPManual\":\"" + noLP + "\","
+                        + "\"user\":\"RSPW" + akses.getkode() + "\""
+                        + "}"
+                        + "}"
+                        + "}";
+                System.out.println("JSON : " + requestJson);
+                requestEntity = new HttpEntity(requestJson, headers);
+                root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.PUT, requestEntity, String.class).getBody());
+                nameNode = root.path("metaData");
+                System.out.println("code : " + nameNode.path("code").asText());
+                System.out.println("message : " + nameNode.path("message").asText());
+                if (nameNode.path("code").asText().equals("200")) {
+                    Sequel.mengedit("bridging_sep", "no_sep=?", "tglpulang=?", 2, new String[]{
+                        tglMeninggal + " " + jamMeninggal, noSep
+                    });
+                    JOptionPane.showMessageDialog(null, "200 OK: Update SEP Meninggal selesai.");
+                } else {
+                    Sequel.menyimpantf("trackersql", "now(),?,?", "trackersql", 2, new String[]{
+                        akses.getalamatip() + " " + nameNode.path("code").asText() + " " + nameNode.path("message").asText(), akses.getkode()
+                    });
+                    JOptionPane.showMessageDialog(null, nameNode.path("code").asText() + " Gagal : " + nameNode.path("message").asText());
+                }
+                Sequel.menyimpan("trackerjson", "now(),?,?,?,?", 4, new String[]{URL, requestJson, nameNode.toString(), akses.getkode()});
+            } catch (Exception ex) {
+                System.out.println("Notifikasi Bridging Simpan : " + ex);
+                if (ex.toString().contains("UnknownHostException")) {
+                    JOptionPane.showMessageDialog(null, "Koneksi ke server BPJS terputus...!");
+                }
+            }
+        }
+    }
+    
+    
+    private String cariNoLPBridgingSEP(String noSEP) {
+        String noLP = "";
+
+        try {
+            noLP = Sequel.cariIsi(
+                    "SELECT TRIM(SUBSTRING_INDEX(keterangankkl, '#', -1)) "
+                    + "FROM bridging_sep "
+                    + "WHERE no_sep=? "
+                    + "AND keterangankkl LIKE '%#%' "
+                    + "AND TRIM(SUBSTRING_INDEX(keterangankkl, '#', -1))<>'' "
+                    + "ORDER BY tglsep DESC LIMIT 1",
+                    noSEP
+            );
+        } catch (Exception e) {
+            System.out.println("Gagal cek No. LP: " + e);
+        }
+
+        return noLP;
     }
 
 }
