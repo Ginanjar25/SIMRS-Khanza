@@ -3884,6 +3884,7 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         } 
+        autoInsertSITB();
     }
     
      public void setNoRm2(String norwt, Date tgl2) {
@@ -3984,6 +3985,7 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         } 
+        autoInsertSITB();
     }
     
     private void isForm(){
@@ -4242,5 +4244,79 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
             }
         }
 
+    }
+
+    public void autoInsertSITB() {
+        String noRM = TNoRM.getText().trim();
+        if (noRM.isEmpty()) {
+            return; // Keluar jika No. RM kosong
+        }
+
+        // 1. Cari nomor registrasi SITB berdasarkan No. RM -> NIK -> tabel tb_register
+        String noregSITB = Sequel.cariIsi(
+                "SELECT tb_register.no_reg_tb FROM side_db.tb_register "
+                + "INNER JOIN pasien ON pasien.no_ktp = tb_register.nik "
+                + "WHERE pasien.no_rkm_medis = ?", noRM
+        );
+
+        // Jika nomor SITB tidak ditemukan di tabel tb_register, hentikan proses
+        if (noregSITB == null || noregSITB.trim().isEmpty()) {
+            return;
+        }
+
+        String labelSITB = "No. Reg SITB: " + noregSITB;
+        String textSaatIni = HasilLaborat.getText().trim();
+        boolean isResumeBaru = TNoRw.getText().isEmpty() || !isDataSudahTersimpan(TNoRw.getText());
+
+        if (isResumeBaru) {
+            // Kondisi 1: Resume baru (belum tersimpan) -> Taruh di paling atas
+            if (textSaatIni.isEmpty()) {
+                HasilLaborat.setText(labelSITB+"\n");
+            } else if (!textSaatIni.contains(noregSITB)) {
+                HasilLaborat.setText(labelSITB + "\n" + textSaatIni);
+            }
+        } else {
+            // Kondisi 2: Resume sudah ada / sudah tersimpan di database -> Update ke posisi paling atas
+            String noRawat = TNoRw.getText().trim();
+            String hasilLabDb = getHasilLaboratFromDatabase(noRawat);
+
+            boolean perluUpdate = false;
+            String teksBaru = "";
+
+            if (hasilLabDb == null || hasilLabDb.trim().isEmpty()) {
+                teksBaru = labelSITB;
+                perluUpdate = true;
+            } else {
+                // Bersihkan teks lama dari format SITB manapun agar tidak terjadi duplikat ganda
+                String bersihText = hasilLabDb.replaceAll("(?m)^No\\. Reg SITB:.*$", "").trim();
+
+                // Cek apakah posisi saat ini belum di paling atas atau belum ada sama sekali
+                if (!hasilLabDb.startsWith(labelSITB)) {
+                    if (bersihText.isEmpty()) {
+                        teksBaru = labelSITB;
+                    } else {
+                        teksBaru = labelSITB + "\n" + bersihText;
+                    }
+                    perluUpdate = true;
+                }
+            }
+
+            if (perluUpdate) {
+                // Update langsung ke database resume_pasien_ranap
+                Sequel.queryu2tf("UPDATE resume_pasien_ranap SET hasil_laborat=? WHERE no_rawat=?", 2, new String[]{
+                    teksBaru, noRawat
+                });
+            } 
+        }
+    }
+
+    // Fungsi pembantu untuk mengecek apakah no_rawat sudah tersimpan di resume
+    private boolean isDataSudahTersimpan(String noRawat) {
+        return Sequel.cariInteger("SELECT count(no_rawat) FROM resume_pasien_ranap WHERE no_rawat=?", noRawat) > 0;
+    }
+
+    // Fungsi pembantu untuk mengambil nilai asli hasil_laborat dari database
+    private String getHasilLaboratFromDatabase(String noRawat) {
+        return Sequel.cariIsi("SELECT hasil_laborat FROM resume_pasien_ranap WHERE no_rawat=?", noRawat);
     }
 }
