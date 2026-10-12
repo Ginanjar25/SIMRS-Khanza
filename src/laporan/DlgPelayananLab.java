@@ -574,6 +574,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 lamajam2 = 0;
                 lamajam3 = 0;
                 int sesuaiCount = 0, tidakSesuaiCount = 0;
+                int citoCount = 0, regulerCount = 0;
                 while (rs.next()) {
                     tabMode.addRow(new Object[]{
                         i, rs.getString("no_rkm_medis"), rs.getString("nm_pasien"), rs.getString("unit"),
@@ -588,6 +589,13 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                         sesuaiCount++;
                     } else {
                         tidakSesuaiCount++;
+                    }
+
+                    // hitung jumlah Reguler / Cito
+                    if ("CITO".equalsIgnoreCase(rs.getString("stts"))) {
+                        citoCount++;
+                    } else {
+                        regulerCount++;
                     }
 
                     lamajam = lamajam + rs.getDouble("permintaansampel");
@@ -649,6 +657,25 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                     tabMode.addRow(new Object[]{
                         "", "", ">120 Menit", ": ", "", "", "", "", "" + lebihduajam, "" + lebihduajam2, "" + lebihduajam3, "", ""
                     });
+
+                    // baris jumlah & persentase Reguler / Cito
+                    int totalStts = regulerCount + citoCount;
+                    if (totalStts > 0) {
+                        double persenReguler = (regulerCount * 100.0) / totalStts;
+                        double persenCito = (citoCount * 100.0) / totalStts;
+                        tabMode.addRow(new Object[]{
+                            "", "", "Jumlah Reguler", ": ", "", "", "", "", "", "", "", "" + regulerCount, ""
+                        });
+                        tabMode.addRow(new Object[]{
+                            "", "", "Jumlah Cito", ": ", "", "", "", "", "", "", "", "" + citoCount, ""
+                        });
+                        tabMode.addRow(new Object[]{
+                            "", "", "Persentase(%) Reguler", ": ", "", "", "", "", "", "", "", Valid.SetAngka6(persenReguler) + "%", ""
+                        });
+                        tabMode.addRow(new Object[]{
+                            "", "", "Persentase(%) Cito", ": ", "", "", "", "", "", "", "", Valid.SetAngka6(persenCito) + "%", ""
+                        });
+                    }
 
                     // baris persentase Sesuai / Tidak Sesuai
                     int totalHasil = sesuaiCount + tidakSesuaiCount;
