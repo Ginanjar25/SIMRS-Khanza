@@ -327,7 +327,7 @@ public final class DlgReg extends javax.swing.JDialog {
         tabMode=new DefaultTableModel(null,new Object[]{
             "P","No.Reg","No.Rawat","Tanggal","Jam","Kode Dokter","Dokter Dituju","Nomer RM",
             "Pasien","J.K.","Umur","Poliklinik","Jenis Bayar","Penanggung Jawab","Alamat P.J.","Hubungan P.J.",
-            "Biaya Regristrasi","Status","No.Telp","Stts Rawat","Stts Poli","Kode Poli","Kode PJ","Status Bayar", "SEP", "Asal", "JKN","FP", "Terbit SKDP","KD PJ 2", "CETAK BARCODE"
+            "Biaya Regristrasi","Status","No.Telp","Stts Rawat","Stts Poli","Kode Poli","Kode PJ","Status Bayar", "SEP", "Asal", "JKN","FP", "Terbit SKDP","KD PJ 2", "CETAK BARCODE", "NO SEP"
         }){
              @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
@@ -344,7 +344,7 @@ public final class DlgReg extends javax.swing.JDialog {
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
                  java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, 
-                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -358,7 +358,7 @@ public final class DlgReg extends javax.swing.JDialog {
         tbPetugas.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbPetugas.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 31; i++) {
+        for (i = 0; i < 32; i++) {
             TableColumn column = tbPetugas.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(20);
@@ -426,6 +426,8 @@ public final class DlgReg extends javax.swing.JDialog {
             }else if(i==30){
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
+            }else if (i == 31) {
+                column.setPreferredWidth(100);
             }
         }
         tbPetugas.setDefaultRenderer(Object.class, new WarnaTableKasirRalan1());
@@ -16142,6 +16144,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.TextBox NoRegBooking;
     private widget.Button BtnSimpanNoreg;
     private widget.Label jLabelJenisBayar2;
+    private widget.Label jLabelNoSEP;
+    private widget.TextBox TNoSEP;
     private widget.TextBox nmpnj2;
     private widget.Button btnPenjab2;
     private widget.Label jLabelNoKaBayar2;
@@ -16177,7 +16181,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     "CASE WHEN penjab.png_jawab = 'BPJS' THEN CASE COALESCE(bse.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END ELSE '' END AS kls_naik, " +
                     "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT( ' - ', penjab_cara_bayar2.png_jawab, " +
                     "CASE WHEN penjab_cara_bayar2.png_jawab = 'BPJS' THEN CONCAT(CASE WHEN bse.klsrawat IS NULL OR bse.klsrawat = '' THEN CONCAT(IFNULL( CASE WHEN pasien.nip LIKE '%#%' THEN SUBSTRING_INDEX(pasien.nip, '#', -1) ELSE NULL END, ''), ' (SEP -)') " +
-                    "ELSE CONCAT(' ', bse.klsrawat) END, CASE COALESCE(bse.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END) ELSE '' END) END AS cara_bayar2 " +
+                    "ELSE CONCAT(' ', bse.klsrawat) END, CASE COALESCE(bse.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END) ELSE '' END) END AS cara_bayar2, IFNULL(bse.no_sep, '') AS no_sep " +
                     "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
                     "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli " +
                     "LEFT JOIN referensi_mobilejkn_bpjs rmb ON rmb.no_rawat = reg_periksa.no_rawat LEFT JOIN side_db.reg_periksa_website regw ON regw.no_rawat = reg_periksa.no_rawat " +
@@ -16200,7 +16204,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                     "CASE WHEN penjab.png_jawab = 'BPJS' THEN CASE COALESCE(bse.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END ELSE '' END AS kls_naik, " +
                     "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT( ' - ', penjab_cara_bayar2.png_jawab, " +
                     "CASE WHEN penjab_cara_bayar2.png_jawab = 'BPJS' THEN CONCAT(CASE WHEN bse.klsrawat IS NULL OR bse.klsrawat = '' THEN CONCAT(IFNULL( CASE WHEN pasien.nip LIKE '%#%' THEN SUBSTRING_INDEX(pasien.nip, '#', -1) ELSE NULL END, ''), ' (SEP -)') " +
-                    "ELSE CONCAT(' ', bse.klsrawat) END, CASE COALESCE(bse.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END) ELSE '' END) END AS cara_bayar2 " +
+                    "ELSE CONCAT(' ', bse.klsrawat) END, CASE COALESCE(bse.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END) ELSE '' END) END AS cara_bayar2, IFNULL(bse.no_sep, '') AS no_sep " +
                     "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
                     "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli " +
                     "LEFT JOIN referensi_mobilejkn_bpjs rmb ON rmb.no_rawat = reg_periksa.no_rawat LEFT JOIN side_db.reg_periksa_website regw ON regw.no_rawat = reg_periksa.no_rawat " +
@@ -16251,7 +16255,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                         rs.getString("p_jawab"),rs.getString("almt_pj"),rs.getString("hubunganpj"),Valid.SetAngka(rs.getDouble("biaya_reg")),
                         rs.getString("stts_daftar"),rs.getString("no_tlp"),rs.getString("stts"),rs.getString("status_poli"),
                         rs.getString("kd_poli"),rs.getString("kd_pj"),rs.getString("status_bayar"), 
-                        rs.getString("skdp"), rs.getString("asal"), rs.getString("jknstts"), rs.getString("fingerprint"), rs.getString("terbit_skdp"), rs.getString("kd_pj2"), rs.getString("cetak_barcode")
+                        rs.getString("skdp"), rs.getString("asal"), rs.getString("jknstts"), rs.getString("fingerprint"), rs.getString("terbit_skdp"), rs.getString("kd_pj2"), rs.getString("cetak_barcode"), rs.getString("no_sep")
                     });
                 }                    
             }catch(Exception e){
@@ -16342,6 +16346,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     public void emptTeks() {
         TNoReg.setText("");
         TNoRw.setText("");
+        TNoSEP.setText("");
         Kd2.setText("");
         DTPReg.setDate(new Date());
         TNoRM.setText("");
@@ -16396,6 +16401,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             kdpnj.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),22).toString()); 
             Sequel.cariIsi("select rujuk_masuk.perujuk from rujuk_masuk where rujuk_masuk.no_rawat=?", AsalRujukan,tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString());
             TNoRw.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString());
+            TNoSEP.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),31).toString());
             TNoReg.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),1).toString());    
             kdpnj2.setText(tbPetugas.getValueAt(tbPetugas.getSelectedRow(),29).toString()); 
             if(penjab2.equals("")){
@@ -17764,6 +17770,19 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         });
         FormInput.add(R2);
         R2.setBounds(852, 132, 95, 23);
+
+        //No SEP
+        jLabelNoSEP = new widget.Label();
+        jLabelNoSEP.setText("No. SEP :");
+        jLabelNoSEP.setName("jLabelNoSEP"); // NOI18N
+        FormInput.add(jLabelNoSEP);
+        jLabelNoSEP.setBounds(0, 162, 70, 23);
+
+        TNoSEP = new widget.TextBox();
+        TNoSEP.setEditable(false);
+        TNoSEP.setName("TNoSEP"); // NOI18N
+        FormInput.add(TNoSEP);
+        TNoSEP.setBounds(74, 162, 318, 23);
         
         btnBookingKuota = new widget.Button();
 

@@ -269,6 +269,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         initKasirRalan();
+        initNoSEP();
 
         this.setLocation(8,1);
         setSize(885,674);
@@ -281,7 +282,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             "No.Reg","Dokter Dituju","No.RM","Pasien","Jenis Bayar","Catatan",
             "Poliklinik","Kode Dokter","Penanggung Jawab","Alamat P.J.","Hubungan P.J.",
             "Biaya Reg","Status","No.Rawat","Tanggal",
-            "Jam","Status Bayar","Stts Poli","Kd PJ","Kd Poli","No.Telp Pasien", "Terbit SKDP", "Resep", "Cetak Barcode"}){
+            "Jam","Status Bayar","Stts Poli","Kd PJ","Kd Poli","No.Telp Pasien", "Terbit SKDP", "Resep", "Cetak Barcode", "No SEP"}){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         tbKasirRalan.setModel(tabModekasir);
@@ -289,7 +290,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         tbKasirRalan.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbKasirRalan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 44; i++) {
+        for (i = 0; i < 45; i++) {
             TableColumn column = tbKasirRalan.getColumnModel().getColumn(i);
             if(i==0){
                 column.setMinWidth(0);
@@ -402,6 +403,10 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
             else if(i==42){
                 column.setPreferredWidth(95);
             }else if(i==43){
+                column.setMinWidth(0);
+                column.setMaxWidth(0);
+            }
+            else if(i==44){
                 column.setMinWidth(0);
                 column.setMaxWidth(0);
             }
@@ -15224,6 +15229,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private widget.TextBox TNoReg;
     private widget.TextBox TNoRw;
     private widget.TextBox TNoRwCari;
+    private widget.TextBox TNoSEPCari;
     private widget.TextBox TPasienCari;
     private javax.swing.JTabbedPane TabRawat;
     private widget.TextBox Tanggal;
@@ -15264,6 +15270,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private widget.Label jLabel33;
     private widget.Label jLabel37;
     private widget.Label jLabel4;
+    private widget.Label jLabelNoSEP;
     private widget.Label jLabel5;
     private widget.Label jLabel6;
     private widget.Label jLabel7;
@@ -15353,7 +15360,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                 "CASE WHEN penjab_cara_bayar2.png_jawab = 'BPJS' THEN CONCAT(CASE WHEN bridging_sep.klsrawat IS NULL OR bridging_sep.klsrawat = '' THEN CONCAT(IFNULL( CASE WHEN pasien.nip LIKE '%#%' THEN SUBSTRING_INDEX(pasien.nip, '#', -1) ELSE NULL END, ''), ' (SEP -)') " +
                 "ELSE CONCAT(' ', bridging_sep.klsrawat) END, CASE COALESCE(bridging_sep.klsnaik, '') WHEN '1' THEN ' -> VVIP' WHEN '2' THEN ' -> VIP' WHEN '8' THEN ' -> VIP/VVIP' WHEN '3' THEN ' -> Kelas 1' WHEN '4' THEN ' -> Kelas 2' ELSE '' END) ELSE '' END) END AS cara_bayar2, " +
                 "CASE WHEN antripoli1.`status` IS NULL OR antripoli1.`status` = '0' THEN 'Belum' ELSE 'Sudah' END AS cetak_barcode, pasien.jk, if(isnull(awal_medis.no_rkm_medis),'', concat(DATE_FORMAT(awal_medis.tgl_registrasi, '%d-%m-%Y'),' \n')) as tgl_awal_medis, " +
-                "if(isnull(awal_medis.no_rkm_medis),'(-)','(+)') as cek_awal_medis, if(isnull(awal_keperawatan.no_rkm_medis),'(-)','(+)') as cek_awal_keperawatan " +(kasir?"":", if(ISNULL(resep_obat.no_resep),'-','Resep') AS resep_obat ")+
+                "if(isnull(awal_medis.no_rkm_medis),'(-)','(+)') as cek_awal_medis, if(isnull(awal_keperawatan.no_rkm_medis),'(-)','(+)') as cek_awal_keperawatan, IFNULL(bridging_sep.no_sep, '') AS no_sep " +(kasir?"":", if(ISNULL(resep_obat.no_resep),'-','Resep') AS resep_obat ")+
                 "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
                 "LEFT JOIN bridging_sep ON bridging_sep.no_rawat = reg_periksa.no_rawat " +
                 "LEFT JOIN bridging_surat_kontrol_bpjs skdp on skdp.no_sep = bridging_sep.no_sep " +
@@ -15420,7 +15427,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                         rskasir.getString(1),rskasir.getString(6),rskasir.getString(7),rskasir.getString(8)+" ("+rskasir.getString("jk")+") ("+rskasir.getString("umur")+")",rskasir.getString("png_jawab")+ " " + rskasir.getString("kls")+ " "+ rskasir.getString("cara_bayar2"),rskasir.getString("tgl_awal_medis")+"M "+rskasir.getString("cek_awal_medis")+ " \nP "+rskasir.getString("cek_awal_keperawatan"),
                         rskasir.getString(9),rskasir.getString(5),rskasir.getString(10),rskasir.getString(11),rskasir.getString(12),Valid.SetAngka(rskasir.getDouble(13)),
                         rskasir.getString(14),rskasir.getString("no_rawat"),rskasir.getString("tgl_registrasi"), rskasir.getString("jam_reg"),rskasir.getString("status_bayar"),rskasir.getString("status_poli"),
-                        rskasir.getString("kd_pj"),rskasir.getString("kd_poli"),rskasir.getString("no_tlp"), rskasir.getString("skdp"), (kasir?"":rskasir.getString("resep_obat")), rskasir.getString("cetak_barcode")
+                        rskasir.getString("kd_pj"),rskasir.getString("kd_poli"),rskasir.getString("no_tlp"), rskasir.getString("skdp"), (kasir?"":rskasir.getString("resep_obat")), rskasir.getString("cetak_barcode"), rskasir.getString("no_sep")
                     });
                 }                
             } catch(Exception e){
@@ -15516,6 +15523,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
             Tanggal.setText(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),12).toString());
             Jam.setText(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),13).toString());
             TNoRwCari.setText(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),11).toString());
+            TNoSEPCari.setText(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),44).toString());
             TNoReg.setText(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),14).toString());
             TNoRMCari.setText(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),2).toString());
             TPasienCari.setText(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),3).toString());
@@ -16254,6 +16262,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private void getDatakasir2() {
         if(tbKasirRalan2.getSelectedRow()!= -1){
             TNoRwCari.setText(tbKasirRalan2.getValueAt(tbKasirRalan2.getSelectedRow(),10).toString());
+            TNoSEPCari.setText(Sequel.cariIsi("select bridging_sep.no_sep from bridging_sep where bridging_sep.no_rawat=? order by bridging_sep.tglsep desc limit 1",TNoRwCari.getText()));
             TNoReg.setText("-");
             TNoRMCari.setText(tbKasirRalan2.getValueAt(tbKasirRalan2.getSelectedRow(),2).toString());
             TPasienCari.setText(tbKasirRalan2.getValueAt(tbKasirRalan2.getSelectedRow(),3).toString());
@@ -16362,6 +16371,24 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         }
     }
     
+    // dipisah dari initComponents() karena method tsb sudah melewati batas 64KB (code too large)
+    private void initNoSEP() {
+        jLabelNoSEP = new widget.Label();
+        jLabelNoSEP.setText("No. SEP :");
+        jLabelNoSEP.setName("jLabelNoSEP"); // NOI18N
+        jLabelNoSEP.setPreferredSize(new java.awt.Dimension(60, 23));
+
+        TNoSEPCari = new widget.TextBox();
+        TNoSEPCari.setEditable(false);
+        TNoSEPCari.setHighlighter(null);
+        TNoSEPCari.setName("TNoSEPCari"); // NOI18N
+        TNoSEPCari.setPreferredSize(new java.awt.Dimension(150, 23));
+
+        int idx=panelGlass9.getComponentZOrder(TNoRwCari)+1;
+        panelGlass9.add(jLabelNoSEP,idx);
+        panelGlass9.add(TNoSEPCari,idx+1);
+    }
+
     private void initKasirRalan() {
         MnLaporanOperasi = new javax.swing.JMenuItem();
         MnLaporanOperasi.setBackground(new java.awt.Color(255, 255, 254));
