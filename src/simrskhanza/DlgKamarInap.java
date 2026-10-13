@@ -18494,7 +18494,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
             TNoRM.setText(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),1).toString());  
             TPasien.setText(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),2).toString());        
             TNoRwCari.setText(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString());
-            TNoSEPCari.setText(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),48).toString());
+            TNoSEPCari.setText(tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 48) != null ? tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 48).toString() : "");
             TNoRMCari.setText(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),1).toString());  
             TPasienCari.setText(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),2).toString());        
             norawatpindah.setText(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString());

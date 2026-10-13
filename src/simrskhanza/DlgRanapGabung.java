@@ -1267,11 +1267,13 @@ public class DlgRanapGabung extends javax.swing.JDialog {
                         String namaPasien = fieldNama[i].getText().trim();
                         String jenisKelamin = cmbKelamin[i].getSelectedItem().toString().substring(0, 1);
                         
-                        boolean statusSimpan = simpanPasienBayi(noRM, namaPasien, jenisKelamin);
-                        if (!statusSimpan) {
+                        // No. RM bisa bergeser bila bentrok, gunakan No. RM yang benar-benar tersimpan
+                        noRM = simpanPasienBayi(noRM, namaPasien, jenisKelamin);
+                        if (noRM == null) {
                             JOptionPane.showMessageDialog(null, "Proses dibatalkan karena penyimpanan data pasien bayi gagal.");
-                            return; 
+                            return;
                         }
+                        fieldNoRM[i].setText(noRM);
 
                         try {
                             psibu = koneksi.prepareStatement("select no_reg,tgl_registrasi,jam_reg,kd_dokter,no_rkm_medis,kd_poli,p_jawab,"
@@ -2175,112 +2177,93 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(set_no_rkm_medis.no_rkm_medis,6),signed)),0) from set_no_rkm_medis", "", 6, TNoRMBayi);
     }
     
-    private boolean simpanPasienBayi(String noRM, String nama, String jk){                                        
-        if (noRM.trim().isEmpty()) {
+    /**
+     * Menyimpan data pasien bayi berdasarkan data pasien ibu.
+     * @return No. RM yang benar-benar tersimpan (bisa berbeda dari parameter
+     *         bila No. RM awal sudah dipakai), atau null bila gagal.
+     */
+    private String simpanPasienBayi(String noRM, String nama, String jk){
+        noRM = noRM.trim();
+        if (noRM.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Nomor Rekam Medis tidak boleh kosong!");
-            return false;
+            return null;
         } else if (nama.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Nama lengkap tidak boleh kosong!");
-            return false;
+            return null;
         } else if (jk.trim().equals("-Pilih-") || jk.trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Silakan pilih jenis kelamin terlebih dahulu!");
-            return false;
-        }else {
-            String noRMIbu = Sequel.cariIsi("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.no_rawat = ?", TNoRWIbu.getText());
+            return null;
+        }
+
+        String noRMIbu = Sequel.cariIsi("SELECT rp.no_rkm_medis FROM reg_periksa rp WHERE rp.no_rawat = ?", TNoRWIbu.getText());
+        if (noRMIbu.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Data registrasi ibu tidak ditemukan!");
+            return null;
+        }
+
+        PreparedStatement psIbu = null;
+        ResultSet rsIbu = null;
+        try {
+            psIbu = koneksi.prepareStatement("SELECT * FROM pasien ps WHERE ps.no_rkm_medis =?");
+            psIbu.setString(1, noRMIbu.trim());
+            rsIbu = psIbu.executeQuery();
+            if (!rsIbu.next()) {
+                JOptionPane.showMessageDialog(null, "Data pasien ibu (" + noRMIbu + ") tidak ditemukan!");
+                return null;
+            }
+            String nmIbu = rsIbu.getString("nm_pasien");
+            String tglLahir = Valid.SetTgl(DTPTgl.getSelectedItem() + "");
+
+            String[] dataBayi = new String[]{
+                noRM, nama.trim(), "", jk, "TULUNGAGUNG", tglLahir,
+                nmIbu, rsIbu.getString("alamat"), "-", "DIBAWAH UMUR", "BELUM MENIKAH", rsIbu.getString("agama"),
+                tglLahir, rsIbu.getString("no_tlp"), "0 Th 0 Bl 0 Hr", "-",
+                rsIbu.getString("keluarga"), rsIbu.getString("namakeluarga"), rsIbu.getString("kd_pj"), rsIbu.getString("no_peserta"),
+                rsIbu.getString("kd_kel"), rsIbu.getString("kd_kec"), rsIbu.getString("kd_kab"),
+                rsIbu.getString("pekerjaanpj"), rsIbu.getString("alamatpj"), rsIbu.getString("kelurahanpj"),
+                rsIbu.getString("kecamatanpj"), rsIbu.getString("kabupatenpj"),
+                rsIbu.getString("perusahaan_pasien"), rsIbu.getString("suku_bangsa"), rsIbu.getString("bahasa_pasien"),
+                rsIbu.getString("cacat_fisik"), rsIbu.getString("email"), rsIbu.getString("nip"),
+                rsIbu.getString("kd_prop"), rsIbu.getString("propinsipj")
+            };
+
+            int maxPercobaan = 5;
+            for (int percobaan = 0; percobaan < maxPercobaan; percobaan++) {
+                if (percobaan > 0) {
+                    // No. RM bentrok / gagal simpan, ambil nomor berikutnya
+                    try {
+                        noRM = String.format("%0" + noRM.length() + "d", Long.parseLong(noRM) + 1);
+                    } catch (NumberFormatException e) {
+                        autoNomor();
+                        noRM = TNoRMBayi.getText().trim();
+                    }
+                    dataBayi[0] = noRM;
+                }
+                if (Sequel.cariInteger("select count(no_rkm_medis) from pasien where no_rkm_medis=?", noRM) > 0) {
+                    continue;
+                }
+                if (Sequel.menyimpantf2("pasien", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "No.Rekam Medis Pasien", 36, dataBayi)) {
+                    Sequel.queryu2("delete from set_no_rkm_medis");
+                    Sequel.queryu2("insert into set_no_rkm_medis values(?)", 1, new String[]{noRM});
+                    return noRM;
+                }
+            }
+            System.out.println("Gagal menyimpan data bayi setelah " + maxPercobaan + " kali percobaan.");
+        } catch (Exception e) {
+            System.out.println("Notifikasi : " + e);
+        } finally {
             try {
-                ps = koneksi.prepareStatement("SELECT * FROM pasien ps WHERE ps.no_rkm_medis =?");
-                try {
-                    ps.setString(1, noRMIbu.trim());
-                    rs = ps.executeQuery();
-                    if (rs.next()) {
-                        String nmIbu = rs.getString(2);
-                        String alamat = rs.getString(8);
-                        String agama = rs.getString(12);
-                        String noTlp = rs.getString(14);
-                        String keluarga = rs.getString(17);
-                        String namaKeluarga = rs.getString(18);
-                        String kdpnj = rs.getString(19);
-                        String noPeserta = rs.getString(20);
-                        String kdKel = rs.getString(21);
-                        String kdKec = rs.getString(22);
-                        String kdKab = rs.getString(23);
-                        String pekerjaanPj = rs.getString(24);
-                        String alamatPj = rs.getString(25);
-                        String kelurahanPj = rs.getString(26);
-                        String kecamatanPj = rs.getString(27);
-                        String kabupatenPj = rs.getString(28);
-                        String perusahaanPasien = rs.getString(29);
-                        String sukuBangsa = rs.getString(30);
-                        String bahasaPasien = rs.getString(31);
-                        String cacatFisik = rs.getString(32);
-                        String email = rs.getString(33);
-                        String nip = rs.getString(34);
-                        String kdProp = rs.getString(35);
-                        String propinsiPj = rs.getString(36);
-
-                        String tglLahirFormatted = DTPTgl.getSelectedItem().toString().substring(6, 10) + "-"
-                                + DTPTgl.getSelectedItem().toString().substring(3, 5) + "-"
-                                + DTPTgl.getSelectedItem().toString().substring(0, 2);
-
-                        // 2. Siapkan array data bayi
-                        String[] dataBayi = new String[]{
-                            noRM, // Indeks ke-0 (No. RM Bayi)
-                            nama, "", jk, "TULUNGAGUNG", tglLahirFormatted,
-                            nmIbu, alamat, "-", "DIBAWAH UMUR", "BELUM MENIKAH", agama,
-                            tglLahirFormatted, noTlp, "0 Th 0 Bl 0 Hr", "-",
-                            keluarga, namaKeluarga, kdpnj, noPeserta, kdKel, kdKec, kdKab,
-                            pekerjaanPj, alamatPj, kelurahanPj, kecamatanPj, kabupatenPj,
-                            perusahaanPasien, sukuBangsa, bahasaPasien, cacatFisik,
-                            email, nip, kdProp, propinsiPj
-                        };
-
-                        boolean suksesSimpan = false;
-                        int maxPercobaan = 5;
-                        int percobaan = 0;
-
-                        // 3. Mekanisme Retry (Percobaan Ulang jika No. RM Bayi Bentrok)
-                        while (!suksesSimpan && percobaan < maxPercobaan) {
-                            if (percobaan > 0) {
-                                try {
-                                    int nomorUrut = Integer.parseInt(noRM) + 1;
-                                    noRM = String.format("%06d", nomorUrut); // Sesuaikan format digit RM
-                                } catch (NumberFormatException e) {
-                                    autoNomor();
-                                    noRM = TNoRMBayi.getText();
-                                }
-                                
-                                TNoRMBayi.setText(noRM);
-                                dataBayi[0] = noRM;
-                            }
-                            suksesSimpan = Sequel.menyimpantf2("pasien", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "No.Rekam Medis Pasien", 36, dataBayi);
-                            percobaan++;
-                        }
-                        
-                        if (suksesSimpan) {
-                            Sequel.queryu2("delete from set_no_rkm_medis");
-                            Sequel.queryu2("insert into set_no_rkm_medis values(?)", 1, new String[]{noRM});
-                            System.out.println("Berhasil menyimpan dengan No. RM: " + noRM);
-                            return true; // KEMBALIKAN TRUE JIKA SUKSES
-                        } else {
-                            System.out.println("Gagal menyimpan data bayi setelah " + maxPercobaan + " kali percobaan.");
-                            return false; // KEMBALIKAN FALSE JIKA GAGAL
-                        }
-                    }
-                } catch (Exception e) {
-                    System.out.println("Notif : " + e);
-                } finally {
-                    if (rs != null) {
-                        rs.close();
-                    }
-                    if (ps != null) {
-                        ps.close();
-                    }
+                if (rsIbu != null) {
+                    rsIbu.close();
+                }
+                if (psIbu != null) {
+                    psIbu.close();
                 }
             } catch (Exception e) {
                 System.out.println("Notifikasi : " + e);
             }
         }
-        return false;
+        return null;
     }
     
     private void formRmBayi() {
