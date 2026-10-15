@@ -87,7 +87,8 @@ public final class SuratSakit extends javax.swing.JDialog {
         NoSurat.setDocument(new batasInput((byte)17).getKata(NoSurat));
         TNoRw.setDocument(new batasInput((byte)17).getKata(TNoRw));  
         LamaSakit.setDocument(new batasInput((byte)20).getKata(LamaSakit));         
-        TCari.setDocument(new batasInput((byte)100).getKata(TCari));           
+        TCari.setDocument(new batasInput((byte)100).getKata(TCari));
+        Judul.setDocument(new batasInput((byte)100).getKata(Judul));           
         if(koneksiDB.CARICEPAT().equals("aktif")){
             TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
                 @Override
@@ -112,6 +113,8 @@ public final class SuratSakit extends javax.swing.JDialog {
         }
         ChkInput.setSelected(false);
         isForm();
+
+        DlgCetak.setSize(560,240);
     }
         
         
@@ -132,7 +135,18 @@ public final class SuratSakit extends javax.swing.JDialog {
         MnCetakSuratSakit1 = new javax.swing.JMenuItem();
         MnCetakSuratSakit4 = new javax.swing.JMenuItem();
         MnCetakSuratSakit5 = new javax.swing.JMenuItem();
+        MnCetakSuratSakit6 = new javax.swing.JMenuItem();
         MnCetakSuratSakit2 = new javax.swing.JMenuItem();
+        DlgCetak = new javax.swing.JDialog();
+        internalFrame2 = new widget.InternalFrame();
+        panelBiasa1 = new widget.PanelBiasa();
+        jLabel5 = new widget.Label();
+        Judul = new widget.TextBox();
+        jLabel8 = new widget.Label();
+        scrollPane1 = new widget.ScrollPane();
+        Rincian = new widget.TextArea();
+        BtnCetakCustom = new widget.Button();
+        BtnTutupCustom = new widget.Button();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -229,6 +243,20 @@ public final class SuratSakit extends javax.swing.JDialog {
         });
         jPopupMenu1.add(MnCetakSuratSakit5);
 
+        MnCetakSuratSakit6.setBackground(new java.awt.Color(250, 250, 250));
+        MnCetakSuratSakit6.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnCetakSuratSakit6.setForeground(new java.awt.Color(50, 50, 50));
+        MnCetakSuratSakit6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnCetakSuratSakit6.setText("Surat Keterangan Custom");
+        MnCetakSuratSakit6.setName("MnCetakSuratSakit6"); // NOI18N
+        MnCetakSuratSakit6.setPreferredSize(new java.awt.Dimension(200, 26));
+        MnCetakSuratSakit6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnCetakSuratSakit6ActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(MnCetakSuratSakit6);
+
         MnCetakSuratSakit2.setBackground(new java.awt.Color(250, 250, 250));
         MnCetakSuratSakit2.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         MnCetakSuratSakit2.setForeground(new java.awt.Color(50, 50, 50));
@@ -242,6 +270,79 @@ public final class SuratSakit extends javax.swing.JDialog {
             }
         });
         jPopupMenu1.add(MnCetakSuratSakit2);
+
+        DlgCetak.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        DlgCetak.setName("DlgCetak"); // NOI18N
+        DlgCetak.setUndecorated(true);
+        DlgCetak.setResizable(false);
+
+        internalFrame2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(230, 235, 225)), "::[ Cetak Surat Keterangan Custom ]::", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(50, 70, 50))); // NOI18N
+        internalFrame2.setName("internalFrame2"); // NOI18N
+        internalFrame2.setLayout(new java.awt.BorderLayout(1, 1));
+
+        panelBiasa1.setName("panelBiasa1"); // NOI18N
+        panelBiasa1.setLayout(null);
+
+        jLabel5.setText("Judul :");
+        jLabel5.setName("jLabel5"); // NOI18N
+        jLabel5.setPreferredSize(new java.awt.Dimension(60, 23));
+        panelBiasa1.add(jLabel5);
+        jLabel5.setBounds(7, 10, 70, 23);
+
+        Judul.setName("Judul"); // NOI18N
+        panelBiasa1.add(Judul);
+        Judul.setBounds(80, 10, 450, 23);
+
+        jLabel8.setText("Rincian :");
+        jLabel8.setName("jLabel8"); // NOI18N
+        jLabel8.setPreferredSize(new java.awt.Dimension(60, 23));
+        panelBiasa1.add(jLabel8);
+        jLabel8.setBounds(7, 40, 70, 23);
+
+        scrollPane1.setName("scrollPane1"); // NOI18N
+        scrollPane1.setOpaque(true);
+
+        Rincian.setColumns(20);
+        Rincian.setLineWrap(true);
+        Rincian.setRows(5);
+        Rincian.setWrapStyleWord(true);
+        Rincian.setName("Rincian"); // NOI18N
+        scrollPane1.setViewportView(Rincian);
+
+        panelBiasa1.add(scrollPane1);
+        scrollPane1.setBounds(80, 40, 450, 120);
+
+        BtnCetakCustom.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/b_print.png"))); // NOI18N
+        BtnCetakCustom.setMnemonic('T');
+        BtnCetakCustom.setText("Cetak");
+        BtnCetakCustom.setToolTipText("Alt+T");
+        BtnCetakCustom.setName("BtnCetakCustom"); // NOI18N
+        BtnCetakCustom.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnCetakCustom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnCetakCustomActionPerformed(evt);
+            }
+        });
+        panelBiasa1.add(BtnCetakCustom);
+        BtnCetakCustom.setBounds(80, 172, 100, 30);
+
+        BtnTutupCustom.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/exit.png"))); // NOI18N
+        BtnTutupCustom.setMnemonic('U');
+        BtnTutupCustom.setText("Tutup");
+        BtnTutupCustom.setToolTipText("Alt+U");
+        BtnTutupCustom.setName("BtnTutupCustom"); // NOI18N
+        BtnTutupCustom.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnTutupCustom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnTutupCustomActionPerformed(evt);
+            }
+        });
+        panelBiasa1.add(BtnTutupCustom);
+        BtnTutupCustom.setBounds(430, 172, 100, 30);
+
+        internalFrame2.add(panelBiasa1, java.awt.BorderLayout.CENTER);
+
+        DlgCetak.getContentPane().add(internalFrame2, java.awt.BorderLayout.CENTER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -1073,6 +1174,66 @@ public final class SuratSakit extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_MnCetakSuratSakit5ActionPerformed
 
+    private void MnCetakSuratSakit6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnCetakSuratSakit6ActionPerformed
+        if(TPasien.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+        }else{
+            Judul.setText("Surat Keterangan Sakit");
+            Rincian.setText("Telah diperiksa kesehatan badannya dan sekarang dalam keadaan sakit dan perlu istirahat "+LamaSakit.getText()+" hari dari tanggal "+TanggalAwal.getSelectedItem().toString()+" sampai dengan "+TanggalAkhir.getSelectedItem().toString());
+            DlgCetak.setLocationRelativeTo(internalFrame1);
+            DlgCetak.setVisible(true);
+        }
+    }//GEN-LAST:event_MnCetakSuratSakit6ActionPerformed
+
+    private void BtnCetakCustomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCetakCustomActionPerformed
+        if(TPasien.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+        }else if(Judul.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Judul masih kosong...!!!");
+            Judul.requestFocus();
+        }else if(Rincian.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Rincian masih kosong...!!!");
+            Rincian.requestFocus();
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            Map<String, Object> param = new HashMap<>();
+            param.put("judul",Judul.getText());
+            param.put("rincian",Rincian.getText());
+            param.put("hari",LamaSakit.getText());
+            param.put("TanggalAwal",TanggalAwal.getSelectedItem().toString());
+            param.put("TanggalAkhir",TanggalAkhir.getSelectedItem().toString());
+            param.put("nosakit",NoSurat.getText());
+            param.put("namars",akses.getnamars());
+            param.put("alamatrs",akses.getalamatrs());
+            param.put("kotars",akses.getkabupatenrs());
+            param.put("propinsirs",akses.getpropinsirs());
+            param.put("kontakrs",akses.getkontakrs());
+            param.put("emailrs",akses.getemailrs());
+            param.put("penyakit",Sequel.cariIsi("select concat(diagnosa_pasien.kd_penyakit,' ',penyakit.nm_penyakit) from diagnosa_pasien inner join reg_periksa inner join penyakit "+
+                "on diagnosa_pasien.no_rawat=reg_periksa.no_rawat and diagnosa_pasien.kd_penyakit=penyakit.kd_penyakit "+
+                "where diagnosa_pasien.no_rawat=? and diagnosa_pasien.prioritas='1'",TNoRw.getText()));
+            param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
+            kodedokter=Sequel.cariIsi("select reg_periksa.kd_dokter from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
+            namadokter=Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?",kodedokter);
+            finger=Sequel.cariIsi("select sha1(sidikjari.sidikjari) from sidikjari inner join pegawai on pegawai.id=sidikjari.id where pegawai.nik=?",kodedokter);
+            param.put("sip_dokter",Sequel.cariIsi("select no_ijn_praktek from dokter where kd_dokter = ?", kodedokter));
+            param.put("finger","Dikeluarkan di "+akses.getnamars()+", Kabupaten/Kota "+akses.getkabupatenrs()+"\nDitandatangani secara elektronik oleh "+namadokter+"\nID "+(finger.equals("")?kodedokter:finger)+"\n"+Sequel.cariIsi("select DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y') from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));
+            DlgCetak.dispose();
+            Valid.MyReportqry("rptSuratSakitCustom.jasper","report","::[ "+Judul.getText()+" ]::",
+                      "select reg_periksa.no_rawat,dokter.nm_dokter,pasien.keluarga,pasien.namakeluarga,pasien.tgl_lahir,pasien.jk,DATE_FORMAT(reg_periksa.tgl_registrasi,'%d-%m-%Y')as tgl_registrasi," +
+                      " pasien.nm_pasien,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,pasien.pekerjaan,concat(pasien.alamat,', ',kelurahan.nm_kel,', ',kecamatan.nm_kec,', ',kabupaten.nm_kab) as alamat" +
+                      " from reg_periksa inner join pasien inner join dokter inner join kelurahan inner join kecamatan inner join kabupaten" +
+                      " on reg_periksa.no_rkm_medis=pasien.no_rkm_medis and reg_periksa.kd_dokter=dokter.kd_dokter and pasien.kd_kel=kelurahan.kd_kel "+
+                      " and pasien.kd_kec=kecamatan.kd_kec and pasien.kd_kab=kabupaten.kd_kab "+
+                      "where reg_periksa.no_rawat='"+TNoRw.getText()+"' ",param);
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }//GEN-LAST:event_BtnCetakCustomActionPerformed
+
+    private void BtnTutupCustomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTutupCustomActionPerformed
+        DlgCetak.dispose();
+    }//GEN-LAST:event_BtnTutupCustomActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -1093,14 +1254,17 @@ public final class SuratSakit extends javax.swing.JDialog {
     private widget.Button BtnAll;
     private widget.Button BtnBatal;
     private widget.Button BtnCari;
+    private widget.Button BtnCetakCustom;
     private widget.Button BtnEdit;
     private widget.Button BtnHapus;
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
     private widget.Button BtnSimpan;
+    private widget.Button BtnTutupCustom;
     private widget.CekBox ChkInput;
     private widget.Tanggal DTPCari1;
     private widget.Tanggal DTPCari2;
+    private javax.swing.JDialog DlgCetak;
     private widget.PanelBiasa FormInput;
     private widget.Label LCount;
     private widget.TextBox LamaSakit;
@@ -1109,8 +1273,10 @@ public final class SuratSakit extends javax.swing.JDialog {
     private javax.swing.JMenuItem MnCetakSuratSakit2;
     private javax.swing.JMenuItem MnCetakSuratSakit4;
     private javax.swing.JMenuItem MnCetakSuratSakit5;
+    private javax.swing.JMenuItem MnCetakSuratSakit6;
     private widget.TextBox NoSurat;
     private javax.swing.JPanel PanelInput;
+    private widget.TextArea Rincian;
     private widget.ScrollPane Scroll;
     private widget.TextBox TCari;
     private widget.TextBox TNoRM;
@@ -1118,7 +1284,9 @@ public final class SuratSakit extends javax.swing.JDialog {
     private widget.TextBox TPasien;
     private widget.Tanggal TanggalAkhir;
     private widget.Tanggal TanggalAwal;
+    private widget.TextBox Judul;
     private widget.InternalFrame internalFrame1;
+    private widget.InternalFrame internalFrame2;
     private widget.Label jLabel13;
     private widget.Label jLabel16;
     private widget.Label jLabel18;
@@ -1126,12 +1294,16 @@ public final class SuratSakit extends javax.swing.JDialog {
     private widget.Label jLabel21;
     private widget.Label jLabel3;
     private widget.Label jLabel4;
+    private widget.Label jLabel5;
     private widget.Label jLabel6;
     private widget.Label jLabel7;
+    private widget.Label jLabel8;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PanelBiasa panelBiasa1;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
+    private widget.ScrollPane scrollPane1;
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
 
