@@ -1323,6 +1323,156 @@ public final class validasi {
         JOptionPane.showMessageDialog(null,"Maaf, "+pesan+" tidak boleh kosong...!!!");
         teks.requestFocus();
     }
+
+    // cek isian wajib, true bila kosong (pesan tampil & fokus pindah ke komponen fokus)
+    public boolean kosong(javax.swing.text.JTextComponent teks, java.awt.Component fokus, String pesan){
+        if(teks.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, "+pesan+" tidak boleh kosong...!!!");
+            fokus.requestFocus();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean kosong(javax.swing.text.JTextComponent teks, String pesan){
+        return kosong(teks,teks,pesan);
+    }
+
+    // cek otomatis seluruh textfield/textarea di dalam panel form (urut dari atas-kiri ke bawah-kanan),
+    // nama di pesan diambil dari label di kiri/atas field. true bila ada yang kosong.
+    // contoh: if(Valid.adaKosong(FormInput,Hubungan)){ return; }
+    public boolean adaKosong(java.awt.Container form, java.awt.Component... kecuali){
+        java.util.List<javax.swing.text.JTextComponent> daftar=new java.util.ArrayList<>();
+        kumpulkanField(form,daftar,java.util.Arrays.asList(kecuali));
+        daftar.sort((a,b)->{
+            java.awt.Point pa=posisiDi(form,area(a)),pb=posisiDi(form,area(b));
+            return pa.y!=pb.y?Integer.compare(pa.y,pb.y):Integer.compare(pa.x,pb.x);
+        });
+        for(javax.swing.text.JTextComponent teks:daftar){
+            if(teks.getText().trim().equals("")){
+                java.awt.Component area=area(teks);
+                tampilkanTab(area);
+                if(area instanceof javax.swing.JComponent){
+                    ((javax.swing.JComponent)area).scrollRectToVisible(new java.awt.Rectangle(area.getSize()));
+                }
+                JOptionPane.showMessageDialog(null,"Maaf, "+namaField(teks)+" tidak boleh kosong...!!!");
+                fokusField(teks).requestFocus();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void kumpulkanField(java.awt.Container wadah,java.util.List<javax.swing.text.JTextComponent> daftar,java.util.List<java.awt.Component> kecuali){
+        for(java.awt.Component c:wadah.getComponents()){
+            if(!c.isVisible()||kecuali.contains(c)){
+                continue;
+            }
+            if(c instanceof javax.swing.JTextField||c instanceof javax.swing.JTextArea){
+                daftar.add((javax.swing.text.JTextComponent)c);
+            }else if(c instanceof java.awt.Container&&!(c instanceof javax.swing.JComboBox)&&!(c instanceof javax.swing.JSpinner)){
+                kumpulkanField((java.awt.Container)c,daftar,kecuali);
+            }
+        }
+    }
+
+    // textarea di dalam scrollpane diwakili oleh scrollpane-nya (posisi & label ada di level scrollpane)
+    private java.awt.Component area(java.awt.Component c){
+        if(c.getParent() instanceof javax.swing.JViewport&&c.getParent().getParent() instanceof javax.swing.JScrollPane){
+            return c.getParent().getParent();
+        }
+        return c;
+    }
+
+    private java.awt.Point posisiDi(java.awt.Container form,java.awt.Component c){
+        return javax.swing.SwingUtilities.convertPoint(c.getParent(),c.getLocation(),form);
+    }
+
+    private String namaField(javax.swing.text.JTextComponent teks){
+        java.awt.Component area=area(teks);
+        java.awt.Rectangle r=area.getBounds();
+        String kiri=null,atas=null;
+        int jarakKiri=Integer.MAX_VALUE,jarakAtas=Integer.MAX_VALUE;
+        if(area.getParent()!=null){
+            for(java.awt.Component c:area.getParent().getComponents()){
+                if(!(c instanceof javax.swing.JLabel)||!c.isVisible()){
+                    continue;
+                }
+                String t=((javax.swing.JLabel)c).getText();
+                if(t==null||t.trim().equals("")){
+                    continue;
+                }
+                java.awt.Rectangle l=c.getBounds();
+                int tengah=l.y+l.height/2;
+                // label sebaris di sebelah kiri field, tanpa komponen lain di antaranya
+                if(l.x+l.width<=r.x+3&&tengah>=r.y&&tengah<=r.y+Math.min(r.height,23)&&r.x-(l.x+l.width)<jarakKiri&&!adaDiAntara(area,l,r)){
+                    jarakKiri=r.x-(l.x+l.width);
+                    kiri=t;
+                }
+                // label tepat di atas field, rata kiri dengan field
+                if(l.y+l.height<=r.y+3&&Math.abs(l.x-r.x)<=10&&r.y-(l.y+l.height)<jarakAtas){
+                    jarakAtas=r.y-(l.y+l.height);
+                    atas=t;
+                }
+            }
+        }
+        String nama=kiri!=null?kiri:(atas!=null&&jarakAtas<=30?atas:null);
+        if(nama==null){
+            // tanpa label: pakai nama variabel yang dipisah per kata, mis. KetFisik -> Ket Fisik, TPasien -> Pasien
+            nama=teks.getName()==null?"Isian":teks.getName();
+            if(nama.matches("T[A-Z].{2,}")){
+                nama=nama.substring(1);
+            }
+            nama=nama.replaceAll("([a-z])([A-Z])","$1 $2");
+        }
+        nama=nama.trim();
+        while(nama.endsWith(":")){
+            nama=nama.substring(0,nama.length()-1).trim();
+        }
+        return nama;
+    }
+
+    // ada komponen non-label (combo, field lain) di antara label dan field -> label itu milik komponen lain
+    private boolean adaDiAntara(java.awt.Component area,java.awt.Rectangle l,java.awt.Rectangle r){
+        for(java.awt.Component c:area.getParent().getComponents()){
+            if(c==area||c instanceof javax.swing.JLabel||!c.isVisible()){
+                continue;
+            }
+            java.awt.Rectangle b=c.getBounds();
+            int tengah=b.y+b.height/2;
+            if(b.x>=l.x+l.width-3&&b.x+b.width<=r.x+3&&tengah>=r.y&&tengah<=r.y+Math.min(r.height,23)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // field yang tidak bisa diketik (mis. nama dokter) -> fokus ke tombol cari di sebelah kanannya
+    private java.awt.Component fokusField(javax.swing.text.JTextComponent teks){
+        if(teks.isEditable()||teks.getParent()==null){
+            return teks;
+        }
+        java.awt.Rectangle r=teks.getBounds();
+        java.awt.Component tombol=teks;
+        int jarak=Integer.MAX_VALUE;
+        for(java.awt.Component c:teks.getParent().getComponents()){
+            java.awt.Rectangle b=c.getBounds();
+            if(c instanceof javax.swing.AbstractButton&&c.isVisible()&&c.isEnabled()&&b.x>=r.x+r.width-3&&b.y<r.y+r.height&&b.y+b.height>r.y&&b.x-r.x<jarak){
+                jarak=b.x-r.x;
+                tombol=c;
+            }
+        }
+        return tombol;
+    }
+
+    // bila field ada di tab yang sedang tidak aktif, pindah ke tab tersebut
+    private void tampilkanTab(java.awt.Component c){
+        for(java.awt.Component p=c;p!=null&&p.getParent()!=null;p=p.getParent()){
+            if(p.getParent() instanceof javax.swing.JTabbedPane){
+                ((javax.swing.JTabbedPane)p.getParent()).setSelectedComponent(p);
+            }
+        }
+    }
     
     public String SetAngka(double nilai){        
        return df2.format(nilai);
