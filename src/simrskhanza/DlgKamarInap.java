@@ -6716,7 +6716,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 dlgrjk.tampil();
                                 dlgrjk.setVisible(true);
                             }else{
-                                String tgl_pulang = CmbTahun.getSelectedItem() + "-"+ CmbBln.getSelectedItem() + "-"+ CmbTgl.getSelectedItem() + " "+ cmbJam.getSelectedItem() + ":"+ cmbMnt.getSelectedItem() + ":"+ cmbDtk.getSelectedItem();
+                                String tgl_pulang = CmbTahun.getSelectedItem() + "-"+ CmbBln.getSelectedItem() + "-"+ CmbTgl.getSelectedItem();
                                 String statusPulangText = cmbStatus.getSelectedItem().toString();
                                 String status_pulang = "";
                                 switch (statusPulangText) {
@@ -6739,6 +6739,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 updateSEPPasienPulang(norawat.getText(),status_pulang,tgl_pulang);
                             }
                         } catch (Exception e) {
+                            System.out.println("Notifikasi : "+e);
                         }
                         Sequel.mengedit("kamar","kd_kamar='"+kdkamar.getText()+"'","status='KOSONG'");
                         WindowInputKamar.dispose();
@@ -19557,11 +19558,19 @@ public class DlgKamarInap extends javax.swing.JDialog {
     }
     
     private void updateSEPPasienPulang(String no_rawat, String status_pulang, String tgl_pulang) {
-        String no_sep = Sequel.cariIsi("select no_sep from bridging_sep where no_rawat = ?", no_rawat);
-        String tgl_sep_pulang = Sequel.cariIsi("select tglpulang from bridging_sep where no_sep = ?", no_sep);
-        String user = akses.getkode().replace(" ", "").substring(0, 9);
-        
-        if (tgl_sep_pulang.equals("0000-00-00 00:00:00")) {
+        String no_sep = Sequel.cariIsi("select no_sep from bridging_sep where no_rawat = ? and jnspelayanan='1' order by tglsep desc limit 1", no_rawat);
+        if (no_sep == null || no_sep.equals("")) {
+            System.out.println("Update SEP pulang dilewati, SEP ranap tidak ditemukan untuk no.rawat " + no_rawat);
+            return;
+        }
+        // zeroDateTimeBehavior=convertToNull : tanggal 0000-00-00 terbaca null
+        String tgl_sep_pulang = Sequel.cariIsi("select ifnull(tglpulang,'') from bridging_sep where no_sep = ?", no_sep);
+        String user = akses.getkode().replace(" ", "");
+        if (user.length() > 9) {
+            user = user.substring(0, 9);
+        }
+
+        if (tgl_sep_pulang == null || tgl_sep_pulang.equals("") || tgl_sep_pulang.startsWith("0000-00-00")) {
             try {
                 headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -19570,7 +19579,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 headers.add("X-Timestamp", utc);
                 headers.add("X-Signature", api.getHmac(utc));
                 headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
-                URL = link + "/SEP/2.0/updtglplg";
+                URL = koneksiDB.URLAPIBPJS() + "/SEP/2.0/updtglplg";
                 user = "RSPW" + user;
                 requestJson
                         = "{"
