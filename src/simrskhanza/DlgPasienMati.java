@@ -1474,7 +1474,7 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
         }
     }
     
-    private String IncrementNumberString() {
+    public String IncrementNumberString() {
         // Ambil keterangan terakhir dari database
         String keterangan = Sequel.cariIsi("SELECT pm.keterangan FROM pasien_mati pm ORDER BY CONCAT(pm.tanggal, pm.jam) DESC LIMIT 1");
 
@@ -1515,16 +1515,54 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
     }
 
     
+    // Simpan data pasien meninggal + bridging SEP pulang tanpa membuka form
+    public boolean simpanOtomatis(String norawat, String norm, String tgl, String jam, String keterangan, String tempat,
+            String icd1, String icd2, String icd3, String icd4, String kddokter) {
+        if (Sequel.cariInteger("select count(pasien_mati.no_rkm_medis) from pasien_mati where pasien_mati.no_rkm_medis=?", norm) > 0) {
+            JOptionPane.showMessageDialog(null, "Pasien " + norm + " sudah tercatat di data pasien meninggal.");
+            return false;
+        }
+        String noSKM = IncrementNumberString();
+        String pesanKonfirmasi = "Apakah Anda yakin ingin menyimpan data pasien meninggal berikut?\n\n"
+                + "• No. RM          : " + norm + "\n"
+                + "• Nama Pasien     : " + Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=?", norm) + "\n"
+                + "• Tgl / Jam       : " + tgl + " " + jam + "\n"
+                + "• Tempat Meninggal: " + tempat + "\n"
+                + "• Keterangan      : " + keterangan + "\n"
+                + "• No. Surat SKM   : " + noSKM + "\n"
+                + "• Dokter DPJP     : " + Sequel.cariIsi("select dokter.nm_dokter from dokter where dokter.kd_dokter=?", kddokter) + "\n"
+                + "• Diagnosis (ICD) : " + icd1 + " / " + icd2 + " / " + icd3 + " / " + icd4 + "\n\n"
+                + "Data ini juga akan memperbarui Status Pulang (Meninggal) di VCLAIM BPJS.";
+        if (JOptionPane.showConfirmDialog(null, pesanKonfirmasi, "Konfirmasi Simpan Data Pasien Meninggal",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != JOptionPane.YES_OPTION) {
+            return false;
+        }
+        if (Sequel.menyimpantf("pasien_mati", "?,?,?,?,?,?,?,?,?,?", "pasien", 10, new String[]{
+                tgl, jam, norm, keterangan.replace("#", "") + "#" + noSKM, tempat, icd1, icd2, icd3, icd4, kddokter
+            }) == true) {
+            kirimSEPMeninggal(norawat, norm, tgl, jam, noSKM);
+            return true;
+        }
+        return false;
+    }
+
     private void updateSEPPasienPulang() {
-        String noSep = Sequel.cariIsi("SELECT bs.no_sep FROM bridging_sep bs WHERE bs.nomr=? ORDER BY bs.tglsep DESC LIMIT 1", TNoRM.getText());
+        kirimSEPMeninggal(no_rawat, TNoRM.getText(), Valid.SetTgl(DTPTgl.getSelectedItem() + ""),
+                cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem(), NoSKM.getText());
+    }
+
+    private void kirimSEPMeninggal(String norawat, String norm, String tglMeninggal, String jamMeninggal, String ksg) {
+        String noSep = "";
+        if (!norawat.equals("")) {
+            noSep = Sequel.cariIsi("SELECT bs.no_sep FROM bridging_sep bs WHERE bs.no_rawat=? ORDER BY bs.tglsep DESC LIMIT 1", norawat);
+        }
+        if (noSep.equals("")) {
+            noSep = Sequel.cariIsi("SELECT bs.no_sep FROM bridging_sep bs WHERE bs.nomr=? ORDER BY bs.tglsep DESC LIMIT 1", norm);
+        }
 
         if (!noSep.equals("")) {
-            String sttsMeninggal = "", tglMeninggal = "", jamMeninggal = "", ksg = "";
-            tglMeninggal = Valid.SetTgl(DTPTgl.getSelectedItem() + "");
-            jamMeninggal = cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem();
-            sttsMeninggal = "4";
-            ksg = NoSKM.getText();
-            String noLP = cariNoLPBridgingSEP(TNoRM.getText());
+            String sttsMeninggal = "4";
+            String noLP = cariNoLPBridgingSEP(noSep);
             try {
                 headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);

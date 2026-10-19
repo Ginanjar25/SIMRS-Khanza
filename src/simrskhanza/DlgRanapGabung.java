@@ -1502,6 +1502,7 @@ public class DlgRanapGabung extends javax.swing.JDialog {
         NamaDPJP.setText("");
         TDiagnosa.setText("");
         TNoRMBayi.requestFocus();
+        emptTeks();
 }//GEN-LAST:event_BtnBatalActionPerformed
 
     private void BtnBatalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnBatalKeyPressed
@@ -2158,6 +2159,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         TNmDPJPPindahKamar.setText("");
         TNmDokterPindahKamar.setText("");
         TDiagnosaPindahKamar.setText("");
+        CmbJk.setSelectedIndex(0);
+        CmbJk2.setSelectedIndex(0);
+        CmbJk3.setSelectedIndex(0);
         WindowPindahranapGabung.dispose();
     }
     

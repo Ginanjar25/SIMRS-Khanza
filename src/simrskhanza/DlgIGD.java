@@ -1171,6 +1171,8 @@ public final class DlgIGD extends javax.swing.JDialog {
         btnPenjab2 = new widget.Button();
         
         BtnSetDisplay = new widget.Button();
+        BtnPasienRujuk = new widget.Button();
+        BtnPasienMeninggal = new widget.Button();
         WindowSetDisplay = new javax.swing.JDialog();
         internalFrameSetDisplay = new widget.InternalFrame();
         BtnSimpanSetDisplay = new widget.Button();
@@ -5053,6 +5055,40 @@ public final class DlgIGD extends javax.swing.JDialog {
             }
         });
         panelGlass6.add(BtnSetDisplay);
+
+        BtnPasienRujuk.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Hospital.png"))); // NOI18N
+        BtnPasienRujuk.setText("Pasien Rujuk");
+        BtnPasienRujuk.setToolTipText("Set status pasien dirujuk");
+        BtnPasienRujuk.setName("BtnPasienRujuk"); // NOI18N
+        BtnPasienRujuk.setPreferredSize(new java.awt.Dimension(130, 30));
+        BtnPasienRujuk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnPasienRujukActionPerformed(evt);
+            }
+        });
+        BtnPasienRujuk.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnPasienRujukKeyPressed(evt);
+            }
+        });
+        panelGlass6.add(BtnPasienRujuk);
+
+        BtnPasienMeninggal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/remove-female-user24.png"))); // NOI18N
+        BtnPasienMeninggal.setText("Pasien Meninggal");
+        BtnPasienMeninggal.setToolTipText("Set status pasien meninggal");
+        BtnPasienMeninggal.setName("BtnPasienMeninggal"); // NOI18N
+        BtnPasienMeninggal.setPreferredSize(new java.awt.Dimension(150, 30));
+        BtnPasienMeninggal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnPasienMeninggalActionPerformed(evt);
+            }
+        });
+        BtnPasienMeninggal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnPasienMeninggalKeyPressed(evt);
+            }
+        });
+        panelGlass6.add(BtnPasienMeninggal);
         jPanel2.add(panelGlass6, java.awt.BorderLayout.PAGE_END);
 
         panelGlass7.setName("panelGlass7"); // NOI18N
@@ -12361,6 +12397,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Button btnPenjab2;
     
     private widget.Button BtnSetDisplay;
+    private widget.Button BtnPasienRujuk;
+    private widget.Button BtnPasienMeninggal;
     private javax.swing.JDialog WindowSetDisplay;
     private widget.InternalFrame internalFrameSetDisplay;
     private widget.Button BtnSimpanSetDisplay;
@@ -13510,7 +13548,68 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             Valid.pindah(evt, BtnPrint, TCari);
         }
     }//GEN-LAST:event_BtnKeluarKeyPressed
-    
+
+    private void BtnPasienRujukActionPerformed(java.awt.event.ActionEvent evt) {
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, data pasien sudah habis...!!!!");
+            TCari.requestFocus();
+        }else if(TNoRw.getText().trim().equals("") || TNoRM.getText().trim().equals("") ){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu data pasien pada table...!!!");
+            tbPetugas.requestFocus();
+        }else if(Sequel.cariInteger("select count(kamar_inap.no_rawat) from kamar_inap where kamar_inap.no_rawat=?",TNoRw.getText())>0){
+            JOptionPane.showMessageDialog(null,"Maaf, Pasien sudah masuk Kamar Inap. Gunakan menu Kamar Inap..!!!");
+        }else if(JOptionPane.showConfirmDialog(null,"Set status pasien "+TNoRM.getText()+" "+TPasien.getText()+" menjadi Dirujuk?","Konfirmasi",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+            Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Dirujuk'");
+            if(tbPetugas.getSelectedRow()>-1){
+                tabMode.setValueAt("Dirujuk",tbPetugas.getSelectedRow(),18);
+            }
+            MnRujukActionPerformed(evt);
+        }
+    }
+
+    private void BtnPasienRujukKeyPressed(java.awt.event.KeyEvent evt) {
+        if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
+            BtnPasienRujukActionPerformed(null);
+        } else {
+            Valid.pindah(evt, BtnSetDisplay, BtnPasienMeninggal);
+        }
+    }
+
+    private void BtnPasienMeninggalActionPerformed(java.awt.event.ActionEvent evt) {
+        if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, data pasien sudah habis...!!!!");
+            TCari.requestFocus();
+        }else if(TNoRw.getText().trim().equals("") || TNoRM.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu data pasien pada table...!!!");
+            tbPetugas.requestFocus();
+        }else if(Sequel.cariInteger("select count(kamar_inap.no_rawat) from kamar_inap where kamar_inap.no_rawat=?",TNoRw.getText())>0){
+            JOptionPane.showMessageDialog(null,"Maaf, Pasien sudah masuk Kamar Inap. Gunakan menu Kamar Inap..!!!");
+        }else if(JOptionPane.showConfirmDialog(null,"Set status pasien "+TNoRM.getText()+" "+TPasien.getText()+" menjadi Meninggal?","Konfirmasi",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+            Valid.editTable(tabMode,"reg_periksa","no_rawat",TNoRw,"stts='Meninggal'");
+            if(tbPetugas.getSelectedRow()>-1){
+                tabMode.setValueAt("Meninggal",tbPetugas.getSelectedRow(),18);
+            }
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            DlgPasienMati dlgPasienMati=new DlgPasienMati(null,false);
+            dlgPasienMati.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            dlgPasienMati.setLocationRelativeTo(internalFrame1);
+            dlgPasienMati.emptTeks();
+            dlgPasienMati.setNoRm(TNoRM.getText(),TPasien.getText());
+            dlgPasienMati.setNoRawat(TNoRw.getText());
+            dlgPasienMati.isCek();
+            dlgPasienMati.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }
+
+    private void BtnPasienMeninggalKeyPressed(java.awt.event.KeyEvent evt) {
+        if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
+            BtnPasienMeninggalActionPerformed(null);
+        } else {
+            Valid.pindah(evt, BtnPasienRujuk, TCari);
+        }
+    }
+
     private void BtnSimpanSetDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanGabungActionPerformed
         antriPoli.kirimAntrianPerawatIGD(KdPetugas1.getText(), NmPetugas1.getText(), KdPetugas2.getText(), NmPetugas2.getText(), KdPetugas3.getText(), NmPetugas3.getText());
     }//GEN-LAST:event_BtnSimpanGabungActionPerformed

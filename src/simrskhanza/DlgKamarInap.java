@@ -9081,8 +9081,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                     new String[]{rs.getString("no_reg"), NoRawatGabung.getText(), Valid.SetTgl(DTPRawatGabung.getSelectedItem() + ""), Catatan.getText(),
                                         "-", NoRmBayi.getText(), rs.getString("kd_poli"), rs.getString("p_jawab"),
                                         rs.getString("almt_pj"), rs.getString("hubunganpj"), rs.getString("biaya_reg"), "Belum", "Baru", "Ranap", rs.getString("kd_pj"), umur, sttsumur, "Sudah Bayar", "Baru"}) == true) {
-                                Sequel.menyimpan("ranap_gabung", "?,?", "Data Ranap Gabung", 2, new String[]{
-                                    norawat.getText(), NoRawatGabung.getText()
+                                Sequel.menyimpan("ranap_gabung", "?,?,?", "Data Ranap Gabung", 3, new String[]{
+                                    norawat.getText(), NoRawatGabung.getText(), NoRmBayi.getText()
                                 });
                                 String penjab2 = Sequel.cariIsi("SELECT CONCAT(penjab_reg.kd_pj, '-', penjab.png_jawab,'-', penjab_reg.no_kartu) AS penjab2 FROM reg_periksa\n" +
                                                         "LEFT JOIN penjab_reg on penjab_reg.no_rawat = reg_periksa.no_rawat\n" +

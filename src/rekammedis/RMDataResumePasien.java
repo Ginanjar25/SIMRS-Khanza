@@ -42,6 +42,7 @@ import laporan.DlgBerkasRawat;
 import laporan.DlgDiagnosaPenyakit;
 import simrskhanza.DlgCariDiagnosaICD10;
 import simrskhanza.DlgCariDiagnosaICD9;
+import simrskhanza.DlgPasienMati;
 
 
 /**
@@ -2055,6 +2056,7 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
                     DIlanjutkan.getSelectedItem().toString(),KetDilanjutkan.getText(), Valid.SetTgl(Kontrol.getSelectedItem()+"")+" "+Kontrol.getSelectedItem().toString().substring(11,19)
                 })==true){
                 simpanICD();
+                simpanPasienMeninggal();
                 tabMode.addRow(new String[]{
                     Tanggal.getText(),TNoRw.getText(),TNoRM.getText(),TPasien.getText(),KodeDokter.getText(),NamaDokter.getText(),Kondisi.getSelectedItem().toString(),
                     Keluhan.getText(),JalannyaPenyakit.getText(),PemeriksaanPenunjang.getText(),HasilLaborat.getText(),DiagnosaUtama.getText(),KodeDiagnosaUtama.getText(),
@@ -3292,6 +3294,31 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
         }            
     }
 
+    private void simpanPasienMeninggal() {
+        if(!Kondisi.getSelectedItem().toString().equals("Meninggal")){
+            return;
+        }
+        if(Sequel.cariInteger("select count(pasien_mati.no_rkm_medis) from pasien_mati where pasien_mati.no_rkm_medis=?",TNoRM.getText())>0){
+            return;
+        }
+        // Resume rawat jalan: waktu meninggal = waktu resume disimpan
+        String waktu=new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        try {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            DlgPasienMati pasienmati=new DlgPasienMati(null,false);
+            if(pasienmati.simpanOtomatis(TNoRw.getText(),TNoRM.getText(),waktu.substring(0,10),waktu.substring(11,19),
+                    DiagnosaUtama.getText(),"Rumah Sakit",KodeDiagnosaUtama.getText(),KodeDiagnosaSekunder1.getText(),
+                    KodeDiagnosaSekunder2.getText(),KodeDiagnosaSekunder3.getText(),KodeDokter.getText())){
+                System.out.println("Pasien meninggal tersimpan otomatis : "+TNoRM.getText());
+            }
+            pasienmati.dispose();
+        } catch (Exception e) {
+            System.out.println("Notifikasi Pasien Meninggal : "+e);
+        } finally {
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }
+
     private void ganti() {
         if(Sequel.mengedittf("resume_pasien","no_rawat=?","no_rawat=?,kd_dokter=?,keluhan_utama=?,jalannya_penyakit=?,pemeriksaan_penunjang=?,hasil_laborat=?,"
                 + "diagnosa_utama=?,kd_diagnosa_utama=?,diagnosa_sekunder=?,kd_diagnosa_sekunder=?,diagnosa_sekunder2=?,kd_diagnosa_sekunder2=?,diagnosa_sekunder3=?,kd_diagnosa_sekunder3=?,diagnosa_sekunder4=?,kd_diagnosa_sekunder4=?,"
@@ -3306,6 +3333,7 @@ public final class RMDataResumePasien extends javax.swing.JDialog {
                 tbObat.getValueAt(tbObat.getSelectedRow(),1).toString(),
             })==true){
             simpanICD();
+            simpanPasienMeninggal();
             tbObat.setValueAt(Tanggal.getText(),tbObat.getSelectedRow(),0);
             tbObat.setValueAt(TNoRw.getText(),tbObat.getSelectedRow(),1);
             tbObat.setValueAt(TNoRM.getText(),tbObat.getSelectedRow(),2);
