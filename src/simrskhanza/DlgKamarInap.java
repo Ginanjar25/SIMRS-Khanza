@@ -6676,6 +6676,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     Valid.textKosong(cmbStatus,"Status Pulang");
                 }else if(diagnosaakhir.getText().equals("")){
                     Valid.textKosong(diagnosaakhir,"Diagnosa Akhir");
+                }else if(!cekPulangSEP()){
+                     System.out.println("Tanggal Pulang tidak sesuai dengan Tanggal Pulang SEP & Tanggal Terbit SKDP !!!");
                 }else{
                     if(Sequel.mengedittf("kamar_inap","no_rawat='"+norawat.getText()+"' and kd_kamar='"+kdkamar.getText()+"' and tgl_masuk='"+TIn.getText()+"' and jam_masuk='"+JamMasuk.getText()+"'",
                             "tgl_keluar='"+CmbTahun.getSelectedItem()+"-"+CmbBln.getSelectedItem()+"-"+CmbTgl.getSelectedItem()+
@@ -6715,28 +6717,6 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 }
                                 dlgrjk.tampil();
                                 dlgrjk.setVisible(true);
-                            }else{
-                                String tgl_pulang = CmbTahun.getSelectedItem() + "-"+ CmbBln.getSelectedItem() + "-"+ CmbTgl.getSelectedItem();
-                                String statusPulangText = cmbStatus.getSelectedItem().toString();
-                                String status_pulang = "";
-                                switch (statusPulangText) {
-                                     case "Atas Persetujuan Dokter":
-                                         status_pulang = "1";
-                                         break;
-                                     case "Atas Permintaan Sendiri":
-                                         status_pulang = "3";
-                                         break;
-                                     case "Meninggal":
-                                         status_pulang = "4";
-                                         break;
-                                     case "Lain-lain":
-                                         status_pulang = "5";
-                                         break;
-                                     default:
-                                         status_pulang = "1";
-                                         break;
-                                 }
-                                updateSEPPasienPulang(norawat.getText(),status_pulang,tgl_pulang);
                             }
                         } catch (Exception e) {
                             System.out.println("Notifikasi : "+e);
@@ -19612,4 +19592,21 @@ public class DlgKamarInap extends javax.swing.JDialog {
             }
         }
     }
+    
+    private Boolean cekPulangSEP(){
+        String no_sep = TNoSEPCari.getText();
+         if (no_sep == null || no_sep.equals("")) {
+            return true;
+        }
+        String tgl_sep_pulang = Sequel.cariIsi("select ifnull(date(tglpulang),'') from bridging_sep where no_sep = ?", no_sep);
+        String tgl_pulang = CmbTahun.getSelectedItem() + "-"+ CmbBln.getSelectedItem() + "-"+ CmbTgl.getSelectedItem();
+        if(tgl_sep_pulang == null || tgl_sep_pulang.equals("") || tgl_sep_pulang.startsWith("0000-00-00") || !tgl_sep_pulang.equals(tgl_pulang)){
+            JOptionPane.showMessageDialog(null, "Tanggal Pulang tidak sesuai dengan Tanggal Pulang SEP & Tanggal Terbit SKDP !!! \n " +
+                    "Tanggal Pulang SEP: " + tgl_sep_pulang);
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

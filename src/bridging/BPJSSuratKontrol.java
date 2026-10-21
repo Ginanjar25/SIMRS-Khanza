@@ -940,6 +940,8 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
               JOptionPane.showMessageDialog(null,"Sudah terdapat SKDP dengan tanggal rencana kontrol yg sama");
         }else if(!CheckLockSkdp()){
             System.out.println("Pembuatan SKDP dikunci karena tidak sesuai dengan tanggal terbit SEP");
+        }else if(!updateSEPPasienPulang()){
+            JOptionPane.showMessageDialog(null,"Gagal update tanggal pulang SEP, silahkan cek kembali data !");
         }else{
             try {
                 headers = new HttpHeaders();
@@ -1199,6 +1201,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             JOptionPane.showMessageDialog(null,"Tanggal terbit surat kontrol tidak boleh sama dengan tanggal rencana kontrol");
         }else if(Sequel.cariInteger("select count(referensi_mobilejkn_bpjs.nomorreferensi) from referensi_mobilejkn_bpjs where  referensi_mobilejkn_bpjs.status != 'Batal' and referensi_mobilejkn_bpjs.nomorreferensi=?", NoSurat.getText())>0){
             JOptionPane.showMessageDialog(null,"No. SKDP Sudah di gunakan untuk antrian Mobile JKN, Silhakan Batalkan dulu");
+        }else if(!updateSEPPasienPulang()){
+            JOptionPane.showMessageDialog(null,"Gagal update tanggal pulang SEP, silahkan cek kembali data !");
         }else{
             if(tbObat.getSelectedRow()!= -1){
                 try {
@@ -1820,5 +1824,88 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
         return true;
     }
+    
+    private Boolean updateSEPPasienPulang() {
+        String no_sep = NoSEP.getText();
+        if (no_sep == null || no_sep.equals("")) {
+            System.out.println("Update SEP pulang dilewati, SEP ranap tidak ditemukan untuk no.rawat " + NoRawat.getText());
+            return false ;
+        }
+        if(!Sequel.cariIsi("select jnspelayanan from bridging_sep where no_sep = ?", no_sep).equals("1")){
+            return true; // bukan SEP ranap, tidak perlu update tgl pulang
+        }
+        String user = akses.getkode().replace(" ", "");
+        if (user.length() > 9) {
+            user = user.substring(0, 9);
+        }
+        
+        String statusPulangText = Sequel.cariIsi("select stts_pulang from kamar_inap where no_rawat ='" + NoRawat.getText() + "' and stts_pulang != 'Pindah Kamar' ");
+        String status_pulang = "";
+        switch (statusPulangText) {
+            case "Atas Persetujuan Dokter":
+                status_pulang = "1";
+                break;
+            case "Atas Permintaan Sendiri":
+                status_pulang = "3";
+                break;
+            case "Meninggal":
+                status_pulang = "4";
+                break;
+            case "Lain-lain":
+                status_pulang = "5";
+                break;
+            default:
+                status_pulang = "1";
+                break;
+        }
 
+        try {
+            headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
+            utc = String.valueOf(api.GetUTCdatetimeAsString());
+            headers.add("X-Timestamp", utc);
+            headers.add("X-Signature", api.getHmac(utc));
+            headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
+            URL = koneksiDB.URLAPIBPJS() + "/SEP/2.0/updtglplg";
+            user = "RSPW" + user;
+            requestJson
+                    = "{"
+                    + "\"request\": {"
+                    + "\"t_sep\": {"
+                    + "\"noSep\": \"" + no_sep + "\","
+                    + "\"statusPulang\": \"" + status_pulang + "\","
+                    + "\"noSuratMeninggal\": \"\","
+                    + "\"tglMeninggal\": \"\","
+                    + "\"tglPulang\": \"" + Valid.SetTgl(TanggalSurat.getSelectedItem()+"") + "\","
+                    + "\"noLPManual\": \"\","
+                    + "\"user\": \"" + user + "\""
+                    + "}"
+                    + "}"
+                    + "}";
+            System.out.println("JSON : " + requestJson);
+            requestEntity = new HttpEntity(requestJson, headers);
+            root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.PUT, requestEntity, String.class).getBody());
+            nameNode = root.path("metaData");
+            System.out.println("code : " + nameNode.path("code").asText());
+            System.out.println("message : " + nameNode.path("message").asText());
+            if (nameNode.path("code").asText().equals("200")) {
+                Sequel.mengedit("bridging_sep", "no_sep=?", "tglpulang=?", 2, new String[]{
+                    Valid.SetTgl(TanggalSurat.getSelectedItem()+""), no_sep
+                });
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
+                return false;
+            }
+        } catch (Exception ex) {
+            System.out.println("Notifikasi Bridging Simpan : " + ex);
+            if (ex.toString().contains("UnknownHostException")) {
+                JOptionPane.showMessageDialog(null, "Koneksi ke server BPJS terputus...!");
+            }
+            return false;
+        }
+    }
+        
+        
 }
