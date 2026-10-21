@@ -107,6 +107,7 @@ public class DlgPemesanan extends javax.swing.JDialog {
 
         tbDokter.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbDokter.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        tbDokter.getTableHeader().setReorderingAllowed(false);
 
         for (i = 0; i < 28; i++) {
             TableColumn column = tbDokter.getColumnModel().getColumn(i);

@@ -2940,8 +2940,19 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         cmbJam.setSelectedItem(jam);
         cmbMnt.setSelectedItem(menit);
         cmbDtk.setSelectedItem(detik); 
-        KdDokter.setText(KodeDokter);
-        NmDokter.setText(NamaDokter);
+        String kodeLogin = akses.getkode();
+        String kodeFinal = KodeDokter;
+        String namaFinal = NamaDokter;
+        // Jika kode dokter parameter berbeda dengan user yang login, cek apakah user login adalah dokter
+        if (kodeLogin != null && !kodeLogin.isBlank() && !kodeLogin.equals(KodeDokter)) {
+            String namaLogin = Sequel.cariIsi("SELECT dokter.nm_dokter FROM dokter WHERE dokter.kd_dokter = ?", kodeLogin);
+            if (namaLogin != null && !namaLogin.isBlank()) {
+                kodeFinal = kodeLogin;
+                namaFinal = namaLogin;
+            }
+        }
+        KdDokter.setText(kodeFinal);
+        NmDokter.setText(namaFinal);
         KdPj.setText(Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?",norwt));
         TAlergi.setText(Alergi);
         TCari.requestFocus();

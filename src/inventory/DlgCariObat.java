@@ -88,6 +88,7 @@ public final class DlgCariObat extends javax.swing.JDialog {
     private ApiPcare api=new ApiPcare();
     private String[] arrSplit;
     private boolean sukses=true;
+    private ValidasiResepLock lockValidasi=null;
     private static final Properties prop = new Properties();
     private static String var = "", FILTEROBATPENJAB="no";
     
@@ -1386,6 +1387,14 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                     ChkJln.setSelected(false);
                     Sequel.AutoComitFalse();
                     sukses=true;
+                    if(!noresep.equals("")&&!tandaiResepTervalidasi()){
+                        Sequel.RollBack();
+                        Sequel.AutoComitTrue();
+                        ChkJln.setSelected(true);
+                        JOptionPane.showMessageDialog(null,"Maaf, Resep sudah tervalidasi oleh petugas lain, transaksi dibatalkan...!!!");
+                        dispose();
+                        return;
+                    }
                     ttlhpp=0;ttljual=0;
                     for(i=0;i<tbObat.getRowCount();i++){ 
                         if(Valid.SetAngka(tbObat.getValueAt(i,1).toString())>0){                        
@@ -1675,10 +1684,6 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         }
                     }
 
-                    if(!noresep.equals("")){
-                        Sequel.mengedit("resep_obat","no_resep='"+noresep+"'","tgl_perawatan='"+Valid.SetTgl(DTPTgl.getSelectedItem()+"")+"',jam='"+cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem()+"'");
-                    }
-                    
                     if(sukses==true){
                         Sequel.queryu("delete from tampjurnal");    
                         if(ttljual>0){
@@ -1785,8 +1790,10 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
             BtnTambah1.setVisible(true);
             BtnHapus.setVisible(true);
             label13.setPreferredSize(new Dimension(1, 23));
-        }  
-        Sequel.queryu("insert into antriapotek3 values('"+noresep+"','0','"+LblNoRawat.getText()+"')");
+        }
+        if(lockValidasi!=null){
+            lockValidasi.perpanjang();
+        }
     }//GEN-LAST:event_formWindowActivated
 
     private void ChkNoResepItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ChkNoResepItemStateChanged
@@ -2106,7 +2113,10 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     }//GEN-LAST:event_TIterActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        Sequel.queryu("delete from antriapotek3 where no_resep = '" + noresep + "'");
+        if(lockValidasi!=null){
+            lockValidasi.lepas();
+            lockValidasi=null;
+        }
     }//GEN-LAST:event_formWindowClosed
 
     /**
@@ -3597,11 +3607,39 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         TCari.requestFocus();
     }
     
-    public void setNoResep(String no_resep) {        
+    public void setNoResep(String no_resep) {
       TAlergi.setText(Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', 1)) AS alergi from resep_obat where no_resep = ?", no_resep));
       this.noresep = no_resep;
       Sequel.cariIsi("SELECT prb from side_db.resep_obat_info where no_resep = ?", TPRB, no_resep);
       Sequel.cariIsi("SELECT iter from side_db.resep_obat_info where no_resep = ?", TIter, no_resep);
+    }
+
+    public void setLockValidasi(ValidasiResepLock lock) {
+        this.lockValidasi=lock;
+    }
+
+    /** Update bersyarat di dalam transaksi: hanya satu petugas yang bisa mengubah resep dari belum menjadi sudah tervalidasi. */
+    private boolean tandaiResepTervalidasi(){
+        PreparedStatement psvalidasi=null;
+        try {
+            psvalidasi=koneksi.prepareStatement(
+                "update resep_obat set tgl_perawatan=?,jam=? where no_resep=? and tgl_perawatan='0000-00-00' and jam='00:00:00'");
+            psvalidasi.setString(1,Valid.SetTgl(DTPTgl.getSelectedItem()+""));
+            psvalidasi.setString(2,cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem());
+            psvalidasi.setString(3,noresep);
+            return psvalidasi.executeUpdate()==1;
+        } catch (Exception e) {
+            System.out.println("Notifikasi : "+e);
+            return false;
+        } finally {
+            if(psvalidasi!=null){
+                try {
+                    psvalidasi.close();
+                } catch (Exception e) {
+                    System.out.println("Notifikasi : "+e);
+                }
+            }
+        }
     }
     
     private void jam(){

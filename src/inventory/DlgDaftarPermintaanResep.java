@@ -53,7 +53,8 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
     private int jmlparsial=0,nilai_detik,resepbaru=0,i=0, blmvalidasi=0;
     private BackgroundMusic music;
     private boolean aktif=false,semua;
-    
+    private ValidasiResepLock lockValidasi=null;
+
     /** Creates new form 
      * @param parent
      * @param modal */
@@ -1797,17 +1798,13 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau divalidasi..!!");
                     }
-                    else if(Sequel.cariInteger("select count(no_resep) from antriapotek3 where no_resep = ?", NoResep) > 0){
-                         JOptionPane.showMessageDialog(null,"Maaf, Resep sedang dalam proses Validasi!!");
-                    }
-                    else{
-//                       if(Status.equals("Sudah Terlayani")){
-//                                JOptionPane.showMessageDialog(rootPane,"Resep sudah tervalidasi ..!!");
-//                        }
+                    else if((lockValidasi=ValidasiResepLock.ambil(NoResep,NoRawat))!=null){
                         if(isValidResep()) {
+                            lepasLockValidasi();
                             JOptionPane.showMessageDialog(null, "Maaf, Resep sudah tervalidasi...!!!");
                         }else{
                             if(Sequel.cariRegistrasi(NoRawat)>0){
+                                lepasLockValidasi();
                                 JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi ..!!");
                             }else {
                                 jmlparsial=0;
@@ -1820,16 +1817,16 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                                     panggilform();
                                 }else{
                                     if(Sequel.cariRegistrasi(NoRawat)>0){
+                                        lepasLockValidasi();
                                         JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi ..!!");
-                                    }else{ 
+                                    }else{
                                         Sequel.queryu("delete from antriapotek2");
                                         Sequel.queryu("insert into antriapotek2 values('"+NoResep+"','1','"+NoRawat+"')");
-                                        panggilform();                             
+                                        panggilform();
                                     }
-                                }               
+                                }
                             }
                         }
-                        
                     }
                 }else{
                     JOptionPane.showMessageDialog(null,"Maaf, Anda tidak punya hak akses untuk mengvalidasi...!!!!");
@@ -1847,17 +1844,17 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                         TCari.requestFocus();
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau divalidasi..!!");
-                    }else if(Sequel.cariInteger("select count(no_resep) from antriapotek3 where no_resep = ?", NoResep) > 0){
-                         JOptionPane.showMessageDialog(null,"Maaf, Resep sedang dalam proses Validasi!!");
-                    }else{
-                        if(Status.equals("Sudah Terlayani")){
+                    }else if((lockValidasi=ValidasiResepLock.ambil(NoResep,NoRawat))!=null){
+                        if(Status.equals("Sudah Terlayani")||isValidResep()){
+                                lepasLockValidasi();
                                 JOptionPane.showMessageDialog(rootPane,"Resep sudah tervalidasi ..!!");
-                        }else {                           
+                        }else {
                             if(Sequel.cariRegistrasi(NoRawat)>0){
+                                lepasLockValidasi();
                                 JOptionPane.showMessageDialog(rootPane,"Data billing sudah terverifikasi ..!!");
-                            }else{ 
-                                panggilform2();                             
-                            }                
+                            }else{
+                                panggilform2();
+                            }
                         }
                     }
                 }else{
@@ -2185,19 +2182,19 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         TCari.requestFocus();
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau dihapus..!!");
-                    }else if(Sequel.cariInteger("select count(no_resep) from antriapotek3 where no_resep = ?", NoResep) > 0){
-                         JOptionPane.showMessageDialog(null,"Maaf, Resep sedang dalam proses Validasi!!");
-                    }else{
+                    }else if((lockValidasi=ValidasiResepLock.ambil(NoResep,NoRawat))!=null){
                         if(Sequel.cariIsi("select if(resep_obat.tgl_perawatan='0000-00-00','Belum','Sudah') as status from resep_obat where resep_obat.no_resep = ?", NoResep).equals("Sudah") || Status.equals("Sudah Terlayani")) {
+                            lepasLockValidasi();
                             JOptionPane.showMessageDialog(rootPane,"Resep sudah tervalidasi ..!!");
                             tampil();
                         }else {
                             Sequel.meghapus("resep_obat","no_resep",NoResep);
                             Sequel.meghapus("resep_dokter","no_resep",NoResep);
                             Sequel.meghapus("side_db.resep_obat_info", "no_resep", NoResep);
+                            lepasLockValidasi();
                             TeksKosong();
                             tampil();
-                        }                    
+                        }
                     }
                 }
             }else if(TabRawatJalan.getSelectedIndex()==1){
@@ -2212,19 +2209,19 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         TCari.requestFocus();
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau dihapus..!!");
-                    }else if(Sequel.cariInteger("select count(no_resep) from antriapotek3 where no_resep = ?", NoResep) > 0){
-                         JOptionPane.showMessageDialog(null,"Maaf, Resep sedang dalam proses Validasi!!");
-                    }else{
+                    }else if((lockValidasi=ValidasiResepLock.ambil(NoResep,NoRawat))!=null){
                          if(Sequel.cariIsi("select if(resep_obat.tgl_perawatan='0000-00-00','Belum','Sudah') as status from resep_obat where resep_obat.no_resep = ?", NoResep).equals("Sudah") || Status.equals("Sudah Terlayani")) {
+                            lepasLockValidasi();
                             JOptionPane.showMessageDialog(rootPane,"Resep sudah tervalidasi ..!!");
                             tampil3();
                         }else {
-                            Sequel.meghapus("resep_obat","no_resep",NoResep); 
+                            Sequel.meghapus("resep_obat","no_resep",NoResep);
                             Sequel.meghapus("resep_dokter","no_resep",NoResep);
                             Sequel.meghapus("side_db.resep_obat_info", "no_resep", NoResep);
+                            lepasLockValidasi();
                             TeksKosong();
                             tampil3();
-                        }                    
+                        }
                     }
                 }
             }else if(TabRawatInap.getSelectedIndex()==1){
@@ -2328,7 +2325,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     }else if(NoRawat.equals("")){
                         JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau diserahkan..!!");
                     }else{
-                        Sequel.queryu("delete from antriapotek3 where status = '1'");
+                        Sequel.queryu("delete from antriapotek3");
                         Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','1','"+NoRawat+"')");
                         Sequel.queryu("delete from bukti_penyerahan_resep_obat where no_resep='"+NoResep+"'");
                     }
@@ -3837,7 +3834,13 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     }//GEN-LAST:event_CetakTelaahResepActionPerformed
 
     private void ResetDoubleValidasiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResetDoubleValidasiActionPerformed
-        Sequel.queryu("delete from antriapotek3");
+        if(NoResep.equals("")){
+            JOptionPane.showMessageDialog(null,ValidasiResepLock.reset("")+" kunci validasi yang sudah tidak aktif dibersihkan.\nUntuk membuka kunci resep tertentu, pilih dulu resepnya.");
+        }else if(!ValidasiResepLock.sedangDikunci(NoResep)){
+            JOptionPane.showMessageDialog(null,"Resep "+NoResep+" tidak sedang dalam proses validasi.");
+        }else if(JOptionPane.showConfirmDialog(rootPane,"Resep "+NoResep+" sedang divalidasi"+ValidasiResepLock.keteranganPemegang(NoResep)+".\nPastikan form validasinya memang sudah tidak dipakai. Buka kunci sekarang?","Konfirmasi",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+            ValidasiResepLock.reset(NoResep);
+        }
     }//GEN-LAST:event_ResetDoubleValidasiActionPerformed
 
     /**
@@ -4388,16 +4391,29 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     }
 
     private void panggilform() {
-        DlgCariObat dlgobt=new DlgCariObat(null,false);
-        dlgobt.setNoRm(NoRawat,NoRM,Pasien,TglPeresepan,JamPeresepan);
-        dlgobt.isCek();
-        dlgobt.tampilobat2(NoResep);
-        dlgobt.setNoResep(NoResep);
-        Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','0','"+NoRawat+"')");
-        dlgobt.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        dlgobt.setLocationRelativeTo(internalFrame1);
-        TeksKosong();
-        dlgobt.setVisible(true);   
+        try {
+            DlgCariObat dlgobt=new DlgCariObat(null,false);
+            dlgobt.setNoRm(NoRawat,NoRM,Pasien,TglPeresepan,JamPeresepan);
+            dlgobt.isCek();
+            dlgobt.tampilobat2(NoResep);
+            dlgobt.setNoResep(NoResep);
+            dlgobt.setLockValidasi(lockValidasi);
+            lockValidasi=null;
+            dlgobt.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            dlgobt.setLocationRelativeTo(internalFrame1);
+            TeksKosong();
+            dlgobt.setVisible(true);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : "+e);
+            lepasLockValidasi();
+        }
+    }
+
+    private void lepasLockValidasi(){
+        if(lockValidasi!=null){
+            lockValidasi.lepas();
+            lockValidasi=null;
+        }
     }
     
     private void TeksKosong(){
@@ -4426,16 +4442,22 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         }else{
             akses.setkdbangsal(bangsal);
         }
-        DlgCariObat2 dlgobt2=new DlgCariObat2(null,false);
-        dlgobt2.setNoRm(NoRawat,NoRM,Pasien,Valid.SetTgl2(TglPeresepan));
-        dlgobt2.isCek();
-        dlgobt2.tampilobat2(NoResep);
-        dlgobt2.setNoResep(NoResep);
-        Sequel.queryu("insert into antriapotek3 values('"+NoResep+"','0','"+NoRawat+"')");
-        dlgobt2.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-        dlgobt2.setLocationRelativeTo(internalFrame1);
-        TeksKosong();
-        dlgobt2.setVisible(true);         
+        try {
+            DlgCariObat2 dlgobt2=new DlgCariObat2(null,false);
+            dlgobt2.setNoRm(NoRawat,NoRM,Pasien,Valid.SetTgl2(TglPeresepan));
+            dlgobt2.isCek();
+            dlgobt2.tampilobat2(NoResep);
+            dlgobt2.setNoResep(NoResep);
+            dlgobt2.setLockValidasi(lockValidasi);
+            lockValidasi=null;
+            dlgobt2.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            dlgobt2.setLocationRelativeTo(internalFrame1);
+            TeksKosong();
+            dlgobt2.setVisible(true);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : "+e);
+            lepasLockValidasi();
+        }
     }
     
     private void panggilform3() {

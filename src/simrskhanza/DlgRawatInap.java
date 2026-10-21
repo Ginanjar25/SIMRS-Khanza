@@ -12891,7 +12891,15 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         FormMenu.add(BtnPenilaianTambahanMelarikanDiri);
     } 
     
+    private boolean cekTanggalTidakMundur() {
+        TanggalRegistrasi.setText(Sequel.cariIsi("select concat(reg_periksa.tgl_registrasi,' ',reg_periksa.jam_reg) from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText()));
+        return Sequel.cekTanggalRegistrasi(TanggalRegistrasi.getText(),Valid.SetTgl(DTPTgl.getSelectedItem()+"")+" "+cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem());
+    }
+
     private void simpan() {
+        if(TabRawat.getSelectedIndex()<=2 && !cekTanggalTidakMundur()){
+            return;
+        }
         switch (TabRawat.getSelectedIndex()) {
             case 0:
                 if(KdDok.getText().trim().equals("")||TDokter.getText().trim().equals("")){

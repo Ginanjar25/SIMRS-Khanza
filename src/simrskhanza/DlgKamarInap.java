@@ -7499,9 +7499,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                     billing.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                                     billing.setLocationRelativeTo(internalFrame1);
                                     billing.setVisible(true);
-                                    billing.checkMismatch();
-                                    billing.checkPermintaan();
-                                    billing.checkSKDPPostRI(Sequel.cariIsi("SELECT bse.no_sep FROM bridging_sep bse WHERE bse.no_rawat =?", norawat.getText()));
+                                    billing.checkSemua(Sequel.cariIsi("SELECT bse.no_sep FROM bridging_sep bse WHERE bse.no_rawat =?", norawat.getText()));
                                 }
                             }else{
                                 bangsal=Sequel.cariIsi("select set_depo_ranap.kd_depo from set_depo_ranap where set_depo_ranap.kd_bangsal=?",Sequel.cariIsi("select kamar.kd_bangsal from kamar where kamar.kd_kamar=?",kdkamar.getText()));
@@ -7523,9 +7521,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                 billing.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                                 billing.setLocationRelativeTo(internalFrame1);
                                 billing.setVisible(true);
-                                billing.checkMismatch();
-                                billing.checkPermintaan();
-                                billing.checkSKDPPostRI(Sequel.cariIsi("SELECT bse.no_sep FROM bridging_sep bse WHERE bse.no_rawat =?", norawat.getText()));
+                                billing.checkSemua(Sequel.cariIsi("SELECT bse.no_sep FROM bridging_sep bse WHERE bse.no_rawat =?", norawat.getText()));
                             }
                         } catch (Exception e) {
                             System.out.println("Notifikasi : "+e);
