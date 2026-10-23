@@ -3634,7 +3634,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(jLabel13);
         jLabel13.setBounds(4, 102, 95, 23);
 
-        DTPLahir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-10-2026" }));
+        DTPLahir.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-10-2026" }));
         DTPLahir.setDisplayFormat("dd-MM-yyyy");
         DTPLahir.setName("DTPLahir"); // NOI18N
         DTPLahir.setOpaque(false);
@@ -3771,7 +3771,7 @@ public class DlgPasien extends javax.swing.JDialog {
         FormInput.add(TKtp);
         TKtp.setBounds(730, 170, 130, 23);
 
-        DTPDaftar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "06-10-2026" }));
+        DTPDaftar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "07-10-2026" }));
         DTPDaftar.setDisplayFormat("dd-MM-yyyy");
         DTPDaftar.setName("DTPDaftar"); // NOI18N
         DTPDaftar.setOpaque(false);
@@ -4151,6 +4151,7 @@ public class DlgPasien extends javax.swing.JDialog {
 
         ChkRM.setBorder(null);
         ChkRM.setSelected(true);
+        ChkRM.setEnabled(false);
         ChkRM.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         ChkRM.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         ChkRM.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -11162,7 +11163,159 @@ private void KabupatenMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:eve
         TabRawat.setSelectedIndex(1);
         pilihantampil();
     }
-    
+
+    // Memuat seluruh data satu pasien langsung dari database ke form input untuk diubah (dipanggil dari DlgReg)
+    public void setPasienUbah(String norm){
+        emptTeks();
+        TabRawat.setSelectedIndex(1);
+        Carialamat.setText("");
+        TCari.setText(norm);
+        if(norm.length()<=2){
+            tampil();
+        }
+        for(int i=0;i<tbPasien.getRowCount();i++){
+            if(tbPasien.getValueAt(i,1).toString().equals(norm)){
+                tbPasien.setRowSelectionInterval(i,i);
+                break;
+            }
+        }
+        try {
+            java.util.Map<String,String> d=new java.util.HashMap<>();
+            PreparedStatement psubah=koneksi.prepareStatement(
+                "select pasien.*,kelurahan.nm_kel,kecamatan.nm_kec,kabupaten.nm_kab,propinsi.nm_prop,penjab.png_jawab,"+
+                "perusahaan_pasien.nama_perusahaan,bahasa_pasien.nama_bahasa,suku_bangsa.nama_suku_bangsa,cacat_fisik.nama_cacat,"+
+                "pasien_tni.golongan_tni,golongan_tni.nama_golongan as nm_golongan_tni,pasien_tni.satuan_tni,satuan_tni.nama_satuan as nm_satuan_tni,"+
+                "pasien_tni.pangkat_tni,pangkat_tni.nama_pangkat as nm_pangkat_tni,pasien_tni.jabatan_tni,jabatan_tni.nama_jabatan as nm_jabatan_tni,"+
+                "pasien_polri.golongan_polri,golongan_polri.nama_golongan as nm_golongan_polri,pasien_polri.satuan_polri,satuan_polri.nama_satuan as nm_satuan_polri,"+
+                "pasien_polri.pangkat_polri,pangkat_polri.nama_pangkat as nm_pangkat_polri,pasien_polri.jabatan_polri,jabatan_polri.nama_jabatan as nm_jabatan_polri,"+
+                "(select penjab_pasien.kd_pj from penjab_pasien where penjab_pasien.no_rm=pasien.no_rkm_medis and penjab_pasien.`order`<>1 limit 1) as kd_pj2,"+
+                "(select penjab_pasien.no_kartu from penjab_pasien where penjab_pasien.no_rm=pasien.no_rkm_medis and penjab_pasien.`order`<>1 limit 1) as no_kartu2 "+
+                "from pasien left join kelurahan on pasien.kd_kel=kelurahan.kd_kel left join kecamatan on pasien.kd_kec=kecamatan.kd_kec "+
+                "left join kabupaten on pasien.kd_kab=kabupaten.kd_kab left join propinsi on pasien.kd_prop=propinsi.kd_prop "+
+                "left join penjab on pasien.kd_pj=penjab.kd_pj left join perusahaan_pasien on pasien.perusahaan_pasien=perusahaan_pasien.kode_perusahaan "+
+                "left join bahasa_pasien on pasien.bahasa_pasien=bahasa_pasien.id left join suku_bangsa on pasien.suku_bangsa=suku_bangsa.id "+
+                "left join cacat_fisik on pasien.cacat_fisik=cacat_fisik.id "+
+                "left join pasien_tni on pasien.no_rkm_medis=pasien_tni.no_rkm_medis left join golongan_tni on pasien_tni.golongan_tni=golongan_tni.id "+
+                "left join satuan_tni on pasien_tni.satuan_tni=satuan_tni.id left join pangkat_tni on pasien_tni.pangkat_tni=pangkat_tni.id "+
+                "left join jabatan_tni on pasien_tni.jabatan_tni=jabatan_tni.id "+
+                "left join pasien_polri on pasien.no_rkm_medis=pasien_polri.no_rkm_medis left join golongan_polri on pasien_polri.golongan_polri=golongan_polri.id "+
+                "left join satuan_polri on pasien_polri.satuan_polri=satuan_polri.id left join pangkat_polri on pasien_polri.pangkat_polri=pangkat_polri.id "+
+                "left join jabatan_polri on pasien_polri.jabatan_polri=jabatan_polri.id "+
+                "where pasien.no_rkm_medis=?");
+            ResultSet rsubah=null;
+            try {
+                psubah.setString(1,norm);
+                rsubah=psubah.executeQuery();
+                if(rsubah.next()){
+                    for(int k=1;k<=rsubah.getMetaData().getColumnCount();k++){
+                        d.put(rsubah.getMetaData().getColumnLabel(k),rsubah.getString(k));
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : "+e);
+            } finally{
+                if(rsubah!=null){
+                    rsubah.close();
+                }
+                psubah.close();
+            }
+            // Field diisi setelah ResultSet ditutup, karena listener TNm/TKtp ikut menjalankan query
+            if(!d.isEmpty()){
+                TNo.setText(teks(d,"no_rkm_medis"));
+                Kd2.setText(TNo.getText());
+                NoRekamMedisDipilih.setText(TNo.getText());
+                TNm.setText(teks(d,"nm_pasien"));
+                NamaPasienDipilih.setText(TNm.getText());
+                TKtp.setText(teks(d,"no_ktp"));
+                CmbJk.setSelectedItem(teks(d,"jk").equals("P")?"PEREMPUAN":"LAKI-LAKI");
+                TTmp.setText(teks(d,"tmp_lahir"));
+                NmIbu.setText(teks(d,"nm_ibu"));
+                CMbGd.setSelectedItem(teks(d,"gol_darah"));
+                Pekerjaan.setText(teks(d,"pekerjaan"));
+                CmbStts.setSelectedItem(teks(d,"stts_nikah"));
+                cmbAgama.setSelectedItem(teks(d,"agama"));
+                TTlp.setText(teks(d,"no_tlp"));
+                CMbPnd.setSelectedItem(teks(d,"pnd"));
+                CmbKeluarga.setSelectedItem(teks(d,"keluarga"));
+                Saudara.setText(teks(d,"namakeluarga"));
+                Kdpnj.setText(teks(d,"kd_pj"));
+                nmpnj.setText(teks(d,"png_jawab"));
+                TNoPeserta.setText(teks(d,"no_peserta"));
+                Alamat.setText(teks(d,"alamat"));
+                Kelurahan.setText(teks(d,"nm_kel"));
+                Kecamatan.setText(teks(d,"nm_kec"));
+                Kabupaten.setText(teks(d,"nm_kab"));
+                Propinsi.setText(teks(d,"nm_prop"));
+                kdkel=teks(d,"kd_kel");
+                kdkec=teks(d,"kd_kec");
+                kdkab=teks(d,"kd_kab");
+                kdprop=teks(d,"kd_prop");
+                PekerjaanPj.setText(teks(d,"pekerjaanpj"));
+                AlamatPj.setText(teks(d,"alamatpj"));
+                KelurahanPj.setText(teks(d,"kelurahanpj"));
+                KecamatanPj.setText(teks(d,"kecamatanpj"));
+                KabupatenPj.setText(teks(d,"kabupatenpj"));
+                PropinsiPj.setText(teks(d,"propinsipj"));
+                kdsuku.setText(teks(d,"suku_bangsa"));
+                nmsukubangsa.setText(teks(d,"nama_suku_bangsa"));
+                kdbahasa.setText(teks(d,"bahasa_pasien"));
+                nmbahasa.setText(teks(d,"nama_bahasa"));
+                kdperusahaan.setText(teks(d,"perusahaan_pasien"));
+                nmperusahaan.setText(teks(d,"nama_perusahaan"));
+                kdcacat.setText(teks(d,"cacat_fisik"));
+                nmcacat.setText(teks(d,"nama_cacat"));
+                EMail.setText(teks(d,"email"));
+                String[] nip=teks(d,"nip").split("#",2);
+                NIP.setText(nip[0].trim());
+                if(nip.length>1){
+                    CMbKelasBPJS.setSelectedItem(nip[1].trim());
+                }else{
+                    CMbKelasBPJS.setSelectedIndex(0);
+                }
+                if(!teks(d,"kd_pj2").equals("")){
+                    Kdpnj1.setText(teks(d,"kd_pj2"));
+                    nmpnj1.setText(Sequel.cariIsi("select penjab.png_jawab from penjab where penjab.kd_pj=?",Kdpnj1.getText()));
+                    TNoPeserta1.setText(teks(d,"no_kartu2"));
+                }
+                if(!teks(d,"golongan_tni").equals("")){
+                    chkTNI.setSelected(true);
+                    chkTNIActionPerformed(null);
+                    kdgolongantni.setText(teks(d,"golongan_tni"));
+                    nmgolongantni.setText(teks(d,"nm_golongan_tni"));
+                    kdsatuantni.setText(teks(d,"satuan_tni"));
+                    nmsatuantni.setText(teks(d,"nm_satuan_tni"));
+                    kdpangkattni.setText(teks(d,"pangkat_tni"));
+                    nmpangkattni.setText(teks(d,"nm_pangkat_tni"));
+                    kdjabatantni.setText(teks(d,"jabatan_tni"));
+                    nmjabatantni.setText(teks(d,"nm_jabatan_tni"));
+                }else if(!teks(d,"golongan_polri").equals("")){
+                    chkPolri.setSelected(true);
+                    chkPolriActionPerformed(null);
+                    kdgolonganpolri.setText(teks(d,"golongan_polri"));
+                    nmgolonganpolri.setText(teks(d,"nm_golongan_polri"));
+                    kdsatuanpolri.setText(teks(d,"satuan_polri"));
+                    nmsatuanpolri.setText(teks(d,"nm_satuan_polri"));
+                    kdpangkatpolri.setText(teks(d,"pangkat_polri"));
+                    nmpangkatpolri.setText(teks(d,"nm_pangkat_polri"));
+                    kdjabatanpolri.setText(teks(d,"jabatan_polri"));
+                    nmjabatanpolri.setText(teks(d,"nm_jabatan_polri"));
+                }
+                Valid.SetTgl(DTPDaftar,teks(d,"tgl_daftar"));
+                Valid.SetTgl(DTPLahir,teks(d,"tgl_lahir"));
+                DTPLahirItemStateChanged(null);
+                TabRawat.setSelectedIndex(0);
+            }
+            panggilPhoto();
+        } catch (Exception e) {
+            System.out.println("Notifikasi : "+e);
+        }
+    }
+
+    private String teks(java.util.Map<String,String> d,String kolom){
+        String nilai=d.get(kolom);
+        return nilai==null?"":nilai;
+    }
+
     public void isCek(){
         BtnSimpan.setEnabled(akses.getpasien());
         BtnHapus.setEnabled(akses.getpasien());

@@ -14,6 +14,10 @@ public class Button extends usu.widget.ButtonGlass {
      */
     private static final long serialVersionUID = 1L;
 
+    static {
+        KonfirmasiHapus.pasang();
+    }
+
     public Button() {
         super();
         setFont(new java.awt.Font("Tahoma", 1, 11));
