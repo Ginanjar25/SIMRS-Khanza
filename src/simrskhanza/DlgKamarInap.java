@@ -229,7 +229,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private DlgRanapGabung ranapgabung = new DlgRanapGabung(null, false);
     String norawatbayikembar ="";
     String diagnosaRanap = "";
-    
+    private static final String[] STATUS_PULANG = { "Sehat", "APS", "+", "Sembuh", "Membaik", "Pulang Paksa", "-", "Pindah Kamar", "Status Belum Lengkap", "Atas Persetujuan Dokter", "Atas Permintaan Sendiri", "Isoman", "Lain-lain" };
+
     /** Creates new form DlgKamarInap
      * @param parent
        @param modal */
@@ -1374,6 +1375,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
         panelGlass10 = new widget.panelisi();
         BtnIn = new widget.Button();
         BtnOut = new widget.Button();
+        BtnOutRujuk = new widget.Button();
+        BtnOutMeninggal = new widget.Button();
         btnPindah = new widget.Button();
         jLabel7 = new widget.Label();
         LCount = new widget.Label();
@@ -1785,7 +1788,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         internalFrame2.add(jLabel24);
         jLabel24.setBounds(0, 115, 72, 23);
 
-        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Sehat", "Rujuk", "APS", "+", "Meninggal", "Sembuh", "Membaik", "Pulang Paksa", "-", "Pindah Kamar", "Status Belum Lengkap", "Atas Persetujuan Dokter", "Atas Permintaan Sendiri", "Isoman", "Lain-lain" }));
+        cmbStatus.setModel(new javax.swing.DefaultComboBoxModel(STATUS_PULANG));
         cmbStatus.setName("cmbStatus"); // NOI18N
         internalFrame2.add(cmbStatus);
         cmbStatus.setBounds(418, 175, 240, 23);
@@ -5912,6 +5915,42 @@ public class DlgKamarInap extends javax.swing.JDialog {
         });
         panelGlass10.add(BtnOut);
 
+        BtnOutRujuk.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Hospital.png"))); // NOI18N
+        BtnOutRujuk.setMnemonic('R');
+        BtnOutRujuk.setText("Rujuk");
+        BtnOutRujuk.setToolTipText("Alt+R");
+        BtnOutRujuk.setName("BtnOutRujuk"); // NOI18N
+        BtnOutRujuk.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnOutRujuk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnOutRujukActionPerformed(evt);
+            }
+        });
+        BtnOutRujuk.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnOutRujukKeyPressed(evt);
+            }
+        });
+        panelGlass10.add(BtnOutRujuk);
+
+        BtnOutMeninggal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/remove-female-user24.png"))); // NOI18N
+        BtnOutMeninggal.setMnemonic('E');
+        BtnOutMeninggal.setText("Meninggal");
+        BtnOutMeninggal.setToolTipText("Alt+E");
+        BtnOutMeninggal.setName("BtnOutMeninggal"); // NOI18N
+        BtnOutMeninggal.setPreferredSize(new java.awt.Dimension(130, 30));
+        BtnOutMeninggal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnOutMeninggalActionPerformed(evt);
+            }
+        });
+        BtnOutMeninggal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnOutMeninggalKeyPressed(evt);
+            }
+        });
+        panelGlass10.add(BtnOutMeninggal);
+
         btnPindah.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inventaris.png"))); // NOI18N
         btnPindah.setMnemonic('P');
         btnPindah.setText("Pindah");
@@ -6352,6 +6391,18 @@ public class DlgKamarInap extends javax.swing.JDialog {
     }//GEN-LAST:event_BtnInKeyPressed
 
     private void BtnOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnOutActionPerformed
+        prosesPulang(true,null);
+    }//GEN-LAST:event_BtnOutActionPerformed
+
+    private void BtnOutRujukActionPerformed(java.awt.event.ActionEvent evt) {
+        prosesPulang(false,"Rujuk");
+    }
+
+    private void BtnOutMeninggalActionPerformed(java.awt.event.ActionEvent evt) {
+        prosesPulang(false,"Meninggal");
+    }
+
+    private void prosesPulang(boolean cekSKDP,String statusKunci) {
         if(tabMode.getRowCount()==0){
             JOptionPane.showMessageDialog(null,"Maaf, data kamar inap pasien sudah habis...!!!!");
             BtnIn.requestFocus();
@@ -6362,7 +6413,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                  JOptionPane.showMessageDialog(null,"Maaf, pasien ini sudah pulang pada tanggal "+TOut.getText()+" ...!!!");
                  emptTeks();
                  tbKamIn.requestFocus();
-        }else if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),6).toString().equals("BPJS") && tbKamIn.getValueAt(tbKamIn.getSelectedRow(),47).toString().equals("Belum") && !billing.checkSKDPPostRI(Sequel.cariIsi("SELECT bse.no_sep FROM bridging_sep bse WHERE bse.no_rawat =?", norawat.getText()))){
+        }else if(cekSKDP && tbKamIn.getValueAt(tbKamIn.getSelectedRow(),6).toString().equals("BPJS") && tbKamIn.getValueAt(tbKamIn.getSelectedRow(),47).toString().equals("Belum") && !billing.checkSKDPPostRI(Sequel.cariIsi("SELECT bse.no_sep FROM bridging_sep bse WHERE bse.no_rawat =?", norawat.getText()))){
              System.out.println("Maaf, pasien ini belum terbit SKDP POST RI !!!");
         }
             else if((TOut.getText().length()==0)&&(norawat.getText().length()>0)){
@@ -6375,6 +6426,11 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 btnDiagnosa.setVisible(true);
                 jLabel23.setVisible(true);
                 diagnosaakhir.setText("");
+                if(statusKunci==null){
+                    cmbStatus.setModel(new javax.swing.DefaultComboBoxModel(STATUS_PULANG));
+                }else{
+                    cmbStatus.setModel(new javax.swing.DefaultComboBoxModel(new String[]{statusKunci}));
+                }
                 cmbStatus.setVisible(true);
                 jLabel26.setVisible(true);
                 LblStts.setText("Pulang/Check Out");
@@ -6402,15 +6458,31 @@ public class DlgKamarInap extends javax.swing.JDialog {
                 WindowInputKamar.setLocationRelativeTo(internalFrame1);
                 WindowInputKamar.setVisible(true);
         }
-    }//GEN-LAST:event_BtnOutActionPerformed
+    }
 
     private void BtnOutKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnOutKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             BtnOutActionPerformed(null);
         }else{
-            Valid.pindah(evt,BtnIn,btnPindah);
+            Valid.pindah(evt,BtnIn,BtnOutRujuk);
         }
     }//GEN-LAST:event_BtnOutKeyPressed
+
+    private void BtnOutRujukKeyPressed(java.awt.event.KeyEvent evt) {
+        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+            BtnOutRujukActionPerformed(null);
+        }else{
+            Valid.pindah(evt,BtnOut,BtnOutMeninggal);
+        }
+    }
+
+    private void BtnOutMeninggalKeyPressed(java.awt.event.KeyEvent evt) {
+        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+            BtnOutMeninggalActionPerformed(null);
+        }else{
+            Valid.pindah(evt,BtnOutRujuk,btnPindah);
+        }
+    }
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
         WindowInputKamar.dispose();
@@ -7947,7 +8019,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             btnPindahActionPerformed(null);
         }else{
-            Valid.pindah(evt,BtnOut,BtnAll);
+            Valid.pindah(evt,BtnOutMeninggal,BtnAll);
         }
     }//GEN-LAST:event_btnPindahKeyPressed
 
@@ -8268,7 +8340,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                     Sequel.queryu("update side_db.detail_pindah_kamar set kd_kamar='"+kdkamarpindah.getText()+"',tarif='"+TTarifpindah.getText()+"',titip='-' "+
                                 " where no_rawat='"+tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString()+
                                 "' and titip='Titip'");
-                    }    
+                    }
                     tampil();
                     WindowPindahKamar.dispose();
                     break;
@@ -17910,6 +17982,8 @@ public class DlgKamarInap extends javax.swing.JDialog {
     private widget.Button BtnKeluar;
     private widget.Button BtnKeluar4;
     private widget.Button BtnOut;
+    private widget.Button BtnOutMeninggal;
+    private widget.Button BtnOutRujuk;
     private widget.Button BtnPrint;
     private widget.Button BtnPrint5;
     private widget.Button BtnSeek5;

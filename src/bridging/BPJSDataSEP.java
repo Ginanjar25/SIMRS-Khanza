@@ -41,8 +41,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
 import javax.swing.JOptionPane;
@@ -4256,141 +4258,11 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                             System.out.println("Gagal get RUJUKAN" + e);
                         }
 
-                        //mulai menampilkan riwayat                
-                        try {
-                            Calendar cal = Calendar.getInstance();
-                            cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) - 2, 1); // to get previous year add -1
-                            Date Year = cal.getTime();
-                            DTPCari1.setDate(Year);
-                            
-                            LocalDate today = LocalDate.now();
-                            // Mengurangi 90 hari dari tanggal hari ini
-                            LocalDate date90DaysAgo = today.minusDays(90);
-                            LocalDate date180DaysAgo = date90DaysAgo.minusDays(90);
-
-                            headers = new HttpHeaders();
-                            headers.setContentType(MediaType.APPLICATION_JSON);
-                            headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
-                            utc = String.valueOf(api.GetUTCdatetimeAsString());
-                            headers.add("X-Timestamp", utc);
-                            headers.add("X-Signature", api.getHmac(utc));
-                            headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
-                            requestEntity = new HttpEntity(headers);
-                            URL = link + "/monitoring/HistoriPelayanan/NoKartu/" + no_peserta + "/tglMulai/" + date90DaysAgo + "/tglAkhir/" + today;
-                            root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.GET, requestEntity, String.class).getBody());
-                            nameNode = root.path("metaData");
-                            if (nameNode.path("code").asText().equals("200")) {
-                                Valid.tabelKosong(tabModeRiwayat);
-                                response = mapper.readTree(api.Decrypt(root.path("response").asText(), utc)).path("histori");
-                                //response = root.path("response").path("histori");
-                                if (response.isArray()) {
-                                    i = 1;
-                                    String skdpTerbaru = null;
-                                    JsonNode dataSepTerbaru = null;
-                                    for (JsonNode list : response) {
-                                        tabModeRiwayat.addRow(new Object[]{
-                                            i + ".",
-                                            "<html>"
-                                            + "<b>"+ list.path("ppkPelayanan").asText() +"</b><br>"
-                                            + "<b>" + list.path("noSep").asText() + "</b><br>"
-                                            + Sequel.cariIsi("SELECT if(bse.nmdpjplayanan='',bse.nmdpdjp,bse.nmdpjplayanan) FROM bridging_sep bse WHERE bse.no_sep =?",list.path("noSep").asText())+"<br>"
-                                            + list.path("jnsPelayanan").asText().replaceAll("1", "Rawat Inap").replaceAll("2", "Rawat Jalan") + "<br>"
-                                            + list.path("poli").asText() + "<br>"
-                                            + "Tgl SEP : " + list.path("tglSep").asText() + "<br>"
-                                            + list.path("noRujukan").asText() + "<br>"
-                                            + list.path("diagnosa").asText() + "</html>",
-                                            "<html>"+Sequel.cariIsi("SELECT CONCAT('<b>',srk.no_surat,'</b><br>',if(bse.nmdpjplayanan='',bse.nmdpdjp,bse.nmdpjplayanan)) AS surkon FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?",list.path("noSep").asText())+"</html>"                                                
-                                            ,Sequel.cariIsi("SELECT srk.no_surat FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?",list.path("noSep").asText())
-                                            ,Sequel.cariIsi("SELECT bse.kddpjp FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?",list.path("noSep").asText())
-                                            ,Sequel.cariIsi("SELECT bse.nmdpdjp FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?",list.path("noSep").asText())
-                                        });
-                                        i++;
-                                         // Cari SEP terbaru
-                                        if (dataSepTerbaru == null) {
-                                            dataSepTerbaru = list;
-                                        } else {
-                                            String tglSepCurrent = list.path("tglSep").asText();
-                                            String tglSepLatest = dataSepTerbaru.path("tglSep").asText();
-
-                                            if (tglSepCurrent.compareTo(tglSepLatest) > 0) {
-                                                dataSepTerbaru = list;
-                                            }
-                                        }
-                                    }
-                                    if (dataSepTerbaru != null) {
-                                        skdpTerbaru = Sequel.cariIsi("SELECT srk.no_surat FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =? AND bse.jnspelayanan = '1'", dataSepTerbaru.path("noSep").asText());
-                                        if(Sequel.cariInteger("select count(no_sep) from bridging_sep where noskdp = ?", skdpTerbaru) == 0){
-                                            JOptionPane.showMessageDialog(rootPane, "Ada Surat Kontrol POST RI yg belum Terbit SEP !!!", "Warning", JOptionPane.WARNING_MESSAGE);
-                                        }
-                                    }
-                                }
-                            } else {
-                                //JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
-                            }
-                            headers = new HttpHeaders();
-                            headers.setContentType(MediaType.APPLICATION_JSON);
-                            headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
-                            utc = String.valueOf(api.GetUTCdatetimeAsString());
-                            headers.add("X-Timestamp", utc);
-                            headers.add("X-Signature", api.getHmac(utc));
-                            headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
-                            requestEntity = new HttpEntity(headers);
-                            URL = link + "/monitoring/HistoriPelayanan/NoKartu/" + no_peserta + "/tglMulai/" + date180DaysAgo + "/tglAkhir/" + date90DaysAgo;
-                            root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.GET, requestEntity, String.class).getBody());
-                            nameNode = root.path("metaData");
-                            if (nameNode.path("code").asText().equals("200")) {                                
-                                response = mapper.readTree(api.Decrypt(root.path("response").asText(), utc)).path("histori");
-                                //response = root.path("response").path("histori");
-                                if (response.isArray()) {
-                                    i = 1;
-                                    String skdpTerbaru = null;
-                                    JsonNode dataSepTerbaru = null;
-                                    for (JsonNode list : response) {
-                                        tabModeRiwayat.addRow(new Object[]{
-                                            i + ".",
-                                            "<html>"
-                                            + "<b>"+ list.path("ppkPelayanan").asText() +"</b><br>"
-                                            + "<b>" + list.path("noSep").asText() + "</b><br>"
-                                            + Sequel.cariIsi("SELECT if(bse.nmdpjplayanan='',bse.nmdpdjp,bse.nmdpjplayanan) FROM bridging_sep bse WHERE bse.no_sep =?",list.path("noSep").asText())+"<br>"
-                                            + list.path("jnsPelayanan").asText().replaceAll("1", "Rawat Inap").replaceAll("2", "Rawat Jalan") + "<br>"
-                                            + list.path("poli").asText() + "<br>"
-                                            + "Tgl SEP : " + list.path("tglSep").asText() + "<br>"
-                                            + list.path("noRujukan").asText() + "<br>"
-                                            + list.path("diagnosa").asText() + "</html>",
-                                            "<html>"+Sequel.cariIsi("SELECT CONCAT('<b>',srk.no_surat,'</b><br>',if(bse.nmdpjplayanan='',bse.nmdpdjp,bse.nmdpjplayanan)) AS surkon FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?",list.path("noSep").asText())+"</html>"                                                
-                                            ,Sequel.cariIsi("SELECT srk.no_surat FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?",list.path("noSep").asText())
-                                            ,Sequel.cariIsi("SELECT bse.kddpjp FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?",list.path("noSep").asText())
-                                            ,Sequel.cariIsi("SELECT bse.nmdpdjp FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?",list.path("noSep").asText())
-                                        });
-                                        i++;
-                                        if (dataSepTerbaru == null) {
-                                            dataSepTerbaru = list;
-                                        } else {
-                                            String tglSepCurrent = list.path("tglSep").asText();
-                                            String tglSepLatest = dataSepTerbaru.path("tglSep").asText();
-
-                                            // bandingkan string "YYYY-MM-DD"
-                                            if (tglSepCurrent.compareTo(tglSepLatest) > 0) {
-                                                dataSepTerbaru = list;
-                                            }
-                                        }
-                                    }
-                                    if (dataSepTerbaru != null) {
-                                        skdpTerbaru = Sequel.cariIsi("SELECT srk.no_surat FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =? AND bse.jnspelayanan = '1'", dataSepTerbaru.path("noSep").asText());
-                                        if(Sequel.cariInteger("select count(no_sep) from bridging_sep where noskdp = ?", skdpTerbaru) == 0){
-                                            JOptionPane.showMessageDialog(rootPane, "Ada Surat Kontrol POST RI yg belum Terbit SEP !!!", "Warning", JOptionPane.WARNING_MESSAGE);
-                                        }
-                                    }
-                                }
-                            } else {
-                                //JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
-                            }
-                        } catch (Exception ex) {
-                            System.out.println("Notifikasi Peserta : " + ex);
-                            if (ex.toString().contains("UnknownHostException")) {
-                                JOptionPane.showMessageDialog(rootPane, "Koneksi ke server BPJS terputus...!");
-                            }
-                        }
+                        //mulai menampilkan riwayat
+                        Calendar cal = Calendar.getInstance();
+                        cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) - 2, 1); // to get previous year add -1
+                        DTPCari1.setDate(cal.getTime());
+                        tampilkanRiwayatSep();
 
                         //mulai menampilkan data rujukan FKTP
                         try {
@@ -7972,5 +7844,105 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
     private String CekCheckInJKN(){
         String status = Sequel.cariIsi("select status from referensi_mobilejkn_bpjs where no_rawat=?", TNoRw.getText());
         return status;
+    }
+
+    private void tampilkanRiwayatSep() {
+        final int JUMLAH_RENTANG = 3;
+        final int HARI_PER_RENTANG = 90; // endpoint HistoriPelayanan hanya menerima rentang maks 90 hari
+        final int MAKS_DATA_PER_REQUEST = 10; // endpoint hanya mengembalikan 10 SEP terbaru per request
+
+        Valid.tabelKosong(tabModeRiwayat);
+        int no = 1;
+        JsonNode sepTerbaru = null;
+        Set<String> noSepTampil = new HashSet<>();
+        LocalDate tglAkhir = LocalDate.now();
+        for (int n = 0; n < JUMLAH_RENTANG; n++) {
+            LocalDate tglMulai = tglAkhir.minusDays(HARI_PER_RENTANG - 1);
+            LocalDate batasAkhir = tglAkhir;
+            try {
+                // jika hasil penuh, ambil lanjutan mulai dari tglSep terlama yang sudah didapat
+                while (!batasAkhir.isBefore(tglMulai)) {
+                    JsonNode histori = ambilHistoriPelayanan(tglMulai, batasAkhir);
+                    System.out.println("Riwayat SEP " + tglMulai + " s/d " + batasAkhir + " : "
+                            + (histori == null ? "kode " + nameNode.path("code").asText() + " - " + nameNode.path("message").asText() : histori.size() + " data"));
+                    if (histori == null || !histori.isArray() || histori.size() == 0) {
+                        break;
+                    }
+                    LocalDate tglTerlama = batasAkhir;
+                    for (JsonNode sep : histori) {
+                        LocalDate tglSep = LocalDate.parse(sep.path("tglSep").asText());
+                        if (tglSep.isBefore(tglTerlama)) {
+                            tglTerlama = tglSep;
+                        }
+                        if (!noSepTampil.add(sep.path("noSep").asText())) {
+                            continue;
+                        }
+                        tambahBarisRiwayatSep(no++, sep);
+                        if (sepTerbaru == null || sep.path("tglSep").asText().compareTo(sepTerbaru.path("tglSep").asText()) > 0) {
+                            sepTerbaru = sep;
+                        }
+                    }
+                    if (histori.size() < MAKS_DATA_PER_REQUEST) {
+                        break;
+                    }
+                    // tglTerlama ikut diminta lagi karena bisa ada SEP lain di tanggal yang sama (duplikat disaring noSepTampil)
+                    batasAkhir = tglTerlama.equals(batasAkhir) ? batasAkhir.minusDays(1) : tglTerlama;
+                }
+            } catch (Exception ex) {
+                System.out.println("Notifikasi Peserta : " + ex);
+                if (ex.toString().contains("UnknownHostException")) {
+                    JOptionPane.showMessageDialog(rootPane, "Koneksi ke server BPJS terputus...!");
+                }
+            }
+            tglAkhir = tglMulai.minusDays(1);
+        }
+        if (sepTerbaru != null) {
+            cekSkdpBelumTerbitSep(sepTerbaru);
+        }
+    }
+
+    private JsonNode ambilHistoriPelayanan(LocalDate tglMulai, LocalDate tglAkhir) throws Exception {
+        headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("X-Cons-ID", koneksiDB.CONSIDAPIBPJS());
+        utc = String.valueOf(api.GetUTCdatetimeAsString());
+        headers.add("X-Timestamp", utc);
+        headers.add("X-Signature", api.getHmac(utc));
+        headers.add("user_key", koneksiDB.USERKEYAPIBPJS());
+        requestEntity = new HttpEntity(headers);
+        URL = link + "/monitoring/HistoriPelayanan/NoKartu/" + no_peserta + "/tglMulai/" + tglMulai + "/tglAkhir/" + tglAkhir;
+        root = mapper.readTree(api.getRest().exchange(URL, HttpMethod.GET, requestEntity, String.class).getBody());
+        nameNode = root.path("metaData");
+        if (!nameNode.path("code").asText().equals("200")) {
+            return null;
+        }
+        return mapper.readTree(api.Decrypt(root.path("response").asText(), utc)).path("histori");
+    }
+
+    private void tambahBarisRiwayatSep(int no, JsonNode sep) {
+        String noSep = sep.path("noSep").asText();
+        tabModeRiwayat.addRow(new Object[]{
+            no + ".",
+            "<html>"
+            + "<b>" + sep.path("ppkPelayanan").asText() + "</b><br>"
+            + "<b>" + noSep + "</b><br>"
+            + Sequel.cariIsi("SELECT if(bse.nmdpjplayanan='',bse.nmdpdjp,bse.nmdpjplayanan) FROM bridging_sep bse WHERE bse.no_sep =?", noSep) + "<br>"
+            + sep.path("jnsPelayanan").asText().replaceAll("1", "Rawat Inap").replaceAll("2", "Rawat Jalan") + "<br>"
+            + sep.path("poli").asText() + "<br>"
+            + "Tgl SEP : " + sep.path("tglSep").asText() + "<br>"
+            + sep.path("noRujukan").asText() + "<br>"
+            + sep.path("diagnosa").asText() + "</html>",
+            "<html>" + Sequel.cariIsi("SELECT CONCAT('<b>',srk.no_surat,'</b><br>',if(bse.nmdpjplayanan='',bse.nmdpdjp,bse.nmdpjplayanan)) AS surkon FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?", noSep) + "</html>",
+            Sequel.cariIsi("SELECT srk.no_surat FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?", noSep),
+            Sequel.cariIsi("SELECT bse.kddpjp FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?", noSep),
+            Sequel.cariIsi("SELECT bse.nmdpdjp FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =?", noSep)
+        });
+    }
+
+    private void cekSkdpBelumTerbitSep(JsonNode sep) {
+        String skdp = Sequel.cariIsi("SELECT srk.no_surat FROM bridging_sep bse JOIN bridging_surat_kontrol_bpjs srk ON srk.no_sep = bse.no_sep WHERE bse.no_sep =? AND bse.jnspelayanan = '1'", sep.path("noSep").asText());
+        if (Sequel.cariInteger("select count(no_sep) from bridging_sep where noskdp = ?", skdp) == 0) {
+            JOptionPane.showMessageDialog(rootPane, "Ada Surat Kontrol POST RI yg belum Terbit SEP !!!", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
     }
 }
