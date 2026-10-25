@@ -19672,6 +19672,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
          if (no_sep == null || no_sep.equals("")) {
             return true;
         }
+        if(cmbStatus.getSelectedItem().equals("Meninggal") || cmbStatus.getSelectedItem().equals("Rujuk")){
+            return true;
+        }
         String tgl_sep_pulang = Sequel.cariIsi("select ifnull(date(tglpulang),'') from bridging_sep where no_sep = ?", no_sep);
         String tgl_pulang = CmbTahun.getSelectedItem() + "-"+ CmbBln.getSelectedItem() + "-"+ CmbTgl.getSelectedItem();
         if(tgl_sep_pulang == null || tgl_sep_pulang.equals("") || tgl_sep_pulang.startsWith("0000-00-00") || !tgl_sep_pulang.equals(tgl_pulang)){
