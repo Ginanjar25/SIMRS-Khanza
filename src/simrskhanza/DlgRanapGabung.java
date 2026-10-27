@@ -369,6 +369,7 @@ public class DlgRanapGabung extends javax.swing.JDialog {
         BtnSimpan = new widget.Button();
         BtnBatal = new widget.Button();
         BtnHapus = new widget.Button();
+        BtnGanti = new widget.Button();
         BtnPindahKamar = new widget.Button();
         jLabel7 = new widget.Label();
         LCount = new widget.Label();
@@ -404,6 +405,16 @@ public class DlgRanapGabung extends javax.swing.JDialog {
         jLabel5 = new widget.Label();
         TNoRWIbu = new widget.TextBox();
         TPasienIbu = new widget.TextBox();
+        KdPos = new widget.TextBox();
+        NoKK = new widget.TextBox();
+        PekerjaanAyah = new widget.TextBox();
+        TAyah = new widget.TextBox();
+        UmurAyah = new widget.TextBox();
+        LblKdPos = new widget.Label();
+        LblNamaAyah = new widget.Label();
+        LblNoKK = new widget.Label();
+        LblPekerjaanAyah = new widget.Label();
+        LblUmurAyah = new widget.Label();
         TKdKamar = new widget.TextBox();
         jLabel8 = new widget.Label();
         CmbJk = new widget.ComboBox();
@@ -772,6 +783,24 @@ public class DlgRanapGabung extends javax.swing.JDialog {
             }
         });
         panelGlass8.add(BtnBatal);
+
+        BtnGanti.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/file-edit-16x16.png"))); // NOI18N
+        BtnGanti.setMnemonic('G');
+        BtnGanti.setText("Ganti");
+        BtnGanti.setToolTipText("Alt+G");
+        BtnGanti.setName("BtnGanti"); // NOI18N
+        BtnGanti.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnGanti.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnGantiActionPerformed(evt);
+            }
+        });
+        BtnGanti.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnGantiKeyPressed(evt);
+            }
+        });
+        panelGlass8.add(BtnGanti);
 
         BtnHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/stop_f2.png"))); // NOI18N
         BtnHapus.setMnemonic('H');
@@ -1210,6 +1239,51 @@ public class DlgRanapGabung extends javax.swing.JDialog {
         FormInput.add(TambahRMBayi);
         TambahRMBayi.setBounds(590, 130, 28, 23);
 
+        LblNoKK.setText("No. KK :");
+        LblNoKK.setName("LblNoKK"); // NOI18N
+        FormInput.add(LblNoKK);
+        LblNoKK.setBounds(0, 160, 100, 23);
+
+        NoKK.setName("NoKK"); // NOI18N
+        FormInput.add(NoKK);
+        NoKK.setBounds(110, 160, 150, 23);
+
+        LblKdPos.setText("Kode Pos :");
+        LblKdPos.setName("LblKdPos"); // NOI18N
+        FormInput.add(LblKdPos);
+        LblKdPos.setBounds(270, 160, 70, 23);
+
+        KdPos.setName("KdPos"); // NOI18N
+        FormInput.add(KdPos);
+        KdPos.setBounds(345, 160, 105, 23);
+
+        LblNamaAyah.setText("Nama Ayah :");
+        LblNamaAyah.setName("LblNamaAyah"); // NOI18N
+        FormInput.add(LblNamaAyah);
+        LblNamaAyah.setBounds(0, 190, 100, 23);
+
+        TAyah.setName("TAyah"); // NOI18N
+        FormInput.add(TAyah);
+        TAyah.setBounds(110, 190, 340, 23);
+
+        LblUmurAyah.setText("Umur Ayah :");
+        LblUmurAyah.setName("LblUmurAyah"); // NOI18N
+        FormInput.add(LblUmurAyah);
+        LblUmurAyah.setBounds(460, 190, 60, 23);
+
+        UmurAyah.setName("UmurAyah"); // NOI18N
+        FormInput.add(UmurAyah);
+        UmurAyah.setBounds(525, 190, 55, 23);
+
+        LblPekerjaanAyah.setText("Pekerjaan Ayah :");
+        LblPekerjaanAyah.setName("LblPekerjaanAyah"); // NOI18N
+        FormInput.add(LblPekerjaanAyah);
+        LblPekerjaanAyah.setBounds(0, 220, 100, 23);
+
+        PekerjaanAyah.setName("PekerjaanAyah"); // NOI18N
+        FormInput.add(PekerjaanAyah);
+        PekerjaanAyah.setBounds(110, 220, 340, 23);
+
         PanelInput.add(FormInput, java.awt.BorderLayout.CENTER);
 
         internalFrame1.add(PanelInput, java.awt.BorderLayout.PAGE_START);
@@ -1256,6 +1330,10 @@ public class DlgRanapGabung extends javax.swing.JDialog {
                         String pilihanJK = cmbKelamin[i].getSelectedItem().toString();
                         if (pilihanJK.equals("-Pilih-")) {
                             JOptionPane.showMessageDialog(null, "Silakan pilih jenis kelamin pada baris ke-" + (i + 1) + " terlebih dahulu!");
+                            return;
+                        }
+                        if (NoKK.getText().trim().isEmpty() || KdPos.getText().trim().isEmpty() || TAyah.getText().trim().isEmpty() || PekerjaanAyah.getText().trim().isEmpty() || UmurAyah.getText().trim().isEmpty()) {
+                            JOptionPane.showMessageDialog(null, "Maaf, No. KK, Kode Pos, Nama Ayah, Pekerjaan Ayah, dan Umur Ayah wajib diisi...!!!");
                             return;
                         }
                     }
@@ -1326,6 +1404,13 @@ public class DlgRanapGabung extends javax.swing.JDialog {
                                         Sequel.menyimpan("ranap_gabung", "?,?,?", "Data Ranap Gabung", 3, new String[]{
                                             TNoRWIbu.getText(), NoRawatGabung.getText(), noRM
                                         });
+
+                                        if (Sequel.cariInteger("select count(no_rkm_medis) from pendaftaran_bayi where no_rkm_medis=?", noRM) == 0) {
+                                            Sequel.menyimpan("pendaftaran_bayi", "?,?,?,?,?,?,?,?", "Pendaftaran Bayi", 8, new String[]{
+                                                noRM, rs.getString("no_rkm_medis"), TAyah.getText(), PekerjaanAyah.getText(), UmurAyah.getText(),
+                                                NoKK.getText(), KdPos.getText(), "0"
+                                            });
+                                        }
 
                                         String penjab2 = Sequel.cariIsi("SELECT CONCAT(penjab_reg.kd_pj, '-', penjab.png_jawab,'-', penjab_reg.no_kartu) AS penjab2 FROM reg_periksa\n"
                                                 + "LEFT JOIN penjab_reg on penjab_reg.no_rawat = reg_periksa.no_rawat\n"
@@ -1501,6 +1586,11 @@ public class DlgRanapGabung extends javax.swing.JDialog {
         KodeDPJP.setText("");
         NamaDPJP.setText("");
         TDiagnosa.setText("");
+        NoKK.setText("");
+        KdPos.setText("");
+        TAyah.setText("");
+        PekerjaanAyah.setText("");
+        UmurAyah.setText("");
         TNoRMBayi.requestFocus();
         emptTeks();
 }//GEN-LAST:event_BtnBatalActionPerformed
@@ -1508,19 +1598,55 @@ public class DlgRanapGabung extends javax.swing.JDialog {
     private void BtnBatalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnBatalKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             BtnBatalActionPerformed(null);
-        }else{Valid.pindah(evt, BtnSimpan, BtnHapus);}
+        }else{Valid.pindah(evt, BtnSimpan, BtnGanti);}
 }//GEN-LAST:event_BtnBatalKeyPressed
+
+    private void BtnGantiActionPerformed(java.awt.event.ActionEvent evt) {
+        if (TNoRMBayi.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan pilih dulu data bayi pada tabel...!!!");
+            tbObat.requestFocus();
+            return;
+        } else if (NoKK.getText().trim().isEmpty() || KdPos.getText().trim().isEmpty() || TAyah.getText().trim().isEmpty() || PekerjaanAyah.getText().trim().isEmpty() || UmurAyah.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Maaf, No. KK, Kode Pos, Nama Ayah, Pekerjaan Ayah, dan Umur Ayah wajib diisi...!!!");
+            return;
+        } else if (Sequel.cariInteger("select count(no_rkm_medis) from pendaftaran_bayi where no_rkm_medis=?", TNoRMBayi.getText()) == 0) {
+            JOptionPane.showMessageDialog(null, "Maaf, data pendaftaran bayi baru lahir belum ada. Gunakan tombol Simpan...!!!");
+            return;
+        }
+
+        if (JOptionPane.showConfirmDialog(null, "Ganti data pendaftaran bayi baru lahir " + TNoRMBayi.getText() + " " + TPasienBayi.getText() + " ?", "Konfirmasi", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if (Sequel.queryu2tf("update pendaftaran_bayi set nama_ayah=?, pekerjaan_ayah=?, umur_ayah=?, no_kk=?, kode_pos=? where no_rkm_medis=?", 6, new String[]{
+                TAyah.getText(), PekerjaanAyah.getText(), UmurAyah.getText(), NoKK.getText(), KdPos.getText(), TNoRMBayi.getText()
+            })) {
+                tampil();
+            }
+        }
+    }
+
+    private void BtnGantiKeyPressed(java.awt.event.KeyEvent evt) {
+        if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
+            BtnGantiActionPerformed(null);
+        } else {
+            Valid.pindah(evt, BtnBatal, BtnHapus);
+        }
+    }
 
     private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
         if (tbObat.getSelectedRow() != -1) {
             int reply = JOptionPane.showConfirmDialog(rootPane, "Apakah Anda Ingin Menghapus Ranap Gabung : \n"
-                    + "No Rawat: " + tbObat.getValueAt(tbObat.getSelectedRow(),1).toString() + "/ Nama: " + tbObat.getValueAt(tbObat.getSelectedRow(),3).toString(), "Konfirmasi", JOptionPane.YES_NO_OPTION);
+                    + "No Rawat: " + tbObat.getValueAt(tbObat.getSelectedRow(),1).toString() + "/ Nama: " + tbObat.getValueAt(tbObat.getSelectedRow(),3).toString() + "\n"
+                    + "Data pendaftaran bayi baru lahir juga akan dihapus.", "Konfirmasi", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 //TNoRMBayi.setText(tbObat.getValueAt(tbObat.getSelectedRow(),2).toString());
+                String noRMBayiHapus = tbObat.getValueAt(tbObat.getSelectedRow(),2).toString();
                 Sequel.mengedit("reg_periksa", "no_rawat='" + Sequel.cariIsi("select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?", tbObat.getValueAt(tbObat.getSelectedRow(),1).toString()) + "'", "status_lanjut='Ralan', status_bayar='Belum Bayar'");
                 Sequel.meghapus("permintaan_ranap", "no_rawat", tbObat.getValueAt(tbObat.getSelectedRow(),1).toString());
                 Sequel.meghapus("ranap_gabung", "no_rawat2", tbObat.getValueAt(tbObat.getSelectedRow(),1).toString());
                 Sequel.meghapus("dpjp_ranap", "no_rawat", tbObat.getValueAt(tbObat.getSelectedRow(),1).toString());
+                // pendaftaran bayi hanya dihapus kalau bayi ini sudah tidak tercatat di ranap gabung lain
+                if (Sequel.cariInteger("select count(no_rm_bayi) from ranap_gabung where no_rm_bayi=?", noRMBayiHapus) == 0) {
+                    Sequel.meghapus("pendaftaran_bayi", "no_rkm_medis", noRMBayiHapus);
+                }
                 tampil();
             }
         } else {
@@ -1804,7 +1930,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         } else{
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
               DlgPendaftaranBayi daftar_bayi = new DlgPendaftaranBayi(null, false);
-              daftar_bayi.setSize(950, 500);
+              daftar_bayi.setSize(this.getWidth(), this.getHeight());
               daftar_bayi.setLocationRelativeTo(internalFrame1);
               daftar_bayi.setNoRm(tbObat.getValueAt(tbObat.getSelectedRow(),2).toString(), tbObat.getValueAt(tbObat.getSelectedRow(),3).toString(), DTPTgl.getDate(), DTPTgl.getDate());
               daftar_bayi.tampil();
@@ -1894,6 +2020,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Button BtnBatal;
     private widget.Button BtnCari;
     private widget.Button BtnHapus;
+    private widget.Button BtnGanti;
     private widget.Button BtnHapusFieldBayi2;
     private widget.Button BtnHapusFieldBayi3;
     private widget.Button BtnKeluar;
@@ -1948,6 +2075,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox TPasienBayi2;
     private widget.TextBox TPasienBayi3;
     private widget.TextBox TPasienIbu;
+    private widget.TextBox KdPos;
+    private widget.TextBox NoKK;
+    private widget.TextBox PekerjaanAyah;
+    private widget.TextBox TAyah;
+    private widget.TextBox UmurAyah;
     private widget.Button TambahRMBayi;
     private javax.swing.JDialog WindowPindahranapGabung;
     private widget.Button btnDPJPPindahKamar1;
@@ -1977,6 +2109,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Label jLabel7;
     private widget.Label jLabel8;
     private widget.Label jLabel9;
+    private widget.Label LblKdPos;
+    private widget.Label LblNamaAyah;
+    private widget.Label LblNoKK;
+    private widget.Label LblPekerjaanAyah;
+    private widget.Label LblUmurAyah;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu jPopupMenu1;
     private widget.panelisi panelGlass8;
@@ -2030,6 +2167,12 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             KodeDPJP.setText(tbObat.getValueAt(tbObat.getSelectedRow(),4).toString());
             NamaDPJP.setText(tbObat.getValueAt(tbObat.getSelectedRow(),5).toString());
             TDiagnosa.setText(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());
+            String noRMBayiPilih = tbObat.getValueAt(tbObat.getSelectedRow(),2).toString();
+            Sequel.cariIsi("select pendaftaran_bayi.no_kk from pendaftaran_bayi where pendaftaran_bayi.no_rkm_medis=?", NoKK, noRMBayiPilih);
+            Sequel.cariIsi("select pendaftaran_bayi.kode_pos from pendaftaran_bayi where pendaftaran_bayi.no_rkm_medis=?", KdPos, noRMBayiPilih);
+            Sequel.cariIsi("select pendaftaran_bayi.nama_ayah from pendaftaran_bayi where pendaftaran_bayi.no_rkm_medis=?", TAyah, noRMBayiPilih);
+            Sequel.cariIsi("select pendaftaran_bayi.pekerjaan_ayah from pendaftaran_bayi where pendaftaran_bayi.no_rkm_medis=?", PekerjaanAyah, noRMBayiPilih);
+            Sequel.cariIsi("select pendaftaran_bayi.umur_ayah from pendaftaran_bayi where pendaftaran_bayi.no_rkm_medis=?", UmurAyah, noRMBayiPilih);
         }
     }
 
@@ -2081,6 +2224,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     public void isCek(){
         BtnSimpan.setEnabled(akses.getpermintaan_ranap());
         BtnHapus.setEnabled(akses.getpermintaan_ranap());
+        BtnGanti.setEnabled(akses.getpermintaan_ranap());
         if(!akses.getkode().equals("Admin Utama")){
            String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode());
             if(jabatan.equals("J005")){
@@ -2166,13 +2310,28 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }
     
     private void aturTinggiPanel() {
+        int yAyah;
         if (TNoRMBayi3.isVisible()) {
-            PanelInput.setPreferredSize(new Dimension(WIDTH, 264)); 
+            PanelInput.setPreferredSize(new Dimension(WIDTH, 354));
+            yAyah = 220;
         } else if (TNoRMBayi2.isVisible()) {
-            PanelInput.setPreferredSize(new Dimension(WIDTH, 224)); 
+            PanelInput.setPreferredSize(new Dimension(WIDTH, 314));
+            yAyah = 190;
         } else {
-            PanelInput.setPreferredSize(new Dimension(WIDTH, 184)); 
+            PanelInput.setPreferredSize(new Dimension(WIDTH, 274));
+            yAyah = 160;
         }
+        // data ayah selalu di bawah baris No.RM bayi terakhir yang tampil
+        LblNoKK.setLocation(LblNoKK.getX(), yAyah);
+        NoKK.setLocation(NoKK.getX(), yAyah);
+        LblKdPos.setLocation(LblKdPos.getX(), yAyah);
+        KdPos.setLocation(KdPos.getX(), yAyah);
+        LblNamaAyah.setLocation(LblNamaAyah.getX(), yAyah + 30);
+        TAyah.setLocation(TAyah.getX(), yAyah + 30);
+        LblUmurAyah.setLocation(LblUmurAyah.getX(), yAyah + 30);
+        UmurAyah.setLocation(UmurAyah.getX(), yAyah + 30);
+        LblPekerjaanAyah.setLocation(LblPekerjaanAyah.getX(), yAyah + 60);
+        PekerjaanAyah.setLocation(PekerjaanAyah.getX(), yAyah + 60);
         PanelInput.revalidate();
         PanelInput.repaint();
     }

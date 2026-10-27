@@ -9242,7 +9242,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
 //                    DTPRawatGabung.setSelectedItem(currentDate);
 //                    Catatan.setText(now.substring(11, 13) + ":" + now.substring(14, 16) + ":" + now.substring(17, 19));
 
-                    ranapgabung.setSize(950,500);
+                    ranapgabung.setSize(950,650);
                     ranapgabung.setLocationRelativeTo(internalFrame1);
                     ranapgabung.isCek();
                     ranapgabung.setNoRm(norawat.getText(),TNoRM.getText()+" "+TPasien.getText(), new Date(), new Date(),tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 19).toString());
@@ -12101,6 +12101,9 @@ public class DlgKamarInap extends javax.swing.JDialog {
             Valid.textKosong(norawat,"No.Rawat");
         }else{
             Sequel.mengedit("kamar_inap","no_rawat=?"," diagnosa_awal=?",2,new String[]{DiagnosaAwalSementara.getText(),norawat.getText()});
+            // kolom permintaan_ranap.diagnosa maksimal 50 karakter
+            String diagnosaPermintaan = DiagnosaAwalSementara.getText().length() > 50 ? DiagnosaAwalSementara.getText().substring(0, 50) : DiagnosaAwalSementara.getText();
+            Sequel.mengedit("permintaan_ranap","no_rawat=?"," diagnosa=?",2,new String[]{diagnosaPermintaan,norawat.getText()});
             if(tbKamIn.getSelectedRow()>-1){
                 tbKamIn.setValueAt(DiagnosaAwalSementara.getText(),tbKamIn.getSelectedRow(),9);
                 tbKamIn.setValueAt(DiagnosaAwalSementara.getText(),tbKamIn.getSelectedRow(),29);

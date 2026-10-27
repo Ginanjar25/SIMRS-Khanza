@@ -16189,7 +16189,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg, " +
                 "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli, " +
                 "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,reg_periksa.status_poli, " +
-                "reg_periksa.kd_poli,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(bse.no_sep),'VCL','BRD') AS skdp, CASE WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '10' THEN 'WEB' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '01' THEN 'JKN' WHEN CONCAT(ISNULL(rmb.nobooking), ISNULL(regw.no_rawat)) = '11' THEN 'ONSITE' ELSE 'Unknown' END AS asal, IF(ISNULL(rmb.`status`),IF(ISNULL(regw.`status`),IF(reg_periksa.stts != 'Batal','-','Batal'),regw.`status`),rmb.`status`) AS jknstts, " +
+                "reg_periksa.kd_poli,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(bse.no_sep),'VCL','BRD') AS skdp, CASE WHEN CONCAT((ISNULL(rmb.nobooking) OR rmbb.nobooking IS NOT NULL), ISNULL(regw.no_rawat)) = '10' THEN 'WEB' WHEN CONCAT((ISNULL(rmb.nobooking) OR rmbb.nobooking IS NOT NULL), ISNULL(regw.no_rawat)) = '01' THEN 'JKN' WHEN CONCAT((ISNULL(rmb.nobooking) OR rmbb.nobooking IS NOT NULL), ISNULL(regw.no_rawat)) = '11' THEN 'ONSITE' ELSE 'Unknown' END AS asal, IF(ISNULL(rmb.`status`),IF(ISNULL(regw.`status`),IF(reg_periksa.stts != 'Batal','-','Batal'),regw.`status`),rmb.`status`) AS jknstts, " +
                 "if(exists(select 1 from side_db.fingerprint_bpjs fr where fr.nokartu=pasien.no_peserta and fr.tanggal=reg_periksa.tgl_registrasi),'Sudah','Belum') AS fingerprint, " +
                 "if(exists(select 1 from bridging_surat_kontrol_bpjs skdp where skdp.no_sep=bse.no_sep),'Sudah','Belum') AS terbit_skdp, if(ISNULL(penjab_reg.no_kartu),'',CONCAT(' - ', penjab_reg.no_kartu)) AS no_kartu2, " +
                 "IFNULL(penjab_reg.kd_pj, '') AS kd_pj2, CASE WHEN antripoli.`status` IS NULL OR antripoli.`status` = '0' THEN 'Belum' ELSE 'Sudah' END AS cetak_barcode, " +
@@ -16203,6 +16203,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli " +
                 "LEFT JOIN kelurahan kelpas ON pasien.kd_kel=kelpas.kd_kel LEFT JOIN kecamatan kecpas ON pasien.kd_kec=kecpas.kd_kec LEFT JOIN kabupaten kabpas ON pasien.kd_kab=kabpas.kd_kab " +
                 "LEFT JOIN referensi_mobilejkn_bpjs rmb ON rmb.no_rawat = reg_periksa.no_rawat LEFT JOIN side_db.reg_periksa_website regw ON regw.no_rawat = reg_periksa.no_rawat " +
+                "LEFT JOIN referensi_mobilejkn_bpjs_batal rmbb ON rmbb.nobooking = rmb.nobooking AND rmbb.keterangan LIKE 'Ganti cara bayar%' " +
                 "LEFT JOIN bridging_sep bse ON bse.no_rawat = reg_periksa.no_rawat " +
                 "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj " +
                 "LEFT JOIN penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat AND penjab_reg.`order` = 2 " +
@@ -17992,6 +17993,15 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     }
 
     private void ganti(){
+        boolean perluKonfirmasiCaraBayar = !kdpnj.getText().equalsIgnoreCase("BPJ") && !Sequel.cariIsi("select no_rawat from referensi_mobilejkn_bpjs where no_rawat=? and status<>'Batal'", TNoRw.getText()).isEmpty();
+        if(perluKonfirmasiCaraBayar){
+            int reply = JOptionPane.showConfirmDialog(rootPane,"No Rawat "+TNoRw.getText()+" terdaftar dari Mobile JKN (BPJS).\n"
+                    + "Apakah yakin ingin merubah cara bayar dari BPJS ke "+nmpnj.getText()+" (Onsite)?\n"
+                    + "Antrian Mobile JKN untuk no rawat ini akan dibatalkan dan status batal akan dikirim ke BPJS.","Konfirmasi",JOptionPane.YES_NO_OPTION);
+            if(reply != JOptionPane.YES_OPTION){
+                return;
+            }
+        }
         if(Sequel.queryu2tf("update reg_periksa set no_reg=?,kd_dokter=?,no_rkm_medis=?,kd_poli=?,"+
                             "p_jawab=?,almt_pj=?,biaya_reg=?,hubunganpj=?,stts_daftar=?,kd_pj=?,umurdaftar=?,sttsumur=? where no_rawat=?",13,
             new String[]{
@@ -17999,7 +18009,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 TAlmt.getText(),TBiaya.getText(),THbngn.getText(),TStatus.getText(),kdpnj.getText(),umur,sttsumur,tbPetugas.getValueAt(tbPetugas.getSelectedRow(),2).toString()
             })==true){
             ubahAntrianPoli();
-                    
+            ubahCaraBayarKeNonBpjs();
+
             if (R2.isSelected() == true) {
                 if (Sequel.cariIsi("select no_rawat from penjab_reg where no_rawat = ?", TNoRw.getText()).isEmpty() && !kdpnj2.getText().trim().equals("")) {
                     Sequel.menyimpan2("penjab_reg", "?,?,?,?", "Data", 4, new String[]{
@@ -18273,6 +18284,23 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 String nipBaru = nipAsli.isEmpty() ? "#" + kelas_bpjs : nipAsli + "#" + kelas_bpjs;
                 Sequel.mengedittf("pasien","no_rkm_medis = ?","nip=?",2,new String[]{nipBaru,TNoRM.getText()}
                 );
+            }
+        }
+    }
+
+    private void ubahCaraBayarKeNonBpjs(){
+        if(!kdpnj.getText().equalsIgnoreCase("BPJ") && !Sequel.cariIsi("select no_rawat from referensi_mobilejkn_bpjs where no_rawat=? and status<>'Batal'", TNoRw.getText()).isEmpty()){
+            if(Sequel.mengedittf("referensi_mobilejkn_bpjs", "no_rawat=?", "status='Batal',validasi=now()", 1, new String[]{TNoRw.getText()})) {
+                Sequel.menyimpan2("referensi_mobilejkn_bpjs_batal", "?,?,?,now(),?,?,?", 6, new String[]{
+                    Sequel.cariIsi("SELECT rmb.norm FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText()),
+                    TNoRw.getText(),
+                    Sequel.cariIsi("SELECT rmb.nomorreferensi FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText()),
+                    "Ganti cara bayar ke "+nmpnj.getText()+" (Onsite) oleh " + akses.getkode(),
+                    "Belum",
+                    Sequel.cariIsi("SELECT rmb.nobooking FROM referensi_mobilejkn_bpjs rmb WHERE rmb.no_rawat =?", TNoRw.getText())
+                });
+                tabMode.setValueAt("ONSITE",tbPetugas.getSelectedRow(),25);
+                tabMode.setValueAt("Batal",tbPetugas.getSelectedRow(),26);
             }
         }
     }
