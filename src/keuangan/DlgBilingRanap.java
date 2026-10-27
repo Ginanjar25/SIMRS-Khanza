@@ -8376,7 +8376,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
 
     /** HTML peringatan jika SKDP Post RI belum terbit untuk SEP tersebut, kosong jika aman. */
     private String pesanSKDPPostRI(String no_sep) {
-        String cara_pulang = Sequel.cariIsi("select stts_pulang from kamar_inap where no_rawat = ?", TNoRw.getText());
+        String cara_pulang = Sequel.cariIsi("select stts_pulang from kamar_inap where no_rawat = ? and stts_pulang != 'Pindah Kamar'", TNoRw.getText());
         if(cara_pulang.equals("Rujuk") || cara_pulang.equals("Meninggal")){
               return "";
         }
