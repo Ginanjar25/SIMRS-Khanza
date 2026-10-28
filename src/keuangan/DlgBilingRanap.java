@@ -8374,9 +8374,12 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         return tampilPeringatan("", "", pesanSKDPPostRI(no_sep));
     }
 
-    /** HTML peringatan jika SKDP Post RI belum terbit untuk SEP tersebut, kosong jika aman. */
+    /** HTML peringatan jika status pulang belum diisi, atau SKDP Post RI belum terbit untuk SEP tersebut (kecuali Rujuk/Meninggal), kosong jika aman. */
     private String pesanSKDPPostRI(String no_sep) {
         String cara_pulang = Sequel.cariIsi("select stts_pulang from kamar_inap where no_rawat = ? and stts_pulang != 'Pindah Kamar'", TNoRw.getText());
+        if (cara_pulang == null || cara_pulang.isEmpty() || cara_pulang.equals("-")) {
+            return judulHtml("h3", "C. Status Pulang Pasien", 0) + "<p style='margin-top: 0;'>Status Pulang Pasien belum di isi</p>";
+        }
         if(cara_pulang.equals("Rujuk") || cara_pulang.equals("Meninggal")){
               return "";
         }
