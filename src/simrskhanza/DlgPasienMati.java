@@ -78,7 +78,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
 
         Object[] row={"Tanggal","Jam","No.R.Medik","Nama Pasien","J.K.","Tmp.Lahir",
                       "Tgl.Lahir","G.D.","Stts.Nikah","Agama","Keterangan","Tempat Meninggal",
-                      "ICD-X","Antara 1","Antara 2","Langsung","Kode DPJP","Nama DPJP","No Surat"};
+                      "ICD-X","Antara 1","Antara 2","Langsung","Kode DPJP","Nama DPJP","No Surat","Tgl Pulang SEP", "Stts Bridging"};
 
         tabMode=new DefaultTableModel(null,row){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
@@ -89,7 +89,7 @@ public class DlgPasienMati extends javax.swing.JDialog {
         tbMati.setPreferredScrollableViewportSize(new Dimension(500,500));
         tbMati.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (int i = 0; i < 19; i++) {
+        for (int i = 0; i < 21; i++) {
             TableColumn column = tbMati.getColumnModel().getColumn(i);
             if(i==0){
                 column.setPreferredWidth(75);
@@ -129,6 +129,11 @@ public class DlgPasienMati extends javax.swing.JDialog {
                 column.setPreferredWidth(150);
             }
             else if(i==18){
+                column.setPreferredWidth(90);
+            }
+            else if(i==19){
+                column.setPreferredWidth(150);
+            }else if(i==20){
                 column.setPreferredWidth(90);
             }
         }
@@ -1363,9 +1368,28 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
             ps=koneksi.prepareStatement("select pasien_mati.tanggal,pasien_mati.jam,pasien_mati.no_rkm_medis,pasien.nm_pasien, "+
                    "pasien.jk,pasien.tmp_lahir,pasien.tgl_lahir,pasien.gol_darah,pasien.stts_nikah, "+
                    "pasien.agama, TRIM(SUBSTRING_INDEX(pasien_mati.keterangan , '#', 1)) as keterangan,pasien_mati.temp_meninggal,pasien_mati.icd1,pasien_mati.icd2, "+
-                   "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter, TRIM(SUBSTRING_INDEX(pasien_mati.keterangan , '#', -1)) as no_skm "+
+                   "pasien_mati.icd3,pasien_mati.icd4,pasien_mati.kd_dokter,dokter.nm_dokter, TRIM(SUBSTRING_INDEX(pasien_mati.keterangan , '#', -1)) as no_skm, " +
+                   "IFNULL(sep.no_sep, '') as no_sep, " +
+                   "       IFNULL(sep.tglpulang, '') as tglpulang, " +
+                   "       case " +
+                   "           when sep.no_sep is null then '' " +
+                   "           when sep.tglpulang is null or sep.tglpulang like '0000-00-00%' then 'Belum' " +
+                   "           else 'Sudah' " +
+                   "       end as bridging "+
                    "from pasien_mati inner join pasien on pasien_mati.no_rkm_medis=pasien.no_rkm_medis "+
-                   "inner join dokter on pasien_mati.kd_dokter=dokter.kd_dokter "+
+                   "inner join dokter on pasien_mati.kd_dokter=dokter.kd_dokter " +
+                   "left join ( " +
+                   "  select b.nomr, max(b.no_sep) as no_sep " +
+                   "    from bridging_sep b " +
+                   "    inner join ( " +
+                   "        select nomr, max(tglsep) as tglsep " +
+                   "        from bridging_sep " +
+                   "        where nomr in (select no_rkm_medis from pasien_mati) " +
+                   "        group by nomr " +
+                   "    ) m on m.nomr = b.nomr and m.tglsep = b.tglsep " +
+                   "    group by b.nomr " +
+                   ") latest on latest.nomr = pasien_mati.no_rkm_medis " +
+                   "left join bridging_sep sep on sep.no_sep = latest.no_sep "+
                    (TCari.getText().trim().equals("")?"":
                    "where pasien_mati.tanggal like '%"+TCari.getText().trim()+"%' or "+
                    "pasien_mati.no_rkm_medis like '%"+TCari.getText().trim()+"%' or "+
@@ -1376,7 +1400,7 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
                    "dokter.nm_dokter like '%"+TCari.getText().trim()+"%' or "+
                    "pasien_mati.icd1 like '%"+TCari.getText().trim()+"%' or "+
                    "pasien_mati.keterangan like '%"+TCari.getText().trim()+"%' ")+
-                   "order by pasien_mati.tanggal ");
+                   "order by pasien_mati.tanggal desc ");
             try {
                 rs=ps.executeQuery();
                 while(rs.next()){               
@@ -1385,7 +1409,8 @@ private void MnCetakSuratMatiActionPerformed(java.awt.event.ActionEvent evt) {//
                         rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),
                         rs.getString(9),rs.getString(10),rs.getString(11),rs.getString(12),
                         rs.getString(13),rs.getString(14),rs.getString(15),rs.getString(16),
-                        rs.getString(17),rs.getString(18), rs.getString(19)
+                        rs.getString(17),rs.getString(18), rs.getString(19), 
+                        rs.getString(21), rs.getString(22)
                     });
                 }
             } catch (Exception e) {
