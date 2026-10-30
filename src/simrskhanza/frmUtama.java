@@ -8413,7 +8413,8 @@ public class frmUtama extends javax.swing.JFrame {
                     if(AKTIFKANTRACKSQL.equals("yes")){
                         Sequel.menyimpan("tracker","'Admin Utama',current_date(),current_time()","Login");
                     }
-                }else if(akses.getjml2()>=1){  
+//                    javax.swing.SwingUtilities.invokeLater(() -> DlgChangelog.tampilkanJikaAdaUpdate(this));
+                }else if(akses.getjml2()>=1){
                     BtnMenu.setEnabled(true);
                     DlgLogin.dispose();
                     BtnLog.setText("Log Out");
@@ -8475,6 +8476,7 @@ public class frmUtama extends javax.swing.JFrame {
                              }
                         }
                     }
+//                    javax.swing.SwingUtilities.invokeLater(() -> DlgChangelog.tampilkanJikaAdaUpdate(this));
                 }else if((akses.getjml1()==0)&&(akses.getjml2()==0)){
                     JOptionPane.showMessageDialog(null,"Maaf, Gagal login. ID User atau password ada yang salah ...!");
                     BtnToolReg.setEnabled(false);

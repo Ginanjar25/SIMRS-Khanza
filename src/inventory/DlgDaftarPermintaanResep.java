@@ -4391,8 +4391,32 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     }
 
     private void panggilform() {
+        if(koneksiDB.OTOMATISOBATKRONIS().equals("yes")&&Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?",NoRawat).equals("BPJ")){
+            panggilformkronis();
+            return;
+        }
         try {
             DlgCariObat dlgobt=new DlgCariObat(null,false);
+            dlgobt.setNoRm(NoRawat,NoRM,Pasien,TglPeresepan,JamPeresepan);
+            dlgobt.isCek();
+            dlgobt.tampilobat2(NoResep);
+            dlgobt.setNoResep(NoResep);
+            dlgobt.setLockValidasi(lockValidasi);
+            lockValidasi=null;
+            dlgobt.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            dlgobt.setLocationRelativeTo(internalFrame1);
+            TeksKosong();
+            dlgobt.setVisible(true);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : "+e);
+            lepasLockValidasi();
+        }
+    }
+
+    /** Pasien BPJS saat OTOMATISOBATKRONIS=yes: validasi dengan pembagian Jml Poli / Jml Kronis */
+    private void panggilformkronis() {
+        try {
+            DlgCariObatKronis dlgobt=new DlgCariObatKronis(null,false);
             dlgobt.setNoRm(NoRawat,NoRM,Pasien,TglPeresepan,JamPeresepan);
             dlgobt.isCek();
             dlgobt.tampilobat2(NoResep);

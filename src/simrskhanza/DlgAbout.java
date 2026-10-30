@@ -34,7 +34,24 @@ public class DlgAbout extends javax.swing.JDialog {
             BuildVersion="Default Version";
         }
         jLabel17.setText(BuildVersion);
+
+        BtnChangelog=new widget.Button();
+        BtnChangelog.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/new_page.png")));
+        BtnChangelog.setMnemonic('B');
+        BtnChangelog.setText("Apa yang Baru");
+        BtnChangelog.setToolTipText("Alt+B");
+        BtnChangelog.setIconTextGap(3);
+        BtnChangelog.setName("BtnChangelog");
+        BtnChangelog.addActionListener(evt -> {
+            DlgChangelog changelog=new DlgChangelog(null,true);
+            changelog.setLocationRelativeTo(this);
+            changelog.setVisible(true);
+        });
+        panelGlass4.add(BtnChangelog);
+        BtnChangelog.setBounds(330, 276, 120, 30);
     }
+
+    private widget.Button BtnChangelog;
 
     /** This method is called from within the constructor to
      * initialize the form.

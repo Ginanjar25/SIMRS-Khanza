@@ -797,6 +797,16 @@ public class koneksiDB {
         return var;
     }
     
+    public static String OTOMATISOBATKRONIS(){
+        try{
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var=prop.getProperty("OTOMATISOBATKRONIS");
+        }catch(Exception e){
+            var="";
+        }
+        return var;
+    }
+
     public static String CETAKRINCIANOBAT(){
         try{
             prop.loadFromXML(new FileInputStream("setting/database.xml"));
