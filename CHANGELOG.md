@@ -17,8 +17,14 @@ PANDUAN MENGISI
 ## [Belum Rilis]
 ### Ditambahkan
 - **Validasi Resep Pasien BPJS / Obat Kronis**: Jendela validasi khusus pasien BPJS dengan kolom "Jml Kronis" di samping "Jml Poli". Jml Poli masuk paket rawat jalan, Jml Kronis otomatis tercatat sebagai piutang. Total kronis tampil di samping total. (Farmasi)
+- **Validasi Resep**: Pilihan "Jenis Resep" (Racikan/Non Racikan, otomatis mengikuti resep dokter) dan "Obat Karyawan" (Ya/Tidak). Waktu peresepan dan validasi resep ikut tercatat. (Farmasi)
+- **Piutang Obat Karyawan dari Resep**: Menu "Piutang Obat Karyawan" di Daftar Permintaan Resep. Resep dokter divalidasi langsung sebagai piutang karyawan memakai tarif Karyawan, lalu dibayar lewat Bayar Piutang Karyawan. Cetak resep dan telaah tetap bisa dilakukan. Khusus resep non racikan. (Farmasi)
 
 ### Catatan Teknis
+- Piutang obat karyawan dari resep (DlgPiutangKaryawan) memakai nota `HKyymmddxxx`, jns_jual "Karyawan", dan catatan "NIK-Nama" agar terbaca di Cari/Bayar Piutang Karyawan. Obat tidak masuk detail_pemberian_obat dan billing. Pembatalan lewat menu Data Piutang. Bila perlu, status validasi resep direset manual.
+- Kolom tambahan untuk piutang karyawan (wajib, karena dipakai cetak resep): `ALTER TABLE side_db.resep_obat_detail ADD COLUMN nota_piutang varchar(20) NULL AFTER is_karyawan, ADD KEY nota_piutang (nota_piutang);`
+- Tabel baru `side_db.resep_obat_detail` (lihat SQL di bawah) diisi saat validasi resep di DlgCariObat dan DlgCariObatKronis. Kolom tgl/jam siap dan penyerahan diisi oleh aplikasi scan barcode terpisah, bukan oleh Khanza.
+  `CREATE TABLE side_db.resep_obat_detail (no_resep varchar(14) NOT NULL, no_rawat varchar(17) NOT NULL, tgl_peresepan date NULL, jam_peresepan time NULL, tgl_validasi date NULL, jam_validasi time NULL, tgl_siap date NULL, jam_siap time NULL, tgl_penyerahan date NULL, jam_penyerahan time NULL, is_racikan tinyint(1) NOT NULL DEFAULT 0, is_karyawan tinyint(1) NOT NULL DEFAULT 0, nota_piutang varchar(20) NULL, PRIMARY KEY (no_resep), KEY nota_piutang (nota_piutang), KEY no_rawat (no_rawat)) ENGINE=InnoDB;`
 - Aktifkan dengan `<entry key="OTOMATISOBATKRONIS">yes</entry>` di setting/database.xml tiap PC farmasi. Bila "yes", validasi resep pasien BPJS (kd_pj = BPJ) dari Daftar Permintaan Resep membuka DlgCariObatKronis. Bila "no", tetap memakai DlgCariObat.
 - Nota piutang kronis = No. Rawat. Validasi ulang pada kunjungan yang sama menambah ke piutang yang sudah ada.
 - Pembatalan bagian kronis dilakukan dari menu Data Piutang (nota = No. Rawat), karena tidak ikut terhapus saat pemberian obat dihapus.

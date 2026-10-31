@@ -2381,7 +2381,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 noRM, nama.trim(), "", jk, "TULUNGAGUNG", tglLahir,
                 nmIbu, rsIbu.getString("alamat"), "-", "DIBAWAH UMUR", "BELUM MENIKAH", rsIbu.getString("agama"),
                 tglLahir, rsIbu.getString("no_tlp"), "0 Th 0 Bl 0 Hr", "-",
-                rsIbu.getString("keluarga"), rsIbu.getString("namakeluarga"), rsIbu.getString("kd_pj"), rsIbu.getString("no_peserta"),
+                rsIbu.getString("keluarga"), rsIbu.getString("namakeluarga"), rsIbu.getString("kd_pj"), "0",
                 rsIbu.getString("kd_kel"), rsIbu.getString("kd_kec"), rsIbu.getString("kd_kab"),
                 rsIbu.getString("pekerjaanpj"), rsIbu.getString("alamatpj"), rsIbu.getString("kelurahanpj"),
                 rsIbu.getString("kecamatanpj"), rsIbu.getString("kabupatenpj"),

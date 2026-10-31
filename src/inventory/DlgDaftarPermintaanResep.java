@@ -570,6 +570,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         BtnRiwayat = new widget.Button();
         BtnPemberianObat = new widget.Button();
         BtnPiutangObat = new widget.Button();
+        BtnPiutangObatKaryawan = new widget.Button();
         BtnResepAwal = new widget.Button();
         BtnResepLuar = new widget.Button();
         BtnKonselingFarmasi = new widget.Button();
@@ -1303,6 +1304,23 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
             }
         });
         FormMenu.add(BtnPiutangObat);
+
+        BtnPiutangObatKaryawan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
+        BtnPiutangObatKaryawan.setText("Piutang Obat Karyawan");
+        BtnPiutangObatKaryawan.setFocusPainted(false);
+        BtnPiutangObatKaryawan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        BtnPiutangObatKaryawan.setGlassColor(new java.awt.Color(255, 255, 255));
+        BtnPiutangObatKaryawan.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        BtnPiutangObatKaryawan.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        BtnPiutangObatKaryawan.setName("BtnPiutangObatKaryawan"); // NOI18N
+        BtnPiutangObatKaryawan.setPreferredSize(new java.awt.Dimension(135, 23));
+        BtnPiutangObatKaryawan.setRoundRect(false);
+        BtnPiutangObatKaryawan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnPiutangObatKaryawanActionPerformed(evt);
+            }
+        });
+        FormMenu.add(BtnPiutangObatKaryawan);
 
         BtnResepAwal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/item.png"))); // NOI18N
         BtnResepAwal.setText("Cetak Resep Awal");
@@ -3241,6 +3259,34 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     Sequel.queryu("delete from temporary_resep where temp37='"+akses.getalamatip()+"'");
                   try {
                     i=0;
+                    // resep piutang karyawan: obatnya ada di detailpiutang, bukan detail_pemberian_obat
+                    String notakaryawan=Sequel.cariIsi("select resep_obat_detail.nota_piutang from side_db.resep_obat_detail where resep_obat_detail.no_resep=? and resep_obat_detail.is_karyawan='1'",NoResep);
+                    if(!notakaryawan.equals("")){
+                        ps=koneksi.prepareStatement(
+                            "select databarang.nama_brng,detailpiutang.aturan_pakai,detailpiutang.jumlah,kodesatuan.satuan "+
+                            "from detailpiutang inner join databarang on detailpiutang.kode_brng=databarang.kode_brng "+
+                            "inner join kodesatuan on kodesatuan.kode_sat=databarang.kode_sat "+
+                            "where detailpiutang.nota_piutang=?");
+                        try {
+                            ps.setString(1,notakaryawan);
+                            rs=ps.executeQuery();
+                            while(rs.next()){
+                                Sequel.menyimpan("temporary_resep","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?",38,new String[]{
+                                    ""+i,rs.getString("nama_brng"),rs.getString("aturan_pakai"),rs.getString("jumlah"),rs.getString("satuan"),"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",NoResep,akses.getalamatip()
+                                });
+                                i++;
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Notif Resep Karyawan : "+e);
+                        } finally{
+                            if(rs!=null){
+                                rs.close();
+                            }
+                            if(ps!=null){
+                                ps.close();
+                            }
+                        }
+                    }
                     ps=koneksi.prepareStatement(
                         "select databarang.nama_brng,aturan_pakai.aturan,detail_pemberian_obat.jml,kodesatuan.satuan "+
                         "from resep_obat inner join reg_periksa inner join "+
@@ -3843,6 +3889,35 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         }
     }//GEN-LAST:event_ResetDoubleValidasiActionPerformed
 
+    private void BtnPiutangObatKaryawanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPiutangObatKaryawanActionPerformed
+        if(TabPilihRawat.getSelectedIndex()==0&&TabRawatJalan.getSelectedIndex()==0){
+            if(akses.getberi_obat()==true){
+                if(tabMode.getRowCount()==0){
+                    JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
+                    TCari.requestFocus();
+                }else if(NoRawat.equals("")){
+                    JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau dijadikan piutang karyawan..!!");
+                }else if(Sequel.cariInteger("select count(resep_dokter_racikan.no_resep) from resep_dokter_racikan where resep_dokter_racikan.no_resep=?",NoResep)>0){
+                    JOptionPane.showMessageDialog(null,"Maaf, resep racikan belum bisa dijadikan piutang karyawan..!!");
+                }else if((lockValidasi=ValidasiResepLock.ambil(NoResep,NoRawat))!=null){
+                    if(isValidResep()) {
+                        lepasLockValidasi();
+                        JOptionPane.showMessageDialog(null, "Maaf, Resep sudah tervalidasi...!!!");
+                    }else{
+                        Sequel.queryu("delete from antriapotek2");
+                        Sequel.queryu("insert into antriapotek2 values('"+NoResep+"','1','"+NoRawat+"')");
+                        panggilformkaryawan();
+                    }
+                }
+            }else{
+                JOptionPane.showMessageDialog(null,"Maaf, Anda tidak punya hak akses untuk mengvalidasi...!!!!");
+                TCari.requestFocus();
+            }
+        }else{
+            JOptionPane.showMessageDialog(null,"Maaf, piutang obat karyawan hanya untuk resep rawat jalan..!!");
+        }
+    }//GEN-LAST:event_BtnPiutangObatKaryawanActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -3871,6 +3946,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private widget.Button BtnPemberianObat;
     private widget.Button BtnPenyerahan;
     private widget.Button BtnPiutangObat;
+    private widget.Button BtnPiutangObatKaryawan;
     private widget.Button BtnPrint;
     private widget.Button BtnRekap;
     private widget.Button BtnResepAwal;
@@ -4417,6 +4493,26 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private void panggilformkronis() {
         try {
             DlgCariObatKronis dlgobt=new DlgCariObatKronis(null,false);
+            dlgobt.setNoRm(NoRawat,NoRM,Pasien,TglPeresepan,JamPeresepan);
+            dlgobt.isCek();
+            dlgobt.tampilobat2(NoResep);
+            dlgobt.setNoResep(NoResep);
+            dlgobt.setLockValidasi(lockValidasi);
+            lockValidasi=null;
+            dlgobt.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            dlgobt.setLocationRelativeTo(internalFrame1);
+            TeksKosong();
+            dlgobt.setVisible(true);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : "+e);
+            lepasLockValidasi();
+        }
+    }
+
+    /** Validasi resep sebagai piutang obat karyawan: obat masuk piutang/detailpiutang, bukan detail_pemberian_obat */
+    private void panggilformkaryawan() {
+        try {
+            DlgPiutangKaryawan dlgobt=new DlgPiutangKaryawan(null,false);
             dlgobt.setNoRm(NoRawat,NoRM,Pasien,TglPeresepan,JamPeresepan);
             dlgobt.isCek();
             dlgobt.tampilobat2(NoResep);

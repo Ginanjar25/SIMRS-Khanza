@@ -94,6 +94,7 @@ public final class DlgCariObatKronis extends javax.swing.JDialog {
     private ValidasiResepLock lockValidasi=null;
     private static final Properties prop = new Properties();
     private static String var = "", FILTEROBATPENJAB="no";
+    private widget.RadioButton RbNonRacikan,RbRacikan,RbKaryawanTidak,RbKaryawanYa;
     
     /** Creates new form DlgPenyakit
      * @param parent
@@ -503,6 +504,40 @@ public final class DlgCariObatKronis extends javax.swing.JDialog {
         LTotalKronis.setToolTipText("Total Jml Kronis, disimpan sebagai piutang Obat Apotek BPJS");
         FormInput.add(LTotalKronis);
         LTotalKronis.setBounds(743, 70, 90, 20);
+
+        // detail resep (side_db.resep_obat_detail), ditambahkan di luar Form Editor
+        widget.Label labelracikan=new widget.Label();
+        labelracikan.setText("Jenis Resep :");
+        FormInput.add(labelracikan);
+        labelracikan.setBounds(710, 10, 90, 23);
+        javax.swing.ButtonGroup grupracikan=new javax.swing.ButtonGroup();
+        RbNonRacikan=new widget.RadioButton();
+        RbNonRacikan.setText("Non Racikan");
+        RbNonRacikan.setSelected(true);
+        grupracikan.add(RbNonRacikan);
+        FormInput.add(RbNonRacikan);
+        RbNonRacikan.setBounds(803, 10, 90, 23);
+        RbRacikan=new widget.RadioButton();
+        RbRacikan.setText("Racikan");
+        grupracikan.add(RbRacikan);
+        FormInput.add(RbRacikan);
+        RbRacikan.setBounds(893, 10, 70, 23);
+        widget.Label labelkaryawan=new widget.Label();
+        labelkaryawan.setText("Obat Karyawan :");
+        FormInput.add(labelkaryawan);
+        labelkaryawan.setBounds(710, 40, 90, 23);
+        javax.swing.ButtonGroup grupkaryawan=new javax.swing.ButtonGroup();
+        RbKaryawanTidak=new widget.RadioButton();
+        RbKaryawanTidak.setText("Tidak");
+        RbKaryawanTidak.setSelected(true);
+        grupkaryawan.add(RbKaryawanTidak);
+        FormInput.add(RbKaryawanTidak);
+        RbKaryawanTidak.setBounds(803, 40, 90, 23);
+        RbKaryawanYa=new widget.RadioButton();
+        RbKaryawanYa.setText("Ya");
+        grupkaryawan.add(RbKaryawanYa);
+        FormInput.add(RbKaryawanYa);
+        RbKaryawanYa.setBounds(893, 40, 70, 23);
     }
     
 
@@ -1406,7 +1441,8 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             JOptionPane.showMessageDialog(null, "Maaf, Resep sudah tervalidasi...!!!");
         }else{
             int reply = JOptionPane.showConfirmDialog(rootPane,"Eeiiiiiits, udah bener belum data yang mau disimpan..??"+
-                    (ttlkronis>0?"\nJml Kronis Rp "+Valid.SetAngka(ttlkronis)+" disimpan sebagai piutang Obat Apotek BPJS":""),"Konfirmasi",JOptionPane.YES_NO_OPTION);
+                    (ttlkronis>0?"\nJml Kronis Rp "+Valid.SetAngka(ttlkronis)+" disimpan sebagai piutang":"")+
+                    "\nJenis Resep : "+(RbRacikan.isSelected()?"Racikan":"Non Racikan")+"\nObat Karyawan : "+(RbKaryawanYa.isSelected()?"Ya":"Tidak"),"Konfirmasi",JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 try {  
                     ChkJln.setSelected(false);
@@ -1419,6 +1455,9 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         JOptionPane.showMessageDialog(null,"Maaf, Resep sudah tervalidasi oleh petugas lain, transaksi dibatalkan...!!!");
                         dispose();
                         return;
+                    }
+                    if(!noresep.equals("")){
+                        simpanDetailResep();
                     }
                     ttlhpp=0;ttljual=0;
                     for(i=0;i<tbObat.getRowCount();i++){ 
@@ -3647,6 +3686,36 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
       this.noresep = no_resep;
       Sequel.cariIsi("SELECT prb from side_db.resep_obat_info where no_resep = ?", TPRB, no_resep);
       Sequel.cariIsi("SELECT iter from side_db.resep_obat_info where no_resep = ?", TIter, no_resep);
+      // default jenis resep mengikuti resep dokter
+      (Sequel.cariInteger("select count(resep_dokter_racikan.no_resep) from resep_dokter_racikan where resep_dokter_racikan.no_resep=?",no_resep)>0?RbRacikan:RbNonRacikan).setSelected(true);
+      RbKaryawanTidak.setSelected(true);
+    }
+
+    /** Simpan detail resep: waktu peresepan & validasi, racikan/non racikan, obat karyawan. Waktu siap & penyerahan diisi aplikasi scan barcode. */
+    private void simpanDetailResep(){
+        PreparedStatement psdetail=null;
+        try {
+            psdetail=koneksi.prepareStatement(
+                "insert into side_db.resep_obat_detail(no_resep,no_rawat,tgl_peresepan,jam_peresepan,tgl_validasi,jam_validasi,is_racikan,is_karyawan) "+
+                "select resep_obat.no_resep,resep_obat.no_rawat,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,?,?,?,? from resep_obat where resep_obat.no_resep=? "+
+                "on duplicate key update tgl_validasi=values(tgl_validasi),jam_validasi=values(jam_validasi),is_racikan=values(is_racikan),is_karyawan=values(is_karyawan)");
+            psdetail.setString(1,Valid.SetTgl(DTPTgl.getSelectedItem()+""));
+            psdetail.setString(2,cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem());
+            psdetail.setString(3,RbRacikan.isSelected()?"1":"0");
+            psdetail.setString(4,RbKaryawanYa.isSelected()?"1":"0");
+            psdetail.setString(5,noresep);
+            psdetail.executeUpdate();
+        } catch (Exception e) {
+            // tidak membatalkan validasi bila tabel detail belum tersedia
+            System.out.println("Notifikasi Detail Resep : "+e);
+        } finally {
+            if(psdetail!=null){
+                try {
+                    psdetail.close();
+                } catch (Exception e) {
+                }
+            }
+        }
     }
 
     private double jmlKronis(int baris){
