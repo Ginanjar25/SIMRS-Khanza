@@ -40,6 +40,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import modif.RiwayatBukaBilling;
 import simrskhanza.DlgCariPeriksaLab;
 import simrskhanza.DlgCariPeriksaRadiologi;
 import inventory.DlgPemberianObat;
@@ -3481,6 +3482,11 @@ private void MnHapusTagihanActionPerformed(java.awt.event.ActionEvent evt) {//GE
             }
         }
         if(i>0){
+            String alasan=RiwayatBukaBilling.tanyaAlasan(rootPane);
+            if(alasan==null){
+                return;
+            }
+
             Sequel.AutoComitFalse();
             sukses=true;
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -3621,6 +3627,10 @@ private void MnHapusTagihanActionPerformed(java.awt.event.ActionEvent evt) {//GE
                  }
              }
                 
+             if(sukses==true){
+                 sukses=RiwayatBukaBilling.simpan(TNoRw.getText(),TNoRM.getText(),alasan);
+             }
+
              if(sukses==true){
                  Valid.editTable(tabModeRwJlDr,"reg_periksa","no_rawat",TNoRw,"status_bayar='Belum Bayar'");
                  if(!norawatbayi.equals("")){

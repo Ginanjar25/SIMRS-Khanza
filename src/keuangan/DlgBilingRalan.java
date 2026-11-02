@@ -29,6 +29,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import kepegawaian.DlgCariDokter;
+import modif.RiwayatBukaBilling;
 import simrskhanza.DlgCariPeriksaLab;
 import simrskhanza.DlgCariPeriksaRadiologi;
 import simrskhanza.DlgCariPoli;
@@ -3098,6 +3099,11 @@ private void MnHapusTagihanActionPerformed(java.awt.event.ActionEvent evt) {//GE
             if(!tbBilling.getValueAt(0,1).toString().trim().contains("No.Nota")){
                 JOptionPane.showMessageDialog(null,"Pasien menggunakan billing parsial..!!");
             }else{
+                String alasan=RiwayatBukaBilling.tanyaAlasan(rootPane);
+                if(alasan==null){
+                    return;
+                }
+
                 Sequel.AutoComitFalse();
                 sukses=true;
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));            
@@ -3197,6 +3203,10 @@ private void MnHapusTagihanActionPerformed(java.awt.event.ActionEvent evt) {//GE
                     }else if(piutang<=0){
                        sukses=jur.simpanJurnal(TNoRw.getText(),"U","PEMBATALAN PEMBAYARAN PASIEN RAWAT JALAN "+TNoRw.getText()+" "+TNoRM.getText()+" "+TPasien.getText()+", DIBATALKAN OLEH "+akses.getkode());    
                     } 
+                }
+
+                if(sukses==true){
+                    sukses=RiwayatBukaBilling.simpan(TNoRw.getText(),TNoRM.getText(),alasan);
                 }
 
                 if(sukses==true){
