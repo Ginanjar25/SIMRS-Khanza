@@ -67,6 +67,10 @@
 		<property name="com.jaspersoft.studio.field.label" value="temp4"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="temporary_resep"/>
 	</field>
+	<field name="temp5" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="temp5"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="temporary_resep"/>
+	</field>
 	<field name="temp36" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="temp36"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="temporary_resep"/>
@@ -78,6 +82,22 @@
 	<variable name="no" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[$F{no}]]></variableExpression>
 	</variable>
+	<group name="jenisobat">
+		<groupExpression><![CDATA[$F{temp5}]]></groupExpression>
+		<groupHeader>
+			<band height="13" splitType="Stretch">
+				<printWhenExpression><![CDATA[$F{temp5}!=null && !$F{temp5}.isEmpty()]]></printWhenExpression>
+				<textField>
+					<reportElement mode="Transparent" x="15" y="1" width="195" height="10" uuid="6d1f6a3e-2c57-4a0b-9e41-7b3a5c1d8f02"/>
+					<textElement>
+						<font fontName="Arial" size="8" isBold="true"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{temp5}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>

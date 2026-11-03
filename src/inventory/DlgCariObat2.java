@@ -1322,6 +1322,9 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         dispose();
                         return;
                     }
+                    if(!noresep.equals("")){
+                        simpanDetailResep();
+                    }
                     ttlhpp=0;ttljual=0;
                     for(i=0;i<tbObat.getRowCount();i++){ 
                         if(Valid.SetAngka(tbObat.getValueAt(i,1).toString())>0){
@@ -2907,6 +2910,32 @@ private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         Sequel.cariIsi("SELECT prb from side_db.resep_obat_info where no_resep = ?", TPRB, no_resep);
         TAlergi.setText(Sequel.cariIsi("SELECT TRIM(SUBSTRING_INDEX(resep_obat.alergi, '#', 1)) AS alergi from resep_obat where no_resep = ?", no_resep));
         this.noresep = no_resep;
+    }
+
+    /** Simpan detail resep: waktu peresepan & validasi, racikan mengikuti resep dokter. Waktu siap & penyerahan diisi aplikasi scan barcode. */
+    private void simpanDetailResep(){
+        PreparedStatement psdetail=null;
+        try {
+            psdetail=koneksi.prepareStatement(
+                "insert into side_db.resep_obat_detail(no_resep,no_rawat,tgl_peresepan,jam_peresepan,tgl_validasi,jam_validasi,is_racikan,is_karyawan) "+
+                "select resep_obat.no_resep,resep_obat.no_rawat,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,?,?,"+
+                "if(exists(select 1 from resep_dokter_racikan where resep_dokter_racikan.no_resep=resep_obat.no_resep),1,0),0 from resep_obat where resep_obat.no_resep=? "+
+                "on duplicate key update tgl_validasi=values(tgl_validasi),jam_validasi=values(jam_validasi),is_racikan=values(is_racikan),is_karyawan=values(is_karyawan)");
+            psdetail.setString(1,Valid.SetTgl(DTPTgl.getSelectedItem()+""));
+            psdetail.setString(2,cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem());
+            psdetail.setString(3,noresep);
+            psdetail.executeUpdate();
+        } catch (Exception e) {
+            // tidak membatalkan validasi bila tabel detail belum tersedia
+            System.out.println("Notifikasi Detail Resep : "+e);
+        } finally {
+            if(psdetail!=null){
+                try {
+                    psdetail.close();
+                } catch (Exception e) {
+                }
+            }
+        }
     }
 
     public void setLockValidasi(ValidasiResepLock lock) {

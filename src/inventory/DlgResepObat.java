@@ -2509,6 +2509,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             String sumber = "";
             String bb = "";
             
+            tambahObatKronis(NoResep.getText(),TNoRw.getText());
+
             Map<String, Object> param = new HashMap<>();  
             param.put("namars",akses.getnamars());
             param.put("alamatrs",akses.getalamatrs());
@@ -3272,6 +3274,46 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }
     
+    /** Bagian kronis pada lembar telaah, dari nota piutang kunjungan (No. Rawat) yang obatnya ada di resep ini. Baris yang sudah ada menjadi "OBAT POLI". */
+    private void tambahObatKronis(String noresepkronis,String norawatkronis){
+        PreparedStatement pskronis=null;
+        ResultSet rskronis=null;
+        boolean adakronis=false;
+        try {
+            pskronis=koneksi.prepareStatement(
+                "select databarang.nama_brng,max(detailpiutang.aturan_pakai) as aturan_pakai,sum(detailpiutang.jumlah) as jumlah,kodesatuan.satuan "+
+                "from detailpiutang inner join databarang on detailpiutang.kode_brng=databarang.kode_brng "+
+                "inner join kodesatuan on kodesatuan.kode_sat=databarang.kode_sat "+
+                "where detailpiutang.nota_piutang=? and detailpiutang.kode_brng in (select resep_dokter.kode_brng from resep_dokter where resep_dokter.no_resep=?) "+
+                "group by databarang.kode_brng,databarang.nama_brng,kodesatuan.satuan order by databarang.nama_brng");
+            pskronis.setString(1,norawatkronis);
+            pskronis.setString(2,noresepkronis);
+            rskronis=pskronis.executeQuery();
+            while(rskronis.next()){
+                Sequel.menyimpan("temporary_resep","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?",38,new String[]{
+                    ""+i,rskronis.getString("nama_brng"),rskronis.getString("aturan_pakai"),rskronis.getString("jumlah"),rskronis.getString("satuan"),"OBAT KRONIS","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",noresepkronis,akses.getalamatip()
+                });
+                i++;
+                adakronis=true;
+            }
+        } catch (Exception e) {
+            System.out.println("Notif Obat Kronis : "+e);
+        } finally {
+            try {
+                if(rskronis!=null){
+                    rskronis.close();
+                }
+                if(pskronis!=null){
+                    pskronis.close();
+                }
+            } catch (Exception e) {
+            }
+        }
+        if(adakronis){
+            Sequel.queryu("update temporary_resep set temp5='OBAT POLI' where temp37='"+akses.getalamatip()+"' and temp5=''");
+        }
+    }
+
     private String getNoUrut(String no_resep, String status, String no_rawat){
         String no_urut = "";
         String query = "";
