@@ -16,15 +16,27 @@ PANDUAN MENGISI
 
 ## [Belum Rilis]
 ### Ditambahkan
+- **Apa yang Baru**: Tombol "Apa yang Baru" di jendela About untuk melihat daftar perubahan aplikasi. (Semua unit)
+- **Hapus Nota Salah**: Menghapus nota di Billing Ralan dan Ranap wajib mengisi alasan, lalu pasien, alasan, dan petugasnya tercatat sebagai riwayat. (Kasir)
+- **Billing Ranap**: Peringatan bila status pulang pasien BPJS belum diisi. (Kasir Ranap)
 - **Validasi Resep Pasien BPJS / Obat Kronis**: Jendela validasi khusus pasien BPJS dengan kolom "Jml Kronis" di samping "Jml Poli". Jml Poli masuk paket rawat jalan, Jml Kronis otomatis tercatat sebagai piutang. Total kronis tampil di samping total. (Farmasi)
-- **Validasi Resep**: Pilihan "Jenis Resep" (Racikan/Non Racikan, otomatis mengikuti resep dokter) dan "Obat Karyawan" (Ya/Tidak). Waktu peresepan dan validasi resep ikut tercatat. (Farmasi)
+- **Validasi Resep**: Waktu peresepan, waktu validasi, dan jenis resep (racikan/non racikan, mengikuti resep dokter) ikut tercatat otomatis. Validasi pasien BPJS / Obat Kronis punya pilihan "Jenis Resep" dan "Obat Karyawan". (Farmasi)
+- **Lembar Telaah Resep**: Resep pasien BPJS yang punya obat kronis tercetak dalam dua bagian, "OBAT POLI" dan "OBAT KRONIS". (Farmasi)
 - **Piutang Obat Karyawan dari Resep**: Menu "Piutang Obat Karyawan" di Daftar Permintaan Resep. Resep dokter divalidasi langsung sebagai piutang karyawan memakai tarif Karyawan, lalu dibayar lewat Bayar Piutang Karyawan. Cetak resep dan telaah tetap bisa dilakukan. Khusus resep non racikan. (Farmasi)
 
+### Diubah
+- **Peringatan SKDP Post RI**: Hanya muncul untuk pasien BPJS. (Kasir Ranap)
+- **Resume Ranap**: Nomor registrasi SITB kini dicek langsung ke SITB memakai NIK pasien dan disimpan otomatis, lalu tampil di baris paling atas Hasil Laborat. Form tetap bisa dipakai selama proses berjalan. (Ranap, Rekam Medis)
+- **Ranap Gabung / Bayi Baru Lahir**: Nomor peserta bayi tidak lagi disalin dari ibu. (Ranap, VK)
+
 ### Catatan Teknis
+- Hapus Nota Salah menyimpan ke tabel `riwayat_buka_billing` (norawat, norm, alasan, asal, nip). Tabel ini wajib ada di server, karena nota tidak terhapus bila riwayat gagal disimpan.
+- Sinkronisasi SITB memakai tabel `side_db.tb_register` (nik, no_reg_tb) dan layanan sulawesi.sitb.id. Lihat `modif.SITBResumeRanap`.
 - Piutang obat karyawan dari resep (DlgPiutangKaryawan) memakai nota `HKyymmddxxx`, jns_jual "Karyawan", dan catatan "NIK-Nama" agar terbaca di Cari/Bayar Piutang Karyawan. Obat tidak masuk detail_pemberian_obat dan billing. Pembatalan lewat menu Data Piutang. Bila perlu, status validasi resep direset manual.
 - Kolom tambahan untuk piutang karyawan (wajib, karena dipakai cetak resep): `ALTER TABLE side_db.resep_obat_detail ADD COLUMN nota_piutang varchar(20) NULL AFTER is_karyawan, ADD KEY nota_piutang (nota_piutang);`
-- Tabel baru `side_db.resep_obat_detail` (lihat SQL di bawah) diisi saat validasi resep di DlgCariObat dan DlgCariObatKronis. Kolom tgl/jam siap dan penyerahan diisi oleh aplikasi scan barcode terpisah, bukan oleh Khanza.
+- Tabel baru `side_db.resep_obat_detail` (lihat SQL di bawah) diisi saat validasi resep di DlgCariObat, DlgCariObat2 (rawat inap), dan DlgCariObatKronis. Kolom tgl/jam siap dan penyerahan diisi oleh aplikasi scan barcode terpisah, bukan oleh Khanza.
   `CREATE TABLE side_db.resep_obat_detail (no_resep varchar(14) NOT NULL, no_rawat varchar(17) NOT NULL, tgl_peresepan date NULL, jam_peresepan time NULL, tgl_validasi date NULL, jam_validasi time NULL, tgl_siap date NULL, jam_siap time NULL, tgl_penyerahan date NULL, jam_penyerahan time NULL, is_racikan tinyint(1) NOT NULL DEFAULT 0, is_karyawan tinyint(1) NOT NULL DEFAULT 0, nota_piutang varchar(20) NULL, PRIMARY KEY (no_resep), KEY nota_piutang (nota_piutang), KEY no_rawat (no_rawat)) ENGINE=InnoDB;`
+- Bagian kronis Lembar Telaah diambil dari detailpiutang (nota = No. Rawat), disaring dengan obat di resep_dokter resep tersebut. Obat pengganti yang tidak ada di resep dokter tidak tampil, dan obat yang sama di dua resep pada satu kunjungan tampil dengan jumlah gabungan.
 - Aktifkan dengan `<entry key="OTOMATISOBATKRONIS">yes</entry>` di setting/database.xml tiap PC farmasi. Bila "yes", validasi resep pasien BPJS (kd_pj = BPJ) dari Daftar Permintaan Resep membuka DlgCariObatKronis. Bila "no", tetap memakai DlgCariObat.
 - Nota piutang kronis = No. Rawat. Validasi ulang pada kunjungan yang sama menambah ke piutang yang sudah ada.
 - Pembatalan bagian kronis dilakukan dari menu Data Piutang (nota = No. Rawat), karena tidak ikut terhapus saat pemberian obat dihapus.
@@ -47,9 +59,6 @@ PANDUAN MENGISI
 - **Validasi Resep**: Resep yang sedang divalidasi dikunci agar tidak diproses dua petugas sekaligus. (Farmasi)
 - **Registrasi**: Tanggal registrasi tidak bisa dimundurkan. (Pendaftaran)
 
-### Diperbaiki
-- **Bayi Baru Lahir**: Penyimpanan bayi tidak gagal lagi saat nomor RM yang dibuat otomatis ternyata sudah terpakai. (Ranap, VK)
-
 ## [2026.10.16] - 2026-10-16
 ### Ditambahkan
 - **Rujukan & Ambulans**: Data ambulans, sopir, kilometer, dan petugas pendamping pada rujukan, beserta laporan rujukan/ambulans. (IGD, Ranap)
@@ -67,6 +76,7 @@ PANDUAN MENGISI
 - **Asesmen Medis IGD, Ranap Dewasa, dan Kandungan**: Isian wajib harus diisi sebelum menyimpan. Kursor otomatis pindah ke isian yang masih kosong. (Dokter)
 
 ### Diperbaiki
+- **Bayi Baru Lahir**: Penyimpanan bayi tidak gagal lagi saat nomor RM yang dibuat otomatis ternyata sudah terpakai. (Ranap, VK)
 - **Penelusuran Login**: Pencarian di tab kedua hanya berjalan bila kata kunci diisi. (IT)
 - **Kamar Inap**: Pencarian tidak error lagi saat pasien belum memiliki SEP. (Ranap)
 
