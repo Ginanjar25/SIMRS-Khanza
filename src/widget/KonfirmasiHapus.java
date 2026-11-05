@@ -54,7 +54,8 @@ public final class KonfirmasiHapus {
         "DlgPeriksaLaboratoriumMB.BtnHapus","DlgPeriksaLaboratoriumPA.BtnHapus",
         "DlgPermintaanLaboratorium.BtnHapus","DlgRanapGabung.BtnHapusFieldBayi2",
         "DlgRanapGabung.BtnHapusFieldBayi3","DlgUbahPeriksaLab.BtnHapus","InventoryResepLuar.BtnHapus",
-        "MasterTemplatePemeriksaanDokter.BtnHapus1","RMRekonsiliasiObat.BtnHapus"
+        "MasterTemplatePemeriksaanDokter.BtnHapus1","RMRekonsiliasiObat.BtnHapus",
+        "RMDataResumePasienRanap.BtnHapusSITB"
     ));
 
     // Tombol keyboard pemicu hapus pada handler KeyPressed (default: spasi)

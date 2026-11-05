@@ -15,6 +15,13 @@ PANDUAN MENGISI
 -->
 
 ## [Belum Rilis]
+### Diubah
+- **Resume Ranap**: No. Reg SITB tidak lagi terisi otomatis saat form dibuka. Klik tombol "SITB" di sebelah tombol Pemeriksaan Penunjang Lab, lalu simpan resume. Nomor juga bisa dihapus dari isian dengan tombol "Hapus SITB", dan bila salah bisa sekaligus dihapus dari data pendaftaran TB. (Ranap, Rekam Medis)
+
+### Diperbaiki
+- **Riwayat Perawatan**: Tampilan tabel yang berantakan pada Pengkajian Awal Medis Rawat Inap Umum dan beberapa asesmen lain sudah dirapikan. (Dokter, Perawat, Rekam Medis)
+
+## [2026.11.03] - 2026-11-03
 ### Ditambahkan
 - **Apa yang Baru**: Tombol "Apa yang Baru" di jendela About untuk melihat daftar perubahan aplikasi. (Semua unit)
 - **Hapus Nota Salah**: Menghapus nota di Billing Ralan dan Ranap wajib mengisi alasan, lalu pasien, alasan, dan petugasnya tercatat sebagai riwayat. (Kasir)
@@ -89,6 +96,9 @@ PANDUAN MENGISI
 - **Sensus Harian Ralan**: Kolom "Status" (dirujuk ke mana atau dirawat di bangsal mana). (Rekam Medis)
 - **Rujukan**: Pencarian faskes tujuan dari referensi BPJS. (Poliklinik, IGD)
 - **Referensi Diagnosa BPJS**: Tetap bisa mencari diagnosa dari data lokal saat layanan BPJS gangguan. (Poliklinik, Casemix)
+- **Asesmen Medis IGD & Ranap Dewasa**: Isian "Alasan Pemeriksaan Penunjang". (Dokter)
+- **Pemeriksaan Laboratorium**: Nomor permintaan dibuat otomatis, dan pemeriksaan dikelompokkan per permintaan. (Laboratorium)
+- **Kasir Ralan**: Status "Rujukan Habis" ditandai warna. (Poliklinik, Kasir)
 
 ### Diubah
 - **Cetakan Hasil & Permintaan Lab**: Tata letak baru, tanda tangan/QR diperbarui, dan saran/kesan terbaru ikut tercetak. (Laboratorium)
@@ -96,7 +106,48 @@ PANDUAN MENGISI
 - **Booking Registrasi**: Cek data ganda kini memperhatikan poli dan dokter yang sama. (Pendaftaran)
 - **Peresepan BPJS**: Pengecekan prasyarat lab memakai pemeriksaan HbA1c. (Dokter)
 - **Kamar Inap**: Tanggal pulang SEP dikirim ke BPJS saat pasien pulang. (Ranap)
+- **Registrasi**: Tarif karcis poli hanya bisa diubah oleh jabatan yang berwenang. (Pendaftaran)
+- **Riwayat Barang Medis**: Filter bisa memakai lebih dari satu gudang, dan langsung terisi Apotek dan Depo Lt. 1. (Farmasi)
+- **Antrean Poli**: Nomor antrean dan daftar tunggu yang dikirim ke sistem antrean diambil dari antrean yang masih aktif. (Poliklinik)
 
 ### Diperbaiki
 - **Rawat Jalan & Rawat Inap**: Tinggi badan dan berat badan dari asesmen IGD tidak tertukar lagi. (Perawat, Dokter)
 - **Template Tambahan Biaya**: Hak akses yang dipakai sudah benar (Billing Ralan). (Kasir)
+
+## [2026.08.31] - 2026-08-31
+### Ditambahkan
+- **Analisa Keperawatan Rawat Jalan**: Pilihan analisa, etiologi, rencana, dan implementasi yang langsung mengisi catatan pemeriksaan. (Perawat)
+
+### Diubah
+- **Riwayat Perawatan**: Catatan operasi tampil berurutan, dari pra operasi, pra anestesi, pra induksi, sign-in/sign-out, laporan operasi, hingga transfer pasca operasi. (Dokter, Perawat, Rekam Medis)
+- **Pemeriksaan Ralan & Ranap**: Label khusus keperawatan juga berlaku untuk jabatan casemix dan vaksinator, dan diagnosa keperawatan rawat inap memakai kata "berhubungan dengan". (Perawat)
+- **Catatan Keseimbangan Cairan**: Isian tidak lagi dibatasi angka saja. (Perawat)
+- **Surat Sakit Pihak Ke-2**: Tata letak cetakan menyesuaikan data pasien yang panjang dan posisi tanda tangan. (Poliklinik, Ranap)
+- **Bayar Piutang**: Akun bayar ikut tercatat di keterangan pembayaran baru. (Keuangan)
+
+### Diperbaiki
+- **Pemeriksaan Ralan & Ranap**: Tanggal dan jam pemeriksaan tidak tertimpa lagi saat data diedit. (Perawat, Dokter)
+- **Surat Sakit Pihak Ke-2**: DPJP tidak kosong lagi, karena memakai dokter yang menangani bila data DPJP belum ada. (Poliklinik, Ranap)
+
+## [2026.08.14] - 2026-08-14
+### Ditambahkan
+- **SBAR / TBaK**: Form pencatatan SBAR, bisa dibuka dari asesmen medis IGD dan tersedia di Rawat Jalan dan Rawat Inap. (Perawat, Dokter)
+- **Verifikasi CPPT**: DPJP bisa memverifikasi CPPT dan SBAR, dengan tanda tangan QR di Riwayat Perawatan. (Dokter, Perawat)
+- **Riwayat Perawatan**: Pilihan untuk menampilkan SBAR, serta bagian asesmen pra dan pasca bedah. (Dokter, Perawat, Rekam Medis)
+- **Analisa Keperawatan Rawat Inap**: Pilihan analisa, etiologi, rencana, dan implementasi yang langsung mengisi catatan pemeriksaan. (Perawat)
+- **Kasir Ralan**: Status "PRB Bpjs" untuk pasien BPJS, ditandai warna dan tersedia di filter status. (Poliklinik, Kasir)
+- **Laporan Pelayanan Lab**: Filter CITO, Reguler, dan Semua, serta ringkasan rata-rata waktu dan persentase kesesuaian. (Laboratorium)
+- **Retur Beli**: Isian "Alasan Retur". (Farmasi)
+- **SKDP**: Pembuatan SKDP dikunci bila berbeda dengan tanggal terbit SEP Rawat Jalan, dan tersedia tombol buka kunci. (Pendaftaran)
+- **Billing Ranap**: Peringatan bila SKDP Post RI belum terbit. (Kasir Ranap)
+
+### Diubah
+- **Pemeriksaan Ralan & Ranap**: Judul isian menyesuaikan jabatan, misalnya "Analisis/Diagnosa Keperawatan" untuk perawat. (Perawat)
+
+### Diperbaiki
+- **Risiko Jatuh Dewasa & Anak**: Total skor dan hasilnya sudah benar, dan rekomendasi tindakan terisi otomatis. (Perawat)
+- **Peresepan Dokter**: Isian terakhir di tabel resep tidak hilang saat disimpan. (Dokter)
+- **Cetakan Time-Out Sebelum Insisi**: Salah ketik pada judul sudah diperbaiki. (Kamar Operasi)
+
+### Catatan Teknis
+- Kunci SKDP diatur dengan `LOCKEDSKDP` di setting/database.xml.

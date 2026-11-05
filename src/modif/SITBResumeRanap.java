@@ -16,18 +16,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
 /**
  * Sinkronisasi No. Reg SITB (person_id) ke resume pasien ranap.
  * Alur: NIK pasien -> cek tb_register -> cek API SITB (sama: biarkan, belum ada: insert, beda: update)
- * -> tulis "No. Reg SITB: xxx" di baris paling atas hasil laborat.
- * Semua query DB dan hit API dijalankan di background agar form tidak tertahan.
+ * -> tulis "No. Reg SITB: xxx" di baris paling atas isian hasil laborat, tersimpan saat petugas klik Simpan/Ganti.
+ * Dijalankan manual dari tombol SITB. Semua query DB dan hit API dijalankan di background agar form tidak tertahan.
  */
 public class SITBResumeRanap {
 
     private static final String URL_VALIDASI_NIK = "https://sulawesi.sitb.id/sitb2024/person/validasi_nik";
+
+    private static final String POLA_LABEL_SITB = "(?m)^No\\. Reg SITB:.*(\\r?\\n|$)";
 
     // Thread daemon agar tidak menahan aplikasi saat ditutup
     private static final ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
@@ -43,9 +46,9 @@ public class SITBResumeRanap {
     private static final sekuel Sequel = new sekuel();
 
     /**
-     * Dipanggil dari EDT (setNoRm / setNoRm2 di RMDataResumePasienRanap).
+     * Dipanggil dari EDT (tombol SITB di RMDataResumePasienRanap).
      */
-    public static void autoInsert(Window owner, String noRM, JTextComponent TNoRw, JTextComponent HasilLaborat) {
+    public static void ambilNoReg(Window owner, String noRM, JTextComponent TNoRw, JTextComponent HasilLaborat) {
         final String rm = noRM == null ? "" : noRM.trim();
         final String noRawat = TNoRw.getText().trim();
         if (rm.isEmpty()) {
@@ -55,9 +58,40 @@ public class SITBResumeRanap {
         runBackground(owner, () -> proses(owner, rm, noRawat, TNoRw, HasilLaborat));
     }
 
-    private static void runBackground(Window owner, Runnable task) {
-        if (!owner.isDisplayable()) return;
-        if (!sedangProses.add(owner)) return;
+    /**
+     * Dipanggil dari EDT (tombol Hapus SITB di RMDataResumePasienRanap).
+     * Hanya mengubah isian hasil laborat, tersimpan saat petugas klik Simpan/Ganti. tb_register tidak diubah.
+     * Mengembalikan false jika isian tidak memuat No. Reg SITB.
+     */
+    public static boolean hapusNoReg(JTextComponent HasilLaborat) {
+        String textSaatIni = HasilLaborat.getText();
+        String bersihText = textSaatIni.replaceAll(POLA_LABEL_SITB, "");
+        if (bersihText.equals(textSaatIni)) {
+            return false;
+        }
+        HasilLaborat.setText(bersihText.trim());
+        return true;
+    }
+
+    /**
+     * Dipanggil dari EDT (tombol Hapus SITB, jika petugas memilih hapus juga dari data pendaftaran TB).
+     * Baris milik NIK pasien dihapus dari tb_register. Resume yang sudah tersimpan tidak berubah.
+     */
+    public static void hapusDariRegister(Window owner, String noRM) {
+        final String rm = noRM == null ? "" : noRM.trim();
+        if (rm.isEmpty()) {
+            return; // Keluar jika No. RM kosong
+        }
+
+        if (!runBackground(owner, () -> prosesHapusRegister(owner, rm))) {
+            pesan(owner, "Proses SITB masih berjalan, No. Reg belum dihapus dari data pendaftaran TB. Silahkan coba lagi...!!!");
+        }
+    }
+
+    // Mengembalikan false jika proses tidak jadi dijalankan
+    private static boolean runBackground(Window owner, Runnable task) {
+        if (!owner.isDisplayable()) return false;
+        if (!sedangProses.add(owner)) return false;
 
         owner.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -79,13 +113,16 @@ public class SITBResumeRanap {
         } catch (RejectedExecutionException ex) {
             sedangProses.remove(owner);
             owner.setCursor(Cursor.getDefaultCursor());
+            return false;
         }
+        return true;
     }
 
     private static void proses(Window owner, String noRM, String noRawat, JTextComponent TNoRw, JTextComponent HasilLaborat) {
         // 1. Ambil NIK pasien berdasarkan No. RM
         String nik = Sequel.cariIsi("SELECT IFNULL(no_ktp,'') FROM pasien WHERE no_rkm_medis = ?", noRM).trim();
         if (nik.isEmpty()) {
+            pesan(owner, "NIK pasien masih kosong, No. Reg SITB tidak bisa dicek...!!!");
             return;
         }
 
@@ -111,60 +148,49 @@ public class SITBResumeRanap {
 
         // Jika nomor SITB tidak ditemukan di tb_register maupun API, hentikan proses
         if (noregSITB.isEmpty()) {
+            pesan(owner, "No. Reg SITB tidak ditemukan, atau layanan SITB tidak bisa diakses...!!!");
             return;
         }
 
-        final String noregFinal = noregSITB;
         final String labelSITB = "No. Reg SITB: " + noregSITB;
-        boolean isResumeBaru = noRawat.isEmpty() || !isDataSudahTersimpan(noRawat);
 
-        if (isResumeBaru) {
-            // Kondisi 1: Resume baru (belum tersimpan) -> Taruh di paling atas
-            // Komponen Swing hanya boleh diubah dari EDT
-            SwingUtilities.invokeLater(() -> {
-                // Lewati jika form sudah ditutup / sudah pindah ke pasien lain
-                if (!owner.isDisplayable() || !TNoRw.getText().trim().equals(noRawat)) {
-                    return;
-                }
-                String textSaatIni = HasilLaborat.getText().trim();
-                if (textSaatIni.isEmpty()) {
-                    HasilLaborat.setText(labelSITB + "\n");
-                } else if (!textSaatIni.contains(noregFinal)) {
-                    HasilLaborat.setText(labelSITB + "\n" + textSaatIni);
-                }
-            });
-        } else {
-            // Kondisi 2: Resume sudah ada / sudah tersimpan di database -> Update ke posisi paling atas
-            String hasilLabDb = getHasilLaboratFromDatabase(noRawat);
-
-            boolean perluUpdate = false;
-            String teksBaru = "";
-
-            if (hasilLabDb == null || hasilLabDb.trim().isEmpty()) {
-                teksBaru = labelSITB;
-                perluUpdate = true;
-            } else {
-                // Bersihkan teks lama dari format SITB manapun agar tidak terjadi duplikat ganda
-                String bersihText = hasilLabDb.replaceAll("(?m)^No\\. Reg SITB:.*$", "").trim();
-
-                // Cek apakah posisi saat ini belum di paling atas atau belum ada sama sekali
-                if (!hasilLabDb.startsWith(labelSITB)) {
-                    if (bersihText.isEmpty()) {
-                        teksBaru = labelSITB;
-                    } else {
-                        teksBaru = labelSITB + "\n" + bersihText;
-                    }
-                    perluUpdate = true;
-                }
+        // Komponen Swing hanya boleh diubah dari EDT
+        SwingUtilities.invokeLater(() -> {
+            // Lewati jika form sudah ditutup / sudah pindah ke pasien lain
+            if (!owner.isDisplayable() || !TNoRw.getText().trim().equals(noRawat)) {
+                return;
             }
+            // Bersihkan teks lama dari format SITB manapun agar tidak terjadi duplikat ganda
+            String bersihText = HasilLaborat.getText().replaceAll(POLA_LABEL_SITB, "").trim();
+            HasilLaborat.setText(bersihText.isEmpty() ? labelSITB + "\n" : labelSITB + "\n" + bersihText);
+        });
+    }
 
-            if (perluUpdate) {
-                // Update langsung ke database resume_pasien_ranap
-                Sequel.queryu2tf("UPDATE resume_pasien_ranap SET hasil_laborat=? WHERE no_rawat=?", 2, new String[]{
-                    teksBaru, noRawat
-                });
-            }
+    private static void prosesHapusRegister(Window owner, String noRM) {
+        String nik = Sequel.cariIsi("SELECT IFNULL(no_ktp,'') FROM pasien WHERE no_rkm_medis = ?", noRM).trim();
+        if (nik.isEmpty()) {
+            pesan(owner, "NIK pasien masih kosong, No. Reg tidak bisa dihapus dari data pendaftaran TB...!!!");
+            return;
         }
+
+        if (Sequel.cariInteger("SELECT count(nik) FROM side_db.tb_register WHERE nik=?", nik) == 0) {
+            pesan(owner, "No. Reg pasien ini tidak ada di data pendaftaran TB...!!!");
+            return;
+        }
+
+        if (Sequel.queryu2tf("DELETE FROM side_db.tb_register WHERE nik=?", 1, new String[]{nik})) {
+            pesan(owner, "No. Reg berhasil dihapus dari data pendaftaran TB.");
+        } else {
+            pesan(owner, "Gagal menghapus No. Reg dari data pendaftaran TB...!!!");
+        }
+    }
+
+    private static void pesan(Window owner, String isi) {
+        SwingUtilities.invokeLater(() -> {
+            if (owner.isDisplayable()) {
+                JOptionPane.showMessageDialog(owner, isi);
+            }
+        });
     }
 
     // Mengambil person_id (No. Reg TB) dari API SITB berdasarkan NIK.
@@ -219,15 +245,5 @@ public class SITBResumeRanap {
                 conn.disconnect();
             }
         }
-    }
-
-    // Mengecek apakah no_rawat sudah tersimpan di resume
-    private static boolean isDataSudahTersimpan(String noRawat) {
-        return Sequel.cariInteger("SELECT count(no_rawat) FROM resume_pasien_ranap WHERE no_rawat=?", noRawat) > 0;
-    }
-
-    // Mengambil nilai asli hasil_laborat dari database
-    private static String getHasilLaboratFromDatabase(String noRawat) {
-        return Sequel.cariIsi("SELECT hasil_laborat FROM resume_pasien_ranap WHERE no_rawat=?", noRawat);
     }
 }

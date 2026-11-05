@@ -926,6 +926,8 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         BtnDokter1 = new widget.Button();
         BtnDokter2 = new widget.Button();
         BtnDokter3 = new widget.Button();
+        BtnSITB = new widget.Button();
+        BtnHapusSITB = new widget.Button();
         jLabel37 = new widget.Label();
         CaraKeluar = new widget.ComboBox();
         jLabel36 = new widget.Label();
@@ -1788,6 +1790,36 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         });
         FormInput.add(BtnDokter3);
         BtnDokter3.setBounds(202, 414, 40, 23);
+
+        BtnSITB.setForeground(new java.awt.Color(0, 60, 20));
+        BtnSITB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/accept.png"))); // NOI18N
+        BtnSITB.setText("SITB");
+        BtnSITB.setToolTipText("Isi No. Reg SITB ke Pemeriksaan Penunjang Lab");
+        BtnSITB.setGlassColor(new java.awt.Color(110, 190, 120));
+        BtnSITB.setName("BtnSITB"); // NOI18N
+        BtnSITB.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnSITB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSITBActionPerformed(evt);
+            }
+        });
+        FormInput.add(BtnSITB);
+        BtnSITB.setBounds(128, 414, 72, 23);
+
+        BtnHapusSITB.setForeground(new java.awt.Color(90, 0, 0));
+        BtnHapusSITB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/stop_f2.png"))); // NOI18N
+        BtnHapusSITB.setText("Hapus SITB");
+        BtnHapusSITB.setToolTipText("Hapus No. Reg SITB dari Pemeriksaan Penunjang Lab");
+        BtnHapusSITB.setGlassColor(new java.awt.Color(235, 120, 110));
+        BtnHapusSITB.setName("BtnHapusSITB"); // NOI18N
+        BtnHapusSITB.setPreferredSize(new java.awt.Dimension(28, 23));
+        BtnHapusSITB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnHapusSITBActionPerformed(evt);
+            }
+        });
+        FormInput.add(BtnHapusSITB);
+        BtnHapusSITB.setBounds(14, 414, 112, 23);
 
         jLabel37.setText("Cara Keluar :");
         jLabel37.setName("jLabel37"); // NOI18N
@@ -3039,6 +3071,30 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         } 
     }//GEN-LAST:event_BtnDokter5ActionPerformed
 
+    private void BtnSITBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSITBActionPerformed
+        if(TNoRM.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Pasien masih kosong...!!!");
+        }else{
+            modif.SITBResumeRanap.ambilNoReg(this, TNoRM.getText(), TNoRw, HasilLaborat);
+        }
+    }//GEN-LAST:event_BtnSITBActionPerformed
+
+    private void BtnHapusSITBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusSITBActionPerformed
+        if(TNoRM.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Pasien masih kosong...!!!");
+        }else{
+            int jawab=JOptionPane.showConfirmDialog(null,"No. Reg SITB akan dihapus dari isian Pemeriksaan Penunjang Lab.\nHapus juga No. Reg dari data pendaftaran TB?","Hapus No. Reg SITB",JOptionPane.YES_NO_CANCEL_OPTION);
+            if((jawab==JOptionPane.YES_OPTION)||(jawab==JOptionPane.NO_OPTION)){
+                boolean adaDiIsian=modif.SITBResumeRanap.hapusNoReg(HasilLaborat);
+                if(jawab==JOptionPane.YES_OPTION){
+                    modif.SITBResumeRanap.hapusDariRegister(this,TNoRM.getText());
+                }else if(!adaDiIsian){
+                    JOptionPane.showMessageDialog(null,"No. Reg SITB tidak ada di isian Pemeriksaan Penunjang Lab...!!!");
+                }
+            }
+        }
+    }//GEN-LAST:event_BtnHapusSITBActionPerformed
+
     private void KodeDokterPengirimKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KodeDokterPengirimKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_KodeDokterPengirimKeyPressed
@@ -3352,6 +3408,7 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
     private widget.Button BtnDokter6;
     private widget.Button BtnEdit;
     private widget.Button BtnHapus;
+    private widget.Button BtnHapusSITB;
     private widget.Button BtnKeluar;
     private widget.Button BtnPrint;
     private widget.Button BtnProsedur;
@@ -3366,6 +3423,7 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
     private widget.Button BtnRefreshProsedur1;
     private widget.Button BtnRefreshProsedur2;
     private widget.Button BtnRefreshProsedur3;
+    private widget.Button BtnSITB;
     private widget.Button BtnSimpan;
     private widget.TextBox CaraBayar;
     private widget.ComboBox CaraKeluar;
@@ -3884,7 +3942,6 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         } 
-        autoInsertSITB();
     }
     
      public void setNoRm2(String norwt, Date tgl2) {
@@ -3985,7 +4042,6 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
         } catch (Exception e) {
             System.out.println("Notif : "+e);
         } 
-        autoInsertSITB();
     }
     
     private void isForm(){
@@ -4244,10 +4300,5 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
             }
         }
 
-    }
-
-    // Logika SITB ada di modif.SITBResumeRanap
-    public void autoInsertSITB() {
-        modif.SITBResumeRanap.autoInsert(this, TNoRM.getText(), TNoRw, HasilLaborat);
     }
 }
