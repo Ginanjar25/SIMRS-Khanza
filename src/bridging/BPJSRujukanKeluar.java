@@ -1188,7 +1188,7 @@ public final class BPJSRujukanKeluar extends javax.swing.JDialog {
                                 + TNoRawat.getText() + "','" + NmPpkRujukan1.getText() + "','"
                                 + Valid.SetTgl(TanggalRujukKeluar.getSelectedItem() + "") + "','"
                                 + NmPenyakit1.getText() + "','" + Sequel.cariIsi("select reg_periksa.kd_dokter from reg_periksa where reg_periksa.no_rawat=?", TNoRawat.getText())
-                                + "','-','-','" + Catatan1.getText() + "','12:00:01'", "No.Rujuk");
+                                + "','-','-','" + Catatan1.getText() + "','12:00:01','-','-','-','-'", "No.Rujuk");
                         tampil();
                         emptTeks();
                         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

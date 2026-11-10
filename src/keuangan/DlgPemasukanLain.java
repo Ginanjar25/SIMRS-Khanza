@@ -17,6 +17,8 @@ import fungsi.koneksiDB;
 import fungsi.sekuel;
 import fungsi.validasi;
 import fungsi.akses;
+import modif.CetakKwitansiPemasukanLain;
+import modif.DlgPilihTindakan;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -53,6 +55,7 @@ public final class DlgPemasukanLain extends javax.swing.JDialog {
     private DlgCariKategoriPemasukanLain kategori=new DlgCariKategoriPemasukanLain(null,false);
     private double total=0;
     private boolean sukses=true;
+    private String norm="",norawat="";
 
     /** Creates new form DlgResepObat 
      *@param parent
@@ -60,6 +63,16 @@ public final class DlgPemasukanLain extends javax.swing.JDialog {
     public DlgPemasukanLain(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        // tombol pilih tindakan/paket hanya untuk pasien dari billing (lihat setPasien) dan kategori NON CLAIM
+        isTindakan();
+        NmKategori.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {isTindakan();isNaikKelas();}
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {isTindakan();}
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {isTindakan();}
+        });
         this.setLocation(8,1);
         setSize(628,674);
 
@@ -214,6 +227,7 @@ public final class DlgPemasukanLain extends javax.swing.JDialog {
 
         Popup = new javax.swing.JPopupMenu();
         cetakkwitansi = new javax.swing.JMenuItem();
+        cetakkwitansiweb = new javax.swing.JMenuItem();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbResep = new widget.Table();
@@ -251,6 +265,7 @@ public final class DlgPemasukanLain extends javax.swing.JDialog {
         jLabel8 = new widget.Label();
         jLabel11 = new widget.Label();
         pemasukan = new widget.TextBox();
+        btnTindakan = new widget.Button();
         Keterangan = new widget.TextBox();
         jLabel12 = new widget.Label();
         Nomor = new widget.TextBox();
@@ -272,6 +287,21 @@ public final class DlgPemasukanLain extends javax.swing.JDialog {
             }
         });
         Popup.add(cetakkwitansi);
+
+        cetakkwitansiweb.setBackground(new java.awt.Color(255, 255, 254));
+        cetakkwitansiweb.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        cetakkwitansiweb.setForeground(java.awt.Color.darkGray);
+        cetakkwitansiweb.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        cetakkwitansiweb.setText("Cetak Kwitansi Penerimaan (Web)");
+        cetakkwitansiweb.setName("cetakkwitansiweb"); // NOI18N
+        cetakkwitansiweb.setPreferredSize(new java.awt.Dimension(250, 25));
+        cetakkwitansiweb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cetakkwitansiwebActionPerformed(evt);
+            }
+        });
+        Popup.add(cetakkwitansiweb);
+
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setUndecorated(true);
@@ -636,7 +666,19 @@ public final class DlgPemasukanLain extends javax.swing.JDialog {
             }
         });
         FormInput.add(pemasukan);
-        pemasukan.setBounds(566, 40, 169, 23);
+        pemasukan.setBounds(566, 40, 138, 23);
+
+        btnTindakan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        btnTindakan.setMnemonic('5');
+        btnTindakan.setToolTipText("Alt+5, Pilih Tindakan/Paket");
+        btnTindakan.setName("btnTindakan"); // NOI18N
+        btnTindakan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTindakanActionPerformed(evt);
+            }
+        });
+        FormInput.add(btnTindakan);
+        btnTindakan.setBounds(707, 40, 28, 23);
 
         Keterangan.setHighlighter(null);
         Keterangan.setName("Keterangan"); // NOI18N
@@ -1024,6 +1066,29 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         kategori.setVisible(true);
     }//GEN-LAST:event_btnKategoriActionPerformed
 
+    private void btnTindakanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTindakanActionPerformed
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        DlgPilihTindakan tindakan=new DlgPilihTindakan(norawat);
+        this.setCursor(Cursor.getDefaultCursor());
+        tindakan.setVisible(true);
+        if(tindakan.isDisimpan()){
+            // pemasukan diisi total tindakan/paket yang dicentang (bukan dijumlahkan dengan isi sebelumnya),
+            // keperluan ditambahkan ke isi yang sudah ada
+            pemasukan.setText(Valid.SetAngka2(tindakan.getTotal()));
+            String keperluan=Keperluan.getText().trim();
+            if(keperluan.equals("")){
+                keperluan=tindakan.getNamaTindakan();
+            }else{
+                keperluan=keperluan+", "+tindakan.getNamaTindakan();
+            }
+            if(keperluan.length()>70){
+                keperluan=keperluan.substring(0,70);
+            }
+            Keperluan.setText(keperluan);
+            pemasukan.requestFocus();
+        }
+    }//GEN-LAST:event_btnTindakanActionPerformed
+
     private void btnKategoriKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnKategoriKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnKategoriKeyPressed
@@ -1044,10 +1109,32 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
             tbResep.requestFocus();
         }else {
-            Valid.panggilUrl("billing/LaporanKeuangan.php?kode="+Nomor.getText()+"&Tanggal="+Valid.SetTgl(Tanggal.getSelectedItem()+"")+"&nama="+NmKategori.getText().replaceAll(" ","_")+"&petugas="+NmPtg.getText().replaceAll(" ","_")+"&keperluan="+Keperluan.getText().replaceAll(" ","_")+"&keterangan="+Keterangan.getText().replaceAll(" ","_")+"&nom="+pemasukan.getText().replaceAll(" ","_")+"&kategori="+NmKategori.getText().replaceAll(" ","_")+"&usere="+koneksiDB.USERHYBRIDWEB()+"&passwordte="+koneksiDB.PASHYBRIDWEB());
+            // validasi tindakan/paket sudah dilakukan saat input (tombol pilih tindakan/paket), langsung cetak
+            // "untuk pembayaran" di kwitansi : nama kategori, keperluan di baris bawahnya
+            new CetakKwitansiPemasukanLain().cetak(Nomor.getText(),Valid.SetTgl(Tanggal.getSelectedItem()+""),
+                    NmKategori.getText()+"\n"+Keperluan.getText(),
+                    NmPtg.getText(),Keterangan.getText(),pemasukan.getText());
         }
         this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_cetakkwitansiActionPerformed
+
+    private void cetakkwitansiwebActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cetakkwitansiwebActionPerformed
+        // opsi kedua : cetak kwitansi lewat web (billing/LaporanKeuangan.php), jika cetak di desktop ada kendala
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        if(Keperluan.getText().trim().equals("")){
+            Valid.textKosong(Keperluan,"Keperluan");
+        }else if(KdPtg.getText().trim().equals("")||NmPtg.getText().trim().equals("")){
+            Valid.textKosong(KdPtg,"Petugas");
+        }else if(KdKategori.getText().trim().equals("")||NmKategori.getText().trim().equals("")){
+            Valid.textKosong(KdKategori,"Kode Kategori");
+        }else if(tabMode.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
+            tbResep.requestFocus();
+        }else {
+            Valid.panggilUrl("billing/LaporanKeuangan.php?kode="+Nomor.getText()+"&Tanggal="+Valid.SetTgl(Tanggal.getSelectedItem()+"")+"&nama="+NmKategori.getText().replaceAll(" ","_")+"&petugas="+NmPtg.getText().replaceAll(" ","_")+"&keperluan="+Keperluan.getText().replaceAll(" ","_")+"&keterangan="+Keterangan.getText().replaceAll(" ","_")+"&nom="+pemasukan.getText().replaceAll(" ","_")+"&kategori="+NmKategori.getText().replaceAll(" ","_")+"&usere="+koneksiDB.USERHYBRIDWEB()+"&passwordte="+koneksiDB.PASHYBRIDWEB());
+        }
+        this.setCursor(Cursor.getDefaultCursor());
+    }//GEN-LAST:event_cetakkwitansiwebActionPerformed
 
     private void NomorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NomorKeyPressed
         // TODO add your handling code here:
@@ -1096,7 +1183,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Tanggal Tanggal;
     private widget.Button btnKategori;
     private widget.Button btnPetugas;
+    private widget.Button btnTindakan;
     private javax.swing.JMenuItem cetakkwitansi;
+    private javax.swing.JMenuItem cetakkwitansiweb;
     private widget.InternalFrame internalFrame1;
     private widget.Label jLabel11;
     private widget.Label jLabel12;
@@ -1222,6 +1311,43 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         
     }
     
+    /**
+     * Dipanggil jika form dibuka dari halaman lain (misal DlgBilingRanap).
+     * Terima dari diisi no.rawat, no.rm dan nama pasien, dan pasien otomatis terpilih di form validasi kwitansi.
+     * Jika tidak dipanggil (dibuka dari menu), form berjalan seperti biasa.
+     */
+    public void setPasien(String norm,String norawat){
+        this.norm=norm;
+        this.norawat=norawat;
+        // terima dari : no.rawat no.rm nama pasien (kolom keterangan maksimal 50 karakter)
+        String terimadari=norawat+" "+norm+" "+Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=?",norm);
+        if(terimadari.length()>50){
+            terimadari=terimadari.substring(0,50);
+        }
+        Keterangan.setText(terimadari);
+        isTindakan();
+        ChkInput.setSelected(true);
+        isForm();
+    }
+
+    // tombol pilih tindakan/paket muncul jika form dibuka dari billing dan kategori yang dipilih NON CLAIM
+    private void isTindakan(){
+        if((!norawat.equals(""))&&NmKategori.getText().toUpperCase().contains("NON CLAIM")){
+            pemasukan.setBounds(566,40,138,23);
+            btnTindakan.setVisible(true);
+        }else{
+            pemasukan.setBounds(566,40,169,23);
+            btnTindakan.setVisible(false);
+        }
+    }
+
+    // kategori naik kelas : keperluan diisi sama dengan nama kategori (kolom keperluan maksimal 70 karakter)
+    private void isNaikKelas(){
+        if(NmKategori.getText().toUpperCase().contains("NAIK KELAS")){
+            Keperluan.setText(NmKategori.getText().length()>70?NmKategori.getText().substring(0,70):NmKategori.getText());
+        }
+    }
+
     private void autoNomor() {
         Valid.autoNomer3("select ifnull(MAX(CONVERT(RIGHT(pemasukan_lain.no_masuk,3),signed)),0) from pemasukan_lain where pemasukan_lain.tanggal like '%"+Valid.SetTgl(Tanggal.getSelectedItem()+"")+"%' ",
                 "PL"+Tanggal.getSelectedItem().toString().substring(6,10)+Tanggal.getSelectedItem().toString().substring(3,5)+Tanggal.getSelectedItem().toString().substring(0,2),3,Nomor); 

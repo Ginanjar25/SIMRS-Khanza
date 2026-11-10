@@ -340,12 +340,12 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         tbTambahan.setDefaultRenderer(Object.class, new WarnaTable());
         
         //potongan biaya
-        Object[] rowPotongan={"Potongan Biaya","Besar Potongan"};
+        Object[] rowPotongan={"P","Potongan Biaya","Besar Potongan"};
         tabModePotongan=new DefaultTableModel(null,rowPotongan){
-              @Override 
+              @Override
               public boolean isCellEditable(int rowIndex, int colIndex){return true;}
              Class[] types = new Class[] {
-                java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -357,11 +357,13 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         tbPotongan.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbPotongan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 2; i++) {
+        for (i = 0; i < 3; i++) {
             TableColumn column = tbPotongan.getColumnModel().getColumn(i);
             if(i==0){
-                column.setPreferredWidth(300);
+                column.setPreferredWidth(20);
             }else if(i==1){
+                column.setPreferredWidth(300);
+            }else if(i==2){
                 column.setPreferredWidth(150);
             }
         }
@@ -1011,6 +1013,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         BtnSimpan = new widget.Button();
         BtnNota = new widget.Button();
         BtnView = new widget.Button();
+        BtnPemasukanLain = new widget.Button();
         BtnKeluar = new widget.Button();
         TabRawat = new javax.swing.JTabbedPane();
         Scroll = new widget.ScrollPane();
@@ -2460,6 +2463,21 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         });
         panelGlass2.add(BtnView);
 
+        BtnPemasukanLain.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/plus_16.png"))); // NOI18N
+        BtnPemasukanLain.setMnemonic('M');
+        BtnPemasukanLain.setText("Pemasukan Lain");
+        BtnPemasukanLain.setToolTipText("Alt+M");
+        BtnPemasukanLain.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        BtnPemasukanLain.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        BtnPemasukanLain.setName("BtnPemasukanLain"); // NOI18N
+        BtnPemasukanLain.setPreferredSize(new java.awt.Dimension(140, 30));
+        BtnPemasukanLain.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnPemasukanLainActionPerformed(evt);
+            }
+        });
+        panelGlass2.add(BtnPemasukanLain);
+
         BtnKeluar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/exit.png"))); // NOI18N
         BtnKeluar.setMnemonic('K');
         BtnKeluar.setText("Keluar");
@@ -2895,6 +2913,23 @@ public class DlgBilingRanap extends javax.swing.JDialog {
             isRawat();
         }
 }//GEN-LAST:event_TNoRwKeyPressed
+
+    private void BtnPemasukanLainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPemasukanLainActionPerformed
+        if(TNoRw.getText().trim().equals("")||TNoRM.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, silahkan pilih data pasien terlebih dahulu...!!!!");
+            TNoRw.requestFocus();
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            DlgPemasukanLain pemasukanlain=new DlgPemasukanLain(null,false);
+            pemasukanlain.isCek();
+            pemasukanlain.emptTeks();
+            pemasukanlain.setPasien(TNoRM.getText(),TNoRw.getText());
+            pemasukanlain.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            pemasukanlain.setLocationRelativeTo(internalFrame1);
+            pemasukanlain.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }//GEN-LAST:event_BtnPemasukanLainActionPerformed
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
         if(akses.getbilling_ranap()==true){
@@ -3817,7 +3852,7 @@ private void norawatpotonganKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST
 }//GEN-LAST:event_norawatpotonganKeyPressed
 
 private void BtnTambahPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTambahPotonganActionPerformed
-  tabModePotongan.addRow(new Object[]{"",""});
+  tabModePotongan.addRow(new Object[]{true,"",""});
 }//GEN-LAST:event_BtnTambahPotonganActionPerformed
 
 private void BtnSimpanPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanPotonganActionPerformed
@@ -3825,9 +3860,9 @@ private void BtnSimpanPotonganActionPerformed(java.awt.event.ActionEvent evt) {/
         Valid.textKosong(norawatpotongan,"Data");
     }else{
         for(int r=0;r<tbPotongan.getRowCount();r++){
-            if(Valid.SetAngka(tbPotongan.getValueAt(r,1).toString())>0){
-                Sequel.menyimpan("pengurangan_biaya","'"+norawatpotongan.getText()+"','"+tbPotongan.getValueAt(r,0).toString()+
-                        "','"+tbPotongan.getValueAt(r,1).toString()+"'","Potongan Biaya");
+            if(tbPotongan.getValueAt(r,0).toString().equals("true") && Valid.SetAngka(tbPotongan.getValueAt(r,2).toString())>0){
+                Sequel.menyimpan("pengurangan_biaya","'"+norawatpotongan.getText()+"','"+tbPotongan.getValueAt(r,1).toString()+
+                        "','"+tbPotongan.getValueAt(r,2).toString()+"'","Potongan Biaya");
             }
         }
         isRawat();
@@ -3836,9 +3871,14 @@ private void BtnSimpanPotonganActionPerformed(java.awt.event.ActionEvent evt) {/
 }//GEN-LAST:event_BtnSimpanPotonganActionPerformed
 
 private void BtnHapusPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusPotonganActionPerformed
+    if(tbPotongan.getSelectedRow()<0){
+        JOptionPane.showMessageDialog(null,"Maaf, silahkan pilih data potongan yang mau dihapus..!!");
+        return;
+    }
     Sequel.queryu("delete from pengurangan_biaya where no_rawat='"+norawatpotongan.getText()+
-            "' and nama_pengurangan='"+tbPotongan.getValueAt(tbPotongan.getSelectedRow(),0).toString() +"'");
+            "' and nama_pengurangan='"+tbPotongan.getValueAt(tbPotongan.getSelectedRow(),1).toString() +"'");
     tabModePotongan.removeRow(tbPotongan.getSelectedRow());
+    tampilPotongan(norawatpotongan.getText());
     isRawat();
 }//GEN-LAST:event_BtnHapusPotonganActionPerformed
 
@@ -5112,6 +5152,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button BtnCloseIn4;
     private widget.Button BtnHapus;
     private widget.Button BtnHapusPotongan;
+    private widget.Button BtnPemasukanLain;
     private widget.Button BtnHapusUbahDetailPindahKamar;
     private widget.Button BtnKeluar;
     private widget.Button BtnKeluar1;
@@ -7167,7 +7208,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 pspotonganbiaya.setString(1,norawatpotongan.getText());
                 rspotonganbiaya=pspotonganbiaya.executeQuery();
                 while(rspotonganbiaya.next()){
-                    tabModePotongan.addRow(new Object[]{rspotonganbiaya.getString(1),rspotonganbiaya.getString(2)});
+                    tabModePotongan.addRow(new Object[]{true,rspotonganbiaya.getString(1),rspotonganbiaya.getString(2)});
                 }
             } catch (Exception e) {
                 System.out.println("Notifikasi : "+e);
@@ -7182,9 +7223,61 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             //rs.close();
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
-        }          
+        }
+
+        //list tarif tindakan yang sudah dibilingkan (ranap & ralan) yang belum dipotong
+        try{
+            pspotonganbiaya=koneksi.prepareStatement(
+                "SELECT x.nama, x.biaya FROM (\n" +
+                "    SELECT CONCAT(t.kd_jenis_prw,'#',jp.nm_perawatan) AS nama, SUM(t.biaya_rawat) AS biaya\n" +
+                "    FROM (\n" +
+                "        SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_inap_dr WHERE no_rawat=?\n" +
+                "        UNION ALL\n" +
+                "        SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_inap_pr WHERE no_rawat=?\n" +
+                "        UNION ALL\n" +
+                "        SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_inap_drpr WHERE no_rawat=?\n" +
+                "    ) t\n" +
+                "    INNER JOIN jns_perawatan_inap jp ON jp.kd_jenis_prw=t.kd_jenis_prw\n" +
+                "    GROUP BY t.kd_jenis_prw, jp.nm_perawatan\n" +
+                "    UNION ALL\n" +
+                "    SELECT CONCAT(t.kd_jenis_prw,'#',jp.nm_perawatan) AS nama, SUM(t.biaya_rawat) AS biaya\n" +
+                "    FROM (\n" +
+                "        SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_jl_dr WHERE no_rawat=?\n" +
+                "        UNION ALL\n" +
+                "        SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_jl_pr WHERE no_rawat=?\n" +
+                "        UNION ALL\n" +
+                "        SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_jl_drpr WHERE no_rawat=?\n" +
+                "    ) t\n" +
+                "    INNER JOIN jns_perawatan jp ON jp.kd_jenis_prw=t.kd_jenis_prw\n" +
+                "    GROUP BY t.kd_jenis_prw, jp.nm_perawatan\n" +
+                ") x\n" +
+                "WHERE NOT EXISTS (\n" +
+                "    SELECT 1 FROM pengurangan_biaya pb\n" +
+                "    WHERE pb.no_rawat=? AND pb.nama_pengurangan=x.nama\n" +
+                ")");
+            try {
+                for(int p=1;p<=7;p++){
+                    pspotonganbiaya.setString(p,norawatpotongan.getText());
+                }
+                rspotonganbiaya=pspotonganbiaya.executeQuery();
+                while(rspotonganbiaya.next()){
+                    tabModePotongan.addRow(new Object[]{false,rspotonganbiaya.getString(1),rspotonganbiaya.getString(2)});
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : "+e);
+            } finally{
+                if(rspotonganbiaya!=null){
+                    rspotonganbiaya.close();
+                }
+                if(pspotonganbiaya!=null){
+                    pspotonganbiaya.close();
+                }
+            }
+        }catch(Exception e){
+            System.out.println("Notifikasi : "+e);
+        }
     }
-    
+
     public void tampilUbahLama(String NoRawat) {
         norawatubahlama.setText(NoRawat);
         Valid.tabelKosong(tabModeKamIn);
