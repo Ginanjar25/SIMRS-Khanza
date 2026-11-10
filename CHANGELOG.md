@@ -15,6 +15,9 @@ PANDUAN MENGISI
 -->
 
 ## [Belum Rilis]
+### Ditambahkan
+- **Surat Kontrol BPJS**: Pilihan "5 SKDP Terakhir" untuk menampilkan 5 surat kontrol terbaru dari hasil pencarian, tanpa batas tanggal. Aktif bila kolom pencarian terisi. (Pendaftaran, Poliklinik)
+
 ### Diubah
 - **Resume Ranap**: No. Reg SITB tidak lagi terisi otomatis saat form dibuka. Klik tombol "SITB" di sebelah tombol Pemeriksaan Penunjang Lab, lalu simpan resume. Nomor juga bisa dihapus dari isian dengan tombol "Hapus SITB", dan bila salah bisa sekaligus dihapus dari data pendaftaran TB. (Ranap, Rekam Medis)
 

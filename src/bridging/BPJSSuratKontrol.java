@@ -1934,6 +1934,11 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         if(!Sequel.cariIsi("select jnspelayanan from bridging_sep where no_sep = ?", no_sep).equals("1")){
             return true; // bukan SEP ranap, tidak perlu update tgl pulang
         }
+        String tglSurat = Valid.SetTgl(TanggalSurat.getSelectedItem()+"");
+        if(Sequel.cariInteger("select count(bridging_sep.no_sep) from bridging_sep inner join bridging_surat_kontrol_bpjs on bridging_surat_kontrol_bpjs.no_sep=bridging_sep.no_sep "+
+                "where bridging_sep.no_sep=? and bridging_surat_kontrol_bpjs.tgl_surat=? and date(bridging_sep.tglpulang)=?", no_sep, tglSurat, tglSurat) > 0){
+            return true; // tgl surat dan tgl pulang SEP sudah sama dengan input, tidak perlu update tgl pulang
+        }
         String user = akses.getkode().replace(" ", "");
         if (user.length() > 9) {
             user = user.substring(0, 9);
