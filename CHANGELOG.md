@@ -15,11 +15,23 @@ PANDUAN MENGISI
 -->
 
 ## [Belum Rilis]
+### Ditambahkan
+- **Pemasukan Lain-Lain**: Kwitansi Penerimaan (klik kanan tabel) kini dicetak langsung dari aplikasi tanpa membuka browser. Baris "Untuk Pembayaran" berisi nama kategori dengan isi Keperluan di bawahnya. Bila ada kendala, cetak lewat browser seperti dulu tetap tersedia di menu "Cetak Kwitansi Penerimaan (Web)". (Kasir)
+- **Pemasukan Lain-Lain dari Billing Ranap**: Tombol "Pemasukan Lain" di Billing Ranap membuka Pemasukan Lain-Lain dengan pasien terisi, dan isian "Terima Dari" otomatis berisi No. Rawat, No. RM, dan nama pasien. Bila kategori yang dipilih NON CLAIM, muncul tombol klip di samping isian Pemasukan untuk memilih tindakan/paket yang ada di billing pasien. Total tindakan yang dicentang mengganti isi Pemasukan dan nama tindakannya ditambahkan ke Keperluan. (Kasir Ranap)
+- **Daftar Tindakan/Paket Non Claim**: Daftar tindakan/paket yang bisa dipilih sebagai pemasukan lain kini bisa ditambah, diganti, dan dihapus sendiri lewat tombol "Daftar Tindakan" di jendela Pilih Tindakan/Paket. (Kasir, Keuangan)
+
 ### Diubah
+- **Pemasukan Lain-Lain**: Bila kategori yang dipilih kategori naik kelas, isian Keperluan otomatis terisi nama kategori. (Kasir)
 - **Resume Ranap**: No. Reg SITB tidak lagi terisi otomatis saat form dibuka. Klik tombol "SITB" di sebelah tombol Pemeriksaan Penunjang Lab, lalu simpan resume. Nomor juga bisa dihapus dari isian dengan tombol "Hapus SITB", dan bila salah bisa sekaligus dihapus dari data pendaftaran TB. (Ranap, Rekam Medis)
 
 ### Diperbaiki
 - **Riwayat Perawatan**: Tampilan tabel yang berantakan pada Pengkajian Awal Medis Rawat Inap Umum dan beberapa asesmen lain sudah dirapikan. (Dokter, Perawat, Rekam Medis)
+
+### Catatan Teknis
+- Daftar tindakan/paket NON CLAIM disimpan di file cache `./cache/tindakanpemasukanlain.iyem` (JSON, tanpa tabel database), diatur lewat `modif.DlgTindakanPemasukanLain` dengan hak akses Kategori Pemasukan Lain. Bila file belum ada, aplikasi memakai daftar bawaan di `modif.KwitansiUI.TINDAKAN`. File ini tersimpan per PC, jadi setelah diubah salin file tersebut ke folder `cache` PC kasir lain. Kode dicocokkan dengan 7 karakter pertama `kd_jenis_prw` di billing atau `nama_biaya` di tambahan biaya.
+- Kwitansi pemasukan lain memakai `report/rptKwitansiPemasukanLainModif.jasper` (dikompilasi dengan JasperReports 6.8.0). Bila jrxml diubah, kompilasi ulang di Jaspersoft Studio.
+- Cetak kwitansi desktop tidak lagi membuka form validasi NON CLAIM / BIAYA SELISIH, karena pengecekan tindakan/paket sudah dilakukan saat input lewat tombol klip. `modif.DlgKwitansiNonClaim`, `modif.DlgKwitansiSelisih`, dan `CetakKwitansiPemasukanLain.jenisKategori()` saat ini tidak dipakai. Validasi lama tetap berjalan di menu Web (`billing/LaporanKeuangan.php`).
+- Kategori NON CLAIM dan naik kelas dikenali dari nama kategori yang mengandung teks "NON CLAIM" / "NAIK KELAS" (huruf besar/kecil tidak berpengaruh).
 
 ## [2026.11.03] - 2026-11-03
 ### Ditambahkan
