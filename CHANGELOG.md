@@ -14,7 +14,7 @@ PANDUAN MENGISI
 - Popup "Apa yang Baru" muncul otomatis sekali setelah login bila versi teratas berubah.
 -->
 
-## [Belum Rilis]
+## [Rilis]
 
 ### Ditambahkan
 
@@ -28,6 +28,7 @@ PANDUAN MENGISI
 
 ### Diubah
 
+- **Registrasi**: Antrean Mobile JKN pasien BPJS kini langsung dikirim otomatis setelah registrasi disimpan, tanpa membuka jendela Antrian Online. Aplikasi tidak lagi berhenti menunggu jawaban BPJS, jadi petugas bisa langsung lanjut ke pasien berikutnya. Bila pengiriman gagal, server BPJS tidak menjawab dalam 20 detik, atau No. Rujukan/SKDP tidak ditemukan, muncul pesan berisi No. Rawat dan nama pasien; kirim ulang lewat tombol "Kirim Antrol BPJS" yang tetap membuka jendela Antrian Online seperti dulu. (Pendaftaran)
 - **Pemasukan Lain-Lain**: Bila kategori yang dipilih kategori naik kelas, isian Keperluan otomatis terisi nama kategori. (Kasir)
 - **Resume Ranap**: No. Reg SITB tidak lagi terisi otomatis saat form dibuka. Klik tombol "SITB" di sebelah tombol Pemeriksaan Penunjang Lab, lalu simpan resume. Nomor juga bisa dihapus dari isian dengan tombol "Hapus SITB", dan bila salah bisa sekaligus dihapus dari data pendaftaran TB. (Ranap, Rekam Medis)
 
@@ -43,6 +44,7 @@ PANDUAN MENGISI
 - Cetak kwitansi desktop tidak lagi membuka form validasi NON CLAIM / BIAYA SELISIH, karena pengecekan tindakan/paket sudah dilakukan saat input lewat tombol klip. `modif.DlgKwitansiNonClaim`, `modif.DlgKwitansiSelisih`, dan `CetakKwitansiPemasukanLain.jenisKategori()` saat ini tidak dipakai. Validasi lama tetap berjalan di menu Web (`billing/LaporanKeuangan.php`).
 - Kategori NON CLAIM dan naik kelas dikenali dari nama kategori yang mengandung teks "NON CLAIM" / "NAIK KELAS" (huruf besar/kecil tidak berpengaruh).
 - Pencarian `DlgReg.tampil()` tidak lagi LEFT JOIN `referensi_mobilejkn_bpjs`, `side_db.reg_periksa_website`, dan `referensi_mobilejkn_bpjs_batal` (kolom `no_rawat` di tabel tsb tidak ber-index, menyebabkan full scan berulang). Kolom Asal (WEB/JKN/ONSITE) dan Status JKN kini diisi oleh file baru `modif.StatusJknRegistrasi` lewat query terpisah hanya untuk `no_rawat` yang tampil, dengan aturan CASE/IF yang sama persis termasuk baris ganda bila satu `no_rawat` punya lebih dari satu booking. Hasil sudah dibandingkan dengan query lama di data production (1 hari, 10 hari, mode Batal, tanggal dengan booking ganda): identik. Waktu query 1 hari 10 dtk -> 0,3 dtk, 10 hari 60 dtk -> 0,5 dtk.
+- Antrol otomatis: file baru `modif.BPJSAntrianOnlineOtomatis`, dipanggil dari `DlgReg.isRegistrasi()` lewat `kirimAntrolBpjs(true)`. Proses bisnis sama dengan dialog `modif.BPJSAntrianOnline` (data pasien `setNoRm2`/`isRawat`, pemilihan rujukan/SKDP/tujuan kunjungan `formWindowOpened`, validasi tombol Simpan, pengiriman `SimpanAntrianOnSite`: request, JSON, kode 200/208/201, insert `referensi_antrean_online`, log `trackerjson` dan `System.out`). Berjalan di thread background (daemon); setting `koneksiDB` dibaca di EDT. Dialog `BPJSAntrianOnline` tidak diubah dan tetap dipakai tombol "Kirim Antrol BPJS" (`kirimAntrolBpjs(false)`). Request antrol otomatis memakai batas waktu tunggu koneksi 10 detik dan jawaban 20 detik (konstanta `WAKTU_TUNGGU_KONEKSI`/`WAKTU_TUNGGU_RESPON`), dipasang lewat `HttpConnectionParams` karena spring-web yang dimuat versi 3.1.0.M2. Hanya request factory yang diganti, interceptor `trackerjson` tetap jalan; `ApiBPJS`/`ApiMobileJKN` dan bridging lain tidak berubah. Bila timeout, tidak bisa terhubung, atau No. Rujukan/SKDP tidak ditemukan, petugas mendapat pesan (di dialog lama kondisi tanpa rujukan/SKDP dianggap sukses tanpa kirim).
 - Disarankan (belum dijalankan) menambah index biasa, BUKAN UNIQUE (`referensi_mobilejkn_bpjs` punya `no_rawat` ganda): `referensi_mobilejkn_bpjs(no_rawat)`, `side_db.reg_periksa_website(no_rawat)`, `reg_periksa(tgl_registrasi, jam_reg)`. Jalankan di jam sepi dengan `SET SESSION lock_wait_timeout=5` dan `ALGORITHM=INPLACE, LOCK=NONE`. Index `reg_periksa` memengaruhi rencana query ratusan query lain, uji dulu di database development.
 
 ## [2026.11.03] - 2026-11-03

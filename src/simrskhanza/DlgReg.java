@@ -15524,7 +15524,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         } else {
             if (Sequel.cariIsi("select stts from reg_periksa where no_rawat = ?", TNoRw.getText()).equals("Belum")){
                 if (tbPetugas.getSelectedRow() != -1) {
-                    kirimAntrolBpjs();
+                    kirimAntrolBpjs(false);
                 }
             }else{
                 JOptionPane.showMessageDialog(null, "Maaf, Pasien sudah selesai Periksa");
@@ -17101,7 +17101,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             if(ChkTracker.isSelected()==true){
                 ctk();
             }
-            kirimAntrolBpjs();
+            kirimAntrolBpjs(true);
             if(TabRawat.getSelectedIndex()==0){
 //                tabMode.addRow(new Object[] {
 //                    false,TNoReg.getText(),TNoRw.getText(),Valid.SetTgl(DTPReg.getSelectedItem()+""),CmbJam.getSelectedItem()+":"+CmbMenit.getSelectedItem()+":"+CmbDetik.getSelectedItem(),
@@ -18247,7 +18247,12 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         LCount.setText(""+tbPetugas.getRowCount());
     }
     
-    private void kirimAntrolBpjs() {
+    /**
+     * Kirim antrean Mobile JKN pasien BPJS.
+     * @param otomatis true = langsung kirim di background tanpa dialog (setelah registrasi),
+     *                 false = buka dialog BPJSAntrianOnline untuk cek/kirim ulang manual
+     */
+    private void kirimAntrolBpjs(boolean otomatis) {
         String ADDANTRIANAPIMOBILEJKNONREG="No";
         try {
             prop.loadFromXML(new FileInputStream("setting/database.xml"));
@@ -18257,7 +18262,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }
         
         if (ADDANTRIANAPIMOBILEJKNONREG.equals("yes")) {
-            if ("BPJ".equals(kdpnj.getText()) && !"IGDK".equals(kdpoli.getText())) {
+            if ("BPJ".equals(kdpnj.getText()) && !"IGDK".equals(kdpoli.getText()) && otomatis) {
+                modif.BPJSAntrianOnlineOtomatis.kirim(TNoRw.getText(), kdpoli.getText(), KdDokter.getText(), TNoReg.getText());
+            }else if ("BPJ".equals(kdpnj.getText()) && !"IGDK".equals(kdpoli.getText())) {
                 this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 BPJSAntrianOnline antrol = new BPJSAntrianOnline(null, true);
                 akses.setform("DlgReg");
