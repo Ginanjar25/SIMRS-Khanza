@@ -34,6 +34,7 @@ PANDUAN MENGISI
 ### Diperbaiki
 
 - **Riwayat Perawatan**: Tampilan tabel yang berantakan pada Pengkajian Awal Medis Rawat Inap Umum dan beberapa asesmen lain sudah dirapikan. (Dokter, Perawat, Rekam Medis)
+- **Registrasi**: Pencarian data registrasi kini jauh lebih cepat, dari sekitar 10-15 detik menjadi kurang dari 2 detik. Pencarian beberapa hari sekaligus yang dulu bisa sampai 1 menit kini juga selesai dalam hitungan detik. Isi tabel tidak berubah. (Pendaftaran)
 
 ### Catatan Teknis
 
@@ -41,6 +42,8 @@ PANDUAN MENGISI
 - Kwitansi pemasukan lain memakai `report/rptKwitansiPemasukanLainModif.jasper` (dikompilasi dengan JasperReports 6.8.0). Bila jrxml diubah, kompilasi ulang di Jaspersoft Studio.
 - Cetak kwitansi desktop tidak lagi membuka form validasi NON CLAIM / BIAYA SELISIH, karena pengecekan tindakan/paket sudah dilakukan saat input lewat tombol klip. `modif.DlgKwitansiNonClaim`, `modif.DlgKwitansiSelisih`, dan `CetakKwitansiPemasukanLain.jenisKategori()` saat ini tidak dipakai. Validasi lama tetap berjalan di menu Web (`billing/LaporanKeuangan.php`).
 - Kategori NON CLAIM dan naik kelas dikenali dari nama kategori yang mengandung teks "NON CLAIM" / "NAIK KELAS" (huruf besar/kecil tidak berpengaruh).
+- Pencarian `DlgReg.tampil()` tidak lagi LEFT JOIN `referensi_mobilejkn_bpjs`, `side_db.reg_periksa_website`, dan `referensi_mobilejkn_bpjs_batal` (kolom `no_rawat` di tabel tsb tidak ber-index, menyebabkan full scan berulang). Kolom Asal (WEB/JKN/ONSITE) dan Status JKN kini diisi oleh file baru `modif.StatusJknRegistrasi` lewat query terpisah hanya untuk `no_rawat` yang tampil, dengan aturan CASE/IF yang sama persis termasuk baris ganda bila satu `no_rawat` punya lebih dari satu booking. Hasil sudah dibandingkan dengan query lama di data production (1 hari, 10 hari, mode Batal, tanggal dengan booking ganda): identik. Waktu query 1 hari 10 dtk -> 0,3 dtk, 10 hari 60 dtk -> 0,5 dtk.
+- Disarankan (belum dijalankan) menambah index biasa, BUKAN UNIQUE (`referensi_mobilejkn_bpjs` punya `no_rawat` ganda): `referensi_mobilejkn_bpjs(no_rawat)`, `side_db.reg_periksa_website(no_rawat)`, `reg_periksa(tgl_registrasi, jam_reg)`. Jalankan di jam sepi dengan `SET SESSION lock_wait_timeout=5` dan `ALGORITHM=INPLACE, LOCK=NONE`. Index `reg_periksa` memengaruhi rencana query ratusan query lain, uji dulu di database development.
 
 ## [2026.11.03] - 2026-11-03
 

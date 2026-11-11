@@ -72,7 +72,9 @@ import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -230,6 +232,7 @@ import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 import modif.DlgBatalPeriksa;
 import modif.BPJSAntrianOnline;
+import modif.StatusJknRegistrasi;
 import java.util.Properties;
 import java.io.FileInputStream;
 
@@ -242,6 +245,9 @@ public final class DlgReg extends javax.swing.JDialog {
     private sekuel Sequel=new sekuel();
     private validasi Valid=new validasi();
     private Connection koneksi=koneksiDB.condb();
+    // indeks kolom tabMode (tbPetugas) yang dipakai StatusJknRegistrasi
+    private static final int KOLOM_NO_RAWAT=2,KOLOM_STTS=19,KOLOM_ASAL=25,KOLOM_STATUS_JKN=26;
+    private final StatusJknRegistrasi statusjkn=new StatusJknRegistrasi();
     public  DlgPasien pasien=new DlgPasien(null,false);
     public  DlgCariDokter dokter=new DlgCariDokter(null,false);
     public  DlgCariDokter2 dokter2=new DlgCariDokter2(null,false);
@@ -16171,8 +16177,9 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }else{
             stts = " and reg_periksa.stts = 'Batal' ";
         }
-        
+
         try {
+            List<Object[]> daftarbaris=new ArrayList<>();
             // Filter hanya dipasang jika isian pencarian diisi
             String filter="";
             if(!CrPoli.getText().trim().equals("")){
@@ -16189,7 +16196,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             ps=koneksi.prepareStatement("select reg_periksa.no_reg,reg_periksa.no_rawat,reg_periksa.tgl_registrasi,reg_periksa.jam_reg, " +
                 "reg_periksa.kd_dokter,dokter.nm_dokter,reg_periksa.no_rkm_medis,pasien.nm_pasien,pasien.jk,concat(reg_periksa.umurdaftar,' ',reg_periksa.sttsumur)as umur,poliklinik.nm_poli, " +
                 "reg_periksa.p_jawab,reg_periksa.almt_pj,reg_periksa.hubunganpj,reg_periksa.biaya_reg,reg_periksa.stts_daftar,penjab.png_jawab,pasien.no_tlp,reg_periksa.stts,reg_periksa.status_poli, " +
-                "reg_periksa.kd_poli,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(bse.no_sep),'VCL','BRD') AS skdp, CASE WHEN CONCAT((ISNULL(rmb.nobooking) OR rmbb.nobooking IS NOT NULL), ISNULL(regw.no_rawat)) = '10' THEN 'WEB' WHEN CONCAT((ISNULL(rmb.nobooking) OR rmbb.nobooking IS NOT NULL), ISNULL(regw.no_rawat)) = '01' THEN 'JKN' WHEN CONCAT((ISNULL(rmb.nobooking) OR rmbb.nobooking IS NOT NULL), ISNULL(regw.no_rawat)) = '11' THEN 'ONSITE' ELSE 'Unknown' END AS asal, IF(ISNULL(rmb.`status`),IF(ISNULL(regw.`status`),IF(reg_periksa.stts != 'Batal','-','Batal'),regw.`status`),rmb.`status`) AS jknstts, " +
+                "reg_periksa.kd_poli,reg_periksa.kd_pj,reg_periksa.status_bayar, if(ISNULL(bse.no_sep),'VCL','BRD') AS skdp, " +
                 "if(exists(select 1 from side_db.fingerprint_bpjs fr where fr.nokartu=pasien.no_peserta and fr.tanggal=reg_periksa.tgl_registrasi),'Sudah','Belum') AS fingerprint, " +
                 "if(exists(select 1 from bridging_surat_kontrol_bpjs skdp where skdp.no_sep=bse.no_sep),'Sudah','Belum') AS terbit_skdp, if(ISNULL(penjab_reg.no_kartu),'',CONCAT(' - ', penjab_reg.no_kartu)) AS no_kartu2, " +
                 "IFNULL(penjab_reg.kd_pj, '') AS kd_pj2, CASE WHEN antripoli.`status` IS NULL OR antripoli.`status` = '0' THEN 'Belum' ELSE 'Sudah' END AS cetak_barcode, " +
@@ -16202,16 +16209,15 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 "from reg_periksa inner join dokter on reg_periksa.kd_dokter=dokter.kd_dokter inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis " +
                 "inner join poliklinik on reg_periksa.kd_poli=poliklinik.kd_poli " +
                 "LEFT JOIN kelurahan kelpas ON pasien.kd_kel=kelpas.kd_kel LEFT JOIN kecamatan kecpas ON pasien.kd_kec=kecpas.kd_kec LEFT JOIN kabupaten kabpas ON pasien.kd_kab=kabpas.kd_kab " +
-                "LEFT JOIN referensi_mobilejkn_bpjs rmb ON rmb.no_rawat = reg_periksa.no_rawat LEFT JOIN side_db.reg_periksa_website regw ON regw.no_rawat = reg_periksa.no_rawat " +
-                "LEFT JOIN referensi_mobilejkn_bpjs_batal rmbb ON rmbb.nobooking = rmb.nobooking AND rmbb.keterangan LIKE 'Ganti cara bayar%' " +
+                // kolom asal & status JKN tidak di-join di sini (lambat), diisi oleh StatusJknRegistrasi
                 "LEFT JOIN bridging_sep bse ON bse.no_rawat = reg_periksa.no_rawat " +
                 "LEFT JOIN penjab AS penjab ON reg_periksa.kd_pj = penjab.kd_pj " +
                 "LEFT JOIN penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat AND penjab_reg.`order` = 2 " +
                 "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj " +
                 "LEFT JOIN antripoli ON antripoli.no_rawat = reg_periksa.no_rawat " +
-                "where reg_periksa.kd_poli<>'IGDK' and reg_periksa.tgl_registrasi between ? and ? "+filter+terbitsep+stts+" order by "+order); 
-                
-            try{  
+                "where reg_periksa.kd_poli<>'IGDK' and reg_periksa.tgl_registrasi between ? and ? "+filter+terbitsep+stts+" order by "+order);
+
+            try{
                 int p=1;
                 ps.setString(p++,Valid.SetTgl(DTPCari1.getSelectedItem()+""));
                 ps.setString(p++,Valid.SetTgl(DTPCari2.getSelectedItem()+""));
@@ -16226,35 +16232,40 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                         ps.setString(p++,"%"+TCari.getText().trim()+"%");
                     }
                 }
-                    
+
                 rs=ps.executeQuery();
                 while(rs.next()){
-                    tabMode.addRow(new Object[] {
+                    daftarbaris.add(new Object[] {
                         false,rs.getString("no_reg"),rs.getString("no_rawat"),rs.getString("tgl_registrasi"),rs.getString("jam_reg"),
                         rs.getString("kd_dokter"),rs.getString("nm_dokter"),rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),
                         rs.getString("jk"),rs.getString("umur"),rs.getString("nm_poli"),rs.getString("png_jawab") + " " + rs.getString("kls")+ " "  + rs.getString("cara_bayar2"),
                         rs.getString("p_jawab"),rs.getString("almt_pj"),rs.getString("hubunganpj"),Valid.SetAngka(rs.getDouble("biaya_reg")),
                         rs.getString("stts_daftar"),rs.getString("no_tlp"),rs.getString("stts"),rs.getString("status_poli"),
-                        rs.getString("kd_poli"),rs.getString("kd_pj"),rs.getString("status_bayar"), 
-                        rs.getString("skdp"), rs.getString("asal"), rs.getString("jknstts"), rs.getString("fingerprint"), rs.getString("terbit_skdp"), rs.getString("kd_pj2"), rs.getString("cetak_barcode"), rs.getString("no_sep"),
+                        rs.getString("kd_poli"),rs.getString("kd_pj"),rs.getString("status_bayar"),
+                        rs.getString("skdp"), null, null, // asal & status JKN diisi StatusJknRegistrasi
+                        rs.getString("fingerprint"), rs.getString("terbit_skdp"), rs.getString("kd_pj2"), rs.getString("cetak_barcode"), rs.getString("no_sep"),
                         rs.getString("data_kurang")
                     });
-                }                    
+                }
             }catch(Exception e){
                 System.out.println("Notifikasi : "+e);
             }finally{
                 if(rs != null){
                     rs.close();
                 }
-                
+
                 if(ps != null){
                     ps.close();
                 }
             }
+
+            for(Object[] baris:statusjkn.lengkapi(daftarbaris,KOLOM_NO_RAWAT,KOLOM_STTS,KOLOM_ASAL,KOLOM_STATUS_JKN)){
+                tabMode.addRow(baris);
+            }
         } catch (Exception e) {
             System.out.println("Notifikasi : "+e);
         }
-    
+
         LCount.setText(""+tabMode.getRowCount());
     }
 
