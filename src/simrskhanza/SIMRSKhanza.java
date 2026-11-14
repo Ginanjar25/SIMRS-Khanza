@@ -11,6 +11,7 @@
  */
 package simrskhanza;
 
+import java.util.Locale;
 import usu.widget.util.WidgetUtilities;
 import fungsi.RedirectSystemOutToDatabase;
 import modif.AutoClose;
@@ -25,6 +26,9 @@ public class SIMRSKhanza {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        // Paksa format angka 20,000.50 (koma ribuan, titik desimal). Java 9+ (CLDR) pada region
+        // Indonesia memakai 20.000,50 sehingga Double.parseDouble membaca "20.000" sebagai 20.
+        Locale.setDefault(Locale.US);
         RedirectSystemOutToDatabase.redirectSystemOut();
         WidgetUtilities.invokeLater(() -> {
            frmUtama utama=frmUtama.getInstance();

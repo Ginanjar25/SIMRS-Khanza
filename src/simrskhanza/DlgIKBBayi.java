@@ -3396,8 +3396,8 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             BtnBatal.requestFocus();
         }else if(tabMode.getRowCount()!=0){
             Locale locale = new Locale ("id", "ID"); 
-            Locale.setDefault(locale);
             Map<String, Object> param = new HashMap<>();    
+                param.put("REPORT_LOCALE",locale); // locale Indonesia hanya untuk laporan, tidak mengubah format angka aplikasi
                 param.put("namars",akses.getnamars());
                 param.put("alamatrs",akses.getalamatrs());
                 param.put("kotars",akses.getkabupatenrs());
@@ -3930,8 +3930,8 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             BtnBatal.requestFocus();
         }else if(tabMode.getRowCount()!=0){
             Locale locale = new Locale ("id", "ID"); 
-            Locale.setDefault(locale);
             Map<String, Object> param = new HashMap<>();
+            param.put("REPORT_LOCALE",locale); // locale Indonesia hanya untuk laporan, tidak mengubah format angka aplikasi
             param.put("namars",akses.getnamars());
             param.put("alamatrs",akses.getalamatrs());
             param.put("kotars",akses.getkabupatenrs());
@@ -3968,8 +3968,8 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
             BtnBatal.requestFocus();
         }else if(tabMode.getRowCount()!=0){
             Locale locale = new Locale ("id", "ID"); 
-            Locale.setDefault(locale); 
             Map<String, Object> param = new HashMap<>();
+            param.put("REPORT_LOCALE",locale); // locale Indonesia hanya untuk laporan, tidak mengubah format angka aplikasi
             param.put("namars",akses.getnamars());
             param.put("alamatrs",akses.getalamatrs());
             param.put("kotars",akses.getkabupatenrs());

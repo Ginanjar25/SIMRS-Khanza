@@ -25,8 +25,10 @@ if(bridging_rujukan_bpjs.jnsPelayanan='1','1. Rawat Inap','2. Rawat Jalan') as j
 bridging_rujukan_bpjs.tipeRujukan,bridging_rujukan_bpjs.catatan,
 bridging_rujukan_bpjs.diagRujukan,bridging_rujukan_bpjs.nama_diagRujukan,
 bridging_rujukan_bpjs.poliRujukan,bridging_rujukan_bpjs.nama_poliRujukan,bridging_sep.no_kartu,
-if(bridging_sep.jkel='L','Laki-Laki','Perempuan') as jkel,bridging_rujukan_bpjs.tglRencanaKunjungan  
+if(bridging_sep.jkel='L','Laki-Laki','Perempuan') as jkel,bridging_rujukan_bpjs.tglRencanaKunjungan,
+ifnull(bridging_rujukan_bpjs_satusehat.no_rujukan_satusehat,'') as no_rujukan_satusehat
 from bridging_sep inner join bridging_rujukan_bpjs on bridging_rujukan_bpjs.no_sep=bridging_sep.no_sep
+left join bridging_rujukan_bpjs_satusehat on bridging_rujukan_bpjs_satusehat.no_rujukan=bridging_rujukan_bpjs.no_rujukan
 where bridging_rujukan_bpjs.no_rujukan=$P{norujuk}]]>
 	</queryString>
 	<field name="no_sep" class="java.lang.String">
@@ -133,6 +135,11 @@ where bridging_rujukan_bpjs.no_rujukan=$P{norujuk}]]>
 		<property name="com.jaspersoft.studio.field.name" value="tglRencanaKunjungan"/>
 		<property name="com.jaspersoft.studio.field.label" value="tglRencanaKunjungan"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="bridging_rujukan_bpjs"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="no_rujukan_satusehat" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="no_rujukan_satusehat"/>
+		<property name="com.jaspersoft.studio.field.label" value="no_rujukan_satusehat"/>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<background>
@@ -413,6 +420,36 @@ where bridging_rujukan_bpjs.no_rujukan=$P{norujuk}]]>
 				</textElement>
 				<text><![CDATA[Rawat]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="339" y="91" width="100" height="14" uuid="3b1f6c2e-7a41-4d8e-9c55-2f0b8d6a1e01">
+					<printWhenExpression><![CDATA[!$F{no_rujukan_satusehat}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[No.Rujukan Satu Sehat]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="439" y="91" width="5" height="14" uuid="3b1f6c2e-7a41-4d8e-9c55-2f0b8d6a1e02">
+					<printWhenExpression><![CDATA[!$F{no_rujukan_satusehat}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Transparent" x="444" y="91" width="109" height="14" uuid="3b1f6c2e-7a41-4d8e-9c55-2f0b8d6a1e03">
+					<printWhenExpression><![CDATA[!$F{no_rujukan_satusehat}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{no_rujukan_satusehat}]]></textFieldExpression>
+			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd MMMMM yyyy">
 				<reportElement mode="Transparent" x="370" y="117" width="142" height="14" uuid="e369cc74-5efd-453d-b7b6-8681e6df3891"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
