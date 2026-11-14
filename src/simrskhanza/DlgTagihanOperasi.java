@@ -228,8 +228,8 @@ public class DlgTagihanOperasi extends javax.swing.JDialog {
     private void initComponents() {
 
         Kd2 = new widget.TextBox();
-        Popup = new javax.swing.JPopupMenu();
-        ppBersihkan = new javax.swing.JMenuItem();
+        Popup = new widget.PopupMenu();
+        ppBersihkan = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -3540,7 +3540,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox Kd2;
     private widget.Label LTotal;
     private javax.swing.JPanel PanelInput;
-    private javax.swing.JPopupMenu Popup;
+    private widget.PopupMenu Popup;
     private widget.ScrollPane Scroll;
     private widget.ScrollPane Scroll1;
     private widget.TextBox TCari;
@@ -3649,7 +3649,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.panelisi panelisi1;
     private widget.panelisi panelisi4;
     private widget.panelisi panelisi5;
-    private javax.swing.JMenuItem ppBersihkan;
+    private widget.MenuItem ppBersihkan;
     private widget.ScrollPane scrollPane1;
     private widget.Table tbObat;
     private widget.Table tbtindakan;

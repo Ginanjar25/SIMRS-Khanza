@@ -181,11 +181,11 @@ public class DlgPemberianObat extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        Popup2 = new javax.swing.JPopupMenu();
-        ppResepObat = new javax.swing.JMenuItem();
-        ppNoRawat = new javax.swing.JMenuItem();
-        ppLokasi = new javax.swing.JMenuItem();
-        ppReqHapusObat = new javax.swing.JMenuItem();
+        Popup2 = new widget.PopupMenu();
+        ppResepObat = new widget.MenuItem();
+        ppNoRawat = new widget.MenuItem();
+        ppLokasi = new widget.MenuItem();
+        ppReqHapusObat = new widget.MenuItem();
         THBeli = new widget.TextBox();
         Tanggal = new widget.Tanggal();
         internalFrame1 = new widget.InternalFrame();
@@ -1376,7 +1376,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Label LCount;
     private widget.Label LCount1;
     private javax.swing.JPanel PanelInput;
-    private javax.swing.JPopupMenu Popup2;
+    private widget.PopupMenu Popup2;
     private widget.ScrollPane Scroll;
     private widget.TextBox TBiayaObat;
     private widget.TextBox TCari;
@@ -1409,10 +1409,10 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JSeparator jSeparator5;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
-    private javax.swing.JMenuItem ppLokasi;
-    private javax.swing.JMenuItem ppNoRawat;
-    private javax.swing.JMenuItem ppReqHapusObat;
-    private javax.swing.JMenuItem ppResepObat;
+    private widget.MenuItem ppLokasi;
+    private widget.MenuItem ppNoRawat;
+    private widget.MenuItem ppReqHapusObat;
+    private widget.MenuItem ppResepObat;
     private widget.Table tbPemberianObat;
     // End of variables declaration//GEN-END:variables
 

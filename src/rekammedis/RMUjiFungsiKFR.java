@@ -178,9 +178,9 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        MnUjiFungsi = new javax.swing.JMenuItem();
-        MnProgramKFR = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        MnUjiFungsi = new widget.MenuItem();
+        MnProgramKFR = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -1934,8 +1934,8 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
     private widget.TextBox KdDokter;
     private widget.Label LCount;
     private widget.ComboBox Menit;
-    private javax.swing.JMenuItem MnProgramKFR;
-    private javax.swing.JMenuItem MnUjiFungsi;
+    private widget.MenuItem MnProgramKFR;
+    private widget.MenuItem MnUjiFungsi;
     private widget.TextBox NmDokter;
     private javax.swing.JPanel PanelInput;
     private widget.TextBox PemFisikUji;
@@ -1984,7 +1984,7 @@ public final class RMUjiFungsiKFR extends javax.swing.JDialog {
     private widget.Label jLabel7;
     private widget.Label jLabel8;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private widget.TextArea kesimpulan;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;

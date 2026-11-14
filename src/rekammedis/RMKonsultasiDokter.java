@@ -206,8 +206,8 @@ public final class RMKonsultasiDokter extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        MnLembarKonsultasi = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        MnLembarKonsultasi = new widget.MenuItem();
         Tanggal = new widget.TextBox();
         jLayeredPane1 = new javax.swing.JLayeredPane();
         internalFrame1 = new widget.InternalFrame();
@@ -1112,7 +1112,7 @@ public final class RMKonsultasiDokter extends javax.swing.JDialog {
     private widget.TextBox KodeDokterKonsulen;
     private widget.TextArea KonsulDPJP;
     private widget.Label LCount;
-    private javax.swing.JMenuItem MnLembarKonsultasi;
+    private widget.MenuItem MnLembarKonsultasi;
     private widget.TextBox NamaDPJP;
     private widget.TextBox NamaDokterKonsulen;
     private javax.swing.JPanel PanelInput;
@@ -1140,7 +1140,7 @@ public final class RMKonsultasiDokter extends javax.swing.JDialog {
     private widget.Label jLabelUmur;
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private widget.Label labelDokterKonsulen;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;

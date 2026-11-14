@@ -21,7 +21,7 @@ public class RadioButton extends JRadioButton {
     private static final long serialVersionUID = 2L;
 
     static final Color AKSEN    = new Color(0x3232a8);
-    static final Color BORDER   = new Color(0xa7aeb6);
+    static final Color BORDER   = new Color(0xa7aeb6);   
     static final Color HOVER    = new Color(0x6f7285);
     static final Color NONAKTIF = new Color(0xF1F4F2);
     static final Color RING     = new Color(0x05, 0x05, 0xA8, 70);
@@ -99,7 +99,7 @@ public class RadioButton extends JRadioButton {
                 } else {
                     g2.setColor(!aktif ? NONAKTIF : ditekan ? new Color(0xE3F2EA) : Color.WHITE);
                     g2.fill(lingkaran);
-                    g2.setColor(!aktif ? new Color(0xC9D3CD) : (hover || fokus) ? HOVER : BORDER);
+                    g2.setColor(!aktif ? new Color(0xC9CDD3) : (hover || fokus) ? HOVER : BORDER);
                     g2.setStroke(new BasicStroke(1f));
                     g2.draw(lingkaran);
                 }

@@ -317,8 +317,8 @@ public class DlgPermintaanFotoBayi extends javax.swing.JDialog {
         NoRawatIbu = new widget.TextBox();
         NoRawatBayi = new widget.TextBox();
         jFileChooser1 = new javax.swing.JFileChooser();
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        MnEditFoto = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        MnEditFoto = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -1670,7 +1670,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox KdDokter2;
     private widget.Label LCount;
     private widget.Tanggal Lahir;
-    private javax.swing.JMenuItem MnEditFoto;
+    private widget.MenuItem MnEditFoto;
     private widget.TextBox NmAyah;
     private widget.TextBox NmIbu;
     private widget.TextBox NmPasien;
@@ -1702,7 +1702,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Label jLabel7;
     private widget.Label jLabel8;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private widget.ComboBox jam;
     private widget.Label label23;
     private widget.Label label24;

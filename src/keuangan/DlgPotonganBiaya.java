@@ -208,8 +208,8 @@ public final class DlgPotonganBiaya extends javax.swing.JDialog {
     private void initComponents() {
 
         Kd2 = new widget.TextBox();
-        Popup = new javax.swing.JPopupMenu();
-        MnRestore = new javax.swing.JMenuItem();
+        Popup = new widget.PopupMenu();
+        MnRestore = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         jPanel1 = new javax.swing.JPanel();
         panelisi3 = new widget.panelisi();
@@ -711,9 +711,9 @@ public final class DlgPotonganBiaya extends javax.swing.JDialog {
     private widget.Button BtnSimpan;
     private widget.TextBox Kd2;
     private widget.Label LCount;
-    private javax.swing.JMenuItem MnRestore;
+    private widget.MenuItem MnRestore;
     private widget.Label NoRw;
-    private javax.swing.JPopupMenu Popup;
+    private widget.PopupMenu Popup;
     private widget.TextBox TCari;
     private widget.TextBox TNoRw;
     private javax.swing.JTabbedPane TabRawat;

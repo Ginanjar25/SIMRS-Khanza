@@ -308,11 +308,11 @@ public class DlgBookingRegistrasi extends javax.swing.JDialog {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        Popup = new javax.swing.JPopupMenu();
-        ppBersihkan = new javax.swing.JMenuItem();
-        ppSemua = new javax.swing.JMenuItem();
-        ppCSVWARocket = new javax.swing.JMenuItem();
-        ppCetakBuktiBooking = new javax.swing.JMenuItem();
+        Popup = new widget.PopupMenu();
+        ppBersihkan = new widget.MenuItem();
+        ppSemua = new widget.MenuItem();
+        ppCSVWARocket = new widget.MenuItem();
+        ppCetakBuktiBooking = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -455,7 +455,7 @@ public class DlgBookingRegistrasi extends javax.swing.JDialog {
         Scroll.setName("Scroll"); // NOI18N
         Scroll.setOpaque(true);
 
-        tbObat.setAutoCreateRowSorter(true);
+        tbObat.setAutoCreateRowSorter(false);
         tbObat.setComponentPopupMenu(Popup);
         tbObat.setName("tbObat"); // NOI18N
         tbObat.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1840,7 +1840,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox NmPoli;
     private widget.TextBox NoReg;
     private javax.swing.JPanel PanelInput;
-    private javax.swing.JPopupMenu Popup;
+    private widget.PopupMenu Popup;
     private widget.RadioButton R2;
     private widget.RadioButton R3;
     private widget.ScrollPane Scroll;
@@ -1871,10 +1871,10 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.panelisi panelCari;
     private widget.panelisi panelGlass10;
     private widget.panelisi panelGlass8;
-    private javax.swing.JMenuItem ppBersihkan;
-    private javax.swing.JMenuItem ppCSVWARocket;
-    private javax.swing.JMenuItem ppCetakBuktiBooking;
-    private javax.swing.JMenuItem ppSemua;
+    private widget.MenuItem ppBersihkan;
+    private widget.MenuItem ppCSVWARocket;
+    private widget.MenuItem ppCetakBuktiBooking;
+    private widget.MenuItem ppSemua;
     private widget.Table tbObat;
     // End of variables declaration//GEN-END:variables
 

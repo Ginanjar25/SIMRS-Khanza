@@ -244,10 +244,10 @@ public class LabKeslingCariVerifikasiPengujianSampel extends javax.swing.JDialog
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        ppSuratVerifikasi = new javax.swing.JMenuItem();
-        ppHapusVerifikasiPengujian = new javax.swing.JMenuItem();
-        ppValidasiPengujian = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        ppSuratVerifikasi = new widget.MenuItem();
+        ppHapusVerifikasiPengujian = new widget.MenuItem();
+        ppValidasiPengujian = new widget.MenuItem();
         KodeSampel = new widget.TextBox();
         KodePelanggan = new widget.TextBox();
         KodePetugas = new widget.TextBox();
@@ -1589,7 +1589,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private widget.InternalFrame internalFrame1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private widget.Label label10;
     private widget.Label label11;
     private widget.Label label12;
@@ -1602,9 +1602,9 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     private widget.panelisi panelisi1;
     private widget.panelisi panelisi3;
     private widget.panelisi panelisi4;
-    private javax.swing.JMenuItem ppHapusVerifikasiPengujian;
-    private javax.swing.JMenuItem ppSuratVerifikasi;
-    private javax.swing.JMenuItem ppValidasiPengujian;
+    private widget.MenuItem ppHapusVerifikasiPengujian;
+    private widget.MenuItem ppSuratVerifikasi;
+    private widget.MenuItem ppValidasiPengujian;
     private widget.ScrollPane scrollPane1;
     private widget.ScrollPane scrollPane2;
     private widget.ScrollPane scrollPaneDetail;

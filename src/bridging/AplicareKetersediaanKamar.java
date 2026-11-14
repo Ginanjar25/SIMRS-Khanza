@@ -217,8 +217,8 @@ public final class AplicareKetersediaanKamar extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        Popup = new javax.swing.JPopupMenu();
-        ppCetak = new javax.swing.JMenuItem();
+        Popup = new widget.PopupMenu();
+        ppCetak = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         PanelInput1 = new javax.swing.JPanel();
         Scroll = new widget.ScrollPane();
@@ -307,7 +307,7 @@ public final class AplicareKetersediaanKamar extends javax.swing.JDialog {
         Scroll.setOpaque(true);
         Scroll.setPreferredSize(new java.awt.Dimension(452, 250));
 
-        tbJnsPerawatan.setAutoCreateRowSorter(true);
+        tbJnsPerawatan.setAutoCreateRowSorter(false);
         tbJnsPerawatan.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbJnsPerawatan.setName("tbJnsPerawatan"); // NOI18N
         tbJnsPerawatan.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1282,7 +1282,7 @@ private void btnKamarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox NmKelas;
     private javax.swing.JPanel PanelInput;
     private javax.swing.JPanel PanelInput1;
-    private javax.swing.JPopupMenu Popup;
+    private widget.PopupMenu Popup;
     private widget.ScrollPane Scroll;
     private widget.ScrollPane Scroll1;
     private widget.TextBox TCari;
@@ -1307,7 +1307,7 @@ private void btnKamarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JPanel jPanel3;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
-    private javax.swing.JMenuItem ppCetak;
+    private widget.MenuItem ppCetak;
     private widget.Table tbJnsPerawatan;
     private widget.Table tbJnsPerawatan1;
     // End of variables declaration//GEN-END:variables

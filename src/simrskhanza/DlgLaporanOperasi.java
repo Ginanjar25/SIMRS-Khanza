@@ -217,8 +217,8 @@ public class DlgLaporanOperasi extends javax.swing.JDialog {
     private void initComponents() {
 
         Kd2 = new widget.TextBox();
-        Popup = new javax.swing.JPopupMenu();
-        MnLaporanOperasi = new javax.swing.JMenuItem();
+        Popup = new widget.PopupMenu();
+        MnLaporanOperasi = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         panelisi1 = new widget.panelisi();
         BtnSimpan = new widget.Button();
@@ -1417,12 +1417,12 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
     private widget.TextBox Kd2;
     private widget.ComboBox Komplikasi;
     private widget.TextArea Laporan;
-    private javax.swing.JMenuItem MnLaporanOperasi;
+    private widget.MenuItem MnLaporanOperasi;
     private widget.TextBox NamaOperasi;
     private widget.TextBox NoRegImplan;
     private javax.swing.JPanel PanelInput;
     private widget.ComboBox Perdarahan;
-    private javax.swing.JPopupMenu Popup;
+    private widget.PopupMenu Popup;
     private widget.TextBox PostOp;
     private widget.TextBox PreOp;
     private widget.ScrollPane Scroll;

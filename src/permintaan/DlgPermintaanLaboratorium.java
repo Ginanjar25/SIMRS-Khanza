@@ -307,15 +307,15 @@ public final class DlgPermintaanLaboratorium extends javax.swing.JDialog {
     private void initComponents() {
 
         Penjab = new widget.TextBox();
-        Popup = new javax.swing.JPopupMenu();
-        ppBersihkan = new javax.swing.JMenuItem();
-        ppSemua = new javax.swing.JMenuItem();
+        Popup = new widget.PopupMenu();
+        ppBersihkan = new widget.MenuItem();
+        ppSemua = new widget.MenuItem();
         Jk = new widget.TextBox();
         Umur = new widget.TextBox();
         Alamat = new widget.TextBox();
-        PopupMB = new javax.swing.JPopupMenu();
-        ppBersihkan1 = new javax.swing.JMenuItem();
-        ppSemua1 = new javax.swing.JMenuItem();
+        PopupMB = new widget.PopupMenu();
+        ppBersihkan1 = new widget.MenuItem();
+        ppSemua1 = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         internalFrame2 = new widget.InternalFrame();
         FormInput = new javax.swing.JPanel();
@@ -1976,8 +1976,8 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox PemeriksaanMB;
     private widget.TextBox PemeriksaanPA;
     private widget.TextBox Penjab;
-    private javax.swing.JPopupMenu Popup;
-    private javax.swing.JPopupMenu PopupMB;
+    private widget.PopupMenu Popup;
+    private widget.PopupMenu PopupMB;
     private widget.ScrollPane Scroll;
     private widget.ScrollPane Scroll1;
     private widget.ScrollPane Scroll2;
@@ -2025,10 +2025,10 @@ private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.panelisi panelGlass12;
     private widget.panelisi panelGlass13;
     private widget.panelisi panelGlass8;
-    private javax.swing.JMenuItem ppBersihkan;
-    private javax.swing.JMenuItem ppBersihkan1;
-    private javax.swing.JMenuItem ppSemua;
-    private javax.swing.JMenuItem ppSemua1;
+    private widget.MenuItem ppBersihkan;
+    private widget.MenuItem ppBersihkan1;
+    private widget.MenuItem ppSemua;
+    private widget.MenuItem ppSemua1;
     private widget.Table tbDetailMB;
     private widget.Table tbDetailPK;
     private widget.Table tbTarifMB;

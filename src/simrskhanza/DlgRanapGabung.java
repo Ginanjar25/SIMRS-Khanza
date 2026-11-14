@@ -318,11 +318,11 @@ public class DlgRanapGabung extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        MnKwitansiDeposit = new javax.swing.JMenuItem();
-        MnCetakGelangPasien = new javax.swing.JMenuItem();
-        MnCetakBarcodeRM = new javax.swing.JMenuItem();
-        MnPendaftaranBBL = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        MnKwitansiDeposit = new widget.MenuItem();
+        MnCetakGelangPasien = new widget.MenuItem();
+        MnCetakBarcodeRM = new widget.MenuItem();
+        MnPendaftaranBBL = new widget.MenuItem();
         NoRawatGabung = new widget.TextBox();
         WindowPindahranapGabung = new javax.swing.JDialog();
         internalFrame2 = new widget.InternalFrame();
@@ -1570,10 +1570,10 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox KdKamar;
     private widget.TextBox KodeDPJP;
     private widget.Label LCount;
-    private javax.swing.JMenuItem MnCetakBarcodeRM;
-    private javax.swing.JMenuItem MnCetakGelangPasien;
-    private javax.swing.JMenuItem MnKwitansiDeposit;
-    private javax.swing.JMenuItem MnPendaftaranBBL;
+    private widget.MenuItem MnCetakBarcodeRM;
+    private widget.MenuItem MnCetakGelangPasien;
+    private widget.MenuItem MnKwitansiDeposit;
+    private widget.MenuItem MnPendaftaranBBL;
     private widget.TextBox NamaDPJP;
     private widget.TextBox NmBangsal;
     private widget.TextBox NoRawatGabung;
@@ -1621,7 +1621,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Label jLabel7;
     private widget.Label jLabel8;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
     private widget.Table tbObat;

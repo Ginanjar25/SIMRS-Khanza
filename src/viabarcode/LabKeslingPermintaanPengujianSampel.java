@@ -153,9 +153,9 @@ public final class LabKeslingPermintaanPengujianSampel extends javax.swing.JDial
         KegiatanUsaha = new widget.TextBox();
         PersonalDihubungi = new widget.TextBox();
         KontakPelanggan = new widget.TextBox();
-        Popup = new javax.swing.JPopupMenu();
-        ppBersihkan = new javax.swing.JMenuItem();
-        ppSemua = new javax.swing.JMenuItem();
+        Popup = new widget.PopupMenu();
+        ppBersihkan = new widget.MenuItem();
+        ppSemua = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         panelGlass8 = new widget.panelisi();
         BtnSimpan = new widget.Button();
@@ -1468,7 +1468,7 @@ private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private widget.TextBox NmPetugas;
     private widget.PanelBiasa PanelInput;
     private widget.TextBox PersonalDihubungi;
-    private javax.swing.JPopupMenu Popup;
+    private widget.PopupMenu Popup;
     private widget.ScrollPane Scroll2;
     private widget.TextBox TCariPeriksa;
     private widget.TextBox TNoPermintaan;
@@ -1500,8 +1500,8 @@ private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private widget.Label label11;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelisi5;
-    private javax.swing.JMenuItem ppBersihkan;
-    private javax.swing.JMenuItem ppSemua;
+    private widget.MenuItem ppBersihkan;
+    private widget.MenuItem ppSemua;
     private widget.ScrollPane scrollInput;
     private widget.Table tbPermintaan;
     // End of variables declaration//GEN-END:variables

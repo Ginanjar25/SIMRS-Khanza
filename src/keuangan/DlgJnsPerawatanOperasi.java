@@ -174,8 +174,8 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        MnRestore = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        MnRestore = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         jPanel3 = new javax.swing.JPanel();
         panelGlass8 = new widget.panelisi();
@@ -1082,7 +1082,7 @@ public final class DlgJnsPerawatanOperasi extends javax.swing.JDialog {
         Scroll.setName("Scroll"); // NOI18N
         Scroll.setOpaque(true);
 
-        tbJnsPerawatan.setAutoCreateRowSorter(true);
+        tbJnsPerawatan.setAutoCreateRowSorter(false);
         tbJnsPerawatan.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
         tbJnsPerawatan.setComponentPopupMenu(jPopupMenu1);
         tbJnsPerawatan.setName("tbJnsPerawatan"); // NOI18N
@@ -1932,7 +1932,7 @@ private void TOmloop1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.ComboBox Kategori;
     private widget.ComboBox Kelas;
     private widget.Label LCount;
-    private javax.swing.JMenuItem MnRestore;
+    private widget.MenuItem MnRestore;
     private widget.ScrollPane Scroll;
     private widget.ScrollPane Scroll1;
     private widget.TextBox TAkomodasi;
@@ -2008,7 +2008,7 @@ private void TOmloop1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.Label jLabel8;
     private widget.Label jLabel9;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private widget.TextBox kdpnj;
     private widget.TextBox nmpnj;
     private widget.panelisi panelGlass8;

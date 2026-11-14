@@ -222,8 +222,8 @@ public final class RMPenilaianAwalMedisRalanAnak extends javax.swing.JDialog {
     private void initComponents() {
 
         LoadHTML = new widget.editorpane();
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        MnPenilaianMedis = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        MnPenilaianMedis = new widget.MenuItem();
         TanggalRegistrasi = new widget.TextBox();
         internalFrame1 = new widget.InternalFrame();
         panelGlass8 = new widget.panelisi();
@@ -2174,7 +2174,7 @@ public final class RMPenilaianAwalMedisRalanAnak extends javax.swing.JDialog {
     private widget.Label LCount;
     private widget.editorpane LoadHTML;
     private widget.ComboBox Mata;
-    private javax.swing.JMenuItem MnPenilaianMedis;
+    private widget.MenuItem MnPenilaianMedis;
     private widget.TextBox Nadi;
     private widget.TextBox NmDokter;
     private usu.widget.glass.PanelGlass PanelWall;
@@ -2251,7 +2251,7 @@ public final class RMPenilaianAwalMedisRalanAnak extends javax.swing.JDialog {
     private widget.Label jLabel9;
     private widget.Label jLabel94;
     private widget.Label jLabel99;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator12;
     private javax.swing.JSeparator jSeparator13;

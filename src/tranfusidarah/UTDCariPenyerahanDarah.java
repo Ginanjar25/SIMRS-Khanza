@@ -118,16 +118,16 @@ public class UTDCariPenyerahanDarah extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        ppCetakNota = new javax.swing.JMenuItem();
-        ppHapus = new javax.swing.JMenuItem();
-        ppVerif = new javax.swing.JMenuItem();
-        ppTampilkanBHPMedis = new javax.swing.JMenuItem();
-        ppTampilkanBHPPenunjang = new javax.swing.JMenuItem();
-        ppTampilkanBHPPenunjangDanMedis = new javax.swing.JMenuItem();
-        ppHapusBHPMedis = new javax.swing.JMenuItem();
-        ppHapusBHPNonMedis = new javax.swing.JMenuItem();
-        ppHapusBHPMedisDanNonMedis = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        ppCetakNota = new widget.MenuItem();
+        ppHapus = new widget.MenuItem();
+        ppVerif = new widget.MenuItem();
+        ppTampilkanBHPMedis = new widget.MenuItem();
+        ppTampilkanBHPPenunjang = new widget.MenuItem();
+        ppTampilkanBHPPenunjangDanMedis = new widget.MenuItem();
+        ppHapusBHPMedis = new widget.MenuItem();
+        ppHapusBHPNonMedis = new widget.MenuItem();
+        ppHapusBHPMedisDanNonMedis = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         scrollPane1 = new widget.ScrollPane();
         tbDokter = new widget.Table();
@@ -1322,7 +1322,7 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private widget.Button btnKomponen;
     private widget.InternalFrame internalFrame1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private widget.TextBox kdkomponen;
     private widget.Label label10;
     private widget.Label label11;
@@ -1337,15 +1337,15 @@ private void ppHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     private widget.panelisi panelisi1;
     private widget.panelisi panelisi3;
     private widget.panelisi panelisi4;
-    private javax.swing.JMenuItem ppCetakNota;
-    private javax.swing.JMenuItem ppHapus;
-    private javax.swing.JMenuItem ppHapusBHPMedis;
-    private javax.swing.JMenuItem ppHapusBHPMedisDanNonMedis;
-    private javax.swing.JMenuItem ppHapusBHPNonMedis;
-    private javax.swing.JMenuItem ppTampilkanBHPMedis;
-    private javax.swing.JMenuItem ppTampilkanBHPPenunjang;
-    private javax.swing.JMenuItem ppTampilkanBHPPenunjangDanMedis;
-    private javax.swing.JMenuItem ppVerif;
+    private widget.MenuItem ppCetakNota;
+    private widget.MenuItem ppHapus;
+    private widget.MenuItem ppHapusBHPMedis;
+    private widget.MenuItem ppHapusBHPMedisDanNonMedis;
+    private widget.MenuItem ppHapusBHPNonMedis;
+    private widget.MenuItem ppTampilkanBHPMedis;
+    private widget.MenuItem ppTampilkanBHPPenunjang;
+    private widget.MenuItem ppTampilkanBHPPenunjangDanMedis;
+    private widget.MenuItem ppVerif;
     private widget.ScrollPane scrollPane1;
     private widget.Table tbDokter;
     // End of variables declaration//GEN-END:variables

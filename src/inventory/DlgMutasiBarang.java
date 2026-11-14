@@ -151,9 +151,9 @@ public class DlgMutasiBarang extends javax.swing.JDialog {
     private void initComponents() {
 
         Kd2 = new widget.TextBox();
-        Popup = new javax.swing.JPopupMenu();
-        ppBersihkan = new javax.swing.JMenuItem();
-        ppStok = new javax.swing.JMenuItem();
+        Popup = new widget.PopupMenu();
+        ppBersihkan = new widget.MenuItem();
+        ppStok = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         scrollPane1 = new widget.ScrollPane();
         tbDokter = new widget.Table();
@@ -677,77 +677,87 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     }//GEN-LAST:event_kddariKeyPressed
 
     private void btnDariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDariActionPerformed
-        if (lokasidepo == null || !lokasidepo.isDisplayable()) {
-            lokasidepo=new DlgCariBangsal(null,false);
-            lokasidepo.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            lokasidepo.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosed(WindowEvent e) {
-                    if(lokasidepo.getTable().getSelectedRow()!= -1){                   
-                        kddari.setText(lokasidepo.getTable().getValueAt(lokasidepo.getTable().getSelectedRow(),0).toString());
-                        nmdari.setText(lokasidepo.getTable().getValueAt(lokasidepo.getTable().getSelectedRow(),1).toString());
-                        kddari.requestFocus();
-                        if((!kdke.getText().equals(""))&&(!kddari.getText().equals(""))){
-                            runBackground(() ->loadTabelStok());
-                        }else{
-                            runBackground(() ->loadTabel());
-                        }
-                    } 
-                    lokasidepo=null;
-                }
-            }); 
+        if(index>0){
+            JOptionPane.showMessageDialog(null,"Maaf, silahkan bersihkan jumlah jika ingin mengganti lokasi depo...!!!");
+            tbDokter.requestFocus();
+        }else{
+            if (lokasidepo == null || !lokasidepo.isDisplayable()) {
+                lokasidepo=new DlgCariBangsal(null,false);
+                lokasidepo.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                lokasidepo.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        if(lokasidepo.getTable().getSelectedRow()!= -1){                   
+                            kddari.setText(lokasidepo.getTable().getValueAt(lokasidepo.getTable().getSelectedRow(),0).toString());
+                            nmdari.setText(lokasidepo.getTable().getValueAt(lokasidepo.getTable().getSelectedRow(),1).toString());
+                            kddari.requestFocus();
+                            if((!kdke.getText().equals(""))&&(!kddari.getText().equals(""))){
+                                runBackground(() ->loadTabelStok());
+                            }else{
+                                runBackground(() ->loadTabel());
+                            }
+                        } 
+                        lokasidepo=null;
+                    }
+                }); 
 
-            lokasidepo.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-            lokasidepo.setLocationRelativeTo(internalFrame1);
-        }
-        if (lokasidepo == null) return;
-        if (!lokasidepo.isVisible()) {
-            lokasidepo.isCek();    
-            lokasidepo.emptTeks();
-        }
+                lokasidepo.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                lokasidepo.setLocationRelativeTo(internalFrame1);
+            }
+            if (lokasidepo == null) return;
+            if (!lokasidepo.isVisible()) {
+                lokasidepo.isCek();    
+                lokasidepo.emptTeks();
+            }
 
-        if (lokasidepo.isVisible()) {
-            lokasidepo.toFront();
-            return;
+            if (lokasidepo.isVisible()) {
+                lokasidepo.toFront();
+                return;
+            }
+            lokasidepo.setVisible(true);
         }
-        lokasidepo.setVisible(true);
     }//GEN-LAST:event_btnDariActionPerformed
 
     private void btnKeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKeActionPerformed
-        if (lokasidepo == null || !lokasidepo.isDisplayable()) {
-            lokasidepo=new DlgCariBangsal(null,false);
-            lokasidepo.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            lokasidepo.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosed(WindowEvent e) {
-                    if(lokasidepo.getTable().getSelectedRow()!= -1){                   
-                        kdke.setText(lokasidepo.getTable().getValueAt(lokasidepo.getTable().getSelectedRow(),0).toString());
-                        nmke.setText(lokasidepo.getTable().getValueAt(lokasidepo.getTable().getSelectedRow(),1).toString());
-                        kdke.requestFocus();
-                        if((!kdke.getText().equals(""))&&(!kddari.getText().equals(""))){
-                            runBackground(() ->loadTabelStok());
-                        }else{
-                            runBackground(() ->loadTabel());
-                        }
-                    } 
-                    lokasidepo=null;
-                }
-            }); 
+        if(index>0){
+            JOptionPane.showMessageDialog(null,"Maaf, silahkan bersihkan jumlah jika ingin mengganti lokasi depo...!!!");
+            tbDokter.requestFocus();
+        }else{
+            if (lokasidepo == null || !lokasidepo.isDisplayable()) {
+                lokasidepo=new DlgCariBangsal(null,false);
+                lokasidepo.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                lokasidepo.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        if(lokasidepo.getTable().getSelectedRow()!= -1){                   
+                            kdke.setText(lokasidepo.getTable().getValueAt(lokasidepo.getTable().getSelectedRow(),0).toString());
+                            nmke.setText(lokasidepo.getTable().getValueAt(lokasidepo.getTable().getSelectedRow(),1).toString());
+                            kdke.requestFocus();
+                            if((!kdke.getText().equals(""))&&(!kddari.getText().equals(""))){
+                                runBackground(() ->loadTabelStok());
+                            }else{
+                                runBackground(() ->loadTabel());
+                            }
+                        } 
+                        lokasidepo=null;
+                    }
+                }); 
 
-            lokasidepo.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-            lokasidepo.setLocationRelativeTo(internalFrame1);
-        }
-        if (lokasidepo == null) return;
-        if (!lokasidepo.isVisible()) {
-            lokasidepo.isCek();    
-            lokasidepo.emptTeks();
-        }
+                lokasidepo.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                lokasidepo.setLocationRelativeTo(internalFrame1);
+            }
+            if (lokasidepo == null) return;
+            if (!lokasidepo.isVisible()) {
+                lokasidepo.isCek();    
+                lokasidepo.emptTeks();
+            }
 
-        if (lokasidepo.isVisible()) {
-            lokasidepo.toFront();
-            return;
+            if (lokasidepo.isVisible()) {
+                lokasidepo.toFront();
+                return;
+            }
+            lokasidepo.setVisible(true);
         }
-        lokasidepo.setVisible(true);
     }//GEN-LAST:event_btnKeActionPerformed
 
     private void kdkeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kdkeKeyPressed
@@ -1101,7 +1111,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private widget.Button BtnSimpan;
     private widget.TextBox Kd2;
     private widget.TextBox Keterangan;
-    private javax.swing.JPopupMenu Popup;
+    private widget.PopupMenu Popup;
     private widget.TextBox TCari;
     private widget.Tanggal Tanggal;
     private widget.Button btnDari;
@@ -1119,8 +1129,8 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private widget.TextBox nmke;
     private widget.panelisi panelisi1;
     private widget.panelisi panelisi3;
-    private javax.swing.JMenuItem ppBersihkan;
-    private javax.swing.JMenuItem ppStok;
+    private widget.MenuItem ppBersihkan;
+    private widget.MenuItem ppStok;
     private widget.ScrollPane scrollPane1;
     private widget.Table tbDokter;
     // End of variables declaration//GEN-END:variables

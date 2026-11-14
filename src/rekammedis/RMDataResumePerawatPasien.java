@@ -388,9 +388,9 @@ public final class RMDataResumePerawatPasien extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        MnLaporanResume = new javax.swing.JMenuItem();
-        ppBerkasDigital = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        MnLaporanResume = new widget.MenuItem();
+        ppBerkasDigital = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbObat = new widget.Table();
@@ -1873,7 +1873,7 @@ public final class RMDataResumePerawatPasien extends javax.swing.JDialog {
     private widget.Label LCount;
     private widget.TextArea MasalahKeperawatan;
     private widget.TextBox Masuk;
-    private javax.swing.JMenuItem MnLaporanResume;
+    private widget.MenuItem MnLaporanResume;
     private widget.TextBox NIP;
     private widget.TextBox NamaPetugas;
     private widget.TextBox NmRuang;
@@ -1910,13 +1910,13 @@ public final class RMDataResumePerawatPasien extends javax.swing.JDialog {
     private widget.Label jLabel8;
     private widget.Label jLabel9;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private widget.Label label13;
     private widget.Label label14;
     private widget.Label label16;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
-    private javax.swing.JMenuItem ppBerkasDigital;
+    private widget.MenuItem ppBerkasDigital;
     private widget.ScrollPane scrollInput;
     private widget.ScrollPane scrollPane11;
     private widget.ScrollPane scrollPane13;

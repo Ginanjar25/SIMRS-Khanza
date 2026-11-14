@@ -119,8 +119,8 @@ public final class TokoMember extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        Popup = new javax.swing.JPopupMenu();
-        MnKartu = new javax.swing.JMenuItem();
+        Popup = new widget.PopupMenu();
+        MnKartu = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         Scroll = new widget.ScrollPane();
         tbPetugas = new widget.Table();
@@ -861,12 +861,12 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.PanelBiasa FormInput;
     private widget.ComboBox JK;
     private widget.Label LCount;
-    private javax.swing.JMenuItem MnKartu;
+    private widget.MenuItem MnKartu;
     private widget.TextBox NamaMember;
     private widget.TextBox NoMember;
     private widget.TextBox NoTelp;
     private javax.swing.JPanel PanelInput;
-    private javax.swing.JPopupMenu Popup;
+    private widget.PopupMenu Popup;
     private widget.ScrollPane Scroll;
     private widget.TextBox TCari;
     private widget.Tanggal TglLahir;

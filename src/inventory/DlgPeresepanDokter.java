@@ -596,20 +596,20 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        Popup = new javax.swing.JPopupMenu();
-        ppBersihkan = new javax.swing.JMenuItem();
-        ppStok1 = new javax.swing.JMenuItem();
+        Popup = new widget.PopupMenu();
+        ppBersihkan = new widget.MenuItem();
+        ppStok1 = new widget.MenuItem();
         KdPj = new widget.TextBox();
         LPpn = new widget.Label();
         jLabel6 = new widget.Label();
         buttonGroup1 = new javax.swing.ButtonGroup();
         buttonGroup2 = new javax.swing.ButtonGroup();
-        PopupRacikanV2 = new javax.swing.JPopupMenu();
-        ppTambahRacikan = new javax.swing.JMenuItem();
-        PopupDetailRacikanV2 = new javax.swing.JPopupMenu();
-        ppHapusRacikan = new javax.swing.JMenuItem();
-        ppTambahObat = new javax.swing.JMenuItem();
-        ppHapusObat = new javax.swing.JMenuItem();
+        PopupRacikanV2 = new widget.PopupMenu();
+        ppTambahRacikan = new widget.MenuItem();
+        PopupDetailRacikanV2 = new widget.PopupMenu();
+        ppHapusRacikan = new widget.MenuItem();
+        ppTambahObat = new widget.MenuItem();
+        ppHapusObat = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         panelisi3 = new widget.panelisi();
         label9 = new widget.Label();
@@ -1325,7 +1325,7 @@ public final class DlgPeresepanDokter extends javax.swing.JDialog {
         Scroll2.setName("Scroll2"); // NOI18N
         Scroll2.setOpaque(true);
 
-        tbDetailResepObatRacikan.setAutoCreateRowSorter(true);
+        tbDetailResepObatRacikan.setAutoCreateRowSorter(false);
         tbDetailResepObatRacikan.setComponentPopupMenu(Popup);
         tbDetailResepObatRacikan.setName("tbDetailResepObatRacikan"); // NOI18N
         tbDetailResepObatRacikan.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -2603,9 +2603,9 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private widget.Label LTotalTagihan;
     private widget.TextBox NmDokter;
     private widget.TextBox NoResep;
-    private javax.swing.JPopupMenu Popup;
-    private javax.swing.JPopupMenu PopupDetailRacikanV2;
-    private javax.swing.JPopupMenu PopupRacikanV2;
+    private widget.PopupMenu Popup;
+    private widget.PopupMenu PopupDetailRacikanV2;
+    private widget.PopupMenu PopupRacikanV2;
     private widget.ScrollPane Scroll;
     private widget.ScrollPane Scroll1;
     private widget.ScrollPane Scroll2;
@@ -2638,12 +2638,12 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private widget.Label label12;
     private widget.Label label9;
     private widget.panelisi panelisi3;
-    private javax.swing.JMenuItem ppBersihkan;
-    private javax.swing.JMenuItem ppHapusObat;
-    private javax.swing.JMenuItem ppHapusRacikan;
-    private javax.swing.JMenuItem ppStok1;
-    private javax.swing.JMenuItem ppTambahObat;
-    private javax.swing.JMenuItem ppTambahRacikan;
+    private widget.MenuItem ppBersihkan;
+    private widget.MenuItem ppHapusObat;
+    private widget.MenuItem ppHapusRacikan;
+    private widget.MenuItem ppStok1;
+    private widget.MenuItem ppTambahObat;
+    private widget.MenuItem ppTambahRacikan;
     private widget.RadioButton rb1Iter;
     private widget.RadioButton rb2Iter;
     private widget.RadioButton rbNonPRB;

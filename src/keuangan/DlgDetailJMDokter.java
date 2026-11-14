@@ -141,9 +141,9 @@ public class DlgDetailJMDokter extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        ppTampilkanSeleksi = new javax.swing.JMenuItem();
-        ppTampilkanRanapGabung = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        ppTampilkanSeleksi = new widget.MenuItem();
+        ppTampilkanRanapGabung = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         panelisi4 = new widget.panelisi();
         label11 = new widget.Label();
@@ -1201,7 +1201,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.CekBox chkRalan;
     private widget.CekBox chkRanap;
     private widget.InternalFrame internalFrame1;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private widget.TextBox kddokter;
     private widget.Label label11;
     private widget.Label label17;
@@ -1209,8 +1209,8 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.TextBox nmdokter;
     private widget.panelisi panelisi1;
     private widget.panelisi panelisi4;
-    private javax.swing.JMenuItem ppTampilkanRanapGabung;
-    private javax.swing.JMenuItem ppTampilkanSeleksi;
+    private widget.MenuItem ppTampilkanRanapGabung;
+    private widget.MenuItem ppTampilkanSeleksi;
     private widget.ScrollPane scrollPane1;
     private widget.ScrollPane scrollPane3;
     private widget.ScrollPane scrollPane4;

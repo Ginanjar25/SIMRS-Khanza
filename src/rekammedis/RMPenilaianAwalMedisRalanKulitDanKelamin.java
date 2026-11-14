@@ -211,8 +211,8 @@ public final class RMPenilaianAwalMedisRalanKulitDanKelamin extends javax.swing.
     private void initComponents() {
 
         LoadHTML = new widget.editorpane();
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        MnPenilaianMedis = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        MnPenilaianMedis = new widget.MenuItem();
         TanggalRegistrasi = new widget.TextBox();
         internalFrame1 = new widget.InternalFrame();
         panelGlass8 = new widget.panelisi();
@@ -1996,7 +1996,7 @@ public final class RMPenilaianAwalMedisRalanKulitDanKelamin extends javax.swing.
     private widget.ComboBox Kesadaran;
     private widget.Label LCount;
     private widget.editorpane LoadHTML;
-    private javax.swing.JMenuItem MnPenilaianMedis;
+    private widget.MenuItem MnPenilaianMedis;
     private widget.TextBox Nadi;
     private widget.TextBox NmDokter;
     private widget.TextBox Nyeri;
@@ -2070,7 +2070,7 @@ public final class RMPenilaianAwalMedisRalanKulitDanKelamin extends javax.swing.
     private widget.Label jLabel95;
     private widget.Label jLabel96;
     private widget.Label jLabel99;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator12;
     private javax.swing.JSeparator jSeparator14;

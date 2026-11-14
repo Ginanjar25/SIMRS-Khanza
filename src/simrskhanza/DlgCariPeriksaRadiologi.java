@@ -182,14 +182,14 @@ public class DlgCariPeriksaRadiologi extends javax.swing.JDialog {
     private void initComponents() {
 
         Kd2 = new widget.TextBox();
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        MnCetakNota = new javax.swing.JMenuItem();
-        MnUbahDokterPetugas = new javax.swing.JMenuItem();
-        ppBerkasDigital = new javax.swing.JMenuItem();
-        ppRiwayat = new javax.swing.JMenuItem();
-        ppBarcodeperiksaRad = new javax.swing.JMenuItem();
-        ppSudahKeluarBacaan = new javax.swing.JMenuItem();
-        ppBelumKeluarBacaan = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        MnCetakNota = new widget.MenuItem();
+        MnUbahDokterPetugas = new widget.MenuItem();
+        ppBerkasDigital = new widget.MenuItem();
+        ppRiwayat = new widget.MenuItem();
+        ppBarcodeperiksaRad = new widget.MenuItem();
+        ppSudahKeluarBacaan = new widget.MenuItem();
+        ppBelumKeluarBacaan = new widget.MenuItem();
         Penjab = new widget.TextBox();
         Jk = new widget.TextBox();
         Umur = new widget.TextBox();
@@ -2378,8 +2378,8 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.TextBox KodePerujuk;
     private widget.TextBox KodePj;
     private widget.editorpane LoadHTML;
-    private javax.swing.JMenuItem MnCetakNota;
-    private javax.swing.JMenuItem MnUbahDokterPetugas;
+    private widget.MenuItem MnCetakNota;
+    private widget.MenuItem MnUbahDokterPetugas;
     private widget.TextBox NmDokterPj;
     private widget.TextBox NmPerujuk;
     private widget.TextBox NmPtgUbah;
@@ -2418,7 +2418,7 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.Label jLabel6;
     private widget.Label jLabel7;
     private widget.Label jLabel9;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private widget.TextBox kdmem;
     private widget.TextBox kdptg;
     private widget.Label label10;
@@ -2437,12 +2437,12 @@ private void tbDokterKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_
     private widget.panelisi panelGlass7;
     private widget.panelisi panelisi1;
     private widget.panelisi panelisi3;
-    private javax.swing.JMenuItem ppBarcodeperiksaRad;
+    private widget.MenuItem ppBarcodeperiksaRad;
     private widget.panelisi panelisi8;
-    private javax.swing.JMenuItem ppBelumKeluarBacaan;
-    private javax.swing.JMenuItem ppBerkasDigital;
-    private javax.swing.JMenuItem ppRiwayat;
-    private javax.swing.JMenuItem ppSudahKeluarBacaan;
+    private widget.MenuItem ppBelumKeluarBacaan;
+    private widget.MenuItem ppBerkasDigital;
+    private widget.MenuItem ppRiwayat;
+    private widget.MenuItem ppSudahKeluarBacaan;
     private widget.ScrollPane scrollPane1;
     private widget.Table tbDokter;
     private widget.Table tbListDicom;

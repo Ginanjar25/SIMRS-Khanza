@@ -134,8 +134,8 @@ public class UTDMedisRusak extends javax.swing.JDialog {
     private void initComponents() {
 
         Kd2 = new widget.TextBox();
-        Popup = new javax.swing.JPopupMenu();
-        ppBersihkan = new javax.swing.JMenuItem();
+        Popup = new widget.PopupMenu();
+        ppBersihkan = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         TabSetting = new widget.TabPane();
         internalFrame2 = new widget.InternalFrame();
@@ -1034,7 +1034,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private widget.Label LTotal;
     private widget.Label LTotal2;
     private widget.TextBox NmPetugas;
-    private javax.swing.JPopupMenu Popup;
+    private widget.PopupMenu Popup;
     private widget.ScrollPane Scroll;
     private widget.TextBox TCari;
     private widget.TextBox TCari2;
@@ -1059,7 +1059,7 @@ private void ppBersihkanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private widget.panelisi panelisi2;
     private widget.panelisi panelisi3;
     private widget.panelisi panelisi4;
-    private javax.swing.JMenuItem ppBersihkan;
+    private widget.MenuItem ppBersihkan;
     private widget.ScrollPane scrollPane1;
     private widget.Table tbDokter;
     private widget.Table tbKamar;

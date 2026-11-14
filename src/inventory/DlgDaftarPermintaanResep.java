@@ -78,7 +78,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         initComponents();
         
         tabMode=new DefaultTableModel(null,new Object[]{
-                "No.Resep","Tgl.Peresepan","Jam Peresepan","No.Rawat","No.RM","Pasien","Dokter Peresep","Telaah",
+                "No.Resep","Tgl.Peresepan","Jam Peresepan","No.Rawat","No.RM","Pasien & Tanggal Lahir","Dokter Peresep","Telaah",
                 "Status","Kode Dokter","Poli/Unit","Kode Poli","Jenis Bayar","Tgl.Validasi","Jam Validasi",
                 "Tgl.Penyerahan","Jam Penyerahan"
             }){
@@ -133,7 +133,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         tbResepRalan.setDefaultRenderer(Object.class, new WarnaTable());
         
         tabMode2=new DefaultTableModel(null,new Object[]{
-                "No.Resep","Tgl.Resep","Poli/Unit","Status","Pasien","Dokter Peresep"
+                "No.Resep","Tgl.Resep","Poli/Unit","Status","Pasien & Tanggal Lahir","Dokter Peresep"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -162,7 +162,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         tbDetailResepRalan.setDefaultRenderer(Object.class, new WarnaTable());
         
         tabMode3=new DefaultTableModel(null,new Object[]{
-                "No.Resep","Tgl.Peresepan","Jam Peresepan","No.Rawat","No.RM","Pasien","Dokter Peresep","Telaah",
+                "No.Resep","Tgl.Peresepan","Jam Peresepan","No.Rawat","No.RM","Pasien & Tanggal Lahir","Dokter Peresep","Telaah",
                 "Status","Kode Dokter","Ruang/Kamar","Kode Bangsal","Jenis Bayar","Kelas","Tgl.Validasi","Jam Validasi"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
@@ -214,7 +214,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         tbResepRanap.setDefaultRenderer(Object.class, new WarnaTableValidasiResep());
         
         tabMode4=new DefaultTableModel(null,new Object[]{
-                "No.Resep","Tgl.Resep","Ruang/Kamar","Status","Pasien","Dokter Peresep"
+                "No.Resep","Tgl.Resep","Ruang/Kamar","Status","Pasien & Tanggal Lahir","Dokter Peresep"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -243,7 +243,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         tbDetailResepRanap.setDefaultRenderer(Object.class, new WarnaTable());
         
         tabMode5=new DefaultTableModel(null,new Object[]{
-                "No.Permintaan","Tanggal","Jam","No.Rawat","No.RM","Pasien","Dokter Yang Meminta",
+                "No.Permintaan","Tanggal","Jam","No.Rawat","No.RM","Pasien & Tanggal Lahir","Dokter Yang Meminta",
                 "Status","Kode Dokter","Ruang/Kamar","Kode Bangsal","Jenis Bayar"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
@@ -287,7 +287,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         tbPermintaanStok.setDefaultRenderer(Object.class, new WarnaTable());
         
         tabMode6=new DefaultTableModel(null,new Object[]{
-                "No.Permintaan","Tanggal","Ruang/Kamar","Status","Pasien","Dokter Yang Meminta"
+                "No.Permintaan","Tanggal","Ruang/Kamar","Status","Pasien & Tanggal Lahir","Dokter Yang Meminta"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -316,7 +316,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         tbDetailPermintaanStok.setDefaultRenderer(Object.class, new WarnaTable());
         
         tabMode7=new DefaultTableModel(null,new Object[]{
-                "No.Permintaan","Tanggal","Jam","No.Rawat","No.RM","Pasien","Dokter Yang Meminta",
+                "No.Permintaan","Tanggal","Jam","No.Rawat","No.RM","Pasien & Tanggal Lahir","Dokter Yang Meminta",
                 "Status","Kode Dokter","Ruang/Kamar","Kode Bangsal","Jenis Bayar",
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
@@ -360,7 +360,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         tbPermintaanResepPulang.setDefaultRenderer(Object.class, new WarnaTable());
         
         tabMode8=new DefaultTableModel(null,new Object[]{
-                "No.Permintaan","Tanggal","Ruang/Kamar","Status","Pasien","Dokter Yang Meminta"
+                "No.Permintaan","Tanggal","Ruang/Kamar","Status","Pasien & Tanggal Lahir","Dokter Yang Meminta"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -4638,7 +4638,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 && TCari.getText().trim().equals("");
                         if (DEPOAKTIFOBAT.equals("")) {
                             ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan, resep_obat.status as st,\n" +
-                                "resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,\n" +
+                                "resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir,\n" +
                                 "if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,poliklinik.nm_poli, \n" +
                                 "reg_periksa.kd_poli,penjab.png_jawab,if(resep_obat.tgl_perawatan='0000-00-00','',resep_obat.tgl_perawatan) as tgl_perawatan,\n" +
                                 "if(resep_obat.jam='00:00:00','',resep_obat.jam) as jam,\n" +
@@ -4660,7 +4660,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
                                 "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or "+
                                 "dokter.nm_dokter like ? or penjab.png_jawab like ?)")+" order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");  ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan, resep_obat.status as st,\n" +
-                                "resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,\n" +
+                                "resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir,\n" +
                                 "if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,poliklinik.nm_poli, \n" +
                                 "reg_periksa.kd_poli,penjab.png_jawab,if(resep_obat.tgl_perawatan='0000-00-00','',resep_obat.tgl_perawatan) as tgl_perawatan,\n" +
                                 "if(resep_obat.jam='00:00:00','',resep_obat.jam) as jam,\n" +
@@ -4684,7 +4684,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 "dokter.nm_dokter like ? or penjab.png_jawab like ?)")+" order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
                         } else {
                             ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan, resep_obat.status as st,\n" +
-                                "resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,\n" +
+                                "resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir,\n" +
                                 "if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,poliklinik.nm_poli, \n" +
                                 "reg_periksa.kd_poli,penjab.png_jawab,if(resep_obat.tgl_perawatan='0000-00-00','',resep_obat.tgl_perawatan) as tgl_perawatan,\n" +
                                 "if(resep_obat.jam='00:00:00','',resep_obat.jam) as jam,\n" +
@@ -4701,6 +4701,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 "left JOIN telaah_farmasi ON telaah_farmasi.no_resep = resep_obat.no_resep \n" +
                                 "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
                                 "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj "+                        
+                                "inner join set_depo_ralan on set_depo_ralan.kd_poli=reg_periksa.kd_poli "+
                                 " where set_depo_ralan.kd_bangsal='"+DEPOAKTIFOBAT+"' and resep_obat.tgl_peresepan<>'0000-00-00' and resep_obat.status='ralan' and resep_obat.tgl_peresepan between ? and ? "+
                                 (semua?"":"and dokter.nm_dokter like ? and poliklinik.nm_poli like ? and "+
                                 "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
@@ -4729,7 +4730,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     publish(new Object[] {
                                             rs.getString("no_resep"), rs.getString("tgl_peresepan"),
                                             rs.getString("jam_peresepan"), rs.getString("no_rawat"),
-                                            rs.getString("no_rkm_medis"), rs.getString("nm_pasien"),
+                                            rs.getString("no_rkm_medis"), rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),
                                             rs.getString("nm_dokter"), rs.getString("telaah_status"),
                                             rs.getString("status"),
                                             rs.getString("kd_dokter"), rs.getString("nm_poli"), rs.getString("kd_poli"),
@@ -4749,7 +4750,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                         publish(new Object[] {
                                                 rs.getString("no_resep"), rs.getString("tgl_peresepan"),
                                                 rs.getString("jam_peresepan"), rs.getString("no_rawat"),
-                                                rs.getString("no_rkm_medis"), rs.getString("nm_pasien"),
+                                                rs.getString("no_rkm_medis"), rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),
                                                 rs.getString("nm_dokter"), rs.getString("telaah_status"),
                                                 rs.getString("status"),
                                                 rs.getString("kd_dokter"), rs.getString("nm_poli"),
@@ -4915,7 +4916,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                     try{  
                         semua=CrDokter.getText().trim().equals("")&&CrPoli.getText().trim().equals("")&&TCari.getText().trim().equals("");
                         if(DEPOAKTIFOBAT.equals("")){
-                            ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis, resep_obat.status as st, "+
+                            ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,pasien.tgl_lahir, resep_obat.status as st, "+
                                     " pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " poliklinik.nm_poli,resep_obat.status as status_asal,penjab.png_jawab, " +
                                     " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2" +
@@ -4932,7 +4933,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or "+
                                     "penjab.png_jawab like ?) ")+"order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
                         }else{
-                            ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis, resep_obat.status as st, "+
+                            ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,pasien.tgl_lahir, resep_obat.status as st, "+
                                     " pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " poliklinik.nm_poli,resep_obat.status as status_asal,penjab.png_jawab "+
                                     " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 " +
@@ -4971,7 +4972,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     publish(new Object[]{
                                         rs.getString("no_resep"),rs.getString("tgl_peresepan")+" "+rs.getString("jam_peresepan"),
                                         rs.getString("nm_poli"),rs.getString("status"),
-                                        rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
+                                        rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
                                         rs.getString("nm_dokter")
                                     });
                                     publish(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});
@@ -5051,7 +5052,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                         publish(new Object[]{
                                             rs.getString("no_resep"),rs.getString("tgl_peresepan")+" "+rs.getString("jam_peresepan"),
                                             rs.getString("nm_poli"),rs.getString("status"),
-                                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab")+")",
+                                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab")+")",
                                             rs.getString("nm_dokter")
                                         });
                                         publish(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});
@@ -5382,7 +5383,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         semua=CrDokter2.getText().trim().equals("")&&Kamar.getText().trim().equals("")&&TCari.getText().trim().equals("");
                         if(DEPOAKTIFOBAT.equals("")){
                             ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,"+
-                                    " resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter, resep_obat.status as st,"+
+                                    " resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir, resep_obat.status as st,"+
                                     " if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " bangsal.nm_bangsal,kamar.kd_bangsal,penjab.png_jawab,"+
                                     " if(resep_obat.tgl_perawatan='0000-00-00','',resep_obat.tgl_perawatan) as tgl_perawatan,"+
@@ -5407,7 +5408,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " group by resep_obat.no_resep order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
                         }else{
                             ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,"+
-                                    " resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter, resep_obat.status as st, "+
+                                    " resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir, resep_obat.status as st, "+
                                     " if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " bangsal.nm_bangsal,kamar.kd_bangsal,penjab.png_jawab,"+
                                     " if(resep_obat.tgl_perawatan='0000-00-00','',resep_obat.tgl_perawatan) as tgl_perawatan,"+
@@ -5453,7 +5454,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     i++;
                                     publish(new Object[]{
                                         rs.getString("no_resep"),rs.getString("tgl_peresepan"),rs.getString("jam_peresepan"),rs.getString("no_rawat"),
-                                        rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("telaah_status"),rs.getString("status"),
+                                        rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),rs.getString("nm_dokter"),rs.getString("telaah_status"),rs.getString("status"),
                                         rs.getString("kd_dokter"),rs.getString("nm_bangsal"),rs.getString("kd_bangsal"),rs.getString("png_jawab") + rs.getString("cara_bayar2") ,rs.getString("kelas"),
                                         rs.getString("tgl_perawatan"),rs.getString("jam")
                                     });
@@ -5464,7 +5465,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                         i++;
                                         publish(new Object[]{
                                             rs.getString("no_resep"),rs.getString("tgl_peresepan"),rs.getString("jam_peresepan"),rs.getString("no_rawat"),
-                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("telaah_status"),rs.getString("status"),
+                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),rs.getString("nm_dokter"),rs.getString("telaah_status"),rs.getString("status"),
                                             rs.getString("kd_dokter"),rs.getString("nm_bangsal"),rs.getString("kd_bangsal"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),rs.getString("kelas"),
                                             rs.getString("tgl_perawatan"),rs.getString("jam")
                                         });
@@ -5484,7 +5485,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
 
                         if(DEPOAKTIFOBAT.equals("")){
                             ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,"+
-                                    " resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter, "+
+                                    " resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir, "+
                                     " if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " bangsal.nm_bangsal,kamar.kd_bangsal,penjab.png_jawab,"+
                                     " if(resep_obat.tgl_perawatan='0000-00-00','',resep_obat.tgl_perawatan) as tgl_perawatan,"+
@@ -5509,7 +5510,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " group by resep_obat.no_resep order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
                         }else{
                             ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,"+
-                                    " resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter, "+
+                                    " resep_obat.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir, "+
                                     " if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " bangsal.nm_bangsal,kamar.kd_bangsal,penjab.png_jawab,"+
                                     " if(resep_obat.tgl_perawatan='0000-00-00','',resep_obat.tgl_perawatan) as tgl_perawatan,"+
@@ -5554,7 +5555,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     i++;
                                     publish(new Object[]{
                                         rs.getString("no_resep"),rs.getString("tgl_peresepan"),rs.getString("jam_peresepan"),rs.getString("no_rawat"),
-                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("telaah_status"),rs.getString("status"),
+                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),rs.getString("nm_dokter"),rs.getString("telaah_status"),rs.getString("status"),
                                             rs.getString("kd_dokter"),rs.getString("nm_bangsal"),rs.getString("kd_bangsal"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),rs.getString("kelas"),
                                             rs.getString("tgl_perawatan"),rs.getString("jam")
                                     });
@@ -5565,7 +5566,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                         i++;
                                         publish(new Object[]{
                                             rs.getString("no_resep"),rs.getString("tgl_peresepan"),rs.getString("jam_peresepan"),rs.getString("no_rawat"),
-                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("telaah_status"),rs.getString("status"),
+                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),rs.getString("nm_dokter"),rs.getString("telaah_status"),rs.getString("status"),
                                             rs.getString("kd_dokter"),rs.getString("nm_bangsal"),rs.getString("kd_bangsal"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),rs.getString("kelas"),
                                             rs.getString("tgl_perawatan"),rs.getString("jam")
                                         });
@@ -5609,7 +5610,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         try{  
             semua=CrDokter2.getText().trim().equals("")&&Kamar.getText().trim().equals("")&&TCari.getText().trim().equals("");
             if(DEPOAKTIFOBAT.equals("")){
-                ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,"+
+                ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,pasien.tgl_lahir,"+
                         " pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,"+
                         " bangsal.nm_bangsal,resep_obat.status as status_asal,penjab.png_jawab, "+
                         " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 " +
@@ -5629,7 +5630,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
                         " group by resep_obat.no_resep order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
             }else{
-                ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,"+
+                ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,pasien.tgl_lahir,"+
                         " pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,"+
                         " bangsal.nm_bangsal,resep_obat.status as status_asal,penjab.png_jawab, "+
                         " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 " +
@@ -5670,7 +5671,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         tabMode4.addRow(new Object[]{
                             rs.getString("no_resep"),rs.getString("tgl_peresepan")+" "+rs.getString("jam_peresepan"),
                             rs.getString("nm_bangsal"),rs.getString("status"),
-                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab") + rs.getString("cara_bayar2")+")",
+                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab") + rs.getString("cara_bayar2")+")",
                             rs.getString("nm_dokter")
                         });
                         tabMode4.addRow(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});                
@@ -5750,7 +5751,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                             tabMode4.addRow(new Object[]{
                                 rs.getString("no_resep"),rs.getString("tgl_peresepan")+" "+rs.getString("jam_peresepan"),
                                 rs.getString("nm_bangsal"),rs.getString("status"),
-                                rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
+                                rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
                                 rs.getString("nm_dokter")
                             });
                             tabMode4.addRow(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});                
@@ -5840,7 +5841,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             } 
             
             if(DEPOAKTIFOBAT.equals("")){
-                ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,"+
+                ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,pasien.tgl_lahir,"+
                         " pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,"+
                         " bangsal.nm_bangsal,resep_obat.status as status_asal,penjab.png_jawab, "+
                         " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 " +
@@ -5861,7 +5862,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         "pasien.no_rkm_medis like ? or pasien.nm_pasien like ? or penjab.png_jawab like ?)")+
                         " group by resep_obat.no_resep order by resep_obat.tgl_peresepan desc,resep_obat.jam_peresepan desc");
             }else{
-                ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,"+
+                ps=koneksi.prepareStatement("select resep_obat.no_resep,resep_obat.tgl_peresepan,resep_obat.jam_peresepan,resep_obat.no_rawat,pasien.no_rkm_medis,pasien.tgl_lahir,"+
                         " pasien.nm_pasien,resep_obat.kd_dokter,dokter.nm_dokter,if(resep_obat.tgl_perawatan='0000-00-00','Belum Terlayani','Sudah Terlayani') as status,"+
                         " bangsal.nm_bangsal,resep_obat.status as status_asal,penjab.png_jawab, "+
                         " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 " +
@@ -5903,7 +5904,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         tabMode4.addRow(new Object[]{
                             rs.getString("no_resep"),rs.getString("tgl_peresepan")+" "+rs.getString("jam_peresepan"),
                             rs.getString("nm_bangsal"),rs.getString("status"),
-                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
+                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
                             rs.getString("nm_dokter")
                         });
                         tabMode4.addRow(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});                
@@ -5983,7 +5984,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                             tabMode4.addRow(new Object[]{
                                 rs.getString("no_resep"),rs.getString("tgl_perawatan")+" "+rs.getString("jam"),
                                 rs.getString("nm_bangsal"),rs.getString("status"),
-                                rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
+                                rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
                                 rs.getString("nm_dokter")
                             });
                             tabMode4.addRow(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});                
@@ -6087,7 +6088,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         semua=CrDokter2.getText().trim().equals("")&&Kamar.getText().trim().equals("")&&TCari.getText().trim().equals("");
                         if(DEPOAKTIFOBAT.equals("")){
                             ps=koneksi.prepareStatement("select permintaan_stok_obat_pasien.no_permintaan,permintaan_stok_obat_pasien.tgl_permintaan,permintaan_stok_obat_pasien.jam,"+
-                                    " permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter, "+
+                                    " permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir, "+
                                     " if(permintaan_stok_obat_pasien.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " bangsal.nm_bangsal,kamar.kd_bangsal,penjab.png_jawab from permintaan_stok_obat_pasien  "+
                                     " inner join reg_periksa on permintaan_stok_obat_pasien.no_rawat=reg_periksa.no_rawat "+
@@ -6104,7 +6105,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " group by permintaan_stok_obat_pasien.no_permintaan order by permintaan_stok_obat_pasien.tgl_permintaan desc,permintaan_stok_obat_pasien.jam desc");
                         }else{
                             ps=koneksi.prepareStatement("select permintaan_stok_obat_pasien.no_permintaan,permintaan_stok_obat_pasien.tgl_permintaan,permintaan_stok_obat_pasien.jam,"+
-                                    " permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter, "+
+                                    " permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir, "+
                                     " if(permintaan_stok_obat_pasien.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " bangsal.nm_bangsal,kamar.kd_bangsal,penjab.png_jawab from permintaan_stok_obat_pasien  "+
                                     " inner join reg_periksa on permintaan_stok_obat_pasien.no_rawat=reg_periksa.no_rawat "+
@@ -6142,7 +6143,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     i++;
                                     publish(new Object[]{
                                         rs.getString("no_permintaan"),rs.getString("tgl_permintaan"),rs.getString("jam"),rs.getString("no_rawat"),
-                                        rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("status"),
+                                        rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),rs.getString("nm_dokter"),rs.getString("status"),
                                         rs.getString("kd_dokter"),rs.getString("nm_bangsal"),rs.getString("kd_bangsal"),rs.getString("png_jawab")
                                     });
                                 } 
@@ -6152,7 +6153,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                         i++;
                                         publish(new Object[]{
                                             rs.getString("no_permintaan"),rs.getString("tgl_permintaan"),rs.getString("jam"),rs.getString("no_rawat"),
-                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("status"),
+                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),rs.getString("nm_dokter"),rs.getString("status"),
                                             rs.getString("kd_dokter"),rs.getString("nm_bangsal"),rs.getString("kd_bangsal"),rs.getString("png_jawab")
                                         });
                                     }                  
@@ -6171,7 +6172,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
 
                         if(DEPOAKTIFOBAT.equals("")){
                             ps=koneksi.prepareStatement("select permintaan_stok_obat_pasien.no_permintaan,permintaan_stok_obat_pasien.tgl_permintaan,permintaan_stok_obat_pasien.jam,"+
-                                    " permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter, "+
+                                    " permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir, "+
                                     " if(permintaan_stok_obat_pasien.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " bangsal.nm_bangsal,kamar.kd_bangsal,penjab.png_jawab, " +
                                     " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_stok_obat_pasien "+
@@ -6192,7 +6193,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " group by permintaan_stok_obat_pasien.no_permintaan order by permintaan_stok_obat_pasien.tgl_permintaan desc,permintaan_stok_obat_pasien.jam desc");
                         }else{
                             ps=koneksi.prepareStatement("select permintaan_stok_obat_pasien.no_permintaan,permintaan_stok_obat_pasien.tgl_permintaan,permintaan_stok_obat_pasien.jam,"+
-                                    " permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter, "+
+                                    " permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir, "+
                                     " if(permintaan_stok_obat_pasien.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " bangsal.nm_bangsal,kamar.kd_bangsal,penjab.png_jawab, " +
                                     " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_stok_obat_pasien "+
@@ -6233,7 +6234,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     i++;
                                     publish(new Object[]{
                                         rs.getString("no_permintaan"),rs.getString("tgl_permintaan"),rs.getString("jam"),rs.getString("no_rawat"),
-                                        rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("status"),
+                                        rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),rs.getString("nm_dokter"),rs.getString("status"),
                                         rs.getString("kd_dokter"),rs.getString("nm_bangsal"),rs.getString("kd_bangsal"),rs.getString("png_jawab")+rs.getString("cara_bayar")
                                     });
                                 } 
@@ -6243,7 +6244,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                         i++;
                                         publish(new Object[]{
                                             rs.getString("no_permintaan"),rs.getString("tgl_permintaan"),rs.getString("jam"),rs.getString("no_rawat"),
-                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("status"),
+                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),rs.getString("nm_dokter"),rs.getString("status"),
                                             rs.getString("kd_dokter"),rs.getString("nm_bangsal"),rs.getString("kd_bangsal"),rs.getString("png_jawab")+rs.getString("cara_bayar")
                                         });  
                                     }                  
@@ -6287,7 +6288,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             semua=CrDokter2.getText().trim().equals("")&&Kamar.getText().trim().equals("")&&TCari.getText().trim().equals("");
             if(DEPOAKTIFOBAT.equals("")){
                 ps=koneksi.prepareStatement("select permintaan_stok_obat_pasien.no_permintaan,permintaan_stok_obat_pasien.tgl_permintaan,permintaan_stok_obat_pasien.jam,permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,"+
-                        " pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter,if(permintaan_stok_obat_pasien.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
+                        " pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter,if(permintaan_stok_obat_pasien.status='Belum','Belum Terlayani','Sudah Terlayani') as status,pasien.tgl_lahir,"+
                         " bangsal.nm_bangsal,permintaan_stok_obat_pasien.status as status_asal,penjab.png_jawab, " +
                         " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_stok_obat_pasien "+
                         " inner join reg_periksa on permintaan_stok_obat_pasien.no_rawat=reg_periksa.no_rawat "+
@@ -6306,7 +6307,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " group by permintaan_stok_obat_pasien.no_permintaan order by permintaan_stok_obat_pasien.tgl_permintaan desc,permintaan_stok_obat_pasien.jam desc");
             }else{
                 ps=koneksi.prepareStatement("select permintaan_stok_obat_pasien.no_permintaan,permintaan_stok_obat_pasien.tgl_permintaan,permintaan_stok_obat_pasien.jam,permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,"+
-                        " pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter,if(permintaan_stok_obat_pasien.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
+                        " pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter,if(permintaan_stok_obat_pasien.status='Belum','Belum Terlayani','Sudah Terlayani') as status,pasien.tgl_lahir,"+
                         " bangsal.nm_bangsal,permintaan_stok_obat_pasien.status as status_asal,penjab.png_jawab, CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_stok_obat_pasien "+
                         " inner join reg_periksa on permintaan_stok_obat_pasien.no_rawat=reg_periksa.no_rawat "+
                         " inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis "+
@@ -6344,7 +6345,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         tabMode6.addRow(new Object[]{
                             rs.getString("no_permintaan"),rs.getString("tgl_permintaan")+" "+rs.getString("jam"),
                             rs.getString("nm_bangsal"),rs.getString("status"),
-                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
+                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
                             rs.getString("nm_dokter")
                         });
                         tabMode6.addRow(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});                
@@ -6411,7 +6412,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                             tabMode6.addRow(new Object[]{
                                 rs.getString("no_permintaan"),rs.getString("tgl_permintaan")+" "+rs.getString("jam"),
                                 rs.getString("nm_bangsal"),rs.getString("status"),
-                                rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
+                                rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
                                 rs.getString("nm_dokter")
                             });
                             tabMode6.addRow(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});                
@@ -6488,7 +6489,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             
             if(DEPOAKTIFOBAT.equals("")){
                 ps=koneksi.prepareStatement("select permintaan_stok_obat_pasien.no_permintaan,permintaan_stok_obat_pasien.tgl_permintaan,permintaan_stok_obat_pasien.jam,permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,"+
-                        " pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter,if(permintaan_stok_obat_pasien.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
+                        " pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter,if(permintaan_stok_obat_pasien.status='Belum','Belum Terlayani','Sudah Terlayani') as status,pasien.tgl_lahir,"+
                         " bangsal.nm_bangsal,permintaan_stok_obat_pasien.status as status_asal,penjab.png_jawab, CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_stok_obat_pasien "+
                         " inner join ranap_gabung on ranap_gabung.no_rawat2=permintaan_stok_obat_pasien.no_rawat "+
                         " inner join reg_periksa on permintaan_stok_obat_pasien.no_rawat=reg_periksa.no_rawat "+
@@ -6507,7 +6508,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " group by permintaan_stok_obat_pasien.no_permintaan order by permintaan_stok_obat_pasien.tgl_permintaan desc,permintaan_stok_obat_pasien.jam desc");
             }else{
                 ps=koneksi.prepareStatement("select permintaan_stok_obat_pasien.no_permintaan,permintaan_stok_obat_pasien.tgl_permintaan,permintaan_stok_obat_pasien.jam,permintaan_stok_obat_pasien.no_rawat,pasien.no_rkm_medis,"+
-                        " pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter,if(permintaan_stok_obat_pasien.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
+                        " pasien.nm_pasien,permintaan_stok_obat_pasien.kd_dokter,dokter.nm_dokter,if(permintaan_stok_obat_pasien.status='Belum','Belum Terlayani','Sudah Terlayani') as status,pasien.tgl_lahir,"+
                         " bangsal.nm_bangsal,permintaan_stok_obat_pasien.status as status_asal,penjab.png_jawab, CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_stok_obat_pasien "+
                         " inner join ranap_gabung on ranap_gabung.no_rawat2=permintaan_stok_obat_pasien.no_rawat "+
                         " inner join reg_periksa on permintaan_stok_obat_pasien.no_rawat=reg_periksa.no_rawat "+
@@ -6546,7 +6547,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         tabMode6.addRow(new Object[]{
                             rs.getString("no_permintaan"),rs.getString("tgl_permintaan")+" "+rs.getString("jam"),
                             rs.getString("nm_bangsal"),rs.getString("status"),
-                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
+                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
                             rs.getString("nm_dokter")
                         });
                         tabMode6.addRow(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});                
@@ -6612,7 +6613,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                             tabMode6.addRow(new Object[]{
                                 rs.getString("no_permintaan"),rs.getString("tgl_permintaan")+" "+rs.getString("jam"),
                                 rs.getString("nm_bangsal"),rs.getString("status"),
-                                rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
+                                rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
                                 rs.getString("nm_dokter")
                             });
                             tabMode6.addRow(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});                
@@ -6702,7 +6703,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         semua=CrDokter2.getText().trim().equals("")&&Kamar.getText().trim().equals("")&&TCari.getText().trim().equals("");
                         if(DEPOAKTIFOBAT.equals("")){
                             ps=koneksi.prepareStatement("select permintaan_resep_pulang.no_permintaan,permintaan_resep_pulang.tgl_permintaan,permintaan_resep_pulang.jam,"+
-                                    " permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter, "+
+                                    " permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir, "+
                                     " if(permintaan_resep_pulang.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " bangsal.nm_bangsal,kamar.kd_bangsal,penjab.png_jawab, " +
                                     " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_resep_pulang  "+
@@ -6722,7 +6723,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " group by permintaan_resep_pulang.no_permintaan order by permintaan_resep_pulang.tgl_permintaan desc,permintaan_resep_pulang.jam desc");
                         }else{
                             ps=koneksi.prepareStatement("select permintaan_resep_pulang.no_permintaan,permintaan_resep_pulang.tgl_permintaan,permintaan_resep_pulang.jam,"+
-                                    " permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter, "+
+                                    " permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir, "+
                                     " if(permintaan_resep_pulang.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " bangsal.nm_bangsal,kamar.kd_bangsal,penjab.png_jawab, "+
                                     " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_resep_pulang  "+
@@ -6763,7 +6764,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     i++;
                                     publish(new Object[]{
                                         rs.getString("no_permintaan"),rs.getString("tgl_permintaan"),rs.getString("jam"),rs.getString("no_rawat"),
-                                        rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("status"),
+                                        rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),rs.getString("nm_dokter"),rs.getString("status"),
                                         rs.getString("kd_dokter"),rs.getString("nm_bangsal"),rs.getString("kd_bangsal"),rs.getString("png_jawab")+rs.getString("cara_bayar2")
                                     });
                                 }
@@ -6773,7 +6774,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                         i++;
                                         publish(new Object[]{
                                             rs.getString("no_permintaan"),rs.getString("tgl_permintaan"),rs.getString("jam"),rs.getString("no_rawat"),
-                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("status"),
+                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),rs.getString("nm_dokter"),rs.getString("status"),
                                             rs.getString("kd_dokter"),rs.getString("nm_bangsal"),rs.getString("kd_bangsal"),rs.getString("png_jawab")+rs.getString("cara_bayar2")
                                         });  
                                     }                  
@@ -6792,7 +6793,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
 
                         if(DEPOAKTIFOBAT.equals("")){
                             ps=koneksi.prepareStatement("select permintaan_resep_pulang.no_permintaan,permintaan_resep_pulang.tgl_permintaan,permintaan_resep_pulang.jam,"+
-                                    " permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter, "+
+                                    " permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir, "+
                                     " if(permintaan_resep_pulang.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " bangsal.nm_bangsal,kamar.kd_bangsal,penjab.png_jawab, " +
                         " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_resep_pulang  "+
@@ -6813,7 +6814,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     " group by permintaan_resep_pulang.no_permintaan order by permintaan_resep_pulang.tgl_permintaan desc,permintaan_resep_pulang.jam desc");
                         }else{
                             ps=koneksi.prepareStatement("select permintaan_resep_pulang.no_permintaan,permintaan_resep_pulang.tgl_permintaan,permintaan_resep_pulang.jam,"+
-                                    " permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter, "+
+                                    " permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter,pasien.tgl_lahir, "+
                                     " if(permintaan_resep_pulang.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
                                     " bangsal.nm_bangsal,kamar.kd_bangsal,penjab.png_jawab, " +
                         " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_resep_pulang  "+
@@ -6854,7 +6855,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                     i++;
                                     publish(new Object[]{
                                         rs.getString("no_permintaan"),rs.getString("tgl_permintaan"),rs.getString("jam"),rs.getString("no_rawat"),
-                                        rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("status"),
+                                        rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),rs.getString("nm_dokter"),rs.getString("status"),
                                         rs.getString("kd_dokter"),rs.getString("nm_bangsal"),rs.getString("kd_bangsal"),rs.getString("png_jawab")+rs.getString("cara_bayar2")
                                     });           
                                 }
@@ -6864,7 +6865,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                         i++;
                                         publish(new Object[]{
                                             rs.getString("no_permintaan"),rs.getString("tgl_permintaan"),rs.getString("jam"),rs.getString("no_rawat"),
-                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("status"),
+                                            rs.getString("no_rkm_medis"),rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir"),rs.getString("nm_dokter"),rs.getString("status"),
                                             rs.getString("kd_dokter"),rs.getString("nm_bangsal"),rs.getString("kd_bangsal"),rs.getString("png_jawab")+rs.getString("cara_bayar2")
                                         });   
                                     }                  
@@ -6908,7 +6909,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             semua=CrDokter2.getText().trim().equals("")&&Kamar.getText().trim().equals("")&&TCari.getText().trim().equals("");
             if(DEPOAKTIFOBAT.equals("")){
                 ps=koneksi.prepareStatement("select permintaan_resep_pulang.no_permintaan,permintaan_resep_pulang.tgl_permintaan,permintaan_resep_pulang.jam,permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,"+
-                        " pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter,if(permintaan_resep_pulang.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
+                        " pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter,if(permintaan_resep_pulang.status='Belum','Belum Terlayani','Sudah Terlayani') as status,pasien.tgl_lahir,"+
                         " bangsal.nm_bangsal,permintaan_resep_pulang.status as status_asal,penjab.png_jawab, " +
                         " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_resep_pulang "+
                         " inner join reg_periksa on permintaan_resep_pulang.no_rawat=reg_periksa.no_rawat "+
@@ -6927,7 +6928,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " group by permintaan_resep_pulang.no_permintaan order by permintaan_resep_pulang.tgl_permintaan desc,permintaan_resep_pulang.jam desc");
             }else{
                 ps=koneksi.prepareStatement("select permintaan_resep_pulang.no_permintaan,permintaan_resep_pulang.tgl_permintaan,permintaan_resep_pulang.jam,permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,"+
-                        " pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter,if(permintaan_resep_pulang.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
+                        " pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter,if(permintaan_resep_pulang.status='Belum','Belum Terlayani','Sudah Terlayani') as status,pasien.tgl_lahir,"+
                         " bangsal.nm_bangsal,permintaan_resep_pulang.status as status_asal,penjab.png_jawab," +
                         " CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_resep_pulang "+
                         " inner join reg_periksa on permintaan_resep_pulang.no_rawat=reg_periksa.no_rawat "+
@@ -6966,7 +6967,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         tabMode8.addRow(new Object[]{
                             rs.getString("no_permintaan"),rs.getString("tgl_permintaan")+" "+rs.getString("jam"),
                             rs.getString("nm_bangsal"),rs.getString("status"),
-                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
+                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
                             rs.getString("nm_dokter")
                         });
                         tabMode8.addRow(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});                
@@ -7000,7 +7001,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                             tabMode8.addRow(new Object[]{
                                 rs.getString("no_permintaan"),rs.getString("tgl_permintaan")+" "+rs.getString("jam"),
                                 rs.getString("nm_bangsal"),rs.getString("status"),
-                                rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
+                                rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
                                 rs.getString("nm_dokter")
                             });
                             tabMode8.addRow(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});                
@@ -7044,7 +7045,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             
             if(DEPOAKTIFOBAT.equals("")){
                 ps=koneksi.prepareStatement("select permintaan_resep_pulang.no_permintaan,permintaan_resep_pulang.tgl_permintaan,permintaan_resep_pulang.jam,permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,"+
-                        " pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter,if(permintaan_resep_pulang.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
+                        " pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter,if(permintaan_resep_pulang.status='Belum','Belum Terlayani','Sudah Terlayani') as status,pasien.tgl_lahir,"+
                         " bangsal.nm_bangsal,permintaan_resep_pulang.status as status_asal,penjab.png_jawab,CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_resep_pulang "+
                         " inner join ranap_gabung on ranap_gabung.no_rawat2=permintaan_resep_pulang.no_rawat "+
                         " inner join reg_periksa on permintaan_resep_pulang.no_rawat=reg_periksa.no_rawat "+
@@ -7063,7 +7064,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         " group by permintaan_resep_pulang.no_permintaan order by permintaan_resep_pulang.tgl_permintaan desc,permintaan_resep_pulang.jam desc");
             }else{
                 ps=koneksi.prepareStatement("select permintaan_resep_pulang.no_permintaan,permintaan_resep_pulang.tgl_permintaan,permintaan_resep_pulang.jam,permintaan_resep_pulang.no_rawat,pasien.no_rkm_medis,"+
-                        " pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter,if(permintaan_resep_pulang.status='Belum','Belum Terlayani','Sudah Terlayani') as status,"+
+                        " pasien.nm_pasien,permintaan_resep_pulang.kd_dokter,dokter.nm_dokter,if(permintaan_resep_pulang.status='Belum','Belum Terlayani','Sudah Terlayani') as status,pasien.tgl_lahir,"+
                         " bangsal.nm_bangsal,permintaan_resep_pulang.status as status_asal,penjab.png_jawab, CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 from permintaan_resep_pulang "+
                         " inner join ranap_gabung on ranap_gabung.no_rawat2=permintaan_resep_pulang.no_rawat "+
                         " inner join reg_periksa on permintaan_resep_pulang.no_rawat=reg_periksa.no_rawat "+
@@ -7102,7 +7103,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         tabMode8.addRow(new Object[]{
                             rs.getString("no_permintaan"),rs.getString("tgl_permintaan")+" "+rs.getString("jam"),
                             rs.getString("nm_bangsal"),rs.getString("status"),
-                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
+                            rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
                             rs.getString("nm_dokter")
                         });
                         tabMode8.addRow(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});                
@@ -7135,7 +7136,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                             tabMode8.addRow(new Object[]{
                                 rs.getString("no_permintaan"),rs.getString("tgl_permintaan")+" "+rs.getString("jam"),
                                 rs.getString("nm_bangsal"),rs.getString("status"),
-                                rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
+                                rs.getString("no_rawat")+" "+rs.getString("no_rkm_medis")+" "+rs.getString("nm_pasien")+"/"+rs.getString("tgl_lahir")+" ("+rs.getString("png_jawab")+rs.getString("cara_bayar2")+")",
                                 rs.getString("nm_dokter")
                             });
                             tabMode8.addRow(new Object[]{"","","Jumlah","Kode Obat","Nama Obat","Aturan Pakai"});                

@@ -192,10 +192,10 @@ public final class KeuanganPenagihanPiutangPasien extends javax.swing.JDialog {
     private void initComponents() {
 
         TKd = new widget.TextBox();
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        MnDetailPiutang = new javax.swing.JMenuItem();
-        ppPilihSemua = new javax.swing.JMenuItem();
-        ppBersihkan = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        MnDetailPiutang = new widget.MenuItem();
+        ppPilihSemua = new widget.MenuItem();
+        ppBersihkan = new widget.MenuItem();
         KdAkun = new widget.TextBox();
         AtasNama = new widget.TextBox();
         NoTelp = new widget.TextBox();
@@ -1678,7 +1678,7 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JLabel LCountBelumDibayar2;
     private widget.Label LCountDipilih1;
     private javax.swing.JLabel LCountDipilih2;
-    private javax.swing.JMenuItem MnDetailPiutang;
+    private widget.MenuItem MnDetailPiutang;
     private widget.TextBox NamaBank;
     private widget.TextBox NoPenagihan;
     private widget.TextBox NoRek;
@@ -1706,7 +1706,7 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
     private widget.Label jLabel13;
     private widget.Label jLabel14;
     private widget.Label jLabel35;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private widget.TextBox kdmenyetujui;
     private widget.TextBox kdpenjab;
     private widget.TextBox kdptg;
@@ -1725,8 +1725,8 @@ private void MnDetailPiutangActionPerformed(java.awt.event.ActionEvent evt) {//G
     private widget.TextBox nmptg;
     private widget.panelisi panelisi1;
     private widget.panelisi panelisi4;
-    private javax.swing.JMenuItem ppBersihkan;
-    private javax.swing.JMenuItem ppPilihSemua;
+    private widget.MenuItem ppBersihkan;
+    private widget.MenuItem ppPilihSemua;
     private widget.Table tbBelumDitagihkan;
     private widget.Table tbBelumLunas;
     // End of variables declaration//GEN-END:variables

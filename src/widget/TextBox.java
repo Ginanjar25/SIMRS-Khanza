@@ -31,15 +31,15 @@ public class TextBox extends JTextField {
     public TextBox() {
         super();
         warnaAksen = AKSEN_DEFAULT;
-        warnaBorder = new Color(0xa7aeb6);
-        warnaNonAktif = new Color(0xFAFCFB);  
+        warnaBorder = new Color(0xa7aeb6);   
+        warnaNonAktif = new Color(0xFAFCFB);   
         radius = 6;
 
         setFont(new Font("Tahoma", Font.PLAIN, 11));
-        setForeground(new Color(0x1C2520));
+        setForeground(new Color(0x1c1d25));
         setBackground(Color.WHITE);
         setSelectionColor(new Color(0xCDEBDA));
-        setSelectedTextColor(new Color(0x0E3B24));
+        setSelectedTextColor(new Color(0x0e133b));
         setCaretColor(warnaAksen);
         setDisabledTextColor(new Color(0x55625B));   
         setHorizontalAlignment(LEFT);
@@ -69,18 +69,8 @@ public class TextBox extends JTextField {
 
     @Override
     protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        try {
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            Color latar = (!isEnabled() || !isEditable()) ? warnaNonAktif : getBackground();
-            g2.setColor(latar);
-            g2.fill(new RoundRectangle2D.Float(1, 1, getWidth() - 2, getHeight() - 2, radius * 2f, radius * 2f));
-        } finally {
-            g2.dispose();
-        }
+        super.paintComponent(g);   
 
-        super.paintComponent(g);  
-        
         if (placeholder != null && !placeholder.isEmpty() && getText().isEmpty() && !isFocusOwner()) {
             Graphics2D gp = (Graphics2D) g.create();
             try {
@@ -122,7 +112,7 @@ public class TextBox extends JTextField {
                 } else if (fokus) {
                     garis = warnaAksen;
                 } else if (hover && aktif) {
-                    garis = new Color(0x6F8578);
+                    garis = new Color(0x6f7285);
                 } else {
                     garis = warnaBorder;
                 }
@@ -155,6 +145,29 @@ public class TextBox extends JTextField {
 
     public Color getWarnaAksen() { return warnaAksen; }
     public void setWarnaAksen(Color c) { warnaAksen = c; setCaretColor(c); repaint(); }
+
+    // Kompatibilitas dengan usu.widget.TextBoxGlass (dipakai kode dev-fo): batasi panjang teks.
+    private int maxLenth = 0;
+    public int getMaxLenth() { return maxLenth; }
+    public void setMaxLenth(int max) {
+        if (max < 0) throw new IllegalArgumentException("maxLenth < 0");
+        maxLenth = max;
+        if (getDocument() instanceof javax.swing.text.AbstractDocument) {
+            ((javax.swing.text.AbstractDocument) getDocument()).setDocumentFilter(max == 0 ? null : new javax.swing.text.DocumentFilter() {
+                @Override
+                public void insertString(FilterBypass fb, int offset, String text, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
+                    replace(fb, offset, 0, text, attr);
+                }
+                @Override
+                public void replace(FilterBypass fb, int offset, int length, String text, javax.swing.text.AttributeSet attrs) throws javax.swing.text.BadLocationException {
+                    if (text == null) { super.replace(fb, offset, length, null, attrs); return; }
+                    int sisa = maxLenth - (fb.getDocument().getLength() - length);
+                    if (sisa <= 0) return;
+                    super.replace(fb, offset, length, text.length() > sisa ? text.substring(0, sisa) : text, attrs);
+                }
+            });
+        }
+    }
 
     public Color getWarnaBorder() { return warnaBorder; }
     public void setWarnaBorder(Color c) { warnaBorder = c; repaint(); }

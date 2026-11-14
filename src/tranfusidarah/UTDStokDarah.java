@@ -110,8 +110,8 @@ public class UTDStokDarah extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        Popup = new javax.swing.JPopupMenu();
-        ppCetak = new javax.swing.JMenuItem();
+        Popup = new widget.PopupMenu();
+        ppCetak = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         jPanel2 = new javax.swing.JPanel();
         scrollPane1 = new widget.ScrollPane();
@@ -1104,7 +1104,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox NoKantong;
     private javax.swing.JPanel PanelCariUtama;
     private javax.swing.JPanel PanelInput;
-    private javax.swing.JPopupMenu Popup;
+    private widget.PopupMenu Popup;
     private widget.ComboBox Resus;
     private widget.TextBox TCari;
     private widget.Button btnKomponen;
@@ -1127,7 +1127,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JPanel panelCariKategori;
     private widget.panelisi panelisi1;
     private widget.panelisi panelisi2;
-    private javax.swing.JMenuItem ppCetak;
+    private widget.MenuItem ppCetak;
     private widget.ScrollPane scrollPane1;
     private widget.Table tbDokter;
     // End of variables declaration//GEN-END:variables

@@ -226,8 +226,8 @@ public final class RMHasilPemeriksaanUSGAbdomen extends javax.swing.JDialog {
     private void initComponents() {
 
         LoadHTML = new widget.editorpane();
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        MnPenilaianMedis = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        MnPenilaianMedis = new widget.MenuItem();
         TanggalRegistrasi = new widget.TextBox();
         internalFrame1 = new widget.InternalFrame();
         panelGlass8 = new widget.panelisi();
@@ -488,7 +488,6 @@ public final class RMHasilPemeriksaanUSGAbdomen extends javax.swing.JDialog {
         internalFrame1.add(panelGlass8, java.awt.BorderLayout.PAGE_END);
 
         TabRawat.setBackground(new java.awt.Color(254, 255, 254));
-        TabRawat.setForeground(new java.awt.Color(50, 50, 50));
         TabRawat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         TabRawat.setName("TabRawat"); // NOI18N
         TabRawat.setPreferredSize(new java.awt.Dimension(457, 480));
@@ -592,20 +591,19 @@ public final class RMHasilPemeriksaanUSGAbdomen extends javax.swing.JDialog {
         label11.setName("label11"); // NOI18N
         label11.setPreferredSize(new java.awt.Dimension(70, 23));
         FormInput.add(label11);
-        label11.setBounds(538, 40, 52, 23);
+        label11.setBounds(528, 40, 52, 23);
 
         Tanggal.setForeground(new java.awt.Color(50, 70, 50));
-        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-06-2026 19:45:30" }));
+        Tanggal.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-06-2026 00:10:24" }));
         Tanggal.setDisplayFormat("dd-MM-yyyy HH:mm:ss");
         Tanggal.setName("Tanggal"); // NOI18N
-        Tanggal.setOpaque(false);
         Tanggal.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 TanggalKeyPressed(evt);
             }
         });
         FormInput.add(Tanggal);
-        Tanggal.setBounds(594, 40, 130, 23);
+        Tanggal.setBounds(584, 40, 140, 23);
 
         jLabel30.setText("Kiriman Dari :");
         jLabel30.setName("jLabel30"); // NOI18N
@@ -898,10 +896,9 @@ public final class RMHasilPemeriksaanUSGAbdomen extends javax.swing.JDialog {
         panelGlass9.add(jLabel19);
 
         DTPCari1.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-06-2026" }));
+        DTPCari1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-06-2026" }));
         DTPCari1.setDisplayFormat("dd-MM-yyyy");
         DTPCari1.setName("DTPCari1"); // NOI18N
-        DTPCari1.setOpaque(false);
         DTPCari1.setPreferredSize(new java.awt.Dimension(90, 23));
         panelGlass9.add(DTPCari1);
 
@@ -912,10 +909,9 @@ public final class RMHasilPemeriksaanUSGAbdomen extends javax.swing.JDialog {
         panelGlass9.add(jLabel21);
 
         DTPCari2.setForeground(new java.awt.Color(50, 70, 50));
-        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "20-06-2026" }));
+        DTPCari2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-06-2026" }));
         DTPCari2.setDisplayFormat("dd-MM-yyyy");
         DTPCari2.setName("DTPCari2"); // NOI18N
-        DTPCari2.setOpaque(false);
         DTPCari2.setPreferredSize(new java.awt.Dimension(90, 23));
         panelGlass9.add(DTPCari2);
 
@@ -987,7 +983,6 @@ public final class RMHasilPemeriksaanUSGAbdomen extends javax.swing.JDialog {
         PanelAccor.add(ChkAccor, java.awt.BorderLayout.WEST);
 
         TabData.setBackground(new java.awt.Color(254, 255, 254));
-        TabData.setForeground(new java.awt.Color(50, 50, 50));
         TabData.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         TabData.setName("TabData"); // NOI18N
         TabData.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1703,7 +1698,7 @@ public final class RMHasilPemeriksaanUSGAbdomen extends javax.swing.JDialog {
     private widget.TextArea Lien;
     private widget.editorpane LoadHTML;
     private widget.editorpane LoadHTML2;
-    private javax.swing.JMenuItem MnPenilaianMedis;
+    private widget.MenuItem MnPenilaianMedis;
     private widget.TextBox NmDokter;
     private widget.TextArea Pancreas;
     private widget.PanelBiasa PanelAccor;
@@ -1743,7 +1738,7 @@ public final class RMHasilPemeriksaanUSGAbdomen extends javax.swing.JDialog {
     private widget.Label jLabel6;
     private widget.Label jLabel7;
     private widget.Label jLabel8;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private javax.swing.JSeparator jSeparator1;
     private widget.Label label11;
     private widget.Label label14;

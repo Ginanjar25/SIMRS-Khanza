@@ -356,9 +356,9 @@ public final class ApotekBPJSResepFKTL extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        MnSurat = new javax.swing.JMenuItem();
-        MnTampilkanObatPRB = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        MnSurat = new widget.MenuItem();
+        MnTampilkanObatPRB = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         jPanel3 = new javax.swing.JPanel();
         panelGlass8 = new widget.panelisi();
@@ -1505,8 +1505,8 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.TextBox KdDPJP;
     private widget.TextBox KdPoli;
     private widget.Label LCount;
-    private javax.swing.JMenuItem MnSurat;
-    private javax.swing.JMenuItem MnTampilkanObatPRB;
+    private widget.MenuItem MnSurat;
+    private widget.MenuItem MnTampilkanObatPRB;
     private widget.TextBox NmDPJP;
     private widget.TextBox NmPasien;
     private widget.TextBox NmPoli;
@@ -1545,7 +1545,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private widget.Label jLabel6;
     private widget.Label jLabel7;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private widget.TextBox kdPpkRujukan;
     private widget.TextBox kd_user;
     private widget.TextBox nmPpkPelayanan;

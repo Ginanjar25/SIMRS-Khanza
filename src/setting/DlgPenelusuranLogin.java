@@ -115,8 +115,8 @@ public class DlgPenelusuranLogin extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu1 = new javax.swing.JPopupMenu();
-        ppFilterPemulanganPasien = new javax.swing.JMenuItem();
+        jPopupMenu1 = new widget.PopupMenu();
+        ppFilterPemulanganPasien = new widget.MenuItem();
         internalFrame1 = new widget.InternalFrame();
         jPanel3 = new javax.swing.JPanel();
         panelGlass8 = new widget.panelisi();
@@ -320,7 +320,7 @@ public class DlgPenelusuranLogin extends javax.swing.JDialog {
         Scroll.setName("Scroll"); // NOI18N
         Scroll.setOpaque(true);
 
-        tbObat.setAutoCreateRowSorter(true);
+        tbObat.setAutoCreateRowSorter(false);
         tbObat.setName("tbObat"); // NOI18N
         Scroll.setViewportView(tbObat);
 
@@ -330,7 +330,7 @@ public class DlgPenelusuranLogin extends javax.swing.JDialog {
         Scroll1.setName("Scroll1"); // NOI18N
         Scroll1.setOpaque(true);
 
-        tbObat1.setAutoCreateRowSorter(true);
+        tbObat1.setAutoCreateRowSorter(false);
         tbObat1.setComponentPopupMenu(jPopupMenu1);
         tbObat1.setName("tbObat1"); // NOI18N
         Scroll1.setViewportView(tbObat1);
@@ -513,10 +513,10 @@ public class DlgPenelusuranLogin extends javax.swing.JDialog {
     private widget.Label jLabel6;
     private widget.Label jLabel7;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPopupMenu jPopupMenu1;
+    private widget.PopupMenu jPopupMenu1;
     private widget.panelisi panelGlass8;
     private widget.panelisi panelGlass9;
-    private javax.swing.JMenuItem ppFilterPemulanganPasien;
+    private widget.MenuItem ppFilterPemulanganPasien;
     private widget.Table tbObat;
     private widget.Table tbObat1;
     // End of variables declaration//GEN-END:variables
