@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Add-Opens: java.base/java.lang java.base/java.util java.base/java.text
+  java.base/java.math java.base/java.io java.sql/java.sql
