@@ -12,6 +12,7 @@
 package simrskhanza;
 
 import bridging.ICareRiwayatPerawatan;
+import modif.SatuSehatRekamMedisElektronik;
 import rekammedis.RMRiwayatPerawatan;
 import surat.SuratKontrol;
 import keuangan.DlgCariPerawatanRanap;
@@ -1829,6 +1830,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         jLabelCaraBayar = new widget.Label();
         TCaraBayar = new widget.Label();
         btnIcare = new widget.Button();
+        btnSSRME = new widget.Button();
         btnRiwayatRadiologi = new widget.Button();
         btnRiwayatLaboratorium = new widget.Button();
         btnRiwayatBerkasDigital = new widget.Button();
@@ -2769,6 +2771,20 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         });
         panelGlass12.add(btnIcare);
         btnIcare.setBounds(910, 10, 170, 22);
+
+        btnSSRME.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnSSRME.setText("Akses RME SATUSEHAT");
+        btnSSRME.setToolTipText("SATUSEHAT Rekam Medis Elektronik (SSRME) - riwayat rekam medis nasional pasien");
+        btnSSRME.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnSSRME.setName("btnSSRME"); // NOI18N
+        btnSSRME.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSSRMEActionPerformed(evt);
+            }
+        });
+        panelGlass12.add(btnSSRME);
+        btnSSRME.setBounds(1090, 10, 190, 22);
+        btnSSRME.setVisible(fungsi.koneksiDB.AKTIFKANSSRME()); // tampil bila AKTIFKANSSRME = yes di setting/database.xml
         
         btnRiwayatRadiologi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
         btnRiwayatRadiologi.setText("Riwayat Pemeriksaan Radiologi");
@@ -10278,6 +10294,18 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
         }
     }
     
+    private void btnSSRMEActionPerformed(java.awt.event.ActionEvent evt) {
+        if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No.Rawat");
+        }else{
+            SatuSehatRekamMedisElektronik ssrme=new SatuSehatRekamMedisElektronik(null,false);
+            ssrme.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            ssrme.setLocationRelativeTo(internalFrame1);
+            ssrme.setVisible(true);
+            ssrme.setPasien(TNoRw.getText(),TNoRM.getText(),KdDok.getText());
+        }
+    }
+
     private void btnIcareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
             Valid.textKosong(TNoRw,"No.Rawat");
@@ -10855,7 +10883,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                           BtnAwalKeperawatanNeonatus,BtnPenilaianPasienImunitasRendah,BtnCatatanKeseimbanganCairan,BtnCatatanObservasiCHBP,BtnCatatanObservasiInduksiPersalinan,BtnPermintaanKonsultasiMedik;
     private widget.Label jLabelCaraBayar;
     private widget.Label TCaraBayar;
-    private widget.Button btnIcare,btnRiwayatRadiologi,btnRiwayatBerkasDigital,btnRiwayatLaboratorium, btnVerifikasiCPPT;
+    private widget.Button btnIcare,btnSSRME,btnRiwayatRadiologi,btnRiwayatBerkasDigital,btnRiwayatLaboratorium, btnVerifikasiCPPT;
     private widget.Label TPotensiPRB;
     private widget.Button BtnLaporanOperasi;
     private widget.Button BtnSeekAnalisaKeperawatan;

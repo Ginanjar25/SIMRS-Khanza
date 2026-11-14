@@ -13,6 +13,7 @@
 package simrskhanza;
 
 import bridging.ICareRiwayatPerawatan;
+import modif.SatuSehatRekamMedisElektronik;
 import surat.SuratKontrol;
 import kepegawaian.DlgCariDokter;
 import kepegawaian.DlgCariPetugas;
@@ -1964,6 +1965,7 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         BtnPenilaianTambahanPerilakuKekerasan = new widget.Button();
         BtnPenilaianTambahanMelarikanDiri = new widget.Button();
         button4 = new widget.Button();
+        btnSSRME = new widget.Button();
         button5 = new widget.Button();
         button6 = new widget.Button();
         button7 = new widget.Button();
@@ -2773,6 +2775,20 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         });
         panelGlass12.add(button4);
         button4.setBounds(910, 10, 170, 22);
+
+        btnSSRME.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnSSRME.setText("Akses RME SATUSEHAT");
+        btnSSRME.setToolTipText("SATUSEHAT Rekam Medis Elektronik (SSRME) - riwayat rekam medis nasional pasien");
+        btnSSRME.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnSSRME.setName("btnSSRME"); // NOI18N
+        btnSSRME.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSSRMEActionPerformed(evt);
+            }
+        });
+        panelGlass12.add(btnSSRME);
+        btnSSRME.setBounds(1090, 10, 190, 22);
+        btnSSRME.setVisible(fungsi.koneksiDB.AKTIFKANSSRME()); // tampil bila AKTIFKANSSRME = yes di setting/database.xml
         
         button5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
         button5.setText("Riwayat Pemeriksaan Radiologi");
@@ -6238,6 +6254,18 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         }
     }
     
+    private void btnSSRMEActionPerformed(java.awt.event.ActionEvent evt) {
+        if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+            Valid.textKosong(TNoRw,"No.Rawat");
+        }else{
+            SatuSehatRekamMedisElektronik ssrme=new SatuSehatRekamMedisElektronik(null,false);
+            ssrme.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            ssrme.setLocationRelativeTo(internalFrame1);
+            ssrme.setVisible(true);
+            ssrme.setPasien(TNoRw.getText(),TNoRM.getText(),KdDok.getText());
+        }
+    }
+
     private void button5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
             Valid.textKosong(TNoRw,"No.Rawat");
@@ -11334,7 +11362,7 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button BtnSkorBromagePascaAnestesi,BtnPenilaianPreInduksi,BtnHasilPemeriksaanUSGUrologi,BtnHasilPemeriksaanUSGGynecologi,BtnHasilPemeriksaanEKG,BtnPenatalaksanaanTerapiOkupasi,BtnPenilaianPsikolog,
                           BtnHasilPemeriksaanUSGNeonatus,BtnHasilEndoskopiFaringLaring,BtnHasilEndoskopiHidung,BtnHasilEndoskopiTelinga,BtnPenilaianPasienImunitasRendah,BtnCatatanKeseimbanganCairan,BtnCatatanObservasiCHBP,
                           BtnCatatanObservasiInduksiPersalinan,BtnPermintaanKonsultasiMedik;
-    private widget.Button button4, button5, button6, button7, btnRiwayatLaboratorium, btnBookingReg;
+    private widget.Button button4, button5, button6, button7, btnRiwayatLaboratorium, btnBookingReg, btnSSRME;
     private widget.Label jLabelCaraBayar;
     private widget.Label TCaraBayar;
     //private widget.TextBox TCaraBayar;

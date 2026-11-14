@@ -13270,7 +13270,36 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         MnBridging.add(MnRiwayatPerawatanICareNoKartu);
         MnBridging.add(MnRiwayatPerawatanICareNIK1);
         MnBridging.add(MnRiwayatPerawatanICareNoKartu1);
-        
+
+        javax.swing.JMenuItem MnSSRME = new javax.swing.JMenuItem();
+        MnSSRME.setBackground(new java.awt.Color(255, 255, 254));
+        MnSSRME.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnSSRME.setForeground(new java.awt.Color(50, 50, 50));
+        MnSSRME.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnSSRME.setText("Akses SATUSEHAT Rekam Medis Elektronik (SSRME)");
+        MnSSRME.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnSSRME.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnSSRME.setName("MnSSRME"); // NOI18N
+        MnSSRME.setPreferredSize(new java.awt.Dimension(320, 26));
+        MnSSRME.addActionListener(evt -> {
+            if(tabMode.getRowCount()==0){
+                JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+                TNoReg.requestFocus();
+            }else if(TPasien.getText().trim().equals("")||tbPetugas.getSelectedRow()==-1){
+                JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+                tbPetugas.requestFocus();
+            }else{
+                modif.SatuSehatRekamMedisElektronik ssrme=new modif.SatuSehatRekamMedisElektronik(null,false);
+                ssrme.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                ssrme.setLocationRelativeTo(internalFrame1);
+                ssrme.setVisible(true);
+                ssrme.setPasien(TNoRw.getText(),TNoRM.getText(),KdDokter.getText());
+            }
+        });
+        if(koneksiDB.AKTIFKANSSRME()){ // tampil bila AKTIFKANSSRME = yes di setting/database.xml
+            MnBridging.add(MnSSRME);
+        }
+
         MnPenilaianLain.add(MnPenilaianTambahanGeriatri);
         MnPenilaianLain.add(MnPenilaianTambahanBunuhDiri);
         MnPenilaianLain.add(MnPenilaianTambahanPerilakuKekerasan);

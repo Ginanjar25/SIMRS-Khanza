@@ -70,6 +70,7 @@ import java.text.SimpleDateFormat;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.HyperlinkListener;
 import modif.GenerateQR;
+import modif.PanelSSRME;
 
 
 /**
@@ -92,6 +93,8 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
     private boolean esign=false,sertisign=false,ceksukses=false;
     private ObjectMapper mapper= new ObjectMapper();
     private JsonNode root;
+    /** tab akses SATUSEHAT Rekam Medis Elektronik (SSRME), dibuat di konstruktor (bukan di .form) */
+    private PanelSSRME panelSSRME;
 
     /** Creates new form DlgLhtBiaya
      * @param parent
@@ -99,6 +102,18 @@ public final class RMRiwayatPerawatan extends javax.swing.JDialog {
     public RMRiwayatPerawatan(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        // tab hanya tampil bila AKTIFKANSSRME = yes di setting/database.xml
+        if(koneksiDB.AKTIFKANSSRME()){
+            panelSSRME=new PanelSSRME();
+            TabRawat.addTab("RME SATUSEHAT",panelSSRME);
+            addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    // hentikan pengecekan consent & kosongkan halaman SSRME (URL sensitif)
+                    panelSSRME.tutup();
+                }
+            });
+        }
         this.setLocation(8,1);
         setSize(885,674);
         WindowPhrase.setSize(320,100);
@@ -3079,6 +3094,12 @@ private void BtnPasienKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event
                                 ceksukses = false;
                             }
                         }.execute();
+                    }
+                    break;
+                case 8:
+                    // klik tab tidak mengulang request bila pasien sama, tombol Tampilkan selalu memuat ulang
+                    if(panelSSRME!=null&&(evt!=null||!NoRM.getText().equals(panelSSRME.getNoRM()))){
+                        panelSSRME.setPasien(NoRawat.getText(),NoRM.getText(),"");
                     }
                     break;
                 default:
