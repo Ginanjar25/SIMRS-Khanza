@@ -7,6 +7,7 @@ package fungsi;
 
 import java.awt.Color;
 import java.awt.Component;
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -21,7 +22,22 @@ public class WarnaTableKasirRalan1 extends DefaultTableCellRenderer {
             component.setBackground(new Color(255,244,244));
         }else{
             component.setBackground(new Color(255,255,255));
-        } 
+        }
+
+        // Kolom ke-32 (model) berisi daftar data pasien yang belum lengkap
+        String kurang = "";
+        if (table.getModel().getColumnCount() > 32) {
+            Object nilai = table.getModel().getValueAt(table.convertRowIndexToModel(row), 32);
+            if (nilai != null) {
+                kurang = nilai.toString().trim();
+            }
+        }
+        if (!kurang.equals("")) {
+            component.setBackground(new Color(255, 204, 153));
+        }
+        if (component instanceof JComponent) {
+            ((JComponent) component).setToolTipText(kurang.equals("") ? null : "Data pasien belum lengkap : " + kurang);
+        }
         
         if (column == 1) {
             Object cellValue = table.getValueAt(row, 30); // Get the value of the cell in column 25

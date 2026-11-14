@@ -44,6 +44,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import modif.RiwayatBukaBilling;
 import simrskhanza.DlgCariPeriksaLab;
 import simrskhanza.DlgCariPeriksaRadiologi;
 import inventory.DlgPemberianObat;
@@ -53,7 +54,6 @@ import simrskhanza.DlgRawatInap;
 import simrskhanza.DlgRawatJalan;
 import inventory.DlgResepPulang;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.List;
@@ -339,12 +339,12 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         tbTambahan.setDefaultRenderer(Object.class, new WarnaTable());
         
         //potongan biaya
-        Object[] rowPotongan={"Potongan Biaya","Besar Potongan"};
+        Object[] rowPotongan={"P","Potongan Biaya","Besar Potongan"};
         tabModePotongan=new DefaultTableModel(null,rowPotongan){
-              @Override 
+              @Override
               public boolean isCellEditable(int rowIndex, int colIndex){return true;}
              Class[] types = new Class[] {
-                java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class
              };
              @Override
              public Class getColumnClass(int columnIndex) {
@@ -356,11 +356,13 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         tbPotongan.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbPotongan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 2; i++) {
+        for (i = 0; i < 3; i++) {
             TableColumn column = tbPotongan.getColumnModel().getColumn(i);
             if(i==0){
-                column.setPreferredWidth(300);
+                column.setPreferredWidth(20);
             }else if(i==1){
+                column.setPreferredWidth(300);
+            }else if(i==2){
                 column.setPreferredWidth(150);
             }
         }
@@ -865,6 +867,7 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         BtnSimpan = new widget.Button();
         BtnNota = new widget.Button();
         BtnView = new widget.Button();
+        BtnPemasukanLain = new widget.Button();
         BtnKeluar = new widget.Button();
         TabRawat = new widget.TabPane();
         Scroll = new widget.ScrollPane();
@@ -2315,6 +2318,21 @@ public class DlgBilingRanap extends javax.swing.JDialog {
         });
         panelGlass2.add(BtnView);
 
+        BtnPemasukanLain.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/plus_16.png"))); // NOI18N
+        BtnPemasukanLain.setMnemonic('M');
+        BtnPemasukanLain.setText("Pemasukan Lain");
+        BtnPemasukanLain.setToolTipText("Alt+M");
+        BtnPemasukanLain.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        BtnPemasukanLain.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        BtnPemasukanLain.setName("BtnPemasukanLain"); // NOI18N
+        BtnPemasukanLain.setPreferredSize(new java.awt.Dimension(140, 30));
+        BtnPemasukanLain.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnPemasukanLainActionPerformed(evt);
+            }
+        });
+        panelGlass2.add(BtnPemasukanLain);
+
         BtnKeluar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/exit.png"))); // NOI18N
         BtnKeluar.setMnemonic('K');
         BtnKeluar.setText("Keluar");
@@ -2750,6 +2768,23 @@ public class DlgBilingRanap extends javax.swing.JDialog {
             isRawat();
         }
 }//GEN-LAST:event_TNoRwKeyPressed
+
+    private void BtnPemasukanLainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPemasukanLainActionPerformed
+        if(TNoRw.getText().trim().equals("")||TNoRM.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null,"Maaf, silahkan pilih data pasien terlebih dahulu...!!!!");
+            TNoRw.requestFocus();
+        }else{
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            DlgPemasukanLain pemasukanlain=new DlgPemasukanLain(null,false);
+            pemasukanlain.isCek();
+            pemasukanlain.emptTeks();
+            pemasukanlain.setPasien(TNoRM.getText(),TNoRw.getText());
+            pemasukanlain.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            pemasukanlain.setLocationRelativeTo(internalFrame1);
+            pemasukanlain.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }//GEN-LAST:event_BtnPemasukanLainActionPerformed
 
     private void BtnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnKeluarActionPerformed
         if(akses.getbilling_ranap()==true){
@@ -3485,6 +3520,11 @@ private void MnHapusTagihanActionPerformed(java.awt.event.ActionEvent evt) {//GE
         }
         if(i>0){
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            String alasan=RiwayatBukaBilling.tanyaAlasan(rootPane);
+            if(alasan==null){
+                return;
+            }
+
             Sequel.AutoComitFalse();
             sukses=true;
             Sequel.queryu2("delete from tampjurnal");
@@ -3665,6 +3705,10 @@ private void MnHapusTagihanActionPerformed(java.awt.event.ActionEvent evt) {//GE
                  }
              }
                 
+             if(sukses==true){
+                 sukses=RiwayatBukaBilling.simpan(TNoRw.getText(),TNoRM.getText(),alasan);
+             }
+
              if(sukses==true){
                  Valid.editTable(tabModeRwJlDr,"reg_periksa","no_rawat",TNoRw,"status_bayar='Belum Bayar'");
                  if(!norawatbayi.equals("")){
@@ -3852,7 +3896,7 @@ private void norawatpotonganKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST
 }//GEN-LAST:event_norawatpotonganKeyPressed
 
 private void BtnTambahPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTambahPotonganActionPerformed
-  tabModePotongan.addRow(new Object[]{"",""});
+  tabModePotongan.addRow(new Object[]{true,"",""});
 }//GEN-LAST:event_BtnTambahPotonganActionPerformed
 
 private void BtnSimpanPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanPotonganActionPerformed
@@ -3860,9 +3904,9 @@ private void BtnSimpanPotonganActionPerformed(java.awt.event.ActionEvent evt) {/
         Valid.textKosong(norawatpotongan,"Data");
     }else{
         for(int r=0;r<tbPotongan.getRowCount();r++){
-            if(Valid.SetAngka(tbPotongan.getValueAt(r,1).toString())>0){
-                Sequel.menyimpan("pengurangan_biaya","'"+norawatpotongan.getText()+"','"+tbPotongan.getValueAt(r,0).toString()+
-                        "','"+tbPotongan.getValueAt(r,1).toString()+"'","Potongan Biaya");
+            if(tbPotongan.getValueAt(r,0).toString().equals("true") && Valid.SetAngka(tbPotongan.getValueAt(r,2).toString())>0){
+                Sequel.menyimpan("pengurangan_biaya","'"+norawatpotongan.getText()+"','"+tbPotongan.getValueAt(r,1).toString()+
+                        "','"+tbPotongan.getValueAt(r,2).toString()+"'","Potongan Biaya");
             }
         }
         isRawat();
@@ -3871,9 +3915,14 @@ private void BtnSimpanPotonganActionPerformed(java.awt.event.ActionEvent evt) {/
 }//GEN-LAST:event_BtnSimpanPotonganActionPerformed
 
 private void BtnHapusPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusPotonganActionPerformed
+    if(tbPotongan.getSelectedRow()<0){
+        JOptionPane.showMessageDialog(null,"Maaf, silahkan pilih data potongan yang mau dihapus..!!");
+        return;
+    }
     Sequel.queryu("delete from pengurangan_biaya where no_rawat='"+norawatpotongan.getText()+
-            "' and nama_pengurangan='"+tbPotongan.getValueAt(tbPotongan.getSelectedRow(),0).toString() +"'");
+            "' and nama_pengurangan='"+tbPotongan.getValueAt(tbPotongan.getSelectedRow(),1).toString() +"'");
     tabModePotongan.removeRow(tbPotongan.getSelectedRow());
+    tampilPotongan(norawatpotongan.getText());
     isRawat();
 }//GEN-LAST:event_BtnHapusPotonganActionPerformed
 
@@ -3902,8 +3951,8 @@ private void MnPotonganActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
 private void BtnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCariActionPerformed
         isRawat();
-       if (!checkPermintaan() || !checkSKDPPostRI(TNoSEP.getText())) {
-            return; 
+        if (!checkPermintaanDanSKDP(TNoSEP.getText())) {
+            return;
         }
 }//GEN-LAST:event_BtnCariActionPerformed
 
@@ -3919,7 +3968,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
 //        if (!checkMismatch()) {
 //            return; // Keluar dari method jika ada mismatch
 //        }
-        if (!checkPermintaan() || !checkSKDPPostRI(TNoSEP.getText())) {
+        if (!checkPermintaanDanSKDP(TNoSEP.getText())) {
             return; 
         }
         try {
@@ -5311,6 +5360,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     private widget.Button BtnCloseIn4;
     private widget.Button BtnHapus;
     private widget.Button BtnHapusPotongan;
+    private widget.Button BtnPemasukanLain;
     private widget.Button BtnHapusUbahDetailPindahKamar;
     private widget.Button BtnKeluar;
     private widget.Button BtnKeluar1;
@@ -7336,7 +7386,7 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
                 pspotonganbiaya.setString(1,norawatpotongan.getText());
                 rspotonganbiaya=pspotonganbiaya.executeQuery();
                 while(rspotonganbiaya.next()){
-                    tabModePotongan.addRow(new Object[]{rspotonganbiaya.getString(1),rspotonganbiaya.getString(2)});
+                    tabModePotongan.addRow(new Object[]{true,rspotonganbiaya.getString(1),rspotonganbiaya.getString(2)});
                 }
             } catch (Exception e) {
                 System.out.println("Notifikasi : "+e);
@@ -7351,9 +7401,61 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             //rs.close();
         }catch(Exception e){
             System.out.println("Notifikasi : "+e);
-        }          
+        }
+
+        //list tarif tindakan yang sudah dibilingkan (ranap & ralan) yang belum dipotong
+        try{
+            pspotonganbiaya=koneksi.prepareStatement(
+                "SELECT x.nama, x.biaya FROM (\n" +
+                "    SELECT CONCAT(t.kd_jenis_prw,'#',jp.nm_perawatan) AS nama, SUM(t.biaya_rawat) AS biaya\n" +
+                "    FROM (\n" +
+                "        SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_inap_dr WHERE no_rawat=?\n" +
+                "        UNION ALL\n" +
+                "        SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_inap_pr WHERE no_rawat=?\n" +
+                "        UNION ALL\n" +
+                "        SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_inap_drpr WHERE no_rawat=?\n" +
+                "    ) t\n" +
+                "    INNER JOIN jns_perawatan_inap jp ON jp.kd_jenis_prw=t.kd_jenis_prw\n" +
+                "    GROUP BY t.kd_jenis_prw, jp.nm_perawatan\n" +
+                "    UNION ALL\n" +
+                "    SELECT CONCAT(t.kd_jenis_prw,'#',jp.nm_perawatan) AS nama, SUM(t.biaya_rawat) AS biaya\n" +
+                "    FROM (\n" +
+                "        SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_jl_dr WHERE no_rawat=?\n" +
+                "        UNION ALL\n" +
+                "        SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_jl_pr WHERE no_rawat=?\n" +
+                "        UNION ALL\n" +
+                "        SELECT no_rawat, kd_jenis_prw, biaya_rawat FROM rawat_jl_drpr WHERE no_rawat=?\n" +
+                "    ) t\n" +
+                "    INNER JOIN jns_perawatan jp ON jp.kd_jenis_prw=t.kd_jenis_prw\n" +
+                "    GROUP BY t.kd_jenis_prw, jp.nm_perawatan\n" +
+                ") x\n" +
+                "WHERE NOT EXISTS (\n" +
+                "    SELECT 1 FROM pengurangan_biaya pb\n" +
+                "    WHERE pb.no_rawat=? AND pb.nama_pengurangan=x.nama\n" +
+                ")");
+            try {
+                for(int p=1;p<=7;p++){
+                    pspotonganbiaya.setString(p,norawatpotongan.getText());
+                }
+                rspotonganbiaya=pspotonganbiaya.executeQuery();
+                while(rspotonganbiaya.next()){
+                    tabModePotongan.addRow(new Object[]{false,rspotonganbiaya.getString(1),rspotonganbiaya.getString(2)});
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : "+e);
+            } finally{
+                if(rspotonganbiaya!=null){
+                    rspotonganbiaya.close();
+                }
+                if(pspotonganbiaya!=null){
+                    pspotonganbiaya.close();
+                }
+            }
+        }catch(Exception e){
+            System.out.println("Notifikasi : "+e);
+        }
     }
-    
+
     public void tampilUbahLama(String NoRawat) {
         norawatubahlama.setText(NoRawat);
         Valid.tabelKosong(tabModeKamIn);
@@ -8464,36 +8566,109 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
     
     
     public boolean checkMismatch() {
+        return tampilPeringatan(pesanMismatch(), "", "");
+    }
+
+    /** Daftar tindakan yang tidak sesuai cara bayar dalam bentuk HTML, kosong jika tidak ada. */
+    private String pesanMismatch() {
         String noRawat = TNoRw.getText().trim();
         CheckPenjabMissmatch penjabChecker = new CheckPenjabMissmatch();
         List<CheckPenjabMissmatch.PenjabMismatch> mismatches = penjabChecker.checkMismatchByNoRawatAll(noRawat);
-        
-        if (mismatches.size() >= 1) {
-            StringBuilder pesan = new StringBuilder();
-            pesan.append("PERINGATAN: Ditemukan ").append(mismatches.size()).append(" Tindakan yg tidak sesuai dengan Cara Bayar!\n\n");
-            pesan.append("No Rawat: ").append(noRawat).append("\n");
-            pesan.append("Detail Mismatch:\n");
-            pesan.append("=".repeat(50)).append("\n");
-            
-            int counter = 1;
-            for (CheckPenjabMissmatch.PenjabMismatch mismatch : mismatches) {
-                pesan.append(counter).append(". ").append(mismatch.getJenisTindakan()).append("-").append(mismatch.getNmPerawatan()).append(" (").append(mismatch.getKdJenisPrw()).append(")").append("\n");
-                counter++;
-            }
-            pesan.append("Silahkan ganti tindakan tersebut terlebih dahulu !!!");
-            
-            JOptionPane.showMessageDialog(null, pesan.toString(), "Konfirmasi Mismatch Penjab", JOptionPane.WARNING_MESSAGE);
-            
-            return false; // Ada mismatch, return false
+
+        if (mismatches.isEmpty()) {
+            return "";
         }
-        
-        return true; // Tidak ada mismatch, return true
+
+        List<String[]> baris = new java.util.ArrayList<>();
+        for (CheckPenjabMissmatch.PenjabMismatch mismatch : mismatches) {
+            baris.add(new String[]{mismatch.getJenisTindakan(), mismatch.getNmPerawatan(), mismatch.getKdJenisPrw()});
+        }
+        return judulHtml("h3", "A. Tindakan Tidak Sesuai Cara Bayar (" + baris.size() + ")", 0) + tabelHtml(new String[]{"Jenis", "Nama Tindakan", "Kode"}, baris);
     }
-    
+
     public boolean checkPermintaan() {
-        StringBuilder daftarPermintaan = new StringBuilder();
-        int totalCount = 0;
+        return tampilPeringatan("", pesanPermintaan(), "");
+    }
+
+    /** Gabungan checkPermintaan dan checkSKDPPostRI dalam satu dialog, dipakai saat simpan. */
+    public boolean checkPermintaanDanSKDP(String no_sep) {
+        return tampilPeringatan("", pesanPermintaan(), pesanSKDPPostRI(no_sep));
+    }
+
+    /** Gabungan checkMismatch, checkPermintaan dan checkSKDPPostRI dalam satu dialog, dipakai saat billing dibuka. */
+    public boolean checkSemua(String no_sep) {
+        return tampilPeringatan(pesanMismatch(), pesanPermintaan(), pesanSKDPPostRI(no_sep));
+    }
+
+    /** Menampilkan satu dialog HTML berisi semua peringatan yang tidak kosong. Mengembalikan true jika tidak ada peringatan. */
+    private boolean tampilPeringatan(String mismatch, String permintaan, String skdp) {
+        if (mismatch.isEmpty() && permintaan.isEmpty() && skdp.isEmpty()) {
+            return true;
+        }
+
+        String footer;
+        if (!mismatch.isEmpty() && (!permintaan.isEmpty() || !skdp.isEmpty())) {
+            footer = "Silahkan ganti tindakan tersebut dan konfirmasi ke unit terkait terlebih dahulu.";
+        } else if (!mismatch.isEmpty()) {
+            footer = "Silahkan ganti tindakan tersebut terlebih dahulu.";
+        } else {
+            footer = "Silahkan konfirmasi ke unit terkait terlebih dahulu.";
+        }
+
+        StringBuilder html = new StringBuilder();
+        html.append("<html><body style='font-family: Tahoma, sans-serif; font-size: 10px; width: 500px; margin: 0; padding: 0;'>");
+        html.append("<h3 style='color: #d9534f; margin-top: 0;'>Peringatan Billing Ranap</h3>");
+        html.append("<p style='margin-top: 0;'>No. Rawat: <b>").append(escapeHtml(TNoRw.getText().trim())).append("</b></p>");
+        html.append(mismatch).append(permintaan).append(skdp);
+        html.append("<p style='margin-bottom: 0;'>").append(footer).append("</p>");
+        html.append("</body></html>");
+
+        javax.swing.JOptionPane.showMessageDialog(null, html.toString(), "Konfirmasi Billing", javax.swing.JOptionPane.WARNING_MESSAGE);
+        return false;
+    }
+
+    /** Judul bagian dalam HTML, indent untuk sub bagian. */
+    private String judulHtml(String tag, String teks, int indent) {
+        return "<" + tag + " style='color: #d9534f; margin-top: 8px; margin-bottom: 4px; margin-left: " + indent + "px;'>" + teks + "</" + tag + ">";
+    }
+
+    /** Tabel HTML dengan kolom nomor dan kolom isi. */
+    private String tabelHtml(String[] kolom, List<String[]> baris) {
+        StringBuilder html = new StringBuilder();
+        html.append("<table width='100%' cellspacing='0' cellpadding='4' style='border-collapse: collapse; margin-bottom: 6px;'>");
+        html.append("<tr style='background-color: #e0e0e0;'>");
+        html.append("<th style='border: 1px solid #a9a9a9; width: 6%;'>No.</th>");
+        for (String kepala : kolom) {
+            html.append("<th style='border: 1px solid #a9a9a9; text-align: left;'>").append(kepala).append("</th>");
+        }
+        html.append("</tr>");
+        int no = 1;
+        for (String[] kolomBaris : baris) {
+            html.append("<tr><td style='border: 1px solid #a9a9a9;'>").append(no++).append("</td>");
+            for (String isi : kolomBaris) {
+                html.append("<td style='border: 1px solid #a9a9a9;'>").append(escapeHtml(isi)).append("</td>");
+            }
+            html.append("</tr>");
+        }
+        html.append("</table>");
+        return html.toString();
+    }
+
+    private String escapeHtml(String teks) {
+        if (teks == null) {
+            return "";
+        }
+        return teks.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    }
+
+    /** Daftar permintaan resep/lab/radiologi yang belum terlayani dalam bentuk HTML, kosong jika tidak ada. */
+    private String pesanPermintaan() {
+        List<String[]> daftarResep = new java.util.ArrayList<>();
+        List<String[]> daftarLab = new java.util.ArrayList<>();
+        List<String[]> daftarRad = new java.util.ArrayList<>();
         String noRawat = TNoRw.getText();
+
+        // ================== 1.        String noRawat = TNoRw.getText();
 
         // ================== 1. CEK RESEP OBAT ==================
         try {
@@ -8504,16 +8679,9 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             try {
                 psobatlangsung.setString(1, noRawat);
                 rscariobat = psobatlangsung.executeQuery();
-                int countResep = 0;
                 while (rscariobat.next()) {
-                    countResep++;
-                    if (countResep == 1) {
-                        daftarPermintaan.append("\n[ RESEP OBAT ]\n");
-                    }
-                    daftarPermintaan.append(countResep).append(". ").append(rscariobat.getString("no_resep"))
-                            .append(" - ").append(rscariobat.getString("nm_dokter")).append("\n");
+                    daftarResep.add(new String[]{rscariobat.getString("no_resep"), rscariobat.getString("nm_dokter")});
                 }
-                totalCount += countResep;
             } catch (Exception e) {
                 System.out.println("Notif Cek Resep : " + e);
             } finally {
@@ -8539,16 +8707,9 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             try {
                 psperiksalab.setString(1, noRawat);
                 rsLab = psperiksalab.executeQuery();
-                int countLab = 0;
                 while (rsLab.next()) {
-                    countLab++;
-                    if (countLab == 1) {
-                        daftarPermintaan.append("\n[ LABORATORIUM ]\n");
-                    }
-                    daftarPermintaan.append(countLab).append(". ").append(rsLab.getString("noorder"))
-                            .append(" - ").append(rsLab.getString("nm_dokter")).append("\n");
+                    daftarLab.add(new String[]{rsLab.getString("noorder"), rsLab.getString("nm_dokter")});
                 }
-                totalCount += countLab;
             } catch (Exception e) {
                 System.out.println("Notif Cek Lab : " + e);
             } finally {
@@ -8574,16 +8735,9 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             try {
                 psperiksarad.setString(1, noRawat);
                 rsRad = psperiksarad.executeQuery();
-                int countRad = 0;
                 while (rsRad.next()) {
-                    countRad++;
-                    if (countRad == 1) {
-                        daftarPermintaan.append("\n[ RADIOLOGI ]\n");
-                    }
-                    daftarPermintaan.append(countRad).append(". ").append(rsRad.getString("noorder"))
-                            .append(" - ").append(rsRad.getString("nm_dokter")).append("\n");
+                    daftarRad.add(new String[]{rsRad.getString("noorder"), rsRad.getString("nm_dokter")});
                 }
-                totalCount += countRad;
             } catch (Exception e) {
                 System.out.println("Notif Cek Rad : " + e);
             } finally {
@@ -8598,46 +8752,58 @@ private void BtnCariKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             System.out.println("Notif (PS Rad) : " + e);
         }
 
-        // ================== 4. PENGECEKAN AKHIR & PESAN ==================
-        if (totalCount >= 1) {
-            StringBuilder pesan = new StringBuilder();
-            pesan.append("PERINGATAN: Ditemukan ").append(totalCount).append(" Permintaan Belum Terlayani/Tervalidasi!\n\n");
-            pesan.append("No Rawat: ").append(noRawat).append("\n");
-            pesan.append("========================================\n");
-            pesan.append(daftarPermintaan.toString());
-            pesan.append("========================================\n\n");
-            pesan.append("Silahkan konfirmasi ke unit terkait terlebih dahulu !!!");
-
-            javax.swing.JOptionPane.showMessageDialog(null, pesan.toString(), "Konfirmasi Permintaan Tertunda", javax.swing.JOptionPane.WARNING_MESSAGE);
-            return false;
+        // ================== 4. SUSUN HTML ==================
+        int total = daftarResep.size() + daftarLab.size() + daftarRad.size();
+        if (total == 0) {
+            return "";
         }
-
-        return true;
+        StringBuilder html = new StringBuilder();
+        html.append(judulHtml("h3", "B. Permintaan (" + total + ")", 0));
+        if (!daftarResep.isEmpty()) {
+            html.append(judulHtml("h4", "1. Resep Obat belum terlayani (" + daftarResep.size() + ")", 12));
+            html.append(tabelHtml(new String[]{"No. Resep", "Dokter"}, daftarResep));
+        }
+        if (!daftarLab.isEmpty()) {
+            html.append(judulHtml("h4", "2. Laboratorium belum terlayani (" + daftarLab.size() + ")", 12));
+            html.append(tabelHtml(new String[]{"No. Order", "Dokter"}, daftarLab));
+        }
+        if (!daftarRad.isEmpty()) {
+            html.append(judulHtml("h4", "3. Radiologi belum terlayani (" + daftarRad.size() + ")", 12));
+            html.append(tabelHtml(new String[]{"No. Order", "Dokter"}, daftarRad));
+        }
+        return html.toString();
     }
-    
+
     public boolean checkSKDPPostRI(String no_sep) {
-        
-        String LOCKEDSKDP = "no";
-        try {
-            prop.loadFromXML(new FileInputStream("setting/database.xml"));
-            LOCKEDSKDP = prop.getProperty("LOCKEDSKDP", "no");
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        
-        if(LOCKEDSKDP.equals("no")){
+        if (no_sep == null || no_sep.isEmpty()) {
             return true;
         }
-        
-       if(!no_sep.equals("")){
-           if(Sequel.cariInteger("select count(no_surat) from bridging_surat_kontrol_bpjs where no_sep = ?", no_sep) == 0){
-               JOptionPane.showMessageDialog(null, "SKDP Post RI belum terbit !!", "Konfirmasi Mismatch Penjab", JOptionPane.WARNING_MESSAGE);
-               return false;
-           }
-        }
-       return true;
+        return tampilPeringatan("", "", pesanSKDPPostRI(no_sep));
     }
-    
+
+    /** HTML peringatan untuk pasien BPJS jika status pulang belum diisi, atau SKDP Post RI belum terbit untuk SEP tersebut (kecuali Rujuk/Meninggal), kosong jika aman. */
+    private String pesanSKDPPostRI(String no_sep) {
+        String png_jawab = Sequel.cariIsi("select penjab.png_jawab from reg_periksa inner join penjab on penjab.kd_pj = reg_periksa.kd_pj where reg_periksa.no_rawat = ?", TNoRw.getText());
+        if (!"BPJS".equals(png_jawab)) {
+            return "";
+        }
+        String cara_pulang = Sequel.cariIsi("select stts_pulang from kamar_inap where no_rawat = ? and stts_pulang != 'Pindah Kamar'", TNoRw.getText());
+        if (cara_pulang == null || cara_pulang.isEmpty() || cara_pulang.equals("-")) {
+            return judulHtml("h3", "C. Status Pulang Pasien", 0) + "<p style='margin-top: 0;'>Status Pulang Pasien belum di isi</p>";
+        }
+        if(cara_pulang.equals("Rujuk") || cara_pulang.equals("Meninggal")){
+              return "";
+        }
+        if (no_sep != null && !no_sep.equals("")) {
+            if (Sequel.cariInteger("select count(no_surat) from bridging_surat_kontrol_bpjs where no_sep = ?", no_sep) == 0) {
+                List<String[]> baris = new java.util.ArrayList<>();
+                baris.add(new String[]{no_sep, "Belum terbit"});
+                return judulHtml("h3", "C. SKDP Post RI (1)", 0) + tabelHtml(new String[]{"No. SEP", "Keterangan"}, baris);
+            }
+        }
+        return "";
+    }
+
     public void tampilUbahDetailPindahKamar(String NoRawat) {
         norawatubdetailpindahkamar.setText(NoRawat);
         Valid.tabelKosong(tabModeDetailPindahKamar);

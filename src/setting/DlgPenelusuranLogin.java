@@ -407,7 +407,9 @@ public class DlgPenelusuranLogin extends javax.swing.JDialog {
         if(TabRawat.getSelectedIndex()==0){
             runBackground(() ->tampil());
         }else if(TabRawat.getSelectedIndex()==1){
-            runBackground(() ->tampil2());
+            if(!TCari.getText().equals("")){
+                runBackground(() ->tampil2());
+            }
         }
 }//GEN-LAST:event_BtnCariActionPerformed
 
@@ -425,7 +427,9 @@ public class DlgPenelusuranLogin extends javax.swing.JDialog {
         if(TabRawat.getSelectedIndex()==0){
             runBackground(() ->tampil());
         }else if(TabRawat.getSelectedIndex()==1){
-            runBackground(() ->tampil2());
+            if(!TCari.getText().equals("")){
+                runBackground(() ->tampil2());
+            }
         }
 }//GEN-LAST:event_BtnAllActionPerformed
 
@@ -476,7 +480,9 @@ public class DlgPenelusuranLogin extends javax.swing.JDialog {
 
     private void ppFilterPemulanganPasienBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppFilterPemulanganPasienBtnPrintActionPerformed
         keyword="update kamar_inap set tgl_keluar";
-        runBackground(() ->tampil2());
+        if (!TCari.getText().equals("")) {
+            runBackground(() ->tampil2());
+        }
     }//GEN-LAST:event_ppFilterPemulanganPasienBtnPrintActionPerformed
 
     /**

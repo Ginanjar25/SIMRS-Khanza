@@ -87,9 +87,11 @@
         <copy todir="${build.dir}/gambar">
             <fileset dir="gambar/" includes="**/*.png, **/*.jpg" />
         </copy>
+        <copy file="CHANGELOG.md" todir="${build.classes.dir}" failonerror="false" />
     </target>
 
     <target name="-post-jar">
+        <copy file="CHANGELOG.md" todir="${dist.dir}" failonerror="false" />
         <mkdir dir="${dist.dir}/report" />        
         <mkdir dir="${dist.dir}/setting" />       
         <mkdir dir="${dist.dir}/suara" />         

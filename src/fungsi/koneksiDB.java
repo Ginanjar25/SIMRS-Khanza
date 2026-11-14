@@ -912,6 +912,16 @@ public class koneksiDB {
         return var;
     }
     
+    public static String OTOMATISOBATKRONIS(){
+        try{
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var=prop.getProperty("OTOMATISOBATKRONIS");
+        }catch(Exception e){
+            var="";
+        }
+        return var;
+    }
+
     public static String CETAKRINCIANOBAT(){
         try (FileInputStream fis = new FileInputStream("setting/database.xml")) {
             prop.loadFromXML(fis);
@@ -1295,11 +1305,43 @@ public class koneksiDB {
             prop.loadFromXML(fis);
             var=prop.getProperty("URLFHIRSATUSEHAT");
         }catch(Exception e){
-            var=""; 
+            var="";
         }
         return var;
     }
+
+    /** Base URL SATUSEHAT Rekam Medis Elektronik (SSRME), mis. https://api-satusehat.kemkes.go.id/ssrme .
+     *  Opsional: jika entry URLSSRMESATUSEHAT tidak ada di database.xml, diturunkan dari URLAUTHSATUSEHAT. */
+    public static String URLSSRMESATUSEHAT(){
+        try{
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var=prop.getProperty("URLSSRMESATUSEHAT","");
+        }catch(Exception e){
+            var="";
+        }
+        if(var==null||var.trim().equals("")){
+            var=URLAUTHSATUSEHAT();
+            if(var==null){
+                var="";
+            }
+            var=var.trim().replaceAll("/+$","").replaceAll("/oauth2/v1$","");
+            if(!var.equals("")){
+                var=var+"/ssrme";
+            }
+        }
+        return var.trim().replaceAll("/+$","");
+    }
     
+    /** true bila fitur SSRME diaktifkan (entry AKTIFKANSSRME = yes di database.xml). Bila entry tidak ada, fitur nonaktif. */
+    public static boolean AKTIFKANSSRME(){
+        try{
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            return prop.getProperty("AKTIFKANSSRME","no").trim().equalsIgnoreCase("yes");
+        }catch(Exception e){
+            return false;
+        }
+    }
+
     public static String KELURAHANSATUSEHAT(){
         try (FileInputStream fis = new FileInputStream("setting/database.xml")) {
             prop.loadFromXML(fis);

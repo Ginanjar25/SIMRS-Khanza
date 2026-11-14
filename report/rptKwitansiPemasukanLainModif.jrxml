@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Kwitansi Pemasukan Lain-Lain (pengganti billing/LaporanKeuangan.php). Diisi dari modif.CetakKwitansiPemasukanLain -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptKwitansiPemasukanLainModif" pageWidth="595" pageHeight="420" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="15" bottomMargin="15">
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="namars" class="java.lang.String"/>
+	<parameter name="alamatrs" class="java.lang.String"/>
+	<parameter name="kontakrs" class="java.lang.String"/>
+	<parameter name="nokwitansi" class="java.lang.String"/>
+	<parameter name="tanggal" class="java.lang.String"/>
+	<parameter name="norawat" class="java.lang.String"/>
+	<parameter name="terimadari" class="java.lang.String"/>
+	<parameter name="terbilang" class="java.lang.String"/>
+	<parameter name="untuk" class="java.lang.String"/>
+	<parameter name="nominal" class="java.lang.String"/>
+	<parameter name="tglcetak" class="java.lang.String"/>
+	<parameter name="kota" class="java.lang.String"/>
+	<parameter name="finger" class="java.lang.String"/>
+	<parameter name="namattd" class="java.lang.String"/>
+	<field name="no" class="java.lang.Integer"/>
+	<field name="nama" class="java.lang.String"/>
+	<field name="biaya" class="java.lang.String"/>
+	<title>
+		<band height="196" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" onErrorType="Blank">
+				<reportElement x="0" y="0" width="70" height="46"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement x="75" y="2" width="380" height="18"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{namars}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="75" y="20" width="380" height="12"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{alamatrs}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="75" y="32" width="380" height="12"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{kontakrs}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="455" y="12" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[KASIR]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="50" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="53" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="2.0"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="60" width="555" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="15" isBold="true"/>
+				</textElement>
+				<text><![CDATA[K W I T A N S I]]></text>
+			</staticText>
+			<!-- No. Kwitansi -->
+			<staticText>
+				<reportElement x="10" y="90" width="110" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<text><![CDATA[No. Kwitansi]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="120" y="90" width="10" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="130" y="90" width="425" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<textFieldExpression><![CDATA[$P{nokwitansi}]]></textFieldExpression>
+			</textField>
+			<!-- Tanggal -->
+			<staticText>
+				<reportElement positionType="Float" x="10" y="106" width="110" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<text><![CDATA[Tanggal/Jam]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="120" y="106" width="10" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="130" y="106" width="425" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<textFieldExpression><![CDATA[$P{tanggal}]]></textFieldExpression>
+			</textField>
+			<!-- No. Rawat (disembunyikan jika kosong) -->
+			<staticText>
+				<reportElement positionType="Float" x="10" y="122" width="110" height="16" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[$P{norawat}!=null && !$P{norawat}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<text><![CDATA[No. Rawat]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="120" y="122" width="10" height="16" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[$P{norawat}!=null && !$P{norawat}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="130" y="122" width="425" height="16" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[$P{norawat}!=null && !$P{norawat}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<textFieldExpression><![CDATA[$P{norawat}]]></textFieldExpression>
+			</textField>
+			<!-- Telah terima dari -->
+			<staticText>
+				<reportElement positionType="Float" x="10" y="138" width="110" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<text><![CDATA[Telah terima dari]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="120" y="138" width="10" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="130" y="138" width="425" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<textFieldExpression><![CDATA[$P{terimadari}]]></textFieldExpression>
+			</textField>
+			<!-- Uang sejumlah -->
+			<staticText>
+				<reportElement positionType="Float" x="10" y="154" width="110" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<text><![CDATA[Uang Sejumlah]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="120" y="154" width="10" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="130" y="154" width="425" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10" isBold="true" isItalic="true"/></textElement>
+				<textFieldExpression><![CDATA["# " + $P{terbilang} + " #"]]></textFieldExpression>
+			</textField>
+			<!-- Untuk pembayaran -->
+			<staticText>
+				<reportElement positionType="Float" x="10" y="170" width="110" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<text><![CDATA[Untuk Pembayaran]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="120" y="170" width="10" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="130" y="170" width="425" height="16"/>
+				<textElement verticalAlignment="Top"><font fontName="Tahoma" size="10"/></textElement>
+				<textFieldExpression><![CDATA[$P{untuk}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<!-- rincian tindakan (hanya NON CLAIM) -->
+		<band height="14" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="130" y="0" width="20" height="14"/>
+				<textElement><font fontName="Tahoma" size="9"/></textElement>
+				<textFieldExpression><![CDATA[$F{no} + "."]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="150" y="0" width="270" height="14"/>
+				<textElement><font fontName="Tahoma" size="9"/></textElement>
+				<textFieldExpression><![CDATA[$F{nama}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="420" y="0" width="110" height="14"/>
+				<textElement textAlignment="Right"><font fontName="Tahoma" size="9"/></textElement>
+				<textFieldExpression><![CDATA["Rp. " + $F{biaya}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="112" splitType="Prevent">
+			<textField isBlankWhenNull="true">
+				<reportElement x="20" y="40" width="330" height="24"/>
+				<textElement verticalAlignment="Middle"><font fontName="Tahoma" size="15" isBold="true"/></textElement>
+				<textFieldExpression><![CDATA["Rp. " + $P{nominal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="370" y="6" width="185" height="14"/>
+				<textElement><font fontName="Tahoma" size="9"/></textElement>
+				<textFieldExpression><![CDATA[$P{kota} + ", " + $P{tglcetak}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="370" y="22" width="64" height="64" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[$P{finger}!=null && !$P{finger}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" margin="0" errorCorrectionLevel="M">
+					<jr:codeExpression><![CDATA[$P{finger}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
+			<textField isBlankWhenNull="true">
+				<reportElement x="370" y="90" width="185" height="14"/>
+				<textElement><font fontName="Tahoma" size="9"/></textElement>
+				<textFieldExpression><![CDATA["( " + ($P{namattd}==null ? "" : $P{namattd}) + " )"]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

@@ -406,7 +406,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                 JOptionPane.showMessageDialog(rootPane, "Silahkan pilih No.Resep ..!!");
             }else if(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),8).toString().equals("Sudah Terlayani")){
                 JOptionPane.showMessageDialog(rootPane,"Resep sudah terlayani, silahkan konfirmasi bagian farmasi ..!!");
-            } else if(Sequel.cariInteger("select count(no_resep) from antriapotek3 where no_resep = ?", tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),0).toString()) > 0){
+            } else if(ValidasiResepLock.sedangDikunci(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),0).toString())){
                JOptionPane.showMessageDialog(null,"Maaf, Resep sedang dalam proses Validasi oleh Farmasi!!");
             } else {
                 if (Sequel.cariIsi("select if(resep_obat.tgl_perawatan='0000-00-00','Belum','Sudah') as status from resep_obat where resep_obat.no_resep = ?", tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(), 0).toString()).equals("Belum")) {
@@ -446,7 +446,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         }else{
             if(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),0).toString().equals("")){
                 JOptionPane.showMessageDialog(rootPane,"Silahkan pilih No.Resep..!!");
-            } else if(Sequel.cariInteger("select count(no_resep) from antriapotek3 where no_resep = ?", tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),0).toString()) > 0){
+            } else if(ValidasiResepLock.sedangDikunci(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),0).toString())){
                JOptionPane.showMessageDialog(null,"Maaf, Resep sedang dalam proses Validasi oleh Farmasi!!");
             }else if(tbPemisahan.getValueAt(tbPemisahan.getSelectedRow(),8).toString().equals("Sudah Terlayani")){
                 JOptionPane.showMessageDialog(rootPane,"Resep sudah terlayani, silahkan konfirmasi bagian farmasi ..!!");

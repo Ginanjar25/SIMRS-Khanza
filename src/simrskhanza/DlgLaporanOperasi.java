@@ -953,8 +953,20 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
             Valid.textKosong(Laporan,"Laporan");
         }else if(NamaOperasi.getText().equals("")){
             Valid.textKosong(NamaOperasi,"Nama Operasi");
+        }else if(Sequel.cariInteger("SELECT COUNT(aa.tgl_perawatan) FROM "+(status.equals("Ralan")?"pemeriksaan_ralan":"pemeriksaan_ranap")+" aa JOIN dokter dr ON dr.kd_dokter = aa.nip "
+                    + "WHERE aa.no_rawat = ? and aa.nip = ? and aa.tgl_perawatan = '"+Valid.SetTgl(tgl.getSelectedItem()+"")+"' and "
+                    + "aa.jam_rawat < '"+tgl.getSelectedItem().toString().substring(11,19)+"'  ", TNoRw.getText(), kdoperator1.getText())==0 ){
+            JOptionPane.showMessageDialog(rootPane, "SOAP Pre operasi dari "+nmoperator1.getText()+" belum tersedia, Silahkan isi SOAP dokter tersebut dulu !!!");
+            modif.DlgSOAPPreOperasi soap = new modif.DlgSOAPPreOperasi(null, true);
+            soap.setData(TNoRw.getText(), status, Valid.SetTgl(tgl.getSelectedItem()+""),
+                    tgl.getSelectedItem().toString().substring(11,19), kdoperator1.getText());
+            soap.setVisible(true);
+            if(soap.isTersimpan()){
+                // SOAP sudah tersimpan, lanjutkan penyimpanan laporan operasi yang tertahan
+                BtnSimpanActionPerformed(evt);
+            }
         }
-        else{            
+        else{
                            
                 Map<String, String> reportMap = new HashMap<>();                
                 try{    

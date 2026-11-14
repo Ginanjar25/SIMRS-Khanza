@@ -1,0 +1,9 @@
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "build/vscode-classes",
+    "java.project.referencedLibraries": {
+        "include": ["dist/lib/**/*.jar"],
+        "exclude": ["dist/lib/**/*-sources.jar", "dist/lib/**/*-javadoc.jar"]
+    },
+    "java.configuration.updateBuildConfiguration": "automatic"
+}
