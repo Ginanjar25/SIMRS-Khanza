@@ -4532,7 +4532,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
                                 TipeRujukan.getSelectedItem().toString(),KdPoli1.getText(),NmPoli1.getText(),response.path("rujukan").path("noRujukan").asText(),
                                 user
                             })==true){
-                            Sequel.menyimpan("rujuk","'"+response.path("rujukan").path("noRujukan").asText()+"','"+
+                            Sequel.menyimpan("rujuk(no_rujuk,no_rawat,rujuk_ke,tgl_rujuk,keterangan_diagnosa,kd_dokter,kat_rujuk,ambulance,keterangan,jam)","'"+response.path("rujukan").path("noRujukan").asText()+"','"+
                                 TNoRw.getText()+"','"+NmPpkRujukan1.getText()+"','"+
                                 Valid.SetTgl(TanggalRujukKeluar.getSelectedItem()+"")+"','"+ 
                                 NmPenyakit1.getText()+"','"+Sequel.cariIsi("select reg_periksa.kd_dokter from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText())+

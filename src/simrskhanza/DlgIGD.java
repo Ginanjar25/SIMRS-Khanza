@@ -11845,7 +11845,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             String now = dateFormat.format(date);
             String catatan = "IGD~"+now.substring(11, 13) + ":" + now.substring(14, 16) + ":" + now.substring(17, 19);
             String tgl_inap = now.substring(0, 10);
-            if (Sequel.menyimpantf("permintaan_ranap", "?,?,?,?,?", "Pasien", 5, new String[]{
+            if (Sequel.menyimpantf("permintaan_ranap(no_rawat,tanggal,kd_kamar,diagnosa,catatan)", "?,?,?,?,?", "Pasien", 5, new String[]{
                 TNoRwRanap.getText(),
                 tgl_inap,
                 "-",

@@ -1601,13 +1601,13 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             if (reply == JOptionPane.YES_OPTION) {
                 Sequel.AutoComitFalse();
                 sukses = true;
-                if (Sequel.menyimpantf2("piutang", "'" + NoNota.getText() + "','" + Valid.SetTgl(TglJual.getSelectedItem() + "") + "','" + kdptg.getText() + "','" + kdpasien.getText()
+                if (Sequel.menyimpantf2("piutang(nota_piutang,tgl_piutang,nip,no_rkm_medis,nm_pasien,catatan,jns_jual,ongkir,uangmuka,sisapiutang,status,tgltempo,kd_bangsal)", "'" + NoNota.getText() + "','" + Valid.SetTgl(TglJual.getSelectedItem() + "") + "','" + kdptg.getText() + "','" + kdpasien.getText()
                         + "','" + nmpasien.getText() + "','" + catatan.getText() + "','" + Jenisjual.getSelectedItem() + "','" + ongkir + "','" + uangmuka + "','" + (ttljual + ongkir - uangmuka)
                         + "','Umum','" + Valid.SetTgl(TglTempo.getSelectedItem() + "") + "','" + kdgudang.getText() + "'", "No.Nota") == true) {
                     simpan();
                 } else {
                     autoNomor();
-                    if (Sequel.menyimpantf2("piutang", "'" + NoNota.getText() + "','" + Valid.SetTgl(TglJual.getSelectedItem() + "") + "','" + kdptg.getText() + "','" + kdpasien.getText()
+                    if (Sequel.menyimpantf2("piutang(nota_piutang,tgl_piutang,nip,no_rkm_medis,nm_pasien,catatan,jns_jual,ongkir,uangmuka,sisapiutang,status,tgltempo,kd_bangsal)", "'" + NoNota.getText() + "','" + Valid.SetTgl(TglJual.getSelectedItem() + "") + "','" + kdptg.getText() + "','" + kdpasien.getText()
                             + "','" + nmpasien.getText() + "','" + catatan.getText() + "','" + Jenisjual.getSelectedItem() + "','" + ongkir + "','" + uangmuka + "','" + (ttljual + ongkir - uangmuka)
                             + "','Umum','" + Valid.SetTgl(TglTempo.getSelectedItem() + "") + "','" + kdgudang.getText() + "'", "No.Nota") == true) {
                         simpan();

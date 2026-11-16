@@ -808,7 +808,7 @@ public final class RMKonsultasiDokter extends javax.swing.JDialog {
         }else if(JawabanDPJP.getText().equals("")){
             Valid.textKosong(KonsulDPJP,"Konsul Dokter DPJP");
         }else{
-            if(Sequel.menyimpantf("lembar_konsultasi","?,?,?,?,?,?,?,?","No.Rawat",7,new String[]{
+            if(Sequel.menyimpantf("lembar_konsultasi","?,?,?,?,?,?,?","No.Rawat",7,new String[]{
                     TNoRw.getText(),TRuang.getText(), KodeDokterKonsulen.getText(),
                     KodeDPJP.getText(), KonsulDPJP.getText(), JawabanDPJP.getText(), Valid.SetTgl(tgl.getSelectedItem()+"")+" "+tgl.getSelectedItem().toString().substring(11,19)
                 })==true){

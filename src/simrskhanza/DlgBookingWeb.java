@@ -2089,7 +2089,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private void isBooking2() {
         Sequel.AutoComitFalse();
         sukses = true;
-        if (Sequel.menyimpantf("booking_registrasi", "?,?,?,?,?,?,?,?,?,?,?", "Pasien dan Tanggal", 11, new String[]{
+        if (Sequel.menyimpantf("booking_registrasi(tanggal_booking,jam_booking,no_rkm_medis,tanggal_periksa,kd_dokter,kd_poli,no_reg,kd_pj,limit_reg,waktu_kunjungan,status)", "?,?,?,?,?,?,?,?,?,?,?", "Pasien dan Tanggal", 11, new String[]{
             TRTglBook.getText(), TRJamBook.getText(), tbPasien1.getValueAt(tbPasien1.getSelectedRow(), 1).toString(),
             TRTglPoli.getText(), TRKdDok.getText(),
             TRKdPoli.getText(), TRNoReg.getText(), TRKdPj.getText(), "0",
@@ -2185,7 +2185,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 Sequel.cariIsi("select cacat_fisik.id from cacat_fisik where cacat_fisik.nama_cacat=?", "-"), "pasien@mail.com", "-", kdprop, TRProv.getText()
             }) == true) {
                 if (Sequel.menyimpantf2("booking_periksa_diterima", "?,?", "Booking Diterima", 2, new String[]{TNoBooking.getText(), TRNoRm.getText()}) == true) {
-                    if (Sequel.menyimpantf2("booking_registrasi", "?,?,?,?,?,?,?,?,?,?,?", "Pasien dan Tanggal", 11, new String[]{
+                    if (Sequel.menyimpantf2("booking_registrasi(tanggal_booking,jam_booking,no_rkm_medis,tanggal_periksa,kd_dokter,kd_poli,no_reg,kd_pj,limit_reg,waktu_kunjungan,status)", "?,?,?,?,?,?,?,?,?,?,?", "Pasien dan Tanggal", 11, new String[]{
                         TRTglBook.getText(), TRJamBook.getText(), TRNoRm.getText(),
                         TRTglPoli.getText(), TRKdDok.getText(), TRKdPoli.getText(), TRNoReg.getText(), TRKdPj.getText(), "1",
                         TRTglPoli.getText() + " " + TRJamBook.getText(), "belum"
@@ -2210,7 +2210,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 Sequel.cariIsi("select cacat_fisik.id from cacat_fisik where cacat_fisik.nama_cacat=?", "-"), "pasien@mail.com", "-", kdprop, TRProv.getText()
                 }) == true) {
                     if (Sequel.menyimpantf2("booking_periksa_diterima", "?,?", "Booking Diterima", 2, new String[]{TNoBooking.getText(), TRNoRm.getText()}) == true) {
-                        if (Sequel.menyimpantf2("booking_registrasi", "?,?,?,?,?,?,?,?,?,?,?", "Pasien dan Tanggal", 11, new String[]{
+                        if (Sequel.menyimpantf2("booking_registrasi(tanggal_booking,jam_booking,no_rkm_medis,tanggal_periksa,kd_dokter,kd_poli,no_reg,kd_pj,limit_reg,waktu_kunjungan,status)", "?,?,?,?,?,?,?,?,?,?,?", "Pasien dan Tanggal", 11, new String[]{
                             TRTglBook.getText(), TRJamBook.getText(), TRNoRm.getText(),
                             TRTglPoli.getText(), TRKdDok.getText(), TRKdPoli.getText(), TRNoReg.getText(), TRKdPj.getText(), "1",
                             TRTglPoli.getText() + " " + TRJamBook.getText(), "belum"

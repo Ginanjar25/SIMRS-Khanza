@@ -8334,7 +8334,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
     }
 
     private void simpandiagnosa() {
-        Sequel.menyimpan3("penyakit","?,?,?,?,?,?","Penyakit",6,new String[]{KdDiagnosa1.getText(),NmDiagnosa1.getText(),NmDiagnosa1.getText(),"-","-","Tidak Menular"});
+        Sequel.menyimpan3("penyakit(kd_penyakit,nm_penyakit,ciri_ciri,keterangan,kd_ktg,status)","?,?,?,?,?,?","Penyakit",6,new String[]{KdDiagnosa1.getText(),NmDiagnosa1.getText(),NmDiagnosa1.getText(),"-","-","Tidak Menular"});
         if(Sequel.cariInteger(
                 "select count(diagnosa_pasien.kd_penyakit) from diagnosa_pasien "+
                 "inner join reg_periksa inner join pasien on "+
@@ -8347,7 +8347,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         }
 
         if(!NmDiagnosa2.equals("")){
-            Sequel.menyimpan3("penyakit","?,?,?,?,?,?","Penyakit",6,new String[]{KdDiagnosa2.getText(),NmDiagnosa2.getText(),NmDiagnosa2.getText(),"-","-","Tidak Menular"});
+            Sequel.menyimpan3("penyakit(kd_penyakit,nm_penyakit,ciri_ciri,keterangan,kd_ktg,status)","?,?,?,?,?,?","Penyakit",6,new String[]{KdDiagnosa2.getText(),NmDiagnosa2.getText(),NmDiagnosa2.getText(),"-","-","Tidak Menular"});
             if(Sequel.cariInteger(
                     "select count(diagnosa_pasien.kd_penyakit) from diagnosa_pasien "+
                     "inner join reg_periksa inner join pasien on "+
@@ -8361,7 +8361,7 @@ public final class PCareDataPendaftaran extends javax.swing.JDialog {
         }
 
         if(!NmDiagnosa3.equals("")){
-            Sequel.menyimpan3("penyakit","?,?,?,?,?,?","Penyakit",6,new String[]{KdDiagnosa3.getText(),NmDiagnosa3.getText(),NmDiagnosa3.getText(),"-","-","Tidak Menular"});
+            Sequel.menyimpan3("penyakit(kd_penyakit,nm_penyakit,ciri_ciri,keterangan,kd_ktg,status)","?,?,?,?,?,?","Penyakit",6,new String[]{KdDiagnosa3.getText(),NmDiagnosa3.getText(),NmDiagnosa3.getText(),"-","-","Tidak Menular"});
             if(Sequel.cariInteger(
                     "select count(diagnosa_pasien.kd_penyakit) from diagnosa_pasien "+
                     "inner join reg_periksa inner join pasien on "+

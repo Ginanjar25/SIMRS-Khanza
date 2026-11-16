@@ -5175,7 +5175,7 @@ public final class InhealthCekEligibilitas extends javax.swing.JDialog {
                 })==true){
                     UpdateUmur();
                     Sequel.menyimpan2("rujuk_masuk","'"+TNoRw.getText()+"','"+NmPpkRujukan.getText()+"','"+Kabupaten.getText()+"','"+NoRujukan.getText()+"','0','"+NmPPK.getText()+"','"+KdPenyakit.getText()+"','-','-','"+NoBalasan.getText()+"'","No.Rujuk");             
-                    Sequel.menyimpan3("penyakit","?,?,?,?,?,?","Penyakit",6,new String[]{KdPenyakit.getText(),NmPenyakit.getText(),NmPenyakit.getText(),"-","-","Tidak Menular"});
+                    Sequel.menyimpan3("penyakit(kd_penyakit,nm_penyakit,ciri_ciri,keterangan,kd_ktg,status)","?,?,?,?,?,?","Penyakit",6,new String[]{KdPenyakit.getText(),NmPenyakit.getText(),NmPenyakit.getText(),"-","-","Tidak Menular"});
                     if(Sequel.cariInteger(
                             "select count(diagnosa_pasien.kd_penyakit) from diagnosa_pasien "+
                             "inner join reg_periksa inner join pasien on "+
@@ -5208,7 +5208,7 @@ public final class InhealthCekEligibilitas extends javax.swing.JDialog {
                 })==true){
                     UpdateUmur();
                     Sequel.menyimpan2("rujuk_masuk","'"+TNoRw.getText()+"','"+NmPpkRujukan.getText()+"','"+Kabupaten.getText()+"','"+NoRujukan.getText()+"','0','"+NmPPK.getText()+"','"+KdPenyakit.getText()+"','-','-','"+NoBalasan.getText()+"'","No.Rujuk");                                     
-                    Sequel.menyimpan3("penyakit","?,?,?,?,?,?","Penyakit",6,new String[]{KdPenyakit.getText(),NmPenyakit.getText(),NmPenyakit.getText(),"-","-","Tidak Menular"});
+                    Sequel.menyimpan3("penyakit(kd_penyakit,nm_penyakit,ciri_ciri,keterangan,kd_ktg,status)","?,?,?,?,?,?","Penyakit",6,new String[]{KdPenyakit.getText(),NmPenyakit.getText(),NmPenyakit.getText(),"-","-","Tidak Menular"});
                     if(Sequel.cariInteger(
                             "select count(diagnosa_pasien.kd_penyakit) from diagnosa_pasien "+
                             "inner join reg_periksa inner join pasien on "+

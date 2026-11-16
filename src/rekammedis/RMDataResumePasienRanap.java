@@ -4703,25 +4703,25 @@ public final class RMDataResumePasienRanap extends javax.swing.JDialog {
 //            koneksi.setAutoCommit(false);
 
                 if (!KodeProsedurUtama.getText().equals("")) {
-                    Sequel.menyimpan("prosedur_pasien", "?,?,?,?", "ICD 9", 4, new String[]{
+                    Sequel.menyimpan("prosedur_pasien(no_rawat,kode,status,prioritas)", "?,?,?,?", "ICD 9", 4, new String[]{
                         TNoRw.getText(), KodeProsedurUtama.getText(), "Ranap", Sequel.cariIsi("select ifnull(MAX(prosedur_pasien.prioritas)+1,1) from prosedur_pasien where prosedur_pasien.no_rawat=? and prosedur_pasien.status='Ranap'", TNoRw.getText())
                     });
                 }
 
                 if (!KodeProsedurSekunder1.getText().equals("")) {
-                    Sequel.menyimpan("prosedur_pasien", "?,?,?,?", "ICD 9", 4, new String[]{
+                    Sequel.menyimpan("prosedur_pasien(no_rawat,kode,status,prioritas)", "?,?,?,?", "ICD 9", 4, new String[]{
                         TNoRw.getText(), KodeProsedurSekunder1.getText(), "Ranap", Sequel.cariIsi("select ifnull(MAX(prosedur_pasien.prioritas)+1,1) from prosedur_pasien where prosedur_pasien.no_rawat=? and prosedur_pasien.status='Ranap'", TNoRw.getText())
                     });
                 }
 
                 if (!KodeProsedurSekunder2.getText().equals("")) {
-                    Sequel.menyimpan("prosedur_pasien", "?,?,?,?", "ICD 9", 4, new String[]{
+                    Sequel.menyimpan("prosedur_pasien(no_rawat,kode,status,prioritas)", "?,?,?,?", "ICD 9", 4, new String[]{
                         TNoRw.getText(), KodeProsedurSekunder2.getText(), "Ranap", Sequel.cariIsi("select ifnull(MAX(prosedur_pasien.prioritas)+1,1) from prosedur_pasien where prosedur_pasien.no_rawat=? and prosedur_pasien.status='Ranap'", TNoRw.getText())
                     });
                 }
 
                 if (!KodeProsedurSekunder3.getText().equals("")) {
-                    Sequel.menyimpan("prosedur_pasien", "?,?,?,?", "ICD 9", 4, new String[]{
+                    Sequel.menyimpan("prosedur_pasien(no_rawat,kode,status,prioritas)", "?,?,?,?", "ICD 9", 4, new String[]{
                         TNoRw.getText(), KodeProsedurSekunder3.getText(), "Ranap", Sequel.cariIsi("select ifnull(MAX(prosedur_pasien.prioritas)+1,1) from prosedur_pasien where prosedur_pasien.no_rawat=? and prosedur_pasien.status='Ranap'", TNoRw.getText())
                     });
                 }

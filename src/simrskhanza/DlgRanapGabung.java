@@ -1428,7 +1428,7 @@ public class DlgRanapGabung extends javax.swing.JDialog {
                                             });
                                         }
 
-                                        Sequel.menyimpantf("permintaan_ranap", "?,?,?,?,?", "Pasien", 5, new String[]{
+                                        Sequel.menyimpantf("permintaan_ranap(no_rawat,tanggal,kd_kamar,diagnosa,catatan)", "?,?,?,?,?", "Pasien", 5, new String[]{
                                             NoRawatGabung.getText(),
                                             Valid.SetTgl(DTPTgl.getSelectedItem() + ""),
                                             TKdKamar.getText(),
@@ -1536,7 +1536,7 @@ public class DlgRanapGabung extends javax.swing.JDialog {
                                     });
                                 }
 
-                                Sequel.menyimpantf("permintaan_ranap", "?,?,?,?,?", "Pasien", 5, new String[]{
+                                Sequel.menyimpantf("permintaan_ranap(no_rawat,tanggal,kd_kamar,diagnosa,catatan)", "?,?,?,?,?", "Pasien", 5, new String[]{
                                     NoRawatGabung.getText(),
                                     Valid.SetTgl(DTPTgl.getSelectedItem() + ""),
                                     TKdKamar.getText(),

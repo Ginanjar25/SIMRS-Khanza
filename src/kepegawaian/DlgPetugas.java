@@ -836,7 +836,7 @@ public final class DlgPetugas extends javax.swing.JDialog {
                 Sequel.menyimpanignore("bidang","?",1,new String[]{"-"});
                 Sequel.menyimpanignore("bank","'T'");
                 Sequel.menyimpanignore("stts_wp","?,?",2,new String[]{"-","-"});
-                Sequel.menyimpanignore("stts_kerja","?,?,?",3,new String[]{"-","-","0"});
+                Sequel.menyimpanignore("stts_kerja(stts,ktg,indek)","?,?,?",3,new String[]{"-","-","0"});
                 Sequel.menyimpanignore("kelompok_jabatan","?,?,?",3,new String[]{"-","-","0"});
                 Sequel.menyimpanignore("resiko_kerja","?,?,?",3,new String[]{"-","-","0"});
                 Sequel.menyimpanignore("emergency_index","?,?,?",3,new String[]{"-","-","0"});

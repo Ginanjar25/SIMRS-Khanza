@@ -1158,7 +1158,7 @@ public final class InventoryTelaahResep extends javax.swing.JDialog {
         }else if(Nip.getText().trim().equals("")||NamaPetugas.getText().trim().equals("")){
             Valid.textKosong(Nip,"Petugas");
         }else{
-            if(Sequel.menyimpantf("telaah_farmasi","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","Data",25,new String[]{
+            if(Sequel.menyimpantf("telaah_farmasi(no_resep,resep_identifikasi_pasien,resep_ket_identifikasi_pasien,resep_tepat_obat,resep_ket_tepat_obat,resep_tepat_dosis,resep_ket_tepat_dosis,resep_tepat_cara_pemberian,resep_ket_tepat_cara_pemberian,resep_tepat_waktu_pemberian,resep_ket_tepat_waktu_pemberian,resep_ada_tidak_duplikasi_obat,resep_ket_ada_tidak_duplikasi_obat,resep_interaksi_obat,resep_ket_interaksi_obat,resep_kontra_indikasi_obat,resep_ket_kontra_indikasi_obat,obat_tepat_pasien,obat_tepat_obat,obat_tepat_dosis,obat_tepat_waktu_pemberian,obat_kesesuaian_formularium,nip,resep_kesesuaian_formularium,resep_ket_kesesuaian_formularium)","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","Data",25,new String[]{
                 NoResep.getText(),ResepTepatIdentifikasiPasien.getSelectedItem().toString(),KetResepTepatIdetifikasiPasien.getText(), 
                 ResepTepatObat.getSelectedItem().toString(),KetResepTepatObat.getText(),ResepTepatDosis.getSelectedItem().toString(), 
                 KetResepTepatDosis.getText(),ResepTepatCaraPemberian.getSelectedItem().toString(),KetResepTepatCaraPemberian.getText(), 

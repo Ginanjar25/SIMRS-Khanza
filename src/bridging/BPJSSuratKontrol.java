@@ -1611,7 +1611,7 @@ public class BPJSSuratKontrol extends javax.swing.JDialog {
 //                Sequel.menyimpan("trackerjson","now(),?,?,?,?",4,new String[]{URL,requestJson,nameNode.toString(),user});
                 if(nameNode.path("code").asText().equals("200")){
                     response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc)).path("noSuratKontrol");
-                    if(Sequel.menyimpantf("bridging_surat_kontrol_bpjs","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Surat",45,new String[]{
+                    if(Sequel.menyimpantf("bridging_surat_kontrol_bpjs(no_sep,tgl_surat,no_surat,tgl_rencana,kd_dokter_bpjs,nm_dokter_bpjs,kd_poli_bpjs,nm_poli_bpjs,status_prb,HBA1C,GDP,GD2JPP,eGFR,TD_Sistolik,TD_Diastolik,LDL,Rata_TD_Sistolik,Rata_TD_Diastolik,JantungKoroner,Stroke,VaskularPerifer,Aritmia,AtrialFibrilasi,NadiIstirahat,SesakNapas3Bulan,NyeriDada3Bulan,SesakNapasAktivitas,NyeriDadaAktivitas,Terkontrol,Gejala2xMinggu,BangunMalam,KeterbatasanFisik,FungsiParu,SkorMMRC,Eksaserbasi1Tahun,MampuAktivitas,Epileptik6Bulan,EfekSampingOAB,HamilMenyusui,Remisi,TerapiRumatan,Usia,AsamUrat,RemisiSLE,Hamil)","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.Surat",45,new String[]{
                             NoSEP.getText(),Valid.SetTgl(TanggalSurat.getSelectedItem()+""),response.asText(),Valid.SetTgl(TanggalKontrol.getSelectedItem()+""),KdDokter.getText(),NmDokter.getText(),KdPoli.getText(),NmPoli.getText(),
                             StatusPRB.getSelectedItem().toString().trim(),HBA1C.getText(),GDP.getText(),GD2JPP.getText(),eGFR.getText(),TDSistolik.getText(),TDDiastolik.getText(),LDL.getText(),RerataTDSistolik.getText(),RerataTDDiastolik.getText(),
                             JantungKoroner.getSelectedItem().toString().trim(),Stroke.getSelectedItem().toString().trim(),VaskularPerifer.getSelectedItem().toString().trim(),Aritmia.getSelectedItem().toString().trim(),AtrialFibrilasi.getSelectedItem().toString().trim(),
@@ -2823,7 +2823,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     noreg=Valid.autoNomer3("select ifnull(MAX(CONVERT(booking_registrasi.no_reg,signed)),0) from booking_registrasi where booking_registrasi.kd_dokter='"+kodedokter+"' and booking_registrasi.tanggal_periksa='"+Valid.SetTgl(TanggalKontrol.getSelectedItem()+"")+"'","",3);
                     break;
             }
-            status=Sequel.menyimpantf2("booking_registrasi","?,?,?,?,?,?,?,?,?,?,?","Pasien dan Tanggal",11,new String[]{
+            status=Sequel.menyimpantf2("booking_registrasi(tanggal_booking,jam_booking,no_rkm_medis,tanggal_periksa,kd_dokter,kd_poli,no_reg,kd_pj,limit_reg,waktu_kunjungan,status)","?,?,?,?,?,?,?,?,?,?,?","Pasien dan Tanggal",11,new String[]{
                 Valid.SetTgl(TanggalSurat.getSelectedItem()+""),"08:00:00",NoRM.getText(),Valid.SetTgl(TanggalKontrol.getSelectedItem()+""),
                 kodedokter,kodepoli,noreg,Sequel.cariIsi("select pasien.kd_pj from pasien where pasien.no_rkm_medis=?",NoRM.getText()),"0",
                 Valid.SetTgl(TanggalKontrol.getSelectedItem()+"")+" "+TanggalKontrol.getSelectedItem().toString().substring(11,19),"belum"

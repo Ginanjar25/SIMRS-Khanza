@@ -3565,7 +3565,7 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                                 Sequel.cariIsi("select cacat_fisik.id from cacat_fisik where cacat_fisik.nama_cacat=?","-"),
                                 "-","-",Sequel.cariIsi("select propinsi.kd_prop from propinsi where propinsi.nm_prop=?","-"),"-"
                             })==true){
-                                if(Sequel.menyimpantf("pasien_bayi","'"+NoRm.getText()+"','"+
+                                if(Sequel.menyimpantf("pasien_bayi(no_rkm_medis,umur_ibu,nama_ayah,umur_ayah,berat_badan,panjang_badan,lingkar_kepala,proses_lahir,anakke,jam_lahir,keterangan,diagnosa,penyulit_kehamilan,ketuban,lingkar_perut,lingkar_dada,penolong,no_skl,g,p,a,f1,u1,t1,r1,w1,n1,f5,u5,t5,r5,w5,n5,f10,u10,t10,r10,w10,n10,resusitas,obat_diberikan,mikasi,mikonium)","'"+NoRm.getText()+"','"+
                                     UmurIbu.getText()+"','"+NmAyah.getText()+"','"+UmurAyah.getText()+"','"+Berat.getText()+"','"+Panjang.getText()+"','"+
                                     LingkarKepala.getText()+"','"+Proses.getText()+"','"+Anakke.getText()+"','"+jam.getSelectedItem()+":"+menit.getSelectedItem()+":00','"+
                                     Keterangan.getText()+"','"+Diagnosa.getText()+"','"+PenyulitKehamilan.getText()+"','"+Ketuban.getText()+"','"+Golda.getText()+"','"+LingkarDada.getText()+"','"+
@@ -3600,7 +3600,7 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                                     Sequel.cariIsi("select cacat_fisik.id from cacat_fisik where cacat_fisik.nama_cacat=?","-"),
                                     "-","-",Sequel.cariIsi("select propinsi.kd_prop from propinsi where propinsi.nm_prop=?","-"),"-"
                                 })==true){
-                                    if(Sequel.menyimpantf("pasien_bayi","'"+NoRm.getText()+"','"+
+                                    if(Sequel.menyimpantf("pasien_bayi(no_rkm_medis,umur_ibu,nama_ayah,umur_ayah,berat_badan,panjang_badan,lingkar_kepala,proses_lahir,anakke,jam_lahir,keterangan,diagnosa,penyulit_kehamilan,ketuban,lingkar_perut,lingkar_dada,penolong,no_skl,g,p,a,f1,u1,t1,r1,w1,n1,f5,u5,t5,r5,w5,n5,f10,u10,t10,r10,w10,n10,resusitas,obat_diberikan,mikasi,mikonium)","'"+NoRm.getText()+"','"+
                                         UmurIbu.getText()+"','"+NmAyah.getText()+"','"+UmurAyah.getText()+"','"+Berat.getText()+"','"+Panjang.getText()+"','"+
                                         LingkarKepala.getText()+"','"+Proses.getText()+"','"+Anakke.getText()+"','"+jam.getSelectedItem()+":"+menit.getSelectedItem()+":00','"+
                                         Keterangan.getText()+"','"+Diagnosa.getText()+"','"+PenyulitKehamilan.getText()+"','"+Ketuban.getText()+"','"+Golda.getText()+"','"+LingkarDada.getText()+"','"+
@@ -3635,7 +3635,7 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                                         Sequel.cariIsi("select cacat_fisik.id from cacat_fisik where cacat_fisik.nama_cacat=?","-"),
                                         "-","-",Sequel.cariIsi("select propinsi.kd_prop from propinsi where propinsi.nm_prop=?","-"),"-"
                                     })==true){
-                                        if(Sequel.menyimpantf("pasien_bayi","'"+NoRm.getText()+"','"+
+                                        if(Sequel.menyimpantf("pasien_bayi(no_rkm_medis,umur_ibu,nama_ayah,umur_ayah,berat_badan,panjang_badan,lingkar_kepala,proses_lahir,anakke,jam_lahir,keterangan,diagnosa,penyulit_kehamilan,ketuban,lingkar_perut,lingkar_dada,penolong,no_skl,g,p,a,f1,u1,t1,r1,w1,n1,f5,u5,t5,r5,w5,n5,f10,u10,t10,r10,w10,n10,resusitas,obat_diberikan,mikasi,mikonium)","'"+NoRm.getText()+"','"+
                                             UmurIbu.getText()+"','"+NmAyah.getText()+"','"+UmurAyah.getText()+"','"+Berat.getText()+"','"+Panjang.getText()+"','"+
                                             LingkarKepala.getText()+"','"+Proses.getText()+"','"+Anakke.getText()+"','"+jam.getSelectedItem()+":"+menit.getSelectedItem()+":00','"+
                                             Keterangan.getText()+"','"+Diagnosa.getText()+"','"+PenyulitKehamilan.getText()+"','"+Ketuban.getText()+"','"+Golda.getText()+"','"+LingkarDada.getText()+"','"+
@@ -3652,7 +3652,7 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                                                 emptTeks();
                                         }                                                  
                                 }else{
-                                    if(Sequel.menyimpantf("pasien_bayi","'"+NoRm.getText()+"','"+
+                                    if(Sequel.menyimpantf("pasien_bayi(no_rkm_medis,umur_ibu,nama_ayah,umur_ayah,berat_badan,panjang_badan,lingkar_kepala,proses_lahir,anakke,jam_lahir,keterangan,diagnosa,penyulit_kehamilan,ketuban,lingkar_perut,lingkar_dada,penolong,no_skl,g,p,a,f1,u1,t1,r1,w1,n1,f5,u5,t5,r5,w5,n5,f10,u10,t10,r10,w10,n10,resusitas,obat_diberikan,mikasi,mikonium)","'"+NoRm.getText()+"','"+
                                         UmurIbu.getText()+"','"+NmAyah.getText()+"','"+UmurAyah.getText()+"','"+Berat.getText()+"','"+Panjang.getText()+"','"+
                                         LingkarKepala.getText()+"','"+Proses.getText()+"','"+Anakke.getText()+"','"+jam.getSelectedItem()+":"+menit.getSelectedItem()+":00','"+
                                         Keterangan.getText()+"','"+Diagnosa.getText()+"','"+PenyulitKehamilan.getText()+"','"+Ketuban.getText()+"','"+Golda.getText()+"','"+LingkarDada.getText()+"','"+
@@ -3671,7 +3671,7 @@ private void MnKartuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
                         }
                         
                     }else{
-                        if(Sequel.menyimpantf("pasien_bayi","'"+NoRm.getText()+"','"+
+                        if(Sequel.menyimpantf("pasien_bayi(no_rkm_medis,umur_ibu,nama_ayah,umur_ayah,berat_badan,panjang_badan,lingkar_kepala,proses_lahir,anakke,jam_lahir,keterangan,diagnosa,penyulit_kehamilan,ketuban,lingkar_perut,lingkar_dada,penolong,no_skl,g,p,a,f1,u1,t1,r1,w1,n1,f5,u5,t5,r5,w5,n5,f10,u10,t10,r10,w10,n10,resusitas,obat_diberikan,mikasi,mikonium)","'"+NoRm.getText()+"','"+
                             UmurIbu.getText()+"','"+NmAyah.getText()+"','"+UmurAyah.getText()+"','"+Berat.getText()+"','"+Panjang.getText()+"','"+
                             LingkarKepala.getText()+"','"+Proses.getText()+"','"+Anakke.getText()+"','"+jam.getSelectedItem()+":"+menit.getSelectedItem()+":00','"+
                             Keterangan.getText()+"','"+Diagnosa.getText()+"','"+PenyulitKehamilan.getText()+"','"+Ketuban.getText()+"','"+Golda.getText()+"','"+LingkarDada.getText()+"','"+

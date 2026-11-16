@@ -1032,7 +1032,7 @@ private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNo
                 sukses=true; 
                 if(sukses==true){
                     if(!Laporan.getText().equals("")){
-                        if(Sequel.menyimpantf2("laporan_operasi","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","laporan operasi",16,new String[]{
+                        if(Sequel.menyimpantf2("laporan_operasi(no_rawat,tanggal,nama_operasi,diagnosa_preop,diagnosa_postop,jaringan_dieksekusi,selesaioperasi,permintaan_pa,laporan_operasi,kd_dokter,komplikasi,perdarahan,jumlah_perdarahan,no_implan,kd_petugas,penulisanlaporan)","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","laporan operasi",16,new String[]{
                                 TNoRw.getText(),
                                 Valid.SetTgl(tgl.getSelectedItem()+"")+" "+tgl.getSelectedItem().toString().substring(11,19),
                                 NamaOperasi.getText(),

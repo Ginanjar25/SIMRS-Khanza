@@ -14,6 +14,20 @@ PANDUAN MENGISI
 - Popup "Apa yang Baru" muncul otomatis sekali setelah login bila versi teratas berubah.
 -->
 
+## [Belum Rilis]
+
+### Diperbaiki
+
+- **Penyimpanan data setelah penggabungan dengan Khanza terbaru**: Penyimpanan di beberapa menu tidak lagi gagal karena jumlah kolom database berbeda, antara lain Resep Dokter, Resep Iterasi/Apotek BPJS, Booking Registrasi & Booking Web, Surat Kontrol BPJS, Rujukan Keluar/SISRUTE, Permintaan Rawat Inap (IGD, Kamar Inap, Ranap Gabung), Laporan Operasi, Resume Pasien (prosedur ICD 9), Telaah Resep, Piutang Karyawan, Kelahiran Bayi, Pengaturan Rekening, serta penambahan ICD 10 otomatis dari menu cek peserta BPJS/PCare/Inhealth. (Semua unit)
+- **Pengaturan Rekening**: Akun "[Debet] Bayar Jasa Medis Dokter pada menu Bayar JM Dokter" kembali tersedia (baris paling bawah). Sebelumnya akun ini hilang setelah penggabungan, sehingga menyimpan pengaturan rekening mengosongkan akun yang dipakai jurnal Bayar JM Dokter. Setelah update, isi kembali akun tersebut lalu simpan. (Keuangan)
+- **Lembar Konsultasi Dokter**: Simpan data konsultasi tidak lagi gagal. (Dokter, Perawat)
+
+### Catatan Teknis
+
+- Schema database disatukan dari `rspw_db` dan schema Khanza terbaru (`sik.sql` master 3052508): tabel/kolom dari kedua sisi digabung, tipe diambil yang paling lebar (varchar terpanjang, enum = gabungan nilai), key RSPW dipertahankan, tanpa DROP. Kolom tambahan upstream ditaruh di akhir tabel. Uji di database `sik` localhost; script: `migrasi_sik_20261116.sql` dan `migrasi_sik_20261116_tahap2.sql`.
+- Insert tanpa daftar kolom yang jumlah nilainya tidak sama dengan tabel gabungan kini memakai daftar kolom eksplisit lewat nama tabel, mis. `Sequel.menyimpan("prosedur_pasien(no_rawat,kode,status,prioritas)",...)` (68 lokasi, 17 tabel). Overload `sekuel` yang juga membuat UPDATE dari nama tabel tidak dipakai di lokasi tersebut.
+- Sebelum menjalankan di production: tabel yang kolomnya ditambah perlu dicek ulang semua insert-nya (lihat CLAUDE.md bagian Database).
+
 ## [Rilis]
 
 ### Ditambahkan

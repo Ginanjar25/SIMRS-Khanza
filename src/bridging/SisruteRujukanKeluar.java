@@ -2255,7 +2255,7 @@ public final class SisruteRujukanKeluar extends javax.swing.JDialog {
                             FrekuensiNadi.getText(),SuhuBadan.getText(),Respirasi.getText(),Valid.MaxTeks(KeadaanUmum.getText(),300),TingkatNyeri.getSelectedItem().toString(),Alergi.getText(),
                             Valid.MaxTeks(Laborat.getText(),1000),Valid.MaxTeks(Radiologi.getText(),1000),Valid.MaxTeks(TerapiTindakan.getText(),1000)
                         })){
-                        Sequel.menyimpan2("rujuk","'"+root.path("data").path("RUJUKAN").path("NOMOR").asText()+"','"+
+                        Sequel.menyimpan2("rujuk(no_rujuk,no_rawat,rujuk_ke,tgl_rujuk,keterangan_diagnosa,kd_dokter,kat_rujuk,ambulance,keterangan,jam)","'"+root.path("data").path("RUJUKAN").path("NOMOR").asText()+"','"+
                                 TNoRw.getText()+"','"+Valid.MaxTeks(NmFaskes.getText(),150)+"','"+
                                 Valid.SetTgl(TanggalRujuk.getSelectedItem()+"")+"','"+NmDiagnosa.getText()+"','"+
                                 Sequel.cariIsi("select reg_periksa.kd_dokter from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText())+
@@ -2460,7 +2460,7 @@ public final class SisruteRujukanKeluar extends javax.swing.JDialog {
                             Valid.MaxTeks(Laborat.getText(),1000),Valid.MaxTeks(Radiologi.getText(),1000),Valid.MaxTeks(TerapiTindakan.getText(),1000),TNoRw.getText()
                         })==true){
                             Sequel.meghapus3("rujuk","no_rawat",TNoRw.getText());
-                            Sequel.menyimpan2("rujuk","'"+root.path("data").path("RUJUKAN").path("NOMOR").asText()+"','"+
+                            Sequel.menyimpan2("rujuk(no_rujuk,no_rawat,rujuk_ke,tgl_rujuk,keterangan_diagnosa,kd_dokter,kat_rujuk,ambulance,keterangan,jam)","'"+root.path("data").path("RUJUKAN").path("NOMOR").asText()+"','"+
                                 TNoRw.getText()+"','"+Valid.MaxTeks(NmFaskes.getText(),150)+"','"+
                                 Valid.SetTgl(TanggalRujuk.getSelectedItem()+"")+"','"+NmDiagnosa.getText()+"','"+
                                 Sequel.cariIsi("select reg_periksa.kd_dokter from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText())+

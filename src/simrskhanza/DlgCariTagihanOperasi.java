@@ -3424,7 +3424,7 @@ private void MnHapusObatOperasiActionPerformed(java.awt.event.ActionEvent evt) {
     private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
         if(!Laporan.getText().equals("")){
             Sequel.queryu("delete from laporan_operasi where no_rawat='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),1)+"' and tanggal='"+tbDokter.getValueAt(tbDokter.getSelectedRow(),0) +"'");
-            Sequel.menyimpan("laporan_operasi","?,?,?,?,?,?,?,?,?","laporan operasi",9,new String[]{
+            Sequel.menyimpan("laporan_operasi(no_rawat,tanggal,diagnosa_preop,diagnosa_postop,jaringan_dieksekusi,selesaioperasi,permintaan_pa,nomor_implan,laporan_operasi)","?,?,?,?,?,?,?,?,?","laporan operasi",9,new String[]{
                 tbDokter.getValueAt(tbDokter.getSelectedRow(),1).toString(),tbDokter.getValueAt(tbDokter.getSelectedRow(),0).toString(),PreOp.getText(),
                 PostOp.getText(),Jaringan.getText(),Valid.SetTgl(tgl2.getSelectedItem()+"")+" "+tgl2.getSelectedItem().toString().substring(11,19),
                 DikirimPA.getSelectedItem().toString(),NomorImplant.getText(),Laporan.getText()

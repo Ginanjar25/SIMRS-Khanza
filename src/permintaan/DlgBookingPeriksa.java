@@ -2427,7 +2427,7 @@ public class DlgBookingPeriksa extends javax.swing.JFrame {
                     Sequel.cariIsi("select cacat_fisik.id from cacat_fisik where cacat_fisik.nama_cacat=?","-"),Email.getText(),"-",kdprop,"-"
                 })==true){
                 if(Sequel.menyimpantf2("booking_periksa_diterima","?,?","Booking Diterima",2,new String[]{NoBooking.getText(),TNo.getText()})==true){
-                    if(Sequel.menyimpantf2("booking_registrasi","?,?,?,?,?,?,?,?,?,?,?","Pasien dan Tanggal",11,new String[]{
+                    if(Sequel.menyimpantf2("booking_registrasi(tanggal_booking,jam_booking,no_rkm_medis,tanggal_periksa,kd_dokter,kd_poli,no_reg,kd_pj,limit_reg,waktu_kunjungan,status)","?,?,?,?,?,?,?,?,?,?,?","Pasien dan Tanggal",11,new String[]{
                             TanggalBooking.getText(),TanggalBooking.getText().toString().substring(11,19),TNo.getText(),
                             TanggalPeriksa.getText(),KdDokter.getText(),KdPoli.getText(),NoReg.getText(),kdpnj.getText(),"1",
                             TanggalPeriksa.getText()+" "+TanggalBooking.getText().toString().substring(11,19),"belum"
@@ -2451,7 +2451,7 @@ public class DlgBookingPeriksa extends javax.swing.JFrame {
                         Sequel.cariIsi("select cacat_fisik.id from cacat_fisik where cacat_fisik.nama_cacat=?","-"),Email.getText(),"-",kdprop,"-"
                     })==true){
                         if(Sequel.menyimpantf2("booking_periksa_diterima","?,?","Booking Diterima",2,new String[]{NoBooking.getText(),TNo.getText()})==true){
-                            if(Sequel.menyimpantf2("booking_registrasi","?,?,?,?,?,?,?,?,?,?,?","Pasien dan Tanggal",11,new String[]{
+                            if(Sequel.menyimpantf2("booking_registrasi(tanggal_booking,jam_booking,no_rkm_medis,tanggal_periksa,kd_dokter,kd_poli,no_reg,kd_pj,limit_reg,waktu_kunjungan,status)","?,?,?,?,?,?,?,?,?,?,?","Pasien dan Tanggal",11,new String[]{
                                     TanggalBooking.getText(),TanggalBooking.getText().toString().substring(11,19),TNo.getText(),
                                     TanggalPeriksa.getText(),KdDokter.getText(),KdPoli.getText(),NoReg.getText(),kdpnj.getText(),"1",
                                     TanggalPeriksa.getText()+" "+TanggalBooking.getText().toString().substring(11,19),"belum"

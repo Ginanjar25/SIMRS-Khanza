@@ -1042,7 +1042,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                             response = mapper.readTree(api.Decrypt(root.path("response").asText(), utc));
                             System.out.println("Response JSON : "+response);
                             nopiutang=response.path("noApotik").asText();
-                            if(Sequel.menyimpantf2("bridging_resep_apotek_bpjs", "?,?,?,?,?,?,?,?,?,?","Data Apotek Online", 10,new String[]{
+                            if(Sequel.menyimpantf2("bridging_resep_apotek_bpjs(no_sep,no_sep_apotek,tgl_sep,kdjenis,id_user_sep,no_resep,tgl_resep,tgl_pelayanan,iterasi,kdppkrujukan)", "?,?,?,?,?,?,?,?,?,?","Data Apotek Online", 10,new String[]{
                                 NoSEP.getText(),response.path("noApotik").asText(),TglSEP.getText(),JnsObat.getSelectedItem().toString(),akses.getkode(),NoResep.getText(),TglResep.getText(),
                                 Valid.SetTgl(DTPTgl.getSelectedItem()+"")+" "+cmbJam.getSelectedItem()+":"+cmbMnt.getSelectedItem()+":"+cmbDtk.getSelectedItem(),Iterasi.getSelectedItem().toString(),
                                 response.path("faskesAsal").asText()
@@ -1069,7 +1069,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                             nameNode = root.path("metaData");
                                             System.out.println("Respon JSON : "+nameNode);
                                             if(nameNode.path("code").asText().equals("200")) {
-                                                if(Sequel.menyimpantf("bridging_resep_apotek_bpjs_nonracikan","?,?,?,?,?,?,?","Obat Non Racikan BPJS",7,new String[]{
+                                                if(Sequel.menyimpantf("bridging_resep_apotek_bpjs_nonracikan(no_sep_apotek,no_resep,kode_brng_apotek_bpjs,signa1,signa2,jml_obat,jho)","?,?,?,?,?,?,?","Obat Non Racikan BPJS",7,new String[]{
                                                     response.path("noApotik").asText(),NoResep.getText(),tbObat.getValueAt(i,1).toString(),tbObat.getValueAt(i,3).toString(),tbObat.getValueAt(i,4).toString(),tbObat.getValueAt(i,0).toString(),tbObat.getValueAt(i,5).toString()
                                                 })==false) {
                                                     sukses=false;
@@ -1112,7 +1112,7 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                                             nameNode = root.path("metaData");
                                             System.out.println("Respon JSON : "+nameNode);
                                             if(nameNode.path("code").asText().equals("200")) {
-                                                if(Sequel.menyimpantf("bridging_resep_apotek_bpjs_racikan","?,?,?,?,?,?,?,?,?","Obat Racikan",9,new String[]{
+                                                if(Sequel.menyimpantf("bridging_resep_apotek_bpjs_racikan(no_sep_apotek,nomor_racik,no_resep,kode_brng_apotek_bpjs,signa1,signa2,jml_obat,permintaan,jho)","?,?,?,?,?,?,?,?,?","Obat Racikan",9,new String[]{
                                                     response.path("noApotik").asText(),(tbDetailObatRacikan.getValueAt(i,0).toString().length()==1?"R.0"+tbDetailObatRacikan.getValueAt(i,0).toString():"R."+tbDetailObatRacikan.getValueAt(i,0).toString()),NoResep.getText(),
                                                     tbDetailObatRacikan.getValueAt(i,2).toString(),tbDetailObatRacikan.getValueAt(i,4).toString(),tbDetailObatRacikan.getValueAt(i,5).toString(),tbDetailObatRacikan.getValueAt(i,1).toString(),tbDetailObatRacikan.getValueAt(i,1).toString(), 
                                                     tbDetailObatRacikan.getValueAt(i,6).toString()

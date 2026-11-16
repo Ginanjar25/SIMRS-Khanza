@@ -8965,7 +8965,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
                                     });
                                 }
 
-                                Sequel.menyimpantf("permintaan_ranap", "?,?,?,?,?", "Pasien", 5, new String[]{
+                                Sequel.menyimpantf("permintaan_ranap(no_rawat,tanggal,kd_kamar,diagnosa,catatan)", "?,?,?,?,?", "Pasien", 5, new String[]{
                                     NoRawatGabung.getText(),
                                     Valid.SetTgl(DTPRawatGabung.getSelectedItem() + ""),
                                     tbKamIn.getValueAt(tbKamIn.getSelectedRow(), 19).toString(),

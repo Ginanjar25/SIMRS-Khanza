@@ -857,7 +857,7 @@ public class DlgDokter extends javax.swing.JDialog {
                 Sequel.menyimpanignore("bidang","'-'");
                 Sequel.menyimpanignore("bank","'T'");
                 Sequel.menyimpanignore("stts_wp","'-','-'");
-                Sequel.menyimpanignore("stts_kerja","'-','-','0'");
+                Sequel.menyimpanignore("stts_kerja(stts,ktg,indek)","'-','-','0'");
                 Sequel.menyimpanignore("kelompok_jabatan","'-','-','0'");
                 Sequel.menyimpanignore("resiko_kerja","'-','-','0'");
                 Sequel.menyimpanignore("emergency_index","'-','-','0'");
