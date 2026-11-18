@@ -159,6 +159,12 @@ where bridging_rujukan_bpjs.no_rujukan=$P{norujuk}]]>
 				<reportElement x="1" y="2" width="141" height="38" uuid="f3e28637-9216-4609-afda-5a4560e0fe2b"/>
 				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
 			</image>
+			<image scaleImage="RetainShape" hAlign="Left" vAlign="Middle" onErrorType="Blank">
+				<reportElement x="146" y="2" width="32" height="38" uuid="03f1d8d5-1429-468e-ab08-a75d1234002a">
+					<printWhenExpression><![CDATA[!$F{no_rujukan_satusehat}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<imageExpression><![CDATA["picture/logo_satusehat.png"]]></imageExpression>
+			</image>
 			<textField>
 				<reportElement x="48" y="21" width="505" height="16" uuid="75eec66c-e40d-4f53-a558-d5ccca72872b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">

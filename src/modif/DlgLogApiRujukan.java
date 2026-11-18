@@ -31,7 +31,7 @@ public class DlgLogApiRujukan extends javax.swing.JDialog implements RujukanSatu
         setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
 
         widget.InternalFrame internalFrame1=new widget.InternalFrame();
-        internalFrame1.setBorder(DlgKriteriaRujukanSatuSehat.judul("::[ Log Request & Response API BPJS / Satu Sehat ]::"));
+        internalFrame1.setBorder(PanelRujukanSatuSehat.judul("::[ Log Request & Response API BPJS / Satu Sehat ]::"));
         internalFrame1.setLayout(new BorderLayout(1,1));
 
         LogApi.setEditable(false);
@@ -44,13 +44,13 @@ public class DlgLogApiRujukan extends javax.swing.JDialog implements RujukanSatu
         widget.panelisi panelGlass8=new widget.panelisi();
         panelGlass8.setPreferredSize(new Dimension(44,44));
         panelGlass8.setLayout(new FlowLayout(FlowLayout.LEFT,5,9));
-        widget.Button BtnSalin=DlgKriteriaRujukanSatuSehat.tombol("Salin","editcopy.png",'S',90);
+        widget.Button BtnSalin=PanelRujukanSatuSehat.tombol("Salin","editcopy.png",'S',90);
         BtnSalin.setToolTipText("Alt+S, Salin semua log ke clipboard");
         BtnSalin.addActionListener(evt->Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(LogApi.getText()),null));
-        widget.Button BtnBersihkan=DlgKriteriaRujukanSatuSehat.tombol("Bersihkan","refresh.png",'B',110);
+        widget.Button BtnBersihkan=PanelRujukanSatuSehat.tombol("Bersihkan","refresh.png",'B',110);
         BtnBersihkan.setToolTipText("Alt+B, Kosongkan log");
         BtnBersihkan.addActionListener(evt->LogApi.setText(""));
-        widget.Button BtnTutup=DlgKriteriaRujukanSatuSehat.tombol("Tutup","exit.png",'T',90);
+        widget.Button BtnTutup=PanelRujukanSatuSehat.tombol("Tutup","exit.png",'T',90);
         BtnTutup.setToolTipText("Alt+T, Sembunyikan, muncul lagi saat ada hit API baru");
         BtnTutup.addActionListener(evt->setVisible(false));
         panelGlass8.add(BtnSalin);

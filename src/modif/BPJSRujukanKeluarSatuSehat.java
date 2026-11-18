@@ -88,6 +88,8 @@ public final class BPJSRujukanKeluarSatuSehat extends javax.swing.JDialog {
     private JsonNode response;
     private RujukanSatuSehatVClaim rujukanss=new RujukanSatuSehatVClaim();
     private DlgLogApiRujukan logapi;
+    private PanelRujukanSatuSehat panelss;
+    private final widget.TabPane TabRujukan=new widget.TabPane();
     /** Creates new form DlgRujuk
      * @param parent
      * @param modal */
@@ -312,6 +314,90 @@ public final class BPJSRujukanKeluarSatuSehat extends javax.swing.JDialog {
                 }
             });
         }
+
+        // RSPW: isian dalam satu runtutan blok tanpa pop-up. Blok 1-2 isian rujukan bawaan form,
+        // blok 3-5 Satu Sehat (PanelRujukanSatuSehat). Isian di atas bisa di-scroll, tabel data rujukan di bawah.
+        internalFrame6.setBorder(PanelRujukanSatuSehat.judul("::[ 1-2. Pasien, SEP, Diagnosa dan Poli Tujuan ]::"));
+        panelss=new PanelRujukanSatuSehat(rujukanss,new PanelRujukanSatuSehat.Isian(){
+            @Override
+            public String getNoRawat(){
+                return TNoRawat.getText();
+            }
+            @Override
+            public String getNoSep(){
+                return TNoSep.getText();
+            }
+            @Override
+            public String getKdDiagnosa(){
+                return KdPenyakit1.getText();
+            }
+            @Override
+            public String getKdPoli(){
+                return KdPoli1.getText();
+            }
+            @Override
+            public String getTglRencana(){
+                return Valid.SetTgl(TanggalKunjungRujukan.getSelectedItem()+"");
+            }
+            @Override
+            public void setFaskes(String kdppk,String nmppk){
+                KdPpkRujukan1.setText(kdppk);
+                NmPpkRujukan1.setText(nmppk);
+            }
+        });
+        // PPK Rujukan baru terisi setelah blok 3-5, jadi dipindah ke baris paling bawah blok 5.
+        // Jns.Pelayanan dan R.Kunjungan digeser ke kiri mengisi baris yang ditinggalkan.
+        internalFrame6.remove(jLabel12);
+        internalFrame6.remove(KdPpkRujukan1);
+        internalFrame6.remove(NmPpkRujukan1);
+        internalFrame6.remove(btnPPKRujukan1);
+        jLabel12.setBounds(0,4,102,23);
+        KdPpkRujukan1.setBounds(110,4,75,23);
+        NmPpkRujukan1.setBounds(190,4,250,23);
+        btnPPKRujukan1.setBounds(442,4,28,23);
+        panelss.getPanelPpkRujukan().add(jLabel12);
+        panelss.getPanelPpkRujukan().add(KdPpkRujukan1);
+        panelss.getPanelPpkRujukan().add(NmPpkRujukan1);
+        panelss.getPanelPpkRujukan().add(btnPPKRujukan1);
+        jLabel31.setBounds(0,80,102,23);
+        JenisPelayanan1.setBounds(110,80,123,23);
+        jLabel50.setBounds(240,80,85,23);
+        TanggalKunjungRujukan.setBounds(330,80,90,23);
+        javax.swing.JPanel isianatas=new javax.swing.JPanel(new java.awt.BorderLayout(1,1));
+        isianatas.setOpaque(false);
+        isianatas.add(internalFrame6,java.awt.BorderLayout.PAGE_START);
+        isianatas.add(panelss,java.awt.BorderLayout.CENTER);
+        widget.ScrollPane ScrollIsian=new widget.ScrollPane();
+        ScrollIsian.setOpaque(true);
+        ScrollIsian.setViewportView(isianatas);
+        ScrollIsian.getVerticalScrollBar().setUnitIncrement(16);
+        // dua tab: Input Rujukan (blok 1-5) dan Data Rujukan (tabel + pencarian Key Word),
+        // tombol Simpan/Ganti/Hapus/Cetak/Keluar tetap di bawah untuk kedua tab
+        internalFrame1.remove(internalFrame6);
+        internalFrame1.remove(Scroll);
+        jPanel3.remove(panelGlass9);
+        javax.swing.JPanel PanelData=new javax.swing.JPanel(new java.awt.BorderLayout(1,1));
+        PanelData.setOpaque(false);
+        PanelData.add(Scroll,java.awt.BorderLayout.CENTER);
+        PanelData.add(panelGlass9,java.awt.BorderLayout.PAGE_END);
+        TabRujukan.setBackground(new java.awt.Color(255,255,254));
+        TabRujukan.setForeground(new java.awt.Color(50,50,50));
+        TabRujukan.setFont(new java.awt.Font("Tahoma",0,11));
+        TabRujukan.setName("TabRujukan");
+        TabRujukan.addTab("Input Rujukan",ScrollIsian);
+        TabRujukan.addTab("Data Rujukan",PanelData);
+        internalFrame1.add(TabRujukan,java.awt.BorderLayout.CENTER);
+        jPanel3.setPreferredSize(new java.awt.Dimension(jPanel3.getPreferredSize().width,panelGlass8.getPreferredSize().height));
+        // dobel klik baris data rujukan: data dimuat lalu pindah ke tab Input untuk diubah
+        tbObat.addMouseListener(new java.awt.event.MouseAdapter(){
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e){
+                if((e.getClickCount()==2)&&(tbObat.getSelectedRow()!=-1)){
+                    TabRujukan.setSelectedIndex(0);
+                }
+            }
+        });
+        TipeRujukan.addItemListener(evt->panelss.setAktif(isRujukanSatuSehat()));
     }
 
 
@@ -914,20 +1000,29 @@ public final class BPJSRujukanKeluarSatuSehat extends javax.swing.JDialog {
             }else if(KdPoli1.getText().trim().equals("")||NmPoli1.getText().trim().equals("")){
                 Valid.textKosong(KdPoli1, "Poli Tujuan");        
             }else{  
+                // RSPW: tipe Penuh diubah lewat PUT /Rujukan/Update vclaim-sisrute-rest (blok satuSehatRujukan),
+                // kriteria dan faskes tujuan dipilih ulang di blok 3-5. Tipe lain tetap /Rujukan/2.0/Update.
+                boolean satusehat=isRujukanSatuSehat();
+                if(satusehat&&!rujukanss.siapSimpan(TNoRawat.getText(),KdPpkRujukan1.getText(),KdPenyakit1.getText())){
+                    JOptionPane.showMessageDialog(null,rujukanss.getPesan()+"\nUntuk mengubah rujukan Satu Sehat, isi ulang blok 3-5 (Cek Data, Ambil Kriteria, Cari Faskes).");
+                    return;
+                }
+                String norujukan=tbObat.getValueAt(tbObat.getSelectedRow(),5).toString();
                 try {
-                    URL = link+"/Rujukan/2.0/Update";	
+                    rujukanss.setKeterangan("Rujukan ke "+NmPpkRujukan1.getText(),Catatan1.getText());
+                    URL = satusehat?rujukanss.getLink()+RujukanSatuSehatVClaim.URL_UPDATE:link+"/Rujukan/2.0/Update";
                     headers = new HttpHeaders();
-                    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+                    headers.setContentType(satusehat?MediaType.APPLICATION_JSON:MediaType.APPLICATION_FORM_URLENCODED);
                     headers.add("X-Cons-ID",koneksiDB.CONSIDAPIBPJS());
                     utc=String.valueOf(api.GetUTCdatetimeAsString());
                     headers.add("X-Timestamp",utc);
                     headers.add("X-Signature",api.getHmac(utc));
                     headers.add("user_key",koneksiDB.USERKEYAPIBPJS());
-//                    user="RSPW"+user;
                     requestJson ="{" +
                                     "\"request\": {" +
                                         "\"t_rujukan\": {" +
-                                            "\"noRujukan\": \""+tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()+"\"," +
+                                            "\"noRujukan\": \""+norujukan+"\"," +
+                                            (satusehat?"\"noSep\": \""+TNoSep.getText()+"\",":"") +
                                             "\"tglRujukan\": \""+Valid.SetTgl(TanggalRujukKeluar.getSelectedItem()+"")+"\"," +
                                             "\"tglRencanaKunjungan\": \""+Valid.SetTgl(TanggalKunjungRujukan.getSelectedItem()+"")+"\"," +
                                             "\"ppkDirujuk\": \""+KdPpkRujukan1.getText()+"\"," +
@@ -937,37 +1032,47 @@ public final class BPJSRujukanKeluarSatuSehat extends javax.swing.JDialog {
                                             "\"tipeRujukan\": \""+TipeRujukan.getSelectedItem().toString().substring(0,1)+"\"," +
                                             "\"poliRujukan\": \""+KdPoli1.getText()+"\"," +
                                             "\"user\": \""+user+"\"" +
+                                            (satusehat?",\"satuSehatRujukan\": "+rujukanss.jsonUpdate():"") +
                                         "}" +
                                     "}" +
                                   "}";
                     requestEntity = new HttpEntity(requestJson,headers);
-                    String hasil=api.getRest().exchange(URL, HttpMethod.PUT, requestEntity, String.class).getBody();
+                    String hasil=satusehat
+                            ?RujukanSatuSehatVClaim.teks(api.getRest().exchange(URL, HttpMethod.PUT, requestEntity, byte[].class).getBody())
+                            :api.getRest().exchange(URL, HttpMethod.PUT, requestEntity, String.class).getBody();
                     rujukanss.catatBpjs("Update Rujukan","PUT",URL,requestJson,hasil,utc);
                     root = mapper.readTree(hasil);
                     nameNode = root.path("metaData");
                     System.out.println("code : "+nameNode.path("code").asText());
                     System.out.println("message : "+nameNode.path("message").asText());
                     if(nameNode.path("code").asText().equals("200")){
-                        response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc));
-                        //response = root.path("response");
-                    
+                        response = rujukanss.bacaResponse(root,utc);
                         Sequel.mengedit3("bridging_rujukan_bpjs","no_rujukan=?","ppkDirujuk=?,tipeRujukan=?,jnsPelayanan=?,catatan=?,diagRujukan=?,poliRujukan=?,nm_ppkDirujuk=?,nama_diagRujukan=?,nama_poliRujukan=?,tglRencanaKunjungan=?",11,new String[]{
                             KdPpkRujukan1.getText(),TipeRujukan.getSelectedItem().toString(),JenisPelayanan1.getSelectedItem().toString().substring(0,1),Catatan1.getText(),KdPenyakit1.getText(),KdPoli1.getText(),NmPpkRujukan1.getText(),
-                            NmPenyakit1.getText(),NmPoli1.getText(),Valid.SetTgl(TanggalKunjungRujukan.getSelectedItem()+""),tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()
+                            NmPenyakit1.getText(),NmPoli1.getText(),Valid.SetTgl(TanggalKunjungRujukan.getSelectedItem()+""),norujukan
                         });
-                        Sequel.mengedit3("rujuk","no_rujuk=?","keterangan_diagnosa=?,keterangan=?",3,new String[]{
-                            NmPenyakit1.getText(),Catatan1.getText(),tbObat.getValueAt(tbObat.getSelectedRow(),5).toString()
+                        Sequel.mengedit3("rujuk","no_rujuk=?","rujuk_ke=?,keterangan_diagnosa=?,keterangan=?",4,new String[]{
+                            NmPpkRujukan1.getText(),NmPenyakit1.getText(),Catatan1.getText(),norujukan
                         });
+                        if(satusehat){
+                            rujukanss.simpanUpdate(norujukan,response.path("rujukan"));
+                            JOptionPane.showMessageDialog(null,"Rujukan "+norujukan+" berhasil diubah\n\n"+
+                                    "No. Rujukan Satu Sehat : "+response.path("rujukan").path("noRujukanSatuSehat").asText()+"\n"+
+                                    "ServiceRequest ID : "+response.path("rujukan").path("serviceRequestId").asText());
+                        }
                         tampil();
                         emptTeks();
+                        TabRujukan.setSelectedIndex(1);
                     }else{
-                        JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
+                        JOptionPane.showMessageDialog(null,satusehat?RujukanSatuSehatVClaim.rapikanPesan(nameNode.path("message").asText()):nameNode.path("message").asText());
                     }
                 }catch (Exception ex) {
                     System.out.println("Notifikasi Bridging : "+ex);
                     rujukanss.catatError("Update Rujukan","PUT",URL,requestJson,ex);
                     if(ex.toString().contains("UnknownHostException")){
                         JOptionPane.showMessageDialog(null,"Koneksi ke server BPJS terputus...!");
+                    }else if(isRujukanSatuSehat()){
+                        JOptionPane.showMessageDialog(null,RujukanSatuSehatVClaim.pesanError(ex));
                     }
                 }
             }
@@ -1087,7 +1192,7 @@ public final class BPJSRujukanKeluarSatuSehat extends javax.swing.JDialog {
     }//GEN-LAST:event_MnSuratRujukanActionPerformed
 
     private void btnPPKRujukan1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPPKRujukan1ActionPerformed
-        // RSPW: tipe rujukan Penuh memilih faskes dari daftar Satu Sehat (GetKriteriaRujukan -> GetFaskesRujukan),
+        // RSPW: tipe rujukan Penuh memilih faskes dari blok 5. Faskes Tujuan Satu Sehat,
         // tipe Partial dan Rujuk Balik tetap memakai referensi faskes VClaim lama
         if(!isRujukanSatuSehat()){
             faskes.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
@@ -1100,22 +1205,8 @@ public final class BPJSRujukanKeluarSatuSehat extends javax.swing.JDialog {
         }else if(btnPoli1.isEnabled()&&(KdPoli1.getText().trim().equals("")||NmPoli1.getText().trim().equals(""))){
             Valid.textKosong(KdPoli1,"Poli Tujuan");
         }else{
-            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            boolean siap=rujukanss.siapkan(TNoRawat.getText(),TNoSep.getText())&&rujukanss.ambilKriteria(KdPenyakit1.getText());
-            this.setCursor(Cursor.getDefaultCursor());
-            if(!siap){
-                JOptionPane.showMessageDialog(null,rujukanss.getPesan());
-            }else if(rujukanss.pilihKriteria(this)){
-                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                RujukanSatuSehatVClaim.Faskes faskestujuan=rujukanss.pilihFaskes(this,KdPenyakit1.getText(),KdPoli1.getText(),
-                        Valid.SetTgl(TanggalKunjungRujukan.getSelectedItem()+""));
-                this.setCursor(Cursor.getDefaultCursor());
-                if(faskestujuan!=null){
-                    KdPpkRujukan1.setText(faskestujuan.kdppk);
-                    NmPpkRujukan1.setText(faskestujuan.nmppk);
-                    Catatan1.requestFocus();
-                }
-            }
+            // blok 5. Faskes Tujuan, kriteria diisi di blok 3-4 (tanpa pop-up)
+            panelss.cariFaskes();
         }
     }//GEN-LAST:event_btnPPKRujukan1ActionPerformed
 
@@ -1272,6 +1363,7 @@ public final class BPJSRujukanKeluarSatuSehat extends javax.swing.JDialog {
                                 + "','-','-','" + Catatan1.getText() + "','12:00:01','-','-','-','-'", "No.Rujuk");
                         tampil();
                         emptTeks();
+                        TabRujukan.setSelectedIndex(1);
                         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                         Map<String, Object> param = new HashMap<>();
                         param.put("namars", akses.getnamars());
@@ -1285,7 +1377,7 @@ public final class BPJSRujukanKeluarSatuSehat extends javax.swing.JDialog {
                         this.setCursor(Cursor.getDefaultCursor());
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, nameNode.path("message").asText());
+                    JOptionPane.showMessageDialog(null, satusehat ? RujukanSatuSehatVClaim.rapikanPesan(nameNode.path("message").asText()) : nameNode.path("message").asText());
                 }
             } catch (Exception ex) {
                 System.out.println("Notifikasi Bridging : " + ex);
@@ -1455,13 +1547,15 @@ public final class BPJSRujukanKeluarSatuSehat extends javax.swing.JDialog {
         NoRM.setText("");
         TNoSep.setText("");
         TNoRawat.setText("");
-        rujukanss.reset();
+        panelss.kosongkan();
     }
 
     
 
     private void getData() {
         if(tbObat.getSelectedRow()!= -1){
+            // RSPW: untuk Edit tipe Penuh, blok 3-5 Satu Sehat diisi ulang
+            panelss.kosongkan();
             TipeRujukan.setSelectedItem(tbObat.getValueAt(tbObat.getSelectedRow(),9).toString());
             KdPpkRujukan1.setText(tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());
             NmPpkRujukan1.setText(tbObat.getValueAt(tbObat.getSelectedRow(),7).toString());
@@ -1585,7 +1679,7 @@ public final class BPJSRujukanKeluarSatuSehat extends javax.swing.JDialog {
                 tampil();
                 emptTeks();
             }else{
-                JOptionPane.showMessageDialog(null,nameNode.path("message").asText());
+                JOptionPane.showMessageDialog(null,jsonsatusehat!=null?RujukanSatuSehatVClaim.rapikanPesan(nameNode.path("message").asText()):nameNode.path("message").asText());
             }
         } catch (Exception e) {            
             System.out.println("Notifikasi Bridging : "+e);
