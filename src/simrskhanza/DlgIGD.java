@@ -190,6 +190,7 @@ import surat.SuratSakit;
 import surat.SuratSakitPihak2;
 import surat.SuratTidakHamil;
 import bridging.BPJSRujukanKeluar;
+import modif.BPJSRujukanKeluarSatuSehat;
 import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.util.Properties;
@@ -11991,6 +11992,32 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         }
     }
     
+    // RSPW: sama dengan ppRujukKeluarActionPerformed, membuka form rujuk keluar terintegrasi Satu Sehat
+    private void ppRujukKeluarSatuSehatActionPerformed(java.awt.event.ActionEvent evt) {
+        if (tbPetugas.getSelectedRow() != -1) {
+            String nosep = Sequel.cariIsi("SELECT bse.no_sep FROM bridging_sep bse WHERE bse.no_rawat =?", TNoRw.getText());
+            if (!nosep.equals("")) {
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                akses.setform("DlgReg");
+                String namaPasien = Sequel.cariIsi("SELECT bse.nama_pasien FROM bridging_sep bse WHERE bse.no_sep =?", nosep);
+                String norm = Sequel.cariIsi("SELECT bse.nomr FROM bridging_sep bse WHERE bse.no_sep =?", nosep);
+                BPJSRujukanKeluarSatuSehat rujuk = new BPJSRujukanKeluarSatuSehat(null, false);
+                rujuk.tampil();
+                rujuk.emptTeks();
+                rujuk.isCek();
+                rujuk.setRujukKeluar(TNoRw.getText(), nosep, namaPasien, norm);
+                rujuk.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+                rujuk.setLocationRelativeTo(internalFrame1);
+                rujuk.setVisible(true);
+                this.setCursor(Cursor.getDefaultCursor());
+            } else {
+                JOptionPane.showMessageDialog(null, "Maaf, Pasien  belum terbit SEP ...!!!!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Maaf, silahkan pilih pasien yang mau dibuatkan rujukan...!!!!");
+        }
+    }
+
     private void MnDepositActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnDepositActionPerformed
         if(tabMode.getRowCount()==0){
             JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
@@ -12425,6 +12452,7 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.Label jLabelNoKaBayar2;
     
     private javax.swing.JMenuItem ppRujukKeluar;
+    private javax.swing.JMenuItem ppRujukKeluarSatuSehat;
     private javax.swing.JMenuItem MnRMLembarKonsultasi;
     private javax.swing.JMenuItem MnDeposit;
     
@@ -13251,11 +13279,29 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
                 ppRujukKeluarActionPerformed(evt);
             }
         });
+
+        // RSPW: rujuk keluar BPJS terintegrasi Satu Sehat (modif.BPJSRujukanKeluarSatuSehat)
+        ppRujukKeluarSatuSehat = new javax.swing.JMenuItem();
+        ppRujukKeluarSatuSehat.setBackground(new java.awt.Color(255, 255, 254));
+        ppRujukKeluarSatuSehat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        ppRujukKeluarSatuSehat.setForeground(new java.awt.Color(50, 50, 50));
+        ppRujukKeluarSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        ppRujukKeluarSatuSehat.setText("Rujuk Keluar BPJS Satu Sehat");
+        ppRujukKeluarSatuSehat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ppRujukKeluarSatuSehat.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ppRujukKeluarSatuSehat.setName("ppRujukKeluarSatuSehat"); // NOI18N
+        ppRujukKeluarSatuSehat.setPreferredSize(new java.awt.Dimension(320, 26));
+        ppRujukKeluarSatuSehat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ppRujukKeluarSatuSehatActionPerformed(evt);
+            }
+        });
         MnBridging.add(MnSEP);
         MnBridging.add(ppSuratKontrol);
         MnBridging.add(ppSuratPRI);
         MnBridging.add(ppProgramPRB);
         MnBridging.add(ppRujukKeluar);
+        MnBridging.add(ppRujukKeluarSatuSehat);
         MnBridging.add(ppSuplesiJasaRaharja);
         MnBridging.add(ppDataIndukKecelakaan);
         MnBridging.add(MnBelumTerbitSEP);

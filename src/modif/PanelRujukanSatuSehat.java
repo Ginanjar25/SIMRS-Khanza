@@ -375,10 +375,14 @@ public class PanelRujukanSatuSehat extends JPanel {
         if(propinsi==null){
             return;
         }
-        CmbKabupaten.addItem(new RujukanSatuSehatVClaim.Wilayah());
+        // BPJS development 19-11-2026: kodeKabupaten wajib ("tidak boleh kosong"), jadi tanpa pilihan Semua Kabupaten/Kota.
+        // Bawaan kabupaten RS (KABUPATENSATUSEHAT).
         for(RujukanSatuSehatVClaim.Wilayah kabupaten:rujukanss.getDaftarKabupaten()){
             if(kabupaten.kodekabupaten.startsWith(propinsi.kodepropinsi)){
                 CmbKabupaten.addItem(kabupaten);
+                if(kabupaten.kodekabupaten.equals(koneksiDB.KABUPATENSATUSEHAT())){
+                    CmbKabupaten.setSelectedItem(kabupaten);
+                }
             }
         }
     }
@@ -477,6 +481,8 @@ public class PanelRujukanSatuSehat extends JPanel {
             JOptionPane.showMessageDialog(null,"Kelompok layanan belum dipilih");
         }else if(CmbPropinsi.getSelectedItem()==null){
             JOptionPane.showMessageDialog(null,"Wilayah jejaring belum dipilih");
+        }else if((CmbKabupaten.getSelectedItem()==null)||((RujukanSatuSehatVClaim.Wilayah)CmbKabupaten.getSelectedItem()).kodekabupaten.equals("")){
+            JOptionPane.showMessageDialog(null,"Kabupaten/kota wilayah jejaring belum dipilih");
         }else{
             for(i=0;i<daftarkriteria.size();i++){
                 RujukanSatuSehatVClaim.Kriteria kriteria=daftarkriteria.get(i);

@@ -1011,6 +1011,37 @@ public class RujukanSatuSehatVClaim {
         return "Gagal menghubungi BPJS : "+e.getMessage();
     }
 
+    /**
+     * Teks kriteria terpilih dari kolom kriteria_rujukan (JSON), untuk surat rujukan rptBridgingRujukanBPJS.
+     * Contoh "Tindakan Medis 45.13", "Upaya Diagnosis". Kosong bila tidak ada/rujukan lama.
+     * Dibaca di Java karena MariaDB development 10.1 belum punya fungsi JSON.
+     */
+    public static String teksKriteria(String json){
+        if((json==null)||json.trim().equals("")){
+            return "";
+        }
+        try {
+            StringBuilder hasil=new StringBuilder();
+            for(JsonNode item:new ObjectMapper().readTree(json).path("item")){
+                JsonNode jawaban=item.path("answer").path(0);
+                String kode=jawaban.path("valueString").asText();
+                if(jawaban.path("valueBoolean").asBoolean(false)||!kode.equals("")){
+                    if(hasil.length()>0){
+                        hasil.append(", ");
+                    }
+                    hasil.append(item.path("text").asText());
+                    if(!kode.equals("")){
+                        hasil.append(" ").append(kode);
+                    }
+                }
+            }
+            return hasil.toString();
+        } catch (Exception e) {
+            System.out.println("Notifikasi : "+e);
+            return "";
+        }
+    }
+
     /** Penanda pesan Satu Sehat yang hanya berisi resource Task tanpa alasan. */
     public static final String TANPA_KETERANGAN="Satu Sehat menolak permintaan tanpa keterangan";
 
