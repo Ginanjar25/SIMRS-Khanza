@@ -26,7 +26,8 @@ bridging_rujukan_bpjs.tipeRujukan,bridging_rujukan_bpjs.catatan,
 bridging_rujukan_bpjs.diagRujukan,bridging_rujukan_bpjs.nama_diagRujukan,
 bridging_rujukan_bpjs.poliRujukan,bridging_rujukan_bpjs.nama_poliRujukan,bridging_sep.no_kartu,
 if(bridging_sep.jkel='L','Laki-Laki','Perempuan') as jkel,bridging_rujukan_bpjs.tglRencanaKunjungan,
-ifnull(bridging_rujukan_bpjs_satusehat.no_rujukan_satusehat,'') as no_rujukan_satusehat
+ifnull(bridging_rujukan_bpjs_satusehat.no_rujukan_satusehat,'') as no_rujukan_satusehat,
+ifnull(bridging_rujukan_bpjs_satusehat.kriteria_rujukan,'') as kriteria_rujukan
 from bridging_sep inner join bridging_rujukan_bpjs on bridging_rujukan_bpjs.no_sep=bridging_sep.no_sep
 left join bridging_rujukan_bpjs_satusehat on bridging_rujukan_bpjs_satusehat.no_rujukan=bridging_rujukan_bpjs.no_rujukan
 where bridging_rujukan_bpjs.no_rujukan=$P{norujuk}]]>
@@ -140,6 +141,11 @@ where bridging_rujukan_bpjs.no_rujukan=$P{norujuk}]]>
 	<field name="no_rujukan_satusehat" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="no_rujukan_satusehat"/>
 		<property name="com.jaspersoft.studio.field.label" value="no_rujukan_satusehat"/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="kriteria_rujukan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="kriteria_rujukan"/>
+		<property name="com.jaspersoft.studio.field.label" value="kriteria_rujukan"/>
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<background>
@@ -455,6 +461,36 @@ where bridging_rujukan_bpjs.no_rujukan=$P{norujuk}]]>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{no_rujukan_satusehat}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="339" y="104" width="100" height="13" uuid="f840269a-7e77-4d9b-bb0a-512f8f4f26d8">
+					<printWhenExpression><![CDATA[!$F{no_rujukan_satusehat}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Kriteria Rujukan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="439" y="104" width="5" height="13" uuid="8194fdea-afb8-4d0a-91db-de5c3ae1739c">
+					<printWhenExpression><![CDATA[!$F{no_rujukan_satusehat}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Transparent" x="444" y="104" width="109" height="13" uuid="96bdfeb9-c9a1-4a09-97c6-34c1eeca88a2">
+					<printWhenExpression><![CDATA[!$F{no_rujukan_satusehat}.isEmpty()]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9" isBold="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[modif.RujukanSatuSehatVClaim.teksKriteria($F{kriteria_rujukan})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd MMMMM yyyy">
 				<reportElement mode="Transparent" x="370" y="117" width="142" height="14" uuid="e369cc74-5efd-453d-b7b6-8681e6df3891"/>
