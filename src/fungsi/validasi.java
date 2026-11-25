@@ -252,6 +252,21 @@ public final class validasi {
         }
     }
     
+    /** Nomor berikutnya dari nomor terakhir (angka) dengan awalan strAwal, panjang angka pnj digit (dari upstream Khanza, dipakai Permintaan Iterasi Resep Apotek BPJS). */
+    public void autoNomer7(String nomorterakhir,String strAwal,Integer pnj,javax.swing.JTextField teks){
+        try {
+            s=Integer.toString(Integer.parseInt(nomorterakhir)+1);
+            j=s.length();
+            s1="";
+            for(i = 1;i<=pnj-j;i++){
+                s1=s1+"0";
+            }
+            teks.setText(strAwal+s1+s);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : "+e);
+        }
+    }
+
     public void autoNomer6(String sql,String strAwal,Integer pnj,javax.swing.JTextField teks){
         try {
             ps=connect.prepareStatement(sql);

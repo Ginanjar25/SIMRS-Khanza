@@ -3274,20 +3274,14 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         }
     }
     
-    /** Bagian kronis pada lembar telaah, dari nota piutang kunjungan (No. Rawat) yang obatnya ada di resep ini. Baris yang sudah ada menjadi "OBAT POLI". */
+    /** Bagian kronis pada lembar telaah, dari nota piutang kunjungan (No. Rawat); pencocokan obat ke resep lihat modif.ObatKronisResep. Baris yang sudah ada menjadi "OBAT POLI". */
     private void tambahObatKronis(String noresepkronis,String norawatkronis){
         PreparedStatement pskronis=null;
         ResultSet rskronis=null;
         boolean adakronis=false;
         try {
-            pskronis=koneksi.prepareStatement(
-                "select databarang.nama_brng,max(detailpiutang.aturan_pakai) as aturan_pakai,sum(detailpiutang.jumlah) as jumlah,kodesatuan.satuan "+
-                "from detailpiutang inner join databarang on detailpiutang.kode_brng=databarang.kode_brng "+
-                "inner join kodesatuan on kodesatuan.kode_sat=databarang.kode_sat "+
-                "where detailpiutang.nota_piutang=? and detailpiutang.kode_brng in (select resep_dokter.kode_brng from resep_dokter where resep_dokter.no_resep=?) "+
-                "group by databarang.kode_brng,databarang.nama_brng,kodesatuan.satuan order by databarang.nama_brng");
-            pskronis.setString(1,norawatkronis);
-            pskronis.setString(2,noresepkronis);
+            pskronis=koneksi.prepareStatement(modif.ObatKronisResep.SQL);
+            modif.ObatKronisResep.isiParameter(pskronis,noresepkronis,norawatkronis);
             rskronis=pskronis.executeQuery();
             while(rskronis.next()){
                 Sequel.menyimpan("temporary_resep","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?",38,new String[]{

@@ -6206,7 +6206,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         if(TabRawat.getSelectedIndex()==1){
             if(tbDataSEP.getSelectedRow()!= -1){
                 ApotekBPJSKunjunganSEP detail=new ApotekBPJSKunjunganSEP(null,false);
-                detail.tampil(tbDataSEP.getValueAt(tbDataSEP.getSelectedRow(),0).toString());
+                detail.tampil2(tbDataSEP.getValueAt(tbDataSEP.getSelectedRow(),0).toString());
                 detail.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                 detail.setLocationRelativeTo(internalFrame1);
                 detail.setVisible(true);
@@ -6217,7 +6217,7 @@ public final class BPJSDataSEP extends javax.swing.JDialog {
         }else if(TabRawat.getSelectedIndex()==2){
             if(tbDataSEPInternal.getSelectedRow()!= -1){
                 ApotekBPJSKunjunganSEP detail=new ApotekBPJSKunjunganSEP(null,false);
-                detail.tampil(tbDataSEPInternal.getValueAt(tbDataSEPInternal.getSelectedRow(),0).toString());
+                detail.tampil2(tbDataSEPInternal.getValueAt(tbDataSEPInternal.getSelectedRow(),0).toString());
                 detail.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                 detail.setLocationRelativeTo(internalFrame1);
                 detail.setVisible(true);

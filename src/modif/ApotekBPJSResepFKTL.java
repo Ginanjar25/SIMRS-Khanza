@@ -1242,7 +1242,7 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 System.out.println("RESPONSE APOTEK BPJS : " + nameNode.path("code").asText() + " " + nameNode.path("message").asText());
                 if(nameNode.path("code").asText().equals("200")){
                     response = mapper.readTree(api.Decrypt(root.path("response").asText(),utc));
-                        if(Sequel.menyimpantf("bridging_resep_apotek_bpjs","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.SEP Apotek",21,new String[]{
+                        if(Sequel.menyimpantf("bridging_resep_apotek_bpjs(no_sep,no_sep_apotek,tgl_sep,kdpoli,nmpoli,kdjenis,nota_piutang,id_user_sep,tgl_resep,tgl_pelayanan,kodedpjp,nmdpjp,iterasi,no_kartu,nama_pasien,kdppkrujukan,nmppkpelayanan,byTagRsp,byVerRsp,status,tgl_entry)","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?","No.SEP Apotek",21,new String[]{
                          NoSEP.getText(),response.path("noApotik").asText(),tglSEP.getText(),KdPoli.getText(),NmPoli.getText(),cmbJenisResep.getSelectedItem().toString(),NotaPiutang.getText(),
                          kd_user.getText(),tglResep.getText(),tglPelResep.getText(),KdDPJP.getText(),NmDPJP.getText(),cmbIterasi.getSelectedItem().toString(),response.path("noKartu").asText(),NmPasien.getText(),
                          response.path("faskesAsal").asText(),nmPpkPelayanan.getText(),response.path("byTagRsp").asText(),response.path("byVerRsp").asText(),cmbStatus.getSelectedItem().toString(),

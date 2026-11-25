@@ -19131,6 +19131,52 @@ public class DlgKamarInap extends javax.swing.JDialog {
         panelGlass9.add(TNoSEPCari,idx+1);
     }
 
+    /** Menu klik kanan Bridging > "Rujukan Pasien SATUSEHAT" (modif.DlgRujukanSatuSehat), tampil bila AKTIFKANRUJUKANSATUSEHAT = yes di setting/database.xml. */
+    private void initRujukanSatuSehat(){
+        if(!koneksiDB.AKTIFKANRUJUKANSATUSEHAT()){
+            return;
+        }
+        javax.swing.JMenuItem MnRujukanSatuSehat=new javax.swing.JMenuItem();
+        MnRujukanSatuSehat.setBackground(new java.awt.Color(255, 255, 254));
+        MnRujukanSatuSehat.setFont(new java.awt.Font("Tahoma", 0, 11));
+        MnRujukanSatuSehat.setForeground(new java.awt.Color(50, 50, 50));
+        MnRujukanSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png")));
+        MnRujukanSatuSehat.setText("Rujukan Pasien SATUSEHAT");
+        MnRujukanSatuSehat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnRujukanSatuSehat.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnRujukanSatuSehat.setName("MnRujukanSatuSehat");
+        MnRujukanSatuSehat.setPreferredSize(new java.awt.Dimension(330, 26));
+        MnRujukanSatuSehat.addActionListener(evt->{
+            if(tabMode.getRowCount()==0){
+                JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+                TCari.requestFocus();
+            }else if(tbKamIn.getSelectedRow()==-1){
+                JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+                tbKamIn.requestFocus();
+            }else{
+                String norawatrujuk=norawat.getText().trim();
+                if(tbKamIn.getValueAt(tbKamIn.getSelectedRow(),0).toString().equals("")&&tbKamIn.getSelectedRow()>0){
+                    // baris bayi gabung: pakai no_rawat bayi dari ranap_gabung
+                    norawatrujuk=Sequel.cariIsi("select ranap_gabung.no_rawat2 from ranap_gabung where ranap_gabung.no_rawat=?",
+                            tbKamIn.getValueAt(tbKamIn.getSelectedRow()-1,0).toString());
+                }
+                if(norawatrujuk.equals("")){
+                    JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu pasien...!!!");
+                    tbKamIn.requestFocus();
+                }else{
+                    this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    modif.DlgRujukanSatuSehat rujukansatusehat=new modif.DlgRujukanSatuSehat(null,false);
+                    rujukansatusehat.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                    rujukansatusehat.setLocationRelativeTo(internalFrame1);
+                    rujukansatusehat.setVisible(true);
+                    rujukansatusehat.setPasien(norawatrujuk,"",modif.SatuSehatRujukan.JENIS_RANAP); // dokter kosong: diambil dari dpjp_ranap
+                    this.setCursor(Cursor.getDefaultCursor());
+                }
+            }
+        });
+        MenuBPJS.add(MnRujukanSatuSehat);
+    }
+
     private void initKamarInap(){
         MnLaporanOperasi = new javax.swing.JMenuItem();
         MnLaporanOperasi.setBackground(new java.awt.Color(255, 255, 254));
@@ -19476,6 +19522,7 @@ public class DlgKamarInap extends javax.swing.JDialog {
         MenuBPJS.add(MnBelumTerbitSEP);
         MenuBPJS.add(MnSudahTerbitSEP);
         MenuBPJS.add(MnRujukSisrute);
+        initRujukanSatuSehat();
         MenuBPJS.add(ppPasienCorona);
         MenuBPJS.add(ppPerawatanCorona);
         MenuBPJS.add(MnTeridentifikasiTB);

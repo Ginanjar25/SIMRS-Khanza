@@ -193,6 +193,7 @@ public final class DlgRawatInap extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         initRawatInap();
+        initRujukanSatuSehat();
 
         this.setLocation(8,1);
         setSize(885,674);
@@ -10293,7 +10294,31 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             this.setCursor(Cursor.getDefaultCursor());
         }
     }
-    
+
+    /** Tombol "Rujukan SATUSEHAT" (modif.DlgRujukanSatuSehat), tampil bila AKTIFKANRUJUKANSATUSEHAT = yes di setting/database.xml. */
+    private void initRujukanSatuSehat(){
+        widget.Button btnRujukanSatuSehat=new widget.Button();
+        btnRujukanSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/inbox.png"))); // NOI18N
+        btnRujukanSatuSehat.setText("Rujukan SATUSEHAT");
+        btnRujukanSatuSehat.setToolTipText("Rujukan pasien rawat inap ke faskes lain / rujukan masuk lewat SATUSEHAT");
+        btnRujukanSatuSehat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnRujukanSatuSehat.setName("btnRujukanSatuSehat"); // NOI18N
+        btnRujukanSatuSehat.addActionListener(evt->{
+            if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
+                Valid.textKosong(TNoRw,"No.Rawat");
+            }else{
+                modif.DlgRujukanSatuSehat rujukansatusehat=new modif.DlgRujukanSatuSehat(null,false);
+                rujukansatusehat.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                rujukansatusehat.setLocationRelativeTo(internalFrame1);
+                rujukansatusehat.setVisible(true);
+                rujukansatusehat.setPasien(TNoRw.getText(),KdDok.getText(),modif.SatuSehatRujukan.JENIS_RANAP);
+            }
+        });
+        panelGlass12.add(btnRujukanSatuSehat);
+        btnRujukanSatuSehat.setBounds(1150,40,190,22);
+        btnRujukanSatuSehat.setVisible(fungsi.koneksiDB.AKTIFKANRUJUKANSATUSEHAT());
+    }
+
     private void btnSSRMEActionPerformed(java.awt.event.ActionEvent evt) {
         if(TNoRw.getText().trim().equals("")||TPasien.getText().trim().equals("")){
             Valid.textKosong(TNoRw,"No.Rawat");

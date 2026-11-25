@@ -215,7 +215,7 @@ public final class akses {
             akun_host_to_host_bank_mandiri=false,penilaian_medis_hemodialisa=false,penilaian_level_kecemasan_ranap_anak=false,penilaian_lanjutan_resiko_jatuh_psikiatri=false,
             penilaian_lanjutan_skrining_fungsional=false,penilaian_medis_ralan_rehab_medik=false,laporan_anestesi=false,template_persetujuan_penolakan_tindakan=false,
             penilaian_medis_ralan_gawat_darurat_psikiatri=false,bpjs_referensi_setting_apotek=false,bpjs_referensi_obat_apotek=false,bpjs_mapping_obat_apotek=false,
-            pembayaran_bank_mandiri=false,penilaian_ulang_nyeri=false,penilaian_terapi_wicara=false,bpjs_obat_23hari_apotek=false,pengkajian_restrain=false,
+            pembayaran_bank_mandiri=false,penilaian_ulang_nyeri=false,penilaian_terapi_wicara=false,bpjs_obat_23hari_apotek=false,bpjs_riwayat_pelayanan_obat=false,bpjs_rekap_peserta_prb_apotek=false,bpjs_daftar_resep_apotek=false,daftar_permintaan_resep_iterasi_bpjs=false,pengkajian_restrain=false,
             bpjs_kunjungan_sep_apotek=false,bpjs_monitoring_klaim_apotek=false,bpjs_daftar_pelayanan_obat_apotek=false,penilaian_awal_medis_ralan_paru=false,
             catatan_keperawatan_ralan=false,catatan_persalinan=false,skor_aldrette_pasca_anestesi=false,skor_steward_pasca_anestesi=false,skor_bromage_pasca_anestesi=false,
             penilaian_pre_induksi=false,hasil_usg_urologi=false,hasil_usg_gynecologi=false,hasil_pemeriksaan_ekg=false,hapus_edit_sep_bpjs=false,satu_sehat_kirim_diet=false,
@@ -1238,6 +1238,10 @@ public final class akses {
                         akses.penilaian_ulang_nyeri=true;
                         akses.penilaian_terapi_wicara=true;
                         akses.bpjs_obat_23hari_apotek=true;
+                        akses.bpjs_riwayat_pelayanan_obat=true;
+                        akses.bpjs_rekap_peserta_prb_apotek=true;
+                        akses.bpjs_daftar_resep_apotek=true;
+                        akses.daftar_permintaan_resep_iterasi_bpjs=true;
                         akses.pengkajian_restrain=true;
                         akses.bpjs_kunjungan_sep_apotek=true;
                         akses.bpjs_monitoring_klaim_apotek=true;
@@ -2293,6 +2297,10 @@ public final class akses {
                         akses.penilaian_ulang_nyeri=rs2.getBoolean("penilaian_ulang_nyeri");
                         akses.penilaian_terapi_wicara=rs2.getBoolean("penilaian_terapi_wicara");
                         akses.bpjs_obat_23hari_apotek=rs2.getBoolean("bpjs_obat_23hari_apotek");
+                        akses.bpjs_riwayat_pelayanan_obat=rs2.getBoolean("bpjs_riwayat_pelayanan_obat");
+                        akses.bpjs_rekap_peserta_prb_apotek=rs2.getBoolean("bpjs_rekap_peserta_prb_apotek");
+                        akses.bpjs_daftar_resep_apotek=rs2.getBoolean("bpjs_daftar_resep_apotek");
+                        akses.daftar_permintaan_resep_iterasi_bpjs=rs2.getBoolean("daftar_permintaan_resep_iterasi_bpjs");
                         akses.pengkajian_restrain=rs2.getBoolean("pengkajian_restrain");
                         akses.bpjs_kunjungan_sep_apotek=rs2.getBoolean("bpjs_kunjungan_sep_apotek");
                         akses.bpjs_monitoring_klaim_apotek=rs2.getBoolean("bpjs_monitoring_klaim_apotek");
@@ -3346,6 +3354,10 @@ public final class akses {
                         akses.penilaian_ulang_nyeri=false;
                         akses.penilaian_terapi_wicara=false;
                         akses.bpjs_obat_23hari_apotek=false;
+                        akses.bpjs_riwayat_pelayanan_obat=false;
+                        akses.bpjs_rekap_peserta_prb_apotek=false;
+                        akses.bpjs_daftar_resep_apotek=false;
+                        akses.daftar_permintaan_resep_iterasi_bpjs=false;
                         akses.pengkajian_restrain=false;
                         akses.bpjs_kunjungan_sep_apotek=false;
                         akses.bpjs_monitoring_klaim_apotek=false;
@@ -4422,6 +4434,10 @@ public final class akses {
         akses.penilaian_ulang_nyeri=false;
         akses.penilaian_terapi_wicara=false;
         akses.bpjs_obat_23hari_apotek=false;
+        akses.bpjs_riwayat_pelayanan_obat=false;
+        akses.bpjs_rekap_peserta_prb_apotek=false;
+        akses.bpjs_daftar_resep_apotek=false;
+        akses.daftar_permintaan_resep_iterasi_bpjs=false;
         akses.pengkajian_restrain=false;
         akses.bpjs_kunjungan_sep_apotek=false;
         akses.bpjs_monitoring_klaim_apotek=false;
@@ -5514,6 +5530,10 @@ public final class akses {
     public static boolean getpenilaian_ulang_nyeri(){return akses.penilaian_ulang_nyeri;}
     public static boolean getpenilaian_terapi_wicara(){return akses.penilaian_terapi_wicara;}
     public static boolean getbpjs_obat_23hari_apotek(){return akses.bpjs_obat_23hari_apotek;}
+    public static boolean getbpjs_riwayat_pelayanan_obat(){return akses.bpjs_riwayat_pelayanan_obat;}
+    public static boolean getbpjs_rekap_peserta_prb_apotek(){return akses.bpjs_rekap_peserta_prb_apotek;}
+    public static boolean getbpjs_daftar_resep_apotek(){return akses.bpjs_daftar_resep_apotek;}
+    public static boolean getdaftar_permintaan_resep_iterasi_bpjs(){return akses.daftar_permintaan_resep_iterasi_bpjs;}
     public static boolean getpengkajian_restrain(){return akses.pengkajian_restrain;}
     public static boolean getbpjs_kunjungan_sep_apotek(){return akses.bpjs_kunjungan_sep_apotek;}
     public static boolean getbpjs_monitoring_klaim_apotek(){return akses.bpjs_monitoring_klaim_apotek;}

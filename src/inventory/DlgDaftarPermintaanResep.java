@@ -44,6 +44,8 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
     private Connection koneksi=koneksiDB.condb();
     private PreparedStatement ps,ps2,ps3, psracikan;
     private ResultSet rs,rs2,rs3, rsracikan;
+    /** Form input resep Apotek Online BPJS (tombol Obat 23 Hari BPJS), dari upstream Khanza. */
+    private bridging.ApotekBPJSInputResepObat apol;
     private String bangsal="",aktifkanparsial="no",kamar="",alarm="",DEPOAKTIFOBAT="",rincianobat="",
             formalarm="",nol_detik,detik,NoResep="",TglPeresepan="",JamPeresepan="",finger="",
             NoRawat="",NoRM="",Pasien="",DokterPeresep="",Status="",KodeDokter="",Ruang="",KodeRuang="";
@@ -65,7 +67,7 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
         tabMode=new DefaultTableModel(null,new Object[]{
                 "No.Resep","Tgl.Peresepan","Jam Peresepan","No.Rawat","No.RM","Pasien","Dokter Peresep","Telaah",
                 "Status","Kode Dokter","Poli/Unit","Kode Poli","Jenis Bayar","Tgl.Validasi","Jam Validasi",
-                "Tgl.Penyerahan","Jam Penyerahan"
+                "Tgl.Penyerahan","Jam Penyerahan","Iterasi"
             }){
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
@@ -115,7 +117,8 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                 column.setPreferredWidth(90);
             }
         }
-        tbResepRalan.setDefaultRenderer(Object.class, new WarnaTable());
+        tbResepRalan.getColumnModel().getColumn(17).setPreferredWidth(85);
+        tbResepRalan.setDefaultRenderer(Object.class, new modif.WarnaTableIterasi(17));
         
         tabMode2=new DefaultTableModel(null,new Object[]{
                 "No.Resep","Tgl.Resep","Poli/Unit","Status","Pasien","Dokter Peresep"
@@ -1820,6 +1823,15 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                         if(isValidResep()) {
                             lepasLockValidasi();
                             JOptionPane.showMessageDialog(null, "Maaf, Resep sudah tervalidasi...!!!");
+                        }else if(modif.ResepIterasiBPJS.isIterasi(NoResep)){
+                            // resep iterasi (bulan ke-2/3) seluruhnya luar paket: tidak dicek billing kunjungan bulan ke-1
+                            String alasaniterasi=modif.ResepIterasiBPJS.cekBolehAmbil(NoResep);
+                            if(!alasaniterasi.equals("")){
+                                lepasLockValidasi();
+                                JOptionPane.showMessageDialog(rootPane,alasaniterasi);
+                            }else{
+                                panggilformiterasi();
+                            }
                         }else{
                             if(Sequel.cariRegistrasi(NoRawat)>0){
                                 lepasLockValidasi();
@@ -2914,7 +2926,129 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     }//GEN-LAST:event_BtnSEPBPJSActionPerformed
 
     private void BtnObat23HariBPJSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnObat23HariBPJSActionPerformed
-        // TODO add your handling code here:
+        if(TabPilihRawat.getSelectedIndex()==0){
+            if(TabRawatJalan.getSelectedIndex()==0){
+                if(tabMode.getRowCount()==0){
+                    JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
+                    TCari.requestFocus();
+                }else if(NoRawat.equals("")){
+                    JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data pasien terlebih dahulu..!!");
+                }else{
+                    if(Status.equals("Sudah Terlayani")){
+                        try {
+                            ps3=koneksi.prepareStatement("select bridging_sep.no_sep,bridging_sep.no_kartu,bridging_sep.kdpolitujuan,bridging_sep.nmpolitujuan,bridging_sep.kddpjp,bridging_sep.nmdpdjp,bridging_sep.tglsep from bridging_sep where bridging_sep.no_rawat=?");
+                            try {
+                                ps3.setString(1,NoRawat);
+                                rs3=ps3.executeQuery();
+                                if(rs3.next()){
+                                    if (apol == null || !apol.isDisplayable()) {
+                                        apol=new bridging.ApotekBPJSInputResepObat(null,false);
+                                        apol.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+                                        apol.addWindowListener(new java.awt.event.WindowAdapter() {
+                                            @Override
+                                            public void windowClosed(WindowEvent e) {
+                                                apol=null;
+                                            }
+                                        }); 
+
+                                        apol.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                                        apol.setLocationRelativeTo(internalFrame1);
+                                    }
+                                    if (apol == null) return;
+                                    if (!apol.isVisible()) {
+                                        apol.setNoRm(NoRawat,NoRM,Pasien,TglPeresepan,JamPeresepan,NoResep,rs3.getString("no_sep"),rs3.getString("no_kartu"),rs3.getString("kdpolitujuan"),rs3.getString("nmpolitujuan"),rs3.getString("kddpjp"),rs3.getString("nmdpdjp"),rs3.getString("tglsep"));
+                                    }
+                                    if (apol.isVisible()) {
+                                        apol.toFront();
+                                        return;
+                                    }
+                                    apol.setVisible(true);
+                                }else{
+                                    JOptionPane.showMessageDialog(null,"Maaf, data SEP tidak ditemukan...!!!!");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Notifikasi : "+e);
+                            } finally{
+                                if(rs3!=null){
+                                    rs3.close();
+                                }   
+                                if(ps3!=null){
+                                    ps3.close();
+                                }   
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Notifikasi : "+e);
+                        }
+                    }else{
+                        JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data yang sudah divalidasi..!!");
+                    }
+                }
+            }else if(TabRawatJalan.getSelectedIndex()==1){
+                JOptionPane.showMessageDialog(null,"Maaf, hanya untuk rawat jalan kebutuhan klaim obat Apotek Online BPJS...!!!!");
+                TCari.requestFocus();
+            }
+        }else if(TabPilihRawat.getSelectedIndex()==1){
+            if(TabRawatInap.getSelectedIndex()==0){
+                if(tabMode3.getRowCount()==0){
+                    JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
+                    TCari.requestFocus();
+                }else if(NoRawat.equals("")){
+                    JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data resep dokter yang mau divalidasi..!!");
+                }else{
+                    if(Status.equals("Sudah Terlayani")){
+                        try {
+                            ps3=koneksi.prepareStatement("select bridging_sep.no_sep,bridging_sep.no_kartu,bridging_sep.kddpjp,bridging_sep.nmdpdjp,bridging_sep.tglsep from bridging_sep where bridging_sep.no_rawat=?");
+                            try {
+                                ps3.setString(1,NoRawat);
+                                rs3=ps3.executeQuery();
+                                if(rs3.next()){
+                                    if (apol == null || !apol.isDisplayable()) {
+                                        apol=new bridging.ApotekBPJSInputResepObat(null,false);
+                                        apol.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+                                        apol.addWindowListener(new java.awt.event.WindowAdapter() {
+                                            @Override
+                                            public void windowClosed(WindowEvent e) {
+                                                apol=null;
+                                            }
+                                        }); 
+
+                                        apol.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                                        apol.setLocationRelativeTo(internalFrame1);
+                                    }
+                                    if (apol == null) return;
+                                    if (!apol.isVisible()) {
+                                        apol.setNoRm(NoRawat,NoRM,Pasien,TglPeresepan,JamPeresepan,NoResep,rs3.getString("no_sep"),rs3.getString("no_kartu"),KodeRuang,Ruang,rs3.getString("kddpjp"),rs3.getString("nmdpdjp"),rs3.getString("tglsep"));
+                                    }
+                                    if (apol.isVisible()) {
+                                        apol.toFront();
+                                        return;
+                                    }
+                                    apol.setVisible(true);
+                                }else{
+                                    JOptionPane.showMessageDialog(null,"Maaf, data SEP tidak ditemukan...!!!!");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Notifikasi : "+e);
+                            } finally{
+                                if(rs3!=null){
+                                    rs3.close();
+                                }   
+                                if(ps3!=null){
+                                    ps3.close();
+                                }   
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Notifikasi : "+e);
+                        }
+                    }else{
+                        JOptionPane.showMessageDialog(null,"Maaf, Silahkan pilih data yang sudah divalidasi..!!");
+                    }
+                }
+            }else {
+                JOptionPane.showMessageDialog(null,"Maaf, hanya untuk rawat inap kebutuhan klaim obat Apotek Online BPJS...!!!!");
+                TCari.requestFocus();
+            }    
+        }
     }//GEN-LAST:event_BtnObat23HariBPJSActionPerformed
 
     private void BtnResepLuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnResepLuarActionPerformed
@@ -4031,7 +4165,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         "if(resep_obat.tgl_penyerahan='0000-00-00','',resep_obat.tgl_penyerahan) as tgl_penyerahan,\n" +
                         "if(resep_obat.jam_penyerahan='00:00:00','',resep_obat.jam_penyerahan) as jam_penyerahan, \n" +
                         "IF(telaah_farmasi.no_resep IS NOT NULL, 'SUDAH', 'BELUM') AS telaah_status,\n" +
-                        "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 \n" +
+                        "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2, \n" +
+                        "ifnull(resep_obat_info.iter,'0') as iter_resep,ifnull(permintaan_resep_iterasi_bpjs.status_iter,'') as status_iter \n" +
                         "from resep_obat \n" +
                         "inner join reg_periksa on resep_obat.no_rawat=reg_periksa.no_rawat \n" +
                         "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis \n" +
@@ -4041,6 +4176,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         "left JOIN telaah_farmasi ON telaah_farmasi.no_resep = resep_obat.no_resep \n" +
                         "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
                         "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj\n" +
+                        "LEFT JOIN side_db.resep_obat_info ON resep_obat_info.no_resep=resep_obat.no_resep \n" +
+                        "LEFT JOIN permintaan_resep_iterasi_bpjs ON permintaan_resep_iterasi_bpjs.no_resep=resep_obat.no_resep \n" +
                         "where resep_obat.tgl_peresepan<>'0000-00-00' and resep_obat.status='ralan' and resep_obat.tgl_peresepan BETWEEN ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and poliklinik.nm_poli like ? and "+
                         "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
@@ -4055,7 +4192,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         "if(resep_obat.tgl_penyerahan='0000-00-00','',resep_obat.tgl_penyerahan) as tgl_penyerahan,\n" +
                         "if(resep_obat.jam_penyerahan='00:00:00','',resep_obat.jam_penyerahan) as jam_penyerahan, \n" +
                         "IF(telaah_farmasi.no_resep IS NOT NULL, 'SUDAH', 'BELUM') AS telaah_status,\n" +
-                        "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2 \n" +
+                        "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2, \n" +
+                        "ifnull(resep_obat_info.iter,'0') as iter_resep,ifnull(permintaan_resep_iterasi_bpjs.status_iter,'') as status_iter \n" +
                         "from resep_obat \n" +
                         "inner join reg_periksa on resep_obat.no_rawat=reg_periksa.no_rawat \n" +
                         "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis \n" +
@@ -4064,7 +4202,10 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         "inner join penjab on reg_periksa.kd_pj=penjab.kd_pj \n" +
                         "left JOIN telaah_farmasi ON telaah_farmasi.no_resep = resep_obat.no_resep \n" +
                         "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
-                        "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj "+                        
+                        "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj "+
+                        "LEFT JOIN side_db.resep_obat_info ON resep_obat_info.no_resep=resep_obat.no_resep \n" +
+                        "LEFT JOIN permintaan_resep_iterasi_bpjs ON permintaan_resep_iterasi_bpjs.no_resep=resep_obat.no_resep \n" +
+                        "inner join set_depo_ralan on set_depo_ralan.kd_poli=reg_periksa.kd_poli \n" +
                         " where set_depo_ralan.kd_bangsal='"+DEPOAKTIFOBAT+"' and resep_obat.tgl_peresepan<>'0000-00-00' and resep_obat.status='ralan' and resep_obat.tgl_peresepan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and poliklinik.nm_poli like ? and "+
                         "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
@@ -4092,7 +4233,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                             rs.getString("no_resep"),rs.getString("tgl_peresepan"),rs.getString("jam_peresepan"),rs.getString("no_rawat"),
                             rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("telaah_status"),rs.getString("status"),
                             rs.getString("kd_dokter"),rs.getString("nm_poli"),rs.getString("kd_poli"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),
-                            rs.getString("tgl_perawatan"),rs.getString("jam"),rs.getString("tgl_penyerahan"),rs.getString("jam_penyerahan")
+                            rs.getString("tgl_perawatan"),rs.getString("jam"),rs.getString("tgl_penyerahan"),rs.getString("jam_penyerahan"),
+                            modif.WarnaTableIterasi.teks(rs.getString("iter_resep"),rs.getString("status_iter"))
                         });
                         
                         if (rs.getString("tgl_perawatan").equals("")) {
@@ -4106,7 +4248,8 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                                 rs.getString("no_resep"),rs.getString("tgl_peresepan"),rs.getString("jam_peresepan"),rs.getString("no_rawat"),
                                 rs.getString("no_rkm_medis"),rs.getString("nm_pasien"),rs.getString("nm_dokter"),rs.getString("telaah_status"),rs.getString("status"),
                                 rs.getString("kd_dokter"),rs.getString("nm_poli"),rs.getString("kd_poli"),rs.getString("png_jawab") + rs.getString("cara_bayar2"),
-                                rs.getString("tgl_perawatan"),rs.getString("jam"),rs.getString("tgl_penyerahan"),rs.getString("jam_penyerahan")
+                                rs.getString("tgl_perawatan"),rs.getString("jam"),rs.getString("tgl_penyerahan"),rs.getString("jam_penyerahan"),
+                            modif.WarnaTableIterasi.teks(rs.getString("iter_resep"),rs.getString("status_iter"))
                             });
                             
                             if (rs.getString("tgl_perawatan").equals("")) {
@@ -4468,20 +4611,14 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         }  
     }
 
-    /** Bagian kronis pada lembar telaah, dari nota piutang kunjungan (No. Rawat) yang obatnya ada di resep ini. Baris yang sudah ada menjadi "OBAT POLI". */
+    /** Bagian kronis pada lembar telaah, dari nota piutang kunjungan (No. Rawat); pencocokan obat ke resep lihat modif.ObatKronisResep. Baris yang sudah ada menjadi "OBAT POLI". */
     private void tambahObatKronis(String noresepkronis,String norawatkronis){
         PreparedStatement pskronis=null;
         ResultSet rskronis=null;
         boolean adakronis=false;
         try {
-            pskronis=koneksi.prepareStatement(
-                "select databarang.nama_brng,max(detailpiutang.aturan_pakai) as aturan_pakai,sum(detailpiutang.jumlah) as jumlah,kodesatuan.satuan "+
-                "from detailpiutang inner join databarang on detailpiutang.kode_brng=databarang.kode_brng "+
-                "inner join kodesatuan on kodesatuan.kode_sat=databarang.kode_sat "+
-                "where detailpiutang.nota_piutang=? and detailpiutang.kode_brng in (select resep_dokter.kode_brng from resep_dokter where resep_dokter.no_resep=?) "+
-                "group by databarang.kode_brng,databarang.nama_brng,kodesatuan.satuan order by databarang.nama_brng");
-            pskronis.setString(1,norawatkronis);
-            pskronis.setString(2,noresepkronis);
+            pskronis=koneksi.prepareStatement(modif.ObatKronisResep.SQL);
+            modif.ObatKronisResep.isiParameter(pskronis,noresepkronis,norawatkronis);
             rskronis=pskronis.executeQuery();
             while(rskronis.next()){
                 Sequel.menyimpan("temporary_resep","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?",38,new String[]{
@@ -4519,6 +4656,29 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
             dlgobt.isCek();
             dlgobt.tampilobat2(NoResep);
             dlgobt.setNoResep(NoResep);
+            dlgobt.setLockValidasi(lockValidasi);
+            lockValidasi=null;
+            dlgobt.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+            dlgobt.setLocationRelativeTo(internalFrame1);
+            TeksKosong();
+            dlgobt.setVisible(true);
+        } catch (Exception e) {
+            System.out.println("Notifikasi : "+e);
+            lepasLockValidasi();
+        }
+    }
+
+    /** Resep iterasi Apotek Online BPJS: validasi seluruh obat sebagai Jml Kronis (piutang nota = no_resep), lihat modif.ResepIterasiBPJS */
+    private void panggilformiterasi() {
+        try {
+            JOptionPane.showMessageDialog(rootPane,"Resep iterasi : "+modif.ResepIterasiBPJS.info(NoResep)+
+                "\nSeluruh obat dicatat sebagai obat luar paket (Apotek Online BPJS), tidak masuk billing kunjungan.");
+            DlgCariObatKronis dlgobt=new DlgCariObatKronis(null,false);
+            dlgobt.setNoRm(NoRawat,NoRM,Pasien,TglPeresepan,JamPeresepan);
+            dlgobt.isCek();
+            dlgobt.tampilobat2(NoResep);
+            dlgobt.setNoResep(NoResep);
+            dlgobt.setModeIterasi(true);
             dlgobt.setLockValidasi(lockValidasi);
             lockValidasi=null;
             dlgobt.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);

@@ -13300,6 +13300,35 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
             MnBridging.add(MnSSRME);
         }
 
+        javax.swing.JMenuItem MnRujukanSatuSehat = new javax.swing.JMenuItem();
+        MnRujukanSatuSehat.setBackground(new java.awt.Color(255, 255, 254));
+        MnRujukanSatuSehat.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnRujukanSatuSehat.setForeground(new java.awt.Color(50, 50, 50));
+        MnRujukanSatuSehat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnRujukanSatuSehat.setText("Rujukan Pasien SATUSEHAT");
+        MnRujukanSatuSehat.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnRujukanSatuSehat.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnRujukanSatuSehat.setName("MnRujukanSatuSehat"); // NOI18N
+        MnRujukanSatuSehat.setPreferredSize(new java.awt.Dimension(320, 26));
+        MnRujukanSatuSehat.addActionListener(evt -> {
+            if(tabMode.getRowCount()==0){
+                JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+                TNoReg.requestFocus();
+            }else if(TPasien.getText().trim().equals("")||tbPetugas.getSelectedRow()==-1){
+                JOptionPane.showMessageDialog(null,"Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+                tbPetugas.requestFocus();
+            }else{
+                modif.DlgRujukanSatuSehat rujukansatusehat=new modif.DlgRujukanSatuSehat(null,false);
+                rujukansatusehat.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                rujukansatusehat.setLocationRelativeTo(internalFrame1);
+                rujukansatusehat.setVisible(true);
+                rujukansatusehat.setPasien(TNoRw.getText(),KdDokter.getText(),modif.SatuSehatRujukan.JENIS_IGD);
+            }
+        });
+        if(koneksiDB.AKTIFKANRUJUKANSATUSEHAT()){ // tampil bila AKTIFKANRUJUKANSATUSEHAT = yes di setting/database.xml
+            MnBridging.add(MnRujukanSatuSehat);
+        }
+
         MnPenilaianLain.add(MnPenilaianTambahanGeriatri);
         MnPenilaianLain.add(MnPenilaianTambahanBunuhDiri);
         MnPenilaianLain.add(MnPenilaianTambahanPerilakuKekerasan);

@@ -70,6 +70,8 @@ public final class DlgCariObatKronis extends javax.swing.JDialog {
     private boolean[] pilih; 
     private double[] jumlah,jumlahkronis,harga,eb,ts,stok,beli,kapasitas,kandungan;
     private double ttlkronis=0;
+    /** Resep iterasi Apotek Online BPJS (bulan ke-2/3): seluruh obat luar paket, piutang dengan nota = no_resep. */
+    private boolean modeiterasi=false;
     private String notakronis="";
     private widget.Label LTotalKronis;
     private String[] kodebarang,namabarang,kodesatuan,letakbarang,namajenis,aturan,industri,kategori,golongan,no,nobatch,nofaktur,kadaluarsa;
@@ -1436,6 +1438,9 @@ private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             Valid.textKosong(TCari,"Lokasi");
         }else if((ttl<=0)&&(ttlkronis<=0)){
             JOptionPane.showMessageDialog(null,"Maaf, silahkan masukkan terlebih dahulu obat yang mau diberikan...!!!");
+            TCari.requestFocus();
+        }else if(modeiterasi&&(ttl>0)){
+            JOptionPane.showMessageDialog(null,"Resep iterasi seluruhnya obat luar paket (Apotek Online BPJS).\nIsi jumlah di kolom Jml Kronis, kosongkan Jml Poli dan racikan.");
             TCari.requestFocus();
         }else if(isValidResep()) {
             JOptionPane.showMessageDialog(null, "Maaf, Resep sudah tervalidasi...!!!");
@@ -3759,7 +3764,7 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
         }
 
         // nota piutang = no rawat; kolom disebut eksplisit karena struktur tabel piutang di server bisa berbeda dengan sik.sql
-        notakronis=TNoRw.getText();
+        notakronis=modeiterasi?noresep:TNoRw.getText();
         if(Sequel.cariInteger("select count(piutang.nota_piutang) from piutang where piutang.nota_piutang=?",notakronis)>0){
             // validasi berikutnya pada kunjungan yang sama: tambahkan ke piutang yang sudah ada
             if(!simpanDenganKolom("update piutang set sisapiutang=sisapiutang+? where nota_piutang=?",""+totalkronis,notakronis)){
@@ -3767,7 +3772,7 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
             }
         }else if(!simpanDenganKolom("insert into piutang(nota_piutang,tgl_piutang,nip,no_rkm_medis,nm_pasien,catatan,jns_jual,ongkir,uangmuka,sisapiutang,status,tgltempo,kd_bangsal) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 notakronis,tgl,(akses.getkode().equals("Admin Utama")?"-":akses.getkode()),TNoRM.getText(),TPasien.getText(),
-                "","Jual Bebas","0","0",""+totalkronis,"UMUM",tgl,kdgudang.getText())){
+                (modeiterasi?"Iterasi Obat Kronis BPJS":""),"Jual Bebas","0","0",""+totalkronis,"UMUM",tgl,kdgudang.getText())){
             return false;
         }
 
@@ -4511,6 +4516,25 @@ private void JeniskelasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
             tbDetailObatRacikan.setValueAt(0,data,11);
             tbDetailObatRacikan.setValueAt(0,data,12);
         }           
+    }
+
+    /**
+     * Mode resep iterasi: dipanggil setelah tampilobat2(). Jumlah resep dipindah ke Jml Kronis, Jml Poli dikosongkan,
+     * dan piutang disimpan dengan nota = no_resep agar tidak bercampur dengan obat kronis kunjungan bulan ke-1.
+     */
+    public void setModeIterasi(boolean iterasi){
+        modeiterasi=iterasi;
+        if(!iterasi){
+            return;
+        }
+        for(int baris=0;baris<tabModeobat.getRowCount();baris++){
+            Object poli=tabModeobat.getValueAt(baris,1);
+            if(poli!=null&&Valid.SetAngka(poli.toString())>0){
+                tabModeobat.setValueAt(poli.toString(),baris,19);
+                tabModeobat.setValueAt("",baris,1);
+            }
+        }
+        hitungObat();
     }
 
     private void hitungObat() {

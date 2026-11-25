@@ -446,11 +446,22 @@ public class koneksiDB {
         }
         return var;
     }
-    
+
+    /** Kode PPK apotek di Apotek Online BPJS (entry terenkripsi KODEPPKAPOTEKBPJS di database.xml), dipakai form Resep Obat Apotek BPJS. */
+    public static String KODEPPKAPOTEKBPJS(){
+        try{
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var=prop.getProperty("KODEPPKAPOTEKBPJS","").trim().equals("")?"":EnkripsiAES.decrypt(prop.getProperty("KODEPPKAPOTEKBPJS").trim());
+        }catch(Exception e){
+            var="";
+        }
+        return var==null?"":var;
+    }
+
     public static String JADIKANPIUTANGAPOTEKBPJS(){
         try{
             prop.loadFromXML(new FileInputStream("setting/database.xml"));
-            var=EnkripsiAES.decrypt(prop.getProperty("JADIKANPIUTANGAPOTEKBPJS"));
+            var=prop.getProperty("JADIKANPIUTANGAPOTEKBPJS","no").trim(); // teks biasa (yes/no) seperti upstream, bukan terenkripsi
         }catch(Exception e){
             var="no"; 
         }
@@ -1195,6 +1206,27 @@ public class koneksiDB {
         }catch(Exception e){
             return false;
         }
+    }
+
+    /** true bila fitur Rujukan SATUSEHAT diaktifkan (entry AKTIFKANRUJUKANSATUSEHAT = yes di database.xml). Bila entry tidak ada, fitur nonaktif. */
+    public static boolean AKTIFKANRUJUKANSATUSEHAT(){
+        try{
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            return prop.getProperty("AKTIFKANRUJUKANSATUSEHAT","no").trim().equalsIgnoreCase("yes");
+        }catch(Exception e){
+            return false;
+        }
+    }
+
+    /** ID Organization BPJS di SATUSEHAT (entry IDORGBPJSSATUSEHAT di database.xml), untuk identifier insurance-subscriber Rujukan SATUSEHAT. */
+    public static String IDORGBPJSSATUSEHAT(){
+        try{
+            prop.loadFromXML(new FileInputStream("setting/database.xml"));
+            var=prop.getProperty("IDORGBPJSSATUSEHAT","");
+        }catch(Exception e){
+            var="";
+        }
+        return var;
     }
 
     public static String KELURAHANSATUSEHAT(){
