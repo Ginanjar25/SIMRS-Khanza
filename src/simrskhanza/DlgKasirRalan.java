@@ -12299,8 +12299,10 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
             tbKasirRalan.requestFocus();
         }else{
             if(tbKasirRalan.getSelectedRow()!= -1){
-                Sequel.queryu("delete from antripoli where kd_dokter='"+tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),0).toString()+"' and kd_poli='"+tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString()+"'");
-                Sequel.queryu("insert into antripoli values('"+tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),0).toString()+"','"+tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString()+"','1','"+tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),11).toString()+"')");
+                // Dulu: hapus SEMUA antripoli dokter+poli lalu insert 4 kolom (tabel sekarang 8 kolom → gagal),
+                // sehingga antrean satu dokter hilang. Sekarang hanya pasien ini yang ditandai masuk poli;
+                // status '2' (sudah diperiksa) tidak diturunkan.
+                Sequel.mengedit("antripoli", "no_rawat = ? and status <> '2'", "status = ?, updated_at = now() ", 2, new String[]{"1", TNoRw.getText()});
                 Sequel.menyimpan("mutasi_berkas","'"+TNoRw.getText()+"','Sudah Diterima',now(),now(),'0000-00-00 00:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00'","status='Sudah Diterima',diterima=now()","no_rawat='"+TNoRw.getText()+"'");
             }
         }

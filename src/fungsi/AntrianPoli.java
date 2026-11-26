@@ -79,32 +79,47 @@ public void kirimAntrean(String kd_poli, String kd_dokter, String no_reg, String
 
         JSONArray queueNumber = new JSONArray();
         JSONArray waitingList = new JSONArray();
+
+        // Yang dipanggil = pasien yang dibuka dokter (no_rawat), BUKAN baris pertama antripoli.
+        // Nomor = no_tiket_poli (Lembar 2 tiket anjungan, mis. SAR-B008) dari side_db.anjungan_antrean_poli.
+        String nomorDipanggil = Sequel.cariIsi(
+            "SELECT aap.no_tiket_poli FROM antripoli ap " +
+            "INNER JOIN side_db.anjungan_antrean_poli aap ON aap.no_rawat = ap.no_rawat " +
+            "WHERE ap.no_rawat = ?", no_rawat);
+        if (nomorDipanggil.equals("")) {
+            // Pasien tanpa tiket anjungan (daftar langsung di SIMRS): format lama poli_bpjs - no_antrian.
+            nomorDipanggil = Sequel.cariIsi(
+                "SELECT CONCAT(IFNULL(ap.poli_bpjs, ''), ' - ', ap.no_antrian) FROM antripoli ap WHERE ap.no_rawat = ?", no_rawat);
+        }
+        if (nomorDipanggil.equals("")) {
+            nomorDipanggil = no_reg;
+        }
+        JSONObject dipanggil = new JSONObject();
+        dipanggil.put("no_antrean", nomorDipanggil);
+        dipanggil.put("no_rawat", no_rawat);
+        queueNumber.put(dipanggil);
+
+        // Daftar tunggu: pasien berikutnya selain yang sedang dipanggil.
         ps = koneksi.prepareStatement(
-            "SELECT ap.kd_dokter, ap.kd_poli, ap.status, ap.no_rawat, ap.no_antrian, " +
-            "DATE(NOW()) AS tanggal, CONCAT(ap.poli_bpjs, ' - ', ap.no_antrian) AS no_reg, " +
-            "ap.created_at, ap.updated_at, rp.stts " +
+            "SELECT ap.no_rawat, aap.no_tiket_poli AS no_reg " +
             "FROM antripoli ap INNER JOIN reg_periksa rp ON rp.no_rawat = ap.no_rawat " +
+            "INNER JOIN side_db.anjungan_antrean_poli aap ON aap.no_rawat = ap.no_rawat " +
             "WHERE ap.kd_dokter = ? " +
             "AND ap.kd_poli = ? AND ap.status != '2' " +
             "AND DATE(ap.created_at) = DATE(NOW()) " +
-            "AND rp.stts = 'Belum' " +
-            "ORDER BY ap.no_antrian ASC LIMIT 4;"
+            "AND rp.stts = 'Belum' AND ap.no_rawat <> ? " +
+            "ORDER BY ap.no_antrian ASC LIMIT 3"
         );
         ps.setString(1, kd_dokter);
         ps.setString(2, kd_poli);
+        ps.setString(3, no_rawat);
         rs = ps.executeQuery();
 
-        int count = 0;
         while (rs.next()) {
             JSONObject antrean = new JSONObject();
             antrean.put("no_antrean", rs.getString("no_reg"));
             antrean.put("no_rawat", rs.getString("no_rawat"));
-            if (count == 0) {
-                queueNumber.put(antrean);
-            } else {
-                waitingList.put(antrean);
-            }
-            count++;
+            waitingList.put(antrean);
         }
 
         // Fill waitingList with "000" placeholders until it has 6 items
@@ -119,20 +134,11 @@ public void kirimAntrean(String kd_poli, String kd_dokter, String no_reg, String
         jsonBody.put("waitingList", waitingList);
 
         String getIP = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", akses.getalamatip());
-        URL url = new URL(link + "/poli/" + getIP);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setConnectTimeout(3000); // Timeout koneksi 2 detik
-        connection.setReadTimeout(3000);
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setDoOutput(true);
-
-        String jsonInputString = jsonBody.toString();
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = jsonInputString.getBytes("utf-8");
-            os.write(input, 0, input.length);
+        if (getIP.equals("") || link.equals("")) {
+            return; // IP PC ini belum terdaftar di side_db.set_ip_antrean / URLAPIANTRIAN kosong
         }
-        connection.getResponseCode();
+        URL url = new URL(link + "/poli/" + getIP);
+        kirimPOST(url, jsonBody.toString());
     } catch (Exception e) {
         e.printStackTrace();
     } finally {
@@ -183,9 +189,10 @@ public void kirimAntrianAwal(String kd_poli, String kd_dokter) {
         JSONArray waitingList = new JSONArray();
         ps = koneksi.prepareStatement(
             "SELECT ap.kd_dokter, ap.kd_poli, ap.status, ap.no_rawat, ap.no_antrian, " +
-            "DATE(NOW()) AS tanggal, CONCAT(ap.poli_bpjs, ' - ', ap.no_antrian) AS no_reg, " +
+            "DATE(NOW()) AS tanggal, aap.no_tiket_poli AS no_reg, " +
             "ap.created_at, ap.updated_at, rp.stts " +
             "FROM antripoli ap INNER JOIN reg_periksa rp ON rp.no_rawat = ap.no_rawat " +
+            "INNER JOIN side_db.anjungan_antrean_poli aap ON aap.no_rawat = ap.no_rawat " +
             "WHERE ap.kd_dokter = ? " +
             "AND ap.kd_poli = ? AND ap.status != '2' " +
             "AND DATE(ap.created_at) = DATE(NOW()) " +
@@ -221,20 +228,11 @@ public void kirimAntrianAwal(String kd_poli, String kd_dokter) {
         jsonBody.put("waitingList", waitingList);
 
         String getIP = Sequel.cariIsi("select ruang_poli from side_db.set_ip_antrean where ip_address = ?", akses.getalamatip());
-        URL url = new URL(link + "/poli/" + getIP);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setConnectTimeout(3000); // Timeout koneksi 2 detik
-        connection.setReadTimeout(3000);
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setDoOutput(true);
-
-        String jsonInputString = jsonBody.toString();
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = jsonInputString.getBytes("utf-8");
-            os.write(input, 0, input.length);
+        if (getIP.equals("") || link.equals("")) {
+            return; // IP PC ini belum terdaftar di side_db.set_ip_antrean / URLAPIANTRIAN kosong
         }
-        connection.getResponseCode();
+        URL url = new URL(link + "/poli/" + getIP);
+        kirimPOST(url, jsonBody.toString());
     } catch (Exception e) {
         e.printStackTrace();
     } finally {
@@ -316,19 +314,7 @@ public void kirimAntrianIGD(String kd_poli, String kd_dokter) {
         }
         jsonBody.put("perawat", perawat);
         URL url = new URL(link + "/igd");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setConnectTimeout(3000); // Timeout koneksi 2 detik
-        connection.setReadTimeout(3000);
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setDoOutput(true);
-
-        String jsonInputString = jsonBody.toString();
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = jsonInputString.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
-        connection.getResponseCode();
+        kirimPOST(url, jsonBody.toString());
     } catch (Exception e) {
         e.printStackTrace();
     } finally {
@@ -390,19 +376,7 @@ public void kirimAntrianPerawatIGD(String nik1, String nama1, String nik2, Strin
         jsonBody.put("perawat", perawat);
 
         URL url = new URL(link + "/igd");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setConnectTimeout(3000); // Timeout koneksi 2 detik
-        connection.setReadTimeout(3000);
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setDoOutput(true);
-
-        String jsonInputString = jsonBody.toString();
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = jsonInputString.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
-        connection.getResponseCode();
+        kirimPOST(url, jsonBody.toString());
     } catch (Exception e) {
         e.printStackTrace();
     } finally {
@@ -414,6 +388,39 @@ public void kirimAntrianPerawatIGD(String nik1, String nama1, String nik2, Strin
         }
     }
 }
+
+    // kirimPOST mengirim JSON ke server antrean di thread terpisah agar layar Khanza tidak macet
+    // (hingga 3 + 3 detik) saat server antrean mati / lambat. Kegagalan hanya dicatat di konsol.
+    private static void kirimPOST(final URL url, final String body) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = null;
+                try {
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setConnectTimeout(3000);
+                    connection.setReadTimeout(3000);
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setDoOutput(true);
+                    try (OutputStream os = connection.getOutputStream()) {
+                        byte[] input = body.getBytes("utf-8");
+                        os.write(input, 0, input.length);
+                    }
+                    int kode = connection.getResponseCode();
+                    if (kode >= 300) {
+                        System.out.println("Antrean " + url + " : HTTP " + kode);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Antrean " + url + " : " + e);
+                } finally {
+                    if (connection != null) {
+                        connection.disconnect();
+                    }
+                }
+            }
+        }, "kirim-antrean").start();
+    }
 
     public static String URLAPIANTRIAN(){
         try {
