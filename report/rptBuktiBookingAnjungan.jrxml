@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rptBuktiBookingAnjungan" pageWidth="325" pageHeight="433" isIgnorePagination="true" columnWidth="317" leftMargin="4" rightMargin="4" topMargin="4" bottomMargin="4" uuid="8fcf3667-a772-4951-9061-6d32afea0581">
+	<style name="NamaRS" fontName="Arial" fontSize="13" isBold="true">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$P{namars}!=null && $P{namars}.length()>40]]></conditionExpression>
+			<style fontSize="9"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$P{namars}!=null && $P{namars}.length()>24]]></conditionExpression>
+			<style fontSize="10"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="namars" class="java.lang.String"/>
+	<parameter name="alamatrs" class="java.lang.String"/>
+	<parameter name="kotars" class="java.lang.String"/>
+	<parameter name="propinsirs" class="java.lang.String"/>
+	<parameter name="kontakrs" class="java.lang.String"/>
+	<parameter name="emailrs" class="java.lang.String"/>
+	<parameter name="kodeAnjungan" class="java.lang.String"/>
+	<parameter name="noRM" class="java.lang.String"/>
+	<parameter name="tanggalPeriksa" class="java.lang.String"/>
+	<parameter name="kodeDokter" class="java.lang.String"/>
+	<parameter name="kodePoli" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT br.no_rkm_medis, ps.nm_pasien, pl.nm_poli, dr.nm_dokter, pj.png_jawab,
+	CONCAT(ELT(DAYOFWEEK(br.tanggal_periksa),'Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'),', ',DATE_FORMAT(br.tanggal_periksa,'%d-%m-%Y')) AS tglperiksa,
+	IFNULL((SELECT GROUP_CONCAT(CONCAT(TIME_FORMAT(jd.jam_mulai,'%H:%i'),' - ',TIME_FORMAT(jd.jam_selesai,'%H:%i')) ORDER BY jd.jam_mulai SEPARATOR ', ') FROM jadwal jd
+		WHERE jd.kd_dokter=br.kd_dokter AND jd.kd_poli=br.kd_poli
+		AND jd.hari_kerja=ELT(DAYOFWEEK(br.tanggal_periksa),'AKHAD','SENIN','SELASA','RABU','KAMIS','JUMAT','SABTU')),'-') AS jampraktek,
+	CONCAT(IF(br.kd_poli='U0026','LAK',IFNULL((SELECT mpb.kd_poli_bpjs FROM maping_poli_bpjs mpb WHERE mpb.kd_poli_rs=br.kd_poli LIMIT 1),br.kd_poli)),
+		'-',IF(br.kd_pj='BPJ','B','A'),LPAD(br.no_reg,GREATEST(3,CHAR_LENGTH(br.no_reg)),'0')) AS noantrean
+	FROM booking_registrasi br
+	JOIN pasien ps ON ps.no_rkm_medis=br.no_rkm_medis
+	JOIN poliklinik pl ON pl.kd_poli=br.kd_poli
+	JOIN dokter dr ON dr.kd_dokter=br.kd_dokter
+	LEFT JOIN penjab pj ON pj.kd_pj=br.kd_pj
+	WHERE br.no_rkm_medis=$P{noRM} AND br.tanggal_periksa=$P{tanggalPeriksa} AND br.kd_dokter=$P{kodeDokter} AND br.kd_poli=$P{kodePoli}]]>
+	</queryString>
+	<field name="no_rkm_medis" class="java.lang.String"/>
+	<field name="nm_pasien" class="java.lang.String"/>
+	<field name="nm_poli" class="java.lang.String"/>
+	<field name="nm_dokter" class="java.lang.String"/>
+	<field name="png_jawab" class="java.lang.String"/>
+	<field name="tglperiksa" class="java.lang.String"/>
+	<field name="jampraktek" class="java.lang.String"/>
+	<field name="noantrean" class="java.lang.String"/>
+	<detail>
+		<band height="425" splitType="Stretch">
+			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle" onErrorType="Blank">
+				<reportElement x="4" y="0" width="50" height="50" uuid="bb095523-bfc3-4a15-9112-c8e57be9134c"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="NamaRS" positionType="Float" x="56" y="6" width="257" height="16" uuid="1dc95c8d-8a6d-47cc-9fda-b62f41ad54b8"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{namars}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="56" y="23" width="257" height="22" uuid="84248c1b-10af-401a-b688-8b0660a7f8b7"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{alamatrs}+", "+$P{kotars}+"\n"+$P{kontakrs}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="10" y="54" width="297" height="1" uuid="55bb3e5a-abe2-4e86-9bbd-a90c23a79232"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="0" y="59" width="317" height="18" uuid="15a95812-0a5b-4ec7-918b-a48ae4e64eb0"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["BUKTI BOOKING"]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement positionType="Float" x="98" y="82" width="120" height="120" uuid="59dd082a-c994-4a16-8ce5-c399f635059d"/>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" margin="0" errorCorrectionLevel="M">
+					<jr:codeExpression><![CDATA[$P{kodeAnjungan}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="0" y="207" width="317" height="12" uuid="e501047f-7246-4385-886c-75076d392620"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Kode Booking"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="0" y="219" width="317" height="32" uuid="71dbf949-469e-46d0-b62e-c02c31defaa3"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="26" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{kodeAnjungan}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="10" y="255" width="297" height="1" uuid="386ceb6e-e468-4d38-a7b0-f40a96f362e4"/>
+			</line>
+			<frame>
+				<reportElement positionType="Float" x="0" y="261" width="317" height="15" uuid="58d9772f-7a47-4468-849e-0e8d37d57d79"/>
+			<staticText>
+				<reportElement positionType="Float" x="10" y="0" width="95" height="15" uuid="057360eb-db2e-425c-a261-0d4647da87c8"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[No. RM]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="105" y="0" width="8" height="15" uuid="1dfec8b8-e19b-45d1-babb-17c9e2c48a3b"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="113" y="0" width="194" height="15" uuid="25fd9bf2-6e10-4c08-bc34-2fbdc6b4bc7d"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{no_rkm_medis}]]></textFieldExpression>
+			</textField>
+			</frame>
+			<frame>
+				<reportElement positionType="Float" x="0" y="276" width="317" height="15" uuid="f5342001-3c99-491a-a5db-dec03251c566"/>
+			<staticText>
+				<reportElement positionType="Float" x="10" y="0" width="95" height="15" uuid="c90e746e-aed4-4456-9706-7c4b7003b587"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[Nama Pasien]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="105" y="0" width="8" height="15" uuid="1b7ec001-a1f6-4ded-840d-25414b91684e"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="113" y="0" width="194" height="15" uuid="f1c2f7a9-b43a-4c0f-a0ca-62a9ede8c04a"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nm_pasien}]]></textFieldExpression>
+			</textField>
+			</frame>
+			<frame>
+				<reportElement positionType="Float" x="0" y="291" width="317" height="15" uuid="32922562-4343-4e9f-bfdb-75362fc260e6"/>
+			<staticText>
+				<reportElement positionType="Float" x="10" y="0" width="95" height="15" uuid="1471a22e-8ede-440b-874e-4e3da195c90c"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[Poliklinik]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="105" y="0" width="8" height="15" uuid="796957b5-8a85-4b70-9185-0640acdd5e8f"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="113" y="0" width="194" height="15" uuid="255b352a-a5fc-40b8-95e1-36e068844ac4"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nm_poli}]]></textFieldExpression>
+			</textField>
+			</frame>
+			<frame>
+				<reportElement positionType="Float" x="0" y="306" width="317" height="15" uuid="ec51f37d-5b37-4a38-b58e-8d74a9ccbadc"/>
+			<staticText>
+				<reportElement positionType="Float" x="10" y="0" width="95" height="15" uuid="af73939b-4ce7-4fad-8761-2a41d6c96ec1"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[Dokter]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="105" y="0" width="8" height="15" uuid="09711105-a075-4e07-a5c7-02619a320856"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="113" y="0" width="194" height="15" uuid="fde1e99f-42d1-4c8f-a488-7470bc23705a"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nm_dokter}]]></textFieldExpression>
+			</textField>
+			</frame>
+			<frame>
+				<reportElement positionType="Float" x="0" y="321" width="317" height="15" uuid="bcc8b993-9204-45c0-b395-ac2f08d05253"/>
+			<staticText>
+				<reportElement positionType="Float" x="10" y="0" width="95" height="15" uuid="5fc8be18-d6d1-4bba-b8c6-360aa01e307d"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[Tanggal Periksa]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="105" y="0" width="8" height="15" uuid="25cac493-6d3d-4183-9388-a8723f801c6d"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="113" y="0" width="194" height="15" uuid="f7560418-7449-4463-bf93-598472052c76"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tglperiksa}]]></textFieldExpression>
+			</textField>
+			</frame>
+			<frame>
+				<reportElement positionType="Float" x="0" y="336" width="317" height="15" uuid="44d78139-a39c-407e-ae31-cd36574628b9"/>
+			<staticText>
+				<reportElement positionType="Float" x="10" y="0" width="95" height="15" uuid="4185a246-8506-46e2-9025-63e1fdf331c5"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[Jam Praktik]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="105" y="0" width="8" height="15" uuid="8fa08880-cb5e-41a2-b670-862b9d62245b"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="113" y="0" width="194" height="15" uuid="b74e8ad0-600f-47f4-8f1c-c684eccac202"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{jampraktek}]]></textFieldExpression>
+			</textField>
+			</frame>
+			<frame>
+				<reportElement positionType="Float" x="0" y="351" width="317" height="15" uuid="eab146bb-f2ec-4f6e-b735-ad818b55b8a3"/>
+			<staticText>
+				<reportElement positionType="Float" x="10" y="0" width="95" height="15" uuid="5179c9ec-b251-4af7-a5f2-11462ff33980"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[Cara Bayar]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="105" y="0" width="8" height="15" uuid="d92a6da9-4cfc-47a0-b794-ea5c026a29f8"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="113" y="0" width="194" height="15" uuid="ede2c42b-8751-484a-83d5-64a070e35f32"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{png_jawab}]]></textFieldExpression>
+			</textField>
+			</frame>
+			<frame>
+				<reportElement positionType="Float" x="0" y="366" width="317" height="15" uuid="970b02aa-1ac7-4f63-82cd-3df1fa73d7f5"/>
+			<staticText>
+				<reportElement positionType="Float" x="10" y="0" width="95" height="15" uuid="7a788b6c-5687-487e-9689-b5066a7112f9"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="10"/>
+				</textElement>
+				<text><![CDATA[No. Antrean Poli]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="105" y="0" width="8" height="15" uuid="b3d21f94-74fa-44d7-a1bf-fc3dd2555e1d"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[":"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="113" y="0" width="194" height="15" uuid="7602c41e-9ae4-4c31-98d4-7ab53273f706"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{noantrean}]]></textFieldExpression>
+			</textField>
+			</frame>
+			<line>
+				<reportElement positionType="Float" x="10" y="384" width="297" height="1" uuid="5e2a3d0b-e233-41c2-a7db-3c19c44f6467"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="10" y="389" width="297" height="36" uuid="0bde621a-3055-4833-94ec-a0e0f74431dc"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Setibanya di rumah sakit, pilih Check-In Booking di mesin Anjungan, lalu scan QR atau ketik kode di atas untuk mencetak nomor antrean."]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -31,6 +31,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import kepegawaian.DlgCariDokter;
 import kepegawaian.DlgCariDokter2;
+import modif.KodeBookingAnjungan;
+import modif.RegistrasiAnjungan;
 import simrskhanza.DlgCariPoli;
 import simrskhanza.DlgCariPoli2;
 import simrskhanza.DlgPasien;
@@ -54,6 +56,8 @@ public class DlgBookingRegistrasi extends javax.swing.JDialog {
     private DlgPasien pasien=new DlgPasien(null,false);
     private String aktifjadwal="",URUTNOREG="",BASENOREG="",status="",no_rawat="",umur="",sttsumur="",nohp="";
     private StringBuilder htmlContent;
+    // fitur antrean anjungan, bila nonaktif registrasi dan bukti booking sama seperti sebelumnya
+    private final boolean anjunganaktif=modif.SettingAnjungan.aktif();
     
     
 
@@ -1450,6 +1454,9 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         Sequel.queryu2("update booking_registrasi set status='Terdaftar' where no_rkm_medis=? and tanggal_periksa=?",2,new String[]{
                             tbObat.getValueAt(i,3).toString(),tbObat.getValueAt(i,5).toString()
                         });
+                        if(anjunganaktif&&!new RegistrasiAnjungan().catatLangsung(no_rawat,akses.getkode(),"BOOKING")){
+                            JOptionPane.showMessageDialog(rootPane,"Registrasi "+no_rawat+" tersimpan, tetapi gagal dicatat di antrean anjungan..!!");
+                        }
                     }
                 }
             }
@@ -1700,7 +1707,27 @@ private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     param.put("kontakrs", akses.getkontakrs());
                     param.put("emailrs", akses.getemailrs());
                     param.put("kodeBooking",tbObat.getValueAt(tbObat.getSelectedRow(),5).toString().replaceAll("-","")+tbObat.getValueAt(tbObat.getSelectedRow(),3).toString());
-                    Valid.MyReport("rptBuktiRegisterOffline.jasper", "report", "::[ Antrian Loket ]::", param);
+                    String kodeanjungan="";
+                    if(anjunganaktif){
+                        try {
+                            kodeanjungan=new KodeBookingAnjungan().buat(tbObat.getValueAt(tbObat.getSelectedRow(),3).toString(),
+                                tbObat.getValueAt(tbObat.getSelectedRow(),5).toString(),tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());
+                        } catch (Exception e) {
+                            System.out.println("Notifikasi : "+e);
+                            JOptionPane.showMessageDialog(rootPane,"Kode booking anjungan tidak bisa dibuat, bukti booking dicetak tanpa kode anjungan.\n"+e.getMessage());
+                        }
+                    }
+                    if(kodeanjungan.equals("")){
+                        Valid.MyReport("rptBuktiRegisterOffline.jasper", "report", "::[ Antrian Loket ]::", param);
+                    }else{
+                        param.put("kodeAnjungan",kodeanjungan);
+                        param.put("logo",Sequel.cariGambar("select setting.logo from setting"));
+                        param.put("noRM",tbObat.getValueAt(tbObat.getSelectedRow(),3).toString());
+                        param.put("tanggalPeriksa",tbObat.getValueAt(tbObat.getSelectedRow(),5).toString());
+                        param.put("kodeDokter",tbObat.getValueAt(tbObat.getSelectedRow(),6).toString());
+                        param.put("kodePoli",tbObat.getValueAt(tbObat.getSelectedRow(),8).toString());
+                        Valid.MyReport("rptBuktiBookingAnjungan.jasper", "report", "::[ Antrian Loket ]::", param);
+                    }
                     this.setCursor(Cursor.getDefaultCursor());
     }//GEN-LAST:event_ppCetakBuktiBookingActionPerformed
 
