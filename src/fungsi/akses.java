@@ -5530,10 +5530,10 @@ public final class akses {
     public static boolean getpenilaian_ulang_nyeri(){return akses.penilaian_ulang_nyeri;}
     public static boolean getpenilaian_terapi_wicara(){return akses.penilaian_terapi_wicara;}
     public static boolean getbpjs_obat_23hari_apotek(){return akses.bpjs_obat_23hari_apotek;}
-    public static boolean getbpjs_riwayat_pelayanan_obat(){return akses.bpjs_riwayat_pelayanan_obat;}
-    public static boolean getbpjs_rekap_peserta_prb_apotek(){return akses.bpjs_rekap_peserta_prb_apotek;}
-    public static boolean getbpjs_daftar_resep_apotek(){return akses.bpjs_daftar_resep_apotek;}
-    public static boolean getdaftar_permintaan_resep_iterasi_bpjs(){return akses.daftar_permintaan_resep_iterasi_bpjs;}
+    public static boolean getbpjs_riwayat_pelayanan_obat(){return akses.bpjs_riwayat_pelayanan_obat&&koneksiDB.AKTIFKANAPOTEKONLINEBPJS();}
+    public static boolean getbpjs_rekap_peserta_prb_apotek(){return akses.bpjs_rekap_peserta_prb_apotek&&koneksiDB.AKTIFKANAPOTEKONLINEBPJS();}
+    public static boolean getbpjs_daftar_resep_apotek(){return akses.bpjs_daftar_resep_apotek&&koneksiDB.AKTIFKANAPOTEKONLINEBPJS();}
+    public static boolean getdaftar_permintaan_resep_iterasi_bpjs(){return akses.daftar_permintaan_resep_iterasi_bpjs&&koneksiDB.AKTIFKANAPOTEKONLINEBPJS();}
     public static boolean getpengkajian_restrain(){return akses.pengkajian_restrain;}
     public static boolean getbpjs_kunjungan_sep_apotek(){return akses.bpjs_kunjungan_sep_apotek;}
     public static boolean getbpjs_monitoring_klaim_apotek(){return akses.bpjs_monitoring_klaim_apotek;}

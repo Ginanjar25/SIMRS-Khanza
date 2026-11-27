@@ -204,6 +204,7 @@ import fungsi.AntrianPoli;
 import bridging.BPJSRujukanKeluar;
 import fungsi.APIInternalRSPW;
 import keuangan.DlgDeposit;
+import modif.DlgAntreanDokterOnOff;
 import modif.DlgBatalPeriksa;
 import modif.DlgJadwalOperasi;
 import permintaan.DlgBookingKuota;
@@ -286,6 +287,24 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
               @Override public boolean isCellEditable(int rowIndex, int colIndex){return false;}
         };
         tbKasirRalan.setModel(tabModekasir);
+
+        // Tombol "Antrean Dokter" di sebelah Poli MCU: form On/Off antrean semua dokter + poli hari ini
+        // (anjungan: layar FO & menu Daftar Onsite). Dibuat di sini, bukan di initComponents, agar tidak hilang saat form disunting di NetBeans.
+        btnAntreanDokter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png")));
+        btnAntreanDokter.setText("Antrean Dokter");
+        btnAntreanDokter.setToolTipText("Buka / tutup antrean dokter hari ini (layar display FO & Daftar Onsite anjungan)");
+        btnAntreanDokter.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnAntreanDokter.setName("btnAntreanDokter");
+        btnAntreanDokter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                // ukuran form diatur di DlgAntreanDokterOnOff (seukuran hp)
+                DlgAntreanDokterOnOff form = new DlgAntreanDokterOnOff(null, false);
+                form.setLocationRelativeTo(internalFrame1);
+                form.muat();
+                form.setVisible(true);
+            }
+        });
+        panelGlass8.add(btnAntreanDokter);
 
         tbKasirRalan.setPreferredScrollableViewportSize(new Dimension(800,800));
         tbKasirRalan.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -12289,6 +12308,8 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
             }
         } 
     }//GEN-LAST:event_MnProgramKFRActionPerformed
+
+    private final widget.Button btnAntreanDokter = new widget.Button();
 
     private void ppMasukPoliBtnPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppMasukPoliBtnPrintActionPerformed
         if(tabModekasir.getRowCount()==0){

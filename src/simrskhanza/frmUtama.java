@@ -8473,9 +8473,10 @@ public class frmUtama extends javax.swing.JFrame {
                     }
                     if(!getIPAntrian().isBlank()){
                         String kd_poli = Sequel.cariIsi("select kd_poli from jadwal where kd_dokter = ? group by kd_poli", akses.getkode());
-                        if(!kd_poli.isBlank()){
-                             if(kd_poli.equals("IGDK")){
-                                 antriPoli.kirimAntrianIGD(kd_poli, akses.getkode());
+                        String kd_sps = Sequel.cariIsi("select kd_sps from dokter where kd_dokter = ?", akses.getkode());
+                        if(!kd_sps.isBlank()){
+                             if(kd_sps.equals("UMUM")){
+                                 antriPoli.kirimAntrianIGD("IGDK", akses.getkode());
                              }else {
                                  antriPoli.kirimAntrianAwal(kd_poli, akses.getkode());
                              }
@@ -25197,7 +25198,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
                 jmlmenu++;
             }
             
-            if(akses.getbpjs_obat_23hari_apotek()==true){
+            if(akses.getbpjs_obat_23hari_apotek()&&fungsi.koneksiDB.AKTIFKANAPOTEKONLINEBPJS()){
                 Panelmenu.add(btnObatApolApotekBPJS);
                 jmlmenu++;
             }
@@ -30407,7 +30408,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             jmlmenu++;
         }
         
-        if(akses.getbpjs_obat_23hari_apotek()==true){
+        if(akses.getbpjs_obat_23hari_apotek()&&fungsi.koneksiDB.AKTIFKANAPOTEKONLINEBPJS()){
             Panelmenu.add(btnObatApolApotekBPJS);
             jmlmenu++;
         }
@@ -36641,7 +36642,7 @@ private void MnGantiPasswordBtnLogActionPerformed(java.awt.event.ActionEvent evt
             }
         }
         
-        if(akses.getbpjs_obat_23hari_apotek()==true){
+        if(akses.getbpjs_obat_23hari_apotek()&&fungsi.koneksiDB.AKTIFKANAPOTEKONLINEBPJS()){
             if(btnObatApolApotekBPJS.getText().toLowerCase().trim().contains(TCari.getText().toLowerCase().trim())){
                 Panelmenu.add(btnObatApolApotekBPJS);
                 jmlmenu++;

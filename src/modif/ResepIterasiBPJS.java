@@ -21,6 +21,9 @@ public final class ResepIterasiBPJS {
 
     /** status_iter ("Iterasi Ke 1"/"Iterasi Ke 2") bila noresep adalah resep iterasi, selain itu "". */
     public static String statusIter(String noresep){
+        if(!koneksiDB.AKTIFKANAPOTEKONLINEBPJS()){
+            return "";
+        }
         return ambil("select permintaan_resep_iterasi_bpjs.status_iter from permintaan_resep_iterasi_bpjs where permintaan_resep_iterasi_bpjs.no_resep=?",noresep);
     }
 

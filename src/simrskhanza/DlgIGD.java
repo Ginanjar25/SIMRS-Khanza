@@ -408,7 +408,7 @@ public final class DlgIGD extends javax.swing.JDialog {
         ChkInput.setSelected(false);
         isForm(); 
         
-        WindowSetDisplay.setSize(630,180);
+        WindowSetDisplay.setSize(630,210);
         WindowDiagnosaMasuk.setSize(630,180);
         
         pasien.addWindowListener(new WindowListener() {
@@ -699,6 +699,10 @@ public final class DlgIGD extends javax.swing.JDialog {
                     KdPetugas3.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(), 0).toString());
                     NmPetugas3.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(), 1).toString());
                     KdPetugas3.requestFocus();
+                } else if (ptg.equals("4")) {
+                    KdPetugas4.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(), 0).toString());
+                    NmPetugas4.setText(petugas.getTable().getValueAt(petugas.getTable().getSelectedRow(), 1).toString());
+                    KdPetugas4.requestFocus();
                 }
             }
             @Override
@@ -1194,6 +1198,11 @@ public final class DlgIGD extends javax.swing.JDialog {
         KdPetugas3 = new widget.TextBox();
         NmPetugas3 = new widget.TextBox();
         btnPetugas3 = new widget.Button();
+
+        jLabelPetugas4 = new widget.Label();
+        KdPetugas4 = new widget.TextBox();
+        NmPetugas4 = new widget.TextBox();
+        btnPetugas4 = new widget.Button();
         
         MnRMLembarKonsultasi = new javax.swing.JMenuItem();
         MnDeposit = new javax.swing.JMenuItem();
@@ -5591,7 +5600,7 @@ public final class DlgIGD extends javax.swing.JDialog {
             }
         });
         internalFrameSetDisplay.add(BtnCloseSetDisplay);
-        BtnCloseSetDisplay.setBounds(510, 120, 100, 30);
+        BtnCloseSetDisplay.setBounds(510, 150, 100, 30);
         
         BtnClearSetDisplay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/Search-16x16.png"))); // NOI18N
         BtnClearSetDisplay.setMnemonic('U');
@@ -5604,7 +5613,7 @@ public final class DlgIGD extends javax.swing.JDialog {
             }
         });
         internalFrameSetDisplay.add(BtnClearSetDisplay);
-        BtnClearSetDisplay.setBounds(100, 120, 100, 30);
+        BtnClearSetDisplay.setBounds(100, 150, 100, 30);
 
         BtnSimpanSetDisplay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
         BtnSimpanSetDisplay.setMnemonic('S');
@@ -5617,7 +5626,7 @@ public final class DlgIGD extends javax.swing.JDialog {
             }
         });
         internalFrameSetDisplay.add(BtnSimpanSetDisplay);
-        BtnSimpanSetDisplay.setBounds(17, 120, 100, 30);
+        BtnSimpanSetDisplay.setBounds(17, 150, 100, 30);
         
         jLabelPetugas1.setText("Petugas 1 : ");
         jLabelPetugas1.setName("jLabelPetugas1"); // NOI18N
@@ -5717,6 +5726,34 @@ public final class DlgIGD extends javax.swing.JDialog {
         });
         internalFrameSetDisplay.add(btnPetugas3);
         btnPetugas3.setBounds(546, 90, 28, 23);
+
+        jLabelPetugas4.setText("Petugas 4 : ");
+        jLabelPetugas4.setName("jLabelPetugas4"); // NOI18N
+        internalFrameSetDisplay.add(jLabelPetugas4);
+        jLabelPetugas4.setBounds(2, 120, 87, 23);
+
+        KdPetugas4.setHighlighter(null);
+        KdPetugas4.setName("KdPetugas4"); // NOI18N
+        internalFrameSetDisplay.add(KdPetugas4);
+        KdPetugas4.setBounds(92, 120, 100, 23);
+
+        NmPetugas4.setEditable(false);
+        NmPetugas4.setName("NmPetugas4"); // NOI18N
+        internalFrameSetDisplay.add(NmPetugas4);
+        NmPetugas4.setBounds(193, 120, 350, 23);
+
+        btnPetugas4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        btnPetugas4.setMnemonic('7');
+        btnPetugas4.setToolTipText("ALt+7");
+        btnPetugas4.setName("btnPetugas4"); // NOI18N
+        btnPetugas4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ptg = "4";
+                btnPetugasActionPerformed(evt);
+            }
+        });
+        internalFrameSetDisplay.add(btnPetugas4);
+        btnPetugas4.setBounds(546, 120, 28, 23);
 
         WindowSetDisplay.getContentPane().add(internalFrameSetDisplay, java.awt.BorderLayout.CENTER);
         
@@ -12446,6 +12483,11 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     private widget.TextBox KdPetugas3;
     private widget.TextBox NmPetugas3;
     private widget.Button btnPetugas3;
+
+    private widget.Label jLabelPetugas4;
+    private widget.TextBox KdPetugas4;
+    private widget.TextBox NmPetugas4;
+    private widget.Button btnPetugas4;
     
     private widget.RadioButton R2;
     private widget.TextBox NoKa2;
@@ -13715,7 +13757,14 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
     }
 
     private void BtnSimpanSetDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanGabungActionPerformed
-        antriPoli.kirimAntrianPerawatIGD(KdPetugas1.getText(), NmPetugas1.getText(), KdPetugas2.getText(), NmPetugas2.getText(), KdPetugas3.getText(), NmPetugas3.getText());
+        // Minimal 1 perawat dipilih (tombol cari di kanan kolom Petugas); kolom kosong dikirim sebagai "placeholder".
+        if (KdPetugas1.getText().trim().isEmpty() && KdPetugas2.getText().trim().isEmpty() && KdPetugas3.getText().trim().isEmpty() && KdPetugas4.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Pilih minimal 1 perawat jaga lewat tombol cari di sebelah kolom Petugas.");
+            return;
+        }
+        antriPoli.kirimAntrianPerawatIGD(
+            new String[]{KdPetugas1.getText().trim(), KdPetugas2.getText().trim(), KdPetugas3.getText().trim(), KdPetugas4.getText().trim()},
+            new String[]{NmPetugas1.getText(), NmPetugas2.getText(), NmPetugas3.getText(), NmPetugas4.getText()});
     }//GEN-LAST:event_BtnSimpanGabungActionPerformed
     
     private void BtnCloseSetDisplayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCloseGabungActionPerformed
@@ -13737,6 +13786,8 @@ private void MnLaporanRekapKunjunganBulananPoliActionPerformed(java.awt.event.Ac
         NmPetugas2.setText("");
         KdPetugas3.setText("");
         NmPetugas3.setText("");
+        KdPetugas4.setText("");
+        NmPetugas4.setText("");
     }//GEN-LAST:event_BtnClearSetDisplayActionPerformed
     
     private void R2MouseClicked(java.awt.event.MouseEvent evt) {

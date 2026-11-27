@@ -447,6 +447,26 @@ public class koneksiDB {
         return var;
     }
 
+    private static Boolean aktifapotekonlinebpjs=null;
+
+    /**
+     * true bila fitur Apotek Online BPJS RSPW diaktifkan (entry AKTIFKANAPOTEKONLINEBPJS = yes di database.xml).
+     * Bila entry tidak ada atau "no": menu Apotek BPJS baru, tombol Obat 23 Hari BPJS, kolom dan alur resep iterasi nonaktif,
+     * sehingga validasi resep berjalan seperti sebelumnya. Dibaca sekali saat aplikasi berjalan (ubah entry lalu buka ulang aplikasi).
+     */
+    public static boolean AKTIFKANAPOTEKONLINEBPJS(){
+        if(aktifapotekonlinebpjs==null){
+            try{
+                Properties p=new Properties();
+                p.loadFromXML(new FileInputStream("setting/database.xml"));
+                aktifapotekonlinebpjs=p.getProperty("AKTIFKANAPOTEKONLINEBPJS","no").trim().equalsIgnoreCase("yes");
+            }catch(Exception e){
+                aktifapotekonlinebpjs=false;
+            }
+        }
+        return aktifapotekonlinebpjs;
+    }
+
     /** Kode PPK apotek di Apotek Online BPJS (entry terenkripsi KODEPPKAPOTEKBPJS di database.xml), dipakai form Resep Obat Apotek BPJS. */
     public static String KODEPPKAPOTEKBPJS(){
         try{
@@ -461,7 +481,11 @@ public class koneksiDB {
     public static String JADIKANPIUTANGAPOTEKBPJS(){
         try{
             prop.loadFromXML(new FileInputStream("setting/database.xml"));
-            var=prop.getProperty("JADIKANPIUTANGAPOTEKBPJS","no").trim(); // teks biasa (yes/no) seperti upstream, bukan terenkripsi
+            var=prop.getProperty("JADIKANPIUTANGAPOTEKBPJS","no").trim(); // teks biasa (yes/no) seperti upstream
+            if(!var.equalsIgnoreCase("yes")&&!var.equalsIgnoreCase("no")){
+                var=EnkripsiAES.decrypt(var); // kompatibel dengan entry lama yang terenkripsi
+            }
+            var=(var==null||!var.trim().equalsIgnoreCase("yes"))?"no":"yes";
         }catch(Exception e){
             var="no"; 
         }

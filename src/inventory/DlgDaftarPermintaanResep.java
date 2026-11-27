@@ -46,6 +46,14 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
     private ResultSet rs,rs2,rs3, rsracikan;
     /** Form input resep Apotek Online BPJS (tombol Obat 23 Hari BPJS), dari upstream Khanza. */
     private bridging.ApotekBPJSInputResepObat apol;
+    /** Fitur Apotek Online BPJS (entry AKTIFKANAPOTEKONLINEBPJS di database.xml). Bila "no", kolom Iterasi, alur resep iterasi dan tombol Obat 23 Hari BPJS nonaktif. */
+    private static final boolean AKTIF_APOL=koneksiDB.AKTIFKANAPOTEKONLINEBPJS();
+    private static final String KOLOM_ITERASI=AKTIF_APOL?
+        "ifnull(resep_obat_info.iter,'0') as iter_resep,ifnull(permintaan_resep_iterasi_bpjs.status_iter,'') as status_iter":
+        "'0' as iter_resep,'' as status_iter";
+    private static final String JOIN_ITERASI=AKTIF_APOL?
+        "LEFT JOIN side_db.resep_obat_info ON resep_obat_info.no_resep=resep_obat.no_resep \n"+
+        "LEFT JOIN permintaan_resep_iterasi_bpjs ON permintaan_resep_iterasi_bpjs.no_resep=resep_obat.no_resep \n":"\n";
     private String bangsal="",aktifkanparsial="no",kamar="",alarm="",DEPOAKTIFOBAT="",rincianobat="",
             formalarm="",nol_detik,detik,NoResep="",TglPeresepan="",JamPeresepan="",finger="",
             NoRawat="",NoRM="",Pasien="",DokterPeresep="",Status="",KodeDokter="",Ruang="",KodeRuang="";
@@ -117,8 +125,14 @@ public class DlgDaftarPermintaanResep extends javax.swing.JDialog {
                 column.setPreferredWidth(90);
             }
         }
-        tbResepRalan.getColumnModel().getColumn(17).setPreferredWidth(85);
-        tbResepRalan.setDefaultRenderer(Object.class, new modif.WarnaTableIterasi(17));
+        if(AKTIF_APOL){
+            tbResepRalan.getColumnModel().getColumn(17).setPreferredWidth(85);
+            tbResepRalan.setDefaultRenderer(Object.class, new modif.WarnaTableIterasi(17));
+        }else{
+            tbResepRalan.getColumnModel().getColumn(17).setMinWidth(0);
+            tbResepRalan.getColumnModel().getColumn(17).setMaxWidth(0);
+            tbResepRalan.setDefaultRenderer(Object.class, new WarnaTable());
+        }
         
         tabMode2=new DefaultTableModel(null,new Object[]{
                 "No.Resep","Tgl.Resep","Poli/Unit","Status","Pasien","Dokter Peresep"
@@ -2926,7 +2940,9 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
     }//GEN-LAST:event_BtnSEPBPJSActionPerformed
 
     private void BtnObat23HariBPJSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnObat23HariBPJSActionPerformed
-        if(TabPilihRawat.getSelectedIndex()==0){
+        if(!AKTIF_APOL){
+            JOptionPane.showMessageDialog(null,"Fitur Apotek Online BPJS belum diaktifkan (AKTIFKANAPOTEKONLINEBPJS di database.xml)...!!!!");
+        }else if(TabPilihRawat.getSelectedIndex()==0){
             if(TabRawatJalan.getSelectedIndex()==0){
                 if(tabMode.getRowCount()==0){
                     JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
@@ -4166,7 +4182,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         "if(resep_obat.jam_penyerahan='00:00:00','',resep_obat.jam_penyerahan) as jam_penyerahan, \n" +
                         "IF(telaah_farmasi.no_resep IS NOT NULL, 'SUDAH', 'BELUM') AS telaah_status,\n" +
                         "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2, \n" +
-                        "ifnull(resep_obat_info.iter,'0') as iter_resep,ifnull(permintaan_resep_iterasi_bpjs.status_iter,'') as status_iter \n" +
+                        KOLOM_ITERASI+" \n" +
                         "from resep_obat \n" +
                         "inner join reg_periksa on resep_obat.no_rawat=reg_periksa.no_rawat \n" +
                         "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis \n" +
@@ -4176,8 +4192,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         "left JOIN telaah_farmasi ON telaah_farmasi.no_resep = resep_obat.no_resep \n" +
                         "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
                         "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj\n" +
-                        "LEFT JOIN side_db.resep_obat_info ON resep_obat_info.no_resep=resep_obat.no_resep \n" +
-                        "LEFT JOIN permintaan_resep_iterasi_bpjs ON permintaan_resep_iterasi_bpjs.no_resep=resep_obat.no_resep \n" +
+                        JOIN_ITERASI+
                         "where resep_obat.tgl_peresepan<>'0000-00-00' and resep_obat.status='ralan' and resep_obat.tgl_peresepan BETWEEN ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and poliklinik.nm_poli like ? and "+
                         "(resep_obat.no_resep like ? or resep_obat.no_rawat like ? or "+
@@ -4193,7 +4208,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         "if(resep_obat.jam_penyerahan='00:00:00','',resep_obat.jam_penyerahan) as jam_penyerahan, \n" +
                         "IF(telaah_farmasi.no_resep IS NOT NULL, 'SUDAH', 'BELUM') AS telaah_status,\n" +
                         "CASE WHEN penjab_cara_bayar2.png_jawab IS NULL OR penjab_reg.kd_pj = '-' THEN '' WHEN penjab_reg.kd_pj = reg_periksa.kd_pj THEN '' ELSE CONCAT(' - ', penjab_cara_bayar2.png_jawab) END AS cara_bayar2, \n" +
-                        "ifnull(resep_obat_info.iter,'0') as iter_resep,ifnull(permintaan_resep_iterasi_bpjs.status_iter,'') as status_iter \n" +
+                        KOLOM_ITERASI+" \n" +
                         "from resep_obat \n" +
                         "inner join reg_periksa on resep_obat.no_rawat=reg_periksa.no_rawat \n" +
                         "inner join pasien on reg_periksa.no_rkm_medis=pasien.no_rkm_medis \n" +
@@ -4203,8 +4218,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
                         "left JOIN telaah_farmasi ON telaah_farmasi.no_resep = resep_obat.no_resep \n" +
                         "LEFT JOIN ( SELECT *  FROM penjab_reg  WHERE `order` = 2 ) AS penjab_reg ON penjab_reg.no_rawat = reg_periksa.no_rawat\n" +
                         "LEFT JOIN penjab AS penjab_cara_bayar2 ON penjab_reg.kd_pj = penjab_cara_bayar2.kd_pj "+
-                        "LEFT JOIN side_db.resep_obat_info ON resep_obat_info.no_resep=resep_obat.no_resep \n" +
-                        "LEFT JOIN permintaan_resep_iterasi_bpjs ON permintaan_resep_iterasi_bpjs.no_resep=resep_obat.no_resep \n" +
+                        JOIN_ITERASI+
                         "inner join set_depo_ralan on set_depo_ralan.kd_poli=reg_periksa.kd_poli \n" +
                         " where set_depo_ralan.kd_bangsal='"+DEPOAKTIFOBAT+"' and resep_obat.tgl_peresepan<>'0000-00-00' and resep_obat.status='ralan' and resep_obat.tgl_peresepan between ? and ? "+
                         (semua?"":"and dokter.nm_dokter like ? and poliklinik.nm_poli like ? and "+
@@ -4360,7 +4374,7 @@ private void KdKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKdKey
         BtnRiwayat.setEnabled(akses.getresume_pasien()); 
         BtnSEPBPJS.setEnabled(akses.getbpjs_sep()); 
         BtnResepLuar.setEnabled(akses.getresep_luar()); 
-        BtnObat23HariBPJS.setEnabled(akses.getbpjs_obat_23hari_apotek()); 
+        BtnObat23HariBPJS.setEnabled(akses.getbpjs_obat_23hari_apotek()&&AKTIF_APOL);
         
         String jabatan = Sequel.cariIsi("select kd_jbtn from petugas where nip =?", akses.getkode()); 
         

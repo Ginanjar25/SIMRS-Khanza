@@ -33,7 +33,6 @@ public class AntrianPoli {
     private static final Properties prop = new Properties();
     private PreparedStatement ps;
     private ResultSet rs;
-    String kd_petugas = "placeholder", kd_petugas2 ="placeholder", kd_petugas3="placeholder", nm_petugas="", nm_petugas2="", nm_petugas3="";
         
     public AntrianPoli(){
         try {
@@ -327,15 +326,13 @@ public void kirimAntrianIGD(String kd_poli, String kd_dokter) {
     }
 }
 
-public void kirimAntrianPerawatIGD(String nik1, String nama1, String nik2, String nama2, String nik3, String nama3) {
+/**
+ * Kirim perawat jaga + jumlah pasien per zona ke display IGD (POST {URLAPIANTRIAN}/igd).
+ * nik[] dan nama[] berpasangan sesuai urutan kolom Petugas di Set Display IGD (saat ini 4 perawat);
+ * kolom kosong dikirim dengan nik "placeholder" dan nama kosong.
+ */
+public void kirimAntrianPerawatIGD(String[] nik, String[] nama) {
     try {
-        kd_petugas = (nik1 == null || nik1.isEmpty()) ? "placeholder" : nik1;
-        kd_petugas2 = (nik2 == null || nik2.isEmpty()) ? "placeholder" : nik2;
-        kd_petugas3 = (nik3 == null || nik3.isEmpty()) ? "placeholder" : nik3;
-        nm_petugas = nama1;
-        nm_petugas2 = nama2;
-        nm_petugas3 = nama3;
-        
         JSONObject jsonBody = new JSONObject();
         ps = koneksi.prepareStatement(
                 "SELECT\n" +
@@ -364,21 +361,23 @@ public void kirimAntrianPerawatIGD(String nik1, String nama1, String nik2, Strin
             jsonBody.put("red_zone", rs.getString("merah"));
         }
         JSONArray perawat = new JSONArray();
-        String[] nikArray = {kd_petugas, kd_petugas2, kd_petugas3};
-        String[] namaArray = {nm_petugas, nm_petugas2, nm_petugas3};
-
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < nik.length; i++) {
             JSONObject perawatObj = new JSONObject();
-            perawatObj.put("nik", nikArray[i]);
-            perawatObj.put("nama", namaArray[i]);
+            perawatObj.put("nik", (nik[i] == null || nik[i].isEmpty()) ? "placeholder" : nik[i]);
+            perawatObj.put("nama", (i < nama.length && nama[i] != null) ? nama[i] : "");
             perawat.put(perawatObj);
         }
         jsonBody.put("perawat", perawat);
 
+        if (link.equals("")) {
+            javax.swing.JOptionPane.showMessageDialog(null, "URLAPIANTRIAN di setting/database.xml belum diisi.");
+            return;
+        }
         URL url = new URL(link + "/igd");
-        kirimPOST(url, jsonBody.toString());
+        kirimPOST(url, jsonBody.toString(), "Perawat jaga terkirim ke display IGD.");
     } catch (Exception e) {
         e.printStackTrace();
+        javax.swing.JOptionPane.showMessageDialog(null, "Gagal menyiapkan data display IGD: " + e.getMessage());
     } finally {
         try {
             if (rs != null) rs.close();
@@ -389,13 +388,143 @@ public void kirimAntrianPerawatIGD(String nik1, String nama1, String nik2, Strin
     }
 }
 
+    // ---- Tutup / buka antrean dokter hari ini (perawat rawat jalan) ----
+    // Disimpan di side_db.anjungan_tutup_antrean (satu baris = antrean dokter + poli ditutup pada tanggal itu;
+    // besok otomatis buka lagi). Anjungan membaca tabel ini: kartu dokter hilang dari layar display FO dan
+    // dokter tidak bisa dipilih di menu Daftar Onsite. Setelah itu anjungan dikabari (POST /callQueue/tutup)
+    // agar layar FO langsung memuat ulang; bila anjungan tidak bisa dihubungi, layar FO tetap berubah
+    // paling lambat 1 menit kemudian.
+    private static final String DDL_TUTUP_ANTREAN =
+        "CREATE TABLE IF NOT EXISTS side_db.anjungan_tutup_antrean (" +
+        " tanggal DATE NOT NULL," +
+        " kd_poli VARCHAR(5) NOT NULL," +
+        " kd_dokter VARCHAR(20) NOT NULL," +
+        " ditutup_oleh VARCHAR(30) NOT NULL DEFAULT ''," +
+        " jam_tutup DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+        " PRIMARY KEY (tanggal, kd_poli, kd_dokter)" +
+        ") ENGINE=InnoDB";
+
+    // tutupBukaAntrean: bila antrean dokter + poli hari ini masih buka → konfirmasi lalu tutup; bila sudah
+    // ditutup → konfirmasi lalu buka kembali.
+    public void tutupBukaAntrean(String kd_poli, String kd_dokter, String nm_poli, String nm_dokter) {
+        if (kd_poli == null || kd_poli.trim().isEmpty() || kd_dokter == null || kd_dokter.trim().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(null, "Pilih dulu pasien pada tabel (poli & dokter belum terbaca).");
+            return;
+        }
+        kd_poli = kd_poli.trim();
+        kd_dokter = kd_dokter.trim();
+        String siapa = nm_dokter + " (" + nm_poli + ")";
+        try {
+            try (java.sql.Statement st = koneksi.createStatement()) {
+                st.execute(DDL_TUTUP_ANTREAN);
+            }
+            String jam = "", oleh = "";
+            boolean ditutup = false;
+            try (PreparedStatement p = koneksi.prepareStatement(
+                    "SELECT TIME_FORMAT(jam_tutup, '%H:%i'), ditutup_oleh FROM side_db.anjungan_tutup_antrean " +
+                    "WHERE tanggal = CURDATE() AND kd_poli = ? AND kd_dokter = ?")) {
+                p.setString(1, kd_poli);
+                p.setString(2, kd_dokter);
+                try (ResultSet r = p.executeQuery()) {
+                    if (r.next()) {
+                        ditutup = true;
+                        jam = r.getString(1);
+                        oleh = r.getString(2);
+                    }
+                }
+            }
+
+            if (!ditutup) {
+                int jawab = javax.swing.JOptionPane.showConfirmDialog(null,
+                    "Tutup antrean " + siapa + " hari ini?\n\n" +
+                    "- Kartu dokter ini hilang dari layar display FO.\n" +
+                    "- Dokter ini tidak bisa dipilih lagi di menu Daftar Onsite anjungan.\n\n" +
+                    "Bisa dibuka kembali lewat menu yang sama.",
+                    "Tutup Antrean Dokter", javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.WARNING_MESSAGE);
+                if (jawab != javax.swing.JOptionPane.YES_OPTION) return;
+            } else {
+                int jawab = javax.swing.JOptionPane.showConfirmDialog(null,
+                    "Antrean " + siapa + " sudah DITUTUP pukul " + jam + (oleh.isEmpty() ? "" : " oleh " + oleh) + ".\n\n" +
+                    "Buka kembali antrean dokter ini?",
+                    "Buka Kembali Antrean Dokter", javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE);
+                if (jawab != javax.swing.JOptionPane.YES_OPTION) return;
+            }
+
+            boolean tutup = !ditutup;
+            setAntreanTutup(kd_poli, kd_dokter, tutup);
+            javax.swing.JOptionPane.showMessageDialog(null, "Antrean " + siapa + (tutup ? " DITUTUP." : " DIBUKA kembali."));
+        } catch (Exception e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(null, "Gagal mengubah status antrean dokter: " + e.getMessage());
+        }
+    }
+
+    // setAntreanTutup: tutup (tutup = true) atau buka kembali antrean dokter + poli hari ini, tanpa dialog.
+    // Status tersimpan di database; kabar ke anjungan hanya mempercepat layar FO (gagal = diam).
+    public void setAntreanTutup(String kd_poli, String kd_dokter, boolean tutup) throws Exception {
+        try (java.sql.Statement st = koneksi.createStatement()) {
+            st.execute(DDL_TUTUP_ANTREAN);
+        }
+        String sql = tutup
+            ? "INSERT IGNORE INTO side_db.anjungan_tutup_antrean (kd_poli, kd_dokter, ditutup_oleh, tanggal, jam_tutup) VALUES (?, ?, ?, CURDATE(), NOW())"
+            : "DELETE FROM side_db.anjungan_tutup_antrean WHERE kd_poli = ? AND kd_dokter = ? AND tanggal = CURDATE()";
+        try (PreparedStatement p = koneksi.prepareStatement(sql)) {
+            p.setString(1, kd_poli.trim());
+            p.setString(2, kd_dokter.trim());
+            if (tutup) p.setString(3, akses.getkode());
+            p.executeUpdate();
+        }
+        if (link != null && !link.trim().isEmpty()) {
+            JSONObject body = new JSONObject();
+            body.put("kd_poli", kd_poli.trim());
+            body.put("kd_dokter", kd_dokter.trim());
+            body.put("tutup", tutup);
+            kirimPOST(new URL(link + "/tutup"), body.toString());
+        }
+    }
+
+    // daftarAntreanHariIni: dokter + poli yang praktik hari ini beserta status antreannya, diambil dari
+    // anjungan (GET {URLAPIANTRIAN}/tutup). Isi tiap elemen: kd_poli, nm_poli, kd_dokter, nm_dokter,
+    // jam_mulai, jam_selesai, pasien, jadwal_buka, ditutup, ditutup_oleh, jam_tutup.
+    public JSONArray daftarAntreanHariIni() throws Exception {
+        if (link == null || link.trim().isEmpty()) {
+            throw new Exception("URLAPIANTRIAN di setting/database.xml belum diisi.");
+        }
+        HttpURLConnection c = (HttpURLConnection) new URL(link + "/tutup").openConnection();
+        try {
+            c.setConnectTimeout(3000);
+            c.setReadTimeout(5000);
+            c.setRequestMethod("GET");
+            int kode = c.getResponseCode();
+            java.io.InputStream in = kode < 300 ? c.getInputStream() : c.getErrorStream();
+            String isi = "";
+            if (in != null) {
+                try (java.util.Scanner sc = new java.util.Scanner(in, "UTF-8").useDelimiter("\\A")) {
+                    isi = sc.hasNext() ? sc.next() : "";
+                }
+            }
+            if (kode >= 300) {
+                throw new Exception("anjungan menjawab HTTP " + kode + ": " + isi);
+            }
+            return new JSONObject(isi).getJSONArray("dokter");
+        } finally {
+            c.disconnect();
+        }
+    }
+
     // kirimPOST mengirim JSON ke server antrean di thread terpisah agar layar Khanza tidak macet
     // (hingga 3 + 3 detik) saat server antrean mati / lambat. Kegagalan hanya dicatat di konsol.
     private static void kirimPOST(final URL url, final String body) {
+        kirimPOST(url, body, null);
+    }
+
+    // kirimPOST dengan pesan hasil ke petugas (pesanSukses != null): muncul dialog berhasil / gagal.
+    private static void kirimPOST(final URL url, final String body, final String pesanSukses) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 HttpURLConnection connection = null;
+                String gagal = null;
                 try {
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setConnectTimeout(3000);
@@ -409,14 +538,32 @@ public void kirimAntrianPerawatIGD(String nik1, String nama1, String nik2, Strin
                     }
                     int kode = connection.getResponseCode();
                     if (kode >= 300) {
-                        System.out.println("Antrean " + url + " : HTTP " + kode);
+                        gagal = "server antrean menjawab HTTP " + kode;
                     }
                 } catch (Exception e) {
-                    System.out.println("Antrean " + url + " : " + e);
+                    gagal = "server antrean tidak bisa dihubungi (" + e.getMessage() + ")";
                 } finally {
                     if (connection != null) {
                         connection.disconnect();
                     }
+                }
+                if (gagal != null) {
+                    System.out.println("Antrean " + url + " : " + gagal);
+                }
+                if (pesanSukses != null) {
+                    final String hasil = gagal;
+                    javax.swing.SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (hasil == null) {
+                                javax.swing.JOptionPane.showMessageDialog(null, pesanSukses);
+                            } else {
+                                javax.swing.JOptionPane.showMessageDialog(null,
+                                    "Gagal mengirim ke display antrean:\n" + hasil + "\n\nAlamat: " + url,
+                                    "Display antrean", javax.swing.JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    });
                 }
             }
         }, "kirim-antrean").start();

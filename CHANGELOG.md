@@ -14,6 +14,18 @@ PANDUAN MENGISI
 - Popup "Apa yang Baru" muncul otomatis sekali setelah login bila versi teratas berubah.
 -->
 
+## [Belum Rilis]
+
+### Diubah
+
+- **Rawat Jalan**: Buka/tutup antrean dokter hari ini kini lewat tombol "Antrean Dokter" di sebelah tombol Poli MCU, bukan lagi menu klik kanan ("Tutup / Buka Antrean Dokter Hari Ini" dan "Antrean Dokter Hari Ini (On/Off)" dihapus). Di form Antrean Dokter, status tiap dokter tampil sebagai tombol geser ON/OFF: klik untuk mengubah (atau tekan Spasi pada baris terpilih). Menutup antrean tetap minta konfirmasi, membuka kembali langsung. Form Antrean Dokter kini kecil seukuran layar HP (tidak lagi memenuhi layar): poliklinik, jam praktik, dan keterangan tampil di bawah nama dokter. (Perawat Rawat Jalan)
+- **IGD**: Set Display IGD kini bisa mengisi 4 perawat jaga (sebelumnya 3). (Perawat IGD)
+
+### Catatan Teknis
+
+- Display IGD: `AntrianPoli.kirimAntrianPerawatIGD(String[] nik, String[] nama)` kini menerima array (sebelumnya 3 pasang parameter), sehingga array `perawat` pada POST `{URLAPIANTRIAN}/igd` berisi 4 objek `{nik, nama}`; kolom kosong tetap dikirim `nik: "placeholder"`. Pastikan aplikasi anjungan/display IGD menampilkan perawat ke-4.
+- Fitur Apotek Online BPJS RSPW bisa dinonaktifkan per PC lewat entry `<entry key="AKTIFKANAPOTEKONLINEBPJS">no</entry>` di `setting/database.xml` (`koneksiDB.AKTIFKANAPOTEKONLINEBPJS()`, dibaca sekali saat aplikasi dibuka). Bila entry tidak ada atau bukan `yes`: menu Riwayat Pelayanan Obat, Rekap Peserta PRB, Daftar Resep Apotek BPJS, Obat Apol, dan Daftar Permintaan Resep Iterasi tidak tampil; tombol "Obat 23 Hari BPJS" di Daftar Permintaan Resep nonaktif; kolom Iterasi disembunyikan dan `tampil()` tidak LEFT JOIN `side_db.resep_obat_info`/`permintaan_resep_iterasi_bpjs`; `modif.ResepIterasiBPJS.statusIter()` selalu kosong sehingga validasi resep, form validasi kronis, dan cetak bagian kronis kembali ke alur kunjungan biasa (nota piutang = No. Rawat). Perbaikan cetak obat kronis tambahan farmasi (`modif.ObatKronisResep`) dan form referensi Apotek BPJS versi upstream tetap berlaku. `koneksiDB.JADIKANPIUTANGAPOTEKBPJS()` kini menerima teks biasa `yes`/`no` maupun entry lama terenkripsi.
+
 ## [Rilis]
 
 ### Ditambahkan
